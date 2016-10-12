@@ -1092,6 +1092,11 @@ namespace BL.Database.Common
 
             qry = qry.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
 
+            //if (!(filter?.IsOpened.HasValue??false) && !(filter?.DocumentId?.Any()??false))
+            //{
+            //    qry = qry.Where(x => !x.OffEventId.HasValue);
+            //}
+
             if (filter != null)
             {
                 if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)

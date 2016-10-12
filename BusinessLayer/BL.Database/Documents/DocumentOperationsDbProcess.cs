@@ -1950,7 +1950,7 @@ namespace BL.Database.Documents
                 var items = model.Select(x => new DocumentSavedFilters
                 {
                     ClientId = context.CurrentClientId,
-                    PositionId = x.PositionId,
+                    UserId = x.UserId,
                     Name = x.Name,
                     Icon = x.Icon,
                     Filter = x.Filter,
@@ -1973,7 +1973,7 @@ namespace BL.Database.Documents
                 var item = new DocumentSavedFilters
                 {
                     Id = model.Id,
-                    PositionId = model.PositionId,
+                    UserId = model.UserId,
                     Name = model.Name,
                     Icon = model.Icon,
                     Filter = model.Filter,
@@ -1984,7 +1984,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentSavedFiltersSet.Attach(item);
 
                 var entry = dbContext.Entry(item);
-                entry.Property(e => e.PositionId).IsModified = true;
+                entry.Property(e => e.UserId).IsModified = true;
                 entry.Property(e => e.Name).IsModified = true;
                 entry.Property(e => e.Icon).IsModified = true;
                 entry.Property(e => e.Filter).IsModified = true;

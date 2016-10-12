@@ -5,6 +5,7 @@ using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using System.Transactions;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Database.Documents
 {
@@ -15,28 +16,32 @@ namespace BL.Database.Documents
         }
         #region DocumentSavedFilters
 
-        public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx, FilterDocumentSavedFilter filter)
         {
             using (var dbContext = new DmsContext(ctx))
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
-                //TODO: Uncomment to get the filters on the positions
-                //var positionId = dbContext.Context.CurrentPositionId;
-                //qry = qry.Where(x => x.PositionId == positionId);
+                if (filter != null)
+                {
+                    if (filter.IsOnlyCurrentUser)
+                    {
+                        qry = qry.Where(x => x.UserId == ctx.CurrentAgentId || x.IsCommon);
+                    }
+                }
 
-                var res = qry.Select(x => new FrontDocumentSavedFilter
+                    var res = qry.Select(x => new FrontDocumentSavedFilter
                 {
                     Id = x.Id,
-                    PositionId = x.PositionId,
+                    UserId = x.UserId,
                     Name = x.Name,
                     Icon = x.Icon,
                     Filter = x.Filter,
                     IsCommon = x.IsCommon,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
-                    PositionName = x.Position.Name
+                    UserName = x.User.Agent.Name
                 }).ToList();
                 return res;
             }
@@ -53,14 +58,14 @@ namespace BL.Database.Documents
                         .Select(x => new FrontDocumentSavedFilter
                         {
                             Id = x.Id,
-                            PositionId = x.PositionId,
+                            UserId = x.UserId,
                             Name = x.Name,
                             Icon = x.Icon,
                             Filter = x.Filter,
                             IsCommon = x.IsCommon,
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
-                            PositionName = x.Position.Name
+                            UserName = x.User.Agent.Name
                         }).FirstOrDefault();
                 return savFilter;
             }

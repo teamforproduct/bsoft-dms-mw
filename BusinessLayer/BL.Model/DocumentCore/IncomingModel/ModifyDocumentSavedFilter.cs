@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи сохраненного фильтра для документом
     /// </summary>
-    public class ModifyDocumentSavedFilter : CurrentPosition
+    public class ModifyDocumentSavedFilter //: CurrentPosition
     {
         /// <summary>
         /// ИД записи сохраненного фильтра

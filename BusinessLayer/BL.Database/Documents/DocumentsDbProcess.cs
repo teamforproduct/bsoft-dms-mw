@@ -155,17 +155,19 @@ namespace BL.Database.Documents
 
                         if (paging.IsOnlyCounter ?? false)
                         {
-                            var tagCounters = dbContext.DocumentTagsSet.Join(qry, x => x.DocumentId, y => y.Id, (x, y) => x.Tag).GroupBy(x => x)
-                                .Select(x => new FrontDocumentTag
-                                {
-                                    TagId = x.Key.Id,
-                                    PositionId = x.Key.PositionId,
-                                    PositionName = x.Key.Position.Name,
-                                    Color = x.Key.Color,
-                                    Name = x.Key.Name,
-                                    IsSystem = !x.Key.PositionId.HasValue,
-                                    DocCount = x.Count(),
-                                }).ToList();
+                            var qryTagCounters = dbContext.DictionaryTagsSet
+                                    .Select(x => new FrontDocumentTag
+                                    {
+                                        TagId = x.Id,
+                                        PositionId = x.PositionId,
+                                        PositionName = x.Position.Name,
+                                        Color = x.Color,
+                                        Name = x.Name,
+                                        IsSystem = !x.PositionId.HasValue,
+                                        DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                                    })
+                                    .Where(x => x.DocCount > 0);
+                            var tagCounters = qryTagCounters.ToList();
                             return new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
                         }
 
@@ -197,17 +199,19 @@ namespace BL.Database.Documents
 
                     if (paging.IsOnlyCounter ?? false)
                     {
-                        var tagCounters = dbContext.DocumentTagsSet.Join(qry, x => x.DocumentId, y => y.Id, (x, y) => x.Tag).GroupBy(x=>x)
-                            .Select( x=> new FrontDocumentTag
+                        var qryTagCounters = dbContext.DictionaryTagsSet
+                                .Select(x => new FrontDocumentTag
                                 {
-                                    TagId = x.Key.Id,
-                                    PositionId = x.Key.PositionId,
-                                    PositionName = x.Key.Position.Name,
-                                    Color = x.Key.Color,
-                                    Name = x.Key.Name,
-                                    IsSystem = !x.Key.PositionId.HasValue,
-                                    DocCount = x.Count(),
-                                }).ToList();
+                                    TagId = x.Id,
+                                    PositionId = x.PositionId,
+                                    PositionName = x.Position.Name,
+                                    Color = x.Color,
+                                    Name = x.Name,
+                                    IsSystem = !x.PositionId.HasValue,
+                                    DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                                })
+                                .Where(x => x.DocCount > 0);
+                        var tagCounters = qryTagCounters.ToList();
                         return new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
                     }
 
