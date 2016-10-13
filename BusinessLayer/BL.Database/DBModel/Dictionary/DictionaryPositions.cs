@@ -17,7 +17,7 @@ namespace BL.Database.DBModel.Dictionary
             //this.Settings = new HashSet<AdminSettings>();
             this.ChiefDepartments = new HashSet<DictionaryDepartments>();
             this.StandartSendLists = new HashSet<DictionaryStandartSendLists>();
-            this.DocumentSavedFilters = new HashSet<DocumentSavedFilters>();
+//            this.DocumentSavedFilters = new HashSet<DocumentSavedFilters>();
             this.Tags = new HashSet<DictionaryTags>();
             this.PositionRoles = new HashSet<AdminPositionRoles>();
             this.PositionExecutors = new HashSet<DictionaryPositionExecutors>();
@@ -54,7 +54,7 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("ChiefPositionId")]
         public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
         public virtual ICollection<DictionaryStandartSendLists> StandartSendLists { get; set; }
-        public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
+//        public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
         public virtual ICollection<DictionaryTags> Tags { get; set; }
         public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
         public virtual ICollection<DictionaryPositionExecutors> PositionExecutors { get; set; }

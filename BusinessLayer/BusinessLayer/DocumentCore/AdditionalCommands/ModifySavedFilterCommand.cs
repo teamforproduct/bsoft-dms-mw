@@ -43,8 +43,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             DocSavedFilter = new InternalDocumentSavedFilter
             {
-                Id = Model.Id,
-                PositionId = _context.CurrentPositionId,
+                Id = Model.Id,              
+                Name = Model.Name,
                 Icon = Model.Icon,
                 Filter = Model.Filter.ToString(),
                 IsCommon = Model.IsCommon
@@ -56,6 +56,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, DocSavedFilter);
+            DocSavedFilter.UserId = DocSavedFilter.LastChangeUserId;
             _operationDb.ModifySavedFilter(_context, DocSavedFilter);
             return null;
         }

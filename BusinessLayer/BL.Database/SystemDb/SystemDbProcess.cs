@@ -14,6 +14,7 @@ using System.Data.Entity;
 using BL.Model.FullTextSearch;
 using System;
 using LinqKit;
+using System.Transactions;
 
 namespace BL.Database.SystemDb
 {
@@ -85,6 +86,7 @@ namespace BL.Database.SystemDb
         public string GetSettingValue(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 if (filter.AgentId.HasValue)
                 {
@@ -106,6 +108,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
 
                 var qry = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).AsQueryable();
@@ -138,6 +141,7 @@ namespace BL.Database.SystemDb
             {
 
                 using (var dbContext = new DmsContext(ctx))
+                using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var qry = dbContext.SystemUIElementsSet.AsQueryable();
 
@@ -193,6 +197,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontSystemObject> GetSystemObjects(IContext ctx, FilterSystemObject filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -218,6 +223,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemFormatsSet.AsQueryable();
 
@@ -234,6 +240,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext ctx, FilterSystemFormula filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
 
@@ -250,6 +257,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemPatternsSet.AsQueryable();
 
@@ -265,6 +273,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemValueTypesSet.AsQueryable();
 
@@ -284,6 +293,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext ctx, FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry =
                     dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
@@ -343,6 +353,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontProperty> GetProperties(IContext ctx, FilterProperty filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetPropertiesQuery(dbContext, ctx, filter);
 
@@ -488,6 +499,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -505,6 +517,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -589,6 +602,7 @@ namespace BL.Database.SystemDb
             FilterPropertyLink filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -614,6 +628,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return
                     dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
@@ -668,6 +683,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext ctx, FilterProperties filter)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry =
                     dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
@@ -698,6 +714,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<int> GetSendListIdsForAutoPlan(IContext ctx, int? sendListId = null, int? documentId = null)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 if (sendListId.HasValue)
                     return new List<int> { sendListId.GetValueOrDefault() };
@@ -774,6 +791,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext ctx, int timeMinForClearTrashDocuments)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
@@ -796,6 +814,7 @@ namespace BL.Database.SystemDb
         public int GetEntityNumbers(IContext ctx, EnumObjects objType)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 switch (objType)
                 {
@@ -828,6 +847,7 @@ namespace BL.Database.SystemDb
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -1096,6 +1116,7 @@ namespace BL.Database.SystemDb
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.Database.CommandTimeout = 0;
                 //Add deleted item to  process processing full text index
@@ -1117,6 +1138,7 @@ namespace BL.Database.SystemDb
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -1239,6 +1261,7 @@ namespace BL.Database.SystemDb
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.Database.CommandTimeout = 0;
                 if (objType == EnumObjects.Documents)
@@ -1332,6 +1355,7 @@ namespace BL.Database.SystemDb
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -1445,6 +1469,7 @@ namespace BL.Database.SystemDb
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.Database.CommandTimeout = 0;
 

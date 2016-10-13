@@ -5,6 +5,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.DocumentCore.Filters;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -12,11 +13,11 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentSavedFiltersController : ApiController
     {
         // GET: api/DocumentSavedFilters
-        public IHttpActionResult Get()
+        public IHttpActionResult Get([FromUri] FilterDocumentSavedFilter filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var savFilters = docProc.GetSavedFilters(ctx);
+            var savFilters = docProc.GetSavedFilters(ctx, filter);
             return new JsonResult(savFilters, this);
         }
 
@@ -32,7 +33,7 @@ namespace DMS_WebAPI.Controllers.Documents
         // POST: api/DocumentSavedFilters
         public IHttpActionResult Post([FromBody]ModifyDocumentSavedFilter model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, ctx, model);
             return Get(id);
@@ -42,7 +43,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSavedFilter model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifySavedFilter, ctx, model);
             return Get(model.Id);

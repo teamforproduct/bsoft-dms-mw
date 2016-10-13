@@ -6,6 +6,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.DocumentCore
 {
@@ -20,9 +21,9 @@ namespace BL.Logic.DocumentCore
 
         #region DocumentSavedFilters
 
-        public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx)
+        public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx, FilterDocumentSavedFilter filter)
         {
-            var savedFilters = _documentDb.GetSavedFilters(ctx).ToList();
+            var savedFilters = _documentDb.GetSavedFilters(ctx, filter).ToList();
             var js = new JavaScriptSerializer();
             for (int i = 0, l = savedFilters.Count; i < l; i++)
             {

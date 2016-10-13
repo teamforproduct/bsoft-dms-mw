@@ -9,6 +9,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
+using System.Transactions;
 
 namespace BL.Database.Documents
 {
@@ -21,6 +22,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
             }
@@ -29,6 +31,7 @@ namespace BL.Database.Documents
         public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return
                     dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
@@ -65,6 +68,7 @@ namespace BL.Database.Documents
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                                     .Where(x => x.Id == documentId)
@@ -108,6 +112,7 @@ namespace BL.Database.Documents
         public InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                                     .Where(x => x.Id == documentId)
@@ -145,6 +150,7 @@ namespace BL.Database.Documents
         public InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Id == documentId)
@@ -274,6 +280,7 @@ namespace BL.Database.Documents
         public InternalDocument DeleteDocumentFilePrepare(IContext ctx, FilterDocumentFileIdentity flIdent)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Id == flIdent.DocumentId)
@@ -361,6 +368,7 @@ namespace BL.Database.Documents
         public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
                 {

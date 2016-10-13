@@ -27,6 +27,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FrontTemplateDocument
                 {
@@ -52,6 +53,7 @@ namespace BL.Database.Documents
         {
             int templateDocumentId = 0;
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 templateDocumentId =
                     dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Id == documentId)
@@ -65,6 +67,7 @@ namespace BL.Database.Documents
         public FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var templateDocument =
                     dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == templateDocumentId)
