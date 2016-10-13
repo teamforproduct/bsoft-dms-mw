@@ -113,6 +113,11 @@ namespace BL.Database.SystemDb
 
                 var qry = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).AsQueryable();
 
+                if (!string.IsNullOrEmpty(filter.Key))
+                {
+                    qry = qry.Where(x => x.Key == filter.Key);
+                }
+
                 if (!string.IsNullOrEmpty(filter.Value))
                 {
                     qry = qry.Where(x => x.Value == filter.Value);

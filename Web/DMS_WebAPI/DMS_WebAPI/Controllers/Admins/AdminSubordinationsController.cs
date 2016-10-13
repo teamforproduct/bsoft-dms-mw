@@ -201,23 +201,6 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Разрешает устанавливать рассылку по умолчанию для исполнения при создании новой должности
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("IsSetDefaultsForExecution")]
-        public IHttpActionResult AllowDefaultsForExecution()
-        {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemSettings(cxt, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION });
-            return new JsonResult(tmpItems, this);
-        }
-
-
-
-        /// <summary>
         /// Возвращает значение настройки: устанавливать рассылку по умолчанию для сведения при создании новой должности
         /// </summary>
         /// <param name="model"></param>
