@@ -4634,10 +4634,12 @@ namespace BL.Database.Dictionaries
             if (filter.Period?.IsActive == true)
             {
                 qry = qry.Where(x =>
-                                (x.StartDate > filter.Period.DateBeg && x.EndDate < filter.Period.DateEnd) ||
-                                (x.StartDate < filter.Period.DateBeg && x.EndDate > filter.Period.DateBeg) ||
-                                (x.StartDate < filter.Period.DateEnd && x.EndDate > filter.Period.DateEnd)
-                                );
+                x.StartDate <= filter.Period.DateEnd && x.EndDate >= filter.Period.DateBeg);
+
+                                //(x.StartDate > filter.Period.DateBeg && x.EndDate < filter.Period.DateEnd) ||
+                                //(x.StartDate < filter.Period.DateBeg && x.EndDate > filter.Period.DateBeg) ||
+                                //(x.StartDate < filter.Period.DateEnd && x.EndDate > filter.Period.DateEnd)
+                                //);
             }
 
 
