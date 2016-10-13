@@ -74,6 +74,7 @@ namespace BL.Database.Admins.Interfaces
         void DeleteSubordination(IContext context, InternalAdminSubordination model);
         void DeleteSubordinationsBySourcePositionId(IContext context, InternalAdminSubordination model);
         void DeleteSubordinationsByTargetPositionId(IContext context, InternalAdminSubordination model);
+        void DeleteSubordinations(IContext context, FilterAdminSubordination filter);
         bool ExistsSubordination(IContext context, FilterAdminSubordination filter);
         List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter);
         InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter);

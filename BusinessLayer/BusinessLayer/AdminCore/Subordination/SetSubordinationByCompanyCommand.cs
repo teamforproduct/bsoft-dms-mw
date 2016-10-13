@@ -27,8 +27,8 @@ namespace BL.Logic.AdminCore
             try
             {
                 var departments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { CompanyIDs = new List<int> { Model.CompanyId } });
-
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                // PSS ReadUncommitted - так как вложенная транзакция ReadUncommitted
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (departments.Count() > 0)
                     {

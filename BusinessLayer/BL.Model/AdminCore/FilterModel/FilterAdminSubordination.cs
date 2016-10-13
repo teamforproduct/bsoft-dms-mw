@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,6 @@ namespace BL.Model.AdminCore.FilterModel
         /// <summary>
         /// SubordinationType
         /// </summary>
-        public List<int> SubordinationTypeIDs { get; set; }
+        public List<EnumSubordinationTypes> SubordinationTypeIDs { get; set; }
     }
 }

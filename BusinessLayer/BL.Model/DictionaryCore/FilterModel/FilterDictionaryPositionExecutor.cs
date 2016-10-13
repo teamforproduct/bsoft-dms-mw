@@ -29,7 +29,17 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Дата начала исполнения должностных обязанностей
         /// </summary>
-        public Period Period { get; set; }
+        //public Period Period { get; set; }
+
+        /// <summary>
+        /// Дата начала исполнения должности
+        /// </summary>
+        public DateTime? StartDate { get; set; }
+
+        /// <summary>
+        /// Дата окончания исполнения должности
+        /// </summary>
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         /// Тип исполнения

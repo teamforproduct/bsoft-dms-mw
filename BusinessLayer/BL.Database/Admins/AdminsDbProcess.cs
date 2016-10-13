@@ -1021,6 +1021,17 @@ namespace BL.Database.Admins
             }
         }
 
+        public void DeleteSubordinations(IContext context, FilterAdminSubordination filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+                qry = GetWhereSubordination(ref qry, filter);
+                dbContext.AdminSubordinationsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
+
         public InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -1045,7 +1056,7 @@ namespace BL.Database.Admins
         public IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            //using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1069,7 +1080,7 @@ namespace BL.Database.Admins
         public IEnumerable<InternalAdminSubordination> GetInternalSubordinations(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            //using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1092,7 +1103,7 @@ namespace BL.Database.Admins
         public List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            //using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1107,7 +1118,7 @@ namespace BL.Database.Admins
         public bool ExistsSubordination(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            //using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 

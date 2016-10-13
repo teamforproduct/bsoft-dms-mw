@@ -17,8 +17,10 @@ namespace BL.Database.DBModel.Dictionary
         public string UserId { get; set; }
         public Nullable<int> LanguageId { get; set; }
         [MaxLength(256)]
+        [Obsolete("Рудимент. Нужно удалить", true)]
         public string Login { get; set; }
         [MaxLength(2000)]
+        [Obsolete("Рудимент. Нужно удалить",true)]
         public string PasswordHash { get; set; }
         public byte[] Picture { get; set; }
 

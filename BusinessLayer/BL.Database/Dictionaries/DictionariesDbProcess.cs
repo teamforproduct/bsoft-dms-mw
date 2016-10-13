@@ -4631,17 +4631,21 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => filter.IsActive == x.IsActive);
             }
 
-            if (filter.Period?.IsActive == true)
+            if (filter.StartDate != null & filter.EndDate != null)
             {
                 qry = qry.Where(x =>
-                x.StartDate <= filter.Period.DateEnd && x.EndDate >= filter.Period.DateBeg);
-
-                                //(x.StartDate > filter.Period.DateBeg && x.EndDate < filter.Period.DateEnd) ||
-                                //(x.StartDate < filter.Period.DateBeg && x.EndDate > filter.Period.DateBeg) ||
-                                //(x.StartDate < filter.Period.DateEnd && x.EndDate > filter.Period.DateEnd)
-                                //);
+                x.StartDate <= filter.EndDate && x.EndDate >= filter.StartDate);
             }
-
+            else if (filter.StartDate != null)
+            {
+                qry = qry.Where(x =>
+                x.EndDate >= filter.StartDate);
+            }
+            else if (filter.EndDate != null)
+            {
+                qry = qry.Where(x =>
+                x.StartDate <= filter.EndDate);
+            }
 
 
             if (filter.AccessLevelIDs?.Count > 0)
@@ -4705,7 +4709,8 @@ namespace BL.Database.Dictionaries
                 // достаю всех исполнителей переданной должности в указанный срок
                 var executors = GetPositionExecutors(context, new FilterDictionaryPositionExecutor()
                 {
-                    Period = filter.Period,
+                    StartDate = filter.Period.DateBeg,
+                    EndDate = filter.Period.DateEnd,
                     PositionIDs = new List<int> { filter.PositionId ?? -1 }
                 });
 

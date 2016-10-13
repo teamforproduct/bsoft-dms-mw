@@ -122,8 +122,39 @@ namespace BL.Logic.AdminCore
                 }
                 else
                 {
-                    _adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination { SourcePositionId = positionId });
-                    _adminDb.DeleteSubordinationsByTargetPositionId(_context, new InternalAdminSubordination { TargetPositionId = positionId });
+                    var f = new FilterAdminSubordination();
+
+                    f.SourcePositionIDs = new List<int> { positionId };
+
+                    if (IsExecution & !IsInforming)
+                    {
+                        f.SubordinationTypeIDs = new List<EnumSubordinationTypes> { EnumSubordinationTypes.Execution };
+                    }
+                    else if (IsInforming & !IsExecution)
+                    {
+                        f.SubordinationTypeIDs = new List<EnumSubordinationTypes> { EnumSubordinationTypes.Informing };
+                    }
+
+                    _adminDb.DeleteSubordinations(_context, f);
+
+                    // -------------------
+
+                    f.SourcePositionIDs = null;
+                    f.TargetPositionIDs = new List<int> { positionId };
+
+                    if (IsExecution & !IsInforming)
+                    {
+                        f.SubordinationTypeIDs = new List<EnumSubordinationTypes> { EnumSubordinationTypes.Execution };
+                    }
+                    else if (IsInforming & !IsExecution)
+                    {
+                        f.SubordinationTypeIDs = new List<EnumSubordinationTypes> { EnumSubordinationTypes.Informing };
+                    }
+
+                    _adminDb.DeleteSubordinations(_context, f);
+
+                    //_adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination { SourcePositionId = positionId });
+                    //_adminDb.DeleteSubordinationsByTargetPositionId(_context, new InternalAdminSubordination { TargetPositionId = positionId });
                 }
             }
             catch (Exception ex)

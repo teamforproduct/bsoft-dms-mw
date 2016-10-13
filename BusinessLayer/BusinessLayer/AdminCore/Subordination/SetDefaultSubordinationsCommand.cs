@@ -21,68 +21,11 @@ namespace BL.Logic.AdminCore
 
         public override object Execute()
         {
-            //try
-            //{
-            //    // Добавляю рассылку во все направления для сведения и исполнения для указанной должности
-            //    var positions = _dictDb.GetPositions(_context, new BL.Model.DictionaryCore.FilterModel.FilterDictionaryPosition()
-            //    { IsActive = true });
-
-            //    foreach (var position in positions)
-            //    {
-            //        // разрешаю рассылку на самого себя (самоконтроль)
-
-            //        // разрешаю выполнять рыссылку от указанной должности для исполнения
-            //        SetSubordination(new ModifyAdminSubordination()
-            //        {
-            //            SourcePositionId = Model.PositionId,
-            //            TargetPositionId = position.Id,
-            //            SubordinationTypeId = BL.Model.Enums.EnumSubordinationTypes.Execution,
-            //            IsChecked = true,
-            //        });
-            //        // разрешаю выполнять рыссылку от указанной должности для сведения
-            //        SetSubordination(new ModifyAdminSubordination()
-            //        {
-            //            SourcePositionId = Model.PositionId,
-            //            TargetPositionId = position.Id,
-            //            SubordinationTypeId = BL.Model.Enums.EnumSubordinationTypes.Informing,
-            //            IsChecked = true,
-            //        });
-
-            //        // разрешаю выполнять рыссылку на указанную должность для исполнения
-            //        SetSubordination(new ModifyAdminSubordination()
-            //        {
-            //            SourcePositionId = position.Id,
-            //            TargetPositionId = Model.PositionId,
-            //            SubordinationTypeId = BL.Model.Enums.EnumSubordinationTypes.Execution,
-            //            IsChecked = true,
-            //        });
-
-            //        // разрешаю выполнять рыссылку на указанную должность для сведения
-            //        SetSubordination(new ModifyAdminSubordination()
-            //        {
-            //            SourcePositionId = position.Id,
-            //            TargetPositionId = Model.PositionId,
-            //            SubordinationTypeId = BL.Model.Enums.EnumSubordinationTypes.Informing,
-            //            IsChecked = true,
-            //        });
-            //    }
-
-            //    return null;
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw new AdminRecordCouldNotBeAdded(ex);
-            //}
 
             base.SetAllSubordinations(Model.PositionId, true, true, true);
 
             return null;
 
         }
-
-        //private void SetSubordination(ModifyAdminSubordination model)
-        //{
-        //    _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
-        //}
     }
 }

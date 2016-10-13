@@ -27,7 +27,8 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                // PSS ReadUncommitted - так как вложенная транзакция ReadUncommitted
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     // Устанавливаю рассылку для должностей заданного отдела
                     SetSubordinationByDepartment(Model.DepartmentId);
@@ -50,6 +51,7 @@ namespace BL.Logic.AdminCore
         {
             _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
         }
+
         private void SetSubordinationByDepartment(int departmentId)
         {
             var positions = _dictDb.GetPositions(_context, new FilterDictionaryPosition() { DepartmentIDs = new List<int> { departmentId } });

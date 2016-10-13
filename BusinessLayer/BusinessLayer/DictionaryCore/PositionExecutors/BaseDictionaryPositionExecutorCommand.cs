@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Extensions;
+using BL.Logic.Common;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -32,9 +33,11 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-           
+            Model.StartDate = Model.StartDate.StartOfDay();
+            Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
 
-            if (Model.StartDate > (Model.EndDate ?? DateTime.MaxValue)) throw new DictionaryPositionExecutorIsInvalidPeriod();
+
+            if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();
 
             FrontDictionaryPositionExecutor executor = null;
 
@@ -42,7 +45,8 @@ namespace BL.Logic.DictionaryCore
             {
                 NotContainsIDs = new List<int> { Model.Id },
                 PositionIDs = new List<int> { Model.PositionId },
-                Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
+                StartDate = Model.StartDate,
+                EndDate = Model.EndDate,
                 AgentIDs = new List<int> { Model.AgentId },
             }).FirstOrDefault();
 
@@ -58,7 +62,8 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
+                        StartDate = Model.StartDate,
+                        EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                     }).FirstOrDefault();
 
@@ -71,7 +76,8 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
+                        StartDate = Model.StartDate,
+                        EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                     }).FirstOrDefault();
 
@@ -84,7 +90,8 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
+                        StartDate = Model.StartDate,
+                        EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
                     }).FirstOrDefault();
@@ -98,7 +105,8 @@ namespace BL.Logic.DictionaryCore
                     {
                         NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
-                        Period = new Period(Model.StartDate, Model.EndDate ?? DateTime.MaxValue),
+                        StartDate = Model.StartDate,
+                        EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
                     }).FirstOrDefault();
