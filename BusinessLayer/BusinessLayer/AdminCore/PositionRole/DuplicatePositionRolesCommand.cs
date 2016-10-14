@@ -9,15 +9,24 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class DuplicatePositionRolesCommand : BasePositionRoleCommand
+    public class DuplicatePositionRolesCommand : BaseAdminCommand
     {
-        private CopyAdminSubordinations Model
+        protected CopyAdminSubordinations Model
         {
             get
             {
                 if (!(_param is CopyAdminSubordinations)) throw new WrongParameterTypeError();
                 return (CopyAdminSubordinations)_param;
             }
+        }
+
+        public override bool CanBeDisplayed(int Id) => true;
+
+        public override bool CanExecute()
+        {
+            _adminService.VerifyAccess(_context, CommandType, false);
+
+            return true;
         }
 
         public override object Execute()

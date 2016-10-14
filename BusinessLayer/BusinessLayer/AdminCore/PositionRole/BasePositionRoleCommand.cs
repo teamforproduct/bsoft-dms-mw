@@ -20,10 +20,7 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        public override bool CanBeDisplayed(int Id)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int Id) => true;
 
         public override bool CanExecute()
         {

@@ -20,6 +20,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// При изменнии ролей для должности возникает задача синхронизации шаблона и экземпляров
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/AdminPositionRoles")]
     public class AdminPositionRolesController : ApiController
     {
         /// <summary>
@@ -104,8 +105,8 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("DuplicatePositionRoles")]
-        public IHttpActionResult DuplicatePositionRoles([FromBody] CopyAdminSubordinations model)
+        [Route("Duplicate")]
+        public IHttpActionResult Duplicate([FromBody] CopyAdminSubordinations model)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
