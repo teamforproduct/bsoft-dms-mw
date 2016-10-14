@@ -595,6 +595,17 @@ namespace BL.Database.Admins
             }
         }
 
+        public void DeletePositionRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+                qry = GetWherePositionRole(ref qry, filter);
+                dbContext.AdminPositionRolesSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
+
         public InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter)
         {
             using (var dbContext = new DmsContext(context))

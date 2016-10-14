@@ -107,6 +107,7 @@
     <Compile Include="AdminCore\DepartmentAdmin\BaseDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\DeleteDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\PositionRole\BasePositionRoleCommand.cs" />
+    <Compile Include="AdminCore\PositionRole\DuplicatePositionRolesCommand.cs" />
     <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetAllSubordinationsCommand.cs" />

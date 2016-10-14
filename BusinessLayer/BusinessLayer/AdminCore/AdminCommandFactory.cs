@@ -52,6 +52,10 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.DeletePositionRole:
                     cmd = DmsResolver.Current.Get<DeletePositionRoleCommand>();
                     break;
+                case EnumAdminActions.DuplicatePositionRoles:
+                    cmd = DmsResolver.Current.Get<DuplicatePositionRolesCommand>();
+                    break;
+
                 #endregion
 
                 #region AdminUserRoles

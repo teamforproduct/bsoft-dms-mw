@@ -132,7 +132,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Key = x.Key,
-                    Value = GetTypedValue(x.Value, EnumValueTypes.Text),
+                    Value = x.Value,//GetTypedValue(x.Value, EnumValueTypes.Text),
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
 

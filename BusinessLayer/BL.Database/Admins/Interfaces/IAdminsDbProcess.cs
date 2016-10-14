@@ -49,6 +49,7 @@ namespace BL.Database.Admins.Interfaces
         int AddPositionRole(IContext context, InternalAdminPositionRole model);
         void UpdatePositionRole(IContext context, InternalAdminPositionRole model);
         void DeletePositionRole(IContext context, InternalAdminPositionRole model);
+        void DeletePositionRoles(IContext context, FilterAdminPositionRole filter);
         bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter);
         InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter);
         FrontAdminPositionRole GetPositionRole(IContext context, int id);

@@ -1000,6 +1000,11 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => x.Agent.AgentPerson.LastName == filter.LastNameExact);
             }
 
+            if (!string.IsNullOrEmpty(filter.PersonnelNumberExact))
+            {
+                qry = qry.Where(x => x.Agent.AgentEmployee.PersonnelNumber == filter.PersonnelNumberExact);
+            }
+
             if (!string.IsNullOrEmpty(filter.PersonnelNumber))
             {
                 var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
