@@ -128,13 +128,23 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
                 }
 
-                return qry.Select(x => new FrontSystemSetting()
+                var res = qry.Select(x => new FrontSystemSetting()
                 {
                     Id = x.Id,
                     Key = x.Key,
-                    Value = x.Value,//GetTypedValue(x.Value, EnumValueTypes.Text),
+                    Value = x.Value,
+                    ValueType = (EnumValueTypes)x.ValueType,
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
+
+                return res.Select(x => new FrontSystemSetting()
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = GetTypedValue(x.Value.ToString(), x.ValueType),
+                    AgentId = x.AgentId,
+                }).ToList();
+
 
             }
         }
