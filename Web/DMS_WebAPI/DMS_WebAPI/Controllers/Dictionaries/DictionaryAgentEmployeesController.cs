@@ -68,7 +68,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentEmployee model)
+        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployee model)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();

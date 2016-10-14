@@ -172,6 +172,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />

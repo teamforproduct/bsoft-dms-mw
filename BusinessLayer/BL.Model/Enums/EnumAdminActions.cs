@@ -49,6 +49,11 @@
         /// Удалить 
         /// </summary>
         DeletePositionRole = 702009,
+
+        /// <summary>
+        /// Дублировать 
+        /// </summary>
+        DuplicatePositionRoles = 702002,
         #endregion
 
         #region [+] UserRoles ...

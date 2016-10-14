@@ -14,15 +14,15 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentEmployee Model
+        private AddDictionaryAgentEmployee Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryAgentEmployee))
+                if (!(_param is AddDictionaryAgentEmployee))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryAgentEmployee)_param;
+                return (AddDictionaryAgentEmployee)_param;
             }
         }
 
@@ -45,11 +45,6 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var item = new InternalDictionaryAgentEmployee(Model);
-
-                // Обрезаю время для даты рождения и даты получения паспорта
-                if (item.PassportDate != null) item.PassportDate = new DateTime(item.PassportDate?.Year ?? 0, item.PassportDate?.Month ?? 0, item.PassportDate?.Day ?? 0);
-
-                if (item.BirthDate != null) item.BirthDate = new DateTime(item.BirthDate?.Year ?? 0, item.BirthDate?.Month ?? 0, item.BirthDate?.Day ?? 0);
 
                 CommonDocumentUtilities.SetLastChange(_context, item);
                 int agent =_dictDb.AddAgentEmployee(_context, item);

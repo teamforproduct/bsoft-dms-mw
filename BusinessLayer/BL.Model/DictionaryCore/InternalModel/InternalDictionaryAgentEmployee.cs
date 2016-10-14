@@ -13,7 +13,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentEmployee()
         { }
 
-        public InternalDictionaryAgentEmployee(ModifyDictionaryAgentEmployee model)
+        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
         {
             Id = model.Id;
             Name = model.Name;
@@ -42,6 +42,30 @@ namespace BL.Model.DictionaryCore.InternalModel
             PasswordHash = model.PasswordHash;
             Login = model.Login;
             Phone = model.Phone;
+            #endregion
+
+        }
+
+        public InternalDictionaryAgentEmployee(ModifyDictionaryAgentEmployee model)
+        {
+            Id = model.Id;
+            Name = model.Name;
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            MiddleName = model.MiddleName;
+            TaxCode = model.TaxCode;
+            IsMale = model.IsMale;
+            PassportDate = model.PassportDate;
+            PassportNumber = model.PassportNumber;
+            PassportSerial = model.PassportSerial;
+            PassportText = model.PassportText;
+            Description = model.Description;
+            BirthDate = model.BirthDate;
+            IsActive = model.IsActive;
+
+
+            #region [+] Employee ...
+            PersonnelNumber = model.PersonnelNumber;
             #endregion
 
         }

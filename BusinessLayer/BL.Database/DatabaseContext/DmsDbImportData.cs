@@ -295,6 +295,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.AddPositionRole, EnumObjects.AdminPositionRoles, "##l@AdminActions:AddPositionRole@l##"));
             items.Add(GetSysAct(EnumAdminActions.ModifyPositionRole, EnumObjects.AdminPositionRoles, "##l@AdminActions:ModifyPositionRole@l##"));
             items.Add(GetSysAct(EnumAdminActions.DeletePositionRole, EnumObjects.AdminPositionRoles, "##l@AdminActions:DeletePositionRole@l##"));
+            items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, "##l@AdminActions:DuplicatePositionRoles@l##"));
 
             items.Add(GetSysAct(EnumAdminActions.AddUserRole, EnumObjects.AdminUserRoles, "##l@AdminActions:AddUserRole@l##"));
             items.Add(GetSysAct(EnumAdminActions.ModifyUserRole, EnumObjects.AdminUserRoles, "##l@AdminActions:ModifyUserRole@l##"));

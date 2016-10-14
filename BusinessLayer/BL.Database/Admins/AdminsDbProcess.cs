@@ -906,7 +906,7 @@ namespace BL.Database.Admins
                     IsChecked = x.UserRoles.
                     Where(y => y.RoleId == x.Id).
                     Where(y => filter.UserIDs.Contains(y.UserId)).
-                    Where(y => y.StartDate <= filter.EndDate && y.EndDate >= filter.StartDate).
+                    Where(y => y.StartDate <= (filter.EndDate ?? DateTime.MaxValue) && y.EndDate >= (filter.StartDate ?? DateTime.MinValue)).
                     Any()
                 }).ToList();
 

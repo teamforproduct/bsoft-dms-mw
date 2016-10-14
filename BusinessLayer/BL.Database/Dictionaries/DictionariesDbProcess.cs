@@ -4631,20 +4631,20 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => filter.IsActive == x.IsActive);
             }
 
-            if (filter.StartDate != null & filter.EndDate != null)
+            //if (filter.StartDate != null & filter.EndDate != null)
+            //{
+            //    qry = qry.Where(x =>
+            //    x.StartDate <= filter.EndDate && x.EndDate >= filter.StartDate);
+            //}
+
+            if (filter.StartDate != null)
             {
-                qry = qry.Where(x =>
-                x.StartDate <= filter.EndDate && x.EndDate >= filter.StartDate);
+                qry = qry.Where(x => x.EndDate >= filter.StartDate);
             }
-            else if (filter.StartDate != null)
+
+            if (filter.EndDate != null)
             {
-                qry = qry.Where(x =>
-                x.EndDate >= filter.StartDate);
-            }
-            else if (filter.EndDate != null)
-            {
-                qry = qry.Where(x =>
-                x.StartDate <= filter.EndDate);
+                qry = qry.Where(x => x.StartDate <= filter.EndDate);
             }
 
 

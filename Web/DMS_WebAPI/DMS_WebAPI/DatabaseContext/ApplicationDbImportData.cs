@@ -452,6 +452,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@AdminActions:AddPositionRole@l##", "Add position role", "Добавить роль для должности");
             AddALV(list, "##l@AdminActions:ModifyPositionRole@l##", "Modify position role", "Изменить роль для должности");
             AddALV(list, "##l@AdminActions:DeletePositionRole@l##", "Delete position role", "Удалить роль для должности");
+            AddALV(list, "##l@AdminActions:DuplicatePositionRoles@l##", "Duplicate position roles", "Дублировать роли должности");
             AddALV(list, "##l@AdminActions:AddUserRole@l##", "Add user role", "Добавить роль для пользователя");
             AddALV(list, "##l@AdminActions:ModifyUserRole@l##", "Modify user role", "Изменить роль для пользователя");
             AddALV(list, "##l@AdminActions:DeleteUserRole@l##", "Delete user role", "Удалить роль для пользователя");

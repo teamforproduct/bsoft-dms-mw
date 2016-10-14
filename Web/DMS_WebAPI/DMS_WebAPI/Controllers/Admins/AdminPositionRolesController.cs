@@ -9,6 +9,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -95,6 +96,24 @@ namespace DMS_WebAPI.Controllers.Admins
             tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, new ModifyAdminPositionRole() { PositionId = positionId, RoleId = roleId });
             FrontAdminPositionRole tmpItem = new FrontAdminPositionRole() { PositionId = positionId, RoleId = roleId };
             return new JsonResult(tmpItem, this);
+        }
+
+        /// <summary>
+        /// Копирует роли от одной должности к другой
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("DuplicatePositionRoles")]
+        public IHttpActionResult DuplicatePositionRoles([FromBody] CopyAdminSubordinations model)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DuplicatePositionRoles, cxt, model);
+            stopWatch.Stop();
+            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
         }
     }
 }
