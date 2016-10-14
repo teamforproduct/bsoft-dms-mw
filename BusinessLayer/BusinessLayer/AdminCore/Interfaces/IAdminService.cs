@@ -55,6 +55,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] UserRoles ...
         IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter);
+        IEnumerable<FrontAdminUserRole> GetAdminUserRolesDIP(IContext context, FilterAdminRole filter);
         #endregion
 
         #region [+] DepartmentAdmins ...

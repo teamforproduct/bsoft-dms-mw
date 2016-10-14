@@ -385,9 +385,11 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemValueTypes>();
 
-            items.Add(new SystemValueTypes { Id = 1, Code = "text", Description = "text" });
-            items.Add(new SystemValueTypes { Id = 2, Code = "number", Description = "number" });
-            items.Add(new SystemValueTypes { Id = 3, Code = "date", Description = "date" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Number, Code = "number", Description = "number" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = "date", Description = "date" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = "api", Description = "api" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = "bool", Description = "boolean" });
 
             return items;
         }

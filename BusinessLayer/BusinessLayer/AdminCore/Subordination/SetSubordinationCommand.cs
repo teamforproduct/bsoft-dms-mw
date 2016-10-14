@@ -2,6 +2,7 @@
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace BL.Logic.AdminCore
                 {
                     SourcePositionIDs = new List<int>() { row.SourcePositionId },
                     TargetPositionIDs = new List<int>() { row.TargetPositionId },
-                    SubordinationTypeIDs = new List<int>() { row.SubordinationTypeId }
+                    SubordinationTypeIDs = new List<EnumSubordinationTypes>() { (EnumSubordinationTypes)row.SubordinationTypeId }
                 });
 
                 if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);

@@ -653,7 +653,45 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter)
+        public IEnumerable<InternalAdminPositionRole> GetInternalPositionRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+
+                qry = GetWherePositionRole(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminPositionRole
+                {
+                    Id = x.Id,
+                    RoleId = x.RoleId,
+                    PositionId = x.PositionId,
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+
+                qry = GetWherePositionRole(ref qry, filter);
+
+                return qry.Select(x => new FrontAdminPositionRole
+                {
+                    Id = x.Id,
+                    RoleId = x.RoleId,
+                    RoleName = x.Role.Name,
+                    PositionId = x.PositionId,
+                }).ToList();
+            }
+        }
+
+
+        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter)
         {
             using (var dbContext = new DmsContext(context))
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -813,7 +851,18 @@ namespace BL.Database.Admins
             }
         }
 
+        public List<int> GetRolesByUsers(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
+                qry = GetWhereUserRole(ref qry, filter);
+
+                return qry.Select(x => x.RoleId).ToList();
+            }
+        }
 
         public IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter)
         {
@@ -824,18 +873,43 @@ namespace BL.Database.Admins
 
                 qry = GetWhereUserRole(ref qry, filter);
 
-                //qry = qry.OrderBy(x => x.Name);
+                return qry.Select(x => new FrontAdminUserRole
+                {
+                    Id = x.Id,
+                    RoleId = x.Id,
+                    RolePositionId = x.PositionId,
+                    UserId = x.UserId,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                }).ToList();
+
+            }
+        }
+
+        public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRolesSet.AsQueryable();
+
+                qry = GetWhereRole(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Name);
 
                 return qry.Select(x => new FrontAdminUserRole
                 {
                     Id = x.Id,
-                    UserId = x.UserId,
-                    UserName = x.Agent.Name,
-                    RoleId = x.RoleId,
-                    RoleName = x.Role.Name,
-                    StartDate = x.StartDate,
-                    EndDate = x.EndDate
+                    //UserId = x.UserId,
+                    RoleId = x.Id,
+                    RoleName = x.Name,
+                    IsChecked = x.UserRoles.
+                    Where(y => y.RoleId == x.Id).
+                    Where(y => filter.UserIDs.Contains(y.UserId)).
+                    Where(y => y.StartDate <= filter.EndDate && y.EndDate >= filter.StartDate).
+                    Any()
                 }).ToList();
+
             }
         }
 
@@ -900,20 +974,20 @@ namespace BL.Database.Admins
                 qry = qry.Where(filterContains);
             }
 
-            if (filter.Period?.IsActive == true)
-            {
-                qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
-                qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
-            }
+            //if (filter.Period?.IsActive == true)
+            //{
+            //    qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
+            //    qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
+            //}
 
             if (filter.StartDate != null)
             {
-                qry = qry.Where(x => x.StartDate == (filter.StartDate ?? DateTime.Now));
+                qry = qry.Where(x => x.StartDate <= (filter.EndDate ?? DateTime.Now));
             }
 
             if (filter.EndDate != null)
             {
-                qry = qry.Where(x => x.EndDate == (filter.EndDate ?? DateTime.Now));
+                qry = qry.Where(x => x.EndDate >= (filter.StartDate ?? DateTime.Now));
             }
 
             return qry;
@@ -1192,7 +1266,7 @@ namespace BL.Database.Admins
                 var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
                 filterContains = filter.SubordinationTypeIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.SubordinationTypeId == value).Expand());
+                    (current, value) => current.Or(e => e.SubordinationTypeId == (int)value).Expand());
 
                 qry = qry.Where(filterContains);
             }

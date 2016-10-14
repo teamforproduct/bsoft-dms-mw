@@ -40,10 +40,25 @@ namespace BL.Model.AdminCore.FilterModel
         public List<int> PositionIDs { get; set; }
 
         /// <summary>
+        /// Список сотрудников
+        /// </summary>
+        public List<int> UserIDs { get; set; }
+
+        /// <summary>
         /// Список ключей из таблицы AdminPositionRoles
         /// </summary>
         [IgnoreDataMember]
         public List<int> LinkIDs { get; set; }
+
+        /// <summary>
+        /// Дата разрешения роли для сотрудника
+        /// </summary>
+        public DateTime? StartDate { get; set; }
+
+        /// <summary>
+        /// Дата запрета роли для сотрудника
+        /// </summary>
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         /// Отмечнено

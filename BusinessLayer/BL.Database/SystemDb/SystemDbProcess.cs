@@ -132,11 +132,38 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Key = x.Key,
-                    Value = x.Value,
+                    Value = GetTypedValue(x.Value, EnumValueTypes.Text),
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
 
             }
+        }
+
+        private object GetTypedValue(string Value, EnumValueTypes ValueType)
+        {
+            object res;
+
+            switch (ValueType)
+            {
+                case EnumValueTypes.Text:
+                case EnumValueTypes.Api:
+                    res = Value;
+                    break;
+                case EnumValueTypes.Number:
+                    res = Int32.Parse(Value);
+                    break;
+                case EnumValueTypes.Date:
+                    res = DateTime.Parse(Value);
+                    break;
+                case EnumValueTypes.Bool:
+                    res = Boolean.Parse(Value);
+                    break;
+                default:
+                    res = Value;
+                    break;
+            }
+
+            return res;
         }
 
         #endregion

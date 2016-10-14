@@ -14,6 +14,16 @@ namespace BL.Model.AdminCore.FilterModel
     {
 
         /// <summary>
+        /// Сужение по наименованию элементов (по входжению)
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Сужение по наименованию элементов (по равенству)
+        /// </summary>
+        public string NameExact { get; set; }
+
+        /// <summary>
         /// Пользователи
         /// </summary>
         public List<int> UserIDs { get; set; }
@@ -24,9 +34,14 @@ namespace BL.Model.AdminCore.FilterModel
         public List<int> RoleIDs { get; set; }
 
         /// <summary>
+        /// Должности
+        /// </summary>
+        public List<int> PositionsIDs { get; set; }
+
+        /// <summary>
         /// Рассматриваемый период
         /// </summary>
-        public Period Period { get; set; }
+        //public Period Period { get; set; }
 
         /// <summary>
         /// Дата начала
@@ -37,6 +52,11 @@ namespace BL.Model.AdminCore.FilterModel
         /// Дата окончания
         /// </summary>
         public DateTime? EndDate { get; set; }
+
+        /// <summary>
+        /// Отмечнено
+        /// </summary>
+        public bool? IsChecked { get; set; }
 
     }
 }

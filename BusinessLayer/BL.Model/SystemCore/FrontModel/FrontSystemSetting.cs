@@ -10,7 +10,7 @@ namespace BL.Model.SystemCore.FrontModel
 
         public string Key { get; set; }
         
-        public string Value { get; set; }
+        public object Value { get; set; }
 
         public int? AgentId { get; set; }
     }

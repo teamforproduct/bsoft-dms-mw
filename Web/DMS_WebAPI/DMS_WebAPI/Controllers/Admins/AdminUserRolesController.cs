@@ -8,6 +8,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -23,11 +24,16 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
-        public IHttpActionResult Get([FromUri] FilterAdminUserRole filter)
+        [ResponseType(typeof(List<FrontAdminUserRole>))]
+        public IHttpActionResult Get([FromUri] int userId, [FromUri] FilterAdminRole filter)
         {
+            if (filter.UserIDs == null) filter.UserIDs = new List<int>();
+
+            filter.UserIDs.Add(userId);
+
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAdminUserRoles(ctx, filter);
+            var tmpItems = tmpService.GetAdminUserRolesDIP(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -36,6 +42,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <returns>FrontAdminUserRole</returns>
+        [ResponseType(typeof(FrontAdminUserRole))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -57,32 +64,32 @@ namespace DMS_WebAPI.Controllers.Admins
             return Get((int)tmpItem);
         }
 
-        /// <summary>
-        /// Изменяет роль сотруднику-пользователю. Например, период исполнения роли
-        /// </summary>
-        /// <param name="id">Record Id</param>
-        /// <param name="model">ModifyAdminUserRole</param>
-        /// <returns>FrontAdminUserRole</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyAdminUserRole model)
-        {
-            model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.ExecuteAction(EnumAdminActions.ModifyUserRole, cxt, model);
-            return Get(model.Id);
-        }
+        ///// <summary>
+        ///// Изменяет роль сотруднику-пользователю. Например, период исполнения роли
+        ///// </summary>
+        ///// <param name="id">Record Id</param>
+        ///// <param name="model">ModifyAdminUserRole</param>
+        ///// <returns>FrontAdminUserRole</returns>
+        //public IHttpActionResult Put(int id, [FromBody]ModifyAdminUserRole model)
+        //{
+        //    model.Id = id;
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    tmpService.ExecuteAction(EnumAdminActions.ModifyUserRole, cxt, model);
+        //    return Get(model.Id);
+        //}
 
         /// <summary>
         /// Отнимает роль у сотрудника-пользователя
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
-        public IHttpActionResult Delete([FromUri] int id)
+        public IHttpActionResult Delete([FromUri] int userId, [FromUri] int roleId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
-            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRole, cxt, id);
-            FrontAdminUserRole tmpItem = new FrontAdminUserRole() { Id = id };
+            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRole, cxt, new ModifyAdminUserRole() { UserId = userId, RoleId = roleId });
+            FrontAdminUserRole tmpItem = new FrontAdminUserRole() { UserId = userId, RoleId = roleId };
             return new JsonResult(tmpItem, this);
         }
     }

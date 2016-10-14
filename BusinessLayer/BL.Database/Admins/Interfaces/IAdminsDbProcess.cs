@@ -51,9 +51,9 @@ namespace BL.Database.Admins.Interfaces
         void DeletePositionRole(IContext context, InternalAdminPositionRole model);
         bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter);
         InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter);
-
         FrontAdminPositionRole GetPositionRole(IContext context, int id);
-        IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter);
+        IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter);
+        IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter);
         #endregion
 
         #region [+] UserRole ...
@@ -62,7 +62,10 @@ namespace BL.Database.Admins.Interfaces
         void DeleteUserRole(IContext context, InternalAdminUserRole model);
         bool ExistsUserRole(IContext context, FilterAdminUserRole filter);
         InternalAdminUserRole GetInternalUserRole(IContext context, FilterAdminUserRole filter);
+        IEnumerable<InternalAdminPositionRole> GetInternalPositionRoles(IContext context, FilterAdminPositionRole filter);
         IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter);
+        IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter);
+        List<int> GetRolesByUsers(IContext context, FilterAdminUserRole filter);
         #endregion
 
         IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId);

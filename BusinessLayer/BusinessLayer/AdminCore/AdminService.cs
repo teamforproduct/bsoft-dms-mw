@@ -20,6 +20,7 @@ using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Logic.TreeBuilder;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.CrossCutting.Extensions;
 
 namespace BL.Logic.AdminCore
 {
@@ -204,7 +205,7 @@ namespace BL.Logic.AdminCore
         #region [+] PositionRoles ...
         public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter)
         {
-            return _adminDb.GetPositionRoles(context, filter);
+            return _adminDb.GetPositionRolesDIP(context, filter);
         }
 
         public FrontAdminPositionRole GetPositionRole(IContext context, int id)
@@ -214,9 +215,52 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] UserRoles ...
+
         public IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter)
         {
             return _adminDb.GetUserRoles(context, filter);
+        }
+        public IEnumerable<FrontAdminUserRole> GetAdminUserRolesDIP(IContext context, FilterAdminRole filter)
+        {
+            if (filter.UserIDs?.Count > 0)
+            {
+                if (filter.IsChecked == true)
+                {
+                    List<int> roles = _adminDb.GetRolesByUsers(context, new FilterAdminUserRole()
+                    {
+                        UserIDs = filter.UserIDs,
+                        StartDate = filter.StartDate,
+                        EndDate = filter.EndDate
+                    });
+
+                    if (filter.IDs == null) filter.IDs = new List<int>();
+
+                    filter.IDs.AddRange(roles);
+                }
+                else if ((filter.PositionIDs?.Count ?? 0) == 0) 
+                {
+                    // определяю должности, которые исполняет сотрудник
+                    var executors = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+                    { AgentIDs = filter.UserIDs, StartDate = filter.StartDate, EndDate = filter.EndDate });
+
+                    if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();
+
+                    filter.PositionIDs.AddRange(executors.Select(x=>x.PositionId));
+
+                }
+            }
+
+            if (filter.PositionIDs?.Count > 0)
+            {
+                // сужение до ролей, котрые принадлежат указанным должностям
+                var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole { PositionIDs = filter.PositionIDs });
+
+                if (filter.IDs == null) filter.IDs = new List<int>();
+
+                filter.IDs.AddRange(positionRoles.Where(x => filter.IDs.Contains(x.Id)).Select(x => x.RoleId).ToList());
+            }
+
+            return _adminDb.GetUserRolesDIP(context, filter);
         }
         #endregion
 

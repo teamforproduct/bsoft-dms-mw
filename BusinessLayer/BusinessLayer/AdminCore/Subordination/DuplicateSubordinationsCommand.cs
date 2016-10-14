@@ -2,6 +2,7 @@
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace BL.Logic.AdminCore
                     {
                         SourcePositionIDs = new List<int> { model.SourcePositionId },
                         TargetPositionIDs = new List<int> { model.TargetPositionId },
-                        SubordinationTypeIDs = new List<int> { (int)model.SubordinationTypeId },
+                        SubordinationTypeIDs = new List<EnumSubordinationTypes>() { model.SubordinationTypeId }
                     }))
                         _adminDb.AddSubordination(_context, CommonAdminUtilities.SubordinationModifyToInternal(_context, model));
                 }

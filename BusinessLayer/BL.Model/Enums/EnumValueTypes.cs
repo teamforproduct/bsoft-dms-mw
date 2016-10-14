@@ -5,6 +5,7 @@
         Text = 1,
         Number = 2,
         Date = 3,
-        Api = 4
+        Api = 4,
+        Bool = 5,
     }
 }
