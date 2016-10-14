@@ -16,11 +16,17 @@ namespace BL.Database.DBModel.System
         public string Key { get; set; }
         [MaxLength(2000)]
         public string Value { get; set; }
+
+        public int ValueType { get; set; }
+
         [Index("IX_KeyExecutorAgent", 2, IsUnique = true)]
         [Index("IX_ExecutorAgentId", 1)]
         public Nullable<int> ExecutorAgentId { get; set; }
 
         [ForeignKey("ExecutorAgentId")]
         public virtual DictionaryAgents ExecutorAgent { get; set; }
+
+        [ForeignKey("ValueType")]
+        public virtual SystemValueTypes ValueTypes { get; set; }
     }
 }

@@ -330,6 +330,14 @@
     <Compile Include="Migrations\201610121136461_DocSavFilters1.Designer.cs">
       <DependentUpon>201610121136461_DocSavFilters1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610141611479_SystemSettingsAddValueType.cs" />
+    <Compile Include="Migrations\201610141611479_SystemSettingsAddValueType.Designer.cs">
+      <DependentUpon>201610141611479_SystemSettingsAddValueType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610141618282_SystemSettings_FK_ValueType.cs" />
+    <Compile Include="Migrations\201610141618282_SystemSettings_FK_ValueType.Designer.cs">
+      <DependentUpon>201610141618282_SystemSettings_FK_ValueType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -457,6 +465,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610121136461_DocSavFilters1.resx">
       <DependentUpon>201610121136461_DocSavFilters1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610141611479_SystemSettingsAddValueType.resx">
+      <DependentUpon>201610141611479_SystemSettingsAddValueType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610141618282_SystemSettings_FK_ValueType.resx">
+      <DependentUpon>201610141618282_SystemSettings_FK_ValueType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
