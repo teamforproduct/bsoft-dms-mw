@@ -719,6 +719,7 @@ namespace BL.Database.Common
 
 
             var maxDateTime = DateTime.Now.AddYears(50);
+            var isNeedRegistrationFullNumber = !(filter?.Event?.DocumentId?.Any() ?? false);
 
             var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
 
@@ -738,7 +739,7 @@ namespace BL.Database.Common
 
                     SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
                     TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
-                    DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                    DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
                     RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
                     RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
@@ -979,6 +980,7 @@ namespace BL.Database.Common
                 }
             }
 
+            var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any()??false);
 
             var qryFE = dbContext.DocumentFilesSet.Where(x => qry.Select(y => y.Id).Contains(x.Id))
                             .OrderByDescending(x => x.LastChangeDate)
@@ -1008,7 +1010,7 @@ namespace BL.Database.Common
                                 ExecutorPositionName = file.ExecutorPosition.Name,
                                 ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name,
 
-                                DocumentDate = file.Document.LinkId.HasValue ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
+                                DocumentDate = (file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
                                 RegistrationNumber = file.Document.RegistrationNumber,
                                 RegistrationNumberPrefix = file.Document.RegistrationNumberPrefix,
                                 RegistrationNumberSuffix = file.Document.RegistrationNumberSuffix,
@@ -1457,6 +1459,7 @@ namespace BL.Database.Common
             }
 
             var maxDateTime = DateTime.Now.AddYears(50);
+            var isNeedRegistrationFullNumber = !(filter?.Wait?.DocumentId?.Any() ?? false);
 
             var qryFE = dbContext.DocumentWaitsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
 
@@ -1477,7 +1480,7 @@ namespace BL.Database.Common
                     //TargetAttentionDate = x.TargetAttentionDate,
                     IsClosed = x.OffEvent != null,
 
-                    DocumentDate = x.Document.LinkId.HasValue ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
+                    DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
                     RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
                     RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
