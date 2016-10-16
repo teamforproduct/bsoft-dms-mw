@@ -124,6 +124,8 @@
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
+    <Compile Include="Common\DictionaryItem.cs" />
+    <Compile Include="Common\ListItem.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
@@ -460,8 +462,8 @@
     <Compile Include="SystemCore\UICounters.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Tree\FilterTree.cs" />
-    <Compile Include="Tree\IDictionaryItem.cs" />
-    <Compile Include="Tree\IListItem.cs" />
+    <Compile Include="Common\IDictionaryItem.cs" />
+    <Compile Include="Common\IListItem.cs" />
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
     <Compile Include="Users\Employee.cs" />

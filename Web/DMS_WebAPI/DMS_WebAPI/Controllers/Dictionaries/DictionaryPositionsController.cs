@@ -9,6 +9,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
+using BL.Model.Common;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -35,6 +36,23 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
+
+        /// <summary>
+        /// Список (Id, Name) всех сотрудников
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetList")]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetPositionList(ctx, filter);
+            return new JsonResult(tmpItems, this);
+        }
+
 
         /// <summary>
         /// Возвращает запись из словаря "Должности" по ID 

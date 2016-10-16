@@ -70,5 +70,8 @@ namespace BL.Database.DBModel.Dictionary
 
         //[ForeignKey("PersonAgentId")]
         //public virtual ICollection<DictionaryAgentPersons> AgentPersonsPersonAgents { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual ICollection<AdminUserRoles> UserRoles { get; set; }
     }
 }

@@ -39,5 +39,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public int? SubordinatedTypeId { get; set; }
 
+        /// <summary>
+        /// Должности, которым назначены указанные роли
+        /// </summary>
+        public List<int> RoleIDs { get; set; }
+
     }
 }

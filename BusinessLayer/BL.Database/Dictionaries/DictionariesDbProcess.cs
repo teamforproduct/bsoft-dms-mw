@@ -934,8 +934,24 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetAgentEmployeesQuery(context, dbContext, filter, paging);
+
+                return qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                }).ToList();
+            }
+        }
+
         private IQueryable<DictionaryAgentEmployees> GetWhereAgentEmployees(ref IQueryable<DictionaryAgentEmployees> qry, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
+
+            if (filter == null) return qry;
 
             // Список первичных ключей
             if (filter.IDs?.Count > 0)
@@ -1064,6 +1080,11 @@ namespace BL.Database.Dictionaries
             if (filter.PassportNumberExact != null)
             {
                 qry = qry.Where(x => x.Agent.AgentPerson.PassportNumber == filter.PassportNumberExact);
+            }
+
+            if (filter.RoleIDs?.Count > 0)
+            {
+                qry = qry.Where(x => x.Agent.UserRoles.Any(y => filter.RoleIDs.Any( RoleId => y.RoleId == RoleId)));
             }
 
             if (paging != null)
@@ -2992,7 +3013,7 @@ namespace BL.Database.Dictionaries
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
-                    var positions = GetPositionsIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list });
+                    var positions = GetPositionIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list });
 
                     if (positions.Count > 0) DeletePositions(context, positions);
 
@@ -4051,12 +4072,25 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public List<int> GetPositionsIDs(IContext context, FilterDictionaryPosition filter)
+        public List<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
                 return qry.Select(x => x.Id).ToList();
+            }
+        }
+
+        public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+                return qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList();
             }
         }
 
@@ -4235,6 +4269,11 @@ namespace BL.Database.Dictionaries
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
                             .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
                             );
+            }
+
+            if (filter.RoleIDs?.Count > 0)
+            {
+                qry = qry.Where(x => x.PositionRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
             }
 
             return qry;

@@ -195,6 +195,11 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentEmployee(context, id);
         }
 
+        public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        {
+            return _dictDb.GetAgentEmployeeList(context, filter, paging);
+        }
+
         public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
 
@@ -675,6 +680,11 @@ namespace BL.Logic.DictionaryCore
         {
 
             return _dictDb.GetPositions(context, filter);
+        }
+
+        public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter)
+        {
+            return _dictDb.GetPositionList(context, filter);
         }
 
         public void SetPositionOrder(IContext context, int positionId, int order)

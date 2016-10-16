@@ -43,6 +43,7 @@ namespace BL.Database.Dictionaries.Interfaces
         FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
         IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         FrontDictionaryAgentEmployee GetAgentEmployeePersonnelNumber(IContext context);
+        IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
 
         #region DictionaryAgentAddress
@@ -195,6 +196,8 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
 
         IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter);
+
+        IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
         #endregion DictionaryPositions
 
         // Исполнители

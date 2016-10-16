@@ -23,5 +23,7 @@ namespace BL.Database.DBModel.Dictionary
 
         //[ForeignKey("AgentPersonId")]
         //public virtual DictionaryAgentPersons AgentPerson { get; set; }
+
+
     }
 }

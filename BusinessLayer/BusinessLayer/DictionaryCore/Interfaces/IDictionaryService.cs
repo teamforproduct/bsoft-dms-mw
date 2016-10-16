@@ -54,6 +54,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context);
 
+        IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
@@ -136,6 +138,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
+
+        IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
 
         void SetPositionOrder(IContext context, int positionId, int order);
 

@@ -66,5 +66,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         public string PassportSerialExact { get; set; }
         public int? PassportNumberExact { get; set; }
         public DateTime? BirthDateExact { get; set; }
+
+        /// <summary>
+        /// Сотрудники, которым назначены указанные роли
+        /// </summary>
+        public List<int> RoleIDs { get; set; }
     }
 }

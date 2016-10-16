@@ -243,7 +243,7 @@ namespace BL.Database.Admins
                 // Указание ид роли для предложенных действий
                 foreach (var item in roleActions)
                 {
-                    ra.Add(new AdminRoleActions() { ActionId = (int)item.ActionId, RoleId = roleId });
+                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
                 }
 
                 // Запись списка соответствий роль-действие
