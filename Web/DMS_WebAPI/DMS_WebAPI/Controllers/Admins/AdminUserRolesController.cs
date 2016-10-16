@@ -33,7 +33,7 @@ namespace DMS_WebAPI.Controllers.Admins
 
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAdminUserRolesDIP(ctx, filter);
+            var tmpItems = tmpService.GetUserRolesDIP(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetAdminUserRoles(ctx, new FilterAdminUserRole() { IDs = new List<int> { id } });
+            var tmpItem = tmpService.GetUserRoles(ctx, new FilterAdminUserRole() { IDs = new List<int> { id } });
             return new JsonResult(tmpItem, this);
         }
 

@@ -1,5 +1,6 @@
 ﻿using BL.Model.Common;
 using BL.Model.AdminCore.IncomingModel;
+using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.InternalModel
 {

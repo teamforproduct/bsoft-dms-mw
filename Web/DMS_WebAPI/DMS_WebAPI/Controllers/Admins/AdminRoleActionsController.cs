@@ -8,6 +8,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -15,6 +16,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Структура описывает действия, которые разрешены для ролей.
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/AdminRoleActions")]
     public class AdminRoleActionsController : ApiController
     {
         /// <summary>
@@ -26,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAdminRoleActions(ctx, filter);
+            var tmpItems = tmpService.GetRoleActions(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -39,7 +41,18 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetAdminRoleActions(ctx, new FilterAdminRoleAction() { IDs = new List<int> { id } });
+            var tmpItem = tmpService.GetRoleActions(ctx, new FilterAdminRoleAction() { IDs = new List<int> { id } });
+            return new JsonResult(tmpItem, this);
+        }
+
+        [HttpGet]
+        [Route("GetRoleActionsDIP")]
+        [ResponseType(typeof(List<FrontAdminRoleAction>))]
+        public IHttpActionResult Get([FromUri] int roleId, [FromUri] FilterAdminRoleActionDIP filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.GetRoleActionsDIP(ctx, roleId, filter);
             return new JsonResult(tmpItem, this);
         }
 
@@ -56,20 +69,20 @@ namespace DMS_WebAPI.Controllers.Admins
             return Get((int)tmpItem);
         }
 
-        /// <summary>
-        /// Изменяет действие для роли
-        /// </summary>
-        /// <param name="id">Record Id</param>
-        /// <param name="model">ModifyAdminRoleAction</param>
-        /// <returns>FrontAdminRoleAction</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyAdminRoleAction model)
-        {
-            model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.ExecuteAction(EnumAdminActions.ModifyRoleAction, cxt, model);
-            return Get(model.Id);
-        }
+        ///// <summary>
+        ///// Изменяет действие для роли
+        ///// </summary>
+        ///// <param name="id">Record Id</param>
+        ///// <param name="model">ModifyAdminRoleAction</param>
+        ///// <returns>FrontAdminRoleAction</returns>
+        //public IHttpActionResult Put(int id, [FromBody]ModifyAdminRoleAction model)
+        //{
+        //    model.Id = id;
+        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    tmpService.ExecuteAction(EnumAdminActions.ModifyRoleAction, cxt, model);
+        //    return Get(model.Id);
+        //}
 
         /// <summary>
         /// Запрещает действие для роли

@@ -8,6 +8,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -16,6 +17,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Предустановленный роли имеют классификатор, для идентификации.
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/AdminRoles")]
     public class AdminRolesController : ApiController
     {
         /// <summary>
@@ -23,6 +25,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
+        [ResponseType(typeof(List<FrontAdminRole>))]
         public IHttpActionResult Get([FromUri] FilterAdminRole filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
@@ -36,6 +39,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <returns>FrontAdminRole</returns>
+        [ResponseType(typeof(FrontAdminRole))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();

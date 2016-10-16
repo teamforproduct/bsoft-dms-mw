@@ -23,6 +23,7 @@ using BL.Model.Common;
 using System.Transactions;
 using BL.Model.Tree;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Database.DBModel.System;
 
 namespace BL.Database.Admins
 {
@@ -242,7 +243,7 @@ namespace BL.Database.Admins
                 // Указание ид роли для предложенных действий
                 foreach (var item in roleActions)
                 {
-                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
+                    ra.Add(new AdminRoleActions() { ActionId = (int)item.ActionId, RoleId = roleId });
                 }
 
                 // Запись списка соответствий роль-действие
@@ -407,6 +408,41 @@ namespace BL.Database.Admins
             return qry;
         }
 
+        private static IQueryable<SystemActions> GetWhereRoleDIP(ref IQueryable<SystemActions> qry, FilterAdminRoleActionDIP filter)
+        {
+
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<SystemActions>();
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.True<SystemActions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Поиск по наименованию
+            if (!string.IsNullOrEmpty(filter.ActionDescription))
+            {
+                var filterContains = PredicateBuilder.False<SystemActions>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ActionDescription).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Description == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
         #endregion
 
         #region [+] RoleAction ...
@@ -558,6 +594,44 @@ namespace BL.Database.Admins
             }
 
             return qry;
+        }
+
+        public IEnumerable<FrontAdminRoleAction> GetRoleActionsDIP(IContext context, int roleId, FilterAdminRoleActionDIP filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.SystemActionsSet.AsQueryable();
+
+                qry = GetWhereRoleDIP(ref qry, filter);
+
+                qry = qry.OrderBy(x => x.Id);
+
+                return qry.Select(x => new FrontAdminRoleAction
+                {
+                    RoleId = roleId,
+                    ActionId = x.Id,
+                    ActionDescription = x.Description,
+                    Category = x.Category,
+                    IsChecked = x.RoleActions.
+                    Where(y => y.ActionId == x.Id).
+                    Where(y => roleId == y.RoleId).
+                    Any()
+                }).ToList();
+            }
+        }
+
+        public List<int> GetActionsByRoles(IContext context, FilterAdminRoleAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+
+                qry = GetWhereRoleAction(ref qry, filter);
+
+                return qry.Select(x => x.ActionId).ToList();
+            }
         }
 
         #endregion

@@ -11,6 +11,12 @@
     font-family: "Segoe UI Light", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+#body.help-page div>p:first-child {
+    color: #ee0000;
+    font-size: 21px;
+    font-weight: 900;
+}
+
 .help-page pre.wrapped {
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
@@ -123,7 +129,7 @@
 }
 
 #body.help-page {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 143%;
     color: #333;
 }

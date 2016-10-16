@@ -196,10 +196,29 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] RoleAction ...
-        public IEnumerable<FrontAdminRoleAction> GetAdminRoleActions(IContext context, FilterAdminRoleAction filter)
+        public IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter)
         {
             return _adminDb.GetRoleActions(context, filter);
         }
+
+        public IEnumerable<FrontAdminRoleAction> GetRoleActionsDIP(IContext context, int roleId, FilterAdminRoleActionDIP filter)
+        {
+
+            if (filter.IsChecked == true)
+            {
+                List<int> actions = _adminDb.GetActionsByRoles(context, new FilterAdminRoleAction()
+                {
+                    RoleIDs = new List<int> { roleId }
+                });
+
+                if (filter.IDs == null) filter.IDs = new List<int>();
+
+                filter.IDs.AddRange(actions);
+            }
+
+            return _adminDb.GetRoleActionsDIP(context, roleId, filter);
+        }
+
         #endregion
 
         #region [+] PositionRoles ...
@@ -216,11 +235,11 @@ namespace BL.Logic.AdminCore
 
         #region [+] UserRoles ...
 
-        public IEnumerable<FrontAdminUserRole> GetAdminUserRoles(IContext context, FilterAdminUserRole filter)
+        public IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter)
         {
             return _adminDb.GetUserRoles(context, filter);
         }
-        public IEnumerable<FrontAdminUserRole> GetAdminUserRolesDIP(IContext context, FilterAdminRole filter)
+        public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
         {
             if (filter.UserIDs?.Count > 0)
             {
