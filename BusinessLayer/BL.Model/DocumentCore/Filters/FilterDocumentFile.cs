@@ -96,5 +96,10 @@ namespace BL.Model.DocumentCore.Filters
         /// По умолчанию false
         /// </summary>
         public bool IsAllVersion { get; set; }
+        /// <summary>
+        /// true - Только мои файлы
+        /// null - игнорируется фильтр
+        /// </summary>
+        public bool? IsMyFiles { get; set; }
     }
 }

@@ -923,6 +923,13 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
+                if (filter.IsMyFiles ?? false)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
