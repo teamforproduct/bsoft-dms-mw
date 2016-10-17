@@ -34,6 +34,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentPerson(InternalDictionaryAgentEmployee model)
         {
             Id = model.Id;
+            Name = model.Name;
             LastChangeDate = model.LastChangeDate;
             LastChangeUserId = model.LastChangeUserId;
             FirstName = model.FirstName;

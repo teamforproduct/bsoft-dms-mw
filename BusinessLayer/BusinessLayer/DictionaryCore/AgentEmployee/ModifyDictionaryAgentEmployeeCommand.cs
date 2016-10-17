@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryAgentEmployeeCommand :BaseDictionaryCommand
+    public class ModifyDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
         private ModifyDictionaryAgentEmployee Model
         {
@@ -44,6 +44,7 @@ namespace BL.Logic.DictionaryCore
                 var item = new InternalDictionaryAgentEmployee(Model);
 
                 CommonDocumentUtilities.SetLastChange(_context, item);
+
                 _dictDb.UpdateAgentEmployee(_context, item);
             }
             catch (DictionaryRecordWasNotFound)
