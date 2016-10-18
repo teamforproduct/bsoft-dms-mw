@@ -29,9 +29,9 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по файлу
+        /// Получение списка доступных команд по событию
         /// </summary>
-        /// <param name="eventId">ИД файла</param>
+        /// <param name="eventId">ИД события</param>
         /// <returns>Массив команд</returns>
         [Route("ActionsByEvent/{eventId}")]
         [HttpGet]
