@@ -25,12 +25,13 @@
         <div class="content-wrapper">
             <h2>Introduction</h2>
             <p>
-                Provide a general description of your APIs here.
+                Общие принципы построения системы находятся https://workflowy.com/s/sefk5EUIQ7.
+                Ниже дано описание АПИ функций, отсортированные в алфавитном порядке по названию контроллера.
             </p>
         </div>
     </section>
     <section class="content-wrapper main-content clear-fix">
-        @foreach (var group in apiGroups)
+        @foreach (var group in apiGroups.OrderBy(g=>g.Key.ControllerName))
         {
             @Html.DisplayFor(m => group, "ApiGroup")
         }

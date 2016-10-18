@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore
 
             if (docCommand != null)
             {
-                foreach (var obs in _documentObservers.Where(x=>x.ObserverType == EnumObserverType.After))
+                foreach (var obs in _documentObservers.Where(x => x.ObserverType == EnumObserverType.After))
                 {
                     obs.Inform(docCommand.Context, docCommand.Document, docCommand.CommandType, docCommand.Parameters);
                 }
@@ -53,9 +53,9 @@ namespace BL.Logic.DocumentCore
             return null;
         }
 
-        private static void MenuFormation(IContext ctx, DocumentActionsModel model)
+        private static void MenuFormation(IContext ctx, DocumentActionsModel model, bool isOnlyIdActions = false)
         {
-// total list of type for possible actions we could process
+            // total list of type for possible actions we could process
             var totalCommandListType = new List<EnumDocumentActions>();
 
             foreach (var cmd in model.ActionsList.Values)
@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore
             totalCommandListType.ForEach(
                 x => totalCommandList.Add(DocumentCommandFactory.GetDocumentCommand(x, ctx, model.Document, null)));
             totalCommandList = totalCommandList.Where(x => x != null).ToList();
-                //TODO remove when all command will be implemented
+            //TODO remove when all command will be implemented
 
             //for each position check his actions
             foreach (var pos in model.PositionWithActions)
@@ -87,7 +87,10 @@ namespace BL.Logic.DocumentCore
                             if (cmd.CanBeDisplayed(pos.Id))
                             {
                                 act.ActionRecords = cmd.ActionRecords;
-                                resultActions.Add(act);
+                                if (!isOnlyIdActions || (act.ActionRecords?.Any()??false))
+                                {
+                                    resultActions.Add(act);
+                                }
                             }
                         }
                     }
@@ -96,13 +99,13 @@ namespace BL.Logic.DocumentCore
             }
         }
 
-        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId)
+        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int? documentId, int? id = null)
         {
-            var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId);
+            var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId, id);
 
-            MenuFormation(ctx, model);
+            MenuFormation(ctx, model, id.HasValue);
 
-            return model.PositionWithActions;
+            return model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentSendListActions(IContext ctx, int documentId)
@@ -114,13 +117,13 @@ namespace BL.Logic.DocumentCore
             return model.PositionWithActions;
         }
 
-        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentFileActions(IContext ctx, int documentId)
+        public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentFileActions(IContext ctx, int? documentId, int? id = null)
         {
-            var model = _operationDb.GetDocumentFileActionsModelPrepare(ctx, documentId);
+            var model = _operationDb.GetDocumentFileActionsModelPrepare(ctx, documentId, id);
 
-            MenuFormation(ctx, model);
+            MenuFormation(ctx, model, id.HasValue);
 
-            return model.PositionWithActions;
+            return model.PositionWithActions.Where(x=>x.Actions!=null && x.Actions.Any()).ToList();
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext ctx, int documentId)

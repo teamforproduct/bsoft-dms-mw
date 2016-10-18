@@ -7,9 +7,9 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface ICommandService
     {
         object ExecuteCommand(ICommand cmd);
-        IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int documentId);
+        IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int? documentId, int? id = null);
         IEnumerable<InternalDictionaryPositionWithActions> GetDocumentSendListActions(IContext ctx, int id);
-        IEnumerable<InternalDictionaryPositionWithActions> GetDocumentFileActions(IContext ctx, int documentId);
+        IEnumerable<InternalDictionaryPositionWithActions> GetDocumentFileActions(IContext ctx, int? documentId, int? id = null);
         IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext ctx, int id);
     }
 }

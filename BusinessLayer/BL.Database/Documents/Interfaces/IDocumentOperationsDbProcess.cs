@@ -86,9 +86,9 @@ namespace BL.Database.Documents.Interfaces
         void ModifySavedFilter(IContext context, InternalDocumentSavedFilter model);
         void DeleteSavedFilter(IContext context, int id);
 
-        DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId);
+        DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int? documentId, int? id = null);
         DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId);
-        DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int documentId);
+        DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int? documentId, int? id = null);
         DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId);
 
         void ControlOffSendListPrepare(IContext context, InternalDocument document);
