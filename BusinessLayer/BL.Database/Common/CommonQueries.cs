@@ -1226,6 +1226,18 @@ namespace BL.Database.Common
                         qry = qry.Where(x => x.OffEventId.HasValue);
                     }
                 }
+                if (filter.IsOverDue.HasValue)
+                {
+                    if (filter.IsOverDue.Value)
+                    {
+                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date :DateTime.Now));
+                    }
+                    else
+                    {
+                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.Now)));
+                    }
+                }
+                
 
                 if (filter.DueDateFromDate.HasValue)
                 {
