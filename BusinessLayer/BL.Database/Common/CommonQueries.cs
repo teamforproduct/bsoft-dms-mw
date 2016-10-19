@@ -373,23 +373,29 @@ namespace BL.Database.Common
                 if ((filter.TagId?.Count() > 0) ||
                     !string.IsNullOrEmpty(filter.TagDescription))
                 {
-                    var filterContainsPosition = PredicateBuilder.False<DocumentTags>();
-
-                    filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
-                        (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
+                    //var filterContainsPosition = PredicateBuilder.False<DocumentTags>();
+                    //filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
+                    //    (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
                     if (filter.TagId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DocumentTags>();
-                        filterContains = filter.TagId.Aggregate(filterContains,
-                            (current, value) => current.And(e => e.Tag.Id == value).Expand());
-
-                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(filterContains));
+                        //var filterContains = PredicateBuilder.True<DocumentTags>();
+                        //filterContains = filter.TagId.Aggregate(filterContains,
+                        //    (current, value) => current.And(e => e.Tag.Id == value).Expand());
+                        //qry = qry.Where(x => x.Tags.AsQueryable()
+                        ////.Where(filterContainsPosition)
+                        //.Any(filterContains));
+                        foreach (var id in filter.TagId)
+                        {
+                            qry = qry.Where(x => x.Tags.Any(y => y.TagId == id));
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(filter.TagDescription))
                     {
-                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(y => y.Tag.Name.Contains(filter.TagDescription)));
+                        qry = qry.Where(x => x.Tags.AsQueryable()
+                        //.Where(filterContainsPosition)
+                        .Any(y => y.Tag.Name.Contains(filter.TagDescription)));
                     }
                 }
                 #endregion Tag
