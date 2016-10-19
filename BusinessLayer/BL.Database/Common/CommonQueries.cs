@@ -380,9 +380,9 @@ namespace BL.Database.Common
 
                     if (filter.TagId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentTags>();
+                        var filterContains = PredicateBuilder.True<DocumentTags>();
                         filterContains = filter.TagId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Tag.Id == value).Expand());
+                            (current, value) => current.And(e => e.Tag.Id == value).Expand());
 
                         qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(filterContains));
                     }
