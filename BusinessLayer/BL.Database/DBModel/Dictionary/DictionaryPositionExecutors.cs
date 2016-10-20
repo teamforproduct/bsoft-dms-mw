@@ -35,5 +35,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
         [ForeignKey("AccessLevelId")]
         public virtual AdminAccessLevels AccessLevel { get; set; }
+
+        [ForeignKey("PositionExecutorId")]
+        public virtual ICollection<AdminUserRoles> UserRoles { get; set; }
     }
 }

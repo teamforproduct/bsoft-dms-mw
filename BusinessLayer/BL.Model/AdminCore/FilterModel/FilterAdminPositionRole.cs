@@ -19,7 +19,7 @@ namespace BL.Model.AdminCore.FilterModel
         public List<int> RoleIDs { get; set; }
 
         /// <summary>
-        /// Список должностей
+        /// Должности
         /// </summary>
         public List<int> PositionIDs { get; set; }
 

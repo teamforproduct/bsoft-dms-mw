@@ -39,6 +39,11 @@ namespace BL.Model.AdminCore.FilterModel
         public List<int> PositionIDs { get; set; }
 
         /// <summary>
+        /// Исполнители
+        /// </summary>
+        public List<int> PositionExecutorIDs { get; set; }
+
+        /// <summary>
         /// Рассматриваемый период
         /// </summary>
         //public Period Period { get; set; }

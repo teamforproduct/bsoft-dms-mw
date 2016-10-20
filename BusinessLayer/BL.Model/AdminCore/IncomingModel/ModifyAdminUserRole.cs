@@ -35,10 +35,15 @@ namespace BL.Model.AdminCore.IncomingModel
         public int RoleId { get; set; }
 
         /// <summary>
-        /// Должность, от которой унаследована роль
+        /// Назначение, от должности которого унаследованы роли
+        /// </summary>
+        public int PositionId { get; set; }
+
+        /// <summary>
+        /// Назначение, от должности которого унаследованы роли
         /// </summary>
         [Required]
-        public int PositionId { get; set; }
+        public int PositionExecutorId { get; set; }
 
         /// <summary>
         /// Дата назначения роли (совпадает с датой назначения на должность)

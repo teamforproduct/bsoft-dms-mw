@@ -32,15 +32,15 @@ namespace BL.Logic.AdminCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            // Определяю нет ли в указанном интервале для сотрудника ролей, унаследовванных от должности
+            // Определяю нет ли в указанном интервале для сотрудника ролей, унаследованных от должности
             var filter = new FilterAdminUserRole
             {
                 NotContainsIDs = new List<int> { Model.Id },
                 RoleIDs = new List<int> { Model.RoleId },
                 UserIDs = new List<int> { Model.UserId },
-                PositionIDs = new List<int> { Model.PositionId },
-                StartDate = Model.StartDate,
-                EndDate = Model.EndDate,
+                PositionExecutorIDs = new List<int> { Model.PositionExecutorId },
+                //StartDate = Model.StartDate,
+                //EndDate = Model.EndDate,
             };
 
             if (_adminDb.ExistsUserRole(_context, filter)) throw new AdminRecordNotUnique();

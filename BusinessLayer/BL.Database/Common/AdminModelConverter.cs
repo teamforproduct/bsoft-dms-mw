@@ -71,6 +71,7 @@ namespace BL.Database.Common
                 UserId = item.UserId,
                 RoleId = item.RoleId,
                 PositionId = item.PositionId,
+                PositionExecutorId = item.PositionExecutorId,
                 StartDate = item.StartDate,
                 EndDate = item.EndDate
             };

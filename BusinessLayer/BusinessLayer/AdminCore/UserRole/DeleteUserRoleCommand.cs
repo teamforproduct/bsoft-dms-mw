@@ -35,8 +35,7 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                var filter = new InternalAdminUserRole() { Id = Model };
-                _adminDb.DeleteUserRole(_context, filter);
+                _adminDb.DeleteUserRole(_context, Model);
                 return null;
             }
             catch (ArgumentNullException ex)

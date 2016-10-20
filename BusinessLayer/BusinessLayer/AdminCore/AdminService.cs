@@ -288,20 +288,6 @@ namespace BL.Logic.AdminCore
         {
             var positionIDs = new List<int>();
 
-            if (filter.IsChecked == true)
-            {
-                //List<int> roles = _adminDb.GetRolesByUsers(context, new FilterAdminUserRole()
-                //{
-                //    UserIDs = filter.UserIDs,
-                //    StartDate = filter.StartDate,
-                //    EndDate = filter.EndDate
-                //});
-
-                //if (filter.IDs == null) filter.IDs = new List<int>();
-
-                //filter.IDs.AddRange(roles);
-            }
-            else
 
             if (filter.PositionId == null)
             {
@@ -317,27 +303,28 @@ namespace BL.Logic.AdminCore
             }
 
 
-
-            var positionRoles = _adminDb.GetPositionRolesDIPUserRoles(context, new FilterAdminPositionRole()
+            var positionExecutors = _dictDb.GetPositionExecutorsDIPUserRoles(context, new FilterDictionaryPositionExecutor()
             {
                 PositionIDs = positionIDs,
             });
 
-            var positionExecutors = _dictDb.GetPositionExecutorsDIPUserRoles(context, new FilterDictionaryPositionExecutor()
+            var positionRoles = _adminDb.GetRolesDIPUserRoles(context, new FilterAdminPositionRole()
             {
-                PositionIDs = (List<int>)positionRoles.Select(x => x.PositionId),
+                PositionIDs = positionIDs,
             });
 
-            var userExecutors = _adminDb.GetUserRoles(context, new FilterAdminUserRole()
+            var positionRolesL = (List<FrontDIPUserRolesRoles>)positionRoles;
+
+            if (filter.IsChecked == true)
             {
-                PositionIDs = (List<int>)positionRoles.Select(x => x.PositionId),
-                UserIDs = new List<int> { userId }
-            });
+                positionRolesL.RemoveAll(r => !r.IsChecked);
+                // PSS Возможно нужно обрезать positionExecutors
+            }
 
             List<TreeItem> flatList = new List<TreeItem>();
 
             flatList.AddRange(positionExecutors);
-            flatList.AddRange(positionRoles);
+            flatList.AddRange(positionRolesL);
 
             var res = Tree.GetList(Tree.Get(flatList, filter));
 
@@ -356,7 +343,8 @@ namespace BL.Logic.AdminCore
             {
                 UserId = positionExecutor.AgentId,
                 RoleId = x.RoleId,
-                PositionId = positionExecutor.PositionId,
+                //PositionId = positionExecutor.PositionId,
+                PositionExecutorId = positionExecutor.Id,
                 StartDate = positionExecutor.StartDate,
                 EndDate = positionExecutor.EndDate ?? DateTime.MaxValue,
             }).ToList();
