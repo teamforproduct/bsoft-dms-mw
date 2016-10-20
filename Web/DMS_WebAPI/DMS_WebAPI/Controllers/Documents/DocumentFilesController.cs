@@ -169,6 +169,22 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Получение списка доступных команд по файлу
+        /// </summary>
+        /// <param name="id">ИД файлу</param>
+        /// <returns>Массив команд</returns>
+        [Route("ActionsByFile/{id}")]
+        [HttpGet]
+        public IHttpActionResult ActionsByFile(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
+            var actions = cmdService.GetDocumentFileActions(ctx, null, id);
+
+            return new JsonResult(actions, this);
+        }
+
+        /// <summary>
         /// Вставка версии файла к файлу
         /// </summary>
         /// <param name="model"></param>

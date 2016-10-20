@@ -97,5 +97,9 @@ namespace BL.Model.DocumentCore.Filters
         /// Отчеты о выполнении. true - выполнять поиск иначе ничего не делаеться
         /// </summary>
         public bool? IsMarkExecution { get; set; }
+        /// <summary>
+        ///Если истина - просроченные, ложь - непросроченные, если null(не задан), то фильтр не применяется
+        /// </summary>
+        public bool? IsOverDue { get; set; }
     }
 }

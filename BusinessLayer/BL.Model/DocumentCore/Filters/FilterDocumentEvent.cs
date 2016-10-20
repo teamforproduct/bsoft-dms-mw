@@ -32,6 +32,10 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public bool? IsNew { get; set; }
         /// <summary>
+        /// Отбор по событиям, да - одно субъектны, нет - двусубъектные, нул - все
+        /// </summary>
+        public bool? IsSingleSubject { get; set; }
+        /// <summary>
         /// Дата "с" для отбора по дате событий документа
         /// </summary>
         public DateTime? FromDate { get; set; }
@@ -70,7 +74,36 @@ namespace BL.Model.DocumentCore.Filters
         public List<int> AgentId { get; set; }
 
         /// <summary>
+        /// Массив ИД должностей получателей событий по документу
+        /// </summary>
+        public List<int> SourcePositionId { get; set; }
+        /// <summary>
+        /// Массив ИД агентов внутрених получателей событий по документу
+        /// </summary>
+        public List<int> SourcePositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД  департаментов получателей событий по документу
+        /// </summary>
+        public List<int> SourceDepartmentId { get; set; }
+        /// <summary>
         /// Массив ИД агентов внешних получателей событий по документу
+        /// </summary>
+        public List<int> SourceAgentId { get; set; }
+
+        /// <summary>
+        /// Массив ИД должностей получателей событий по документу
+        /// </summary>
+        public List<int> TargetPositionId { get; set; }
+        /// <summary>
+        /// Массив ИД агентов внутрених получателей событий по документу
+        /// </summary>
+        public List<int> TargetPositionExecutorAgentId { get; set; }
+        /// <summary>
+        /// Массив ИД  департаментов получателей событий по документу
+        /// </summary>
+        public List<int> TargetDepartmentId { get; set; }
+        /// <summary>
+        /// Массив ИД агентов получателей событий по документу
         /// </summary>
         public List<int> TargetAgentId { get; set; }
     }

@@ -23,6 +23,7 @@ using LinqKit;
 using System.Data.Entity;
 using BL.Model.Reports.FrontModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.Documents
 {
@@ -155,7 +156,11 @@ namespace BL.Database.Documents
 
                         if (paging.IsOnlyCounter ?? false)
                         {
-                            var qryTagCounters = dbContext.DictionaryTagsSet
+                            //var filterContainsPosition = PredicateBuilder.False<DictionaryTags>();
+                            //filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
+                            //    (current, value) => current.Or(e => !e.PositionId.HasValue || e.PositionId == value).Expand());
+
+                            var qryTagCounters = dbContext.DictionaryTagsSet//.Where(filterContainsPosition)
                                     .Select(x => new FrontDocumentTag
                                     {
                                         TagId = x.Id,
@@ -199,8 +204,12 @@ namespace BL.Database.Documents
 
                     if (paging.IsOnlyCounter ?? false)
                     {
-                        var qryTagCounters = dbContext.DictionaryTagsSet
-                                .Select(x => new FrontDocumentTag
+                        //var filterContainsPosition = PredicateBuilder.False<DictionaryTags>();
+                        //filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
+                        //    (current, value) => current.Or(e => !e.PositionId.HasValue || e.PositionId == value).Expand());
+
+                        var qryTagCounters = dbContext.DictionaryTagsSet//.Where(filterContainsPosition)
+                            .Select(x => new FrontDocumentTag
                                 {
                                     TagId = x.Id,
                                     PositionId = x.PositionId,

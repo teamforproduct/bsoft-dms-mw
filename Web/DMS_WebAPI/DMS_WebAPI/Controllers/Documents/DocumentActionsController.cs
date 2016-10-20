@@ -29,6 +29,22 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Получение списка доступных команд по событию
+        /// </summary>
+        /// <param name="eventId">ИД события</param>
+        /// <returns>Массив команд</returns>
+        [Route("ActionsByEvent/{eventId}")]
+        [HttpGet]
+        public IHttpActionResult ActionsByEvent(int eventId)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var cmdService = DmsResolver.Current.Get<ICommandService>();
+            var actions = cmdService.GetDocumentActions(ctx, null, eventId);
+
+            return new JsonResult(actions, this);
+        }
+
+        /// <summary>
         /// Удаление в Избранного
         /// </summary>
         /// <param name="model"></param>

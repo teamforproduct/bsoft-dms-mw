@@ -29,16 +29,23 @@ namespace BL.Database.Documents
     {
         #region DocumentAction
 
-        public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int documentId)
+        public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int? documentId, int? id = null)
         {
             using (var dbContext = new DmsContext(context))
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
-                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Id == documentId)
-                    .Select(x => new InternalDocument
+                var qry = CommonQueries.GetDocumentQuery(dbContext, context);
+                if (documentId.HasValue)
+                {
+                    qry = qry.Where(x => x.Id == documentId);
+                }
+                if (id.HasValue)
+                {
+                    qry = qry.Where(x => x.Events.Any(y => y.Id == id.Value));
+                }
+                res.Document = qry.Select(x => new InternalDocument
                     {
                         Id = x.Id,
                         IsRegistered = x.IsRegistered,
@@ -50,7 +57,7 @@ namespace BL.Database.Documents
 
                 if (res.Document != null)
                 {
-
+                    documentId = res.Document.Id;
                     res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, context)
                         .Select(x => new InternalDocumentAccess
                         {
@@ -62,17 +69,32 @@ namespace BL.Database.Documents
                         ).ToList();
                     res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
                     res.Document.IsFavourite = res.Document.Accesses.Any(x => x.IsFavourite);
+                    var qryEvents = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId);
+                    if (id.HasValue)
+                    {
+                        qryEvents = qryEvents.Where(x => x.Id == id);
+                    }
+                    else
+                    {
+                        qryEvents = qryEvents.Where(x => x.DocumentId == documentId);
+                    }
 
-
-                    res.Document.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
-                        .Select(x => new InternalDocumentEvent
+                    res.Document.Events = qryEvents.Select(x => new InternalDocumentEvent
                         {
                             Id = x.Id,
                         }
                         ).ToList();
 
-                    res.Document.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
-                        .Select(x => new InternalDocumentWait
+                    var qryWaits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId);
+                    if (id.HasValue)
+                    {
+                        qryWaits = qryWaits.Where(x => x.OnEventId == id);
+                    }
+                    else
+                    {
+                        qryWaits = qryWaits.Where(x => x.DocumentId == documentId);
+                    }
+                    res.Document.Waits = qryWaits.Select(x => new InternalDocumentWait
                         {
                             Id = x.Id,
                             OffEventId = x.OffEventId,
@@ -115,8 +137,6 @@ namespace BL.Database.Documents
                             PositionId = x.PositionId,
                         }
                         ).ToList();
-
-
 
                     var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
 
@@ -182,7 +202,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int documentId)
+        public DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int? documentId, int? id = null)
         {
             using (var dbContext = new DmsContext(context))
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -190,19 +210,27 @@ namespace BL.Database.Documents
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
-                    .Where(x => x.Id == documentId)
-                    .Select(x => new InternalDocument
-                    {
-                        Id = x.Id,
-                        IsRegistered = x.IsRegistered,
-                        ExecutorPositionId = x.ExecutorPositionId,
-                        LinkId = x.LinkId,
-                    }).FirstOrDefault();
+                var qry = CommonQueries.GetDocumentQuery(dbContext, context);
+
+                if (documentId.HasValue)
+                {
+                    qry = qry.Where(x => x.Id == documentId);
+                }
+                if (id.HasValue)
+                {
+                    qry = qry.Where(x => x.Files.Any(y => y.Id == id.Value));
+                }
+                res.Document = qry.Select(x => new InternalDocument
+                {
+                    Id = x.Id,
+                    IsRegistered = x.IsRegistered,
+                    ExecutorPositionId = x.ExecutorPositionId,
+                    LinkId = x.LinkId,
+                }).FirstOrDefault();
 
                 if (res.Document != null)
                 {
-
+                    documentId = res.Document.Id;
                     res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
                         .Select(x => new InternalDocumentAccess
                         {
@@ -210,21 +238,25 @@ namespace BL.Database.Documents
                             PositionId = x.PositionId,
                         }
                         ).ToList();
-
-                    res.Document.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
-                        .Select(x => new InternalDocumentAttachedFile
-                        {
-                            Id = x.Id,
-                            ExecutorPositionId = x.ExecutorPositionId,
-                            Type = (EnumFileTypes)x.TypeId,
-                            IsWorkedOut = x.IsWorkedOut,
-                            IsMainVersion = x.IsMainVersion,
-                            IsDeleted = x.IsDeleted,
-                        }).ToList();
-
-
+                    var qryFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId);
+                    if (id.HasValue)
+                    {
+                        qryFiles = qryFiles.Where(x => x.Id == id);
+                    }
+                    else
+                    {
+                        qryFiles = qryFiles.Where(x => x.DocumentId == documentId);
+                    }
+                    res.Document.DocumentFiles = qryFiles.Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                        ExecutorPositionId = x.ExecutorPositionId,
+                        Type = (EnumFileTypes)x.TypeId,
+                        IsWorkedOut = x.IsWorkedOut,
+                        IsMainVersion = x.IsMainVersion,
+                        IsDeleted = x.IsDeleted,
+                    }).ToList();
                     var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
-
                     if (positionAccesses.Any())
                     {
                         res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);

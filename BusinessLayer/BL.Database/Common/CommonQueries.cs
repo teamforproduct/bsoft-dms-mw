@@ -373,23 +373,29 @@ namespace BL.Database.Common
                 if ((filter.TagId?.Count() > 0) ||
                     !string.IsNullOrEmpty(filter.TagDescription))
                 {
-                    var filterContainsPosition = PredicateBuilder.False<DocumentTags>();
-
-                    filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
-                        (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
+                    //var filterContainsPosition = PredicateBuilder.False<DocumentTags>();
+                    //filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
+                    //    (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
                     if (filter.TagId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentTags>();
-                        filterContains = filter.TagId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Tag.Id == value).Expand());
-
-                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(filterContains));
+                        //var filterContains = PredicateBuilder.True<DocumentTags>();
+                        //filterContains = filter.TagId.Aggregate(filterContains,
+                        //    (current, value) => current.And(e => e.Tag.Id == value).Expand());
+                        //qry = qry.Where(x => x.Tags.AsQueryable()
+                        ////.Where(filterContainsPosition)
+                        //.Any(filterContains));
+                        foreach (var id in filter.TagId)
+                        {
+                            qry = qry.Where(x => x.Tags.Any(y => y.TagId == id));
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(filter.TagDescription))
                     {
-                        qry = qry.Where(x => x.Tags.AsQueryable().Where(filterContainsPosition).Any(y => y.Tag.Name.Contains(filter.TagDescription)));
+                        qry = qry.Where(x => x.Tags.AsQueryable()
+                        //.Where(filterContainsPosition)
+                        .Any(y => y.Tag.Name.Contains(filter.TagDescription)));
                     }
                 }
                 #endregion Tag
@@ -502,6 +508,17 @@ namespace BL.Database.Common
                         qry = qry.Where(x => x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
                     }
                 }
+                if (filter.IsSingleSubject.HasValue)
+                {
+                    if (filter.IsSingleSubject.Value)
+                    {
+                        qry = qry.Where(x => x.SourcePositionId == x.TargetPositionId);
+                    }
+                    else
+                    {
+                        qry = qry.Where(x => x.TargetPositionId != x.SourcePositionId);
+                    }
+                }
 
                 if (filter.FromDate.HasValue)
                 {
@@ -541,7 +558,22 @@ namespace BL.Database.Common
                     var filterContains = PredicateBuilder.False<DocumentEvents>();
                     filterContains = filter.PositionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
 
+                if (filter.SourcePositionId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.SourcePositionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.TargetPositionId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.TargetPositionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
 
@@ -554,15 +586,40 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.TargetAgentId?.Count() > 0)
+                if (filter.SourcePositionExecutorAgentId?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.False<DocumentEvents>();
-                    filterContains = filter.TargetAgentId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TargetAgentId == value).Expand());
+                    filterContains = filter.SourcePositionExecutorAgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.TargetPositionExecutorAgentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.TargetPositionExecutorAgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetPositionExecutorAgentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.TargetAgentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.TargetAgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetAgentId == value || e.TargetPositionExecutorAgentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.SourceAgentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.SourceAgentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourceAgentId == value || e.SourcePositionExecutorAgentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
                 if (filter.AgentId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DocumentEvents>();
@@ -584,6 +641,24 @@ namespace BL.Database.Common
                     var filterContains = PredicateBuilder.False<DocumentEvents>();
                     filterContains = filter.DepartmentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePosition.DepartmentId == value || e.TargetPosition.DepartmentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.SourceDepartmentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.SourceDepartmentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePosition.DepartmentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.TargetDepartmentId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    filterContains = filter.DepartmentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetPosition.DepartmentId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -923,6 +998,13 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
+                if (filter.IsMyFiles ?? false)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
@@ -1144,6 +1226,18 @@ namespace BL.Database.Common
                         qry = qry.Where(x => x.OffEventId.HasValue);
                     }
                 }
+                if (filter.IsOverDue.HasValue)
+                {
+                    if (filter.IsOverDue.Value)
+                    {
+                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date :DateTime.Now));
+                    }
+                    else
+                    {
+                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.Now)));
+                    }
+                }
+                
 
                 if (filter.DueDateFromDate.HasValue)
                 {
