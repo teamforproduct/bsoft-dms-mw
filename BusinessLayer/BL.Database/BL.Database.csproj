@@ -342,6 +342,14 @@
     <Compile Include="Migrations\201610191859186_changeLogs.Designer.cs">
       <DependentUpon>201610191859186_changeLogs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610201008126_AddExecutror_to-UserRoles.cs" />
+    <Compile Include="Migrations\201610201008126_AddExecutror_to-UserRoles.Designer.cs">
+      <DependentUpon>201610201008126_AddExecutror_to-UserRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610201029201_AddExecutror_to-UserRoles2.cs" />
+    <Compile Include="Migrations\201610201029201_AddExecutror_to-UserRoles2.Designer.cs">
+      <DependentUpon>201610201029201_AddExecutror_to-UserRoles2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -478,6 +486,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610191859186_changeLogs.resx">
       <DependentUpon>201610191859186_changeLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610201008126_AddExecutror_to-UserRoles.resx">
+      <DependentUpon>201610201008126_AddExecutror_to-UserRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610201029201_AddExecutror_to-UserRoles2.resx">
+      <DependentUpon>201610201029201_AddExecutror_to-UserRoles2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

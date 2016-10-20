@@ -16,6 +16,7 @@ namespace BL.Database.DBModel.Admin
         [Index("IX_UserRoleStartDate", 3, IsUnique = true)]
         public DateTime StartDate { get; set; }
         [Index("IX_UserRoleStartDate", 4, IsUnique = true)]
+        public int? PositionExecutorId { get; set; }
         public int? PositionId { get; set; }
         public DateTime EndDate { get; set; }
         public int LastChangeUserId { get; set; }
@@ -28,5 +29,7 @@ namespace BL.Database.DBModel.Admin
         public virtual DictionaryAgents Agent { get; set; }
         [ForeignKey("PositionId")]
         public virtual DictionaryPositions Position { get; set; }
+        [ForeignKey("PositionExecutorId")]
+        public virtual DictionaryPositionExecutors PositionExecutors { get; set; }
     }
 }
