@@ -34,7 +34,7 @@ namespace BL.Model.AdminCore.InternalModel
 
         public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         
         /// <summary>
         /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.

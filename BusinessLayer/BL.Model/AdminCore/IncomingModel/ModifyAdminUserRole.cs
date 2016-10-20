@@ -54,8 +54,8 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Дата снятия роли (совпадает с датой снятия с должности)
         /// </summary>
-        [Required]
-        public DateTime EndDate { get; set; }
+        // [Required]
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.

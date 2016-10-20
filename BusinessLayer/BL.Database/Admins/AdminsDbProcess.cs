@@ -1035,6 +1035,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
                 qry = GetWhereUserRole(ref qry, filter);
@@ -1047,7 +1049,7 @@ namespace BL.Database.Admins
                     PositionId = x.PositionId,
                     PositionExecutorId = x.PositionExecutorId,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -1059,6 +1061,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
                 qry = GetWhereUserRole(ref qry, filter);
@@ -1071,7 +1075,7 @@ namespace BL.Database.Admins
                     PositionId = x.PositionId,
                     PositionExecutorId = x.PositionExecutorId,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).ToList();
@@ -1097,6 +1101,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
                 qry = GetWhereUserRole(ref qry, filter);
@@ -1108,7 +1114,7 @@ namespace BL.Database.Admins
                     RolePositionId = x.PositionId,
                     UserId = x.UserId,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                 }).ToList();
 
             }
