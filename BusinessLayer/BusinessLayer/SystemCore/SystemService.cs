@@ -2,9 +2,11 @@
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.TreeBuilder;
 using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.Tree;
 using System.Collections.Generic;
 
 namespace BL.Logic.SystemCore
@@ -43,18 +45,30 @@ namespace BL.Logic.SystemCore
         }
         public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter)
         {
-
             return _systemDb.GetSystemFormulas(context, filter);
         }
         public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter)
         {
-
             return _systemDb.GetSystemPatterns(context, filter);
         }
         public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter)
         {
-
             return _systemDb.GetSystemValueTypes(context, filter);
+        }
+        public List<ITreeItem> GetSystemActionForDIP(IContext context, FilterTree filter)
+        {
+            var objects = _systemDb.GetSystemObjectsForTree(context, new FilterSystemObject());
+
+            var actions = _systemDb.GetSystemActionsForTree(context, new FilterSystemAction());
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            flatList.AddRange(objects);
+            flatList.AddRange(actions);
+
+            var res = Tree.GetList( Tree.Get(flatList, filter));
+
+            return res;
         }
     }
 }

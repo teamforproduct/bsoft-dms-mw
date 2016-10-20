@@ -18,12 +18,12 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Сотрудник
         /// </summary>
-        public new int? UserId { get; set; }
+        public int? UserId { get; set; }
 
         /// <summary>
         /// Роль
         /// </summary>
-        public new int? RoleId { get; set; }
+        public int? RoleId { get; set; }
 
         /// <summary>
         /// Дата назначения роли
@@ -62,10 +62,21 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public bool? IsChecked { get; set; }
 
-
+        /// <summary>
+        /// Должность, от которой унаследована роль
+        /// </summary>
         public int? RolePositionId { get; set; }
+
+        /// <summary>
+        /// Наименование должности
+        /// </summary>
         public string RolePositionName { get; set; }
+
+        /// <summary>
+        /// Имя сотрудника
+        /// </summary>
         public string RolePositionExecutorAgentName { get; set; }
+
         public int? NewEventsCount { get; set; }
 
     }

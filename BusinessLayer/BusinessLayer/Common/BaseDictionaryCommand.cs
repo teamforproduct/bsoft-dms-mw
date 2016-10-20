@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Admins.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
@@ -16,6 +17,7 @@ namespace BL.Logic.Common
         protected object _param;
         private EnumDictionaryActions _action;
         protected IAdminService _adminService;
+        protected IAdminsDbProcess _adminDb;
         protected IDictionaryService _dictService;
         protected IDictionariesDbProcess _dictDb;
 
@@ -29,8 +31,9 @@ namespace BL.Logic.Common
             _action = action;
             _context = ctx;
             _param = param;
-            _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            _adminDb = DmsResolver.Current.Get<IAdminsDbProcess>();
             _adminService = DmsResolver.Current.Get<IAdminService>();
+            _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             _dictService = DmsResolver.Current.Get<IDictionaryService>();
         }
 

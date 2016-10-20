@@ -21,6 +21,8 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Logic.TreeBuilder;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.CrossCutting.Extensions;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.AdminCore.InternalModel;
 
 namespace BL.Logic.AdminCore
 {
@@ -239,48 +241,131 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetUserRoles(context, filter);
         }
-        public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
+        //public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
+        //{
+        //    if (filter.UserIDs?.Count > 0)
+        //    {
+        //        if (filter.IsChecked == true)
+        //        {
+        //            List<int> roles = _adminDb.GetRolesByUsers(context, new FilterAdminUserRole()
+        //            {
+        //                UserIDs = filter.UserIDs,
+        //                StartDate = filter.StartDate,
+        //                EndDate = filter.EndDate
+        //            });
+
+        //            if (filter.IDs == null) filter.IDs = new List<int>();
+
+        //            filter.IDs.AddRange(roles);
+        //        }
+        //        else if ((filter.PositionIDs?.Count ?? 0) == 0)
+        //        {
+        //            // определяю должности, которые исполняет сотрудник
+        //            var executors = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+        //            { AgentIDs = filter.UserIDs, StartDate = filter.StartDate, EndDate = filter.EndDate });
+
+        //            if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();
+
+        //            filter.PositionIDs.AddRange(executors.Select(x => x.PositionId));
+
+        //        }
+        //    }
+
+        //    if (filter.PositionIDs?.Count > 0)
+        //    {
+        //        // сужение до ролей, котрые принадлежат указанным должностям
+        //        var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole { PositionIDs = filter.PositionIDs });
+
+        //        if (filter.IDs == null) filter.IDs = new List<int>();
+
+        //        filter.IDs.AddRange(positionRoles.Where(x => filter.IDs.Contains(x.Id)).Select(x => x.RoleId).ToList());
+        //    }
+
+        //    return _adminDb.GetUserRolesDIP(context, filter);
+        //}
+
+        public IEnumerable<ITreeItem> GetUserRolesDIP(IContext context, int userId, FilterDIPAdminUserRole filter)
         {
-            if (filter.UserIDs?.Count > 0)
+            var positionIDs = new List<int>();
+
+            if (filter.IsChecked == true)
             {
-                if (filter.IsChecked == true)
-                {
-                    List<int> roles = _adminDb.GetRolesByUsers(context, new FilterAdminUserRole()
-                    {
-                        UserIDs = filter.UserIDs,
-                        StartDate = filter.StartDate,
-                        EndDate = filter.EndDate
-                    });
+                //List<int> roles = _adminDb.GetRolesByUsers(context, new FilterAdminUserRole()
+                //{
+                //    UserIDs = filter.UserIDs,
+                //    StartDate = filter.StartDate,
+                //    EndDate = filter.EndDate
+                //});
 
-                    if (filter.IDs == null) filter.IDs = new List<int>();
+                //if (filter.IDs == null) filter.IDs = new List<int>();
 
-                    filter.IDs.AddRange(roles);
-                }
-                else if ((filter.PositionIDs?.Count ?? 0) == 0) 
-                {
-                    // определяю должности, которые исполняет сотрудник
-                    var executors = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
-                    { AgentIDs = filter.UserIDs, StartDate = filter.StartDate, EndDate = filter.EndDate });
+                //filter.IDs.AddRange(roles);
+            }
+            else
 
-                    if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();
+            if (filter.PositionId == null)
+            {
+                // определяю должности, которые исполняет сотрудник
+                var executors = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+                { AgentIDs = new List<int> { userId }, StartDate = filter.StartDate, EndDate = filter.EndDate });
 
-                    filter.PositionIDs.AddRange(executors.Select(x=>x.PositionId));
-
-                }
+                positionIDs.AddRange(executors.Select(x => x.PositionId));
+            }
+            else
+            {
+                positionIDs.Add(filter.PositionId ?? -1);
             }
 
-            if (filter.PositionIDs?.Count > 0)
+
+
+            var positionRoles = _adminDb.GetPositionRolesDIPUserRoles(context, new FilterAdminPositionRole()
             {
-                // сужение до ролей, котрые принадлежат указанным должностям
-                var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole { PositionIDs = filter.PositionIDs });
+                PositionIDs = positionIDs,
+            });
 
-                if (filter.IDs == null) filter.IDs = new List<int>();
+            var positionExecutors = _dictDb.GetPositionExecutorsDIPUserRoles(context, new FilterDictionaryPositionExecutor()
+            {
+                PositionIDs = (List<int>)positionRoles.Select(x => x.PositionId),
+            });
 
-                filter.IDs.AddRange(positionRoles.Where(x => filter.IDs.Contains(x.Id)).Select(x => x.RoleId).ToList());
-            }
+            var userExecutors = _adminDb.GetUserRoles(context, new FilterAdminUserRole()
+            {
+                PositionIDs = (List<int>)positionRoles.Select(x => x.PositionId),
+                UserIDs = new List<int> { userId }
+            });
 
-            return _adminDb.GetUserRolesDIP(context, filter);
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            flatList.AddRange(positionExecutors);
+            flatList.AddRange(positionRoles);
+
+            var res = Tree.GetList(Tree.Get(flatList, filter));
+
+            return res;
         }
+
+        public void AddAllPositionRoleForUser(IContext context, ModifyDictionaryPositionExecutor positionExecutor)
+        {
+            var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole() { PositionIDs = new List<int> { positionExecutor.PositionId } });
+
+            if (positionRoles.Count() == 0) return;
+
+            var userRoles = new List<InternalAdminUserRole>();
+
+            userRoles = positionRoles.Select(x => new InternalAdminUserRole()
+            {
+                UserId = positionExecutor.AgentId,
+                RoleId = x.RoleId,
+                PositionId = positionExecutor.PositionId,
+                StartDate = positionExecutor.StartDate,
+                EndDate = positionExecutor.EndDate ?? DateTime.MaxValue,
+            }).ToList();
+
+            CommonDocumentUtilities.SetLastChange(context, userRoles);
+
+            _adminDb.AddUserRoles(context, userRoles);
+        }
+
         #endregion
 
         #region [+] DepartmentAdmin ...

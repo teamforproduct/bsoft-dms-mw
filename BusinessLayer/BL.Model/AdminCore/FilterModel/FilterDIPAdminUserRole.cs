@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Tree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,23 +11,27 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminUserRole
     /// </summary>
-    public class FilterAdminUserRole: AdminBaseFilterParameters
+    public class FilterDIPAdminUserRole : FilterTree
     {
+        /// <summary>
+        /// Список ID
+        /// </summary>
+        public List<int> IDs { get; set; }
 
         /// <summary>
-        /// Сужение по наименованию элементов (по входжению)
+        /// Исключение записей по ID
         /// </summary>
-        public string Name { get; set; }
+        public List<int> NotContainsIDs { get; set; }
 
         /// <summary>
         /// Сужение по наименованию элементов (по равенству)
         /// </summary>
         public string NameExact { get; set; }
 
-        /// <summary>
-        /// Пользователи
-        /// </summary>
-        public List<int> UserIDs { get; set; }
+        ///// <summary>
+        ///// Пользователи
+        ///// </summary>
+        //public List<int> UserIDs { get; set; }
 
         /// <summary>
         /// Роли
@@ -36,7 +41,7 @@ namespace BL.Model.AdminCore.FilterModel
         /// <summary>
         /// Должности
         /// </summary>
-        public List<int> PositionIDs { get; set; }
+        public int? PositionId { get; set; }
 
         /// <summary>
         /// Рассматриваемый период

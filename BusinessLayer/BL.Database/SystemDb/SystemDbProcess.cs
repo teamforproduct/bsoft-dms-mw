@@ -15,6 +15,8 @@ using BL.Model.FullTextSearch;
 using System;
 using LinqKit;
 using System.Transactions;
+using BL.Model.Tree;
+using BL.Database.Common;
 
 namespace BL.Database.SystemDb
 {
@@ -241,6 +243,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                // TODO Почему для SystemObjects используется PropertiesSet???
                 var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 if (filter.SystemObjectId?.Count > 0)
@@ -257,6 +260,72 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<TreeItem> GetSystemObjectsForTree(IContext ctx, FilterSystemObject filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.SystemObjectsSet.AsQueryable();
+
+                if (filter.SystemObjectId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemObjects>();
+                    filterContains = filter.SystemObjectId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                qry = qry.OrderBy(x => x.Id);
+
+                return qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name = x.Description,
+                    SearchText = x.Description,
+                    TreeId = string.Concat(x.Id.ToString(),"_", (int)EnumObjects.SystemObjects),
+                    TreeParentId = string.Empty,
+                    ObjectId = (int)EnumObjects.SystemObjects,
+                    IsActive = true,
+                    IsList = !(x.Actions.Where(y => y.ObjectId == x.Id).Any()),
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<TreeItem> GetSystemActionsForTree(IContext ctx, FilterSystemAction filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.SystemActionsSet.AsQueryable();
+
+                if (!string.IsNullOrEmpty(filter.Description))
+                {
+                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Description == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                qry = qry.Where(x => x.IsGrantable == true);
+
+                qry = qry.OrderBy(x => x.Id);
+
+                return qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name = x.Description,
+                    SearchText = x.Description,
+                    TreeId = string.Concat(x.Id.ToString(), "_", (int)EnumObjects.SystemActions),
+                    TreeParentId = string.Concat(x.ObjectId.ToString(), "_", (int)EnumObjects.SystemObjects),
+                    ObjectId = (int)EnumObjects.SystemActions,
+                    IsActive = true,
+                    IsList = true,
                 }).ToList();
             }
         }

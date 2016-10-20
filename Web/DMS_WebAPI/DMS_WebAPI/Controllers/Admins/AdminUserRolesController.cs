@@ -25,15 +25,11 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
         [ResponseType(typeof(List<FrontAdminUserRole>))]
-        public IHttpActionResult Get([FromUri] int userId, [FromUri] FilterAdminRole filter)
+        public IHttpActionResult Get([FromUri] int userId, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (filter.UserIDs == null) filter.UserIDs = new List<int>();
-
-            filter.UserIDs.Add(userId);
-
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetUserRolesDIP(ctx, filter);
+            var tmpItems = tmpService.GetUserRolesDIP(ctx, userId, filter);
             return new JsonResult(tmpItems, this);
         }
 

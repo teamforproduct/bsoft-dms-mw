@@ -83,6 +83,8 @@
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRoleActionDIP.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesExecutor.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinations.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDefaultSubordination.cs" />
@@ -152,6 +154,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPUserRolesExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />

@@ -70,9 +70,20 @@ namespace BL.Database.Common
                 LastChangeUserId = item.LastChangeUserId,
                 UserId = item.UserId,
                 RoleId = item.RoleId,
+                PositionId = item.PositionId,
                 StartDate = item.StartDate,
                 EndDate = item.EndDate
             };
+        }
+
+        public static IEnumerable<AdminUserRoles> GetDbUserRoles(IContext context, IEnumerable<InternalAdminUserRole> list)
+        {
+            var items = new List<AdminUserRoles>();
+            foreach (var item in list)
+            {
+                items.Add(GetDbUserRole(context, item));
+            }
+            return items;
         }
 
         public static AdminSubordinations GetDbSubordination(IContext context, InternalAdminSubordination item)

@@ -210,6 +210,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         FrontDictionaryPositionExecutor GetPositionExecutor(IContext context, int id);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDIPUserRolesExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 
         // Типы исполнителей

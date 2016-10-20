@@ -63,6 +63,8 @@
 
 
         SystemSettings = 900,
+        SystemObjects = -1,
+        SystemActions = 1,
 
     }
 }

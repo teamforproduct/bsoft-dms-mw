@@ -33,6 +33,9 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _adminService.VerifyAccess(_context, CommandType, false);
+
+            // PSS Добавить проверку. Существуют ли события от этой должности
+
             return true;
         }
 

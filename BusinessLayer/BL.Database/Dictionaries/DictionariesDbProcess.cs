@@ -4587,6 +4587,35 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        
+
+        public IEnumerable<FrontDIPUserRolesExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
+
+                string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
+                string parObjId = string.Empty;
+
+                return qry.Select(x => new FrontDIPUserRolesExecutor
+                {
+                    Id = x.PositionId,
+                    Name = x.Position.Name,
+                    SearchText = string.Concat( x.Position.Name ," ", x.StartDate, " ", x.EndDate, " ", x.PositionExecutorType.Name),
+                    ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
+                    TreeId = string.Concat(x.PositionId.ToString(), "_", objId),
+                    TreeParentId = string.Empty,
+                    IsActive = x.IsActive,
+                    IsList = !x.Agent.UserRoles.Where(y => y.UserId == x.AgentId).Any(),
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    PositionName = x.Position.Name,
+                    ExecutorTypeName = x.PositionExecutorType.Name,
+                }).ToList();
+            }
+        }
+
         public IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(IContext context, DmsContext dbContext, FilterDictionaryPositionExecutor filter)
         {
             var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId).AsQueryable();

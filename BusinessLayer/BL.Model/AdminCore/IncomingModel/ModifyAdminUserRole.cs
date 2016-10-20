@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -24,21 +25,31 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Пользователь
         /// </summary>
+        [Required]
         public int UserId { get; set; }
 
         /// <summary>
         /// Роль
         /// </summary>
+        [Required]
         public int RoleId { get; set; }
 
         /// <summary>
-        /// Дата назначения роли
+        /// Должность, от которой унаследована роль
         /// </summary>
+        [Required]
+        public int PositionId { get; set; }
+
+        /// <summary>
+        /// Дата назначения роли (совпадает с датой назначения на должность)
+        /// </summary>
+        [Required]
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// Дата снятия роли
+        /// Дата снятия роли (совпадает с датой снятия с должности)
         /// </summary>
+        [Required]
         public DateTime EndDate { get; set; }
 
         /// <summary>

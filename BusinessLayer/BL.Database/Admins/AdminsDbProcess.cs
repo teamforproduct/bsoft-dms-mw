@@ -24,6 +24,7 @@ using System.Transactions;
 using BL.Model.Tree;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.System;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Database.Admins
 {
@@ -213,6 +214,7 @@ namespace BL.Database.Admins
         }
 
         #endregion
+
 
         #region [+] Roles ...
 
@@ -612,7 +614,7 @@ namespace BL.Database.Admins
                     RoleId = roleId,
                     ActionId = x.Id,
                     ActionDescription = x.Description,
-                    Category = x.Category,
+                    //Category = x.Category,
                     IsChecked = x.RoleActions.
                     Where(y => y.ActionId == x.Id).
                     Where(y => roleId == y.RoleId).
@@ -700,8 +702,6 @@ namespace BL.Database.Admins
             }
         }
 
-
-
         public List<int> GetRolesByPositions(IContext context, List<int> positionIDs)
         {
             using (var dbContext = new DmsContext(context))
@@ -752,6 +752,8 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     RoleId = x.RoleId,
                     PositionId = x.PositionId,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
             }
         }
@@ -812,6 +814,34 @@ namespace BL.Database.Admins
                     RoleId = x.Id,
                     RoleName = x.Name,
                     IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any()
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontDIPUserRolesRoles> GetPositionRolesDIPUserRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+
+                qry = GetWherePositionRole(ref qry, filter);
+
+                string objId = ((int)EnumObjects.AdminRoles).ToString();
+
+                return qry.Select(x => new FrontDIPUserRolesRoles
+                {
+                    Id = x.Id,
+                    Name = x.Role.Name,
+                    SearchText = string.Concat(x.Role.Name),
+                    ObjectId = (int)EnumObjects.AdminRoles,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = string.Concat(x.PositionId.ToString(), "_", (int)EnumObjects.DictionaryPositionExecutors),
+                    IsActive = true,
+                    IsList = true,
+                    //StartDate = x.Position.PositionExecutors. x.StartDate,
+                    //EndDate = x.EndDate,
+                    //IsChecked = false,
+                    PositionId = x.PositionId,
                 }).ToList();
             }
         }
@@ -894,6 +924,17 @@ namespace BL.Database.Admins
                 return dbModel.Id;
             }
         }
+
+        public void AddUserRoles(IContext context, IEnumerable<InternalAdminUserRole> models)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModels = AdminModelConverter.GetDbUserRoles(context, models);
+                dbContext.AdminUserRolesSet.AddRange(dbModels);
+                dbContext.SaveChanges();
+            }
+        }
+
         public void UpdateUserRole(IContext context, InternalAdminUserRole model)
         {
             using (var dbContext = new DmsContext(context))
@@ -913,6 +954,17 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
             }
         }
+        public void DeleteUserRoles(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+                qry = GetWhereUserRole(ref qry, filter);
+                if (qry.Count() == 0) return;
+                dbContext.AdminUserRolesSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
 
         public InternalAdminUserRole GetInternalUserRole(IContext context, FilterAdminUserRole filter)
         {
@@ -928,6 +980,7 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     UserId = x.UserId,
                     RoleId = x.RoleId,
+                    PositionId = x.PositionId,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
                     LastChangeUserId = x.LastChangeUserId,
@@ -935,6 +988,30 @@ namespace BL.Database.Admins
                 }).FirstOrDefault();
             }
         }
+
+        public IEnumerable<InternalAdminUserRole> GetInternalUserRoles(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+                qry = GetWhereUserRole(ref qry, filter);
+
+                return qry.Select(x => new InternalAdminUserRole
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    RoleId = x.RoleId,
+                    PositionId = x.PositionId,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate
+                }).ToList();
+            }
+        }
+
 
         public List<int> GetRolesByUsers(IContext context, FilterAdminUserRole filter)
         {
@@ -998,6 +1075,33 @@ namespace BL.Database.Admins
             }
         }
 
+        public IEnumerable<FrontDIPUserRolesRoles> GetUserRolesDIPUserRoles(IContext context, FilterAdminUserRole filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+                qry = GetWhereUserRole(ref qry,  filter);
+
+                string objId = ((int)EnumObjects.AdminUserRoles).ToString();
+
+                return qry.Select(x => new FrontDIPUserRolesRoles
+                {
+                    Id = x.Id,
+                    Name = x.Role.Name,
+                    SearchText = string.Concat(x.Role.Name, " ", x.StartDate, " ", x.EndDate),
+                    ObjectId = (int)EnumObjects.AdminUserRoles,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = string.Concat(x.PositionId.ToString(), "_", (int)EnumObjects.DictionaryPositionExecutors),
+                    IsActive = true,
+                    IsList = true,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    PositionId = x.PositionId ?? -1,
+                }).ToList();
+            }
+        }
+
         public bool ExistsUserRole(IContext context, FilterAdminUserRole filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -1055,6 +1159,16 @@ namespace BL.Database.Admins
 
                 filterContains = filter.RoleIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.PositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+
+                filterContains = filter.PositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }

@@ -6,6 +6,7 @@ using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.Tree;
 
 namespace BL.Database.SystemDb
 {
@@ -23,7 +24,7 @@ namespace BL.Database.SystemDb
         IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter);
         #endregion
 
-        #region SystemObjects
+        #region [+] SystemObjects ...
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
@@ -31,8 +32,12 @@ namespace BL.Database.SystemDb
 
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
+        IEnumerable<TreeItem> GetSystemObjectsForTree(IContext ctx, FilterSystemObject filter);
+        #endregion
 
-        #endregion SystemObjects
+        #region [+] Actions ...
+        IEnumerable<TreeItem> GetSystemActionsForTree(IContext ctx, FilterSystemAction filter);
+        #endregion
 
         #region Properties
         IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter);

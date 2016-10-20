@@ -15,6 +15,7 @@ namespace BL.Model.AdminCore.InternalModel
             Id = model.Id;
             UserId = model.UserId;
             RoleId = model.RoleId;
+            PositionId = model.PositionId;
             StartDate = model.StartDate;
             EndDate = model.EndDate;
             ObjectId = model.ObjectId;
@@ -43,6 +44,11 @@ namespace BL.Model.AdminCore.InternalModel
         /// Id сущности. Например отдел...
         /// </summary>
         public int EntityId { get; set; }
+
+        /// <summary>
+        /// Должность, от которой унаследована роль
+        /// </summary>
+        public int? PositionId { get; set; }
 
     }
 }

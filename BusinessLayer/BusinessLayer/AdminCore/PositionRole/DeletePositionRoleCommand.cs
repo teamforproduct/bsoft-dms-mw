@@ -5,6 +5,7 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.AdminCore.IncomingModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
@@ -37,6 +38,12 @@ namespace BL.Logic.AdminCore
             {
                 var model = CommonAdminUtilities.PositionRoleModifyToInternal(_context, Model);
                 _adminDb.DeletePositionRole(_context, model);
+                // PSS При удалении роли у должности, удаляю роль у сотрудников, которые унасленовали ее от этой должности
+                _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole()
+                {
+                    PositionIDs = new List<int> { Model.PositionId },
+                    RoleIDs = new List<int> { Model.RoleId}
+                });
                 return null;
             }
             catch (ArgumentNullException ex)

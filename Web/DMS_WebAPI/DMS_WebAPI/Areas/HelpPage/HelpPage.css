@@ -17,6 +17,10 @@
     font-weight: 900;
 }
 
+section.content-wrapper.main-content.clear-fix>p {
+    font-size: 18px;
+}
+
 .help-page pre.wrapped {
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
@@ -121,6 +125,7 @@
 .help-page h2,
 .help-page .h2 {
     font-size: 24px;
+    border-bottom-style: outset;
 }
 
 .help-page h3,
@@ -129,7 +134,7 @@
 }
 
 #body.help-page {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 143%;
     color: #333;
 }

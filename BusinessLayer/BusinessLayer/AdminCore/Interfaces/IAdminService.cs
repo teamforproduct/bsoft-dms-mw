@@ -10,6 +10,7 @@ using BL.Model.Tree;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
@@ -56,7 +57,9 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] UserRoles ...
         IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter);
-        IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter);
+        //IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter);
+        IEnumerable<ITreeItem> GetUserRolesDIP(IContext context, int userId, FilterDIPAdminUserRole filter);
+        void AddAllPositionRoleForUser(IContext context, ModifyDictionaryPositionExecutor positionExecutor);
         #endregion
 
         #region [+] DepartmentAdmins ...
