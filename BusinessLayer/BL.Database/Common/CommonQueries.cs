@@ -1480,7 +1480,7 @@ namespace BL.Database.Common
                     var qryGroupsCounter = qrys.Select(qry => qry.GroupBy(y => new
                     {
                         IsClosed = y.OffEventId.HasValue,
-                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value < DateTime.Now,
+                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.Now,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
                         SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
                         TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
@@ -1497,7 +1497,7 @@ namespace BL.Database.Common
                                             DueDate = z.Key.DueDate,
                                             SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
                                             TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
-                                            RecordCount = 0// z.Sum(c => c.RecordCount)
+                                            RecordCount = z.Sum(c => c.RecordCount)
                                         }).ToList(); 
 
                     paging.Counters = new UICounters
