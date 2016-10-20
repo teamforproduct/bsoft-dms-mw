@@ -22,7 +22,7 @@ namespace BL.Database.Admins
         public AdminLanguageInfo GetAdminLanguage(IContext context)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new AdminLanguageInfo();
 
@@ -71,7 +71,7 @@ namespace BL.Database.Admins
         public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
@@ -88,7 +88,7 @@ namespace BL.Database.Admins
         public InternalAdminLanguage GetInternalAdminLanguage(IContext context, FilterAdminLanguage filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
@@ -105,7 +105,7 @@ namespace BL.Database.Admins
         public int AddAdminLanguage(IContext context, InternalAdminLanguage model)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var item = new AdminLanguages
                 {
@@ -199,7 +199,7 @@ namespace BL.Database.Admins
         public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetAdminLanguageValuesQuery(dbContext, filter);
 
@@ -216,7 +216,7 @@ namespace BL.Database.Admins
         public InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext context, FilterAdminLanguageValue filter)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetAdminLanguageValuesQuery(dbContext, filter);
 

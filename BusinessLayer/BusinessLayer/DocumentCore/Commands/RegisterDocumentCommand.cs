@@ -62,7 +62,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 CommonDocumentUtilities.SetLastChange(_context, _document);
                 _document.IsRegistered = Model.IsRegistered;

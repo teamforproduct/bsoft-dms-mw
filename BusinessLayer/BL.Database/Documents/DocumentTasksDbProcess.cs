@@ -22,7 +22,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext ctx, FilterDocumentTask filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentTasks(dbContext, ctx, filter, paging);
             }
@@ -31,7 +31,7 @@ namespace BL.Database.Documents
         public FrontDocumentTask GetDocumentTask(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
             }

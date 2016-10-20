@@ -32,7 +32,7 @@ namespace BL.Database.Documents
         public DocumentActionsModel GetDocumentActionsModelPrepare(IContext context, int? documentId, int? id = null)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
@@ -46,14 +46,14 @@ namespace BL.Database.Documents
                     qry = qry.Where(x => x.Events.Any(y => y.Id == id.Value));
                 }
                 res.Document = qry.Select(x => new InternalDocument
-                    {
-                        Id = x.Id,
-                        IsRegistered = x.IsRegistered,
-                        IsLaunchPlan = x.IsLaunchPlan,
-                        ExecutorPositionId = x.ExecutorPositionId,
-                        LinkId = x.LinkId,
-                        AccessesCount = x.Accesses.Count(),
-                    }).FirstOrDefault();
+                {
+                    Id = x.Id,
+                    IsRegistered = x.IsRegistered,
+                    IsLaunchPlan = x.IsLaunchPlan,
+                    ExecutorPositionId = x.ExecutorPositionId,
+                    LinkId = x.LinkId,
+                    AccessesCount = x.Accesses.Count(),
+                }).FirstOrDefault();
 
                 if (res.Document != null)
                 {
@@ -80,9 +80,9 @@ namespace BL.Database.Documents
                     }
 
                     res.Document.Events = qryEvents.Select(x => new InternalDocumentEvent
-                        {
-                            Id = x.Id,
-                        }
+                    {
+                        Id = x.Id,
+                    }
                         ).ToList();
 
                     var qryWaits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId);
@@ -95,26 +95,26 @@ namespace BL.Database.Documents
                         qryWaits = qryWaits.Where(x => x.DocumentId == documentId);
                     }
                     res.Document.Waits = qryWaits.Select(x => new InternalDocumentWait
+                    {
+                        Id = x.Id,
+                        OffEventId = x.OffEventId,
+                        ParentId = x.ParentId,
+                        OnEvent = new InternalDocumentEvent
                         {
-                            Id = x.Id,
-                            OffEventId = x.OffEventId,
-                            ParentId = x.ParentId,
-                            OnEvent = new InternalDocumentEvent
-                            {
-                                Id = x.OnEvent.Id,
-                                TaskId = x.OnEvent.TaskId,
-                                IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
-                                SourcePositionId = x.OnEvent.SourcePositionId,
-                                TargetPositionId = x.OnEvent.TargetPositionId,
-                                //SourcePositionName = x.OnEvent.SourcePosition.Name,
-                                //TargetPositionName = x.OnEvent.TargetPosition.Name,
-                                //SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                                //TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
-                                EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
-                                //GeneralInfo = $"от {x.OnEvent.SourcePosition.ExecutorAgent.Name} к {x.OnEvent.TargetPosition.ExecutorAgent.Name} {x.OnEvent.TaskName}"
-                            }
-
+                            Id = x.OnEvent.Id,
+                            TaskId = x.OnEvent.TaskId,
+                            IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
+                            SourcePositionId = x.OnEvent.SourcePositionId,
+                            TargetPositionId = x.OnEvent.TargetPositionId,
+                            //SourcePositionName = x.OnEvent.SourcePosition.Name,
+                            //TargetPositionName = x.OnEvent.TargetPosition.Name,
+                            //SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
+                            //TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                            EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                            //GeneralInfo = $"от {x.OnEvent.SourcePosition.ExecutorAgent.Name} к {x.OnEvent.TargetPosition.ExecutorAgent.Name} {x.OnEvent.TaskName}"
                         }
+
+                    }
                         ).ToList();
 
                     res.Document.Subscriptions =
@@ -153,7 +153,7 @@ namespace BL.Database.Documents
         public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
@@ -205,7 +205,7 @@ namespace BL.Database.Documents
         public DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int? documentId, int? id = null)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
@@ -270,7 +270,7 @@ namespace BL.Database.Documents
         public DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
@@ -335,7 +335,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (document.Tasks?.Any(x => x.Id == 0) ?? false)
                     {
@@ -362,7 +362,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
 
                     var waitParentDb = ModelConverter.GetDbDocumentWait(wait.ParentWait);
@@ -395,7 +395,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var eventDb = ModelConverter.GetDbDocumentEvent(newEvent);
                     dbContext.DocumentEventsSet.Add(eventDb);
@@ -531,7 +531,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var eventDb = ModelConverter.GetDbDocumentEvent(document.Events.First());
 
@@ -573,7 +573,7 @@ namespace BL.Database.Documents
         public InternalDocument ControlChangeDocumentPrepare(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var maxDateTime = DateTime.Now.AddYears(50);
 
@@ -628,7 +628,7 @@ namespace BL.Database.Documents
         public InternalDocument ControlTargetChangeDocumentPrepare(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.OnEventId == eventId)
@@ -663,7 +663,7 @@ namespace BL.Database.Documents
         public InternalDocument ControlOffDocumentPrepare(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.OnEventId == eventId)
@@ -701,7 +701,7 @@ namespace BL.Database.Documents
         public InternalDocument SelfAffixSigningDocumentPrepare(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx);
                 var doc = qry.Where(x => x.Id == documentId)
@@ -719,7 +719,7 @@ namespace BL.Database.Documents
         public void ControlOffSendListPrepare(IContext context, InternalDocument document)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var filterContains = PredicateBuilder.False<DocumentSendLists>();
                 filterContains = document.Waits.Select(x => x.OnEventId).Aggregate(filterContains,
@@ -740,7 +740,7 @@ namespace BL.Database.Documents
         public void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var filterContains = PredicateBuilder.False<DocumentWaits>();
                 filterContains = document.Waits.Select(x => x.Id).ToList().Aggregate(filterContains,
@@ -773,7 +773,7 @@ namespace BL.Database.Documents
         public void ControlOffSubscriptionPrepare(IContext context, InternalDocument document)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
                 filterContains = document.Waits.Select(x => x.OnEventId).ToList().Aggregate(filterContains,
@@ -794,7 +794,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (document.Tasks?.Any(x => x.Id == 0) ?? false)
                     {
@@ -820,7 +820,7 @@ namespace BL.Database.Documents
         public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { EventId = new List<int> { eventId } })
                     .Select(x => new FrontDocumentEvent
@@ -851,7 +851,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentEvents(ctx, dbContext, filter, paging).ToList();
             }
@@ -860,7 +860,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentWaits(dbContext, filter, ctx, paging).ToList();
             }
@@ -869,7 +869,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentSubscriptions(dbContext, filter, ctx, paging).ToList();
             }
@@ -878,7 +878,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetDocumentWorkGroup(dbContext, ctx, filter).ToList();
             }
@@ -887,7 +887,7 @@ namespace BL.Database.Documents
         public IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 if (model.EventIds == null)
                     return new List<InternalDocumentEvent>();
@@ -939,7 +939,7 @@ namespace BL.Database.Documents
         public IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetInternalDocumentAccesses(dbContext, ctx, documentId);
             }
@@ -948,7 +948,7 @@ namespace BL.Database.Documents
         public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return CommonQueries.GetInternalPositionsInfo(dbContext, ctx, positionIds);
             }
@@ -977,7 +977,7 @@ namespace BL.Database.Documents
         public InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
@@ -1030,7 +1030,7 @@ namespace BL.Database.Documents
         public InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var acc = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
@@ -1056,7 +1056,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var sendList = document.SendLists.First();
                     var sendListDb = new DocumentSendLists
@@ -1247,7 +1247,7 @@ namespace BL.Database.Documents
         public InternalDocument AddNoteDocumentPrepare(IContext ctx, AddNote model)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Id == model.DocumentId)
@@ -1276,7 +1276,7 @@ namespace BL.Database.Documents
         public InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Id == sendList.DocumentId)
@@ -1343,7 +1343,7 @@ namespace BL.Database.Documents
         public InternalDocument SendForInformationDocumentPrepare(IContext context, InternalDocumentSendList sendList)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Id == sendList.DocumentId)
@@ -1383,7 +1383,7 @@ namespace BL.Database.Documents
         public InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Id == model.DocumentId)
@@ -1413,7 +1413,7 @@ namespace BL.Database.Documents
         public InternalDocument DeleteDocumentLinkPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Id == documentId)
@@ -1536,7 +1536,7 @@ namespace BL.Database.Documents
         public InternalDocument ChangeDocumentSendListPrepare(IContext context, int documentId, string task = null, int id = 0)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var docDb = from doc in dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == documentId)
                             join tmp in dbContext.TemplateDocumentsSet on doc.TemplateDocumentId equals tmp.Id
@@ -1649,7 +1649,7 @@ namespace BL.Database.Documents
         public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
 
                 var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).Where(x => x.StandartSendListId == model.StandartSendListId)
@@ -1667,7 +1667,7 @@ namespace BL.Database.Documents
         public InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
 
                 var item = dbContext.DocumentRestrictedSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == restSendListId)
@@ -1699,7 +1699,7 @@ namespace BL.Database.Documents
             List<int> res = null;
             using (var dbContext = new DmsContext(context))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (task?.Any(x => x.Id == 0) ?? false)
                     {
@@ -1735,7 +1735,7 @@ namespace BL.Database.Documents
         {
             //TODO DELETE!!!!
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
 
                 var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).Where(x => x.StandartSendListId == model.StandartSendListId)
@@ -1776,7 +1776,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (task?.Any(x => x.Id == 0) ?? false)
                     {
@@ -1839,7 +1839,7 @@ namespace BL.Database.Documents
         public InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                             .Where(x => x.Id == sendListId)
@@ -1879,7 +1879,7 @@ namespace BL.Database.Documents
         public InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var docDb = (from doc in dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == documentId)
                              select new { doc })
@@ -1929,7 +1929,7 @@ namespace BL.Database.Documents
         public InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == id)
@@ -2063,7 +2063,7 @@ namespace BL.Database.Documents
         public InternalDocument DeleteDocumentTaskPrepare(IContext context, int taskId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == taskId)
                         .Select(x => new InternalDocument
@@ -2117,7 +2117,7 @@ namespace BL.Database.Documents
         public InternalDocument ModifyDocumentTaskPrepare(IContext context, ModifyDocumentTasks model)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true)
                     .Where(x => x.Id == model.DocumentId)
@@ -2144,7 +2144,7 @@ namespace BL.Database.Documents
         public InternalDocument DeleteDocumentPaperPrepare(IContext context, int paperId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == paperId)
                         .Select(x => new InternalDocument
@@ -2173,7 +2173,7 @@ namespace BL.Database.Documents
         public InternalDocument EventDocumentPaperPrepare(IContext context, PaperList filters, bool isCalcPreLastPaperEvent = false)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Select(x => x);
 
@@ -2233,7 +2233,7 @@ namespace BL.Database.Documents
         public InternalDocument ModifyDocumentPaperPrepare(IContext context, ModifyDocumentPapers model)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true)
                     .Where(x => x.Id == model.DocumentId)
@@ -2279,7 +2279,7 @@ namespace BL.Database.Documents
             List<int> res = new List<int>();
             using (var dbContext = new DmsContext(context))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (papers != null && papers.Any())
                     {
@@ -2330,7 +2330,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var paper = new DocumentPapers { Id = id };
                     dbContext.DocumentPapersSet.Attach(paper);
@@ -2349,25 +2349,22 @@ namespace BL.Database.Documents
         public void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                using (
-                    var transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
-                {
-                    var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
-                    dbContext.DocumentEventsSet.Add(paperEventDb);
-                    dbContext.SaveChanges();
-                    paper.LastPaperEventId = paperEventDb.Id;
-                    var paperDb = ModelConverter.GetDbDocumentPaper(paper);
-                    dbContext.DocumentPapersSet.Attach(paperDb);
-                    var entry = dbContext.Entry(paperDb);
-                    entry.Property(e => e.LastPaperEventId).IsModified = true;
-                    entry.Property(e => e.LastChangeUserId).IsModified = true;
-                    entry.Property(e => e.LastChangeDate).IsModified = true;
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
+                var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
+                dbContext.DocumentEventsSet.Add(paperEventDb);
+                dbContext.SaveChanges();
+                paper.LastPaperEventId = paperEventDb.Id;
+                var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                dbContext.DocumentPapersSet.Attach(paperDb);
+                var entry = dbContext.Entry(paperDb);
+                entry.Property(e => e.LastPaperEventId).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
+                dbContext.SaveChanges();
+                transaction.Complete();
             }
+
         }
 
         public void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper)
@@ -2376,7 +2373,7 @@ namespace BL.Database.Documents
             {
                 using (
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
                     dbContext.DocumentEventsSet.Add(paperEventDb);
@@ -2401,7 +2398,7 @@ namespace BL.Database.Documents
             {
                 using (
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     foreach (var paper in papers)
                     {
@@ -2426,7 +2423,7 @@ namespace BL.Database.Documents
             {
                 using (
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     foreach (var paper in papers)
                     {
@@ -2451,7 +2448,7 @@ namespace BL.Database.Documents
             {
                 using (
                     var transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     foreach (var paper in papers)
                     {
@@ -2482,7 +2479,7 @@ namespace BL.Database.Documents
         public IEnumerable<InternalDocumentPaper> PlanDocumentPaperFromSendListPrepare(IContext context, int idSendList)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 return dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.SendListId == idSendList && x.PaperPlanDate == null && x.PaperSendDate == null && x.PaperRecieveDate == null)
@@ -2512,7 +2509,7 @@ namespace BL.Database.Documents
         public InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = new InternalDocument();
 
@@ -2551,9 +2548,8 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context))
             {
-                using (
-                    var transaction = new TransactionScope(TransactionScopeOption.Required,
-                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required,
+                        new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     if (papers != null && papers.Any(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null))
                     {
@@ -2580,7 +2576,7 @@ namespace BL.Database.Documents
         public InternalDocumentPaperList AddDocumentPaperListsPrepare(IContext context, AddDocumentPaperLists model)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var sourcePositions = (model.SourcePositionIds == null || !model.SourcePositionIds.Any())
                     ? context.CurrentPositionsIdList
@@ -2641,7 +2637,7 @@ namespace BL.Database.Documents
             List<int> res = new List<int>();
             using (var dbContext = new DmsContext(context))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     foreach (var item in items)
                     {
@@ -2677,7 +2673,7 @@ namespace BL.Database.Documents
         public InternalDocumentPaperList DeleteDocumentPaperListPrepare(IContext ctx, int itemId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var filterContains = PredicateBuilder.False<DocumentEvents>();
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
@@ -2709,7 +2705,7 @@ namespace BL.Database.Documents
         public InternalDocumentPaperList ModifyDocumentPaperListPrepare(IContext context, int itemId)
         {
             using (var dbContext = new DmsContext(context))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var list = dbContext.DocumentPaperListsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == itemId)
                     .Select(x => new InternalDocumentPaperList

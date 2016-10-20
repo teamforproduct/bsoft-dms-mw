@@ -97,7 +97,7 @@ namespace BL.Logic.DocumentCore.Commands
             //subscription.SubscriptionStates = EnumSubscriptionStates.No;
             //CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
 
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
                 if (sendList != null)
