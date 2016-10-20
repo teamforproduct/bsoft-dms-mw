@@ -19,7 +19,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx, FilterDocumentSavedFilter filter)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -50,7 +50,7 @@ namespace BL.Database.Documents
         public FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
 
                 var savFilter =

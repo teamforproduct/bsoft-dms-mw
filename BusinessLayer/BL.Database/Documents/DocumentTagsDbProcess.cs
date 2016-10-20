@@ -20,7 +20,7 @@ namespace BL.Database.Documents
         public IEnumerable<FrontDocumentTag> GetTags(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx))
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == documentId).AsQueryable();

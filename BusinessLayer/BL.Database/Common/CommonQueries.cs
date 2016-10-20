@@ -1477,16 +1477,17 @@ namespace BL.Database.Common
                 List<FrontDocumentWait> groupsCounter = null;
                 if (paging.IsOnlyCounter ?? true)
                 {
-                    groupsCounter = qrys.Select(qry => qry.GroupBy(y => new
+                    var qryGroupsCounter = qrys.Select(qry => qry.GroupBy(y => new
                     {
                         IsClosed = y.OffEventId.HasValue,
-                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value < DateTime.Now,
+                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.Now,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
                         SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
                         TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
                     })
                     .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
-                                        ).ToList()
+                                        ).ToList();
+                     groupsCounter = qryGroupsCounter
                                         .SelectMany(z => z)
                                         .GroupBy(z => z.Group)
                                         .Select(z => new FrontDocumentWait
@@ -1497,7 +1498,8 @@ namespace BL.Database.Common
                                             SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
                                             TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
                                             RecordCount = z.Sum(c => c.RecordCount)
-                                        }).ToList();
+                                        }).ToList(); 
+
                     paging.Counters = new UICounters
                     {
                         //Counter1 = qrys.Sum(qry => qry.Count(y => !y.OffEventId.HasValue)),
