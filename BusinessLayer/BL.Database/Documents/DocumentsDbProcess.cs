@@ -245,6 +245,14 @@ namespace BL.Database.Documents
                 filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains, (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
                 #endregion Counter
 
+                //var t = dbContext.DictionaryPositionExecutorsSet.Where(x=>true).Select(x=> new
+                //{
+                //    x.AgentId,
+                //    x.Description,
+                //    x.
+                //}
+                //)
+
                 var res = qry.Select(doc => new FrontDocument
                 {
                     Id = doc.Id,
