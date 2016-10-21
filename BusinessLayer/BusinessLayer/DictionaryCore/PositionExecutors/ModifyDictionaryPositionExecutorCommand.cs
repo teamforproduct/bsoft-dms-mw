@@ -18,6 +18,9 @@ namespace BL.Logic.DictionaryCore
 
                 _dictDb.UpdateExecutor(_context, dp);
 
+                // Синхронизация параметров в UserRoles:
+                _adminDb.UpdateUserRolePeriod(_context, new BL.Model.DictionaryCore.InternalModel.InternalDictionaryPositionExecutor(Model));
+
                 return Model.Id;
             }
             catch (DictionaryRecordWasNotFound)

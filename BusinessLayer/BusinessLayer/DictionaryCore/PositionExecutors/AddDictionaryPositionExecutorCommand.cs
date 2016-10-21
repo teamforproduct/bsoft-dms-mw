@@ -16,12 +16,12 @@ namespace BL.Logic.DictionaryCore
             {
                 var dp = CommonDictionaryUtilities.PositionExecutorModifyToInternal(_context, Model);
 
-                 int id = _dictDb.AddExecutor(_context, dp);
+                Model.Id = _dictDb.AddExecutor(_context, dp);
 
                 // При назначении сотрудника добавляю все роли должности
                 _adminService.AddAllPositionRoleForUser(_context, Model);
 
-                return id;
+                return Model.Id;
             }
             catch (Exception ex)
             {

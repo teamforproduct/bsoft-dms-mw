@@ -41,14 +41,17 @@ namespace BL.Logic.DictionaryCore
 
             FrontDictionaryPositionExecutor executor = null;
 
-            executor = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
+
+            var PositionExecutors = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
             {
                 NotContainsIDs = new List<int> { Model.Id },
                 PositionIDs = new List<int> { Model.PositionId },
                 StartDate = Model.StartDate,
                 EndDate = Model.EndDate,
                 AgentIDs = new List<int> { Model.AgentId },
-            }).FirstOrDefault();
+            });
+
+            executor = PositionExecutors.FirstOrDefault();
 
             if (executor != null)
             { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }

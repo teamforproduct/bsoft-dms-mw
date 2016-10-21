@@ -4,6 +4,7 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Database.DBModel.Admin;
 using BL.Model.Enums;
 using BL.CrossCutting.Interfaces;
+using System;
 
 namespace BL.Database.Common
 {
@@ -71,8 +72,9 @@ namespace BL.Database.Common
                 UserId = item.UserId,
                 RoleId = item.RoleId,
                 PositionId = item.PositionId,
+                PositionExecutorId = item.PositionExecutorId,
                 StartDate = item.StartDate,
-                EndDate = item.EndDate
+                EndDate = item.EndDate ?? DateTime.MaxValue
             };
         }
 

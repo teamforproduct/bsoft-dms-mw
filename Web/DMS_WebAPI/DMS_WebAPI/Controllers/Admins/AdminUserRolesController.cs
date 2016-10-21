@@ -79,13 +79,13 @@ namespace DMS_WebAPI.Controllers.Admins
         /// Отнимает роль у сотрудника-пользователя
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
-        public IHttpActionResult Delete([FromUri] int userId, [FromUri] int roleId)
+        public IHttpActionResult Delete([FromUri] int id)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
-            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRole, cxt, new ModifyAdminUserRole() { UserId = userId, RoleId = roleId });
-            FrontAdminUserRole tmpItem = new FrontAdminUserRole() { UserId = userId, RoleId = roleId };
+            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRole, cxt, id);
+            FrontAdminUserRole tmpItem = new FrontAdminUserRole() { Id = id };
             return new JsonResult(tmpItem, this);
         }
     }
