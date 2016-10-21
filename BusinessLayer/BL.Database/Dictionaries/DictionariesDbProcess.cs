@@ -4604,7 +4604,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Position.Name,
                     SearchText = string.Concat( x.Position.Name ," ", x.StartDate, " ", x.EndDate, " ", x.PositionExecutorType.Name),
                     ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
-                    TreeId = string.Concat(x.PositionId.ToString(), "_", objId),
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
                     IsList = !x.Agent.UserRoles.Where(y => y.UserId == x.AgentId).Any(),

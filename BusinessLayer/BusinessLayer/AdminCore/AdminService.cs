@@ -306,12 +306,12 @@ namespace BL.Logic.AdminCore
             var positionExecutors = _dictDb.GetPositionExecutorsDIPUserRoles(context, new FilterDictionaryPositionExecutor()
             {
                 PositionIDs = positionIDs,
+                AgentIDs = new List<int> { userId },
+                StartDate = filter.StartDate,
+                EndDate = filter.EndDate
             });
 
-            var positionRoles = _adminDb.GetRolesDIPUserRoles(context, new FilterAdminPositionRole()
-            {
-                PositionIDs = positionIDs,
-            });
+            var positionRoles = _adminDb.GetRolesDIPUserRoles(context, positionExecutors.Select(x => x.Id).ToList());
 
             var positionRolesL = (List<FrontDIPUserRolesRoles>)positionRoles;
 
