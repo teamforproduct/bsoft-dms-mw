@@ -13,7 +13,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     // 
     public class FrontDIPSubordinationsPosition: FrontDIPSubordinationsBase
     {
-  
+
         /// <summary>
         /// Сотрудник на должности
         /// </summary>

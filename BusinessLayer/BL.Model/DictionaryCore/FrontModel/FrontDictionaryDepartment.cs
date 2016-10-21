@@ -33,9 +33,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string CompanyName { get; set; }
 
         /// <summary>
-        /// Индекс подразделения
+        /// Код подразделения
         /// </summary>
-        public string CodePath { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// Список подчиненных подразделений

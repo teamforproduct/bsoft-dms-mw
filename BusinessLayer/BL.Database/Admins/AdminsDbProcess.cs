@@ -1059,10 +1059,10 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     UserId = x.UserId ?? x.PositionExecutor.AgentId,
                     RoleId = x.RoleId,
-                    PositionId = x.PositionExecutor.PositionId,
+                    //PositionId = x.PositionExecutor.PositionId,
                     PositionExecutorId = x.PositionExecutorId,
-                    StartDate = x.PositionExecutor.StartDate,
-                    EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
+                    //StartDate = x.PositionExecutor.StartDate,
+                    //EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -1083,10 +1083,10 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     UserId = x.UserId ?? x.PositionExecutor.AgentId,
                     RoleId = x.RoleId,
-                    PositionId = x.PositionExecutor.PositionId,
+                    //PositionId = x.PositionExecutor.PositionId,
                     PositionExecutorId = x.PositionExecutorId,
-                    StartDate = x.PositionExecutor.StartDate,
-                    EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
+                    //StartDate = x.PositionExecutor.StartDate,
+                    //EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).ToList();

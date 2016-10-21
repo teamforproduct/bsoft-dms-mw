@@ -341,12 +341,12 @@ namespace BL.Logic.AdminCore
 
             userRoles = positionRoles.Select(x => new InternalAdminUserRole()
             {
-                UserId = positionExecutor.AgentId,
+                //UserId = positionExecutor.AgentId,
                 RoleId = x.RoleId,
                 //PositionId = positionExecutor.PositionId,
                 PositionExecutorId = positionExecutor.Id,
-                StartDate = positionExecutor.StartDate,
-                EndDate = positionExecutor.EndDate ?? DateTime.MaxValue,
+                //StartDate = positionExecutor.StartDate,
+                //EndDate = positionExecutor.EndDate ?? DateTime.MaxValue,
             }).ToList();
 
             CommonDocumentUtilities.SetLastChange(context, userRoles);

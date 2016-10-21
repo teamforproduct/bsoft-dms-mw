@@ -15,12 +15,7 @@ namespace BL.Model.AdminCore.InternalModel
             Id = model.Id;
             UserId = model.UserId;
             RoleId = model.RoleId;
-            PositionId = model.PositionId;
             PositionExecutorId = model.PositionExecutorId;
-            StartDate = model.StartDate;
-            EndDate = model.EndDate;
-            ObjectId = model.ObjectId;
-            EntityId = model.EntityId;
         }
 
         /// <summary>
@@ -32,24 +27,14 @@ namespace BL.Model.AdminCore.InternalModel
 
         public int RoleId { get; set; }
 
-        public DateTime StartDate { get; set; }
+        //public DateTime StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        //public DateTime? EndDate { get; set; }
         
-        /// <summary>
-        /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.
-        /// </summary>
-        public EnumObjects ObjectId { get; set; }
-
-        /// <summary>
-        /// Id сущности. Например отдел...
-        /// </summary>
-        public int EntityId { get; set; }
-
         /// <summary>
         /// Должность, от которой унаследована роль
         /// </summary>
-        public int? PositionId { get; set; }
+        //public int? PositionId { get; set; }
 
         /// <summary>
         /// Назначение, от которой унаследована роль

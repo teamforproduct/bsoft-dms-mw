@@ -17,7 +17,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             LanguageId = model.LanguageId;
-            //UserId = model.UserId;
+            UserId = model.UserId;
             Login = model.Login;
             PasswordHash = model.PasswordHash;
             IsActive = model.IsActive;
@@ -42,7 +42,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// </summary>
         public int? LanguageId { get; set; }
 
-        //public string UserId { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// Признак активности

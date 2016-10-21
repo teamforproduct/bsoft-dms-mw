@@ -19,7 +19,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             ParentId = model.ParentId;
             Name = model.Name;
             FullName = model.FullName;
-            Code = model.Code;
+            Index = model.Index;
+            //Code = model.Code;
             CompanyId = model.CompanyId;
             ChiefPositionId = model.ChiefPositionId;
         }
@@ -51,6 +52,11 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         /// <summary>
         /// Индекс подразделения
+        /// </summary>
+        public string Index { get; set; }
+
+        /// <summary>
+        /// Код подразделения
         /// </summary>
         public string Code { get; set; }
 

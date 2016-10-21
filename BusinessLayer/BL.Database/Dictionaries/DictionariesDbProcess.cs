@@ -23,6 +23,8 @@ using BL.Model.Common;
 using System.Transactions;
 using BL.Model.AdminCore.Clients;
 using BL.Model.Tree;
+using EntityFramework.Extensions;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.Dictionaries
 {
@@ -3045,7 +3047,8 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = x.LastChangeUserId,
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
-                    Code = x.Code,
+                    Code = x.FullPath,
+                    Index = x.Code,
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
@@ -3065,8 +3068,8 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
-                    Code = x.Code,
-                    CodePath = x.FullPath,
+                    Code = x.FullPath,
+                    Index = x.Code,
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
@@ -3100,7 +3103,7 @@ namespace BL.Database.Dictionaries
                 {
 
                     var qry = GetDepartmentsQuery(context, dbContext, new FilterDictionaryDepartment() { IDs = new List<int> { id ?? 0 } });
-                    var item = qry.Select(x => new FrontDictionaryDepartment() { Id = x.Id, ParentId = x.ParentId, Code = x.Code }).FirstOrDefault();
+                    var item = qry.Select(x => new FrontDictionaryDepartment() { Id = x.Id, ParentId = x.ParentId, Code = x.FullPath }).FirstOrDefault();
 
                     if (item == null) break;
 
@@ -3125,8 +3128,8 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => new FrontDictionaryDepartmentTreeItem
                 {
                     Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
+                    Code = x.FullPath,
+                    Name = string.Concat(x.FullPath, " ", x.Name),
                     SearchText = x.Name,
                     CompanyId = x.CompanyId,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
@@ -3150,9 +3153,9 @@ namespace BL.Database.Dictionaries
                 return qry.Select(x => new FrontDIPSubordinationsDepartment
                 {
                     Id = x.Id,
-                    CodePath = x.FullPath,
+                    Code = x.FullPath,
                     Name = x.Name,
-                    SearchText = x.Name,
+                    SearchText = string.Concat(x.FullPath," ", x.Name),
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
@@ -3935,11 +3938,52 @@ namespace BL.Database.Dictionaries
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
                 {
+                    // Удаляю настройку ролей для должности
+                    #region [+] AdminPositionRoles ...
+                    var filterPositionRoles = PredicateBuilder.False<AdminPositionRoles>();
+                    filterPositionRoles = list.Aggregate(filterPositionRoles,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                    var positionExecutors = GetPositionExecutorsIDs(context, new FilterDictionaryPositionExecutor() { PositionIDs = list });
+                    dbContext.AdminPositionRolesSet.Where(filterPositionRoles).Delete();
+                    #endregion
 
-                    if (positionExecutors.Count > 0) DeleteExecutors(context, positionExecutors);
+                    // Удаляю настройку рассылки
+                    #region [+] AdminSubordinations ...
+                    var filterSubordination = PredicateBuilder.False<AdminSubordinations>();
+                    filterSubordination = list.Aggregate(filterSubordination,
+                        (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
 
+                    dbContext.AdminSubordinationsSet.Where(filterSubordination).Delete();
+                    #endregion
+
+                    // Удаляю настройку сенд лист ????
+                    //#region [+] DictionaryStandartSendListContents ...
+                    //var filterStandartSendListContents = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    //filterStandartSendListContents = list.Aggregate(filterStandartSendListContents,
+                    //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                    //dbContext.DictionaryStandartSendListContentsSet.Where(filterStandartSendListContents).Delete();
+                    //#endregion
+
+                    // Удаляю руководителей подразделений
+                    #region [+] DictionaryDepartments ...
+                    var filterDepartments = PredicateBuilder.False<DictionaryDepartments>();
+                    filterDepartments = list.Aggregate(filterDepartments,
+                        (current, value) => current.Or(e => e.ChiefPositionId == value).Expand());
+
+                    dbContext.DictionaryDepartmentsSet.Where(filterDepartments).Update(x => new DictionaryDepartments() { ChiefPositionId = null });
+                    #endregion
+
+                    // Удаляю исполнителей
+                    #region [+] DictionaryPositionExecutors ...
+                    var filterPositionExecutors = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    filterPositionExecutors = list.Aggregate(filterPositionExecutors,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    dbContext.DictionaryPositionExecutorsSet.Where(filterPositionExecutors).Delete();
+                    #endregion
+                    
+                    // удаляю саму должность
                     dbContext.DictionaryPositionsSet.RemoveRange(dbContext.DictionaryPositionsSet.
                         Where(x => x.Department.Company.ClientId == context.CurrentClientId).
                         Where(x => list.Contains(x.Id)));

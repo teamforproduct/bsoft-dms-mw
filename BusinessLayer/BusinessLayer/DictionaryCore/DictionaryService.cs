@@ -969,7 +969,8 @@ namespace BL.Logic.DictionaryCore
 
                     int depId = _dictDb.AddDepartment(context, new InternalDictionaryDepartment()
                     {
-                        Code = string.Format("{0:000}", d),
+                        Code = string.Format("{0:000}/{0:000}", d, d),
+                        Index = string.Format("{0:000}", d),
                         Name = string.Concat("Отдел №", string.Format("{0:000}", d)),
                         FullName = string.Concat("Отдел номер ", string.Format("{0:000}", d)),
                         IsActive = true,
@@ -1093,7 +1094,7 @@ namespace BL.Logic.DictionaryCore
 
             var res = Tree.Get(flatList, filter);
 
-            AddCodePathDepartment(res);
+            //AddCodePathDepartment(res);
 
             return res;
         }

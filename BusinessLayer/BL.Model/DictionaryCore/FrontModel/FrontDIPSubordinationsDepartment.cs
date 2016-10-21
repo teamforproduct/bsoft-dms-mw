@@ -14,9 +14,9 @@ namespace BL.Model.DictionaryCore.FrontModel
     {
 
         /// <summary>
-        /// Сотрудник на должности
+        /// Код подразделения
         /// </summary>
-        public string CodePath { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// Руководитель
