@@ -3129,7 +3129,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Code = x.FullPath,
-                    Name = string.Concat(x.FullPath, " ", x.Name),
+                    Name = x.Name,
                     SearchText = x.Name,
                     CompanyId = x.CompanyId,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
@@ -3155,7 +3155,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.FullPath,
                     Name = x.Name,
-                    SearchText = string.Concat(x.FullPath," ", x.Name),
+                    SearchText = x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
