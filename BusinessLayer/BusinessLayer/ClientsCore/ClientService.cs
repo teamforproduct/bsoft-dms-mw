@@ -169,7 +169,7 @@ namespace BL.Logic.ClientCore
             //_DictDb.AddContact(context, new InternalDictionaryContact()
             //{ AgentId = companyId, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
             var department = new InternalDictionaryDepartment()
-            { CompanyId = companyId, Code = "01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true };
+            { CompanyId = companyId, Index = "01", Code ="01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true };
 
             CommonDocumentUtilities.SetLastChange(context, department);
 

@@ -43,7 +43,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Индекс подразделения
         /// </summary>
         [Required]
-        public string Code { get; set; }
+        public string Index { get; set; }
 
         /// <summary>
         /// Компания

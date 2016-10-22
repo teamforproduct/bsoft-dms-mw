@@ -32,18 +32,13 @@ namespace BL.Logic.AdminCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            Model.StartDate = Model.StartDate.StartOfDay();
-            Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
-
             // Определяю нет ли в указанном интервале для сотрудника ролей, унаследованных от должности
             var filter = new FilterAdminUserRole
             {
                 NotContainsIDs = new List<int> { Model.Id },
                 RoleIDs = new List<int> { Model.RoleId },
-                UserIDs = new List<int> { Model.UserId },
+                //UserIDs = new List<int> { Model.UserId },
                 PositionExecutorIDs = new List<int> { Model.PositionExecutorId },
-                //StartDate = Model.StartDate,
-                //EndDate = Model.EndDate,
             };
 
             if (_adminDb.ExistsUserRole(_context, filter)) throw new AdminRecordNotUnique();

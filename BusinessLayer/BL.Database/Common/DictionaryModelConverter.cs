@@ -23,7 +23,8 @@ namespace BL.Database.Common
                 Name = item.Name,
                 FullName = item.FullName,
                 CompanyId = item.CompanyId,
-                Code = item.Code,
+                Code = item.Index,
+                FullPath = item.Code,
                 ChiefPositionId = item.ChiefPositionId
             };
         }
@@ -271,12 +272,13 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentUsers
             {
-                //ClientId = context.CurrentClientId,
+                ClientId = context.CurrentClientId,
 
                 Id = item.Id,
+                UserId = item.UserId,
                 LanguageId = item.LanguageId,
                 //Picture = item.Picture,
-                //IsActive = item.IsActive,
+                IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
             };

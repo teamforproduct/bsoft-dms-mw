@@ -25,7 +25,6 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Пользователь
         /// </summary>
-        [Required]
         public int UserId { get; set; }
 
         /// <summary>
@@ -37,35 +36,8 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Назначение, от должности которого унаследованы роли
         /// </summary>
-        public int PositionId { get; set; }
-
-        /// <summary>
-        /// Назначение, от должности которого унаследованы роли
-        /// </summary>
         [Required]
         public int PositionExecutorId { get; set; }
-
-        /// <summary>
-        /// Дата назначения роли (совпадает с датой назначения на должность)
-        /// </summary>
-        [Required]
-        public DateTime StartDate { get; set; }
-
-        /// <summary>
-        /// Дата снятия роли (совпадает с датой снятия с должности)
-        /// </summary>
-        // [Required]
-        public DateTime? EndDate { get; set; }
-
-        /// <summary>
-        /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.
-        /// </summary>
-        public EnumObjects ObjectId { get; set; }
-
-        /// <summary>
-        /// Id сущности. Например отдел...
-        /// </summary>
-        public int EntityId { get; set; }
 
     }
 }

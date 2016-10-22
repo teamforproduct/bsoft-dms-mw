@@ -12,7 +12,7 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(400)]
         [Index("IX_AgentName", 2, IsUnique = true)]
         public string Name { get; set; }
-        public int AgentBankId { get; set; }
+        //public int AgentBankId { get; set; }
         [MaxLength(2000)]
         public string AccountNumber { get; set; }
         public bool IsMain { get; set; }
@@ -23,7 +23,7 @@ namespace BL.Database.DBModel.Dictionary
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
-        [ForeignKey("AgentBankId")]
+        //[ForeignKey("AgentId")]
         public virtual DictionaryAgentBanks AgentBank { get; set; }
     }
 }
