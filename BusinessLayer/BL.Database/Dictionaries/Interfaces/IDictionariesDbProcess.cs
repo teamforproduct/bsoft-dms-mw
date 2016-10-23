@@ -206,11 +206,12 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor model);
         void DeleteExecutors(IContext context, List<int> list);
         bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
-        InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
+        InternalDictionaryPositionExecutor GetInternalPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<InternalDictionaryPositionExecutor> GetInternalPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         FrontDictionaryPositionExecutor GetPositionExecutor(IContext context, int id);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
-        IEnumerable<FrontDIPUserRolesExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 
         // Типы исполнителей

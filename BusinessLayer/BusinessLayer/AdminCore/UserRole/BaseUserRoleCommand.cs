@@ -33,16 +33,26 @@ namespace BL.Logic.AdminCore
             _adminService.VerifyAccess(_context, CommandType, false);
 
             // Определяю нет ли в указанном интервале для сотрудника ролей, унаследованных от должности
-            var filter = new FilterAdminUserRole
+
+            // Определяю нет ли в указанном интервале для сотрудника ролей, унаследованных от должности
+            if (Model.PositionExecutorId != null)
             {
-                NotContainsIDs = new List<int> { Model.Id },
-                RoleIDs = new List<int> { Model.RoleId },
-                //UserIDs = new List<int> { Model.UserId },
-                PositionExecutorIDs = new List<int> { Model.PositionExecutorId },
-            };
-
-            if (_adminDb.ExistsUserRole(_context, filter)) throw new AdminRecordNotUnique();
-
+                if (_adminDb.ExistsUserRole(_context, new FilterAdminUserRole
+                {
+                    NotContainsIDs = new List<int> { Model.Id },
+                    RoleIDs = new List<int> { Model.RoleId },
+                    PositionExecutorIDs = new List<int> { Model.PositionExecutorId ?? 0 },
+                })) throw new AdminRecordNotUnique();
+            }
+            if (Model.UserId != null)
+            {
+                if (_adminDb.ExistsUserRole(_context, new FilterAdminUserRole
+                {
+                    NotContainsIDs = new List<int> { Model.Id },
+                    RoleIDs = new List<int> { Model.RoleId },
+                    UserIDs = new List<int> { Model.UserId ?? 0 },
+                })) throw new AdminRecordNotUnique();
+            }
             return true;
         }
 

@@ -25,27 +25,16 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public int? RoleId { get; set; }
 
-        /// <summary>
-        /// Дата назначения роли
-        /// </summary>
-        public DateTime? StartDate { get; set; }
+        ///// <summary>
+        ///// Дата назначения роли
+        ///// </summary>
+        //public DateTime? StartDate { get; set; }
 
-        /// <summary>
-        /// Дата снятия роли
-        /// </summary>
-        public DateTime? EndDate { get; set; }
+        ///// <summary>
+        ///// Дата снятия роли
+        ///// </summary>
+        //public DateTime? EndDate { get; set; }
 
-        /// <summary>
-        /// Тип объекта. Например: Конкретному сотруднику на конр должности разрешены действия (роль) над конкретным объектом.
-        /// </summary>
-        public EnumObjects? ObjectId { get; set; }
-
-        /// <summary>
-        /// Id сущности. Например отдел...
-        /// </summary>
-        public int? EntityId { get; set; }
-
-        
 
         ///// <summary>
         ///// Пользователь
@@ -57,10 +46,10 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public string RoleName { get; set; }
 
-        /// <summary>
-        /// Отмечено
-        /// </summary>
-        public bool? IsChecked { get; set; }
+        ///// <summary>
+        ///// Отмечено
+        ///// </summary>
+        //public bool? IsChecked { get; set; }
 
         /// <summary>
         /// Должность, от которой унаследована роль

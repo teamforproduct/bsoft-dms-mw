@@ -25,6 +25,7 @@ using BL.Model.AdminCore.Clients;
 using BL.Model.Tree;
 using EntityFramework.Extensions;
 using BL.Database.DBModel.Admin;
+using BL.Model.AdminCore.FrontModel;
 
 namespace BL.Database.Dictionaries
 {
@@ -4548,7 +4549,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public InternalDictionaryPositionExecutor GetInternalDictionaryPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter)
+        public InternalDictionaryPositionExecutor GetInternalPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -4606,6 +4607,29 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<InternalDictionaryPositionExecutor> GetInternalPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
+
+                return qry.Select(x => new InternalDictionaryPositionExecutor
+                {
+                    Id = x.Id,
+                    IsActive = x.IsActive,
+                    AgentId = x.AgentId,
+                    PositionId = x.PositionId,
+                    PositionExecutorTypeId = x.PositionExecutorTypeId,
+                    AccessLevelId =x.AccessLevelId,
+                    Description = x.Description,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate == DateTime.MaxValue ? (DateTime?)null : x.EndDate,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                }).ToList();
+            }
+        }
+
         public List<int> GetPositionExecutorsIDs(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -4642,7 +4666,7 @@ namespace BL.Database.Dictionaries
 
         
 
-        public IEnumerable<FrontDIPUserRolesExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter)
+        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context))
             {
@@ -4651,21 +4675,26 @@ namespace BL.Database.Dictionaries
                 string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
                 string parObjId = string.Empty;
 
-                return qry.Select(x => new FrontDIPUserRolesExecutor
+                return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
-                    Id = x.PositionId,
-                    Name = x.Position.Name,
-                    SearchText = string.Concat( x.Position.Name ," ", x.StartDate, " ", x.EndDate, " ", x.PositionExecutorType.Name),
-                    ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
-                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
-                    TreeParentId = string.Empty,
+                    Id = x.Id,
                     IsActive = x.IsActive,
-                    IsList = !x.Agent.UserRoles.Where(y => y.UserId == x.AgentId).Any(),
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
                     PositionName = x.Position.Name,
-                    ExecutorTypeName = x.PositionExecutorType.Name,
+                    PositionExecutorTypeName = x.PositionExecutorType.Name,
+                    PositionRoles = x.Position.PositionRoles
+                        .Where(y => y.PositionId == x.PositionId)
+                        .OrderBy(y => y.Role.Name)
+                        .Select(y => new FrontAdminPositionRole
+                        {
+                            Id = y.RoleId,
+                            RoleName = y.Role.Name,
+                            RoleId = y.RoleId,
+                        }).ToList()
+
                 }).ToList();
+
             }
         }
 
@@ -4675,7 +4704,7 @@ namespace BL.Database.Dictionaries
 
             qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
 
-            qry = ExecutorGetWhere(ref qry, filter);
+            qry = GetWherePositionExecutors(ref qry, filter);
 
             return qry;
         }
@@ -4691,7 +4720,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        private static IQueryable<DictionaryPositionExecutors> ExecutorGetWhere(ref IQueryable<DictionaryPositionExecutors> qry, FilterDictionaryPositionExecutor filter)
+        private static IQueryable<DictionaryPositionExecutors> GetWherePositionExecutors(ref IQueryable<DictionaryPositionExecutors> qry, FilterDictionaryPositionExecutor filter)
         {
             // Список первичных ключей
             if (filter.IDs?.Count > 0)

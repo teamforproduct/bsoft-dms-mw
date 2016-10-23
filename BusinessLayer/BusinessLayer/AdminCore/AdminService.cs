@@ -286,49 +286,69 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<ITreeItem> GetUserRolesDIP(IContext context, int userId, FilterDIPAdminUserRole filter)
         {
-            var positionIDs = new List<int>();
+            var flatTree = new List<TreeItem>();
 
+            var executorFilter = new FilterDictionaryPositionExecutor
+            { AgentIDs = new List<int> { userId }, StartDate = filter.StartDate, EndDate = filter.EndDate };
 
-            if (filter.PositionId == null)
+            // Если указана должность, нохожу все исполнения должности в указанный период
+            if (filter.PositionId != null)
             {
-                // определяю должности, которые исполняет сотрудник
-                var executors = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
-                { AgentIDs = new List<int> { userId }, StartDate = filter.StartDate, EndDate = filter.EndDate });
-
-                positionIDs.AddRange(executors.Select(x => x.PositionId));
-            }
-            else
-            {
-                positionIDs.Add(filter.PositionId ?? -1);
+                executorFilter.PositionIDs = new List<int> { filter.PositionId ?? -1 };
             }
 
+            // определяю назначения с ролями должности, которые исполняет сотрудник на указанном отрезке времени
+            var executors = _dictDb.GetPositionExecutorsDIPUserRoles(context, executorFilter);
 
-            var positionExecutors = _dictDb.GetPositionExecutorsDIPUserRoles(context, new FilterDictionaryPositionExecutor()
+            if (executors.Count() > 0)
             {
-                PositionIDs = positionIDs,
-                AgentIDs = new List<int> { userId },
-                StartDate = filter.StartDate,
-                EndDate = filter.EndDate
-            });
+                var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.Id).ToList() });
 
-            var positionRoles = _adminDb.GetRolesDIPUserRoles(context, positionExecutors.Select(x => x.Id).ToList());
 
-            var positionRolesL = (List<FrontDIPUserRolesRoles>)positionRoles;
 
-            if (filter.IsChecked == true)
-            {
-                positionRolesL.RemoveAll(r => !r.IsChecked);
-                // PSS Возможно нужно обрезать positionExecutors
+                foreach (var executor in executors)
+                {
+                    var e = new FrontDIPUserRolesExecutor()
+                    {
+                        Id = executor.Id,
+                        Name = executor.PositionName,
+                        StartDate = executor.StartDate,
+                        EndDate = executor.EndDate,
+                        ExecutorTypeName = executor.PositionExecutorTypeName,
+                        IsActive = executor.IsActive ?? true,
+                        ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
+                    };
+
+                    //flatTree.Add(e);
+                    var roles = new List<TreeItem>();
+
+                    foreach (var role in executor.PositionRoles)
+                    {
+                        var r = new FrontDIPUserRolesRoles()
+                        {
+                            Id = userRoles.Where(x => x.RoleId == role.RoleId & x.PositionExecutorId == e.Id).Select(x=>x.Id).FirstOrDefault(),
+                            RoleId = role.RoleId ?? -1,
+                            PositionExecutorId = e.Id,
+                            Name = role.RoleName,
+                            IsActive = true,
+                            ObjectId = (int)EnumObjects.AdminRoles,
+                            IsChecked = userRoles.Where(x => x.RoleId == role.RoleId & x.PositionExecutorId == e.Id).Any(),
+                        };
+
+                        if ((filter?.IsChecked == true) & !r.IsChecked) continue;
+                        roles.Add(r);
+                    }
+
+                    // Если есть отмеченные роли, добавляю должность и роли
+                    if (roles?.Count > 0)
+                    {
+                        flatTree.Add(e);
+                        flatTree.AddRange(roles);
+                    }
+                }
+
             }
-
-            List<TreeItem> flatList = new List<TreeItem>();
-
-            flatList.AddRange(positionExecutors);
-            flatList.AddRange(positionRolesL);
-
-            var res = Tree.GetList(Tree.Get(flatList, filter));
-
-            return res;
+            return flatTree;
         }
 
         public void AddAllPositionRoleForUser(IContext context, ModifyDictionaryPositionExecutor positionExecutor)
@@ -476,7 +496,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList) continue;
+                if (item.IsList ?? true) continue;
 
                 SetCheckForDepartmentsAndCompanies((List<TreeItem>)item.Childs);
 

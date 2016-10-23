@@ -54,7 +54,7 @@ namespace BL.Logic.DictionaryCore
             executor = PositionExecutors.FirstOrDefault();
 
             if (executor != null)
-            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
 
 
             switch (Model.PositionExecutorTypeId)
@@ -71,7 +71,7 @@ namespace BL.Logic.DictionaryCore
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate??DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
                     break;
                 case EnumPositionExecutionTypes.IO:
                     // IO может быть только один на должности за период
@@ -85,7 +85,7 @@ namespace BL.Logic.DictionaryCore
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
                     break;
                 case EnumPositionExecutionTypes.Referent:
                     // Референтов может быть несколько может быть н на должности за период
@@ -100,7 +100,7 @@ namespace BL.Logic.DictionaryCore
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
 
                     break;
                 default:
@@ -115,7 +115,7 @@ namespace BL.Logic.DictionaryCore
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
 
                     break;
             }
