@@ -1,6 +1,8 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.ClientCore;
+using BL.Logic.ClientCore.Interfaces;
 using BL.Logic.DictionaryCore;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
@@ -53,6 +55,7 @@ namespace BL.Logic.DependencyInjection
             Bind<ISettings>().To<Setting>().InSingletonScope();
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
+            Bind<IClientService>().To<ClientService>().InSingletonScope();
             Bind<ILanguageService>().To<LanguageService>().InSingletonScope();
             Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();

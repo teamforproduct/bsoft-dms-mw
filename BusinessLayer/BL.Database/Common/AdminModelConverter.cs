@@ -49,6 +49,18 @@ namespace BL.Database.Common
             };
         }
 
+        public static IEnumerable<AdminRoleActions> GetDbRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> list)
+        {
+            {
+                var items = new List<AdminRoleActions>();
+                foreach (var item in list)
+                {
+                    items.Add(GetDbRoleAction(context, item));
+                }
+                return items;
+            }
+        }
+
 
         public static AdminPositionRoles GetDbPositionRole(IContext context, InternalAdminPositionRole item)
         {

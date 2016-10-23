@@ -15,7 +15,8 @@ namespace DMS_WebAPI.Controllers.Admins
     ///
     /// </summary>
     [Authorize]
-    public class ClientsController : ApiController
+    [RoutePrefix("api/v2/ClientActions")]
+    public class ClientActionsController : ApiController
     {
        
         /// <summary>
@@ -30,7 +31,21 @@ namespace DMS_WebAPI.Controllers.Admins
             tmpService.AddNewClient(cxt, model);
             return new JsonResult(model, this);
         }
-      
+
+        /// <summary>
+        /// Добавляет нового клиента
+        /// </summary>
+        /// <param name="model">ModifyAdminPositionRole</param>
+        /// <returns>FrontAdminPositionRole</returns>
+        [HttpPost]
+        [Route("AddDefaultRoles")]
+        public IHttpActionResult AddDefaultRoles()
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IClientService>();
+            tmpService.AddClientRoles(cxt);
+            return new JsonResult(true, this);
+        }
 
         /// <summary>
         /// Удаляет роль для должности

@@ -235,32 +235,6 @@ namespace BL.Database.Admins
             }
         }
 
-        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                // Классификатор роли
-                var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
-
-                // Новая роль со ссылкой на классификатор ролей.
-                var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
-
-                var ra = new List<AdminRoleActions>();
-
-                // Указание ид роли для предложенных действий
-                foreach (var item in roleActions)
-                {
-                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
-                }
-
-                // Запись списка соответствий роль-действие
-                dbContext.AdminRoleActionsSet.AddRange(ra);
-                dbContext.SaveChanges();
-
-                return roleId;
-            }
-        }
-
         public int AddRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context))
@@ -464,6 +438,17 @@ namespace BL.Database.Admins
                 return dbModel.Id;
             }
         }
+
+        public void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModels = AdminModelConverter.GetDbRoleActions(context, models);
+                dbContext.AdminRoleActionsSet.AddRange(dbModels);
+                dbContext.SaveChanges();
+            }
+        }
+
         public void UpdateRoleAction(IContext context, InternalAdminRoleAction model)
         {
             using (var dbContext = new DmsContext(context))

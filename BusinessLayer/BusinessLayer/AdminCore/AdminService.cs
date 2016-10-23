@@ -23,6 +23,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.CrossCutting.Extensions;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
+using System.Transactions;
 
 namespace BL.Logic.AdminCore
 {
@@ -195,6 +196,41 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetRoles(context, filter);
         }
+
+        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
+        {
+            int roleId = 0;
+
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var roleType = new InternalAdminRoleType() { Code = code, Name = name };
+                CommonDocumentUtilities.SetLastChange(context, roleType);
+
+                // Классификатор роли
+                var roleTypeId = _adminDb.AddRoleType(context, roleType);
+
+                var role = new InternalAdminRole() { RoleTypeId = roleTypeId, Name = name };
+                CommonDocumentUtilities.SetLastChange(context, role);
+
+                // Новая роль со ссылкой на классификатор ролей.
+                roleId = _adminDb.AddRole(context, role);
+
+                var ra = new List<InternalAdminRoleAction>();
+
+                // Указание ид роли для предложенных действий
+                foreach (var item in roleActions)
+                {
+                    ra.Add(new InternalAdminRoleAction() { ActionId = item.ActionId, RoleId = roleId });
+                }
+
+                CommonDocumentUtilities.SetLastChange(context, ra);
+
+                _adminDb.AddRoleActions(context, ra);
+
+                transaction.Complete();
+            }
+            return roleId;
+        }
         #endregion
 
         #region [+] RoleAction ...
@@ -241,48 +277,6 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetUserRoles(context, filter);
         }
-        //public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
-        //{
-        //    if (filter.UserIDs?.Count > 0)
-        //    {
-        //        if (filter.IsChecked == true)
-        //        {
-        //            List<int> roles = _adminDb.GetRolesByUsers(context, new FilterAdminUserRole()
-        //            {
-        //                UserIDs = filter.UserIDs,
-        //                StartDate = filter.StartDate,
-        //                EndDate = filter.EndDate
-        //            });
-
-        //            if (filter.IDs == null) filter.IDs = new List<int>();
-
-        //            filter.IDs.AddRange(roles);
-        //        }
-        //        else if ((filter.PositionIDs?.Count ?? 0) == 0)
-        //        {
-        //            // определяю должности, которые исполняет сотрудник
-        //            var executors = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
-        //            { AgentIDs = filter.UserIDs, StartDate = filter.StartDate, EndDate = filter.EndDate });
-
-        //            if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();
-
-        //            filter.PositionIDs.AddRange(executors.Select(x => x.PositionId));
-
-        //        }
-        //    }
-
-        //    if (filter.PositionIDs?.Count > 0)
-        //    {
-        //        // сужение до ролей, котрые принадлежат указанным должностям
-        //        var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole { PositionIDs = filter.PositionIDs });
-
-        //        if (filter.IDs == null) filter.IDs = new List<int>();
-
-        //        filter.IDs.AddRange(positionRoles.Where(x => filter.IDs.Contains(x.Id)).Select(x => x.RoleId).ToList());
-        //    }
-
-        //    return _adminDb.GetUserRolesDIP(context, filter);
-        //}
 
         public IEnumerable<ITreeItem> GetUserRolesDIP(IContext context, int userId, FilterDIPAdminUserRole filter)
         {
@@ -304,8 +298,6 @@ namespace BL.Logic.AdminCore
             {
                 var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.Id).ToList() });
 
-
-
                 foreach (var executor in executors)
                 {
                     var e = new FrontDIPUserRolesExecutor()
@@ -319,14 +311,13 @@ namespace BL.Logic.AdminCore
                         ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
                     };
 
-                    //flatTree.Add(e);
                     var roles = new List<TreeItem>();
 
                     foreach (var role in executor.PositionRoles)
                     {
                         var r = new FrontDIPUserRolesRoles()
                         {
-                            Id = userRoles.Where(x => x.RoleId == role.RoleId & x.PositionExecutorId == e.Id).Select(x=>x.Id).FirstOrDefault(),
+                            Id = userRoles.Where(x => x.RoleId == role.RoleId & x.PositionExecutorId == e.Id).Select(x => x.Id).FirstOrDefault(),
                             RoleId = role.RoleId ?? -1,
                             PositionExecutorId = e.Id,
                             Name = role.RoleName,

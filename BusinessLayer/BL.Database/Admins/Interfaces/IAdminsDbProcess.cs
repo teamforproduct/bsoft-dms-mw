@@ -29,7 +29,6 @@ namespace BL.Database.Admins.Interfaces
 
         #region [+] Roles ...
         int AddRoleType(IContext context, InternalAdminRoleType model);
-        int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions);
         int AddRole(IContext context, InternalAdminRole model);
         void UpdateRole(IContext context, InternalAdminRole model);
         void DeleteRole(IContext context, InternalAdminRole model);
@@ -40,6 +39,7 @@ namespace BL.Database.Admins.Interfaces
 
         #region [+] RoleAction ...
         int AddRoleAction(IContext context, InternalAdminRoleAction model);
+        void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models);
         void UpdateRoleAction(IContext context, InternalAdminRoleAction model);
         void DeleteRoleAction(IContext context, InternalAdminRoleAction model);
         bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter);
