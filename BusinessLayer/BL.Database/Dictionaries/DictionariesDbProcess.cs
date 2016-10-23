@@ -3974,6 +3974,15 @@ namespace BL.Database.Dictionaries
                     dbContext.DictionaryDepartmentsSet.Where(filterDepartments).Update(x => new DictionaryDepartments() { ChiefPositionId = null });
                     #endregion
 
+                    // Удаляю настройку ролей для исполнителей
+                    #region [+] AdminPositionRoles ...
+                    var filterUserRoles = PredicateBuilder.False<AdminUserRoles>();
+                    filterUserRoles = list.Aggregate(filterUserRoles,
+                        (current, value) => current.Or(e => e.PositionExecutor.PositionId == value).Expand());
+
+                    dbContext.AdminUserRolesSet.Where(filterUserRoles).Delete();
+                    #endregion
+
                     // Удаляю исполнителей
                     #region [+] DictionaryPositionExecutors ...
                     var filterPositionExecutors = PredicateBuilder.False<DictionaryPositionExecutors>();
