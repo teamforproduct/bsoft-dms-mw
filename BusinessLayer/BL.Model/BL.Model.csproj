@@ -418,6 +418,7 @@
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemLog.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemPattern.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemSetting.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemValueType.cs" />
@@ -438,6 +439,7 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemFormat.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemFormula.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemPattern.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemLog.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemValueType.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemSetting.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifySystemSetting.cs" />

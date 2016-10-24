@@ -4,6 +4,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.TreeBuilder;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;

@@ -5,6 +5,7 @@
     /// </summary>
     public enum EnumObjects
     {
+        System = 0, //Система
         Documents = 100, // Документы
         DocumentAccesses = 101, // Документы - доступы
         DocumentRestrictedSendLists = 102, // Документы - ограничения рассылки

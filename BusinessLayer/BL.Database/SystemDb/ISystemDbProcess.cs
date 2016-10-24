@@ -15,6 +15,7 @@ namespace BL.Database.SystemDb
         void InitializerDatabase(IContext context);
 
         #region Logging
+        IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         int AddLog(IContext ctx, LogInfo log);
         #endregion
 

@@ -4,29 +4,37 @@ using BL.Logic.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
+using BL.Model.SystemCore.FrontModel;
+using BL.Model.SystemCore.Filters;
 
 namespace BL.Logic.Logging
 {
     public class Logger :ILogger
     {
-        private readonly ISystemDbProcess _dbProcess;
+        private readonly ISystemDbProcess _systemDb;
 
         private const string _LOG_LEVEL_KEY = "LOG_LEVEL";
 
         public Logger(ISystemDbProcess dbProcess)
         {
-            _dbProcess = dbProcess;
+            _systemDb = dbProcess;
             
+        }
+
+        public IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging)
+        {
+            return _systemDb.GetSystemLogs(context, filter, paging);
         }
 
         private void AddLogToDb(IContext ctx, LogInfo info)
         {
-            int  loggerLevel = 1;//TODO Get it from settings
+            int  loggerLevel = 0;//TODO Get it from settings
             if ((int) info.LogType >= loggerLevel)
             {
                 info.Date = DateTime.Now;
                 info.AgentId = ctx.CurrentAgentId;
-                _dbProcess.AddLog(ctx, info);
+                _systemDb.AddLog(ctx, info);
             }
         }
 
@@ -41,12 +49,14 @@ namespace BL.Logic.Logging
         }
 
 
-        public void Information(IContext ctx, string message)
+        public void Information(IContext ctx, string message, int? objectId = null, int? actionId = null)
         {
             AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Information,
-                Message = message
+                Message = message,
+                ObjectId = objectId,
+                ActionId = actionId,
             });
         }
 
@@ -101,5 +111,6 @@ namespace BL.Logic.Logging
                 LogObjects = string.Join(" / ", args)
             });
         }
+
     }
 }

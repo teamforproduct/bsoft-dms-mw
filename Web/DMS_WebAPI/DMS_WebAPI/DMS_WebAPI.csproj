@@ -299,6 +299,7 @@
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
+    <Compile Include="Controllers\System\SystemLogsController.cs" />
     <Compile Include="Controllers\System\SystemSettingsController.cs" />
     <Compile Include="Controllers\System\VersionController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
@@ -399,7 +400,9 @@
     <Content Include="App_Data\CryptoExts\x86\plugins\caclient.jar" />
     <Content Include="App_Data\CryptoExts\x86\plugins\pdfapi.jar" />
     <Content Include="App_Data\Documentation\BL.Model.XML" />
-    <Content Include="App_Data\Documentation\DMS_WebAPI.XML" />
+    <Content Include="App_Data\Documentation\DMS_WebAPI.XML">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />

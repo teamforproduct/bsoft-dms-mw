@@ -11,5 +11,7 @@ namespace BL.Model.SystemCore
         public string LogException { get; set; }
         public int AgentId { get; set; }
         public DateTime Date { get; set; }
+        public int? ObjectId { get; set; }
+        public int? ActionId { get; set; }
     }
 }
