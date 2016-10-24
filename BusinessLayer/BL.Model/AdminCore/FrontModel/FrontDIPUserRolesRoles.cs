@@ -7,14 +7,12 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace BL.Model.AdminCore.FrontModel
-{ 
+{
     public class FrontDIPUserRolesRoles: TreeItem
     {
-        public DateTime? StartDate { get; set; }
+        public int RoleId { get; set; }
 
-        public DateTime? EndDate { get; set; }
-
-        public int PositionId { get; set; }
+        public int PositionExecutorId { get; set; }
 
         public bool IsChecked { get; set; }
     }

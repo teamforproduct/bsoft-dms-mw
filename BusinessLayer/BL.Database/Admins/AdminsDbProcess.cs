@@ -473,6 +473,16 @@ namespace BL.Database.Admins
             }
         }
 
+        public void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModels = AdminModelConverter.GetDbRoleActions(context, models);
+                dbContext.AdminRoleActionsSet.AddRange(dbModels);
+                dbContext.SaveChanges();
+            }
+        }
+
         public void UpdateRoleAction(IContext context, InternalAdminRoleAction model)
         {
             using (var dbContext = new DmsContext(context))
@@ -844,55 +854,6 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontDIPUserRolesRoles> GetRolesDIPUserRoles(IContext context, List<int> PositionExecutorIDs)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                var positionRoles = dbContext.AdminPositionRolesSet.AsQueryable();
-
-                var positionExecutors = dbContext.DictionaryPositionExecutorsSet.AsQueryable();
-
-                if (PositionExecutorIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
-                    filterContains = PositionExecutorIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-                    positionExecutors = positionExecutors.Where(filterContains);
-                }
-
-                
-                //var positionRoles = GetAdminPositionRoleQuery(dbContext, filter).AsQueryable();
-
-                var itemsRes = from positionRole in positionRoles
-                               join positionExecutor in dbContext.DictionaryPositionExecutorsSet on positionRole.PositionId equals positionExecutor.PositionId
-                               //join ids in PositionExecutorIDs on positionExecutor.Id equals ids
-                               select new FrontDIPUserRolesRoles
-                               {
-                                   Id = positionRole.RoleId,
-                                   Name = positionRole.Role.Name,
-                                   SearchText = string.Concat(positionRole.Role.Name),
-                                   ObjectId = (int)EnumObjects.AdminRoles,
-                                   TreeId = string.Concat(positionRole.RoleId.ToString(), "_", ((int)EnumObjects.AdminRoles).ToString()),
-                                   TreeParentId = string.Concat(positionExecutor.Id.ToString(), "_", (int)EnumObjects.DictionaryPositionExecutors),
-                                   IsActive = true,
-                                   IsList = true,
-                                   StartDate = positionExecutor.StartDate,
-                                   EndDate = positionExecutor.EndDate,
-                                   IsChecked = positionExecutor.UserRoles.
-                                        Where(x => 
-                                        x.UserId == positionExecutor.AgentId 
-                                        & x.RoleId == positionRole.RoleId 
-                                        & x.PositionExecutorId == positionExecutor.Id
-                                        ).Any(),
-                                   PositionId = positionRole.PositionId,
-                               };
-
-                //itemsRes = itemsRes.Where(x => x.Locations.Any(l => searachIds.Contains(l.Id)));
-
-                return itemsRes.ToList();
-            }
-        }
-
         public bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -1134,39 +1095,39 @@ namespace BL.Database.Admins
                     RoleId = x.Id,
                     RolePositionId = x.PositionExecutor.PositionId,
                     UserId = x.UserId,
-                    StartDate = x.PositionExecutor.StartDate,
-                    EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
+                    //StartDate = x.PositionExecutor.StartDate,
+                    //EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
                 }).ToList();
 
             }
         }
 
-        public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-                var qry = dbContext.AdminRolesSet.AsQueryable();
+        //public IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    {
+        //        var qry = dbContext.AdminRolesSet.AsQueryable();
 
-                qry = GetWhereRole(ref qry, filter);
+        //        qry = GetWhereRole(ref qry, filter);
 
-                qry = qry.OrderBy(x => x.Name);
+        //        qry = qry.OrderBy(x => x.Name);
 
-                return qry.Select(x => new FrontAdminUserRole
-                {
-                    Id = x.Id,
-                    //UserId = x.UserId,
-                    RoleId = x.Id,
-                    RoleName = x.Name,
-                    IsChecked = x.UserRoles.
-                    Where(y => y.RoleId == x.Id).
-                    Where(y => filter.UserIDs.Contains(y.UserId ?? y.PositionExecutor.AgentId)).
-                    Where(y => y.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.MaxValue) && y.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.MinValue)).
-                    Any()
-                }).ToList();
+        //        return qry.Select(x => new FrontAdminUserRole
+        //        {
+        //            Id = x.Id,
+        //            //UserId = x.UserId,
+        //            RoleId = x.Id,
+        //            RoleName = x.Name,
+        //            IsChecked = x.UserRoles.
+        //            Where(y => y.RoleId == x.Id).
+        //            Where(y => filter.UserIDs.Contains(y.UserId ?? y.PositionExecutor.AgentId)).
+        //            Where(y => y.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.MaxValue) && y.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.MinValue)).
+        //            Any()
+        //        }).ToList();
 
-            }
-        }
+        //    }
+        //}
 
         //public IEnumerable<FrontDIPUserRolesRoles> GetUserRolesDIPUserRoles(IContext context, FilterAdminUserRole filter)
         //{

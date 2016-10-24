@@ -40,12 +40,12 @@ namespace BL.Model.Tree
         /// <summary>
         /// Лист или группа. У листьев нет наследников
         /// </summary>
-        bool IsList { get; set; }
+        bool? IsList { get; set; }
 
         /// <summary>
         /// Уровень вложенности элемента
         /// </summary>
-        int Level { get; set; }
+        int? Level { get; set; }
 
         /// <summary>
         /// Список потомков, который формирует универсальная процедура построения дерева.

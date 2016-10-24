@@ -47,7 +47,7 @@ namespace BL.Model.Tree
         /// <summary>
         /// Уровень вложенности элемента
         /// </summary>
-        public int Level { get; set; }
+        public int? Level { get; set; }
 
         /// <summary>
         /// Вспомагательный признак для ускорения построения дерева.
@@ -64,12 +64,12 @@ namespace BL.Model.Tree
         /// <summary>
         /// Лист или группа. У листьев нет наследников
         /// </summary>
-        public bool IsList { get; set; }
+        public bool? IsList { get; set; }
 
         /// <summary>
         /// Признак активности элемента
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         /// <summary>
         /// Описание элемента

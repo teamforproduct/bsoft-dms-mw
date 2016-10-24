@@ -1,6 +1,8 @@
-﻿using BL.Model.Common;
+﻿using BL.Model.AdminCore.FrontModel;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -70,7 +72,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Дата окончания исполнения должности
         /// </summary>
         public DateTime? EndDate { get; set; }
-
 
     }
 }
