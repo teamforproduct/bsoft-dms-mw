@@ -48,7 +48,13 @@ namespace BL.Logic.DictionaryCore
 
                 // Если order не задан, задаю максимальный.
                 if (Model.Order < 1)
-                { _dictService.SetPositionOrder(_context, positionId, 100000000); }
+                { _dictService.SetPositionOrder(_context, positionId, Int32.MaxValue); }
+
+
+                // Добавляю рассылку (subordinations). 
+                // Если SUBORDINATIONS_SEND_ALL_FOR_EXECUTION и SUBORDINATIONS_SEND_ALL_FOR_EXECUTION включены, то разрешаю рассылку на всех
+                
+
 
                 return positionId;
             }

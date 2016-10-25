@@ -14,11 +14,12 @@ namespace BL.Model.SystemCore.InternalModel
         {
             Key = model.Key;
             Value = model.Value;
+            ValueType = model.ValueType;
             AgentId = model.AgentId;
         }
-
         public string Key { get; set; }
         public string Value { get; set; }
+        public EnumValueTypes ValueType { get; set; }
         public int? AgentId { get; set; }
     }
 }

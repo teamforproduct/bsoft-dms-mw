@@ -261,10 +261,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
             {
-                IEnumerable<AdminRoleActions> roleActions = dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Select(x => new AdminRoleActions { Id = x.Id }).ToList(); ;
-                dbContext.AdminRoleActionsSet.RemoveRange(roleActions);
-                dbContext.SaveChanges();
-
+                dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Delete(); ;
+ 
                 var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRolesSet.Remove(dbModel);
                 dbContext.SaveChanges();

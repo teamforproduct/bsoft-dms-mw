@@ -17,15 +17,16 @@ namespace BL.Database.FileWorker
         private string GetStorePath(IContext ctx)
         {
             var sett = DmsResolver.Current.Get<ISettings>();
-            try
-            {
-                return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
-            }
-            catch
-            {
-                sett.SaveSetting(ctx, SettingConstants.FILE_STORE_PATH, SettingConstants.FILE_STORE_DEFAULT_PATH);
-                return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
-            }
+            return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH, SettingConstants.DefaultFileStorePath());
+            //try
+            //{
+            //    return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
+            //}
+            //catch
+            //{
+            //    sett.SaveSetting(ctx, SettingConstants.FILE_STORE_PATH, SettingConstants.FILE_STORE_DEFAULT_PATH);
+            //    return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
+            //}
         }
 
         private string GetFullDocumentFilePath(IContext ctx, FrontDocumentAttachedFile attFile)
@@ -422,17 +423,18 @@ namespace BL.Database.FileWorker
         {
             var path = GetStorePath(ctx);
 
-            var templateReportFile = string.Empty;
             var sett = DmsResolver.Current.Get<ISettings>();
-            try
-            {
-                templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
-            }
-            catch
-            {
-                sett.SaveSetting(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType, SettingConstants.FILE_STORE_DEFAULT_TEMPLATE_REPORT_FILE);
-                templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
-            }
+            var templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType, SettingConstants.DefaultFileStoreTemplateReportFile(reportType.ToString()));
+
+            //try
+            //{
+            //    templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
+            //}
+            //catch
+            //{
+            //    sett.SaveSetting(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType, SettingConstants.FILE_STORE_DEFAULT_TEMPLATE_REPORT_FILE);
+            //    templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
+            //}
 
             path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
             return path;

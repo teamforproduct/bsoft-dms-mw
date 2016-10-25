@@ -46,28 +46,30 @@ namespace BL.Logic.Common
         protected bool GetIsUseInternalSign()
         {
             var sett = DmsResolver.Current.Get<ISettings>();
-            try
-            {
-                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
-            }
-            catch
-            {
-                sett.SaveSetting(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN, false);
-                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
-            }
+            return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN, SettingConstants.DefaultDigitalSignatureIsUseInternalSign());
+            //try
+            //{
+            //    return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
+            //}
+            //catch
+            //{
+            //    sett.SaveSetting(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN, false);
+            //    return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
+            //}
         }
         protected bool GetIsUseCertificateSign()
         {
             var sett = DmsResolver.Current.Get<ISettings>();
-            try
-            {
-                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
-            }
-            catch
-            {
-                sett.SaveSetting(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN, false);
-                return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
-            }
+            return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN, SettingConstants.DefaultDigitalSignatureIsUseCertificateSign());
+            //try
+            //{
+            //    return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
+            //}
+            //catch
+            //{
+            //    sett.SaveSetting(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN, false);
+            //    return sett.GetSetting<bool>(_context, SettingConstants.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
+            //}
         }
     }
 }

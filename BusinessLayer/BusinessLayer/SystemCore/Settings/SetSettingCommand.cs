@@ -13,7 +13,7 @@ namespace BL.Logic.SystemCore
             try
             {
                 var model = new InternalSystemSetting(Model);
-                return _systemDb.AddSetting(_context, model);
+                return _systemDb.MergeSetting(_context, model);
             }
             catch (Exception ex)
             {

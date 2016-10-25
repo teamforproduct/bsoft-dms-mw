@@ -21,6 +21,7 @@ using BL.Model.Constants;
 using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using System.Transactions;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.ClientCore
 {
@@ -83,19 +84,39 @@ namespace BL.Logic.ClientCore
         {
             var items = new List<SystemSettings>();
 
-            items.Add(new SystemSettings()
-            {
-                Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION,
-                Value = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION_DEFAULT.ToString(),
-            });
+            items.Add(
+                new SystemSettings
+                {
+                    Key = SettingConstants.DefaultSubordinationsSendAllForExecution().Key,
+                    Value = SettingConstants.DefaultSubordinationsSendAllForExecution().Value,
+                    ValueType = (int)SettingConstants.DefaultSubordinationsSendAllForExecution().ValueType,
+                }
+                );
 
-            items.Add(new SystemSettings()
-            {
-                Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_INFORMING,
-                Value = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_INFORMING_DEFAULT.ToString(),
-            });
+            items.Add(
+                new SystemSettings
+                {
+                    Key = SettingConstants.DefaultSubordinationsSendAllForInforming().Key,
+                    Value = SettingConstants.DefaultSubordinationsSendAllForInforming().Value,
+                    ValueType = (int)SettingConstants.DefaultSubordinationsSendAllForInforming().ValueType,
+                }
+                );
+
+            //items.Add(GetDbSystemSettings(SettingConstants.DefaultSubordinationsSendAllForExecution()));
+
+            //items.Add(GetDbSystemSettings(SettingConstants.DefaultSubordinationsSendAllForInforming()));
 
             return items;
+        }
+
+        private SystemSettings GetDbSystemSettings(InternalSystemSetting item)
+        {
+            return item == null ? null : new SystemSettings
+            {
+                Key = item.Key,
+                Value = item.Value,
+                ValueType = (int)item.ValueType,
+            };
         }
 
 

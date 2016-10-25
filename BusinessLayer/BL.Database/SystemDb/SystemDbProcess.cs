@@ -59,7 +59,7 @@ namespace BL.Database.SystemDb
 
         #region Settings
 
-        public int AddSetting(IContext ctx, InternalSystemSetting model)
+        public int MergeSetting(IContext ctx, InternalSystemSetting model)
         {
             using (var dbContext = new DmsContext(ctx))
             {
@@ -71,7 +71,8 @@ namespace BL.Database.SystemDb
                         ClientId = ctx.CurrentClientId,
                         ExecutorAgentId = model.AgentId,
                         Key = model.Key,
-                        Value = model.Value
+                        Value = model.Value,
+                        ValueType = (int)model.ValueType,
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();
@@ -79,6 +80,12 @@ namespace BL.Database.SystemDb
                 }
 
                 cset.Value = model.Value;
+
+                if (model.ValueType > 0)
+                {
+                    cset.ValueType = (int)model.ValueType;
+                }
+
                 cset.ExecutorAgentId = model.AgentId;
                 dbContext.SaveChanges();
                 return cset.Id;
@@ -107,75 +114,52 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        public IEnumerable<InternalSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                var qry = GetSettingsQuery(ctx, dbContext, filter);
 
-                var qry = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).AsQueryable();
-
-                if (!string.IsNullOrEmpty(filter.Key))
+                return qry.Select(x => new InternalSystemSetting()
                 {
-                    qry = qry.Where(x => x.Key == filter.Key);
-                }
-
-                if (!string.IsNullOrEmpty(filter.Value))
-                {
-                    qry = qry.Where(x => x.Value == filter.Value);
-                }
-                
-                if (filter.AgentId.HasValue)
-                {
-                    qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
-                }
-
-                var res = qry.Select(x => new FrontSystemSetting()
-                {
-                    Id = x.Id,
                     Key = x.Key,
                     Value = x.Value,
                     ValueType = (EnumValueTypes)x.ValueType,
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
-
-                return res.Select(x => new FrontSystemSetting()
-                {
-                    Id = x.Id,
-                    Key = x.Key,
-                    Value = GetTypedValue(x.Value.ToString(), x.ValueType),
-                    AgentId = x.AgentId,
-                }).ToList();
-
-
             }
         }
 
-        private object GetTypedValue(string Value, EnumValueTypes ValueType)
+        private IQueryable<SystemSettings> GetWhereSettings(ref IQueryable<SystemSettings> qry, FilterSystemSetting filter)
         {
-            object res;
-
-            switch (ValueType)
+            if (!string.IsNullOrEmpty(filter.Key))
             {
-                case EnumValueTypes.Text:
-                case EnumValueTypes.Api:
-                    res = Value;
-                    break;
-                case EnumValueTypes.Number:
-                    res = Int32.Parse(Value);
-                    break;
-                case EnumValueTypes.Date:
-                    res = DateTime.Parse(Value);
-                    break;
-                case EnumValueTypes.Bool:
-                    res = Boolean.Parse(Value);
-                    break;
-                default:
-                    res = Value;
-                    break;
+                qry = qry.Where(x => x.Key == filter.Key);
             }
 
-            return res;
+            if (!string.IsNullOrEmpty(filter.Value))
+            {
+                qry = qry.Where(x => x.Value == filter.Value);
+            }
+
+            if (filter.AgentId.HasValue)
+            {
+                qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
+            }
+
+            return qry;
+        }
+
+        public IQueryable<SystemSettings> GetSettingsQuery(IContext context, DmsContext dbContext, FilterSystemSetting filter)
+        {
+            var qry = dbContext.SettingsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = qry.OrderBy(x => x.Id);
+
+            qry = GetWhereSettings(ref qry, filter);
+
+            return qry;
         }
 
         #endregion

@@ -13,6 +13,7 @@ using System.Diagnostics;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Constants;
+using BL.CrossCutting.Interfaces;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -191,12 +192,12 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("IsSetDefaultsForExecution")]
-        public IHttpActionResult IsSetDefaultsForExecution()
+        [Route("IsSendAllForExecution")] //IsSetDefaultsForExecution
+        public IHttpActionResult IsSendAllForExecution()
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemSettings(cxt, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_EXECUTION });
+            var tmpService = DmsResolver.Current.Get<ISettings>();
+            var tmpItems = tmpService.GetSubordinationsSendAllForExecution(cxt);//, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION });
             return new JsonResult(tmpItems, this);
         }
 
@@ -206,12 +207,12 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("IsSetDefaultsForInforming")]
-        public IHttpActionResult IsSetDefaultsForInforming()
+        [Route("IsSendAllForInforming")]
+        public IHttpActionResult IsSendAllForInforming()
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemSettings(cxt, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_ADD_DEFAULT_FOR_INFORMING });
+            var tmpService = DmsResolver.Current.Get<ISettings>();
+            var tmpItems = tmpService.GetSubordinationsSendAllForInforming(cxt);
             return new JsonResult(tmpItems, this);
         }
 

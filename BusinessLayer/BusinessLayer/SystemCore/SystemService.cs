@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
@@ -7,7 +8,9 @@ using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Logic.SystemCore
 {
@@ -36,8 +39,17 @@ namespace BL.Logic.SystemCore
 
         public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext context, FilterSystemSetting filter)
         {
-            return _systemDb.GetSystemSettings(context, filter);
+            var tmpSettings= DmsResolver.Current.Get<ISettings>();
+
+            return _systemDb.GetSystemSettings(context, filter).Select(x => new FrontSystemSetting()
+            {
+                Key = x.Key,
+                Value = tmpSettings.GetTypedValue(x.Value.ToString(), x.ValueType),
+                AgentId = x.AgentId,
+            } );
         }
+
+        
 
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter)
         {
