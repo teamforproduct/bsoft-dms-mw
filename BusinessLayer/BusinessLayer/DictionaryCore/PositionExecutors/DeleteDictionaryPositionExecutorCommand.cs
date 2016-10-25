@@ -1,14 +1,19 @@
 ﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryPositionExecutorCommand : BaseDictionaryCommand
 
     {
-      
+
         private int Model
         {
             get
@@ -40,7 +45,15 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { Model } }).FirstOrDefault();
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj);
+
+                    _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });
+
+                    transaction.Complete();
+                }
                 return null;
             }
             catch (Exception ex)

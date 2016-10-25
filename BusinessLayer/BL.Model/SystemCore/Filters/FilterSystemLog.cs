@@ -5,7 +5,6 @@ namespace BL.Model.SystemCore.Filters
 {
     /// <summary>
     /// Модель фильтра лога
-    /// 
     /// </summary>
     public class FilterSystemLog
     {

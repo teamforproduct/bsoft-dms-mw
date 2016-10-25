@@ -139,7 +139,8 @@ namespace BL.Database.SystemDb
                     LogDate = log.Date,
                     LogLevel = (int)log.LogType,
                     LogException = log.LogException,
-                    LogTrace = log.LogObjects,
+                    LogTrace = log.LogTrace,
+                    ObjectLog = log.LogObject,
                     Message = log.Message,
                     ObjectId = log.ObjectId,
                     ActionId = log.ActionId,
@@ -338,19 +339,63 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                // TODO Почему для SystemObjects используется PropertiesSet???
-                var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
-
-                if (filter.SystemObjectId?.Count > 0)
+                var qry = dbContext.SystemObjectsSet.AsQueryable();
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<Properties>();
-                    filterContains = filter.SystemObjectId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    if (filter.ObjectId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemObjects>();
+                        filterContains = filter.ObjectId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (!string.IsNullOrEmpty(filter.Description))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(filter.Description));
+                    }
+                }
+                return qry.Select(x => new FrontSystemObject
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                }).ToList();
+            }
+        }
 
-                    qry = qry.Where(filterContains);
+        public IEnumerable<FrontSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.SystemActionsSet.AsQueryable();
+                if (filter != null)
+                {
+                    if (filter.ActionId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemActions>();
+                        filterContains = filter.ActionId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
+                    if (filter.ObjectId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemActions>();
+                        filterContains = filter.ObjectId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.ObjectId == value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
+                    if (!string.IsNullOrEmpty(filter.Description))
+                    {
+                        qry = qry.Where(x => x.Code.Contains(filter.Description));
+                    }
                 }
 
-                return qry.Select(x => new FrontSystemObject
+                return qry.Select(x => new FrontSystemAction
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -366,10 +411,10 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.SystemObjectsSet.AsQueryable();
 
-                if (filter.SystemObjectId?.Count > 0)
+                if (filter.ObjectId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<SystemObjects>();
-                    filterContains = filter.SystemObjectId.Aggregate(filterContains,
+                    filterContains = filter.ObjectId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     qry = qry.Where(filterContains);

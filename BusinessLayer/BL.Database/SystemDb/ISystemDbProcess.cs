@@ -32,6 +32,7 @@ namespace BL.Database.SystemDb
         IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
 
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
+        IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
         IEnumerable<TreeItem> GetSystemObjectsForTree(IContext ctx, FilterSystemObject filter);
         #endregion

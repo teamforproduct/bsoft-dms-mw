@@ -7,7 +7,9 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
-
+using System.Transactions;
+using System.Linq;
+using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -46,10 +48,16 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
 
-                _dictDb.UpdatePosition(_context, dp);
+                    _dictDb.UpdatePosition(_context, dp);
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj);
 
-                _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
+                    _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
+                    transaction.Complete();
+                }
             }
             catch (DictionaryRecordWasNotFound)
             {

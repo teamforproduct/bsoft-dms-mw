@@ -2,9 +2,12 @@
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -43,12 +46,19 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
+                int positionId;
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
 
-                var positionId = _dictDb.AddPosition(_context, dp);
+                    positionId = _dictDb.AddPosition(_context, dp);
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj);
 
-                // Если order не задан, задаю максимальный.
-                if (Model.Order < 1)
-                { _dictService.SetPositionOrder(_context, positionId, 100000000); }
+                    // Если order не задан, задаю максимальный.
+                    if (Model.Order < 1)
+                    { _dictService.SetPositionOrder(_context, positionId, 100000000); }
+                    transaction.Complete();
+                }
 
                 return positionId;
             }

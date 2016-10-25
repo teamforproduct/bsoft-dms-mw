@@ -17,6 +17,7 @@ namespace BL.Logic.Common
         protected IAdminService _adminService;
         protected IAdminsDbProcess _adminDb;
         protected IDictionariesDbProcess _dictDb;
+        protected ILogger _logger;
 
         public void InitializeCommand(EnumAdminActions action, IContext ctx)
         {
@@ -31,6 +32,7 @@ namespace BL.Logic.Common
             _adminDb = DmsResolver.Current.Get<IAdminsDbProcess>();
             _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             _adminService = DmsResolver.Current.Get<IAdminService>();
+            _logger = DmsResolver.Current.Get<ILogger>();
         }
 
         public InternalDocument Document => null;

@@ -3,13 +3,22 @@ using System.Collections.Generic;
 
 namespace BL.Model.SystemCore.Filters
 {
+    /// <summary>
+    /// Модель фильтра действий системы
+    /// </summary>
     public class FilterSystemAction
     {
-        public List<int> IDs { get; set; }
+        /// <summary>
+        /// Массив ИД действий системы
+        /// </summary>
+        public List<int> ActionId { get; set; }
+        /// <summary>
+        /// Отрывок описания действий системы
+        /// </summary>
         public string Description { get; set; }
-        public EnumDocumentActions? DocumentAction { get; set; }
-        public EnumObjects? ObjectId { get; set; }
-        public bool? IsAvailable { get; set; }
-        public List<int> PositionsIDs { get; set; }
+        /// <summary>
+        /// Массив ИД объектов системы
+        /// </summary>
+        public List<int> ObjectId { get; set; }
     }
 }

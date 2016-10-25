@@ -10,7 +10,7 @@ namespace BL.CrossCutting.Interfaces
     {
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         void Trace(IContext ctx, string message, params object[] args);
-        void Information(IContext ctx, string message, int? objectId = null, int? actionId = null);
+        void Information(IContext ctx, string message, int? objectId = null, int? actionId = null, object logObject = null);
         void Warning(IContext ctx, string message, params object[] args);
         void Error(IContext ctx, string message, params object[] args);
         void Error(IContext ctx, Exception exception, string message = null, params object[] args);

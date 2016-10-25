@@ -14,6 +14,7 @@ namespace BL.Model.SystemCore.FrontModel
         public string LogTrace { get; set; }
         public string LogException { get; set; }
         public string ObjectLog { get; set; }
+        public object LogObject { get; set; }
         public int? ExecutorAgentId { get; set; }
         public string ExecutorAgent { get; set; }
         public DateTime LogDate { get; set; }

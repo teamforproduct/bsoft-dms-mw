@@ -20,6 +20,7 @@ namespace BL.Logic.Common
         protected IAdminsDbProcess _adminDb;
         protected IDictionaryService _dictService;
         protected IDictionariesDbProcess _dictDb;
+        protected ILogger _logger;
 
         public void InitializeCommand(EnumDictionaryActions action, IContext ctx)
         {
@@ -35,6 +36,7 @@ namespace BL.Logic.Common
             _adminService = DmsResolver.Current.Get<IAdminService>();
             _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             _dictService = DmsResolver.Current.Get<IDictionaryService>();
+            _logger = DmsResolver.Current.Get<ILogger>();
         }
 
         public InternalDocument Document => null;

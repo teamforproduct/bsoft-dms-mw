@@ -7,7 +7,9 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
-
+using System.Transactions;
+using BL.Model.Enums;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -46,8 +48,15 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
+                    _dictDb.UpdateDepartment(_context, dds);
 
-                _dictDb.UpdateDepartment(_context, dds);
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dds.Id } }).FirstOrDefault();
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj);
+
+                    transaction.Complete();
+                }
             }
             catch (DictionaryRecordWasNotFound)
             {
