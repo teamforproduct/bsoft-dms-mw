@@ -5,6 +5,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.TreeBuilder;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
@@ -67,6 +68,27 @@ namespace BL.Logic.SystemCore
         {
             return _systemDb.GetSystemValueTypes(context, filter);
         }
+
+        public FrontSystemObject GetSystemObject(IContext context, int id)
+        {
+            return _systemDb.GetSystemObjects(context, new FilterSystemObject { ObjectId = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
+        {
+            return _systemDb.GetSystemObjects(context, filter);
+        }
+
+        public FrontSystemAction GetSystemAction(IContext context, int id)
+        {
+            return _systemDb.GetSystemActions(context, new FilterSystemAction { ActionId = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter)
+        {
+            return _systemDb.GetSystemActions(context, filter);
+        }
+
         public List<ITreeItem> GetSystemActionForDIP(IContext context, FilterTree filter)
         {
             var objects = _systemDb.GetSystemObjectsForTree(context, new FilterSystemObject());

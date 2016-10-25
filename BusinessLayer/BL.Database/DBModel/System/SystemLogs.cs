@@ -23,8 +23,6 @@ namespace BL.Database.DBModel.System
         public string ObjectLog { get; set; }
         public Nullable<int> ActionId { get; set; }
         public Nullable<int> RecordId { get; set; }
-
-
         [Index("IX_LogDate", 1)]
         public DateTime LogDate { get; set; }
 

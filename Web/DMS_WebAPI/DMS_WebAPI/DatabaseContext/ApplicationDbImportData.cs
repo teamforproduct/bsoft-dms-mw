@@ -102,6 +102,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован");
             AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна");
 
+            AddALV(list, "##l@System@l##", "System", "Система");
             AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий");
             AddALV(list, "##l@DictionaryDocumentDirections:Internal@l##", "Internal", "Собственный");
             AddALV(list, "##l@DictionaryDocumentDirections:Outcoming@l##", "Outcoming", "Иcходящий");

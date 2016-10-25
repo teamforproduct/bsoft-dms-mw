@@ -20,5 +20,10 @@ namespace BL.Logic.SystemCore.Interfaces
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
         IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
         IEnumerable<FrontSystemSetting> GetSystemSettings(IContext context, FilterSystemSetting filter);
+        FrontSystemObject GetSystemObject(IContext context, int id);
+        IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
+        FrontSystemAction GetSystemAction(IContext context, int id);
+        IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
+
     }
 }

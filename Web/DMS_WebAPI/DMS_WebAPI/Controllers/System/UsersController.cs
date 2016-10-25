@@ -11,6 +11,8 @@ using BL.Logic.DictionaryCore.Interfaces;
 using System.Linq;
 using Microsoft.AspNet.Identity;
 using BL.Model.WebAPI.IncomingModel;
+using BL.CrossCutting.Interfaces;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -105,7 +107,7 @@ namespace DMS_WebAPI.Controllers
         {
             var mngContext = DmsResolver.Current.Get<UserContext>();
 
-            var ctx = mngContext.Get();
+
 
             var dbProc = new WebAPIDbProcess();
 
@@ -116,7 +118,10 @@ namespace DMS_WebAPI.Controllers
             }
 
             mngContext.Set(db, model.ClientId);
+            var ctx = mngContext.Get();
 
+            var logger = DmsResolver.Current.Get<ILogger>();
+            logger.Information(ctx, null, (int)EnumObjects.System, (int)EnumSystemActions.Login);
 
             return new JsonResult(null, this);
         }

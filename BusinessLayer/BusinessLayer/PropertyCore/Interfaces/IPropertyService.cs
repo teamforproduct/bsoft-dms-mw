@@ -11,13 +11,6 @@ namespace BL.Logic.PropertyCore.Interfaces
     {
         object ExecuteAction(EnumPropertyActions act, IContext context, object param);
 
-        #region SystemObjects
-        FrontSystemObject GetSystemObject(IContext context, int id);
-
-        IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
-
-        #endregion SystemObjects
-
         #region Properties
         FrontProperty GetProperty(IContext context, int id);
 

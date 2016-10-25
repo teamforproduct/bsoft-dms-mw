@@ -29,19 +29,6 @@ namespace BL.Logic.PropertyCore
             return res;
         }
 
-        #region SystemObjects
-        public FrontSystemObject GetSystemObject(IContext context, int id)
-        {
-            return _systDb.GetSystemObjects(context, new FilterSystemObject { SystemObjectId = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
-        {
-            return _systDb.GetSystemObjects(context, filter);
-        }
-
-        #endregion SystemObjects
-
         #region Properties
         public FrontProperty GetProperty(IContext context, int id)
         {

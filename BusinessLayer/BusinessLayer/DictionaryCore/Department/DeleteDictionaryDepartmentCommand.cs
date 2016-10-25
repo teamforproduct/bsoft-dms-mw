@@ -5,6 +5,11 @@ using BL.Model.DictionaryCore.InternalModel;
 
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Transactions;
+using BL.Model.DictionaryCore.FilterModel;
+using System.Collections.Generic;
+using BL.Model.Enums;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -40,7 +45,14 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                _dictDb.DeleteDepartments(_context, new System.Collections.Generic.List<int>() { Model });
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { Model } }).FirstOrDefault();
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj);
+
+                    _dictDb.DeleteDepartments(_context, new List<int>() { Model });
+                    transaction.Complete();
+                }
                 return null;
             }
             catch (Exception ex)

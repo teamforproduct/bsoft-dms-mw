@@ -226,34 +226,67 @@ namespace BL.Database.Admins
         public int AddRoleType(IContext context, InternalAdminRoleType model)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 AdminRoleTypes dbModel = AdminModelConverter.GetDbRoleType(context, model);
                 dbContext.AdminRolesTypesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
+            }
+        }
+
+        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                // Классификатор роли
+                var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
+
+                // Новая роль со ссылкой на классификатор ролей.
+                var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
+
+                var ra = new List<AdminRoleActions>();
+
+                // Указание ид роли для предложенных действий
+                foreach (var item in roleActions)
+                {
+                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
+                }
+
+                // Запись списка соответствий роль-действие
+                dbContext.AdminRoleActionsSet.AddRange(ra);
+                dbContext.SaveChanges();
+                transaction.Complete();
+                return roleId;
             }
         }
 
         public int AddRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
                 dbContext.AdminRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
             }
         }
         public void UpdateRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
                 dbContext.AdminRolesSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         public void DeleteRole(IContext context, InternalAdminRole model)
@@ -266,7 +299,6 @@ namespace BL.Database.Admins
                 var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRolesSet.Remove(dbModel);
                 dbContext.SaveChanges();
-
                 transaction.Complete();
             }
         }
@@ -428,11 +460,13 @@ namespace BL.Database.Admins
         public int AddRoleAction(IContext context, InternalAdminRoleAction model)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
                 dbContext.AdminRoleActionsSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
             }
         }
@@ -450,16 +484,19 @@ namespace BL.Database.Admins
         public void UpdateRoleAction(IContext context, InternalAdminRoleAction model)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
                 dbContext.AdminRoleActionsSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         public void DeleteRoleAction(IContext context, InternalAdminRoleAction model)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRoleActionsSet.Remove(dbModel);
@@ -473,9 +510,7 @@ namespace BL.Database.Admins
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-
                 qry = GetWhereRoleAction(ref qry, filter);
-
                 var res = qry.Select(x => new InternalAdminRoleAction
                 {
                     Id = x.Id,
@@ -712,10 +747,10 @@ namespace BL.Database.Admins
 
                 filterContains = positionIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
-
                 qry = qry.Where(filterContains);
-
-                return qry.Select(x => x.RoleId).ToList();
+                var res = qry.Select(x => x.RoleId).ToList();
+                transaction.Complete();
+                return res;
 
             }
 

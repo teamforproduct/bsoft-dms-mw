@@ -17,6 +17,7 @@ namespace BL.Logic.Common
         protected EnumDocumentActions _action;
         protected IEnumerable<InternalActionRecord> _actionRecords;
         protected IAdminService _admin;
+        protected ILogger _logger;
 
         public void InitializeCommand(IContext ctx, InternalDocument doc)
         {
@@ -30,6 +31,7 @@ namespace BL.Logic.Common
             _param = param;
             _action = action?? EnumDocumentActions.Undefined;
             _admin = DmsResolver.Current.Get<IAdminService>();
+            _logger = DmsResolver.Current.Get<ILogger>();
         }
 
         public InternalDocument Document => _document;
