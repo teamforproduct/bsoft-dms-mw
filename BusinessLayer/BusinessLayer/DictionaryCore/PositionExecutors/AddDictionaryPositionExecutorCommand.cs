@@ -23,7 +23,7 @@ namespace BL.Logic.DictionaryCore
                 {
 
                     Model.Id = _dictDb.AddExecutor(_context, dp);
-                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { dp.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj);
 
                     // При назначении сотрудника добавляю все роли должности

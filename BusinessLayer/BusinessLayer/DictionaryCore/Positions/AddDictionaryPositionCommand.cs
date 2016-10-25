@@ -51,7 +51,7 @@ namespace BL.Logic.DictionaryCore
                 {
 
                     positionId = _dictDb.AddPosition(_context, dp);
-                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { dp.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj);
 
                     // Если order не задан, задаю максимальный.

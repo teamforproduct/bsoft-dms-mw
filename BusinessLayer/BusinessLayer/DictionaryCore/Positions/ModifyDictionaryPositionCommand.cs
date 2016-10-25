@@ -52,7 +52,7 @@ namespace BL.Logic.DictionaryCore
                 {
 
                     _dictDb.UpdatePosition(_context, dp);
-                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { dp.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj);
 
                     _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
