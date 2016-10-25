@@ -63,9 +63,8 @@ namespace BL.Logic.Logging
 
         public void Information(IContext ctx, string message, int? objectId = null, int? actionId = null, object logObject = null)
         {
-
             var js = new JavaScriptSerializer();
-            var frontObjJson = js.Serialize(logObject);
+            var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
             AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Information,
