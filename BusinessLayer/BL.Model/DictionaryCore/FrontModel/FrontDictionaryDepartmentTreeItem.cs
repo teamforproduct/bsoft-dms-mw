@@ -17,7 +17,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Код подразделения
         /// </summary>
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public string Code { get; set; }
 
         /// <summary>
