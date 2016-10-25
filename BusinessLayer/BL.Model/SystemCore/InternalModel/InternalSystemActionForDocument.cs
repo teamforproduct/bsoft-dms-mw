@@ -4,17 +4,14 @@ using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Model.SystemCore.InternalModel
 {
-    public class InternalSystemAction
+    public class InternalSystemActionForDocument
     {
-        public int Id { get; set; }
-        public EnumObjects ObjectId { get; set; }
-        public string Code { get; set; }
+        public EnumDocumentActions DocumentAction { get; set; }
+        public EnumObjects Object { get; set; }
+        public string ActionCode { get; set; }
+        public string ObjectCode { get; set; }
         public string API { get; set; }
         public string Description { get; set; }
-        public bool IsGrantable { get; set; }
-        public bool IsGrantableByRecordId { get; set; }
-        public bool IsVisible { get; set; }
-        public int? GrantId { get; set; }
         public string Category { get; set; }
         public IEnumerable<InternalActionRecord> ActionRecords { get; set; }
         

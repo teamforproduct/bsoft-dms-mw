@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Database.DatabaseContext;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
@@ -103,6 +104,28 @@ namespace BL.Logic.SystemCore
             var res = Tree.GetList( Tree.Get(flatList, filter));
 
             return res;
+        }
+
+        public void RefreshSystemActions(IContext context)
+        {
+            var systemDbActions = _systemDb.GetInternalSystemActions(context, new FilterSystemAction());
+
+            var systemImportActions = DmsDbImportData.GetSystemActions();
+
+            foreach (var act in systemImportActions)
+            {
+                var i = systemDbActions.Where(x => x.Id == act.Id).FirstOrDefault();
+
+                if (i == null)
+                {
+                    _systemDb.AddSystemAction(context, act);
+                }
+                else
+                {
+                    _systemDb.UpdateSystemAction(context, act);
+                }
+            }         
+
         }
     }
 }

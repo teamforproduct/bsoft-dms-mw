@@ -6,6 +6,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.SystemCore.Filters;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -13,6 +14,7 @@ namespace DMS_WebAPI.Controllers
     /// Действия системы
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/SystemActions")]
     public class SystemActionsController : ApiController
     {
         /// <summary>
@@ -27,6 +29,19 @@ namespace DMS_WebAPI.Controllers
             var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
             var tmpDicts = tmpSysProc.GetSystemActions(ctx, filter);
             return new JsonResult(tmpDicts, this);
+        }
+
+        [HttpPost]
+        [Route("RefreshSystemactions")]
+        public IHttpActionResult RefreshSystemactions()
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            tmpService.RefreshSystemActions(cxt);
+            stopWatch.Stop();
+            return new JsonResult("Done", this, stopWatch.Elapsed);
         }
 
     }

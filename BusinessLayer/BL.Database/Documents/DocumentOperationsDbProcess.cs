@@ -35,7 +35,7 @@ namespace BL.Database.Documents
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
-                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+                res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
                 var qry = CommonQueries.GetDocumentQuery(dbContext, context);
                 if (documentId.HasValue)
                 {
@@ -156,7 +156,7 @@ namespace BL.Database.Documents
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
-                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+                res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
 
                 res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Id == documentId)
@@ -208,7 +208,7 @@ namespace BL.Database.Documents
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
-                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+                res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
 
                 var qry = CommonQueries.GetDocumentQuery(dbContext, context);
 
@@ -273,7 +273,7 @@ namespace BL.Database.Documents
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new DocumentActionsModel();
-                res.ActionsList = new Dictionary<int, List<InternalSystemAction>>();
+                res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
 
                 res.Document = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.Id == documentId)

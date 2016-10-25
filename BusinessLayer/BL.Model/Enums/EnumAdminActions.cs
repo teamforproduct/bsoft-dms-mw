@@ -29,7 +29,7 @@
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyRoleAction = 701005,
+        //ModifyRoleAction = 701005,
         /// <summary>
         /// Удалить 
         /// </summary>

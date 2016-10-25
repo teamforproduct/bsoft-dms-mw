@@ -34,9 +34,9 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.AddRoleAction:
                     cmd = DmsResolver.Current.Get<AddRoleActionCommand>();
                     break;
-                case EnumAdminActions.ModifyRoleAction:
-                    cmd = DmsResolver.Current.Get<ModifyRoleActionCommand>();
-                    break;
+                //case EnumAdminActions.ModifyRoleAction:
+                //    cmd = DmsResolver.Current.Get<ModifyRoleActionCommand>();
+                //    break;
                 case EnumAdminActions.DeleteRoleAction:
                     cmd = DmsResolver.Current.Get<DeleteRoleActionCommand>();
                     break;

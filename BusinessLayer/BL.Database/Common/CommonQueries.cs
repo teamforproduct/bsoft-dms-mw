@@ -3324,13 +3324,13 @@ namespace BL.Database.Common
                 }).ToList();
         }
 
-        public static Dictionary<int, List<InternalSystemAction>> GetActionsListForCurrentPositionsList(IContext context, DmsContext dbContext, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
+        public static Dictionary<int, List<InternalSystemActionForDocument>> GetActionsListForCurrentPositionsList(IContext context, DmsContext dbContext, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
         {
             var filterObjectsContains = PredicateBuilder.False<SystemActions>();
             filterObjectsContains = objects.Aggregate(filterObjectsContains,
                 (current, value) => current.Or(e => (EnumObjects)e.ObjectId == value).Expand());
 
-            var res = new Dictionary<int, List<InternalSystemAction>>();
+            var res = new Dictionary<int, List<InternalSystemActionForDocument>>();
             foreach (var posId in context.CurrentPositionsIdList)
             {
                 if (positionAccesses.Contains(posId))
@@ -3343,7 +3343,7 @@ namespace BL.Database.Common
                                         y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
                         );
 
-                    var actLst = qry.Select(a => new InternalSystemAction
+                    var actLst = qry.Select(a => new InternalSystemActionForDocument
                     {
                         DocumentAction = (EnumDocumentActions)a.Id,
                         Object = (EnumObjects)a.ObjectId,

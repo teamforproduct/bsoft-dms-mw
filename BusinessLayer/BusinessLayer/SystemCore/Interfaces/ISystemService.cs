@@ -24,6 +24,7 @@ namespace BL.Logic.SystemCore.Interfaces
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         FrontSystemAction GetSystemAction(IContext context, int id);
         IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
+        void RefreshSystemActions(IContext context);
 
     }
 }

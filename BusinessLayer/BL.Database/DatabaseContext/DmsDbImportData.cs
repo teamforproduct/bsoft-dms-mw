@@ -1,8 +1,10 @@
 ﻿using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
+using BL.Model.Common;
 using BL.Model.Constants;
 using BL.Model.Enums;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +73,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.PropertyValues, "Значения динамических аттрибутов"));
 
             items.Add(GetSystemObjects(EnumObjects.EncryptionCertificates, "Хранилище сертификатов"));
-            items.Add(GetSystemObjects(EnumObjects.EncryptionCertificateTypes, "Типы сертификатов"));
+            //items.Add(GetSystemObjects(EnumObjects.EncryptionCertificateTypes, "Типы сертификатов"));
 
             items.Add(GetSystemObjects(EnumObjects.AdminRoles, "Роли"));
             items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles, "Роли"));
@@ -98,37 +100,43 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemActions>();
 
+            items.Add(GetSysAct(EnumDocumentActions.ViewDocument, EnumObjects.Documents, "##l@DocumentActions:ViewDocument@l##", "Документ", isVisible:false));
             items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, "##l@DocumentActions:AddDocument@l##", "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, "##l@DocumentActions:CopyDocument@l##", "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, "##l@DocumentActions:ModifyDocument@l##", "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, "##l@DocumentActions:DeleteDocument@l##", "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, "##l@DocumentActions:LaunchPlan@l##", "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListItem, EnumObjects.Documents, "##l@DocumentActions:AddDocumentSendListItem@l##", "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, "##l@DocumentActions:StopPlan@l##", "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, "##l@DocumentActions:ChangeExecutor@l##", "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, "##l@DocumentActions:RegisterDocument@l##", "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents, "##l@DocumentActions:MarkDocumentEventAsRead@l##", "Информирование"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForInformation, EnumObjects.Documents, "##l@DocumentActions:SendForInformation@l##", "Информирование"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents, "##l@DocumentActions:SendForConsideration@l##", "Информирование"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents, "##l@DocumentActions:SendForInformationExternal@l##", "Информирование"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForControl, EnumObjects.Documents, "##l@DocumentActions:SendForControl@l##", "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecution, EnumObjects.Documents, "##l@DocumentActions:SendForResponsibleExecution@l##", "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents, "##l@DocumentActions:SendForExecution@l##", "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents, "##l@DocumentActions:SendForVisaing@l##", "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForАgreement, EnumObjects.Documents, "##l@DocumentActions:SendForАgreement@l##", "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForАpproval, EnumObjects.Documents, "##l@DocumentActions:SendForАpproval@l##", "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForSigning, EnumObjects.Documents, "##l@DocumentActions:SendForSigning@l##", "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, "##l@DocumentActions:ReportRegistrationCardDocument@l##", "Отчеты"));
+            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, "##l@DocumentActions:LaunchPlan@l##", "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListItem, EnumObjects.Documents, "##l@DocumentActions:AddDocumentSendListItem@l##", "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, "##l@DocumentActions:StopPlan@l##", "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, "##l@DocumentActions:ChangeExecutor@l##", "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, "##l@DocumentActions:RegisterDocument@l##", "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents, "##l@DocumentActions:MarkDocumentEventAsRead@l##", "Информирование", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, "##l@DocumentActions:SendDocument@l##", "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.SendForInformation, EnumObjects.Documents, "##l@DocumentActions:SendForInformation@l##", "Информирование", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents, "##l@DocumentActions:SendForConsideration@l##", "Информирование", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents, "##l@DocumentActions:SendForInformationExternal@l##", "Информирование", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForControl, EnumObjects.Documents, "##l@DocumentActions:SendForControl@l##", "Контроль", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForControlChange, EnumObjects.Documents, "##l@DocumentActions:SendForControlChange@l##", "Контроль"));
+            items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecution, EnumObjects.Documents, "##l@DocumentActions:SendForResponsibleExecution@l##", "Контроль", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents, "##l@DocumentActions:SendForExecution@l##", "Контроль", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents, "##l@DocumentActions:SendForVisaing@l##", "Подписание", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForАgreement, EnumObjects.Documents, "##l@DocumentActions:SendForАgreement@l##", "Подписание", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForАpproval, EnumObjects.Documents, "##l@DocumentActions:SendForАpproval@l##", "Подписание", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendForSigning, EnumObjects.Documents, "##l@DocumentActions:SendForSigning@l##", "Подписание", isVisible: false));
+            items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, "##l@DocumentActions:ReportRegistrationCardDocument@l##", "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, "##l@DocumentActions:ReportRegisterTransmissionDocuments@l##", "Отчеты"));
+            items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, "##l@DocumentActions:ReportDocumentForDigitalSignature@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, "##l@DocumentActions:AddFavourite@l##", "Дополнительно", false));
             items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, "##l@DocumentActions:DeleteFavourite@l##", "Дополнительно", false));
-            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, "##l@DocumentActions:FinishWork@l##", "Дополнительно"));
-            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, "##l@DocumentActions:StartWork@l##", "Дополнительно"));
-            items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, "##l@DocumentActions:ChangePosition@l##", "Администратор"));
+            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, "##l@DocumentActions:FinishWork@l##", "Дополнительно", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, "##l@DocumentActions:StartWork@l##", "Дополнительно", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, "##l@DocumentActions:ChangePosition@l##", "Администратор", isVisible: false));
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, "##l@DocumentActions:AddDocumentRestrictedSendList@l##"));
             items.Add(GetSysAct(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, "##l@DocumentActions:AddByStandartSendListDocumentRestrictedSendList@l##"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, "##l@DocumentActions:DeleteDocumentRestrictedSendList@l##"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentSendList, EnumObjects.DocumentSendLists, "##l@DocumentActions:ModifyDocumentSendList@l##"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentSendList, EnumObjects.DocumentSendLists, "##l@DocumentActions:DeleteDocumentSendList@l##"));
+            items.Add(GetSysAct(EnumDocumentActions.CopyDocumentSendList, EnumObjects.DocumentSendLists, "##l@DocumentActions:CopyDocumentSendList@l##", isVisible: false));
             items.Add(GetSysAct(EnumDocumentActions.LaunchDocumentSendListItem, EnumObjects.DocumentSendLists, "##l@DocumentActions:LaunchDocumentSendListItem@l##"));
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentFile, EnumObjects.DocumentFiles, "##l@DocumentActions:AddDocumentFile@l##"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentFile, EnumObjects.DocumentFiles, "##l@DocumentActions:ModifyDocumentFile@l##"));
@@ -146,8 +154,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AddByStandartSendListDocumentSendList, EnumObjects.DocumentSendListStages, "##l@DocumentActions:AddByStandartSendListDocumentSendList@l##"));
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListStage, EnumObjects.DocumentSendListStages, "##l@DocumentActions:AddDocumentSendListStage@l##"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentSendListStage, EnumObjects.DocumentSendListStages, "##l@DocumentActions:DeleteDocumentSendListStage@l##"));
-            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, "##l@DocumentActions:SendMessage@l##", "Информирование"));
-            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, "##l@DocumentActions:AddNote@l##", "Информирование"));
+            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, "##l@DocumentActions:SendMessage@l##", "Информирование", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, "##l@DocumentActions:AddNote@l##", "Информирование", isGrantable: false));
             items.Add(GetSysAct(EnumDocumentActions.ControlOn, EnumObjects.DocumentWaits, "##l@DocumentActions:ControlOn@l##", "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.ControlChange, EnumObjects.DocumentWaits, "##l@DocumentActions:ControlChange@l##", "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.SendForExecutionChange, EnumObjects.DocumentWaits, "##l@DocumentActions:SendForExecutionChange@l##", "Контроль"));
@@ -165,11 +173,12 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AffixАgreement, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:AffixАgreement@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.AffixАpproval, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:AffixАpproval@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.AffixSigning, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:AffixSigning@l##", "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.SelfAffixSigning, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:SelfAffixSigning@l##", "Подписание"));
+            items.Add(GetSysAct(EnumDocumentActions.SelfAffixSigning, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:SelfAffixSigning@l##", "Подписание", isVisible: false));
             items.Add(GetSysAct(EnumDocumentActions.RejectVisaing, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:RejectVisaing@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.RejectАgreement, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:RejectАgreement@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.RejectАpproval, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:RejectАpproval@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.RejectSigning, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:RejectSigning@l##", "Подписание"));
+            items.Add(GetSysAct(EnumDocumentActions.VerifySigning, EnumObjects.DocumentSubscriptions, "##l@DocumentActions:VerifySigning@l##", "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentTask, EnumObjects.DocumentTasks, "##l@DocumentActions:AddDocumentTask@l##"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentTask, EnumObjects.DocumentTasks, "##l@DocumentActions:ModifyDocumentTask@l##"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentTask, EnumObjects.DocumentTasks, "##l@DocumentActions:DeleteDocumentTask@l##"));
@@ -297,6 +306,10 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.DeletePositionRole, EnumObjects.AdminPositionRoles, "##l@AdminActions:DeletePositionRole@l##"));
             items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, "##l@AdminActions:DuplicatePositionRoles@l##"));
 
+            items.Add(GetSysAct(EnumAdminActions.AddRoleAction, EnumObjects.AdminRoleAction, "##l@AdminActions:AddRoleAction@l##"));
+           // items.Add(GetSysAct(EnumAdminActions.ModifyRoleAction, EnumObjects.AdminRoleAction, "##l@AdminActions:ModifyRoleAction@l##"));
+            items.Add(GetSysAct(EnumAdminActions.DeleteRoleAction, EnumObjects.AdminRoleAction, "##l@AdminActions:DeleteRoleAction@l##"));
+
             items.Add(GetSysAct(EnumAdminActions.AddUserRole, EnumObjects.AdminUserRoles, "##l@AdminActions:AddUserRole@l##"));
             items.Add(GetSysAct(EnumAdminActions.ModifyUserRole, EnumObjects.AdminUserRoles, "##l@AdminActions:ModifyUserRole@l##"));
             items.Add(GetSysAct(EnumAdminActions.DeleteUserRole, EnumObjects.AdminUserRoles, "##l@AdminActions:DeleteUserRole@l##"));
@@ -311,12 +324,95 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.AddDepartmentAdmin, EnumObjects.DictionaryDepartments, "##l@AdminActions:AddDepartmentAdmin@l##"));
             items.Add(GetSysAct(EnumAdminActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments, "##l@AdminActions:DeleteDepartmentAdmin@l##"));
 
+            items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, "##l@SystemActions:Login@l##",  isGrantable:false, isVisible:false));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings, "##l@SystemActions:SetSetting@l##"));
 
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
             return items;
         }
+
+        public static void CheckSystemActions()
+        {
+            int actionsCountByEnums =
+            Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
+
+            var actionsCountByList = GetSystemActions().Count();
+
+            if (actionsCountByEnums != actionsCountByList)
+            {
+                List<EnumModel> list = CheckSystemActions2();
+                string s = string.Empty;
+                foreach (var item in list)
+                {
+                    s += item.Value.ToString() + " - " + item.Name + "\r\n";
+                }
+                throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
+            }
+
+
+        }
+
+        public static List<EnumModel> CheckSystemActions2()
+        {
+            var AdminActionsList = GetListByEnum<EnumAdminActions>().Where(x => x.Value > 0);
+            var EncryptionActionsList = GetListByEnum<EnumEncryptionActions>().Where(x => x.Value > 0);
+            var PropertyActionsList = GetListByEnum<EnumPropertyActions>().Where(x => x.Value > 0);
+            var DictionaryActionsList = GetListByEnum<EnumDictionaryActions>().Where(x => x.Value > 0);
+            var DocumentActionsList = GetListByEnum<EnumDocumentActions>().Where(x => x.Value > 0);
+            var SystemActionsList = GetListByEnum<EnumSystemActions>().Where(x => x.Value > 0);
+
+            var actionsList = GetSystemActions();
+            List<EnumModel> ActionsList = new List<EnumModel>();
+            ActionsList.AddRange(AdminActionsList);
+            ActionsList.AddRange(EncryptionActionsList);
+            ActionsList.AddRange(PropertyActionsList);
+            ActionsList.AddRange(DictionaryActionsList);
+            ActionsList.AddRange(DocumentActionsList);
+            ActionsList.AddRange(SystemActionsList);
+
+            List<EnumModel> ResList = new List<EnumModel>();
+
+            foreach (var action in ActionsList)
+            {
+                if (!ExistAction(actionsList, action))
+                {
+                    ResList.Add(action);
+                }
+            }
+
+            return ResList;
+
+        }
+
+        private static bool ExistAction(List<SystemActions> items, EnumModel item)
+        {
+            foreach (var i in items)
+            {
+                if (i.Id == item.Value) return true;
+            }
+
+            return false;
+        }
+
+        public static List<EnumModel> GetListByEnum<T>()
+        {
+            var array = (T[])(Enum.GetValues(typeof(T)).Cast<T>());
+            return array
+              .Select(a => new EnumModel
+              {
+                  Value = Convert.ToInt32(a),
+                  Name = a.ToString(),
+              })
+              .OrderBy(kvp => kvp.Name)
+              .ToList();
+        }
+
 
         private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, string description, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, int? grantId = null)
         { return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, grantId); }

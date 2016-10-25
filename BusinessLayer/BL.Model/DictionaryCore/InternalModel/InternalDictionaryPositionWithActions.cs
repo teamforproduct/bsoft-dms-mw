@@ -12,6 +12,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         public int? ExecutorAgentId { get; set; }
         public string DepartmentName { get; set; }
         public string ExecutorAgentName { get; set; }
-        public IEnumerable<InternalSystemAction> Actions { get; set; }
+        public IEnumerable<InternalSystemActionForDocument> Actions { get; set; }
     }
 }

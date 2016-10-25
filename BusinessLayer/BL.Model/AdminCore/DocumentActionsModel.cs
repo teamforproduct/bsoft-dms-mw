@@ -9,7 +9,7 @@ namespace BL.Model.AdminCore
     {
         public InternalDocument Document { get; set; }
         public List<InternalDictionaryPositionWithActions> PositionWithActions { get; set; }
-        public Dictionary<int, List<InternalSystemAction>> ActionsList { get; set; }
+        public Dictionary<int, List<InternalSystemActionForDocument>> ActionsList { get; set; }
 
     }
 }

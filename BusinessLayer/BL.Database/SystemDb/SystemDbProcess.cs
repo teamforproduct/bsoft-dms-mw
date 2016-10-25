@@ -347,37 +347,42 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public void AddSystemAction(IContext context, InternalSystemAction item)
+        {
+            AddSystemAction(context, SystemModelConverter.GetDbSystemAction(context, item));
+        }
+
+        public void UpdateSystemAction(IContext context, InternalSystemAction item)
+        {
+            UpdateSystemAction(context, SystemModelConverter.GetDbSystemAction(context, item));
+        }
+
+        public void AddSystemAction(IContext context, SystemActions item)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                //item.ObjectId = (int)EnumObjects.System;
+                dbContext.SystemActionsSet.Add(item);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void UpdateSystemAction(IContext context, SystemActions item)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.SystemActionsSet.Attach(item);
+                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
         public IEnumerable<FrontSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var qry = dbContext.SystemActionsSet.AsQueryable();
-                if (filter != null)
-                {
-                    if (filter.ActionId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<SystemActions>();
-                        filterContains = filter.ActionId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.ObjectId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<SystemActions>();
-                        filterContains = filter.ObjectId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.ObjectId == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (!string.IsNullOrEmpty(filter.Description))
-                    {
-                        qry = qry.Where(x => x.Code.Contains(filter.Description));
-                    }
-                }
+                var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
                 return qry.Select(x => new FrontSystemAction
                 {
@@ -386,6 +391,62 @@ namespace BL.Database.SystemDb
                     Description = x.Description,
                 }).ToList();
             }
+        }
+
+        public IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = GetSystemActionsQuery(ctx, dbContext, filter);
+                
+                return qry.Select(x => new InternalSystemAction
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                    API = x.API,
+                    Category = x.Category,
+                    GrantId = x.GrantId,
+                    IsGrantable = x.IsGrantable,
+                    IsGrantableByRecordId = x.IsGrantableByRecordId,
+                    IsVisible = x.IsVisible,
+                    ObjectId = (EnumObjects)x.ObjectId
+                }).ToList();
+            }
+        }
+
+        public IQueryable<SystemActions> GetSystemActionsQuery(IContext context, DmsContext dbContext, FilterSystemAction filter)
+        {
+            var qry = dbContext.SystemActionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.ActionId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    filterContains = filter.ActionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.ObjectId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    filterContains = filter.ObjectId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ObjectId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Description))
+                {
+                    qry = qry.Where(x => x.Code.Contains(filter.Description));
+                }
+            }
+
+            return qry;
         }
 
         public IEnumerable<TreeItem> GetSystemObjectsForTree(IContext ctx, FilterSystemObject filter)

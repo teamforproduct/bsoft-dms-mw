@@ -7,6 +7,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
+using BL.Database.DBModel.System;
 
 namespace BL.Database.SystemDb
 {
@@ -31,8 +32,15 @@ namespace BL.Database.SystemDb
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
         IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
 
+
+        void AddSystemAction(IContext context, InternalSystemAction item);
+        void UpdateSystemAction(IContext context, InternalSystemAction item);
+        void AddSystemAction(IContext context, SystemActions item);
+        void UpdateSystemAction(IContext context, SystemActions item);
+
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
+        IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter);
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
         IEnumerable<TreeItem> GetSystemObjectsForTree(IContext ctx, FilterSystemObject filter);
         #endregion

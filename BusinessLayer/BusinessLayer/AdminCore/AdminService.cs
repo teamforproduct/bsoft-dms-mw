@@ -574,6 +574,5 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
-
     }
 }

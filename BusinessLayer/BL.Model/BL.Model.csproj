@@ -128,6 +128,7 @@
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Common\DictionaryItem.cs" />
     <Compile Include="Common\ListItem.cs" />
+    <Compile Include="Common\EnumModel.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
@@ -452,12 +453,13 @@
     <Compile Include="SystemCore\InternalModel\InternalPropertyValues.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyValue.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailServerParameters.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalSystemAction.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemSetting.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemObject.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPropertyLink.cs" />
     <Compile Include="SystemCore\InternalModel\InternalProperty.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSystemValueType.cs" />
-    <Compile Include="SystemCore\InternalModel\InternalSystemAction.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalSystemActionForDocument.cs" />
     <Compile Include="SystemCore\ModifyLicenceInfo.cs" />
     <Compile Include="SystemCore\LicenceInfo.cs" />
     <Compile Include="SystemCore\LogInfo.cs" />

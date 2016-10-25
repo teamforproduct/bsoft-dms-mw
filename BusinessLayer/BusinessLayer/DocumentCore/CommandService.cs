@@ -75,7 +75,7 @@ namespace BL.Logic.DocumentCore
             foreach (var pos in model.PositionWithActions)
             {
                 var actionList = model.ActionsList[pos.Id];
-                var resultActions = new List<InternalSystemAction>();
+                var resultActions = new List<InternalSystemActionForDocument>();
                 if (actionList != null)
                 {
                     foreach (var act in actionList)
