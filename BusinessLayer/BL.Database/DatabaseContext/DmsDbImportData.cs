@@ -333,7 +333,6 @@ namespace BL.Database.DatabaseContext
 
             items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisibleInMenu: false));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
-            items.Add(GetSysAct(EnumSystemActions.qqqq, EnumObjects.SystemSettings));
 
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
