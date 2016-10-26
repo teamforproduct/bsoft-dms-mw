@@ -50,7 +50,7 @@ namespace BL.Logic.DictionaryCore
                     var id = _dictDb.AddDepartment(_context, dds);
 
                     var frontObj = _dictDb.GetDepartment(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } });
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj);
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();
                     return id;

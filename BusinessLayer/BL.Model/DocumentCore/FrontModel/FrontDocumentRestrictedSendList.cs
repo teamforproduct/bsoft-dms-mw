@@ -13,6 +13,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PositionExecutorAgentName { get; set; }
         public string AccessLevelName { get; set; }
         public string PositionExecutorAgentPhoneNumber { get; set; }
-
+        public string DepartmentName { get; set; }
     }
 }

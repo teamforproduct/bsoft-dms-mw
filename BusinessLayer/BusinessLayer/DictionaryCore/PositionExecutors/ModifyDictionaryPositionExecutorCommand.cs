@@ -24,7 +24,7 @@ namespace BL.Logic.DictionaryCore
 
                     _dictDb.UpdateExecutor(_context, dp);
                     var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { dp.Id } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj);
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
 
                     // Синхронизация параметров в UserRoles:
                     _adminDb.UpdateUserRolePeriod(_context, new BL.Model.DictionaryCore.InternalModel.InternalDictionaryPositionExecutor(Model));

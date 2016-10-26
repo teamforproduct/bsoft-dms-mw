@@ -61,7 +61,7 @@ namespace BL.Logic.Logging
         }
 
 
-        public void Information(IContext ctx, string message, int? objectId = null, int? actionId = null, object logObject = null)
+        public void Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null)
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
@@ -71,6 +71,7 @@ namespace BL.Logic.Logging
                 Message = message,
                 ObjectId = objectId,
                 ActionId = actionId,
+                RecordId = recordId,
                 LogObject = frontObjJson,
                 LogTrace = (logObject != null? logObject.GetType().ToString():null),
             });
