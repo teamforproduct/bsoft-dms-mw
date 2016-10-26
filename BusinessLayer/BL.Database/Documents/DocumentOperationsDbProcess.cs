@@ -2219,7 +2219,7 @@ namespace BL.Database.Documents
                     ((List<InternalDocumentPaper>)doc.Papers).ForEach(x =>
                     {
                         x.PreLastPaperEventId = dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                                .Where(y => y.PaperId == x.Id && y.Id != x.LastPaperEvent.Id && y.PaperRecieveDate != null &&
+                                .Where(y => y.PaperId == x.Id && y.Id != x.LastPaperEvent.Id && y.PaperRecieveDate.HasValue &&
                                             y.TargetPositionId == x.LastPaperEvent.SourcePositionId)
                                 .OrderByDescending(y => y.PaperRecieveDate)
                                 .Select(y => y.Id)

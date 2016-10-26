@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 _document.Papers.Where(
                     x => x.IsInWork &&
                         x.LastPaperEvent.TargetPositionId == positionId &&
-                        x.LastPaperEvent.PaperRecieveDate == null && x.LastPaperEvent.PaperPlanDate != null)
+                        x.LastPaperEvent.PaperRecieveDate == null && x.LastPaperEvent.PaperPlanDate.HasValue)
                         .Select(x => new InternalActionRecord
                         {
                             PaperId = x.Id,

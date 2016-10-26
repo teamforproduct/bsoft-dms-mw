@@ -4786,18 +4786,18 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => filter.IsActive == x.IsActive);
             }
 
-            //if (filter.StartDate != null & filter.EndDate != null)
+            //if (filter.StartDate.HasValue & filter.EndDate.HasValue)
             //{
             //    qry = qry.Where(x =>
             //    x.StartDate <= filter.EndDate && x.EndDate >= filter.StartDate);
             //}
 
-            if (filter.StartDate != null)
+            if (filter.StartDate.HasValue)
             {
                 qry = qry.Where(x => x.EndDate >= filter.StartDate);
             }
 
-            if (filter.EndDate != null)
+            if (filter.EndDate.HasValue)
             {
                 qry = qry.Where(x => x.StartDate <= filter.EndDate);
             }

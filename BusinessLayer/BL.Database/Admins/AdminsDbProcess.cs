@@ -781,7 +781,7 @@ namespace BL.Database.Admins
 
                 qry = GetWherePositionRole(ref qry, filter);
 
-                return qry.Select(x => new InternalAdminPositionRole
+                var res = qry.Select(x => new InternalAdminPositionRole
                 {
                     Id = x.Id,
                     RoleId = x.RoleId,
@@ -789,6 +789,10 @@ namespace BL.Database.Admins
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1241,13 +1245,13 @@ namespace BL.Database.Admins
             //    qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
             //}
 
-            if (filter.StartDate != null)
+            if (filter.StartDate.HasValue)
             {
                 // PSS ссылка может отсутствовать
                 qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.Now));
             }
 
-            if (filter.EndDate != null)
+            if (filter.EndDate.HasValue)
             {
                 // PSS ссылка может отсутствовать
                 qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.Now));
