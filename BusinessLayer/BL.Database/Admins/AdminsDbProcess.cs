@@ -405,15 +405,27 @@ namespace BL.Database.Admins
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
             {
                 qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Description))
+            {
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Description == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             return qry;
@@ -501,6 +513,20 @@ namespace BL.Database.Admins
                 var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRoleActionsSet.Remove(dbModel);
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteRoleActions(IContext context, FilterAdminRoleAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+                qry = GetWhereRoleAction(ref qry, filter);
+                qry.Delete();
+                //dbContext.AdminRoleActionsSet.Remove(dbModel);
+                //dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 

@@ -88,13 +88,13 @@ namespace DMS_WebAPI.Controllers.Admins
         /// Запрещает действие для роли
         /// </summary>
         /// <returns>FrontAdminRoleAction</returns> 
-        public IHttpActionResult Delete([FromUri] int id)
+        public IHttpActionResult Delete([FromUri] int roleId, [FromUri] int actionId)
         {
             var cxt = DmsResolver.Current.Get<UserContext>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
-            tmpService.ExecuteAction(EnumAdminActions.DeleteRoleAction, cxt, id);
-            FrontAdminRoleAction tmpItem = new FrontAdminRoleAction() { Id = id };
+            tmpService.ExecuteAction(EnumAdminActions.DeleteRoleAction, cxt, new ModifyAdminRoleAction() { RoleId = roleId , ActionId = actionId });
+            FrontAdminRoleAction tmpItem = new FrontAdminRoleAction() { RoleId = roleId, ActionId = actionId };
             return new JsonResult(tmpItem, this);
         }
     }

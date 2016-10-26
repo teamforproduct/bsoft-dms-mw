@@ -4,18 +4,21 @@ using BL.Logic.Common;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Model.AdminCore.IncomingModel;
+using BL.Model.AdminCore.FilterModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
     public class DeleteRoleActionCommand : BaseAdminCommand
     {
 
-        private int Model
+        private ModifyAdminRoleAction Model
         {
             get
             {
-                if (!(_param is int)) throw new WrongParameterTypeError();
-                return (int)_param;
+                if (!(_param is ModifyAdminRoleAction)) throw new WrongParameterTypeError();
+                return (ModifyAdminRoleAction)_param;
             }
         }
 
@@ -35,8 +38,12 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                var filter = new InternalAdminRoleAction() { Id = Model };
-                _adminDb.DeleteRoleAction(_context, filter);
+                var filter = new FilterAdminRoleAction()
+                {
+                    RoleIDs = new List<int> { Model.RoleId },
+                    ActionIDs = new List<int> { Model.ActionId },
+                };
+                _adminDb.DeleteRoleActions(_context, filter);
                 return null;
             }
             catch (ArgumentNullException ex)

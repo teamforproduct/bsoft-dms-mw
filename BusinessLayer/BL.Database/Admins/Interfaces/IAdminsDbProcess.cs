@@ -42,6 +42,7 @@ namespace BL.Database.Admins.Interfaces
         void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models);
         void UpdateRoleAction(IContext context, InternalAdminRoleAction model);
         void DeleteRoleAction(IContext context, InternalAdminRoleAction model);
+        void DeleteRoleActions(IContext context, FilterAdminRoleAction filter);
         bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter);
         InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter);
         IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter);

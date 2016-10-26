@@ -21,6 +21,8 @@ namespace BL.Database.DBModel.Admin
         [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
+        [MaxLength(2000)]
+        public string Description { get; set; }
         public int? RoleTypeId { get; set; }
         //        public int PositionId { get; set; }
         //        public int AccessLevelId { get; set; }

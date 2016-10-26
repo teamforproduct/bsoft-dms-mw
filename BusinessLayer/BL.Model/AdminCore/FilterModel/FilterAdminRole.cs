@@ -24,6 +24,11 @@ namespace BL.Model.AdminCore.FilterModel
         public string NameExact { get; set; }
 
         /// <summary>
+        /// Сужение по описанию
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// Сужение по ролям
         /// </summary>
         public List<int> RoleIDs { get; set; }

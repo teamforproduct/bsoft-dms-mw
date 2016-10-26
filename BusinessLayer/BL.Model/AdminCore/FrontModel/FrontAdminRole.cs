@@ -6,17 +6,26 @@ namespace BL.Model.AdminCore.FrontModel
     /// <summary>
     /// "Список ролей", представление записи.
     /// </summary>
-    public class FrontAdminRole : ModifyAdminRole
+    public class FrontAdminRole 
     {
         /// <summary>
         /// ID
         /// </summary>
-        public new int Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Наименование роли
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Классификатор роли
+        /// </summary>
+        public int? RoleTypeId { get; set; }
+
+        /// <summary>
+        /// Описание роли
+        /// </summary>
+        public string Description { get; set; }
     }
 }
