@@ -12,34 +12,8 @@ using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryAgentEmployeeCommand : BaseDictionaryCommand
+    public class AddDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
-        private AddDictionaryAgentEmployee Model
-        {
-            get
-            {
-                if (!(_param is AddDictionaryAgentEmployee))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (AddDictionaryAgentEmployee)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false, true);
-
-            DictionaryModelVerifying.VerifyAgentEmployee(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try

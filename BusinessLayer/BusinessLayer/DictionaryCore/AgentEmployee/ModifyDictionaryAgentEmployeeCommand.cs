@@ -9,34 +9,8 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryAgentEmployeeCommand : BaseDictionaryCommand
+    public class ModifyDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
-        private ModifyDictionaryAgentEmployee Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentEmployee))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentEmployee)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyAgentEmployee(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try

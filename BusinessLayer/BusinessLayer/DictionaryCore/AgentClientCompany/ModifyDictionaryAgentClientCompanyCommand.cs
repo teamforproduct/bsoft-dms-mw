@@ -11,36 +11,8 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryAgentClientCompanyCommand : BaseDictionaryCommand
+    public class ModifyDictionaryAgentClientCompanyCommand : BaseDictionaryAgentClientCompanyCommand
     {
-
-        private ModifyDictionaryAgentClientCompany Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentClientCompany))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentClientCompany)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int CompanyId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyAgentClientCompany(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try

@@ -9,34 +9,8 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    class AddDictionaryAgentAddressCommand : BaseDictionaryCommand
+    class AddDictionaryAgentAddressCommand : BaseDictionaryAgentAddressCommand
     {
-        private ModifyDictionaryAgentAddress Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentAddress))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentAddress)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyAgentAddress(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try
