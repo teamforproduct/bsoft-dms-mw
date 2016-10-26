@@ -14,5 +14,6 @@ namespace BL.Model.SystemCore
         public DateTime Date { get; set; }
         public int? ObjectId { get; set; }
         public int? ActionId { get; set; }
+        public int? RecordId { get; set; }
     }
 }

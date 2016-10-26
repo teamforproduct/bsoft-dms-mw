@@ -2614,7 +2614,7 @@ namespace BL.Database.Common
                 PositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
-
+                DepartmentName = y.Position.Department.Name,
             }).ToList();
         }
         #endregion

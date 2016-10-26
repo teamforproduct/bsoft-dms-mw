@@ -57,6 +57,13 @@ namespace BL.Database.SystemDb
                             (current, value) => current.Or(e => e.ActionId == value).Expand());
                         qry = qry.Where(filterContains);
                     }
+                    if (filter.RecordId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemLogs>();
+                        filterContains = filter.ActionId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.RecordId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
                     if (filter.LogLevel?.Count > 0)
                     {
                         var filterContains = PredicateBuilder.False<SystemLogs>();
@@ -122,6 +129,7 @@ namespace BL.Database.SystemDb
                     ObjectName = x.Object.Description,
                     ActionId = x.ActionId,
                     ActionName = x.Action.Description,
+                    RecordId = x.RecordId
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -144,6 +152,7 @@ namespace BL.Database.SystemDb
                     Message = log.Message,
                     ObjectId = log.ObjectId,
                     ActionId = log.ActionId,
+                    RecordId = log.RecordId,
                 };
                 dbContext.LogSet.Add(nlog);
                 dbContext.SaveChanges();

@@ -53,7 +53,7 @@ namespace BL.Logic.DictionaryCore
                     _dictDb.UpdateDepartment(_context, dds);
 
                     var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dds.Id } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj);
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();
                 }
