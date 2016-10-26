@@ -26,6 +26,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.System;
 using BL.Model.DictionaryCore.IncomingModel;
 using EntityFramework.Extensions;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Admins
 {
@@ -66,7 +67,7 @@ namespace BL.Database.Admins
                     RoleId = x.RoleId
                 }).ToList();
 
-                res.Actions = dbContext.SystemActionsSet.Select(x => new InternalDictionarySystemActions
+                res.Actions = dbContext.SystemActionsSet.Select(x => new InternalSystemAction
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -74,7 +75,8 @@ namespace BL.Database.Admins
                     IsGrantable = x.IsGrantable,
                     IsGrantableByRecordId = x.IsGrantableByRecordId,
                     IsVisible = x.IsVisible,
-                    Object = (EnumObjects)x.ObjectId
+                    IsVisibleInMenu = x.IsVisibleInMenu,
+                    ObjectId = (EnumObjects)x.ObjectId,
                 }).ToList();
 
                 res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRoleAction
@@ -317,6 +319,7 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     Name = x.Name,
                     RoleTypeId = x.RoleTypeId,
+                    Description = x.Description,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -339,7 +342,9 @@ namespace BL.Database.Admins
                 var res = qry.Select(x => new FrontAdminRole
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    Description = x.Description,
+                    
                     //RoleCode = x.RoleType.Code,
                     //RoleName = x.RoleType.Name
                 }).ToList();
@@ -462,6 +467,21 @@ namespace BL.Database.Admins
                     (current, value) => current.Or(e => e.Description == value).Expand());
 
                 qry = qry.Where(filterContains);
+            }
+
+            if (filter.IsVisible.HasValue)
+            {
+                qry = qry.Where(x => x.IsVisible == filter.IsVisible);
+            }
+
+            if (filter.IsGrantable.HasValue)
+            {
+                qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
+            }
+
+            if (filter.IsGrantableByRecordId.HasValue)
+            {
+                qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
             }
 
             return qry;

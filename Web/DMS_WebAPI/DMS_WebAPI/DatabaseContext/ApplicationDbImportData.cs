@@ -94,6 +94,7 @@ namespace DMS_WebAPI.Models
 
             var list = new List<AdminLanguageValues>();
 
+            list.AddRange(GetAdminLanguageValuesForObjects());
             list.AddRange(GetAdminLanguageValuesForActions());
 
             AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}");
@@ -252,6 +253,62 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:ContriolHasNotBeenChanged@l##", "Contriol Has Not Been Changed", "Параметры контроля не изменены");
 
             // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
+
+            return list;
+        }
+        public static List<AdminLanguageValues> GetAdminLanguageValuesForObjects()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@Objects:Documents@l##", "Documents", "Документы");
+            AddALV(list, "##l@Objects:DocumentAccesses@l##", "Document accesses", "Документы - доступы");
+            AddALV(list, "##l@Objects:DocumentRestrictedSendLists@l##", "Document restricted send lists", "Документы - ограничения рассылки");
+            AddALV(list, "##l@Objects:DocumentSendLists@l##", "Document send lists", "Документы - план работы");
+            AddALV(list, "##l@Objects:DocumentFiles@l##", "Document files", "Документы - файлы");
+            AddALV(list, "##l@Objects:DocumentLinks@l##", "Document links", "Документы - связи");
+            AddALV(list, "##l@Objects:DocumentSendListStages@l##", "Document send list stages", "Документы - этапы плана работ");
+            AddALV(list, "##l@Objects:DocumentEvents@l##", "Document events", "Документы - события");
+            AddALV(list, "##l@Objects:DocumentWaits@l##", "Document waits", "Документы - ожидания");
+            AddALV(list, "##l@Objects:DocumentSubscriptions@l##", "Document subscriptions", "Документы - подписи");
+            AddALV(list, "##l@Objects:DocumentTasks@l##", "Document tasks", "Документы - задачи");
+            AddALV(list, "##l@Objects:DocumentPapers@l##", "Document papers", "Документы - бумажные носители");
+            AddALV(list, "##l@Objects:DocumentPaperEvents@l##", "Document paper events", "Документы - события по бумажным носителям");
+            AddALV(list, "##l@Objects:DocumentPaperLists@l##", "Document paper lists", "Документы - реестры передачи бумажных носителей");
+            AddALV(list, "##l@Objects:DocumentSavedFilters@l##", "Document saved filters", "Документы - сохраненные фильтры");
+            AddALV(list, "##l@Objects:DocumentTags@l##", "Document tags", "Документы - тэги");
+            AddALV(list, "##l@Objects:DictionaryDocumentType@l##", "Dictionary document type", "Типы документов");
+            AddALV(list, "##l@Objects:DictionaryAddressType@l##", "Dictionary address type", "Типы адресов");
+            AddALV(list, "##l@Objects:DictionaryDocumentSubjects@l##", "Dictionary document subjects", "Тематики документов");
+            AddALV(list, "##l@Objects:DictionaryRegistrationJournals@l##", "Dictionary registration journals", "Журналы регистрации");
+            AddALV(list, "##l@Objects:DictionaryContactType@l##", "Dictionary contact type", "Типы контактов");
+            AddALV(list, "##l@Objects:DictionaryAgents@l##", "Dictionary agents", "Контрагенты");
+            AddALV(list, "##l@Objects:DictionaryContacts@l##", "Dictionary contacts", "Контакты");
+            AddALV(list, "##l@Objects:DictionaryAgentAddresses@l##", "Dictionary agent addresses", "Адреса");
+            AddALV(list, "##l@Objects:DictionaryAgentPersons@l##", "Dictionary agent persons", "Физические лица");
+            AddALV(list, "##l@Objects:DictionaryDepartments@l##", "Dictionary departments", "Структура предприятия");
+            AddALV(list, "##l@Objects:DictionaryPositions@l##", "Dictionary positions", "Штатное расписание");
+            AddALV(list, "##l@Objects:DictionaryAgentEmployees@l##", "Dictionary agent employees", "Сотрудники");
+            AddALV(list, "##l@Objects:DictionaryAgentCompanies@l##", "Dictionary agent companies", "Юридические лица");
+            AddALV(list, "##l@Objects:DictionaryAgentBanks@l##", "Dictionary agent banks", "Контрагенты - банки");
+            AddALV(list, "##l@Objects:DictionaryAgentAccounts@l##", "Dictionary agent accounts", "Расчетные счета");
+            AddALV(list, "##l@Objects:DictionaryStandartSendListContent@l##", "Dictionary standart send list content", "Типовые списки рассылки (содержание)");
+            AddALV(list, "##l@Objects:DictionaryStandartSendLists@l##", "Dictionary standart send lists", "Типовые списки рассылки");
+            AddALV(list, "##l@Objects:DictionaryAgentClientCompanies@l##", "Dictionary agent client companies", "Компании");
+            AddALV(list, "##l@Objects:DictionaryPositionExecutorTypes@l##", "Dictionary position executor types", "Типы исполнителей");
+            AddALV(list, "##l@Objects:DictionaryPositionExecutors@l##", "Dictionary position executors", "Исполнители должности");
+            AddALV(list, "##l@Objects:TemplateDocument@l##", "Template document", "Шаблоны документов");
+            AddALV(list, "##l@Objects:TemplateDocumentSendList@l##", "Template document send list", "Списки рассылки в шаблонах");
+            AddALV(list, "##l@Objects:TemplateDocumentRestrictedSendList@l##", "Template document restricted send list", "Ограничительные списки рассылки в шаблонах");
+            AddALV(list, "##l@Objects:TemplateDocumentTask@l##", "Template document task", "Задачи в шаблонах");
+            AddALV(list, "##l@Objects:TemplateDocumentAttachedFiles@l##", "Template document attached files", "Прикрепленные к шаблонам файлы");
+            AddALV(list, "##l@Objects:DictionaryTag@l##", "Dictionary tag", "Теги");
+            AddALV(list, "##l@Objects:CustomDictionaryTypes@l##", "Custom dictionary types", "Типы пользовательских словарей");
+            AddALV(list, "##l@Objects:CustomDictionaries@l##", "Custom dictionaries", "Пользовательские словари");
+            AddALV(list, "##l@Objects:Properties@l##", "Properties", "Динамические аттрибуты");
+            AddALV(list, "##l@Objects:PropertyLinks@l##", "Property links", "Связи динамических аттрибутов с объектами системы");
+            AddALV(list, "##l@Objects:PropertyValues@l##", "Property values", "Значения динамических аттрибутов");
+
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
 
             return list;
         }

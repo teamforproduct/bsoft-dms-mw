@@ -3337,7 +3337,7 @@ namespace BL.Database.Common
                 {
                     var qry = dbContext.SystemActionsSet
                         .Where(filterObjectsContains)
-                        .Where(x => x.IsVisible &&
+                        .Where(x => x.IsVisibleInMenu &&
                                     (!x.IsGrantable ||
                                         x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))

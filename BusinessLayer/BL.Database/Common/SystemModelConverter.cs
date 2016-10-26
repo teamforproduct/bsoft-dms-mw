@@ -26,7 +26,18 @@ namespace BL.Database.Common
                 IsGrantable = item.IsGrantable,
                 IsGrantableByRecordId = item.IsGrantableByRecordId,
                 IsVisible = item.IsVisible,
+                IsVisibleInMenu = item.IsVisibleInMenu,
                 ObjectId = (int)item.ObjectId,
+            };
+        }
+
+        public static SystemObjects GetDbSystemObject(IContext context, InternalSystemObject item)
+        {
+            return item == null ? null : new SystemObjects
+            {
+                Id = item.Id,
+                Code = item.Code,
+                Description = item.Description,
             };
         }
 

@@ -14,6 +14,7 @@ namespace BL.Model.SystemCore.InternalModel
         public bool IsGrantable { get; set; }
         public bool IsGrantableByRecordId { get; set; }
         public bool IsVisible { get; set; }
+        public bool IsVisibleInMenu { get; set; }
         public int? GrantId { get; set; }
         public string Category { get; set; }
         public IEnumerable<InternalActionRecord> ActionRecords { get; set; }

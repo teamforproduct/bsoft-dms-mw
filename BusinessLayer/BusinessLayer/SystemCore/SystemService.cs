@@ -127,5 +127,27 @@ namespace BL.Logic.SystemCore
             }         
 
         }
+
+        public void RefreshSystemObjects(IContext context)
+        {
+            var systemDbObjects = _systemDb.GetSystemObjects(context, new FilterSystemObject());
+
+            var systemImportObjects = DmsDbImportData.GetSystemObjects();
+
+            foreach (var act in systemImportObjects)
+            {
+                var i = systemDbObjects.Where(x => x.Id == act.Id).FirstOrDefault();
+
+                if (i == null)
+                {
+                    _systemDb.AddSystemObject(context, act);
+                }
+                else
+                {
+                    _systemDb.UpdateSystemObject(context, act);
+                }
+            }
+
+        }
     }
 }
