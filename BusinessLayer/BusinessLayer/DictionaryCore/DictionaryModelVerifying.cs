@@ -229,9 +229,9 @@ namespace BL.Logic.DictionaryCore
             Model.TaxCode?.Trim();
 
             // Обрезаю время для даты рождения и даты получения паспорта
-            if (Model.PassportDate != null) Model.PassportDate = new DateTime(Model.PassportDate?.Year ?? 0, Model.PassportDate?.Month ?? 0, Model.PassportDate?.Day ?? 0);
+            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
 
-            if (Model.BirthDate != null) Model.BirthDate = new DateTime(Model.BirthDate?.Year ?? 0, Model.BirthDate?.Month ?? 0, Model.BirthDate?.Day ?? 0);
+            if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
 
             if (dictDb.ExistsAgents(context, new FilterDictionaryAgent()
@@ -285,6 +285,11 @@ namespace BL.Logic.DictionaryCore
             Model.Name?.Trim();
             Model.PassportSerial?.Trim();
             Model.TaxCode?.Trim();
+
+            // Обрезаю время для даты рождения и даты получения паспорта
+            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
+
+            if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
             if (dictDb.ExistsAgents(context, new FilterDictionaryAgent
             {
