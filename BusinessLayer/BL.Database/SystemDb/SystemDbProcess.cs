@@ -64,6 +64,13 @@ namespace BL.Database.SystemDb
                             (current, value) => current.Or(e => e.RecordId == value).Expand());
                         qry = qry.Where(filterContains);
                     }
+                    if (filter.ExecutorAgentId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemLogs>();
+                        filterContains = filter.ActionId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.ExecutorAgentId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
                     if (filter.LogLevel?.Count > 0)
                     {
                         var filterContains = PredicateBuilder.False<SystemLogs>();
