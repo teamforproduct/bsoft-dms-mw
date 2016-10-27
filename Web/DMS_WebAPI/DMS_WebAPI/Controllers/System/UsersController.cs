@@ -124,7 +124,8 @@ namespace DMS_WebAPI.Controllers
 
             var logger = DmsResolver.Current.Get<ILogger>();
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
-            var message = $"UserAgent = {HttpContext.Current.Request.UserAgent}; IP = {HttpContext.Current.Request.UserHostAddress}; Browser = {bc.Browser} {bc.Version}; Platform = {bc.Platform}";
+            var userAgent = HttpContext.Current.Request.UserAgent;
+            var message = $"IP = {HttpContext.Current.Request.UserHostAddress}; Browser = {bc.Browser} {bc.Version}; Platform = {bc.Platform}; IsMobile = {userAgent.Contains("Mobile")}; UserAgent = {userAgent};";
             logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
             return new JsonResult(null, this);
         }
