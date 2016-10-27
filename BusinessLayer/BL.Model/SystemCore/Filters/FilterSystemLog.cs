@@ -11,7 +11,7 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Массив ИД лога
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> IDs { get; set; }
         /// <summary>
         /// Массив ИД пользователей
         /// </summary>

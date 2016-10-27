@@ -93,6 +93,13 @@ namespace BL.Database.SystemDb
 
             if (filter != null)
             {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
                 if (filter.ObjectIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<SystemLogs>();
