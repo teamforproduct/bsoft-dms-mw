@@ -33,10 +33,33 @@ namespace BL.Logic.Logging
                 var js = new JavaScriptSerializer();
                 Type type = Type.GetType(item.LogTrace + ", BL.Model");//, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null");
                 item.LogObject = js.Deserialize(item.ObjectLog, type);
+                item.Message = GetObjectChangeDescription(item.LogObject);
+                if (((filter?.Id?.Count) ?? 0) == 0)
+                    item.LogObject = null;
                 item.ObjectLog = null;
                 item.LogTrace = null;
             }
             return res;
+        }
+
+        private string GetObjectChangeDescription(object logObject)
+        {
+            if (logObject is FrontDictionaryDepartment)
+            {
+                var model = logObject as FrontDictionaryDepartment;
+                return $"{model.Name}";
+            }
+            if (logObject is FrontDictionaryPosition)
+            {
+                var model = logObject as FrontDictionaryPosition;
+                return $"{model.Name}, {model.DepartmentName}";
+            }
+            if (logObject is FrontDictionaryPositionExecutor)
+            {
+                var model = logObject as FrontDictionaryPositionExecutor;
+                return $"{model.AgentName}, {model.PositionName},c {model.StartDate} по {model.EndDate}";
+            }
+            return null;
         }
 
         private void AddLogToDb(IContext ctx, LogInfo info)
@@ -73,7 +96,7 @@ namespace BL.Logic.Logging
                 ActionId = actionId,
                 RecordId = recordId,
                 LogObject = frontObjJson,
-                LogTrace = (logObject != null? logObject.GetType().ToString():null),
+                LogTrace = (logObject != null ? logObject.GetType().ToString() : null),
             });
         }
 

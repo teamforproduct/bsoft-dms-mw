@@ -43,6 +43,13 @@ namespace BL.Database.SystemDb
                 var qry = dbContext.LogSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
                 if (filter != null)
                 {
+                    if (filter.Id?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemLogs>();
+                        filterContains = filter.Id.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
                     if (filter.ObjectId?.Count > 0)
                     {
                         var filterContains = PredicateBuilder.False<SystemLogs>();
