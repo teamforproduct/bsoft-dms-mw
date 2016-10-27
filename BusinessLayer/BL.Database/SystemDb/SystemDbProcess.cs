@@ -489,7 +489,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.OrderBy(x => x.Id);
 
-                return qry.Select(x => new TreeItem
+                return qry.Select(x => new FrontSystemActionForDIP
                 {
                     Id = x.Id,
                     Name = x.Description,
@@ -499,7 +499,9 @@ namespace BL.Database.SystemDb
                     ObjectId = (int)EnumObjects.SystemActions,
                     IsActive = true,
                     IsList = true,
-                    IsChecked = x.RoleActions.Where(y=>y.RoleId == roleId & !y.RecordId.HasValue).Any()
+                    IsChecked = x.RoleActions.Where(y=>y.RoleId == roleId & !y.RecordId.HasValue).Any(),
+                    RoleId = roleId,
+                    ActionId = x.Id,
                 }).ToList();
             }
         }
