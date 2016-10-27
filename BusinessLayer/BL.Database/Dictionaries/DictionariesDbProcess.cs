@@ -4110,6 +4110,7 @@ namespace BL.Database.Dictionaries
                     DepartmentCode = x.Department.Code,
                     DepartmentCodePath = x.Department.FullPath,
                     DepartmentName = x.Department.Name,
+                    CompanyName = x.Department.Company.Agent.Name,
                     ExecutorAgentId = x.ExecutorAgentId,
                     ExecutorAgentName = x.ExecutorAgent.Name,
                     MaxSubordinationTypeId = x.TargetPositionSubordinations.AsQueryable()
@@ -4601,6 +4602,7 @@ namespace BL.Database.Dictionaries
                     AgentName = x.Agent.Name,
                     PositionName = x.Position.Name,
                     PositionFullName = x.Position.FullName,
+                    DepartmentName = x.Position.Department.Name,
                     AccessLevelName = x.AccessLevel.Name,
                     PositionExecutorTypeName = x.PositionExecutorType.Name
                 }).ToList();

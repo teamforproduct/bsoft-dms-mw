@@ -44,20 +44,31 @@ namespace BL.Logic.Logging
 
         private string GetObjectChangeDescription(object logObject)
         {
+            if (logObject is FrontDictionaryAgentCompany)
+            {
+                var model = logObject as FrontDictionaryAgentCompany;
+                return string.Format("{0}",
+                    model.Name);
+            }
             if (logObject is FrontDictionaryDepartment)
             {
                 var model = logObject as FrontDictionaryDepartment;
-                return $"{model.Name}";
+                return string.Format("{0}\r\n{1}",
+                    model.CompanyName,model.Name);
             }
             if (logObject is FrontDictionaryPosition)
             {
                 var model = logObject as FrontDictionaryPosition;
-                return $"{model.Name}, {model.DepartmentName}";
+                return string.Format("{0}\r\n{1}\r\n{2}",
+                    model.CompanyName, model.DepartmentName, model.Name);
             }
             if (logObject is FrontDictionaryPositionExecutor)
             {
                 var model = logObject as FrontDictionaryPositionExecutor;
-                return $"{model.AgentName}, {model.PositionName},c {model.StartDate} по {model.EndDate}";
+                return string.Format("{0}\r\n{1}\r\n{2} {3} - {4}",
+                    model.DepartmentName, model.PositionName, model.AgentName,
+                    model.StartDate.HasValue ? model.StartDate.Value.ToString("dd.MM.yyyy") : " ",
+                    model.EndDate.HasValue ? model.EndDate.Value.ToString("dd.MM.yyyy") : " ");
             }
             return null;
         }
