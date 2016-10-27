@@ -31,6 +31,7 @@ namespace BL.Database.DBModel.System
         public bool IsGrantable { get; set; }
         public bool IsGrantableByRecordId { get; set; }
         public bool IsVisible { get; set; }
+        public bool IsVisibleInMenu { get; set; }
         public Nullable<int> GrantId { get; set; }
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }

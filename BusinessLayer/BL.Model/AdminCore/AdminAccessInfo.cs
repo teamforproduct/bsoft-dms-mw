@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.AdminCore.InternalModel;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Model.AdminCore
 {
@@ -10,6 +10,6 @@ namespace BL.Model.AdminCore
         public List<InternalAdminUserRole> UserRoles { get; set; }
         public List<InternalAdminRole> Roles { get; set; }
         public List<InternalAdminPositionRole> PositionRoles { get; set; }
-        public List<InternalDictionarySystemActions> Actions { get; set; }
+        public List<InternalSystemAction> Actions { get; set; }
     }
 }

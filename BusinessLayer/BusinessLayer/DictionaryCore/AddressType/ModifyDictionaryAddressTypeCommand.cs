@@ -10,33 +10,8 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryAddressTypeCommand : BaseDictionaryCommand
+    public class ModifyDictionaryAddressTypeCommand : BaseDictionaryAddressTypeCommand
     {
-       
-        private ModifyDictionaryAddressType Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAddressType))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAddressType)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
-            DictionaryModelVerifying.VerifyAddressType(_context, _dictDb, Model);
-            return true;
-        }
-
         public override object Execute()
         {
             try

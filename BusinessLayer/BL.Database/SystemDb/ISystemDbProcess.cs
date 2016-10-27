@@ -27,6 +27,12 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region [+] SystemObjects ...
+
+        void AddSystemObject(IContext context, InternalSystemObject item);
+        void UpdateSystemObject(IContext context, InternalSystemObject item);
+        void AddSystemObject(IContext context, SystemObjects item);
+        void UpdateSystemObject(IContext context, SystemObjects item);
+
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);

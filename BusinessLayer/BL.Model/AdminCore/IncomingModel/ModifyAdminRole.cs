@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -23,7 +24,13 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Наименование
         /// </summary>
+        [Required]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Описание
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
         /// Классификатор роли

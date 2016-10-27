@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -24,11 +25,13 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Роль
         /// </summary>
+        [Required]
         public int RoleId { get; set; }
 
         /// <summary>
         /// Действие
         /// </summary>
+        [Required]
         public int ActionId { get; set; }
 
         /// <summary>

@@ -26,6 +26,20 @@ namespace BL.Model.AdminCore.FilterModel
         /// </summary>
         public bool? IsChecked { get; set; }
 
+        /// <summary>
+        /// Только те которые учавствуют в грантовании
+        /// </summary>
+        public bool? IsGrantable { get; set; }
+
+        /// <summary>
+        /// Только те которые отображаются в грантовании
+        /// </summary>
+        public bool? IsVisible { get; set; }
+
+        /// <summary>
+        /// Только объектные
+        /// </summary>
+        public bool? IsGrantableByRecordId { get; set; }
 
     }
 }

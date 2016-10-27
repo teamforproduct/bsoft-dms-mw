@@ -26,6 +26,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.System;
 using BL.Model.DictionaryCore.IncomingModel;
 using EntityFramework.Extensions;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Admins
 {
@@ -66,7 +67,7 @@ namespace BL.Database.Admins
                     RoleId = x.RoleId
                 }).ToList();
 
-                res.Actions = dbContext.SystemActionsSet.Select(x => new InternalDictionarySystemActions
+                res.Actions = dbContext.SystemActionsSet.Select(x => new InternalSystemAction
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -74,7 +75,8 @@ namespace BL.Database.Admins
                     IsGrantable = x.IsGrantable,
                     IsGrantableByRecordId = x.IsGrantableByRecordId,
                     IsVisible = x.IsVisible,
-                    Object = (EnumObjects)x.ObjectId
+                    IsVisibleInMenu = x.IsVisibleInMenu,
+                    ObjectId = (EnumObjects)x.ObjectId,
                 }).ToList();
 
                 res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRoleAction
@@ -317,6 +319,7 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     Name = x.Name,
                     RoleTypeId = x.RoleTypeId,
+                    Description = x.Description,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
@@ -339,7 +342,9 @@ namespace BL.Database.Admins
                 var res = qry.Select(x => new FrontAdminRole
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    Description = x.Description,
+                    
                     //RoleCode = x.RoleType.Code,
                     //RoleName = x.RoleType.Name
                 }).ToList();
@@ -405,15 +410,27 @@ namespace BL.Database.Admins
             // Поиск по наименованию
             if (!string.IsNullOrEmpty(filter.Name))
             {
-                foreach (string temp in CommonFilterUtilites.GetWhereExpressions(filter.Name))
-                {
-                    qry = qry.Where(x => x.Name.Contains(temp));
-                }
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Name == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             if (!string.IsNullOrEmpty(filter.NameExact))
             {
                 qry = qry.Where(x => x.Name == filter.NameExact);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Description))
+            {
+                var filterContains = PredicateBuilder.False<AdminRoles>();
+
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Description == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             return qry;
@@ -450,6 +467,21 @@ namespace BL.Database.Admins
                     (current, value) => current.Or(e => e.Description == value).Expand());
 
                 qry = qry.Where(filterContains);
+            }
+
+            if (filter.IsVisible.HasValue)
+            {
+                qry = qry.Where(x => x.IsVisible == filter.IsVisible);
+            }
+
+            if (filter.IsGrantable.HasValue)
+            {
+                qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
+            }
+
+            if (filter.IsGrantableByRecordId.HasValue)
+            {
+                qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
             }
 
             return qry;
@@ -501,6 +533,20 @@ namespace BL.Database.Admins
                 var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRoleActionsSet.Remove(dbModel);
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteRoleActions(IContext context, FilterAdminRoleAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+                qry = GetWhereRoleAction(ref qry, filter);
+                qry.Delete();
+                //dbContext.AdminRoleActionsSet.Remove(dbModel);
+                //dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 

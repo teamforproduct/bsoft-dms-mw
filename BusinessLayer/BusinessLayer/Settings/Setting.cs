@@ -108,6 +108,12 @@ namespace BL.Logic.Settings
                     // ... записываю дефолт в базу и в _casheSettings
                     SaveSetting(ctx, defaulValue);
                 }
+                else
+                {
+                    // ... записываю дефолт в _casheSettings
+                    MergeCasheSettings(ctx, defaulValue);
+                }
+                
             }
 
             try
@@ -131,16 +137,19 @@ namespace BL.Logic.Settings
             var db = DmsResolver.Current.Get<ISystemDbProcess>();
 
             db.MergeSetting(ctx, setting );
+            MergeCasheSettings(ctx, setting);
+        }
 
+        private void MergeCasheSettings(IContext ctx, InternalSystemSetting setting)
+        {
             if (_casheSettings.ContainsKey(MakeKey(setting.Key, ctx)))
             {
-                _casheSettings[MakeKey(setting.Key, ctx)] = GetTypedValue(setting.Value, setting.ValueType) ;
+                _casheSettings[MakeKey(setting.Key, ctx)] = GetTypedValue(setting.Value, setting.ValueType);
             }
             else
             {
                 _casheSettings.Add(MakeKey(setting.Key, ctx), GetTypedValue(setting.Value, setting.ValueType));
             }
-
         }
 
         public void ClearCache(IContext ctx)

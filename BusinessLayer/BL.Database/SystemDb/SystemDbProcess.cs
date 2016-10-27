@@ -100,7 +100,7 @@ namespace BL.Database.SystemDb
                         qry = qry.Where(x => x.LogException.Contains(filter.LogException));
                     }
                 }
-                qry = qry.OrderByDescending(x=>x.LogDate);
+                qry = qry.OrderByDescending(x => x.LogDate);
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
@@ -333,6 +333,46 @@ namespace BL.Database.SystemDb
         }
 
         #region SystemObjects
+        public void AddSystemObject(IContext context, InternalSystemObject item)
+        {
+            AddSystemObject(context, SystemModelConverter.GetDbSystemObject(context, item));
+        }
+
+        public void UpdateSystemObject(IContext context, InternalSystemObject item)
+        {
+            UpdateSystemObject(context, SystemModelConverter.GetDbSystemObject(context, item));
+        }
+
+        public void AddSystemObject(IContext context, SystemObjects item)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = dbContext.Database.BeginTransaction())
+            {
+                dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemObjects] ON");
+
+                dbContext.Database.ExecuteSqlCommand(
+                String.Format(@"INSERT INTO[DMS].[SystemObjects]
+                (Id, Code, [Description]) 
+                VALUES
+                ({0},{1},{2})",
+                item.Id, "'" + item.Code + "'", "'" + item.Description + "'")
+                );
+
+                dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemObjects] OFF");
+
+                transaction.Commit();
+            }
+        }
+
+        public void UpdateSystemObject(IContext context, SystemObjects item)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.SystemObjectsSet.Attach(item);
+                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
 
         public IEnumerable<FrontSystemObject> GetSystemObjects(IContext ctx, FilterSystemObject filter)
         {
@@ -376,10 +416,25 @@ namespace BL.Database.SystemDb
         public void AddSystemAction(IContext context, SystemActions item)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = dbContext.Database.BeginTransaction())
             {
-                //item.ObjectId = (int)EnumObjects.System;
-                dbContext.SystemActionsSet.Add(item);
-                dbContext.SaveChanges();
+                dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
+
+                dbContext.Database.ExecuteSqlCommand(
+                String.Format(@"INSERT INTO[DMS].[SystemActions]
+                (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category) 
+                VALUES
+                ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10})",
+                item.Id, item.ObjectId,"'"+ item.Code +"'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ?  "null": item.GrantId.ToString(), item.Category?? "null")
+                );
+
+                //dbContext.SystemActionsSet.Add(item);
+
+                //dbContext.SaveChanges();
+
+                dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
+
+                transaction.Commit();
             }
         }
 
@@ -415,7 +470,7 @@ namespace BL.Database.SystemDb
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
-                
+
                 return qry.Select(x => new InternalSystemAction
                 {
                     Id = x.Id,
@@ -488,7 +543,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     Name = x.Description,
                     SearchText = x.Description,
-                    TreeId = string.Concat(x.Id.ToString(),"_", (int)EnumObjects.SystemObjects),
+                    TreeId = string.Concat(x.Id.ToString(), "_", (int)EnumObjects.SystemObjects),
                     TreeParentId = string.Empty,
                     ObjectId = (int)EnumObjects.SystemObjects,
                     IsActive = true,
@@ -1455,11 +1510,11 @@ namespace BL.Database.SystemDb
                 dbContext.Database.CommandTimeout = 0;
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
-                            x.Id <= selectBis && x.OperationType == (int) EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int) EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType == (int)EnumOperationType.UpdateDocument &&
+                            x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId)
                         .ThenBy(x => x.Id)
-                        .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d})
+                        .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
                         .Where(x => x.doc.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Select(x => new FullTextIndexItem
                         {
@@ -1485,11 +1540,11 @@ namespace BL.Database.SystemDb
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
-                            x.Id <= selectBis && x.OperationType == (int) EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int) EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType == (int)EnumOperationType.UpdateDocument &&
+                            x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId).ThenBy(x => x.Id)
                         .Join(dbContext.DocumentEventsSet, i => i.ObjectId, d => d.DocumentId,
-                            (i, d) => new {ind = i, evt = d})
+                            (i, d) => new { ind = i, evt = d })
                         .Where(x => x.evt.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Select(x => new FullTextIndexItem
                         {
@@ -1506,11 +1561,11 @@ namespace BL.Database.SystemDb
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
-                            x.Id <= selectBis && x.OperationType == (int) EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int) EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType == (int)EnumOperationType.UpdateDocument &&
+                            x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId).ThenBy(x => x.Id)
                         .Join(dbContext.DocumentSendListsSet, i => i.ObjectId, d => d.DocumentId,
-                            (i, d) => new {ind = i, sl = d})
+                            (i, d) => new { ind = i, sl = d })
                         .Where(x => x.sl.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Select(x => new FullTextIndexItem
                         {
@@ -1527,13 +1582,13 @@ namespace BL.Database.SystemDb
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
-                            x.Id <= selectBis && x.OperationType == (int) EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int) EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType == (int)EnumOperationType.UpdateDocument &&
+                            x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId).ThenBy(x => x.Id)
                         .Join(
                             dbContext.DocumentFilesSet.Where(
                                 x => !x.IsDeleted && x.Document.TemplateDocument.ClientId == ctx.CurrentClientId),
-                            i => i.ObjectId, d => d.DocumentId, (i, d) => new {ind = i, fl = d})
+                            i => i.ObjectId, d => d.DocumentId, (i, d) => new { ind = i, fl = d })
                         .Where(x => x.fl.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Select(x => new FullTextIndexItem
                         {
@@ -1547,11 +1602,11 @@ namespace BL.Database.SystemDb
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
-                            x.Id <= selectBis && x.OperationType == (int) EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int) EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType == (int)EnumOperationType.UpdateDocument &&
+                            x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId).ThenBy(x => x.Id)
                         .Join(dbContext.DocumentSubscriptionsSet, i => i.ObjectId, d => d.DocumentId,
-                            (i, d) => new {ind = i, ss = d})
+                            (i, d) => new { ind = i, ss = d })
                         .Where(x => x.ss.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Select(x => new FullTextIndexItem
                         {
@@ -1842,7 +1897,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.TaxCode.Trim() + " " 
+                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.TaxCode.Trim() + " "
                                      + x.agent.BirthDate + " " + x.agent.PassportNumber + " " + x.agent.PassportSerial.Trim() + " " + x.agent.PassportText.Trim()
                     }).ToList());
                 }
@@ -1871,7 +1926,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.contact.Agent.Name.Trim() + " " + x.contact.Description.Trim() + " " + x.contact.Contact.Trim() + " " + x.contact.ContactType.Code.Trim() + " " 
+                        ObjectText = x.contact.Agent.Name.Trim() + " " + x.contact.Description.Trim() + " " + x.contact.Contact.Trim() + " " + x.contact.ContactType.Code.Trim() + " "
                         + x.contact.ContactType.Name.Trim()
                     }).ToList());
                 }
@@ -1900,7 +1955,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.address.Agent.Name.Trim() + " " + x.address.Description.Trim() + " " + x.address.Address.Trim() + " " + x.address.PostCode.Trim() + " " 
+                        ObjectText = x.address.Agent.Name.Trim() + " " + x.address.Description.Trim() + " " + x.address.Address.Trim() + " " + x.address.PostCode.Trim() + " "
                         + x.address.AddressType.Name.Trim()
                     }).ToList());
                 }
@@ -2034,7 +2089,7 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentClientCompanies))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int) EnumOperationType.Delete && x.ObjectType == (int) EnumObjects.DictionaryAgentClientCompanies).Join(dbContext.DictionaryAgentClientCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new {ind = i, doc = d, id = d.Id}).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentClientCompanies).Join(dbContext.DictionaryAgentClientCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,

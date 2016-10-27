@@ -44,5 +44,18 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult("Done", this, stopWatch.Elapsed);
         }
 
+        [HttpPost]
+        [Route("RefreshSystemObjects")]
+        public IHttpActionResult RefreshSystemObjects()
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            tmpService.RefreshSystemObjects(cxt);
+            stopWatch.Stop();
+            return new JsonResult("Done", this, stopWatch.Elapsed);
+        }
+
     }
 }

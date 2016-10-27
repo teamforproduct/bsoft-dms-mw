@@ -32,7 +32,8 @@ namespace BL.Database.Common
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
                 RoleTypeId = item.RoleTypeId,
-                Name = item.Name
+                Name = item.Name,
+                Description = item.Description,
             };
         }
 

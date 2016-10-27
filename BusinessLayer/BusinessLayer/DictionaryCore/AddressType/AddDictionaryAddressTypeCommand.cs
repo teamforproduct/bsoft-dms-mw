@@ -10,33 +10,8 @@ using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryAddressTypeCommand : BaseDictionaryCommand
+    public class AddDictionaryAddressTypeCommand : BaseDictionaryAddressTypeCommand
     {
-
-        private ModifyDictionaryAddressType Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAddressType))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAddressType)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
-            DictionaryModelVerifying.VerifyAddressType(_context, _dictDb, Model);
-            return true;
-        }
-
         public override object Execute()
         {
             try

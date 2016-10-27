@@ -11,35 +11,8 @@ using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryAgentCommand : BaseDictionaryCommand
+    public class AddDictionaryAgentCommand : BaseDictionaryAgentCommand
     {
-        private ModifyDictionaryAgent Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgent))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgent)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-           
-            _adminService.VerifyAccess(_context, CommandType,false,true);
-
-            DictionaryModelVerifying.VerifyAgent(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try

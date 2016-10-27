@@ -242,6 +242,12 @@ namespace BL.Logic.AdminCore
         public IEnumerable<FrontAdminRoleAction> GetRoleActionsDIP(IContext context, int roleId, FilterAdminRoleActionDIP filter)
         {
 
+            if (filter == null) filter = new FilterAdminRoleActionDIP();
+
+            filter.IsVisible = true;
+            filter.IsGrantable = true;
+            filter.IsGrantableByRecordId = false;
+
             if (filter.IsChecked == true)
             {
                 List<int> actions = _adminDb.GetActionsByRoles(context, new FilterAdminRoleAction()

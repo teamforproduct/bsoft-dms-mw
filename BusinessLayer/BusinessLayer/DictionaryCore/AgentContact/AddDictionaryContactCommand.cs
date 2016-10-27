@@ -9,34 +9,8 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryContactCommand : BaseDictionaryCommand
+    public class AddDictionaryContactCommand : BaseDictionaryContactCommand
     {
-        private ModifyDictionaryContact Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryContact))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryContact)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyAgentContact(_context, _dictDb, Model);
-
-            return true;
-        }
-
         public override object Execute()
         {
             try
