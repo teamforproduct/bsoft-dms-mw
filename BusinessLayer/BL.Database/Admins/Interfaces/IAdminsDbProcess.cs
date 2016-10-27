@@ -46,7 +46,6 @@ namespace BL.Database.Admins.Interfaces
         bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter);
         InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter);
         IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter);
-        IEnumerable<FrontAdminRoleAction> GetRoleActionsDIP(IContext context, int roleId, FilterAdminRoleActionDIP filter);
         List<int> GetActionsByRoles(IContext context, FilterAdminRoleAction filter);
         #endregion
 

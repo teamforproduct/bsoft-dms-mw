@@ -7,6 +7,7 @@ using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.Tree;
 
 namespace BL.Logic.SystemCore.Interfaces
 {
@@ -24,6 +25,7 @@ namespace BL.Logic.SystemCore.Interfaces
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         FrontSystemAction GetSystemAction(IContext context, int id);
         IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
+        IEnumerable<ITreeItem> GetSystemActionForDIP(IContext context, int roleId, FilterTree filter);
         void RefreshSystemActions(IContext context);
         void RefreshSystemObjects(IContext context);
 

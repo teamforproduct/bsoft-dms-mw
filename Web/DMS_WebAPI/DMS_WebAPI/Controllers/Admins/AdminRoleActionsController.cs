@@ -9,6 +9,8 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
+using BL.Logic.SystemCore.Interfaces;
+using BL.Model.Tree;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -48,11 +50,11 @@ namespace DMS_WebAPI.Controllers.Admins
         [HttpGet]
         [Route("GetRoleActionsDIP")]
         [ResponseType(typeof(List<FrontAdminRoleAction>))]
-        public IHttpActionResult Get([FromUri] int roleId, [FromUri] FilterAdminRoleActionDIP filter)
+        public IHttpActionResult Get([FromUri] int roleId, [FromUri] FilterTree filter)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetRoleActionsDIP(ctx, roleId, filter);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItem = tmpService.GetSystemActionForDIP(ctx, roleId, filter);
             return new JsonResult(tmpItem, this);
         }
 

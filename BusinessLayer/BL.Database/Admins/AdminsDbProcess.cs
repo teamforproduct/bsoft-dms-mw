@@ -435,57 +435,6 @@ namespace BL.Database.Admins
 
             return qry;
         }
-
-        private static IQueryable<SystemActions> GetWhereRoleDIP(ref IQueryable<SystemActions> qry, FilterAdminRoleActionDIP filter)
-        {
-
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<SystemActions>();
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<SystemActions>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-
-            // Поиск по наименованию
-            if (!string.IsNullOrEmpty(filter.ActionDescription))
-            {
-                var filterContains = PredicateBuilder.False<SystemActions>();
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ActionDescription).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Description == value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-
-            if (filter.IsVisible.HasValue)
-            {
-                qry = qry.Where(x => x.IsVisible == filter.IsVisible);
-            }
-
-            if (filter.IsGrantable.HasValue)
-            {
-                qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
-            }
-
-            if (filter.IsGrantableByRecordId.HasValue)
-            {
-                qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
-            }
-
-            return qry;
-        }
         #endregion
 
         #region [+] RoleAction ...
@@ -669,33 +618,6 @@ namespace BL.Database.Admins
             }
 
             return qry;
-        }
-
-        public IEnumerable<FrontAdminRoleAction> GetRoleActionsDIP(IContext context, int roleId, FilterAdminRoleActionDIP filter)
-        {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-                var qry = dbContext.SystemActionsSet.AsQueryable();
-
-                qry = GetWhereRoleDIP(ref qry, filter);
-
-                qry = qry.OrderBy(x => x.Id);
-
-                var res = qry.Select(x => new FrontAdminRoleAction
-                {
-                    RoleId = roleId,
-                    ActionId = x.Id,
-                    ActionDescription = x.Description,
-                    //Category = x.Category,
-                    IsChecked = x.RoleActions.
-                    Where(y => y.ActionId == x.Id).
-                    Where(y => roleId == y.RoleId).
-                    Any()
-                }).ToList();
-                transaction.Complete();
-                return res;
-            }
         }
 
         public List<int> GetActionsByRoles(IContext context, FilterAdminRoleAction filter)

@@ -43,5 +43,10 @@ namespace BL.Model.Tree
         /// Только активные
         /// </summary>
         public bool? IsActive { get; set; }
+
+        /// <summary>
+        /// Только отмеченные
+        /// </summary>
+        public bool? IsChecked { get; set; }
     }
 }

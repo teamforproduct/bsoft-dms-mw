@@ -11,7 +11,7 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Массив ИД действий системы
         /// </summary>
-        public List<int> ActionId { get; set; }
+        public List<int> ActionIDs { get; set; }
         /// <summary>
         /// Отрывок описания действий системы
         /// </summary>
@@ -19,6 +19,26 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Массив ИД объектов системы
         /// </summary>
-        public List<int> ObjectId { get; set; }
+        public List<int> ObjectIDs { get; set; }
+
+        /// <summary>
+        /// Отмечнено
+        /// </summary>
+        //public bool? IsChecked { get; set; }
+
+        /// <summary>
+        /// Только те которые учавствуют в грантовании
+        /// </summary>
+        public bool? IsGrantable { get; set; }
+
+        /// <summary>
+        /// Только те которые отображаются в грантовании
+        /// </summary>
+        public bool? IsVisible { get; set; }
+
+        /// <summary>
+        /// Только объектные
+        /// </summary>
+        public bool? IsGrantableByRecordId { get; set; }
     }
 }

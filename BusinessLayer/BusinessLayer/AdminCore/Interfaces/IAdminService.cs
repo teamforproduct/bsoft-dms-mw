@@ -47,7 +47,6 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] RoleActions ...
         IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter);
-        IEnumerable<FrontAdminRoleAction> GetRoleActionsDIP(IContext context, int roleId, FilterAdminRoleActionDIP filter);
         #endregion
 
         #region [+] PositionRoles ...

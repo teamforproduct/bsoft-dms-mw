@@ -23,7 +23,7 @@ namespace BL.Logic.TreeBuilder
 
             var res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
 
-            if ((filter.Name ?? string.Empty) != string.Empty)
+            if ((filter.Name ?? string.Empty) != string.Empty || (filter.IsChecked ?? false == true))
             {
                 var safeList = new List<string>();
 
@@ -104,15 +104,31 @@ namespace BL.Logic.TreeBuilder
         {
             if (tree != null)
             {
-                var arr = CommonFilterUtilites.GetWhereExpressions(filter.Name.ToLower());
+                var existsNameFilter = !string.IsNullOrEmpty(filter.Name);
+                var existsCheckFilter = filter.IsChecked.HasValue;
+
+                string[] arrName = null;
+
+                if (existsNameFilter)
+                { arrName = CommonFilterUtilites.GetWhereExpressions(filter.Name.ToLower()); }
 
                 foreach (var item in tree)
                 {
-                    // Поиск присходит по специальному полю для поиска
-                    if (item.SearchText.ToLower().ContainsArray(arr))
+                    var addToSafeList = false;
+
+                    if (existsNameFilter)
                     {
-                        safeList.AddRange(item.Path.Split('/'));
+                        // Поиск присходит по специальному полю для поиска
+                        addToSafeList = (item.SearchText.ToLower().ContainsArray(arrName));
                     }
+
+                    if (existsCheckFilter)
+                    {
+                        addToSafeList = item.IsChecked ?? false;
+                    }
+
+                    if (addToSafeList) safeList.AddRange(item.Path.Split('/'));
+
                     GetSafeList((List<TreeItem>)item.Childs, safeList, filter);
                 }
             }
