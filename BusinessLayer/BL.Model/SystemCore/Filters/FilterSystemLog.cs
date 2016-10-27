@@ -9,6 +9,10 @@ namespace BL.Model.SystemCore.Filters
     public class FilterSystemLog
     {
         /// <summary>
+        /// Массив ИД лога
+        /// </summary>
+        public List<int> Id { get; set; }
+        /// <summary>
         /// Массив ИД пользователей
         /// </summary>
         public List<int> ExecutorAgentId { get; set; }
