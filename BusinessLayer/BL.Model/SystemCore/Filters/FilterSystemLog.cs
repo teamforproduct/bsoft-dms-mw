@@ -11,27 +11,27 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Массив ИД лога
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> IDs { get; set; }
         /// <summary>
         /// Массив ИД пользователей
         /// </summary>
-        public List<int> ExecutorAgentId { get; set; }
+        public List<int> ExecutorAgentIDs { get; set; }
         /// <summary>
         /// Массив ИД объектов системы
         /// </summary>
-        public List<int> ObjectId { get; set; }
+        public List<int> ObjectIDs { get; set; }
         /// <summary>
         /// Массив ИД экшинов системы
         /// </summary>
-        public List<int> ActionId { get; set; }
+        public List<int> ActionIDs { get; set; }
         /// <summary>
         /// Массив ИД записей
         /// </summary>
-        public List<int> RecordId { get; set; }
+        public List<int> RecordIDs { get; set; }
         /// <summary>
         /// Массив уровней лога
         /// </summary>
-        public List<int> LogLevel { get; set; }
+        public List<int> LogLevels { get; set; }
         /// <summary>
         /// Дата записи лог с
         /// </summary>

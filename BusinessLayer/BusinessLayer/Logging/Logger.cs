@@ -34,7 +34,7 @@ namespace BL.Logic.Logging
                 Type type = Type.GetType(item.LogTrace + ", BL.Model");//, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null");
                 item.LogObject = js.Deserialize(item.ObjectLog, type);
                 item.Message = GetObjectChangeDescription(item.LogObject);
-                if (((filter?.Id?.Count) ?? 0) == 0)
+                if (((filter?.IDs?.Count) ?? 0) == 0)
                     item.LogObject = null;
                 item.ObjectLog = null;
                 item.LogTrace = null;

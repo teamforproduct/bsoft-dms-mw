@@ -32,8 +32,8 @@ namespace DMS_WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("RefreshSystemactions")]
-        public IHttpActionResult RefreshSystemactions()
+        [Route("RefreshSystemActions")]
+        public IHttpActionResult RefreshSystemActions()
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();

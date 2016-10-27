@@ -27,33 +27,30 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region [+] SystemObjects ...
-
         void AddSystemObject(IContext context, InternalSystemObject item);
         void UpdateSystemObject(IContext context, InternalSystemObject item);
         void AddSystemObject(IContext context, SystemObjects item);
         void UpdateSystemObject(IContext context, SystemObjects item);
+        IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
+        IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, FilterSystemObject filter);
+        IEnumerable<int> GetObjectsByActions(IContext context, FilterSystemAction filter);
+        #endregion
+
+        #region [+] Actions ...
+        void AddSystemAction(IContext context, InternalSystemAction item);
+        void UpdateSystemAction(IContext context, InternalSystemAction item);
+        void AddSystemAction(IContext context, SystemActions item);
+        void UpdateSystemAction(IContext context, SystemActions item);
+        IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter);
+        IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
+        IEnumerable<TreeItem> GetSystemActionsForTree(IContext context, int roleId, FilterSystemAction filter);
+        #endregion
 
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
         IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
-
-
-        void AddSystemAction(IContext context, InternalSystemAction item);
-        void UpdateSystemAction(IContext context, InternalSystemAction item);
-        void AddSystemAction(IContext context, SystemActions item);
-        void UpdateSystemAction(IContext context, SystemActions item);
-
-        IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
-        IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
-        IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter);
         IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter);
-        IEnumerable<TreeItem> GetSystemObjectsForTree(IContext ctx, FilterSystemObject filter);
-        #endregion
-
-        #region [+] Actions ...
-        IEnumerable<TreeItem> GetSystemActionsForTree(IContext ctx, FilterSystemAction filter);
-        #endregion
 
         #region Properties
         IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext context, FilterPropertyLink filter);

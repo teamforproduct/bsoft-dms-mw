@@ -82,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
-    <Compile Include="AdminCore\FilterModel\FilterAdminRoleActionDIP.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesRoles.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
@@ -433,6 +432,7 @@
     <Compile Include="SystemCore\Filters\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemAction.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyValue.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemActionForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemAction.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyLink.cs" />

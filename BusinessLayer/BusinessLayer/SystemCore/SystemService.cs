@@ -72,7 +72,7 @@ namespace BL.Logic.SystemCore
 
         public FrontSystemObject GetSystemObject(IContext context, int id)
         {
-            return _systemDb.GetSystemObjects(context, new FilterSystemObject { ObjectId = new List<int> { id } }).FirstOrDefault();
+            return _systemDb.GetSystemObjects(context, new FilterSystemObject { ObjectIDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
@@ -82,7 +82,7 @@ namespace BL.Logic.SystemCore
 
         public FrontSystemAction GetSystemAction(IContext context, int id)
         {
-            return _systemDb.GetSystemActions(context, new FilterSystemAction { ActionId = new List<int> { id } }).FirstOrDefault();
+            return _systemDb.GetSystemActions(context, new FilterSystemAction { ActionIDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter)
@@ -90,11 +90,24 @@ namespace BL.Logic.SystemCore
             return _systemDb.GetSystemActions(context, filter);
         }
 
-        public List<ITreeItem> GetSystemActionForDIP(IContext context, FilterTree filter)
+        public IEnumerable<ITreeItem> GetSystemActionForDIP(IContext context, int roleId, FilterTree filter)
         {
-            var objects = _systemDb.GetSystemObjectsForTree(context, new FilterSystemObject());
 
-            var actions = _systemDb.GetSystemActionsForTree(context, new FilterSystemAction());
+            var actions = _systemDb.GetSystemActionsForTree(context, roleId, new FilterSystemAction()
+            {
+                IsGrantable = true,
+                IsVisible = true,
+                IsGrantableByRecordId = false,
+            });
+
+            var objectList = (List<int>)_systemDb.GetObjectsByActions(context, new FilterSystemAction { ActionIDs = actions.Select(x => x.Id).ToList() });
+
+            var objects = _systemDb.GetSystemObjectsForTree(context, new FilterSystemObject()
+            {
+                ObjectIDs = objectList,
+            });
+
+
 
             List<TreeItem> flatList = new List<TreeItem>();
 
