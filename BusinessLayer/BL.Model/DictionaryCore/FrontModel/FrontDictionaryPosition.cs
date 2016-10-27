@@ -30,7 +30,10 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Наименование подразделения
         /// </summary>
         public string DepartmentName { get; set; }
-
+        /// <summary>
+        /// Наименование компании
+        /// </summary>
+        public string CompanyName { get; set; }
         /// <summary>
         /// Имя сотрудника на должности по штатному рассписанию
         /// </summary>

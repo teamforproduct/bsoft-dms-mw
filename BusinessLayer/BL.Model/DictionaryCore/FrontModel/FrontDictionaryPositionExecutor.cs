@@ -80,6 +80,10 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Тип исполнителя
         /// </summary>
         public string PositionExecutorTypeName { get; set; }
+        /// <summary>
+        /// Департамент
+        /// </summary>
+        public string DepartmentName { get; set; }
 
         /// <summary>
         /// Уровень доступа: лично, референт, ио

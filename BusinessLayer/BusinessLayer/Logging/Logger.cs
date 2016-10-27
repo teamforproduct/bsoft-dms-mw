@@ -33,10 +33,44 @@ namespace BL.Logic.Logging
                 var js = new JavaScriptSerializer();
                 Type type = Type.GetType(item.LogTrace + ", BL.Model");//, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null");
                 item.LogObject = js.Deserialize(item.ObjectLog, type);
+                item.Message = GetObjectChangeDescription(item.LogObject);
+                if (((filter?.Id?.Count) ?? 0) == 0)
+                    item.LogObject = null;
                 item.ObjectLog = null;
                 item.LogTrace = null;
             }
             return res;
+        }
+
+        private string GetObjectChangeDescription(object logObject)
+        {
+            if (logObject is FrontDictionaryAgentCompany)
+            {
+                var model = logObject as FrontDictionaryAgentCompany;
+                return string.Format("{0}",
+                    model.Name);
+            }
+            if (logObject is FrontDictionaryDepartment)
+            {
+                var model = logObject as FrontDictionaryDepartment;
+                return string.Format("{0}\r\n{1}",
+                    model.CompanyName,model.Name);
+            }
+            if (logObject is FrontDictionaryPosition)
+            {
+                var model = logObject as FrontDictionaryPosition;
+                return string.Format("{0}\r\n{1}\r\n{2}",
+                    model.CompanyName, model.DepartmentName, model.Name);
+            }
+            if (logObject is FrontDictionaryPositionExecutor)
+            {
+                var model = logObject as FrontDictionaryPositionExecutor;
+                return string.Format("{0}\r\n{1}\r\n{2} {3} - {4}",
+                    model.DepartmentName, model.PositionName, model.AgentName,
+                    model.StartDate.HasValue ? model.StartDate.Value.ToString("dd.MM.yyyy") : " ",
+                    model.EndDate.HasValue ? model.EndDate.Value.ToString("dd.MM.yyyy") : " ");
+            }
+            return null;
         }
 
         private void AddLogToDb(IContext ctx, LogInfo info)
@@ -73,7 +107,7 @@ namespace BL.Logic.Logging
                 ActionId = actionId,
                 RecordId = recordId,
                 LogObject = frontObjJson,
-                LogTrace = (logObject != null? logObject.GetType().ToString():null),
+                LogTrace = (logObject != null ? logObject.GetType().ToString() : null),
             });
         }
 

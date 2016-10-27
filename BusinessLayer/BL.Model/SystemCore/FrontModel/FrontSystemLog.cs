@@ -10,6 +10,7 @@ namespace BL.Model.SystemCore.FrontModel
         public int? Id { get; set; }
         public int? ClientId { get; set; }
         public int? LogLevel { get; set; }
+        public string LogLevelName { get; set; }
         public string Message { get; set; }
         public string LogTrace { get; set; }
         public string LogException { get; set; }

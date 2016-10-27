@@ -68,6 +68,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     LogLevel = x.LogLevel,
+                    LogLevelName = ((EnumLogTypes)x.LogLevel).ToString(),
                     Message = x.Message,
                     LogTrace = x.LogTrace,
                     LogException = x.LogException,

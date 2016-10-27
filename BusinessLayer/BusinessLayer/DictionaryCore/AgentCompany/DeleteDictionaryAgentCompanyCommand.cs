@@ -4,6 +4,8 @@ using BL.Logic.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using System.Transactions;
+using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -38,8 +40,17 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                _dictDb.DeleteAgentCompanies(_context, new System.Collections.Generic.List<int>() { Model });
-                return null;
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
+                    var frontObj = _dictDb.GetAgentCompany(_context, Model); ;
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentCompanies, (int)CommandType, frontObj.Id, frontObj);
+
+                    _dictDb.DeleteAgentCompanies(_context, new System.Collections.Generic.List<int>() { Model });
+
+                    transaction.Complete();
+                    return null;
+                }
+
             }
             catch (Exception ex)
             {

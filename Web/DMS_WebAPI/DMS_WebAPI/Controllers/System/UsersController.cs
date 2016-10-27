@@ -13,6 +13,8 @@ using Microsoft.AspNet.Identity;
 using BL.Model.WebAPI.IncomingModel;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Enums;
+using System.Web;
+using System;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -121,8 +123,11 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var logger = DmsResolver.Current.Get<ILogger>();
-            logger.Information(ctx, null, (int)EnumObjects.System, (int)EnumSystemActions.Login);
-
+            HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
+            var userAgent = HttpContext.Current.Request.UserAgent;
+            var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
+            var message = $"{HttpContext.Current.Request.UserHostAddress}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
+            logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
             return new JsonResult(null, this);
         }
 
