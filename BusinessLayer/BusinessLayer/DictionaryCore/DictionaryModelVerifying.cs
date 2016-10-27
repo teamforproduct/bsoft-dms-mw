@@ -127,24 +127,6 @@ namespace BL.Logic.DictionaryCore
             }
         }
 
-        public static void VerifyDepartment(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryDepartment Model)
-        {
-            Model.Name?.Trim();
-
-            // отдел нельзя подчинить сасому себе и (дочерним отделам)
-            if ((Model.ParentId ?? -1) == Model.Id)
-            {
-                throw new DictionarysdDepartmentNotBeSubordinated(Model.Name);
-            }
-
-            if (dictDb.ExistsDictionaryDepartment(context, new FilterDictionaryDepartment
-            {
-                NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            { throw new DictionaryDepartmentNameNotUnique(Model.Name); }
-        }
-
         public static void VerifyDocumentSubject(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryDocumentSubject Model)
         {
             Model.Name?.Trim();

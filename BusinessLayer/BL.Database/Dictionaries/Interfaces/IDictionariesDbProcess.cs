@@ -122,9 +122,11 @@ namespace BL.Database.Dictionaries.Interfaces
         #region [+] DictionaryDepartments ...
         int AddDepartment(IContext context, InternalDictionaryDepartment model);
         void UpdateDepartment(IContext context, InternalDictionaryDepartment model);
+        void UpdateDepartmentCode(IContext context, string code, FilterDictionaryDepartment filter);
         void DeleteDepartments(IContext context, List<int> list);
         bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
         InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<InternalDictionaryDepartment> GetInternalDepartments(IContext context, FilterDictionaryDepartment filter);
 
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter);

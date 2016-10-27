@@ -189,6 +189,7 @@
     <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
+    <Compile Include="DictionaryCore\Department\BaseDictionaryDepartmentCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
     <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />

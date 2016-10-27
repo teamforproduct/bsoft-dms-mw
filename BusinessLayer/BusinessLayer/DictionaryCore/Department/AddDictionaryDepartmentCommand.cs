@@ -10,42 +10,18 @@ using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryDepartmentCommand : BaseDictionaryCommand
+    public class AddDictionaryDepartmentCommand : BaseDictionaryDepartmentCommand
     {
-
-        private ModifyDictionaryDepartment Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryDepartment))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryDepartment)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyDepartment(_context, _dictDb, Model);
-
-            return true;
-        }
 
         public override object Execute()
         {
             try
             {
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
+
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
+                    if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
 
                     var id = _dictDb.AddDepartment(_context, dds);
 

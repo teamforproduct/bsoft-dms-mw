@@ -3006,6 +3006,20 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void UpdateDepartmentCode(IContext context, string codePreffix, FilterDictionaryDepartment filter)
+        {
+            if (string.IsNullOrEmpty(codePreffix)) return;
+
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).AsQueryable();
+
+                qry = DepartmentGetWhere(ref qry, filter);
+
+                qry.Update( x => new DictionaryDepartments { FullPath = codePreffix + "/"+ x.Code });
+            }
+        }
+
         public void DeleteDepartments(IContext context, List<int> list)
         {
             using (var dbContext = new DmsContext(context))
@@ -3014,7 +3028,7 @@ namespace BL.Database.Dictionaries
 
                 if (childDepartments.Count > 0) DeleteDepartments(context, childDepartments);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     var positions = GetPositionIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list });
 
@@ -3028,6 +3042,31 @@ namespace BL.Database.Dictionaries
 
                     transaction.Complete();
                 }
+            }
+        }
+
+        public IEnumerable<InternalDictionaryDepartment> GetInternalDepartments(IContext context, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == context.CurrentClientId).AsQueryable();
+
+                qry = DepartmentGetWhere(ref qry, filter);
+
+                return qry.Select(x => new InternalDictionaryDepartment
+                {
+                    Id = x.Id,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                    IsActive = x.IsActive,
+                    ParentId = x.ParentId,
+                    Code = x.FullPath,
+                    Index = x.Code,
+                    Name = x.Name,
+                    FullName = x.FullName,
+                    CompanyId = x.CompanyId,
+                    ChiefPositionId = x.ChiefPositionId,
+                }).ToList();
             }
         }
 

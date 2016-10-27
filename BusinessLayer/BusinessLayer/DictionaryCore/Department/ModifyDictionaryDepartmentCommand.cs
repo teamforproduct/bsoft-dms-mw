@@ -13,36 +13,8 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryDepartmentCommand : BaseDictionaryCommand
+    public class ModifyDictionaryDepartmentCommand : BaseDictionaryDepartmentCommand
     {
-
-        private ModifyDictionaryDepartment Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryDepartment))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryDepartment)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyDepartment(_context, _dictDb, Model);
-
-            return true;
-        }
-
-
         public override object Execute()
         {
             try
@@ -50,7 +22,11 @@ namespace BL.Logic.DictionaryCore
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
+                    if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
+
                     _dictDb.UpdateDepartment(_context, dds);
+
+                    UpdateCodeForChildDepartment(dds.Id, dds.Code);
 
                     var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dds.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
