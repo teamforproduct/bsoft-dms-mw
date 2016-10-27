@@ -7,7 +7,9 @@ using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
-
+using System.Transactions;
+using BL.Model.Enums;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -17,9 +19,18 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                {
 
-                _dictDb.UpdateAgentClientCompany(_context, dp);
+                    var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
+
+                    _dictDb.UpdateAgentClientCompany(_context, dp);
+
+                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
+
+                    transaction.Complete();
+                }
             }
             catch (DictionaryRecordWasNotFound)
             {

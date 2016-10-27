@@ -1485,7 +1485,7 @@ namespace DMS_WebAPI.Utilities
 
                 new Licences().Verify(regCode, lic, null, true);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     using (var dbContext = new ApplicationDbContext())
                     {
