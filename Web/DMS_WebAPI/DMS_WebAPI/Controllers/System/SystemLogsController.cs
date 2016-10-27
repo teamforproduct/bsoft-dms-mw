@@ -30,7 +30,9 @@ namespace DMS_WebAPI.Controllers
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpSysProc = DmsResolver.Current.Get<ILogger>();
             var tmpDicts = tmpSysProc.GetSystemLogs(ctx, filter, paging);
-            return new JsonResult(tmpDicts, this);
+            var res = new JsonResult(tmpDicts, this);
+            res.Paging = paging;
+            return res;
         }
 
     }

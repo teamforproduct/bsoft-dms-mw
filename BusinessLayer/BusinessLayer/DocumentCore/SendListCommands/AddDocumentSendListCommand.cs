@@ -93,7 +93,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
-            //            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            //            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
                 if (Model.IsLaunchItem ?? false)

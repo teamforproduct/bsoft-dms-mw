@@ -44,9 +44,9 @@ namespace BL.Logic.Logging
 
         private string GetObjectChangeDescription(object logObject)
         {
-            if (logObject is FrontDictionaryAgentCompany)
+            if (logObject is FrontDictionaryAgentClientCompany)
             {
-                var model = logObject as FrontDictionaryAgentCompany;
+                var model = logObject as FrontDictionaryAgentClientCompany;
                 return string.Format("{0}",
                     model.Name);
             }

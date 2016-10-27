@@ -266,22 +266,22 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(documentId);
         }
 
-        /// <summary>
-        /// Изменить параметры направлен для исполнения (на контроль)
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("SendForControlChange")]
-        [HttpPost]
-        public IHttpActionResult SendForControlChange(ControlChange model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForControlChange, ctx, model);
+        ///// <summary>
+        ///// Изменить параметры направлен для исполнения (на контроль)
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[Route("SendForControlChange")]
+        //[HttpPost]
+        //public IHttpActionResult SendForControlChange(ControlChange model)
+        //{
+        //    var ctx = DmsResolver.Current.Get<UserContext>().Get();
+        //    var docProc = DmsResolver.Current.Get<IDocumentService>();
+        //    var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForControlChange, ctx, model);
 
-            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
-            return ctrl.Get(documentId);
-        }
+        //    var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+        //    return ctrl.Get(documentId);
+        //}
 
         /// <summary>
         /// Изменить параметры направлен для исполнения (отв. исполнитель)

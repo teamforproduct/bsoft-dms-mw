@@ -294,7 +294,7 @@ namespace BL.Database.Admins
         public void DeleteRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Delete(); ;
  
