@@ -33,7 +33,7 @@ namespace BL.Database.SystemDb
         void UpdateSystemObject(IContext context, SystemObjects item);
         void DeleteSystemObjects(IContext context, FilterSystemObject filter);
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
-        IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, FilterSystemObject filter);
+        IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, int roleId, FilterSystemObject filter);
         IEnumerable<int> GetObjectsByActions(IContext context, FilterSystemAction filter);
         #endregion
 

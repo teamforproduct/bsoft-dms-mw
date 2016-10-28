@@ -435,6 +435,7 @@
     <Compile Include="SystemCore\Filters\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemAction.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyValue.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemObjectForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemActionForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemAction.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemObject.cs" />

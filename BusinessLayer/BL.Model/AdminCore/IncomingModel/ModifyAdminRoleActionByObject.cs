@@ -32,7 +32,7 @@ namespace BL.Model.AdminCore.IncomingModel
         /// Объект
         /// </summary>
         [Required]
-        public int ObjectId { get; set; }
+        public int SystemObjectId { get; set; }
 
         /// <summary>
         /// Установить галочку

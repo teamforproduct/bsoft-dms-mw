@@ -83,7 +83,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminUserRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
-            items.Add(GetSystemObjects(EnumObjects.DepartmentAdmin));
+            //items.Add(GetSystemObjects(EnumObjects.DepartmentAdmin));
 
             items.Add(GetSystemObjects(EnumObjects.SystemSettings));
 

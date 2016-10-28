@@ -103,7 +103,7 @@ namespace BL.Logic.SystemCore
 
             var objectList = (List<int>)_systemDb.GetObjectsByActions(context, new FilterSystemAction { IDs = actions.Select(x => x.Id).ToList() });
 
-            var objects = _systemDb.GetSystemObjectsForTree(context, new FilterSystemObject()
+            var objects = _systemDb.GetSystemObjectsForTree(context, roleId, new FilterSystemObject()
             {
                 IDs = objectList,
             });

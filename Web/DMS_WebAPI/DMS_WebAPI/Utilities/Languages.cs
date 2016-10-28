@@ -127,6 +127,8 @@ namespace DMS_WebAPI.Utilities
             if (string.IsNullOrEmpty(languageName)) languageName = string.Empty;
 
             // нахожу локаль по имени 
+            // TODO PSS "ru-RU".Equals("ru", StringComparison.OrdinalIgnoreCase); возвращает false
+            //var language = languageInfo.Languages.FirstOrDefault(x => languageName.Contains(x.Code));
             var language = languageInfo.Languages.FirstOrDefault(x => languageName.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
 
             // если локаль не определена, беру локаль по умолчанию

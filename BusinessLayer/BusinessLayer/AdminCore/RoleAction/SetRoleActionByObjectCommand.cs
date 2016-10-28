@@ -14,9 +14,9 @@ using BL.Database.DBModel.Admin;
 
 namespace BL.Logic.AdminCore
 {
-    public class SetRoleActionByObjectCommand : BaseRoleActionCommand
+    public class SetRoleActionByObjectCommand : BaseAdminCommand
     {
-        private new ModifyAdminRoleActionByObject Model
+        private ModifyAdminRoleActionByObject Model
         {
             get
             {
@@ -25,30 +25,38 @@ namespace BL.Logic.AdminCore
             }
         }
 
+        public override bool CanBeDisplayed(int Id) => true;
+
+        public override bool CanExecute()
+        {
+            _adminService.VerifyAccess(_context, CommandType, false);
+            return true;
+        }
+
         public override object Execute()
         {
             try
             {
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
-
-                    if (Model.IsChecked)
+                    var actions = _systemDb.GetSystemActions(_context, new FilterSystemAction()
                     {
-                        var actions = _systemDb.GetSystemActions(_context, new FilterSystemAction()
+                        ObjectIDs = new List<int> { Model.SystemObjectId },
+                        IsGrantable = true,
+                        IsVisible = true,
+                        IsGrantableByRecordId = false,
+                    });
+
+                    if (actions.Count() >0) 
+                    {
+                        if (Model.IsChecked)
                         {
-                            ObjectIDs = new List<int> { Model.ObjectId },
-                            IsGrantable = true,
-                            IsVisible = true,
-                            IsGrantableByRecordId = false,
-                        });
 
-                        if (actions.Count() > 0)
-                        {
-                            var checkedActions = _adminDb.GetRoleActions(_context, new FilterAdminRoleAction() { RoleIDs = new List<int> { Model.RoleId } });
+                            var checkedActions = _adminDb.GetRoleActions(_context, new FilterAdminRoleAction() { RoleIDs = new List<int> { Model.RoleId }, });
 
-                            var roleActions = new List<InternalAdminRoleAction>();
+                            var roleActions = new List<ModifyAdminRoleAction>();
 
-                            roleActions = actions.Where(x => !checkedActions.Select(y => y.ActionId).ToList().Contains(x.Id)).Select(c => new InternalAdminRoleAction()
+                            roleActions = actions.Where(x => !checkedActions.Select(y => y.ActionId).ToList().Contains(x.Id)).Select(c => new ModifyAdminRoleAction()
                             {
                                 ActionId = c.Id,
                                 RoleId = Model.RoleId,
@@ -56,17 +64,24 @@ namespace BL.Logic.AdminCore
 
                             if (roleActions.Count > 0)
                             {
-                                CommonDocumentUtilities.SetLastChange(_context, roleActions);
-                                _adminDb.AddRoleActions(_context, roleActions);
+                                //CommonDocumentUtilities.SetLastChange(_context, roleActions);
+                                //_adminDb.AddRoleActions(_context, roleActions);
+                                foreach (var item in roleActions)
+                                {
+                                    AddRoleAction(item);
+                                }
                             }
+
                         }
-
+                        else
+                        {
+                            _adminDb.DeleteRoleActions(_context, new FilterAdminRoleAction()
+                            {
+                                ActionIDs = actions.Select(x => x.Id).ToList(),
+                                RoleIDs = new List<int> { Model.RoleId }
+                            });
+                        }
                     }
-                    else
-                    {
-                        _adminDb.DeleteRoleActions(_context, new FilterAdminRoleAction() { RoleIDs = new List<int> { Model.RoleId } });
-                    }
-
 
                     transaction.Complete();
                 }
@@ -88,9 +103,5 @@ namespace BL.Logic.AdminCore
             _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.AddRoleAction, _context, model);
         }
 
-        private void DeleteRoleAction(ModifyAdminRoleAction model)
-        {
-            _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.DeleteRoleAction, _context, model);
-        }
     }
 }

@@ -494,7 +494,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, FilterSystemObject filter)
+        public IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, int roleId, FilterSystemObject filter)
         {
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -503,7 +503,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.OrderBy(x => x.Id);
 
-                var res = qry.Select(x => new TreeItem
+                var res = qry.Select(x => new FrontSystemObjectForDIP
                 {
                     Id = x.Id,
                     Name = x.Description,
@@ -513,6 +513,8 @@ namespace BL.Database.SystemDb
                     ObjectId = (int)EnumObjects.SystemObjects,
                     IsActive = true,
                     IsList = !(x.Actions.Where(y => y.ObjectId == x.Id).Any()),
+                    RoleId = roleId,
+                    SystemObjectId = x.Id,
                 }).ToList();
 
                 transaction.Complete();

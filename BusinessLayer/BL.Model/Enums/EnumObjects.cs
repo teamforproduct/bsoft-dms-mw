@@ -62,7 +62,7 @@
         AdminPositionRoles = 702,
         AdminUserRoles = 703,
         AdminSubordination = 704,
-        DepartmentAdmin = 705,
+        //DepartmentAdmin = 705,
 
 
         SystemSettings = 900,
