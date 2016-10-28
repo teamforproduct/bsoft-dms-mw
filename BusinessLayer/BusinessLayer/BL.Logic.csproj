@@ -110,6 +110,7 @@
     <Compile Include="AdminCore\PositionRole\BasePositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DuplicatePositionRolesCommand.cs" />
     <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
+    <Compile Include="AdminCore\RoleAction\SetRoleActionByObjectCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetAllSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetDefaultSubordinationsCommand.cs" />

@@ -133,7 +133,7 @@ namespace BL.Logic.SystemCore
 
             var systemImportActions = DmsDbImportData.GetSystemActions();
 
-            _systemDb.DeleteSystemActions(context, new FilterSystemAction() { NotContainsIDs = systemDbActions.Select(x => x.Id).ToList() });
+            _systemDb.DeleteSystemActions(context, new FilterSystemAction() { NotContainsIDs = systemImportActions.Select(x => x.Id).ToList() });
 
             foreach (var act in systemImportActions)
             {

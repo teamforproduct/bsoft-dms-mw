@@ -27,7 +27,6 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                // PSS ReadUncommitted - так как вложенная транзакция ReadUncommitted
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     // Устанавливаю рассылку для должностей заданного отдела

@@ -230,18 +230,26 @@ namespace BL.Database.SystemDb
             {
                 if (filter.AgentId.HasValue)
                 {
-                    return
-                        dbContext.SettingsSet.Where(
+                    var res = dbContext.SettingsSet.Where(
                             x =>
                                 ctx.CurrentClientId == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
+                    transaction.Complete();
+
+                    return res;
                 }
-                return
-                    dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
-                        .OrderBy(x => x.ExecutorAgentId)
-                        .Select(x => x.Value)
-                        .FirstOrDefault();
+                else
+                {
+                    var res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
+                            .OrderBy(x => x.ExecutorAgentId)
+                            .Select(x => x.Value)
+                            .FirstOrDefault();
+                    transaction.Complete();
+
+                    return res;
+                }
+
             }
         }
 
@@ -252,13 +260,17 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSettingsQuery(ctx, dbContext, filter);
 
-                return qry.Select(x => new InternalSystemSetting()
+                var res = qry.Select(x => new InternalSystemSetting()
                 {
                     Key = x.Key,
                     Value = x.Value,
                     ValueType = (EnumValueTypes)x.ValueType,
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -377,6 +389,8 @@ namespace BL.Database.SystemDb
 
                     qry.Delete();
                 }
+
+                transaction.Complete();
             }
         }
 
@@ -418,12 +432,16 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemObjectsQuery(context, dbContext, filter);
 
-                return qry.Select(x => new FrontSystemObject
+                var res = qry.Select(x => new FrontSystemObject
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -485,7 +503,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.OrderBy(x => x.Id);
 
-                return qry.Select(x => new TreeItem
+                var res = qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
                     Name = x.Description,
@@ -496,6 +514,11 @@ namespace BL.Database.SystemDb
                     IsActive = true,
                     IsList = !(x.Actions.Where(y => y.ObjectId == x.Id).Any()),
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
+
             }
         }
 
@@ -508,7 +531,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.OrderBy(x => x.Id);
 
-                return qry.Select(x => new FrontSystemActionForDIP
+                var res = qry.Select(x => new FrontSystemActionForDIP
                 {
                     Id = x.Id,
                     Name = x.Description,
@@ -522,6 +545,11 @@ namespace BL.Database.SystemDb
                     RoleId = roleId,
                     ActionId = x.Id,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
+
             }
         }
 
@@ -577,10 +605,18 @@ namespace BL.Database.SystemDb
         public void DeleteSystemActions(IContext context, FilterSystemAction filter)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = dbContext.Database.BeginTransaction())
             {
                 var qry = GetSystemActionsQuery(context, dbContext, filter);
 
+                var actions = qry.Select(x => x.Id).ToList();
+
+                dbContext.AdminRoleActionsSet.Where(x => actions.Contains(x.ActionId)).Delete();
+
                 qry.Delete();
+
+                transaction.Commit();
+
             }
 
         }
@@ -627,12 +663,16 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
-                return qry.Select(x => new FrontSystemAction
+                var res = qry.Select(x => new FrontSystemAction
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -643,7 +683,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
-                return qry.Select(x => new InternalSystemAction
+                var res = qry.Select(x => new InternalSystemAction
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -656,6 +696,10 @@ namespace BL.Database.SystemDb
                     IsVisible = x.IsVisible,
                     ObjectId = (EnumObjects)x.ObjectId
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -706,6 +750,21 @@ namespace BL.Database.SystemDb
                 qry = qry.Where(filterContains);
             }
 
+            if (filter.IsGrantable.HasValue)
+            {
+                qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
+            }
+
+            if (filter.IsGrantableByRecordId.HasValue)
+            {
+                qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
+            }
+
+            if (filter.IsVisible.HasValue)
+            {
+                qry = qry.Where(x => x.IsVisible == filter.IsVisible);
+            }
+
             return qry;
         }
 
@@ -719,13 +778,17 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.SystemFormatsSet.AsQueryable();
 
-                return qry.Select(x => new FrontSystemFormat
+                var res = qry.Select(x => new FrontSystemFormat
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     Description = x.Description,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -736,7 +799,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
 
-                return qry.Select(x => new FrontSystemFormula
+                var res = qry.Select(x => new FrontSystemFormula
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -744,6 +807,10 @@ namespace BL.Database.SystemDb
                     Description = x.Description,
                     Example = x.Example
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
         public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
@@ -753,13 +820,17 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.SystemPatternsSet.AsQueryable();
 
-                return qry.Select(x => new FrontSystemPattern
+                var res = qry.Select(x => new FrontSystemPattern
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     Description = x.Description,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
         public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
@@ -769,12 +840,17 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.SystemValueTypesSet.AsQueryable();
 
-                return qry.Select(x => new FrontSystemValueType
+                var res = qry.Select(x => new FrontSystemValueType
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
+
             }
         }
 
@@ -799,7 +875,7 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(filterContains);
                 }
 
-                return qry.Select(x => new BaseSystemUIElement
+                var res = qry.Select(x => new BaseSystemUIElement
                 {
                     PropertyLinkId = x.Id,
                     ObjectCode = x.Object.Code,
@@ -820,6 +896,10 @@ namespace BL.Database.SystemDb
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -849,7 +929,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetPropertiesQuery(dbContext, ctx, filter);
 
-                return qry.Select(x => new FrontProperty
+                var res = qry.Select(x => new FrontProperty
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -874,6 +954,10 @@ namespace BL.Database.SystemDb
                             Description = x.ValueType.Description
                         }
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -995,7 +1079,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
-                return qry.Select(x => new InternalPropertyLink
+                var res = qry.Select(x => new InternalPropertyLink
                 {
                     Id = x.Id,
                     PropertyId = x.PropertyId,
@@ -1003,6 +1087,10 @@ namespace BL.Database.SystemDb
                     Filers = x.Filers,
                     IsMandatory = x.IsMandatory,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1013,7 +1101,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
-                return qry.Select(x => new FrontPropertyLink
+                var res = qry.Select(x => new FrontPropertyLink
                 {
                     Id = x.Id,
                     PropertyId = x.PropertyId,
@@ -1022,6 +1110,10 @@ namespace BL.Database.SystemDb
                     IsMandatory = x.IsMandatory,
                     SystemObject = new FrontSystemObject { Code = x.Object.Code }
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1105,11 +1197,15 @@ namespace BL.Database.SystemDb
                             y => y.ObjectId == (int)EnumObjects.Documents && y.Filers == x.Filers))
                     .Where(x => x != null);
 
-                return qry.Select(x => new FrontPropertyValue
+                var res= qry.Select(x => new FrontPropertyValue
                 {
                     PropertyLinkId = x.Id,
                     PropertyCode = x.Property.Code
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1122,7 +1218,8 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                return
+                // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
+                var res =
                     dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
                                     && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
@@ -1147,6 +1244,9 @@ namespace BL.Database.SystemDb
                             WasUpdated = !(x.SendDate == null),
                             DestinationAgentEmail = "sergozubr@rambler.ru"
                         }).ToList();
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1182,7 +1282,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
-                return qry.Select(x => new BaseSystemUIElement
+                var res= qry.Select(x => new BaseSystemUIElement
                 {
                     PropertyLinkId = x.Id,
                     ObjectCode = filter.Object.ToString(),
@@ -1200,6 +1300,10 @@ namespace BL.Database.SystemDb
                     ValueDescriptionFieldCode = x.Property.ValueType.Description,
                     Format = x.Property.OutFormat,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1276,6 +1380,8 @@ namespace BL.Database.SystemDb
 
                 res.AddRange(qry3.ToList());
 
+                transaction.Complete();
+
                 return res;
             }
         }
@@ -1295,6 +1401,8 @@ namespace BL.Database.SystemDb
 
                 var res = qry.ToList();
 
+                transaction.Complete();
+
                 return res;
             }
         }
@@ -1308,22 +1416,32 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                int res = 0;
                 switch (objType)
                 {
                     case EnumObjects.Documents:
-                        return dbContext.DocumentsSet.Count(x => x.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        res =  dbContext.DocumentsSet.Count(x => x.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        break;
                     case EnumObjects.DocumentSendLists:
-                        return dbContext.DocumentSendListsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        res = dbContext.DocumentSendListsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        break;
                     case EnumObjects.DocumentFiles:
-                        return dbContext.DocumentFilesSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId && !x.IsDeleted);
+                        res = dbContext.DocumentFilesSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId && !x.IsDeleted);
+                        break;
                     case EnumObjects.DocumentEvents:
-                        return dbContext.DocumentEventsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        res = dbContext.DocumentEventsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        break;
                     case EnumObjects.DocumentSubscriptions:
-                        return dbContext.DocumentSubscriptionsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        res = dbContext.DocumentSubscriptionsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        break;
 
                     default:
                         return 0;
                 }
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1600,6 +1718,7 @@ namespace BL.Database.SystemDb
                 }).ToList());
 
                 #endregion DocumentTemplates
+                transaction.Complete();
             }
             return res;
         }
@@ -1622,6 +1741,7 @@ namespace BL.Database.SystemDb
                     ObjectId = x.ObjectId,
                     ObjectText = ""
                 }).ToList());
+                transaction.Complete();
             }
             return res;
         }
@@ -1745,7 +1865,10 @@ namespace BL.Database.SystemDb
                                 x.ss.Description + " " + x.ss.SubscriptionState.Name + " " +
                                 x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                         }).ToList());
+
+            transaction.Complete();
             }
+
             return res;
         }
 
@@ -1781,6 +1904,9 @@ namespace BL.Database.SystemDb
                                          + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " +
                                          x.SenderNumber + " "
                         }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
+
+                    transaction.Complete();
+
                     return res;
                 }
 
@@ -1795,6 +1921,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Description + " " + x.AddDescription + " " + x.Task.Task + " " + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " " + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
+
+                    transaction.Complete();
                     return res;
                 }
 
@@ -1809,6 +1937,7 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Name + "." + x.Extension + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
+                    transaction.Complete();
                     return res;
                 }
 
@@ -1823,6 +1952,7 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Description + " " + x.SendType.Name + " " + x.SourcePosition.Name + " " + x.TargetPosition.Name + " " + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
+                    transaction.Complete();
                     return res;
                 }
 
@@ -1837,8 +1967,10 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Description + " " + x.SubscriptionState.Name + " " + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
+                    transaction.Complete();
                     return res;
                 }
+            transaction.Complete();
             }
             return res;
         }
@@ -1953,6 +2085,7 @@ namespace BL.Database.SystemDb
                     dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
                     dbContext.SaveChanges();
                 }
+                transaction.Complete();
             }
             return res;
         }
@@ -2337,6 +2470,7 @@ namespace BL.Database.SystemDb
                 }
 
                 #endregion TemplateDocuments
+                transaction.Complete();
             }
             return res;
         }

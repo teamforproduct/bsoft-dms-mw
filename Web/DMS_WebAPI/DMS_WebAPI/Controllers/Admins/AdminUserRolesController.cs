@@ -60,21 +60,6 @@ namespace DMS_WebAPI.Controllers.Admins
             return Get((int)tmpItem);
         }
 
-        ///// <summary>
-        ///// Изменяет роль сотруднику-пользователю. Например, период исполнения роли
-        ///// </summary>
-        ///// <param name="id">Record Id</param>
-        ///// <param name="model">ModifyAdminUserRole</param>
-        ///// <returns>FrontAdminUserRole</returns>
-        //public IHttpActionResult Put(int id, [FromBody]ModifyAdminUserRole model)
-        //{
-        //    model.Id = id;
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
-        //    tmpService.ExecuteAction(EnumAdminActions.ModifyUserRole, cxt, model);
-        //    return Get(model.Id);
-        //}
-
         /// <summary>
         /// Отнимает роль у сотрудника-пользователя
         /// </summary>

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Transactions;
 using System.Web;
 
 namespace DMS_WebAPI.Utilities
@@ -217,6 +218,7 @@ namespace DMS_WebAPI.Utilities
         private AdminLanguageInfo GetAdminLanguage()
         {
             using (var dbContext = new ApplicationDbContext())
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var res = new AdminLanguageInfo();
 
@@ -235,6 +237,8 @@ namespace DMS_WebAPI.Utilities
                     Label = x.Label,
                     Value = x.Value
                 }).ToList();
+
+                transaction.Complete();
 
                 return res;
             }
@@ -300,9 +304,11 @@ namespace DMS_WebAPI.Utilities
         private void DeleteAllAdminLanguageValues()
         {
             using (var dbContext = new ApplicationDbContext())
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 

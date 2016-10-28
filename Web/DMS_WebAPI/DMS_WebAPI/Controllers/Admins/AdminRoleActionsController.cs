@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Web.Http.Description;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Tree;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -71,21 +72,6 @@ namespace DMS_WebAPI.Controllers.Admins
             return Get((int)tmpItem);
         }
 
-        ///// <summary>
-        ///// Изменяет действие для роли
-        ///// </summary>
-        ///// <param name="id">Record Id</param>
-        ///// <param name="model">ModifyAdminRoleAction</param>
-        ///// <returns>FrontAdminRoleAction</returns>
-        //public IHttpActionResult Put(int id, [FromBody]ModifyAdminRoleAction model)
-        //{
-        //    model.Id = id;
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
-        //    tmpService.ExecuteAction(EnumAdminActions.ModifyRoleAction, cxt, model);
-        //    return Get(model.Id);
-        //}
-
         /// <summary>
         /// Запрещает действие для роли
         /// </summary>
@@ -99,5 +85,19 @@ namespace DMS_WebAPI.Controllers.Admins
             FrontAdminRoleAction tmpItem = new FrontAdminRoleAction() { RoleId = roleId, ActionId = actionId };
             return new JsonResult(tmpItem, this);
         }
+
+        [HttpPost]
+        [Route("SetByObject")]
+        public IHttpActionResult SetByObject([FromBody] ModifyAdminRoleActionByObject model)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetRoleActionByObject, cxt, model);
+            stopWatch.Stop();
+            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+        }
+
     }
 }

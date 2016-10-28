@@ -22,6 +22,7 @@
         #endregion
 
         #region [+] RoleActions ...
+        SetRoleAction = 701000,
         /// <summary>
         /// Добавить
         /// </summary>
@@ -34,9 +35,15 @@
         /// Удалить 
         /// </summary>
         DeleteRoleAction = 701009,
+
+        /// <summary>
+        /// Удалить 
+        /// </summary>
+        SetRoleActionByObject = 701002,
         #endregion
 
         #region [+] PositionRole ...
+        SetPositionRole = 702000,
         /// <summary>
         /// Добавить
         /// </summary>
@@ -44,7 +51,7 @@
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyPositionRole = 702005,
+        //ModifyPositionRole = 702005,
         /// <summary>
         /// Удалить 
         /// </summary>
@@ -57,6 +64,7 @@
         #endregion
 
         #region [+] UserRoles ...
+        SetUserRole = 703000,
         /// <summary>
         /// Добавить
         /// </summary>
@@ -64,7 +72,7 @@
         /// <summary>
         /// Изменить
         /// </summary>
-        ModifyUserRole = 703005,
+        //ModifyUserRole = 703005,
         /// <summary>
         /// Удалить 
         /// </summary>

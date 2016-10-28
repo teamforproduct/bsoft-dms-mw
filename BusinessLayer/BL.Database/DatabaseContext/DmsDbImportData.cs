@@ -309,18 +309,20 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.ModifyRole, EnumObjects.AdminRoles));
             items.Add(GetSysAct(EnumAdminActions.DeleteRole, EnumObjects.AdminRoles));
 
-            items.Add(GetSysAct(EnumAdminActions.AddPositionRole, EnumObjects.AdminPositionRoles));
-            items.Add(GetSysAct(EnumAdminActions.ModifyPositionRole, EnumObjects.AdminPositionRoles));
-            items.Add(GetSysAct(EnumAdminActions.DeletePositionRole, EnumObjects.AdminPositionRoles));
-            items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles));
+            items.Add(GetSysAct(EnumAdminActions.SetPositionRole, EnumObjects.AdminPositionRoles));
+            items.Add(GetSysAct(EnumAdminActions.AddPositionRole, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
+            items.Add(GetSysAct(EnumAdminActions.DeletePositionRole, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
+            items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
 
-            items.Add(GetSysAct(EnumAdminActions.AddRoleAction, EnumObjects.AdminRoleAction));
-            // items.Add(GetSysAct(EnumAdminActions.ModifyRoleAction, EnumObjects.AdminRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.DeleteRoleAction, EnumObjects.AdminRoleAction));
+            items.Add(GetSysAct(EnumAdminActions.SetRoleAction, EnumObjects.AdminRoleAction));
+            items.Add(GetSysAct(EnumAdminActions.AddRoleAction, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
+            items.Add(GetSysAct(EnumAdminActions.DeleteRoleAction, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
+            items.Add(GetSysAct(EnumAdminActions.SetRoleActionByObject, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
 
-            items.Add(GetSysAct(EnumAdminActions.AddUserRole, EnumObjects.AdminUserRoles));
-            items.Add(GetSysAct(EnumAdminActions.ModifyUserRole, EnumObjects.AdminUserRoles));
-            items.Add(GetSysAct(EnumAdminActions.DeleteUserRole, EnumObjects.AdminUserRoles));
+
+            items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));
+            items.Add(GetSysAct(EnumAdminActions.AddUserRole, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
+            items.Add(GetSysAct(EnumAdminActions.DeleteUserRole, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
 
             items.Add(GetSysAct(EnumAdminActions.SetSubordination, EnumObjects.AdminSubordination));
             items.Add(GetSysAct(EnumAdminActions.SetSubordinationByCompany, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));

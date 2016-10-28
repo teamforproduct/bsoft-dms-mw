@@ -40,15 +40,18 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.DeleteRoleAction:
                     cmd = DmsResolver.Current.Get<DeleteRoleActionCommand>();
                     break;
+                case EnumAdminActions.SetRoleActionByObject:
+                    cmd = DmsResolver.Current.Get<SetRoleActionByObjectCommand>();
+                    break;
                 #endregion
-                    
+
                 #region AdminPositionRoles
                 case EnumAdminActions.AddPositionRole:
                     cmd = DmsResolver.Current.Get<AddPositionRoleCommand>();
                     break;
-                case EnumAdminActions.ModifyPositionRole:
-                    cmd = DmsResolver.Current.Get<ModifyPositionRoleCommand>();
-                    break;
+                //case EnumAdminActions.ModifyPositionRole:
+                //    cmd = DmsResolver.Current.Get<ModifyPositionRoleCommand>();
+                //    break;
                 case EnumAdminActions.DeletePositionRole:
                     cmd = DmsResolver.Current.Get<DeletePositionRoleCommand>();
                     break;
@@ -62,9 +65,9 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.AddUserRole:
                     cmd = DmsResolver.Current.Get<AddUserRoleCommand>();
                     break;
-                case EnumAdminActions.ModifyUserRole:
-                    cmd = DmsResolver.Current.Get<ModifyUserRoleCommand>();
-                    break;
+                //case EnumAdminActions.ModifyUserRole:
+                //    cmd = DmsResolver.Current.Get<ModifyUserRoleCommand>();
+                //    break;
                 case EnumAdminActions.DeleteUserRole:
                     cmd = DmsResolver.Current.Get<DeleteUserRoleCommand>();
                     break;
