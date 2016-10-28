@@ -24,6 +24,7 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemObjects>();
 
+            items.Add(GetSystemObjects(EnumObjects.System));
             items.Add(GetSystemObjects(EnumObjects.SystemObjects));
             items.Add(GetSystemObjects(EnumObjects.SystemActions));
 

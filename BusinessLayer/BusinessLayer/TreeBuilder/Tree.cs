@@ -114,15 +114,15 @@ namespace BL.Logic.TreeBuilder
 
                 foreach (var item in tree)
                 {
-                    var addToSafeList = false;
+                    var addToSafeList = true;
 
-                    if (existsNameFilter)
+                    if (existsNameFilter & addToSafeList)
                     {
                         // Поиск присходит по специальному полю для поиска
                         addToSafeList = (item.SearchText.ToLower().ContainsArray(arrName));
                     }
 
-                    if (existsCheckFilter)
+                    if (existsCheckFilter & addToSafeList)
                     {
                         addToSafeList = item.IsChecked ?? false;
                     }

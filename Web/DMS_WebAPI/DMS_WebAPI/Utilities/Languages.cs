@@ -1,4 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
@@ -16,7 +18,7 @@ namespace DMS_WebAPI.Utilities
     /// <summary>
     /// Represent functionality to configure languages
     /// </summary>
-    public class Languages
+    public class Languages : ILanguages
     {
         private const int _MINUTES_TO_UPDATE_INFO = 5;// int.MaxValue; 
 
@@ -193,6 +195,11 @@ namespace DMS_WebAPI.Utilities
             //}
             //catch { }
 
+        }
+
+        public string ReplaceLanguageLabel(IContext context, string text)
+        {
+            return ReplaceLanguageLabel(context.CurrentEmployee.LanguageId, text);
         }
 
         public void RefreshLanguageValues()

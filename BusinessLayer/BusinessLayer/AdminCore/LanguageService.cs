@@ -66,25 +66,25 @@ namespace BL.Logic.AdminCore
 
             return languageValues;
         }
-        public string ReplaceLanguageLabel(IContext context, string text)
-        {
-            var labelsInText = new List<string>();
-            foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
-            {
-                labelsInText.Add(label.Value);
-            }
+        //public string ReplaceLanguageLabel(IContext context, string text)
+        //{
+        //    var labelsInText = new List<string>();
+        //    foreach (Match label in Regex.Matches(text, "##l@(.*?)@l##"))
+        //    {
+        //        labelsInText.Add(label.Value);
+        //    }
 
-            if (labelsInText.Count > 0)
-            {
-                var labels = GetLanguageValues(context, new FilterAdminLanguageValue { LanguageId = context.CurrentEmployee.LanguageId, Labels = labelsInText }).ToArray();
+        //    if (labelsInText.Count > 0)
+        //    {
+        //        var labels = GetLanguageValues(context, new FilterAdminLanguageValue { LanguageId = context.CurrentEmployee.LanguageId, Labels = labelsInText }).ToArray();
 
-                for (int i = 0, l = labels.Length; i < l; i++)
-                {
-                    text = text.Replace(labels[i].Label, labels[i].Value);
-                }
-            }
-            return text;
-        }
+        //        for (int i = 0, l = labels.Length; i < l; i++)
+        //        {
+        //            text = text.Replace(labels[i].Label, labels[i].Value);
+        //        }
+        //    }
+        //    return text;
+        //}
 
         #region AdminLanguages
         public FrontAdminLanguage GetAdminLanguage(IContext context, int id)

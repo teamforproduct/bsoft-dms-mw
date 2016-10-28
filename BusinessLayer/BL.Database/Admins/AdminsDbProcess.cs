@@ -213,7 +213,7 @@ namespace BL.Database.Admins
                     {
                         AgentId = x.Id,
                         Name = x.Agent.Name,
-                        LanguageId = /*x.Agent.LanguageId ??*/ 0
+                        LanguageId = x.Agent.AgentUser.LanguageId ?? (int)EnumSystemLanguageId.LanguageId
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;

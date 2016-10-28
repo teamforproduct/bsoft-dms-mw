@@ -4,6 +4,7 @@ using BL.Database.Admins.Interfaces;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
@@ -16,6 +17,7 @@ namespace BL.Logic.Common
         private EnumAdminActions _action;
         protected IAdminService _adminService;
         protected IAdminsDbProcess _adminDb;
+        protected IDictionaryService _dictService;
         protected IDictionariesDbProcess _dictDb;
         protected ILogger _logger;
 
@@ -30,8 +32,9 @@ namespace BL.Logic.Common
             _context = ctx;
             _param = param;
             _adminDb = DmsResolver.Current.Get<IAdminsDbProcess>();
-            _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
             _adminService = DmsResolver.Current.Get<IAdminService>();
+            _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            _dictService= DmsResolver.Current.Get<IDictionaryService>();
             _logger = DmsResolver.Current.Get<ILogger>();
         }
 

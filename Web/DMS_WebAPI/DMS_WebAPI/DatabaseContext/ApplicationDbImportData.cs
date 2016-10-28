@@ -14,58 +14,14 @@ namespace DMS_WebAPI.Models
 
         private static int IdSequence = 0;
 
-        // этот метод-подпорка пока не решены вопросы локализации полностью
-        // достаю переводы из функции инициализации переводов при первом старте
-        public static string ReplaceLanguageLabel(string userLanguage, string text)
-        {
-            string errorMessage = text;
-
-            try
-            {
-                var labelsInText = new List<string>();
-                foreach (Match label in Regex.Matches(errorMessage, "##l@(.*?)@l##"))
-                {
-                    labelsInText.Add(label.Value);
-                }
-
-                if (labelsInText.Count > 0)
-                {
-                    int LanguageId = 0;
-
-                    if (string.IsNullOrEmpty(userLanguage)) userLanguage = string.Empty;
-
-                    //var lang =  GetAdminLanguages().Where(x => x.Name == userLanguage).FirstOrDefault();
-
-                    if (userLanguage == string.Empty )
-                    {
-                        LanguageId = GetAdminLanguages().Where(x => x.IsDefault == true).FirstOrDefault().Id;
-                    }
-
-                    var labels = GetAdminLanguageValues().Where( x => x.LanguageId == LanguageId && labelsInText.Contains( x.Label)).ToArray();
-
-                    for (int i = 0, l = labels.Length; i < l; i++)
-                    {
-                        string val = labels[i].Value;
-                        if (string.IsNullOrEmpty(val)) val = "Empty translation for label: " + labels[i].Label;
-                        errorMessage = errorMessage.Replace(labels[i].Label, val);
-                    }
-                }
-
-                return errorMessage;
-            }
-            catch (Exception ex) { }
-            return text;
-        }
-
-
         #region [+] Languages ...
 
         public static List<AdminLanguages> GetAdminLanguages()
         {
             var items = new List<AdminLanguages>();
 
-            items.Add(new AdminLanguages { Id = 1, Code = "ru", Name = "Русский", IsDefault = true });
-            items.Add(new AdminLanguages { Id = 2, Code = "en", Name = "English", IsDefault = false });
+            items.Add(new AdminLanguages { Id = (int)EnumLanguages.ru, Code = EnumLanguages.ru.ToString(), Name = "Русский", IsDefault = (int)EnumLanguages.ru == (int)EnumSystemLanguageId.LanguageId });
+            items.Add(new AdminLanguages { Id = (int)EnumLanguages.en, Code = EnumLanguages.en.ToString(), Name = "English", IsDefault = (int)EnumLanguages.en == (int)EnumSystemLanguageId.LanguageId });
 
             return items;
         }
@@ -234,7 +190,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!");
             AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!");
             AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана");
-            
+
 
 
             //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 

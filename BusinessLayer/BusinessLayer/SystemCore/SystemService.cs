@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.SystemDb;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.TreeBuilder;
@@ -72,7 +73,7 @@ namespace BL.Logic.SystemCore
 
         public FrontSystemObject GetSystemObject(IContext context, int id)
         {
-            return _systemDb.GetSystemObjects(context, new FilterSystemObject { ObjectIDs = new List<int> { id } }).FirstOrDefault();
+            return _systemDb.GetSystemObjects(context, new FilterSystemObject { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
@@ -82,7 +83,7 @@ namespace BL.Logic.SystemCore
 
         public FrontSystemAction GetSystemAction(IContext context, int id)
         {
-            return _systemDb.GetSystemActions(context, new FilterSystemAction { ActionIDs = new List<int> { id } }).FirstOrDefault();
+            return _systemDb.GetSystemActions(context, new FilterSystemAction { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter)
@@ -100,19 +101,26 @@ namespace BL.Logic.SystemCore
                 IsGrantableByRecordId = false,
             });
 
-            var objectList = (List<int>)_systemDb.GetObjectsByActions(context, new FilterSystemAction { ActionIDs = actions.Select(x => x.Id).ToList() });
+            var objectList = (List<int>)_systemDb.GetObjectsByActions(context, new FilterSystemAction { IDs = actions.Select(x => x.Id).ToList() });
 
             var objects = _systemDb.GetSystemObjectsForTree(context, new FilterSystemObject()
             {
-                ObjectIDs = objectList,
+                IDs = objectList,
             });
-
-
 
             List<TreeItem> flatList = new List<TreeItem>();
 
             flatList.AddRange(objects);
             flatList.AddRange(actions);
+
+            // перевожу на пользовательский язык лейблы
+
+            var languageService = DmsResolver.Current.Get<ILanguages>();
+
+            foreach (var item in flatList)
+            {
+                item.Name  = languageService.ReplaceLanguageLabel(context,  item.Name);
+            }
 
             var res = Tree.GetList( Tree.Get(flatList, filter));
 
@@ -124,6 +132,8 @@ namespace BL.Logic.SystemCore
             var systemDbActions = _systemDb.GetInternalSystemActions(context, new FilterSystemAction());
 
             var systemImportActions = DmsDbImportData.GetSystemActions();
+
+            _systemDb.DeleteSystemActions(context, new FilterSystemAction() { NotContainsIDs = systemDbActions.Select(x => x.Id).ToList() });
 
             foreach (var act in systemImportActions)
             {
@@ -146,6 +156,8 @@ namespace BL.Logic.SystemCore
             var systemDbObjects = _systemDb.GetSystemObjects(context, new FilterSystemObject());
 
             var systemImportObjects = DmsDbImportData.GetSystemObjects();
+
+            _systemDb.DeleteSystemObjects(context, new FilterSystemObject() { NotContainsIDs = systemImportObjects.Select(x => x.Id).ToList() });
 
             foreach (var act in systemImportObjects)
             {

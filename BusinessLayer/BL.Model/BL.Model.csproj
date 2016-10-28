@@ -372,7 +372,9 @@
     <Compile Include="Enums\EnumSort.cs" />
     <Compile Include="Enums\EnumCopyMode.cs" />
     <Compile Include="Enums\EnumPositionExecutionTypes.cs" />
+    <Compile Include="Enums\EnumLanguages.cs" />
     <Compile Include="Enums\EnumSystemPositions.cs" />
+    <Compile Include="Enums\EnumSystemLanguageId.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
     <Compile Include="Enums\EnumPropertyActions.cs" />

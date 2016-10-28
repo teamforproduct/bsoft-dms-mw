@@ -1,4 +1,5 @@
-﻿using DMS_WebAPI.Utilities;
+﻿using BL.Logic.AdminCore.Interfaces;
+using DMS_WebAPI.Utilities;
 using Ninject.Modules;
 
 namespace DMS_WebAPI.DependencyInjection
@@ -10,7 +11,8 @@ namespace DMS_WebAPI.DependencyInjection
             Bind<UserContext>().ToSelf().InSingletonScope();
             Bind<UserContextWorkerService>().ToSelf().InSingletonScope();
             Bind<LicencesWorkerService>().ToSelf().InSingletonScope();
-            Bind<Languages>().ToSelf().InSingletonScope();
+            //Bind<Languages>().ToSelf().InSingletonScope();
+            Bind<ILanguages>().To <Languages>().InSingletonScope();
         }
     }
 }

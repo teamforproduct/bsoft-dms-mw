@@ -11,7 +11,12 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Массив ИД действий системы
         /// </summary>
-        public List<int> ActionIDs { get; set; }
+        public List<int> IDs { get; set; }
+
+        /// <summary>
+        /// Массив ИД действий системы
+        /// </summary>
+        public List<int> NotContainsIDs { get; set; }
         /// <summary>
         /// Отрывок описания действий системы
         /// </summary>

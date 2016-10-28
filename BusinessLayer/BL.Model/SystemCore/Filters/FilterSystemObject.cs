@@ -10,7 +10,12 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Массив ИД объектов системы
         /// </summary>
-        public List<int> ObjectIDs { get; set; }
+        public List<int> IDs { get; set; }
+
+        /// <summary>
+        /// Массив ИД объектов системы
+        /// </summary>
+        public List<int> NotContainsIDs { get; set; }
 
         /// <summary>
         /// Отрывок описания объектов системы

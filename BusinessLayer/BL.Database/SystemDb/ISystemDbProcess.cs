@@ -31,6 +31,7 @@ namespace BL.Database.SystemDb
         void UpdateSystemObject(IContext context, InternalSystemObject item);
         void AddSystemObject(IContext context, SystemObjects item);
         void UpdateSystemObject(IContext context, SystemObjects item);
+        void DeleteSystemObjects(IContext context, FilterSystemObject filter);
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, FilterSystemObject filter);
         IEnumerable<int> GetObjectsByActions(IContext context, FilterSystemAction filter);
@@ -41,6 +42,7 @@ namespace BL.Database.SystemDb
         void UpdateSystemAction(IContext context, InternalSystemAction item);
         void AddSystemAction(IContext context, SystemActions item);
         void UpdateSystemAction(IContext context, SystemActions item);
+        void DeleteSystemActions(IContext context, FilterSystemAction filter);
         IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter);
         IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
         IEnumerable<TreeItem> GetSystemActionsForTree(IContext context, int roleId, FilterSystemAction filter);

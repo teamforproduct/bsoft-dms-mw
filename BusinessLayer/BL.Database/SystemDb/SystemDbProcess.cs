@@ -17,6 +17,7 @@ using LinqKit;
 using System.Transactions;
 using BL.Model.Tree;
 using BL.Database.Common;
+using EntityFramework.Extensions;
 
 namespace BL.Database.SystemDb
 {
@@ -361,6 +362,24 @@ namespace BL.Database.SystemDb
             UpdateSystemObject(context, SystemModelConverter.GetDbSystemObject(context, item));
         }
 
+        public void DeleteSystemObjects(IContext context, FilterSystemObject filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = GetSystemObjectsQuery(context, dbContext, filter);
+
+                var objects = qry.Select(x => x.Id).ToList();
+
+                if (objects.Count > 0)
+                {
+                    DeleteSystemActions(context, new FilterSystemAction() { ObjectIDs = objects });
+
+                    qry.Delete();
+                }
+            }
+        }
+
         public void AddSystemObject(IContext context, SystemObjects item)
         {
             using (var dbContext = new DmsContext(context))
@@ -499,7 +518,7 @@ namespace BL.Database.SystemDb
                     ObjectId = (int)EnumObjects.SystemActions,
                     IsActive = true,
                     IsList = true,
-                    IsChecked = x.RoleActions.Where(y=>y.RoleId == roleId & !y.RecordId.HasValue).Any(),
+                    IsChecked = x.RoleActions.Where(y => y.RoleId == roleId & !y.RecordId.HasValue).Any(),
                     RoleId = roleId,
                     ActionId = x.Id,
                 }).ToList();
@@ -512,11 +531,19 @@ namespace BL.Database.SystemDb
 
             if (filter != null)
             {
-                if (filter.ObjectIDs?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<SystemObjects>();
-                    filterContains = filter.ObjectIDs.Aggregate(filterContains,
+                    filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<SystemObjects>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
                     qry = qry.Where(filterContains);
                 }
 
@@ -547,6 +574,17 @@ namespace BL.Database.SystemDb
             UpdateSystemAction(context, SystemModelConverter.GetDbSystemAction(context, item));
         }
 
+        public void DeleteSystemActions(IContext context, FilterSystemAction filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetSystemActionsQuery(context, dbContext, filter);
+
+                qry.Delete();
+            }
+
+        }
+
         public void AddSystemAction(IContext context, SystemActions item)
         {
             using (var dbContext = new DmsContext(context))
@@ -559,7 +597,7 @@ namespace BL.Database.SystemDb
                 (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category) 
                 VALUES
                 ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10})",
-                item.Id, item.ObjectId,"'"+ item.Code +"'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ?  "null": item.GrantId.ToString(), item.Category?? "null")
+                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null")
                 );
 
                 //dbContext.SystemActionsSet.Add(item);
@@ -633,33 +671,40 @@ namespace BL.Database.SystemDb
         private IQueryable<SystemActions> GetWhereSystemActions(ref IQueryable<SystemActions> qry, FilterSystemAction filter)
         {
             if (filter == null) return qry;
-            
-                if (filter.ActionIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<SystemActions>();
-                    filterContains = filter.ActionIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<SystemActions>();
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
 
-                if (filter.ObjectIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<SystemActions>();
-                    filterContains = filter.ObjectIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ObjectId == value).Expand());
+                qry = qry.Where(filterContains);
+            }
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.True<SystemActions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                qry = qry.Where(filterContains);
+            }
+            if (filter.ObjectIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<SystemActions>();
+                filterContains = filter.ObjectIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.ObjectId == value).Expand());
 
-                if (!string.IsNullOrEmpty(filter.Description))
-                {
-                    var filterContains = PredicateBuilder.False<SystemActions>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Description == value).Expand());
+                qry = qry.Where(filterContains);
+            }
 
-                    qry = qry.Where(filterContains);
-                }
+            if (!string.IsNullOrEmpty(filter.Description))
+            {
+                var filterContains = PredicateBuilder.False<SystemActions>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Description == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
 
             return qry;
         }
@@ -733,7 +778,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        
+
 
         #region [+] Properties ...
 
