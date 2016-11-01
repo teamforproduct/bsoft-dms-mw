@@ -188,17 +188,19 @@ namespace DMS_WebAPI.Utilities
 
             context.CurrentDB = db;
 
-            var agent = DmsResolver.Current.Get<IAdminService>().GetEmployee(context, context.CurrentEmployee.UserId);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetUserForLogin(context, context.CurrentEmployee.UserId);
 
-            if (agent != null)
+            if (agentUser != null)
             {
-                context.CurrentEmployee.AgentId = agent.AgentId;
-                context.CurrentEmployee.Name = agent.Name;
-                context.CurrentEmployee.LanguageId = agent.LanguageId;
+                if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
+
+                context.CurrentEmployee.AgentId = agentUser.AgentId;
+                context.CurrentEmployee.Name = agentUser.Name;
+                context.CurrentEmployee.LanguageId = agentUser.LanguageId;
             }
             else
             {
-                throw new AccessIsDenied();
+                throw new UserAccessIsDenied();
             }
 
         }

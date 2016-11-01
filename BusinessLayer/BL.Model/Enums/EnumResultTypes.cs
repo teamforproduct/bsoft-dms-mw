@@ -12,5 +12,12 @@ namespace BL.Model.Enums
         CloseByWithdrawing = -2,
         CloseByRejecting = -3,
         CloseByAffixing = -4,
+
+        Excellent= 2841,// Отлично
+        Good = 2842,// Хорошо
+        Satisfactorily = 2843,// Удовлетворительно
+        Bad = 2844, //Плохо
+        WithoutEvaluation = 4062, //Без оценки
+
     }
 }

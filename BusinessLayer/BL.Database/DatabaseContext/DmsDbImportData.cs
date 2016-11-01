@@ -483,26 +483,39 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<AdminAccessLevels>();
 
-            items.Add(new AdminAccessLevels { Id = (int)EnumAccessLevels.Personally, Code = null, Name = "Только лично", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new AdminAccessLevels { Id = (int)EnumAccessLevels.PersonallyAndReferents, Code = null, Name = "Лично+референты", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new AdminAccessLevels { Id = (int)EnumAccessLevels.PersonallyAndIOAndReferents, Code = null, Name = "Лично+ИО+референты", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(GetAdminAccessLevel(EnumAccessLevels.Personally));
+            items.Add(GetAdminAccessLevel(EnumAccessLevels.PersonallyAndReferents));
+            items.Add(GetAdminAccessLevel(EnumAccessLevels.PersonallyAndIOAndReferents));
 
             return items;
+        }
+
+        private static AdminAccessLevels GetAdminAccessLevel(EnumAccessLevels id)
+        {
+            string name = "##l@" + "AccessLevels" + ":" + id.ToString() + "@l##";
+            return new AdminAccessLevels()
+            {
+                Id = (int)id,
+                Code = null,
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.Now,
+            };
         }
 
         public static List<SystemUIElements> GetSystemUIElements()
         {
             var items = new List<SystemUIElements>();
 
-            items.Add(new SystemUIElements { Id = 1, ActionId = 100003, Code = "GeneralInfo", TypeCode = "display_only_text", Description = "Общая информация", Label = null, Hint = null, ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "GeneralInfo", ValueDescriptionFieldCode = "GeneralInfo", Format = null });
-            items.Add(new SystemUIElements { Id = 2, ActionId = 100003, Code = "DocumentSubject", TypeCode = "select", Description = "Тематика документа", Label = "Тематика документа", Hint = "Выберите из словаря тематику документа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryDocumentSubjects", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "DocumentSubjectId", ValueDescriptionFieldCode = "DocumentSubjectName", Format = null });
-            items.Add(new SystemUIElements { Id = 3, ActionId = 100003, Code = "Description", TypeCode = "textarea", Description = "Краткое содержание", Label = "Краткое содержание", Hint = "Введите краткое содержание", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
-            items.Add(new SystemUIElements { Id = 4, ActionId = 100003, Code = "SenderAgent", TypeCode = "select", Description = "Контрагент, от которого получен документ", Label = "Организация", Hint = "Выберите из словаря контрагента, от которого получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
-            items.Add(new SystemUIElements { Id = 5, ActionId = 100003, Code = "SenderAgentPerson", TypeCode = "select", Description = "Контактное лицо в организации", Label = "Контакт", Hint = "Выберите из словаря контактное лицо в организации, от которой получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'AgentCompanyId' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
-            items.Add(new SystemUIElements { Id = 6, ActionId = 100003, Code = "SenderNumber", TypeCode = "input", Description = "Входящий номер документа", Label = "Входящий номер документа", Hint = "Введите входящий номер документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderNumber", ValueDescriptionFieldCode = "SenderNumber", Format = null });
-            items.Add(new SystemUIElements { Id = 7, ActionId = 100003, Code = "SenderDate", TypeCode = "input", Description = "Дата входящего документа", Label = "Дата входящего документа", Hint = "Введите дату входящего документа", ValueTypeId = 3, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderDate", ValueDescriptionFieldCode = "SenderDate", Format = null });
-            items.Add(new SystemUIElements { Id = 8, ActionId = 100003, Code = "Addressee", TypeCode = "input", Description = "Кому адресован документ", Label = "Кому адресован документ", Hint = "Введите кому адресован документ", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Addressee", ValueDescriptionFieldCode = "Addressee", Format = null });
-            items.Add(new SystemUIElements { Id = 9, ActionId = 100003, Code = "AccessLevel", TypeCode = "select", Description = "Уровень доступа", Label = "Уровень доступа", Hint = "Выберите из словаря уровень доступа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "AdminAccessLevels", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "AccessLevelId", ValueDescriptionFieldCode = "AccessLevelName", Format = null });
+            items.Add(new SystemUIElements { Id = 1, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "GeneralInfo", TypeCode = "display_only_text", Description = "Общая информация", Label = null, Hint = null, ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "GeneralInfo", ValueDescriptionFieldCode = "GeneralInfo", Format = null });
+            items.Add(new SystemUIElements { Id = 2, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "DocumentSubject", TypeCode = "select", Description = "Тематика документа", Label = "Тематика документа", Hint = "Выберите из словаря тематику документа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryDocumentSubjects", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "DocumentSubjectId", ValueDescriptionFieldCode = "DocumentSubjectName", Format = null });
+            items.Add(new SystemUIElements { Id = 3, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Description", TypeCode = "textarea", Description = "Краткое содержание", Label = "Краткое содержание", Hint = "Введите краткое содержание", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
+            items.Add(new SystemUIElements { Id = 4, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgent", TypeCode = "select", Description = "Контрагент, от которого получен документ", Label = "Организация", Hint = "Выберите из словаря контрагента, от которого получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
+            items.Add(new SystemUIElements { Id = 5, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgentPerson", TypeCode = "select", Description = "Контактное лицо в организации", Label = "Контакт", Hint = "Выберите из словаря контактное лицо в организации, от которой получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'AgentCompanyId' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
+            items.Add(new SystemUIElements { Id = 6, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderNumber", TypeCode = "input", Description = "Входящий номер документа", Label = "Входящий номер документа", Hint = "Введите входящий номер документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderNumber", ValueDescriptionFieldCode = "SenderNumber", Format = null });
+            items.Add(new SystemUIElements { Id = 7, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderDate", TypeCode = "input", Description = "Дата входящего документа", Label = "Дата входящего документа", Hint = "Введите дату входящего документа", ValueTypeId = 3, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderDate", ValueDescriptionFieldCode = "SenderDate", Format = null });
+            items.Add(new SystemUIElements { Id = 8, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Addressee", TypeCode = "input", Description = "Кому адресован документ", Label = "Кому адресован документ", Hint = "Введите кому адресован документ", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Addressee", ValueDescriptionFieldCode = "Addressee", Format = null });
+            items.Add(new SystemUIElements { Id = 9, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "AccessLevel", TypeCode = "select", Description = "Уровень доступа", Label = "Уровень доступа", Hint = "Выберите из словаря уровень доступа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "AdminAccessLevels", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "AccessLevelId", ValueDescriptionFieldCode = "AccessLevelName", Format = null });
 
             return items;
         }
@@ -546,126 +559,183 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryDocumentDirections>();
 
-            items.Add(new DictionaryDocumentDirections { Id = 1, Code = "1", Name = "##l@DictionaryDocumentDirections:Incoming@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryDocumentDirections { Id = 2, Code = "2", Name = "##l@DictionaryDocumentDirections:Outcoming@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryDocumentDirections { Id = 3, Code = "3", Name = "##l@DictionaryDocumentDirections:Internal@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(GetDictionaryDocumentDirection(EnumDocumentDirections.Incoming));
+            items.Add(GetDictionaryDocumentDirection(EnumDocumentDirections.Outcoming));
+            items.Add(GetDictionaryDocumentDirection(EnumDocumentDirections.Internal));
 
             return items;
+        }
+
+        private static DictionaryDocumentDirections GetDictionaryDocumentDirection(EnumDocumentDirections id)
+        {
+            string name = "##l@" + "DictionaryDocumentDirections" + ":" + id.ToString() + "@l##";
+            return new DictionaryDocumentDirections()
+            {
+                Id = (int)id,
+                Code = ((int)id).ToString(),
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.Now,
+            };
         }
 
         public static List<DictionaryEventTypes> GetDictionaryEventTypes()
         {
             var items = new List<DictionaryEventTypes>();
 
-            items.Add(new DictionaryEventTypes { Id = 100, Code = null, Name = "Поступил входящий документ", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 110, Code = null, Name = "Создан проект", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 115, Code = null, Name = "Добавлен файл", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 117, Code = null, Name = "Изменен файл", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 119, Code = null, Name = "Удален файл", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 120, Code = null, Name = "Исполнение документа", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 130, Code = null, Name = "Подписание документа", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 140, Code = null, Name = "Визирование документа", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 150, Code = null, Name = "Утверждение документа", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 160, Code = null, Name = "Согласование документа", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 200, Code = null, Name = "Направлен для сведения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 205, Code = null, Name = "Передано управление проектом", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 207, Code = null, Name = "Замена должности в документе", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 210, Code = null, Name = "Направлен для исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Исполнение" });
-            items.Add(new DictionaryEventTypes { Id = 211, Code = null, Name = "Изменены параметры направлен для исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Исполнение" });
-            items.Add(new DictionaryEventTypes { Id = 212, Code = null, Name = "Направлен для контроля", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Контроль" });
-            items.Add(new DictionaryEventTypes { Id = 213, Code = null, Name = "Изменены параметры направлен для контроля", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Контроль" });
-            items.Add(new DictionaryEventTypes { Id = 214, Code = null, Name = "Направлен для отв.исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Исполнение" });
-            items.Add(new DictionaryEventTypes { Id = 215, Code = null, Name = "Изменены параметры направлен для отв.исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Исполнение" });
-            items.Add(new DictionaryEventTypes { Id = 220, Code = null, Name = "Направлен для рассмотрения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 221, Code = null, Name = "Рассмотрен положительно", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 222, Code = null, Name = "Рассмотрен отрицательно", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 230, Code = null, Name = "Направлен для сведения внешнему агенту", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 250, Code = null, Name = "Направлен на визирование", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Виза" });
-            items.Add(new DictionaryEventTypes { Id = 251, Code = null, Name = "Завизирован", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 252, Code = null, Name = "Отказано в визировании", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 253, Code = null, Name = "Отозван с визирования", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 260, Code = null, Name = "Направлен на согласование", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Согласование" });
-            items.Add(new DictionaryEventTypes { Id = 261, Code = null, Name = "Согласован", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 262, Code = null, Name = "Отказано в согласовании", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 263, Code = null, Name = "Отозван с согласования", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 270, Code = null, Name = "Направлен на утверждение", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Утверждение" });
-            items.Add(new DictionaryEventTypes { Id = 271, Code = null, Name = "Утвержден", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 272, Code = null, Name = "Отказано в утверждении", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 273, Code = null, Name = "Отозван с утверждения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 280, Code = null, Name = "Направлен на подпись", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Подпись" });
-            items.Add(new DictionaryEventTypes { Id = 281, Code = null, Name = "Подписан", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 282, Code = null, Name = "Отказано в подписании", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 283, Code = null, Name = "Отозван с подписания", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 300, Code = null, Name = "Взят на контроль", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Контроль" });
-            items.Add(new DictionaryEventTypes { Id = 301, Code = null, Name = "Снят с контроля", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 310, Code = null, Name = "Изменить параметры контроля", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Контроль" });
-            items.Add(new DictionaryEventTypes { Id = 315, Code = null, Name = "Изменить параметры контроля для исполнителя", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 320, Code = null, Name = "Поручение выполнено", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = "Рассмотрение отчета" });
-            items.Add(new DictionaryEventTypes { Id = 321, Code = null, Name = "Результат принят", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 322, Code = null, Name = "Результат отклонен", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 330, Code = null, Name = "Контролирую документ", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 340, Code = null, Name = "Являюсь ответственным исполнителем", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 350, Code = null, Name = "Являюсь соисполнителем", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 360, Code = null, Name = "Принято", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 3, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 400, Code = null, Name = "Отменено", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 410, Code = null, Name = "Изменен текст", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 420, Code = null, Name = "Установлен срок исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 430, Code = null, Name = "Изменен срок исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 440, Code = null, Name = "Назначен ответсвенный исполнитель", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 441, Code = null, Name = "Отменено назначение ответсвенным исполнителем", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 450, Code = null, Name = "Очередной срок исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 460, Code = null, Name = "Истекает срок исполнения", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 470, Code = null, Name = "Срок исполнения истек", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 500, Code = null, Name = "Направлено сообщение", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 9, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 505, Code = null, Name = "Добавлен бумажный носитель", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 7, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 507, Code = null, Name = "Отметка нахождения бумажного носителя у себя", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 7, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 509, Code = null, Name = "Отметка порчи бумажного носителя", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 7, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 510, Code = null, Name = "Переданы бумажные носители", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 7, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 600, Code = null, Name = "Примечание", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 8, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 601, Code = null, Name = "Формулировка задачи", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 8, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 610, Code = null, Name = "Передан на рассмотрение руководителю", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 3, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 620, Code = null, Name = "Получен после рассмотрения руководителем", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 3, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 700, Code = null, Name = "Направлен на регистрацию", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 701, Code = null, Name = "Зарегистрирован", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 702, Code = null, Name = "Отказано в регистрации", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 712, Code = null, Name = "Отозван проект", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 800, Code = null, Name = "Запущено исполнение плана работы по документу", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 810, Code = null, Name = "Остановлено исполнение плана работы по документу", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 998, Code = null, Name = "Работа возобновлена", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
-            items.Add(new DictionaryEventTypes { Id = 999, Code = null, Name = "Работа завершена", SourceDescription = null, TargetDescription = null, ImportanceEventTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now, WaitDescription = null });
+            items.Add(GetDictionaryEventType(EnumEventTypes.ПоступилВходящийДокумент, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AddNewDocument, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AddDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RanameDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ModifyDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.DeleteDocumentFileVersion, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.DeleteDocumentFile, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RejectDocumentFile, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AcceptDocumentFile, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForInformation, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ChangeExecutor, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ChangePosition, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForExecution, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForExecutionChange, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForControl, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForResponsibleExecution, EnumImportanceEventTypes.DocumentMoovement, "Контроль"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForResponsibleExecutionChange, EnumImportanceEventTypes.DocumentMoovement, "Контроль"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForConsideration, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForInformationExternal, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForVisaing, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AffixVisaing, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RejectVisaing, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.WithdrawVisaing, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForАgreement, EnumImportanceEventTypes.DocumentMoovement, "Виза"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AffixАgreement, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RejectАgreement, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.WithdrawАgreement, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForАpproval, EnumImportanceEventTypes.DocumentMoovement, "Согласование"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AffixАpproval, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RejectАpproval, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.WithdrawАpproval, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendForSigning, EnumImportanceEventTypes.DocumentMoovement, "Утверждение"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AffixSigning, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RejectSigning, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.WithdrawSigning, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ControlOn, EnumImportanceEventTypes.DocumentMoovement, "Подпись"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ControlOff, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ControlChange, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ControlTargetChange, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.MarkExecution, EnumImportanceEventTypes.ImportantEvents, "Контроль"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AcceptResult, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RejectResult, EnumImportanceEventTypes.ImportantEvents, "Контроль"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SendMessage, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AddNewPaper, EnumImportanceEventTypes.ImportantEvents, "Рассмотрение отчета"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.MarkOwnerDocumentPaper, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.MarkСorruptionDocumentPaper, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.MoveDocumentPaper, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AddLink, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.DeleteLink, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AddNote, EnumImportanceEventTypes.AdditionalEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.TaskFormulation, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.Registered, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.LaunchPlan, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.StopPlan, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SetInWork, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.SetOutWork, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ОчереднойСрокИсполнения, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ИстекаетСрокИсполнения, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.СрокИсполненияИстек, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.НаправленоСообщение, EnumImportanceEventTypes.Internal, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ДобавленБумажныйНоситель, EnumImportanceEventTypes.PaperMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ОтметкаНахожденияБумажногоНосителяУСебя, EnumImportanceEventTypes.PaperMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ОтметкаПорчиБумажногоНосителя, EnumImportanceEventTypes.PaperMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ПереданыБумажныеНосители, EnumImportanceEventTypes.PaperMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.Примечание, EnumImportanceEventTypes.Message, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ФормулировкаЗадачи, EnumImportanceEventTypes.Message, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ПереданНаРассмотрениеРуководителю, EnumImportanceEventTypes.AdditionalEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ПолученПослеРассмотренияРуководителем, EnumImportanceEventTypes.AdditionalEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.НаправленНаРегистрацию, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.Зарегистрирован, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ОтказаноВРегистрации, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ОтозванПроект, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ЗапущеноИсполнениеПланаРаботыПоДокументу, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.ОстановленоИсполнениеПланаРаботыПоДокументу, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.РаботаВозобновлена, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.РаботаЗавершена, EnumImportanceEventTypes.ImportantEvents, null));
 
             return items;
+        }
+
+        private static DictionaryEventTypes GetDictionaryEventType(EnumEventTypes id, EnumImportanceEventTypes importanceEventTypeId, string waitDescription = null)
+        {
+            string name = "##l@" + "DictionaryEventTypes" + ":" + id.ToString() + "@l##";
+            return new DictionaryEventTypes()
+            {
+                Id = (int)id,
+                Code = null,
+                Name = name,
+                SourceDescription = null,
+                TargetDescription = null,
+                ImportanceEventTypeId = (int)importanceEventTypeId,
+                WaitDescription = waitDescription,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.Now,
+            };
         }
 
         public static List<DictionaryImportanceEventTypes> GetDictionaryImportanceEventTypes()
         {
             var items = new List<DictionaryImportanceEventTypes>();
 
-            items.Add(new DictionaryImportanceEventTypes { Id = 1, Code = null, Name = "##l@DictionaryImportanceEventTypes:DocumentMoovement@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryImportanceEventTypes { Id = 2, Code = null, Name = "##l@DictionaryImportanceEventTypes:ImportantEvents@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryImportanceEventTypes { Id = 3, Code = null, Name = "##l@DictionaryImportanceEventTypes:AdditionalEvents@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryImportanceEventTypes { Id = 7, Code = null, Name = "##l@DictionaryImportanceEventTypes:PaperMoovement@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryImportanceEventTypes { Id = 8, Code = null, Name = "##l@DictionaryImportanceEventTypes:Message@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryImportanceEventTypes { Id = 9, Code = null, Name = "##l@DictionaryImportanceEventTypes:Internal@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(GetDictionaryImportanceEventType(EnumImportanceEventTypes.DocumentMoovement));
+            items.Add(GetDictionaryImportanceEventType(EnumImportanceEventTypes.ImportantEvents));
+            items.Add(GetDictionaryImportanceEventType(EnumImportanceEventTypes.AdditionalEvents));
+            items.Add(GetDictionaryImportanceEventType(EnumImportanceEventTypes.PaperMoovement));
+            items.Add(GetDictionaryImportanceEventType(EnumImportanceEventTypes.Message));
+            items.Add(GetDictionaryImportanceEventType(EnumImportanceEventTypes.Internal));
 
             return items;
+        }
+
+        private static DictionaryImportanceEventTypes GetDictionaryImportanceEventType(EnumImportanceEventTypes id)
+        {
+            string name = "##l@" + "DictionaryImportanceEventTypes" + ":" + id.ToString() + "@l##";
+            return new DictionaryImportanceEventTypes()
+            {
+                Id = (int)id,
+                Code = null,
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.Now,
+            };
         }
 
         public static List<DictionaryResultTypes> GetDictionaryResultTypes()
         {
             var items = new List<DictionaryResultTypes>();
 
-            items.Add(new DictionaryResultTypes { Id = -4, Name = "Подписание", IsExecute = true, IsActive = false, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = -3, Name = "Отказ", IsExecute = false, IsActive = false, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = -2, Name = "Отзыв", IsExecute = false, IsActive = false, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = -1, Name = "Изменение контроля", IsExecute = false, IsActive = false, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = 2841, Name = "Отлично", IsExecute = true, IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = 2842, Name = "Хорошо", IsExecute = true, IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = 2843, Name = "Удовлетворительно", IsExecute = true, IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = 2844, Name = "Плохо", IsExecute = false, IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
-            items.Add(new DictionaryResultTypes { Id = 4062, Name = "Без оценки", IsExecute = false, IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.Now });
+            items.Add(GetDictionaryResultType(EnumResultTypes.CloseByAffixing, IsExecute: true, IsActive: false));
+            items.Add(GetDictionaryResultType(EnumResultTypes.CloseByRejecting, IsExecute: false, IsActive: false));
+            items.Add(GetDictionaryResultType(EnumResultTypes.CloseByWithdrawing, IsExecute: false, IsActive: false));
+            items.Add(GetDictionaryResultType(EnumResultTypes.CloseByChanging, IsExecute: false, IsActive: false));
+            items.Add(GetDictionaryResultType(EnumResultTypes.Excellent, IsExecute: true, IsActive: true));
+            items.Add(GetDictionaryResultType(EnumResultTypes.Good, IsExecute: true, IsActive: true));
+            items.Add(GetDictionaryResultType(EnumResultTypes.Satisfactorily, IsExecute: true, IsActive: true));
+            items.Add(GetDictionaryResultType(EnumResultTypes.Bad, IsExecute: false, IsActive: true));
+            items.Add(GetDictionaryResultType(EnumResultTypes.WithoutEvaluation, IsExecute: false, IsActive: true));
 
             return items;
+        }
+
+        private static DictionaryResultTypes GetDictionaryResultType(EnumResultTypes id, bool IsExecute, bool IsActive)
+        {
+            string name = "##l@" + "DictionaryResultTypes" + ":" + id.ToString() + "@l##";
+            return new DictionaryResultTypes()
+            {
+                Id = (int)id,
+                Name = name,
+                IsExecute = IsExecute,
+                IsActive = IsActive,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.Now,
+            };
         }
 
         public static List<DictionarySendTypes> GetDictionarySendTypes()

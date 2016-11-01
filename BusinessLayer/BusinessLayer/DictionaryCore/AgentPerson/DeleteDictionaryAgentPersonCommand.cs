@@ -35,6 +35,8 @@ namespace BL.Logic.DictionaryCore
            // }
 
             _adminService.VerifyAccess(_context, CommandType,false,true);
+
+
             return true;
         }
 

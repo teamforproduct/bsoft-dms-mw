@@ -17,7 +17,7 @@ namespace BL.Database.Admins.Interfaces
     {
         #region [+] General ...
         AdminAccessInfo GetAdminAccesses(IContext context);
-        Employee GetEmployee(IContext ctx, string userId);
+        Employee GetUserForLogin(IContext ctx, string userId);
 
         IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);

@@ -36,9 +36,9 @@ namespace BL.Logic.DictionaryCore
             Model.TaxCode?.Trim();
 
             // Обрезаю время для даты рождения и даты получения паспорта
-            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
+            //if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
 
-            if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
+            //if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
             if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent
             {

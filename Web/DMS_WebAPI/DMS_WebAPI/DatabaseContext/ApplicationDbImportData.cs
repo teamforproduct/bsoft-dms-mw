@@ -58,14 +58,20 @@ namespace DMS_WebAPI.Models
 
             var list = new List<AdminLanguageValues>();
 
-            list.AddRange(GetAdminLanguageValuesForObjects());
-            list.AddRange(GetAdminLanguageValuesForActions());
+            list.AddRange(GetObjects());
+            list.AddRange(GetActions());
+
+            list.AddRange(GetAdminAccessLevels());
+            list.AddRange(GetDictionaryEventTypes());
 
             AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}", "Вхідна модель недійсна! {0}");
             AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!", "Тип параметра комманди вказано невірно !");
             AddALV(list, "##l@DmsExceptions:WrongParameterValueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!", "Параметри комманди невірні !");
-            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован", "Користувач не авторизований");
             AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна", "Запис не унікальна");
+
+            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован", "Користувач не авторизований");
+            AddALV(list, "##l@DmsExceptions:UserAccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
+            AddALV(list, "##l@DmsExceptions:UserIsDeactivated@l##", "User \"{0}\" is deactivated", "Пользователь \"{0}\" деактивирован", "Користувач \"{0}\" деактивовано");
 
             AddALV(list, "##l@System@l##", "System", "Система", "Система");
             AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
@@ -76,7 +82,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DictionaryImportanceEventTypes:ImportantEvents@l##", "Important events", "Важные события", "Важливі події");
             AddALV(list, "##l@DictionaryImportanceEventTypes:Internal@l##", "Own notes", "Собственные примечания", "Власні примітки");
             AddALV(list, "##l@DictionaryImportanceEventTypes:Message@l##", "Messages", "Сообщения", "Повідомлення");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:PaperMoovement@l##", "Paper movement", "Движение БН", "Рух БН");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:PaperMoovement@l##", "Paper movement", "Движение БН", "Рух ПН");
             AddALV(list, "##l@DictionarySendTypes:SendForConsideration@l##", "For consideration", "Для рассмотрения", "Для розгляду");
             AddALV(list, "##l@DictionarySendTypes:SendForControl@l##", "In control", "На контроль(отв.исп.)", "На контроль (отв");
             AddALV(list, "##l@DictionarySendTypes:SendForExecution@l##", "For execution", "Соисполнителю", "Співвиконавцю");
@@ -221,7 +227,7 @@ namespace DMS_WebAPI.Models
 
             return list;
         }
-        public static List<AdminLanguageValues> GetAdminLanguageValuesForObjects()
+        public static List<AdminLanguageValues> GetObjects()
         {
             var list = new List<AdminLanguageValues>();
 
@@ -278,7 +284,7 @@ namespace DMS_WebAPI.Models
             return list;
         }
 
-        public static List<AdminLanguageValues> GetAdminLanguageValuesForActions()
+        public static List<AdminLanguageValues> GetActions()
         {
             var list = new List<AdminLanguageValues>();
 
@@ -484,6 +490,109 @@ namespace DMS_WebAPI.Models
 
             return list;
         }
+
+        public static List<AdminLanguageValues> GetAdminAccessLevels()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@AccessLevels:Personally@l##", "Personally", "Только лично", "Тільки особисто");
+            AddALV(list, "##l@AccessLevels:PersonallyAndReferents@l##", "Personally and referents", "Лично и референты", "Особисто і референти");
+            AddALV(list, "##l@AccessLevels:PersonallyAndIOAndReferents@l##", "Personally and IO and referents", "Лично, ИО и референты", "Особисто, ВО і референти");
+
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
+
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetDictionaryEventTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@EventTypes:ПоступилВходящийДокумент", "Receive an incoming document", "Поступил входящий документ", "Вступив вхідний документ");
+            AddALV(list, "##l@EventTypes:AddNewDocument", "Created project", "Создан проект", "Створено проект");
+            AddALV(list, "##l@EventTypes:AddDocumentFile", "Added file", "Добавлен файл", "Доданий файл");
+            AddALV(list, "##l@EventTypes:RanameDocumentFile", "Changed file", "Изменен файл", "Змінено файл");
+            AddALV(list, "##l@EventTypes:ModifyDocumentFile", "Delete the file", "Удален файл", "Вилучений файл");
+            AddALV(list, "##l@EventTypes:DeleteDocumentFileVersion", "Design document", "Исполнение документа", "Виконання документа");
+            AddALV(list, "##l@EventTypes:DeleteDocumentFile", "The signing of the document", "Подписание документа", "Підписання документа");
+            AddALV(list, "##l@EventTypes:RejectDocumentFile", "The sight of the document", "Визирование документа", "Візування документа");
+            AddALV(list, "##l@EventTypes:AcceptDocumentFile", "Adoption of the document", "Утверждение документа", "Затвердження документа");
+            AddALV(list, "##l@EventTypes:SendForInformation", "Approval of the document", "Согласование документа", "Узгодження документа");
+            AddALV(list, "##l@EventTypes:ChangeExecutor", "Directed by reference", "Направлен для сведения", "Направлений для відомості");
+            AddALV(list, "##l@EventTypes:ChangePosition", "Submitted project management", "Передано управление проектом", "Передано управління проектом");
+            AddALV(list, "##l@EventTypes:SendForExecution", "Changing position in the document", "Замена должности в документе", "Заміна посади в документі");
+            AddALV(list, "##l@EventTypes:SendForExecutionChange", "It aims for execution", "Направлен для исполнения", "Направлений для виконання");
+            AddALV(list, "##l@EventTypes:SendForControl", "Changed parameters are sent for execution", "Изменены параметры направлен для исполнения", "Змінені параметри спрямований для виконання");
+            AddALV(list, "##l@EventTypes:SendForResponsibleExecution", "It aims to control", "Направлен для контроля", "Направлений для контролю");
+            AddALV(list, "##l@EventTypes:SendForResponsibleExecutionChange", "Changed parameters are sent to the control", "Изменены параметры направлен для контроля", "Змінені параметри спрямований для контролю");
+            AddALV(list, "##l@EventTypes:SendForConsideration", "Directed to otvispolneniya", "Направлен для отв.исполнения", "Направлений для отвісполненія");
+            AddALV(list, "##l@EventTypes:SendForInformationExternal", "Changed parameters are sent to otvispolneniya", "Изменены параметры направлен для отв.исполнения", "Змінені параметри спрямований для отвісполненія");
+            AddALV(list, "##l@EventTypes:SendForVisaing", "Submitted for consideration", "Направлен для рассмотрения", "Направлений для розгляду");
+            AddALV(list, "##l@EventTypes:AffixVisaing", "Considered positive", "Рассмотрен положительно", "Розглянуто позитивно");
+            AddALV(list, "##l@EventTypes:RejectVisaing", "Is considered negative", "Рассмотрен отрицательно", "Розглянуто негативно");
+            AddALV(list, "##l@EventTypes:WithdrawVisaing", "Directed by reference external agents", "Направлен для сведения внешнему агенту", "Направлений для відомості зовнішньому агенту");
+            AddALV(list, "##l@EventTypes:SendForАgreement", "Directed at the sight", "Направлен на визирование", "Спрямований на візування");
+            AddALV(list, "##l@EventTypes:AffixАgreement", "It endorses", "Завизирован", "Завізований");
+            AddALV(list, "##l@EventTypes:RejectАgreement", "Denied in sight", "Отказано в визировании", "Відмовлено в візуванні");
+            AddALV(list, "##l@EventTypes:WithdrawАgreement", "Withdrawn from sight", "Отозван с визирования", "Відкликаний з візування");
+            AddALV(list, "##l@EventTypes:SendForАpproval", "It aims for approval", "Направлен на согласование", "Направлений на узгодження");
+            AddALV(list, "##l@EventTypes:AffixАpproval", "Agreed", "Согласован", "Погоджено");
+            AddALV(list, "##l@EventTypes:RejectАpproval", "Denied agreement", "Отказано в согласовании", "Відмовлено в погодженні");
+            AddALV(list, "##l@EventTypes:WithdrawАpproval", "Withdrawn from the agreement", "Отозван с согласования", "Відкликаний з узгодження");
+            AddALV(list, "##l@EventTypes:SendForSigning", "Submitted for approval", "Направлен на утверждение", "Направлений на затвердження");
+            AddALV(list, "##l@EventTypes:AffixSigning", "Approved", "Утвержден", "Затверджено");
+            AddALV(list, "##l@EventTypes:RejectSigning", "It denied in a statement", "Отказано в утверждении", "Відмовлено в утвердженні");
+            AddALV(list, "##l@EventTypes:WithdrawSigning", "Withdrawn from the approval", "Отозван с утверждения", "Відкликаний з утвердження");
+            AddALV(list, "##l@EventTypes:ControlOn", "I sent for signature", "Направлен на подпись", "Направлений на підпис");
+            AddALV(list, "##l@EventTypes:ControlOff", "Signed", "Подписан", "Підписано");
+            AddALV(list, "##l@EventTypes:ControlChange", "It refused to sign", "Отказано в подписании", "Відмовлено в підписанні");
+            AddALV(list, "##l@EventTypes:ControlTargetChange", "Withdrawn from the signing", "Отозван с подписания", "Відкликаний з підписання");
+            AddALV(list, "##l@EventTypes:MarkExecution", "To take control", "Взят на контроль", "Взято на контроль");
+            AddALV(list, "##l@EventTypes:AcceptResult", "Out of control", "Снят с контроля", "Знятий з контролю");
+            AddALV(list, "##l@EventTypes:RejectResult", "Change the control parameters", "Изменить параметры контроля", "Змінити параметри контролю");
+            AddALV(list, "##l@EventTypes:SendMessage", "Change the control parameters for the artist", "Изменить параметры контроля для исполнителя", "Змінити параметри контролю для виконавця");
+            AddALV(list, "##l@EventTypes:AddNewPaper", "The order is made", "Поручение выполнено", "Доручення виконано");
+            AddALV(list, "##l@EventTypes:MarkOwnerDocumentPaper", "The result is adopted", "Результат принят", "Результат прийнятий");
+            AddALV(list, "##l@EventTypes:MarkСorruptionDocumentPaper", "The result is rejected", "Результат отклонен", "Результат відхилений");
+            AddALV(list, "##l@EventTypes:MoveDocumentPaper", "Document controls", "Контролирую документ", "Контролюю документ");
+            AddALV(list, "##l@EventTypes:AddLink", "It is the responsibility of the Executive", "Являюсь ответственным исполнителем", "Є відповідальним виконавцем");
+            AddALV(list, "##l@EventTypes:DeleteLink", "I am a co-executor", "Являюсь соисполнителем", "Є співвиконавцем");
+            AddALV(list, "##l@EventTypes:AddNote", "Accepted", "Принято", "Прийнято");
+            AddALV(list, "##l@EventTypes:TaskFormulation", "Canceled", "Отменено", "Скасовано");
+            AddALV(list, "##l@EventTypes:Registered", "Changed the text", "Изменен текст", "Змінено текст");
+            AddALV(list, "##l@EventTypes:LaunchPlan", "Established execution time", "Установлен срок исполнения", "Встановлено термін виконання");
+            AddALV(list, "##l@EventTypes:StopPlan", "Changed the date of performance", "Изменен срок исполнения", "Змінено термін виконання");
+            AddALV(list, "##l@EventTypes:SetInWork", "Appointed Executive Responsibility", "Назначен ответсвенный исполнитель", "Призначено відповідальний виконавець");
+            AddALV(list, "##l@EventTypes:SetOutWork", "Revoke the appointment of the Executive Responsibility", "Отменено назначение ответсвенным исполнителем", "Скасовано призначення відповідальним виконавцем");
+            AddALV(list, "##l@EventTypes:ОчереднойСрокИсполнения", "The next execution time", "Очередной срок исполнения", "Черговий термін виконання");
+            AddALV(list, "##l@EventTypes:ИстекаетСрокИсполнения", "Deadline Deadline", "Истекает срок исполнения", "Закінчується строк виконання");
+            AddALV(list, "##l@EventTypes:СрокИсполненияИстек", "Deadline expired", "Срок исполнения истек", "Термін виконання закінчився");
+            AddALV(list, "##l@EventTypes:НаправленоСообщение", "It sent a message", "Направлено сообщение", "Направлено повідомлення");
+            AddALV(list, "##l@EventTypes:ДобавленБумажныйНоситель", "Added a paper carrier", "Добавлен бумажный носитель", "Доданий паперовий носій");
+            AddALV(list, "##l@EventTypes:ОтметкаНахожденияБумажногоНосителяУСебя", "Stamp paper carrier location at", "Отметка нахождения бумажного носителя у себя", "Відмітка знаходження паперового носія у себе");
+            AddALV(list, "##l@EventTypes:ОтметкаПорчиБумажногоНосителя", "Mark damage paper", "Отметка порчи бумажного носителя", "Відмітка псування паперового носія");
+            AddALV(list, "##l@EventTypes:ПереданыБумажныеНосители", "Transferred paper", "Переданы бумажные носители", "Передано паперові носії");
+            AddALV(list, "##l@EventTypes:Примечание", "Note", "Примечание", "Примітка");
+            AddALV(list, "##l@EventTypes:ФормулировкаЗадачи", "Problem Statement", "Формулировка задачи", "Формулювання завдання");
+            AddALV(list, "##l@EventTypes:ПереданНаРассмотрениеРуководителю", "Referred to the supervisor", "Передан на рассмотрение руководителю", "Передано на розгляд керівнику");
+            AddALV(list, "##l@EventTypes:ПолученПослеРассмотренияРуководителем", "Obtained after consideration of the head", "Получен после рассмотрения руководителем", "Отримано після розгляду керівником");
+            AddALV(list, "##l@EventTypes:НаправленНаРегистрацию", "Directed at registration", "Направлен на регистрацию", "Направлений на реєстрацію");
+            AddALV(list, "##l@EventTypes:Зарегистрирован", "Joined", "Зарегистрирован", "З нами");
+            AddALV(list, "##l@EventTypes:ОтказаноВРегистрации", "Denied registration", "Отказано в регистрации", "Відмовлено в реєстрації");
+            AddALV(list, "##l@EventTypes:ОтозванПроект", "Withdraw the draft", "Отозван проект", "Відкликаний проект");
+            AddALV(list, "##l@EventTypes:ЗапущеноИсполнениеПланаРаботыПоДокументу", "Started by execution of the work plan document", "Запущено исполнение плана работы по документу", "Запущено виконання плану роботи по документу");
+            AddALV(list, "##l@EventTypes:ОстановленоИсполнениеПланаРаботыПоДокументу", "It stops the execution of the document work plan", "Остановлено исполнение плана работы по документу", "Зупинено виконання плану роботи по документу");
+            AddALV(list, "##l@EventTypes:РаботаВозобновлена", "Work resumed", "Работа возобновлена", "Робота відновлено");
+            AddALV(list, "##l@EventTypes:РаботаЗавершена", "Job completed", "Работа завершена", "Робота завершена");
+
+
+
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
+
+            return list;
+        }
+
+
 
         #endregion
 

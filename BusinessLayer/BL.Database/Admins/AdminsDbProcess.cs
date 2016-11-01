@@ -203,17 +203,19 @@ namespace BL.Database.Admins
             }
         }
 
-        public Employee GetEmployee(IContext ctx, string userId)
+        public Employee GetUserForLogin(IContext ctx, string userId)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                // для авторизации 
                 var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
                     {
                         AgentId = x.Id,
                         Name = x.Agent.Name,
-                        LanguageId = x.Agent.AgentUser.LanguageId ?? (int)EnumSystemLanguageId.LanguageId
+                        LanguageId = x.Agent.AgentUser.LanguageId ?? (int)EnumSystemLanguageId.LanguageId,
+                        IsActive = x.IsActive
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;

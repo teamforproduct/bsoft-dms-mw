@@ -32,7 +32,61 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            DictionaryModelVerifying.VerifyAgentEmployee(_context, _dictDb, Model);
+            Model.Name?.Trim();
+            Model.PersonnelNumber?.Trim();
+            Model.PassportSerial?.Trim();
+            Model.TaxCode?.Trim();
+
+            // Обрезаю время для даты рождения и даты получения паспорта
+            //if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
+
+            //if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
+
+
+            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
+            {
+                NameExact = Model.Name,
+                NotContainsIDs = new List<int> { Model.Id }
+            }))
+            {
+                throw new DictionaryAgentNameNotUnique(Model.Name);
+            }
+
+            if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
+            {
+                PersonnelNumberExact = Model.PersonnelNumber,
+                NotContainsIDs = new List<int> { Model.Id }
+            }))
+            {
+                throw new DictionaryAgentEmployeePersonnelNumberNotUnique(Model.PersonnelNumber);
+            }
+
+            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
+            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
+            {
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    PassportSerialExact = Model.PassportSerial,
+                    PassportNumberExact = Model.PassportNumber,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                {
+                    throw new DictionaryAgentEmployeePassportNotUnique(Model.PassportSerial, Model.PassportNumber);
+                }
+            }
+
+            // Если указан необязательный ИНН, проверяю нет ли такого уже
+            if (!string.IsNullOrEmpty(Model.TaxCode))
+            {
+                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                {
+                    TaxCodeExact = Model.TaxCode,
+                    NotContainsIDs = new List<int> { Model.Id }
+                }))
+                {
+                    throw new DictionaryAgentEmployeeTaxCodeNotUnique(Model.TaxCode);
+                }
+            }
 
             return true;
         }

@@ -238,7 +238,8 @@ namespace BL.Database.Admins
                 {
                     LanguageId = model.LanguageId,
                     Label = model.Label,
-                    Value = model.Value
+                    Value = model.Value,
+                    ClientId = context.CurrentClientId
                 };
                 dbContext.AdminLanguageValuesSet.Add(item);
                 dbContext.SaveChanges();

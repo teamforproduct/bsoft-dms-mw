@@ -29,6 +29,8 @@
         public int ClientId { get; set; }
         public string ClientCode { get; set; }
 
+        // деактивированный пользователь не может войти в систему
+        public bool IsActive { get; set; }
         ///// <summary>
         ///// ЛОгин
         ///// </summary>

@@ -72,6 +72,8 @@ namespace DMS_WebAPI.Infrastructure
             //msgExp = exc.Message;
             //#endif
 
+            // TOTO Убрать UserLanguages
+
             var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp, UserLanguages = currentContext.Request.UserLanguages }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
             //json = ReplaceLanguageLabel(currentContext, json);
 

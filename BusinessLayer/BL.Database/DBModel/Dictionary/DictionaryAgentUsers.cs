@@ -18,7 +18,7 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(128)]
         [Index("IX_UserId", 1, IsUnique = true)]
         public string UserId { get; set; }
-        public Nullable<int> LanguageId { get; set; }
+        public int? LanguageId { get; set; }
         public byte[] Picture { get; set; }
         /// <summary>
         /// Определяет может ли пользователь войти в систему
@@ -29,7 +29,8 @@ namespace BL.Database.DBModel.Dictionary
 
         [ForeignKey("Id")]
         public virtual DictionaryAgents Agent { get; set; }
-//        [ForeignKey("LanguageId")]
-//        public virtual AdminLanguages Language { get; set; }
+
+        [ForeignKey("LanguageId")]
+        public virtual AdminLanguages Language { get; set; }
     }
 }

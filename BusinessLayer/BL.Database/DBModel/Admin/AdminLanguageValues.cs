@@ -8,6 +8,9 @@ namespace BL.Database.DBModel.Admin
     public class AdminLanguageValues
     {
         public int Id { get; set; }
+        [Index("IX_Label", 3, IsUnique = true)]
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
         [Index("IX_Label", 2, IsUnique = true)]
         [Index("IX_LanguageId", 1)]
         public int LanguageId { get; set; }

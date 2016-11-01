@@ -201,6 +201,22 @@ namespace BL.Model.Exception
         public AccessIsDenied(string ObjectName, string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ObjectName, ActionName }; }
         public AccessIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class UserAccessIsDenied : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserAccessIsDenied@l##";
+        public UserAccessIsDenied() : base(_MESSAGE) { }
+        public UserAccessIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserIsDeactivated : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserIsDeactivated@l##";
+        public UserIsDeactivated (string UserName) : base(_MESSAGE) { Parameters = new List<string> { UserName }; }
+        public UserIsDeactivated(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+
     public class DocumentHasAlreadyHasLink : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentHasAlreadyHasLink@l##";

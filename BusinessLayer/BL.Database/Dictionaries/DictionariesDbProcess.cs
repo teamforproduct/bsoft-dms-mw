@@ -823,6 +823,8 @@ namespace BL.Database.Dictionaries
                     PassportText = x.Agent.AgentPerson.PassportText,
                     PassportDate = x.Agent.AgentPerson.PassportDate,
                     BirthDate = x.Agent.AgentPerson.BirthDate,
+                    LanguageId = x.Agent.AgentUser.LanguageId,
+
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                     {
                         Id = y.Id,
@@ -855,7 +857,7 @@ namespace BL.Database.Dictionaries
                         Description = z.Description
                     })
                 }).FirstOrDefault();
-
+ 
             }
         }
 
@@ -901,7 +903,10 @@ namespace BL.Database.Dictionaries
                     PassportNumber = x.Agent.AgentPerson.PassportNumber,
                     PassportText = x.Agent.AgentPerson.PassportText,
                     PassportDate = x.Agent.AgentPerson.PassportDate,
-                    BirthDate = x.Agent.AgentPerson.BirthDate//,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
+                    
+                    LanguageId = x.Agent.AgentUser.LanguageId,
+
                     //Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
                     //{
                     //    Id = y.Id,
