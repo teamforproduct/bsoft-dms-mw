@@ -205,8 +205,13 @@
         /// удалить сотрудника
         /// </summary>
         DeleteAgentEmployee=212009,
-        #endregion AgentEmployee
         
+        /// <summary>
+        /// добавить фото
+        /// </summary>
+        SetAgentEmployeePicture = 212002,
+        #endregion AgentEmployee
+
         // Тэги
         #region Tags
         /// <summary>

@@ -15,6 +15,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Контрагент - физическое лицо
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryAgentPersons")]
     public class DictionaryAgentPersonsController : ApiController
     {
        
@@ -57,6 +58,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentPerson, ctx, model));
         }
+
 
         /// <summary>
         /// добавить реквизиты физлица к существующему контрагенту

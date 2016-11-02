@@ -46,6 +46,11 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
 
+        #region DictionaryAgentUser
+        void SetAgentUserPicture(IContext context, InternalDictionaryAgentUserPicture User);
+        InternalDictionaryAgentUserPicture GetInternalAgentUserPicture(IContext context, int id);
+        #endregion
+
         #region DictionaryAgentAddress
 
         FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id);

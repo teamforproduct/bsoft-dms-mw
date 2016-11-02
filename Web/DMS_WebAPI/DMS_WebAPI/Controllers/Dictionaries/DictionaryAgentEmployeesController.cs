@@ -82,6 +82,28 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpItem = tmpService.GetDictionaryAgentEmployeePersonnelNumber(ctx);
             return new JsonResult(tmpItem, this);
         }
+
+        [HttpPut]
+        [Route("SetPicture")]
+        public IHttpActionResult SetPicture([FromUri] int employeeId, ModifyDictionaryAgentUserPicture model)
+        {
+            model.Id = employeeId;
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentEmployeePicture, ctx, model));
+        }
+
+        [HttpGet]
+        [Route("GetPicture")]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetPicture([FromUri] int employeeId)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryAgentUserPicture(ctx, employeeId);
+            return new JsonResult(tmpItems, this);
+        }
+
         /// <summary>
         /// Добавление сотрудника
         /// </summary>

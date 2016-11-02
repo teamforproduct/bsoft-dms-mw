@@ -152,6 +152,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDepartmentAdmin.cs" />
@@ -202,6 +204,7 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />

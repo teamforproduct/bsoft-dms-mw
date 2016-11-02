@@ -54,6 +54,10 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteAgentPerson:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentPersonCommand>();
                     break;
+                case EnumDictionaryActions.SetAgentEmployeePicture:
+                    cmd = DmsResolver.Current.Get<SetDictionaryAgentUserPictureCommand>();
+                    break;
+
                 #endregion DictionaryAgentPersons
 
                 case EnumDictionaryActions.ModifyAgentEmployee:

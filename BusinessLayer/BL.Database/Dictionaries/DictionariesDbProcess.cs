@@ -1182,6 +1182,22 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void SetAgentUserPicture(IContext context, InternalDictionaryAgentUserPicture User)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentUserPicture(context, User);
+
+                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+
+                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Update);
+
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
 
         public IEnumerable<InternalDictionaryAgentUser> GetAgentUser(IContext context, int id)
         {
@@ -1193,6 +1209,19 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     LanguageId = x.LanguageId
                 }).ToList();
+            }
+        }
+
+        public InternalDictionaryAgentUserPicture GetInternalAgentUserPicture(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                // Where(x => x.ClientId == context.CurrentClientId).
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentUserPicture
+                {
+                    Id = x.Id,
+                    Picture = x.Picture
+                }).FirstOrDefault();
             }
         }
 

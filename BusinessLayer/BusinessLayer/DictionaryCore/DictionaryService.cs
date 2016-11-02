@@ -240,6 +240,19 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentEmployeePersonnelNumber(context);
         }
 
+        public FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId)
+        {
+            var userPicture = _dictDb.GetInternalAgentUserPicture(context, employeeId);
+
+            var uPic = new FrontDictionaryAgentUserPicture()
+            {
+                Id = userPicture.Id,
+                FileContent = Convert.ToBase64String(userPicture.Picture)
+            };
+
+            return uPic;
+        }
+
 
         #endregion DictionaryAgentEmployees
 

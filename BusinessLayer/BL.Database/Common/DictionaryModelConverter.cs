@@ -285,7 +285,23 @@ namespace BL.Database.Common
 
         }
 
-        
+        public static DictionaryAgentUsers GetDbAgentUserPicture(IContext context, InternalDictionaryAgentUserPicture item)
+        {
+            return item == null ? null : new DictionaryAgentUsers
+            {
+                ClientId = context.CurrentClientId,
+
+                Id = item.Id,
+                
+                Picture = item.Picture,
+
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+
+        }
+
+
 
         public static DictionaryAgentAddresses GetDbAgentAddress(IContext context, InternalDictionaryAgentAddress item)
         {
