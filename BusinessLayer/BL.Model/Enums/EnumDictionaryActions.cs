@@ -106,11 +106,11 @@
         /// <summary>
         /// добавить фото
         /// </summary>
-        SetAgentPicture = 206002,
+        SetAgentImage = 206002,
         /// <summary>
         /// добавить фото
         /// </summary>
-        DeleteAgentPicture = 206003,
+        DeleteAgentImage = 206003,
         #endregion Agent
 
         // Контакты

@@ -6,17 +6,17 @@ using System;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class SetDictionaryAgentPictureCommand : BaseDictionaryCommand
+    public class DeleteDictionaryAgentImageCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentImage Model
+        private int Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryAgentImage))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryAgentImage)_param;
+                return (int)_param;
             }
         }
 
@@ -37,16 +37,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                byte[] buffer = new byte[Model.PostedFileData.ContentLength];
-                Model.PostedFileData.InputStream.Read(buffer, 0, Model.PostedFileData.ContentLength);
-
-                var newPers = new InternalDictionaryAgentUserPicture
-                {
-                    Id = Model.Id,
-                    Picture = buffer,
-                };
-                CommonDocumentUtilities.SetLastChange(_context, newPers);
-                _dictDb.SetAgentUserPicture(_context, newPers);
+                _dictDb.DeleteAgentImage(_context, new InternalDictionaryAgentImage { Id = Model});
                 return null;
             }
             catch (Exception ex)

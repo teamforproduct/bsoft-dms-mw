@@ -1182,11 +1182,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void SetAgentUserPicture(IContext context, InternalDictionaryAgentUserPicture User)
+        public void SetAgentImage(IContext context, InternalDictionaryAgentImage User)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = DictionaryModelConverter.GetDbAgentUserPicture(context, User);
+                var dbModel = DictionaryModelConverter.GetDbAgentImage(context, User);
 
                 dbContext.DictionaryAgentUsersSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
@@ -1195,6 +1195,14 @@ namespace BL.Database.Dictionaries
 
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteAgentImage(IContext context, InternalDictionaryAgentImage User)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                dbContext.DictionaryAgentUsersSet.Where (x => x.Id == User.Id).Update(x=>new DictionaryAgentUsers { Picture = null});
             }
         }
 
@@ -1212,12 +1220,12 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public InternalDictionaryAgentUserPicture GetInternalAgentUserPicture(IContext context, int id)
+        public InternalDictionaryAgentImage GetInternalAgentUserPicture(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 // Where(x => x.ClientId == context.CurrentClientId).
-                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentUserPicture
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentImage
                 {
                     Id = x.Id,
                     Picture = x.Picture
