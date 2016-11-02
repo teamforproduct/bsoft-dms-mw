@@ -10,6 +10,7 @@ namespace BL.Logic.AdminCore.Interfaces
         #region AdminLanguages
         FrontAdminLanguage GetAdminLanguage(IContext context, int id);
         IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter);
+        IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext context, int userId, FilterAdminLanguage filter);
         #endregion AdminLanguages
 
         #region AdminLanguageValues

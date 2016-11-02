@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.Admin
 {
@@ -19,5 +20,8 @@ namespace BL.Database.DBModel.Admin
         public string Name { get; set; }
         public bool IsDefault { get; set; }
         public virtual ICollection<AdminLanguageValues> LanguageValues { get; set; }
+
+        [ForeignKey("LanguageId")]
+        public virtual ICollection<DictionaryAgentUsers> AgentUsers { get; set; }
     }
 }

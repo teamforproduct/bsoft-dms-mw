@@ -51,10 +51,10 @@ namespace BL.Database.Admins
         {
             var qry = dbContext.AdminLanguagesSet.AsQueryable();
 
-            if (filter.LanguageId?.Count > 0)
+            if (filter.IDs?.Count > 0)
             {
                 var filterContains = PredicateBuilder.False<AdminLanguages>();
-                filterContains = filter.LanguageId.Aggregate(filterContains,
+                filterContains = filter.IDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
 
                 qry = qry.Where(filterContains);
@@ -81,6 +81,24 @@ namespace BL.Database.Admins
                     Code = x.Code,
                     Name = x.Name,
                     IsDefault = x.IsDefault
+                }).ToList();
+            }
+        }
+
+        public IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext context, int userId, FilterAdminLanguage filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = GetAdminLanguagesQuery(dbContext, filter);
+
+                return qry.Select(x => new FrontAdminUserLanguage
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    IsDefault = x.IsDefault,
+                    IsChecked = x.AgentUsers.Where(y=>y.LanguageId == x.Id).Any(),
                 }).ToList();
             }
         }
@@ -154,9 +172,9 @@ namespace BL.Database.Admins
 
         #region AdminLanguageValues
 
-        private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(DmsContext dbContext, FilterAdminLanguageValue filter)
+        private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(IContext context, DmsContext dbContext, FilterAdminLanguageValue filter)
         {
-            var qry = dbContext.AdminLanguageValuesSet.AsQueryable();
+            var qry = dbContext.AdminLanguageValuesSet.Where(x=> x.ClientId == context.CurrentClientId).AsQueryable();
 
             if (filter.LanguageValueId?.Count > 0)
             {
@@ -201,7 +219,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var qry = GetAdminLanguageValuesQuery(dbContext, filter);
+                var qry = GetAdminLanguageValuesQuery(context,dbContext, filter);
 
                 return qry.Select(x => new FrontAdminLanguageValue
                 {
@@ -218,7 +236,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var qry = GetAdminLanguageValuesQuery(dbContext, filter);
+                var qry = GetAdminLanguageValuesQuery(context, dbContext, filter);
 
                 return qry.Select(x => new InternalAdminLanguageValue
                 {

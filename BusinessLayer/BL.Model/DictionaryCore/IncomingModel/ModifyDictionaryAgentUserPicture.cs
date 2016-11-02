@@ -17,8 +17,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
+        public int AgentId { get; set; }
 
         /// <summary>
         /// Данные файла

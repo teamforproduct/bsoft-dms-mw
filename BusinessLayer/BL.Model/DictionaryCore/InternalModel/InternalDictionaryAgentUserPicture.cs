@@ -15,7 +15,7 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         public InternalDictionaryAgentImage(ModifyDictionaryAgentImage model)
         {
-            Id = model.Id;
+            Id = model.AgentId;
         }
 
         /// <summary>

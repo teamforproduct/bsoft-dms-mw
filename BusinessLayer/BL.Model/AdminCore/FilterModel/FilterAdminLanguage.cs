@@ -4,7 +4,7 @@ namespace BL.Model.AdminCore.FilterModel
 {
     public class FilterAdminLanguage
     {
-        public List<int> LanguageId { get; set; }
+        public List<int> IDs { get; set; }
         public string Code { get; set; }
     }
 }

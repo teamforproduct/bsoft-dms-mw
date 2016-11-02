@@ -42,7 +42,7 @@ namespace BL.Logic.DictionaryCore
 
                 var newPers = new InternalDictionaryAgentImage
                 {
-                    Id = Model.Id,
+                    Id = Model.AgentId,
                     Picture = buffer,
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newPers);
