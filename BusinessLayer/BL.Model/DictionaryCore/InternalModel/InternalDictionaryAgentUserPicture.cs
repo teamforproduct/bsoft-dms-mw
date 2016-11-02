@@ -26,7 +26,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Файл
         /// </summary>
-        public byte[] Picture { get; set; }
+        public byte[] Image { get; set; }
 
     }
 }

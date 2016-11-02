@@ -213,8 +213,11 @@
         /// удалить сотрудника
         /// </summary>
         DeleteAgentEmployee=212009,
-        
-        
+        /// <summary>
+        /// изменить сотрудника
+        /// </summary>
+        ModifyAgentEmployeeLanguage = 212002,
+
         #endregion AgentEmployee
 
         // Тэги

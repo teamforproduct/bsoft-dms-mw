@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                _dictDb.DeleteAgentImage(_context, new InternalDictionaryAgentImage { Id = Model});
+                _dictDb.SetAgentImage(_context, new InternalDictionaryAgentImage { Id = Model });
                 return null;
             }
             catch (Exception ex)

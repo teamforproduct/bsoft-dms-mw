@@ -42,11 +42,5 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         public bool IsActive { get; set; }
 
-        /// <summary>
-        /// Аватар
-        /// </summary>
-        //[IgnoreDataMember]
-        public HttpPostedFile Picture { get; set; }
-
     }
 }

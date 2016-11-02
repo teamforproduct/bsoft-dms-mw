@@ -56,7 +56,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 return _language.StoreObject as AdminLanguageInfo;
             }
-            
+
         }
 
         public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter)
@@ -65,12 +65,21 @@ namespace DMS_WebAPI.Utilities
             var languageInfo = GetLanguageInfo();
 
             // выгребаю переводы для заданных filter.Labels
-            var languageValues = languageInfo.LanguageValues
-                .Where(x => x.LanguageId == filter.LanguageId)
-                .Where(x => filter.Labels.Contains(x.Label))
-                .ToList();
+            var languageValues = languageInfo.LanguageValues.AsQueryable();
 
-            return languageValues;
+            if (filter != null)
+            {
+                if (filter.LanguageId.HasValue)
+                {
+                    languageValues = languageValues.Where(x => x.LanguageId == filter.LanguageId);
+                }
+
+                if (filter.Labels?.Count > 0)
+                {
+                    languageValues = languageValues.Where(x => filter.Labels.Contains(x.Label));
+                }
+            }
+            return languageValues.ToList(); ;
         }
 
         public IEnumerable<InternalAdminLanguage> GetLanguages(FilterAdminLanguage filter)
@@ -79,12 +88,24 @@ namespace DMS_WebAPI.Utilities
             var languageInfo = GetLanguageInfo();
 
             // выгребаю переводы для заданных filter.Labels
-            var languageValues = languageInfo.Languages
-                .Where(x => filter.IDs.Contains(x.Id))
-                .Where(x => x.Code == filter.Code)
-                .ToList();
+            var languageValues = languageInfo.Languages.AsQueryable();
 
-            return languageValues;
+            if (filter != null)
+            {
+
+                if (filter.IDs?.Count > 0)
+                {
+                    languageValues = languageValues.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    languageValues = languageValues.Where(x => x.Code == filter.Code);
+                }
+
+            }
+
+            return languageValues.ToList();
         }
 
         public string ReplaceLanguageLabel(int languageId, string text)
@@ -163,7 +184,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                
+
                 // pss Закоментировал. потому что ниже все равно еще раз будет перевод
                 // сначала достаю перевод из DMS-Base
                 //IContext ctx = null;

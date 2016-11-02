@@ -48,8 +48,8 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region DictionaryAgentUser
         void SetAgentImage(IContext context, InternalDictionaryAgentImage User);
-        void DeleteAgentImage(IContext context, InternalDictionaryAgentImage User);
-        InternalDictionaryAgentImage GetInternalAgentUserPicture(IContext context, int id);
+        InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id);
+        void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);
         #endregion
 
         #region DictionaryAgentAddress
