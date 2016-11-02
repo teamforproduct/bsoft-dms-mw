@@ -98,12 +98,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
 
-        [HttpPut]
+        [HttpPost]
         [Route("SetImage")]
-        public IHttpActionResult SetImage([FromUri] int employeeId, ModifyDictionaryAgentImage model)
+        public IHttpActionResult SetImage([FromUri]ModifyDictionaryAgentImage model)
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
-            model.Id = employeeId;
             model.PostedFileData = file;
 
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
