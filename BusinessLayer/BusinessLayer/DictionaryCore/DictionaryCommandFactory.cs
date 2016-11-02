@@ -41,11 +41,11 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteAgent:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCommand>();
                     break;
-                case EnumDictionaryActions.SetAgentPicture:
-                    cmd = DmsResolver.Current.Get<SetDictionaryAgentPictureCommand>();
+                case EnumDictionaryActions.SetAgentImage:
+                    cmd = DmsResolver.Current.Get<SetDictionaryAgentImageCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentPicture:
-                    cmd = DmsResolver.Current.Get<SetDictionaryAgentPictureCommand>();
+                case EnumDictionaryActions.DeleteAgentImage:
+                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentImageCommand>();
                     break;
                 #endregion DictionaryAgents
 

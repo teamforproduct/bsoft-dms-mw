@@ -285,7 +285,7 @@ namespace BL.Database.Common
 
         }
 
-        public static DictionaryAgentUsers GetDbAgentUserPicture(IContext context, InternalDictionaryAgentUserPicture item)
+        public static DictionaryAgentUsers GetDbAgentImage(IContext context, InternalDictionaryAgentImage item)
         {
             return item == null ? null : new DictionaryAgentUsers
             {

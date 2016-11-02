@@ -20,6 +20,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// соответствующую выбранному типу
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryAgents")]
     public class DictionaryAgentsController : ApiController
     {
         /// <summary>
@@ -108,16 +109,16 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentPicture, ctx, model));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model));
         }
 
-        [HttpPut]
+        [HttpDelete]
         [Route("DeleteImage")]
         public IHttpActionResult DeleteImage([FromUri] int employeeId)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentPicture, ctx, employeeId));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, employeeId));
         }
 
         [HttpGet]

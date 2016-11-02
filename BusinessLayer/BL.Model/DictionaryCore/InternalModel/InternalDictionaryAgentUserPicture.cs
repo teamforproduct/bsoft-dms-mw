@@ -7,13 +7,13 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
-    public class InternalDictionaryAgentUserPicture : LastChangeInfo
+    public class InternalDictionaryAgentImage : LastChangeInfo
     {
 
-        public InternalDictionaryAgentUserPicture()
+        public InternalDictionaryAgentImage()
         { }
 
-        public InternalDictionaryAgentUserPicture(ModifyDictionaryAgentImage model)
+        public InternalDictionaryAgentImage(ModifyDictionaryAgentImage model)
         {
             Id = model.Id;
         }
