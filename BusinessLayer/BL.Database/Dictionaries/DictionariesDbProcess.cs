@@ -1190,10 +1190,9 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentUsersSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Update);
-
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.Property(x => x.Picture).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
             }
         }
