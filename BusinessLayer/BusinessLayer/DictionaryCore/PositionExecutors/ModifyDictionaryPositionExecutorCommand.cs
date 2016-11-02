@@ -27,7 +27,6 @@ namespace BL.Logic.DictionaryCore
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
 
                     // Синхронизация параметров в UserRoles:
-                    _adminDb.UpdateUserRolePeriod(_context, new BL.Model.DictionaryCore.InternalModel.InternalDictionaryPositionExecutor(Model));
                     transaction.Complete();
                 }
 

@@ -103,6 +103,14 @@
         /// удалить контрагента
         /// </summary>
         DeleteAgent = 206009,
+        /// <summary>
+        /// добавить фото
+        /// </summary>
+        SetAgentPicture = 206002,
+        /// <summary>
+        /// добавить фото
+        /// </summary>
+        DeleteAgentPicture = 206003,
         #endregion Agent
 
         // Контакты
@@ -206,10 +214,7 @@
         /// </summary>
         DeleteAgentEmployee=212009,
         
-        /// <summary>
-        /// добавить фото
-        /// </summary>
-        SetAgentEmployeePicture = 212002,
+        
         #endregion AgentEmployee
 
         // Тэги

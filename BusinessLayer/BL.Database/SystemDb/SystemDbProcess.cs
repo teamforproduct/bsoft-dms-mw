@@ -613,7 +613,10 @@ namespace BL.Database.SystemDb
 
                 var actions = qry.Select(x => x.Id).ToList();
 
-                dbContext.AdminRoleActionsSet.Where(x => actions.Contains(x.ActionId)).Delete();
+                if (actions.Count() > 0)
+                {
+                    dbContext.AdminRoleActionsSet.Where(x => actions.Contains(x.ActionId)).Delete();
+                }
 
                 qry.Delete();
 

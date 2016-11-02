@@ -935,38 +935,6 @@ namespace BL.Database.Admins
             }
         }
 
-        /// <summary>
-        /// Синхронизация дат при изменении дат в PositionExecutors
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="model"></param>
-        public void UpdateUserRolePeriod(IContext context, InternalDictionaryPositionExecutor model)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                //var qry = dbContext.AdminUserRolesSet.AsQueryable();
-                //qry = GetWhereUserRole(ref qry, new FilterAdminUserRole()
-                //{ PositionExecutorIDs = new List<int> { model.Id }  });
-
-                //var items = qry.ToList();
-
-                //foreach (var item in items)
-                //{
-                //    item.StartDate = model.StartDate;
-                //    item.EndDate = model.EndDate?? DateTime.MaxValue;
-
-                //    dbContext.AdminUserRolesSet.Attach(item);
-                //    dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                //}
-
-                //dbContext.SaveChanges();
-
-                // PSS Нет необходимости синхронизации
-                //var itemsUpdated = dbContext.AdminUserRolesSet.Where(x => x.PositionExecutorId == model.Id).Update(x => new AdminUserRoles
-                //{ StartDate = model.StartDate, EndDate = model.EndDate ?? DateTime.MaxValue, LastChangeDate = model.LastChangeDate, LastChangeUserId = model.LastChangeUserId });
-            }
-        }
-
         public void DeleteUserRole(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))

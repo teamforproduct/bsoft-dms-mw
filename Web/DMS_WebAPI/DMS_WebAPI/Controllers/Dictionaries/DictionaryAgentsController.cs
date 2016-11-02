@@ -8,6 +8,9 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using System.Web;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -92,6 +95,40 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             return new JsonResult(tmp, this);
 
+        }
+
+
+        [HttpPut]
+        [Route("SetImage")]
+        public IHttpActionResult SetImage([FromUri] int employeeId, ModifyDictionaryAgentImage model)
+        {
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            model.Id = employeeId;
+            model.PostedFileData = file;
+
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentPicture, ctx, model));
+        }
+
+        [HttpPut]
+        [Route("DeleteImage")]
+        public IHttpActionResult DeleteImage([FromUri] int employeeId)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentPicture, ctx, employeeId));
+        }
+
+        [HttpGet]
+        [Route("GetImage")]
+        [ResponseType(typeof(List<FrontDictionaryAgentUserPicture>))]
+        public IHttpActionResult GetImage([FromUri] int employeeId)
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryAgentUserPicture(ctx, employeeId);
+            return new JsonResult(tmpItems, this);
         }
 
 

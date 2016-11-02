@@ -77,7 +77,12 @@ namespace DMS_WebAPI.Results
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = _spentTime }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
+            var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+            //settings.DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+            // По наблюдениям: Если задать  DateTimeZoneHandling.Utc то локальная дата будет переведена в utc и будет отображена c буквой Z:
+            //settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+            // Если форматом отрезать милисекунды, то Z перестает отображаться
+            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = _spentTime}, settings);
 
             var languageService = DmsResolver.Current.Get<Languages>();
 

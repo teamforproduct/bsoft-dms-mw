@@ -13,7 +13,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentUserPicture()
         { }
 
-        public InternalDictionaryAgentUserPicture(ModifyDictionaryAgentUserPicture model)
+        public InternalDictionaryAgentUserPicture(ModifyDictionaryAgentImage model)
         {
             Id = model.Id;
         }

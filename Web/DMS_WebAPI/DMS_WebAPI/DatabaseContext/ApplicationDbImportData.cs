@@ -413,6 +413,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DictionaryActions:AddAgent@l##", "Add agent", "Добавить контрагента", "Додати контрагента");
             AddALV(list, "##l@DictionaryActions:ModifyAgent@l##", "Modify agent", "Изменить контрагента", "Змінити контрагента");
             AddALV(list, "##l@DictionaryActions:DeleteAgent@l##", "Delete agent", "Удалить контрагента", "Видалити контрагента");
+            AddALV(list, "##l@DictionaryActions:SetAgentPicture@l##", "Set agent picture", "Установить картинку контрагента", "Змінити аватар контрагента");
+            AddALV(list, "##l@DictionaryActions:DeleteAgentPicture@l##", "Delete agent picture", "Удалить картинку контрагента", "Видалити аватар контрагента");
             AddALV(list, "##l@DictionaryActions:AddAgentContact@l##", "Add agent contact", "Добавить контакт", "Додати контакт");
             AddALV(list, "##l@DictionaryActions:ModifyAgentContact@l##", "Modify agent contact", "Изменить контакт", "Змінити контакт");
             AddALV(list, "##l@DictionaryActions:DeleteAgentContact@l##", "Delete agent contact", "Удалить контакт", "Видалити контакт");

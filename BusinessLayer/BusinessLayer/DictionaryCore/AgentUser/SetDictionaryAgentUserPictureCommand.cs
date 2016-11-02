@@ -6,17 +6,17 @@ using System;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class SetDictionaryAgentUserPictureCommand : BaseDictionaryCommand
+    public class SetDictionaryAgentPictureCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentUserPicture Model
+        private ModifyDictionaryAgentImage Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryAgentUserPicture))
+                if (!(_param is ModifyDictionaryAgentImage))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryAgentUserPicture)_param;
+                return (ModifyDictionaryAgentImage)_param;
             }
         }
 

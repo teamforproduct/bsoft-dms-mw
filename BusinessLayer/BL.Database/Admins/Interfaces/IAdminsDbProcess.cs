@@ -66,7 +66,6 @@ namespace BL.Database.Admins.Interfaces
         int AddUserRole(IContext context, InternalAdminUserRole model);
         void AddUserRoles(IContext context, IEnumerable<InternalAdminUserRole> models);
         void UpdateUserRole(IContext context, InternalAdminUserRole model);
-        void UpdateUserRolePeriod(IContext context, InternalDictionaryPositionExecutor model);
         void DeleteUserRole(IContext context, int id);
         void DeleteUserRoles(IContext context, FilterAdminUserRole filter);
         bool ExistsUserRole(IContext context, FilterAdminUserRole filter);
