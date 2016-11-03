@@ -156,7 +156,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployeeLanguage, ctx, new ModifyDictionaryAgentUser { Id = id, LanguageId = (int)languageId } ));
+            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployeeLanguage, ctx, new ModifyDictionaryAgentUser { Id = id, LanguageId = (int)languageId } );
+            return new JsonResult(null, this);
         }
     }
 }

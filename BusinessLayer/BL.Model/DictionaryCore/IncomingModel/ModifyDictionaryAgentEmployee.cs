@@ -90,7 +90,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
-#endregion
+        #endregion
 
         #region [+] Employee ...
         /// <summary>

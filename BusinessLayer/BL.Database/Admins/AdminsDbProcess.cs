@@ -71,6 +71,7 @@ namespace BL.Database.Admins
                 {
                     Id = x.Id,
                     Code = x.Code,
+                    Description = x.Description,
                     GrantId = x.GrantId,
                     IsGrantable = x.IsGrantable,
                     IsGrantableByRecordId = x.IsGrantableByRecordId,

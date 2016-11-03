@@ -303,7 +303,7 @@
     <Compile Include="Controllers\System\SystemLogsController.cs" />
     <Compile Include="Controllers\System\SystemActionsController.cs" />
     <Compile Include="Controllers\System\SystemSettingsController.cs" />
-    <Compile Include="Controllers\System\VersionController.cs" />
+    <Compile Include="Controllers\System\UtilitesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />

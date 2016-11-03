@@ -22,17 +22,31 @@ using System.Reflection;
 
 namespace DMS_WebAPI.Controllers
 {
-    public class VersionController : ApiController
+    [RoutePrefix("api/v2/Utilities")]
+    public class UtilitiesController : ApiController
     {
         /// <summary>
         /// Возвращает версию сборки
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
-        public IHttpActionResult Get()
+        [HttpGet]
+        [Route("GetVersion")]
+        public IHttpActionResult GetVersion()
         {
             var tmpItems = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return new JsonResult(tmpItems, this);
+        }
+
+        /// <summary>
+        /// Возвращает объект Request. Для определения параметров, которые браузер отправляет в запрос
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetRequest")]
+        public IHttpActionResult GetRequest()
+        {
+            return new JsonResult(HttpContext.Current.Request, this);
         }
 
     }

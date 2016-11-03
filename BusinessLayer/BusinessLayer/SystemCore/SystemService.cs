@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
+using BL.Database.DBModel.System;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
@@ -10,6 +11,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.SystemCore.InternalModel;
 using BL.Model.Tree;
 using System;
 using System.Collections.Generic;
@@ -145,9 +147,28 @@ namespace BL.Logic.SystemCore
                 }
                 else
                 {
-                    _systemDb.UpdateSystemAction(context, act);
+                    if (!EqualsAction(systemDbActions.FirstOrDefault(x => x.Id == act.Id), act))
+                    { _systemDb.UpdateSystemAction(context, act); }
+
                 }
-            }         
+            }
+        }
+
+        private bool EqualsAction(InternalSystemAction intAction, SystemActions dbAction)
+        {
+            if (intAction.Id != dbAction.Id) throw new Exception("EqualsAction");
+
+            return (
+              intAction.API == dbAction.API
+              & intAction.Category == dbAction.Category
+              & intAction.Code == dbAction.Code
+              & intAction.Description == dbAction.Description
+              & intAction.GrantId == dbAction.GrantId
+              & intAction.IsGrantable == dbAction.IsGrantable
+              & intAction.IsGrantableByRecordId == dbAction.IsGrantableByRecordId
+              & intAction.IsVisible == dbAction.IsVisible
+              & intAction.IsVisibleInMenu == dbAction.IsVisibleInMenu
+              & (int)intAction.ObjectId == dbAction.ObjectId);
 
         }
 

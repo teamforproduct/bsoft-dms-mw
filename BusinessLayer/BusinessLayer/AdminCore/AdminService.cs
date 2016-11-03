@@ -146,7 +146,15 @@ namespace BL.Logic.AdminCore
             }
             if (!res && isThrowExeception)
             {
-                throw new AccessIsDenied(); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                string actionName = string.Empty;
+                var a = data.Actions.Where(x => x.Id == model.DocumentActionId).FirstOrDefault();
+
+                if (a != null)
+                {
+                    actionName = a.Description;
+                }
+
+                throw new AccessIsDenied("Obj", actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
             }
             return res;
 

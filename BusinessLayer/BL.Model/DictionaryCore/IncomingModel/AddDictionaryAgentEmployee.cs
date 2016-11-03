@@ -44,19 +44,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Основной имейл, на который высылается письмо с приглашением
         /// </summary>
         [Required]
-        [EmailAddress]
+        //[EmailAddress]
         public string Login { get; set; }
 
         /// <summary>
         /// Основной номер мобильного телефона
         /// </summary>
         public string Phone { get; set; }
-
-        /// <summary>
-        /// Аватар
-        /// </summary>
-        //[IgnoreDataMember]
-        //public HttpPostedFile Picture { get; set; }
 
         #endregion
     }
