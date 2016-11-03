@@ -19,6 +19,7 @@ using DMS_WebAPI.Results;
 using BL.Logic.DependencyInjection;
 using DMS_WebAPI.Utilities;
 using System.Reflection;
+using BL.Logic.DictionaryCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -47,6 +48,26 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult GetRequest()
         {
             return new JsonResult(HttpContext.Current.Request, this);
+        }
+
+
+        [HttpPost]
+        [Route("SetUsers")]
+        public IHttpActionResult SetUsers()
+        {
+            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+
+            var tmpItems = tmpDict.GetInternalContacts(ctx,
+                new BL.Model.DictionaryCore.FilterModel.FilterDictionaryContact
+                {
+                    ContactTypeIDs = new List<int> { 28 },
+                    NotContainsAgentIDs = new List<int> { 1036, 1040, 1489 }
+                });
+
+            var dbProc = new WebAPIDbProcess();
+            dbProc.AddUsersTemp( tmpItems);
+            return new JsonResult(null, this);
         }
 
     }

@@ -2884,6 +2884,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
+
         public FrontDictionaryContact GetContact(IContext context, int id)
 
         {
@@ -2906,76 +2907,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        //pss Зачем отдельным параметром передавать agentId если в filter есть такой параметр
-        public IEnumerable<FrontDictionaryContact> GetContacts(IContext context, int agentId, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryContact> GetContacts(IContext context, FilterDictionaryContact filter)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
-
-                qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
-
-
-                qry = qry.Where(x => x.AgentId == agentId);
-
-                if (filter.AgentIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
-                    filterContains = filter.AgentIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.AgentId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.ContactTypeIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
-                    filterContains = filter.ContactTypeIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ContactTypeId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-
-                if (!string.IsNullOrEmpty(filter.Contact))
-                {
-                    //pss проверить, что по номерам с учетом "---" поиск работает
-
-                    string searchExpression = filter.Contact.Replace('-', ' ').Replace('(', ' ').Replace(')', ' ');
-
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(searchExpression).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Contact == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!String.IsNullOrEmpty(filter.ContactExact))
-                {
-                    //pss Здесь ContactExact нужно делать более умным в сравнении телефонов
-                    qry = qry.Where(x =>
-                    x.Contact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ", "") ==
-                    filter.ContactExact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ", ""));
-                }
-
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => x.IsActive == filter.IsActive);
-                }
-
-                if (filter.IsConfirmed != null)
-                {
-                    qry = qry.Where(x => x.IsConfirmed == filter.IsConfirmed);
-                }
-
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentContacts>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
+                var qry = GetContactsQuery(context, dbContext, filter);
 
                 return qry.Select(x => new FrontDictionaryContact
                 {
@@ -2987,6 +2923,111 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive
                 }).ToList();
             }
+        }
+
+        public IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetContactsQuery(context, dbContext, filter);
+
+                return qry.Select(x => new InternalDictionaryContact
+                {
+                    Id = x.Id,
+                    AgentId = x.AgentId,
+                    Value = x.Contact,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    ContactTypeId = x.ContactTypeId,
+                    IsConfirmed = x.IsConfirmed,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId,
+                }).ToList();
+            }
+        }
+
+        private IQueryable<DictionaryAgentContacts> GetWhereContacts(ref IQueryable<DictionaryAgentContacts> qry, FilterDictionaryContact filter)
+        {
+            if (filter.AgentIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                filterContains = filter.AgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.AgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.NotContainsAgentIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.True<DictionaryAgentContacts>();
+                filterContains = filter.NotContainsAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.AgentId != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.ContactTypeIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                filterContains = filter.ContactTypeIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.ContactTypeId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+
+            if (!string.IsNullOrEmpty(filter.Contact))
+            {
+                //pss проверить, что по номерам с учетом "---" поиск работает
+
+                string searchExpression = filter.Contact.Replace('-', ' ').Replace('(', ' ').Replace(')', ' ');
+
+                var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                filterContains = CommonFilterUtilites.GetWhereExpressions(searchExpression).Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Contact == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (!String.IsNullOrEmpty(filter.ContactExact))
+            {
+                //pss Здесь ContactExact нужно делать более умным в сравнении телефонов
+                qry = qry.Where(x =>
+                x.Contact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ", "") ==
+                filter.ContactExact.Replace("-", "").Replace(")", "").Replace("(", "").Replace("+", "").Replace(" ", ""));
+            }
+
+            if (filter.IsActive != null)
+            {
+                qry = qry.Where(x => x.IsActive == filter.IsActive);
+            }
+
+            if (filter.IsConfirmed != null)
+            {
+                qry = qry.Where(x => x.IsConfirmed == filter.IsConfirmed);
+            }
+
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.True<DictionaryAgentContacts>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
+
+        public IQueryable<DictionaryAgentContacts> GetContactsQuery(IContext context, DmsContext dbContext, FilterDictionaryContact filter)
+        {
+            var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+
+            qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
+
+            qry = GetWhereContacts(ref qry, filter);
+
+            return qry;
         }
 
 

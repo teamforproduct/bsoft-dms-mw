@@ -100,22 +100,6 @@ namespace BL.Logic.DictionaryCore
             }
         }
 
-        public static void VerifyPosition(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryPosition Model)
-        {
-            //var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            //if (Model.ParentId != null)
-            //{
-            //    fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            //}
-
-            //// Находим запись с таким-же именем в этой-же папке
-            //if (_dictDb.ExistsPosition(_context, fdd))
-            //{
-            //    throw new DictionaryRecordNotUnique();
-            //}
-        }
-
         public static void VerifyRegistrationJournal(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryRegistrationJournal Model)
         {
             Model.Name?.Trim();

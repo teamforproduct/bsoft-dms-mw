@@ -32,7 +32,15 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryContacts(ctx, agentId, filter);
+
+            if (filter == null) filter = new FilterDictionaryContact();
+
+            if (filter.AgentIDs == null)
+                filter.AgentIDs = new List<int> { agentId };
+            else
+                filter.AgentIDs.Add(agentId);
+
+            var tmpDicts = tmpDictProc.GetDictionaryContacts(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 

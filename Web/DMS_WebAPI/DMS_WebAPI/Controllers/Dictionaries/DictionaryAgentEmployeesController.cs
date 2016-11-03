@@ -146,7 +146,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Добавление сотрудника
+        /// Устанавливает язык интерфейса для пользователя
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

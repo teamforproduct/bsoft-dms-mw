@@ -74,7 +74,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryContacts
         FrontDictionaryContact GetDictionaryContact(IContext context, int id);
 
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter);
         #endregion
 
         #region DictionaryContactTypes
@@ -151,6 +152,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id);
 
         IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutorsByAgent(IContext context, int agentId, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 
         // Типы исполнителей

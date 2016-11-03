@@ -497,9 +497,14 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetContact(context, id);
         }
 
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
         {
-            return _dictDb.GetContacts(context, agentId, filter);
+            return _dictDb.GetContacts(context, filter);
+        }
+
+        public IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter)
+        {
+            return _dictDb.GetInternalContacts(context, filter);
         }
         #endregion
 
@@ -752,6 +757,27 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
         {
+            return _dictDb.GetPositionExecutors(context, filter);
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutorsByAgent(IContext context, int agentId, FilterDictionaryPositionExecutor filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { agentId };
+            else filter.AgentIDs.Add(agentId);
+
+            return GetCurrentPositionExecutors(context, filter);
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
+            filter.IsActive = true;
+
             return _dictDb.GetPositionExecutors(context, filter);
         }
         #endregion DictionaryPositinExecutors

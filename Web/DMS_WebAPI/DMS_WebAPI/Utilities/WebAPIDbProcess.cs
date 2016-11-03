@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.AdminCore.Clients;
 using BL.Model.Database;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
@@ -954,6 +955,78 @@ namespace DMS_WebAPI.Utilities
                         transaction.Complete();
 
                         return client.Id;
+                    }
+                }
+            }
+            catch (UserNameAlreadyExists)
+            {
+                throw new UserNameAlreadyExists();
+            }
+            catch (ClientNameAlreadyExists)
+            {
+                throw new ClientNameAlreadyExists();
+            }
+            catch (Exception ex)
+            {
+                throw new DictionaryRecordCouldNotBeAdded();
+            }
+        }
+
+        public void AddUsersTemp(IEnumerable<InternalDictionaryContact> models)
+        {
+            try
+            {
+                var owinContext = HttpContext.Current.Request.GetOwinContext();
+                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+
+                using (var dbContext = new ApplicationDbContext())
+                {
+                    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
+
+                    foreach (var item in models)
+                    {
+
+                        if (userManager.FindByName(item.Value) != null) continue;
+
+                        using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                        {
+
+                            #region Create user                        
+
+                            var user = new ApplicationUser() { UserName = item.Value, Email = item.Value };
+
+                            IdentityResult result = userManager.Create(user, "P@ssw0rd");
+
+                            if (!result.Succeeded)
+                            {
+                                transaction.Dispose();
+                                throw new DictionaryRecordCouldNotBeAdded();
+                            }
+
+                            var userClient = new AspNetUserClients
+                            {
+                                UserId = user.Id,
+                                ClientId = 1,
+                            };
+
+                            dbContext.AspNetUserClientsSet.Add(userClient);
+                            dbContext.SaveChanges();
+
+                            var userServer = new AspNetUserServers
+                            {
+                                ClientId = 1,
+                                ServerId = 1,
+                                UserId = user.Id,
+                            };
+
+                            dbContext.AspNetUserServersSet.Add(userServer);
+                            dbContext.SaveChanges();
+
+                            #endregion Create user
+
+                            transaction.Complete();
+                        }
+
                     }
                 }
             }

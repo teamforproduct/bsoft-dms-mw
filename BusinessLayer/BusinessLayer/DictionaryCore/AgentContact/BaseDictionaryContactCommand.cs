@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore
             Model.Value?.Trim();
 
             // У одного агента не должно быть два контакта одинакового типа
-            var spr = _dictDb.GetContacts(_context, Model.AgentId,
+            var spr = _dictDb.GetContacts(_context,
                    new FilterDictionaryContact
                    {
                        NotContainsIDs = new List<int> { Model.Id },
@@ -43,7 +43,7 @@ namespace BL.Logic.DictionaryCore
             if (spr.Count() != 0) throw new DictionaryAgentContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
 
             // У одного агента не должно быть два контакта с одинаковыми значениями
-            spr = _dictDb.GetContacts(_context, Model.AgentId,
+            spr = _dictDb.GetContacts(_context, 
                    new FilterDictionaryContact
                    {
                        NotContainsIDs = new List<int> { Model.Id },

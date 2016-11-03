@@ -208,6 +208,7 @@
     <Compile Include="DictionaryCore\AgentClientCompany\ModifyDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\Positions\AddDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\Positions\DeleteDictionaryPositionCommand.cs" />
+    <Compile Include="DictionaryCore\Positions\BaseDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\Positions\ModifyDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
     <Compile Include="DictionaryCore\Department\AddDictionaryDepartmentCommand.cs" />

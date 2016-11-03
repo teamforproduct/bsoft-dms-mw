@@ -23,6 +23,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Вся история назначений отображается в панели "Назначения"
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryPositionExecutors")]
     public class DictionaryPositionExecutorsController : ApiController
     {
         /// <summary>
@@ -54,6 +55,38 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpItem, this);
         }
 
+        /// <summary>
+        /// Возвращает текущие назначения
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetCurrent")]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
+        public IHttpActionResult GetCurrent([FromUri] FilterDictionaryPositionExecutor filter)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetCurrentPositionExecutors(cxt,  filter);
+            return new JsonResult(tmpItems, this);
+        }
+
+        /// <summary>
+        /// Возвращает текущие назначения для указанного сотрудника
+        /// </summary>
+        /// <param name="agentId">сотрудник</param>
+        /// <param name="filter">дополнительные фильтры</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetCurrentByAgent")]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
+        public IHttpActionResult GetCurrentByAgent([FromUri] int agentId, [FromUri] FilterDictionaryPositionExecutor filter)
+        {
+            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetCurrentPositionExecutorsByAgent(cxt, agentId, filter);
+            return new JsonResult(tmpItems, this);
+        }
 
         /// <summary>
         /// Добавление записи в словаре "Исполнители должности"

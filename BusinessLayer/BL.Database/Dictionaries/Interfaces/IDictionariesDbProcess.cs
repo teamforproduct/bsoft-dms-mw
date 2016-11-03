@@ -109,7 +109,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateContact(IContext context, InternalDictionaryContact contact);
         void DeleteContact(IContext context, InternalDictionaryContact contact);
         int AddContact(IContext context, InternalDictionaryContact contact);
-        IEnumerable<FrontDictionaryContact> GetContacts(IContext context, int agentId, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter);
         IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts);
         #endregion
 
