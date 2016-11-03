@@ -160,7 +160,7 @@ namespace BL.Logic.Common
         {
             if (document != null)
             {
-                document.LastChangeDate = DateTime.Now;
+                document.LastChangeDate = DateTime.UtcNow;
                 document.LastChangeUserId = context.CurrentAgentId;
             }
         }

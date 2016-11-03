@@ -113,11 +113,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         [HttpDelete]
         [Route("DeleteImage")]
-        public IHttpActionResult DeleteImage([FromUri] int employeeId)
+        public IHttpActionResult DeleteImage([FromUri] int AgentId)
         {
             var ctx = DmsResolver.Current.Get<UserContext>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, employeeId));
+            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, AgentId));
         }
 
         [HttpGet]

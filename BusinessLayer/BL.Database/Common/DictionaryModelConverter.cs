@@ -285,15 +285,15 @@ namespace BL.Database.Common
 
         }
 
-        public static DictionaryAgentUsers GetDbAgentImage(IContext context, InternalDictionaryAgentImage item)
+        public static DictionaryAgents GetDbAgentImage(IContext context, InternalDictionaryAgentImage item)
         {
-            return item == null ? null : new DictionaryAgentUsers
+            return item == null ? null : new DictionaryAgents
             {
                 ClientId = context.CurrentClientId,
 
                 Id = item.Id,
                 
-                Picture = item.Picture,
+                Image = item.Image,
 
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,

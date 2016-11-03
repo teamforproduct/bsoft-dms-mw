@@ -179,6 +179,20 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void SetAgentImage(IContext context, InternalDictionaryAgentImage User)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentImage(context, User);
+                dbContext.DictionaryAgentsSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.Image).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
         public FrontDictionaryAgent GetAgent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
@@ -1182,27 +1196,18 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void SetAgentImage(IContext context, InternalDictionaryAgentImage User)
+        public void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User)
         {
             using (var dbContext = new DmsContext(context))
             {
-                var dbModel = DictionaryModelConverter.GetDbAgentImage(context, User);
+                var dbModel = DictionaryModelConverter.GetDbAgentUser(context, User);
 
                 dbContext.DictionaryAgentUsersSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Update);
-
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.Property(x => x.LanguageId).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
-            }
-        }
-
-        public void DeleteAgentImage(IContext context, InternalDictionaryAgentImage User)
-        {
-            using (var dbContext = new DmsContext(context))
-            {
-                dbContext.DictionaryAgentUsersSet.Where (x => x.Id == User.Id).Update(x=>new DictionaryAgentUsers { Picture = null});
             }
         }
 
@@ -1220,15 +1225,15 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public InternalDictionaryAgentImage GetInternalAgentUserPicture(IContext context, int id)
+        public InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 // Where(x => x.ClientId == context.CurrentClientId).
-                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentImage
+                return dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentImage
                 {
                     Id = x.Id,
-                    Picture = x.Picture
+                    Image = x.Image
                 }).FirstOrDefault();
             }
         }

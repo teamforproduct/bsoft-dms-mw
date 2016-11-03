@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Utilities
             // если нет кэша - первый вход и после сброса
             if (_language == null)
             {
-                var nlst = GetAdminLanguage();
+                var nlst = GetAdminLanguageStruct();
                 var nso = new StoreInfo
                 {
                     LastUsage = DateTime.Now,
@@ -49,28 +49,63 @@ namespace DMS_WebAPI.Utilities
             {
                 if ((DateTime.Now - _language.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
                 {
-                    var lst = GetAdminLanguage();
+                    var lst = GetAdminLanguageStruct();
                     _language.StoreObject = lst;
                     _language.LastUsage = DateTime.Now;
                     return lst;
                 }
                 return _language.StoreObject as AdminLanguageInfo;
             }
-            
+
         }
 
-        private List<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter)
+        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter)
         {
             // выгребаю все переводы из кэша 
             var languageInfo = GetLanguageInfo();
 
             // выгребаю переводы для заданных filter.Labels
-            var languageValues = languageInfo.LanguageValues
-                .Where(x => x.LanguageId == filter.LanguageId)
-                .Where(x => filter.Labels.Contains(x.Label))
-                .ToList();
+            var languageValues = languageInfo.LanguageValues.AsQueryable();
 
-            return languageValues;
+            if (filter != null)
+            {
+                if (filter.LanguageId.HasValue)
+                {
+                    languageValues = languageValues.Where(x => x.LanguageId == filter.LanguageId);
+                }
+
+                if (filter.Labels?.Count > 0)
+                {
+                    languageValues = languageValues.Where(x => filter.Labels.Contains(x.Label));
+                }
+            }
+            return languageValues.ToList(); ;
+        }
+
+        public IEnumerable<InternalAdminLanguage> GetLanguages(FilterAdminLanguage filter)
+        {
+            // выгребаю все переводы из кэша 
+            var languageInfo = GetLanguageInfo();
+
+            // выгребаю переводы для заданных filter.Labels
+            var languageValues = languageInfo.Languages.AsQueryable();
+
+            if (filter != null)
+            {
+
+                if (filter.IDs?.Count > 0)
+                {
+                    languageValues = languageValues.Where(x => filter.IDs.Contains(x.Id));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    languageValues = languageValues.Where(x => x.Code == filter.Code);
+                }
+
+            }
+
+            return languageValues.ToList();
         }
 
         public string ReplaceLanguageLabel(int languageId, string text)
@@ -149,7 +184,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                
+
                 // pss Закоментировал. потому что ниже все равно еще раз будет перевод
                 // сначала достаю перевод из DMS-Base
                 //IContext ctx = null;
@@ -217,7 +252,7 @@ namespace DMS_WebAPI.Utilities
 
         #region [+] DbProcess
 
-        private AdminLanguageInfo GetAdminLanguage()
+        private AdminLanguageInfo GetAdminLanguageStruct()
         {
             using (var dbContext = new ApplicationDbContext())
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
