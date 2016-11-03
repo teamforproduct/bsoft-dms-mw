@@ -43,7 +43,7 @@ namespace DMS_WebAPI.Infrastructure
             }
 
             var exc = context.Exception;
-            var languageService = DmsResolver.Current.Get<Languages>();
+            var languageService = DmsResolver.Current.Get<ILanguages>();
 
             string msgExp = string.Empty;
             //#if DEBUG
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Infrastructure
             {
                 var m = exc.Message;
 
-                m = languageService.ReplaceLanguageLabel(currentContext, m);
+                m = languageService.ReplaceLanguageLabel(DmsResolver.Current.Get<UserContext>().Get(), m);
 
                 if (exc is DmsExceptions)
                 {
@@ -68,13 +68,16 @@ namespace DMS_WebAPI.Infrastructure
                 exc = exc.InnerException;
             };
 
+            // Если в результате подстановки параметров подставили лейблы, нужно их перевести
+            msgExp = languageService.ReplaceLanguageLabel(DmsResolver.Current.Get<UserContext>().Get(), msgExp);
+
             //#else
             //msgExp = exc.Message;
             //#endif
 
-            // TOTO Убрать UserLanguages
+            var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
 
-            var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp, UserLanguages = currentContext.Request.UserLanguages }, GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings);
+            var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp }, settings);
             //json = ReplaceLanguageLabel(currentContext, json);
 
 

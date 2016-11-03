@@ -13,7 +13,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         string ReplaceLanguageLabel(int languageId, string text);
         string ReplaceLanguageLabel(string languageName, string text);
-        string ReplaceLanguageLabel(HttpContext Context, string text);
+        //string ReplaceLanguageLabel(HttpContext Context, string text);
         string ReplaceLanguageLabel(IContext Context, string text);
         IEnumerable<InternalAdminLanguage> GetLanguages(FilterAdminLanguage filter);
         IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter);
