@@ -15,6 +15,10 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Enums;
 using System.Web;
 using System;
+using System.Web.Http.Description;
+using BL.Model.AdminCore.FrontModel;
+using BL.Model.DictionaryCore.FrontModel;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -22,12 +26,15 @@ namespace DMS_WebAPI.Controllers
     [RoutePrefix("api/v2/Users")]
     public class UsersController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Получение информации о пользователе
         /// </summary>
         /// <returns>список должностей</returns>
         [Route("UserInfo")]
         [HttpGet]
+        [ResponseType(typeof(FrontDictionaryAgent))]
         public IHttpActionResult GetUserInfo()
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
@@ -44,11 +51,15 @@ namespace DMS_WebAPI.Controllers
         /// <returns>список должностей</returns>
         [Route("AvailablePositions")]
         [HttpGet]
+        [ResponseType(typeof(List<FrontAvailablePositions>))]
         public IHttpActionResult AvailablePositions()
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var context = DmsResolver.Current.Get<UserContexts>().Get();
-            var admProc = DmsResolver.Current.Get<IAdminService>();
-            return new JsonResult(admProc.GetPositionsByCurrentUser(context), this);
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetAvailablePositions(context);
+            stopWatch.Stop();
+            return new JsonResult(tmpItems, this, stopWatch.Elapsed);
         }
 
         /// <summary>
@@ -57,6 +68,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns>массива ИД должностей</returns>
         [Route("ChoosenPositions")]
         [HttpGet]
+        [ResponseType(typeof(List<int>))]
         public IHttpActionResult ChoosenPositions()
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();

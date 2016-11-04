@@ -22,7 +22,7 @@ namespace BL.Logic.AdminCore.Interfaces
         object ExecuteAction(EnumAdminActions act, IContext context, object param);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
-        IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context);
+        IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetUserForContext(IContext context, string userId);

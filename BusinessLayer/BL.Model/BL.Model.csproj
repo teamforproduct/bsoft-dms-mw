@@ -84,6 +84,7 @@
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminUserLanguage.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontAvailablePositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesRoles.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRoleActionByObject.cs" />

@@ -92,6 +92,54 @@ namespace BL.Database.Admins
             }
         }
 
+        public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext ctx , int agentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+
+                var now = DateTime.UtcNow;
+
+                qry = qry.Where(x => x.AgentId == agentId & x.IsActive == true & now >= x.StartDate & now <=x.EndDate);
+
+                qry = qry.OrderBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Position.Order);
+
+                var res = qry.Select(x => new FrontAvailablePositions
+                {
+                    RolePositionId = x.PositionId,
+                    RolePositionName = x.Position.Name,
+                    RolePositionExecutorAgentName = x.Agent.Name,//x.Position.ExecutorAgent.Name,
+                    RolePositionExecutorTypeName = x.PositionExecutorType.Name,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                }).ToList();
+
+                var roleList = res.Select(s => s.RolePositionId).ToList();
+
+                var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                                .Where(filterNewEventTargetPositionContains)
+                                .GroupBy(g => g.TargetPositionId)
+                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                var newevnt = neweventQry.ToList();
+
+                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
+
+                //TODO
+                //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
+                //{
+                //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
+                //}
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
         {
             using (var dbContext = new DmsContext(ctx))
