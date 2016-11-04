@@ -428,7 +428,7 @@ namespace DMS_WebAPI.Utilities
                     var item = new AspNetClientLicences
                     {
                         ClientId = ctx.CurrentClientId,
-                        FirstStart = DateTime.Now.Date,
+                        FirstStart = DateTime.UtcNow.Date,
                         IsActive = false,
                         LicenceId = licenceId
                     };
@@ -698,7 +698,7 @@ namespace DMS_WebAPI.Utilities
                         //    clientLicence = new AspNetClientLicences
                         //    {
                         //        ClientId = client.Id,
-                        //        FirstStart = DateTime.Now,
+                        //        FirstStart = DateTime.UtcNow,
                         //        IsActive = false,
                         //        LicenceId = model.LicenceId.GetValueOrDefault(),
                         //        LicenceKey = null,
@@ -847,7 +847,7 @@ namespace DMS_WebAPI.Utilities
                             clientLicence = new AspNetClientLicences
                             {
                                 ClientId = client.Id,
-                                FirstStart = DateTime.Now,
+                                FirstStart = DateTime.UtcNow,
                                 IsActive = false,
                                 LicenceId = model.LicenceId.GetValueOrDefault(),
                                 LicenceKey = null,

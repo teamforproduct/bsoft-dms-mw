@@ -23,6 +23,8 @@ namespace DMS_WebAPI.Utilities
     {
         private const int _MINUTES_TO_UPDATE_INFO = 5;// int.MaxValue; 
 
+        private const string _PATTERN = "##l@(.*?)@l##";
+
         private StoreInfo _language;
 
         #region [+] Service
@@ -39,7 +41,7 @@ namespace DMS_WebAPI.Utilities
                 var nlst = GetAdminLanguageStruct();
                 var nso = new StoreInfo
                 {
-                    LastUsage = DateTime.Now,
+                    LastUsage = DateTime.UtcNow,
                     StoreObject = nlst
                 };
                 _language = nso;
@@ -47,11 +49,11 @@ namespace DMS_WebAPI.Utilities
             }
             else
             {
-                if ((DateTime.Now - _language.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
+                if ((DateTime.UtcNow - _language.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
                 {
                     var lst = GetAdminLanguageStruct();
                     _language.StoreObject = lst;
-                    _language.LastUsage = DateTime.Now;
+                    _language.LastUsage = DateTime.UtcNow;
                     return lst;
                 }
                 return _language.StoreObject as AdminLanguageInfo;
@@ -108,6 +110,11 @@ namespace DMS_WebAPI.Utilities
             return languageValues.ToList();
         }
 
+        private bool ExistsLabels(string text)
+        {
+            return Regex.IsMatch(text, _PATTERN);
+        }
+
         public string ReplaceLanguageLabel(int languageId, string text)
         {
             string errorMessage = text;
@@ -118,7 +125,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     var labelsInText = new List<string>();
                     // нахожу в тексте все лейблы, которые нужно переводить
-                    foreach (Match label in Regex.Matches(errorMessage, "##l@(.*?)@l##"))
+                    foreach (Match label in Regex.Matches(errorMessage, _PATTERN))
                     {
                         labelsInText.Add(label.Value);
                     }
@@ -147,6 +154,7 @@ namespace DMS_WebAPI.Utilities
             return text;
         }
 
+        
 
         /// <summary>
         /// переводит текст с лейблами ##l@(.*?)@l##
@@ -156,14 +164,14 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         public string ReplaceLanguageLabel(string languageName, string text)
         {
+            if (!ExistsLabels(text)) return text;
+
             // запрашиваю из кэша переводы
             var languageInfo = GetLanguageInfo();
 
             if (string.IsNullOrEmpty(languageName)) languageName = string.Empty;
 
             // нахожу локаль по имени 
-            // TODO PSS "ru-RU".Equals("ru", StringComparison.OrdinalIgnoreCase); возвращает false
-            //var language = languageInfo.Languages.FirstOrDefault(x => languageName.Contains(x.Code));
             var language = languageInfo.Languages.FirstOrDefault(x => languageName.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
 
             // если локаль не определена, беру локаль по умолчанию
@@ -177,10 +185,10 @@ namespace DMS_WebAPI.Utilities
 
         public string ReplaceLanguageLabel(HttpContext Context, string text)
         {
-            string res = text;
 
-            // pss временно беру переводы из функции для инициализации переводов.
-            // return ApplicationDbImportData.ReplaceLanguageLabel(Context.Request.UserLanguages?[0], res);
+            if (!ExistsLabels(text)) return text;
+
+            string res = text;
 
             try
             {
@@ -208,13 +216,17 @@ namespace DMS_WebAPI.Utilities
                 // всегда пусто
                 string languageName = Context.Request.UserLanguages?[0];
 
+                if (!string.IsNullOrEmpty(languageName))
+                // Первый параметр может быть "ru-RU" или просто "ru"
+                { languageName = languageName.Split('-')[0]; }
+
                 res = ReplaceLanguageLabel(languageName, res);
             }
             catch { }
 
             return res;
 
-            // этот индус-код из JsonResult
+            // этот код из JsonResult
             //try
             //{
             //    IContext ctx = null;

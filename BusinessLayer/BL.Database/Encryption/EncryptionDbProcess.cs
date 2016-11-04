@@ -548,8 +548,8 @@ namespace BL.Database.Encryption
                 ReadDetailsAboutCertificate(certificate);
                 AddCertificateInWindowsCertificateStores(certificate);
 
-                if ((certificate.NotBefore.HasValue && certificate.NotBefore > DateTime.Now)
-                    || (certificate.NotAfter.HasValue && certificate.NotAfter < DateTime.Now))
+                if ((certificate.NotBefore.HasValue && certificate.NotBefore > DateTime.UtcNow)
+                    || (certificate.NotAfter.HasValue && certificate.NotAfter < DateTime.UtcNow))
                     throw new EncryptionCertificateHasExpired();
 
                 InitJVM();
@@ -640,8 +640,8 @@ namespace BL.Database.Encryption
                 ReadDetailsAboutCertificate(certificate);
                 AddCertificateInWindowsCertificateStores(certificate);
 
-                if ((certificate.NotBefore.HasValue && certificate.NotBefore > DateTime.Now)
-                    || (certificate.NotAfter.HasValue && certificate.NotAfter < DateTime.Now))
+                if ((certificate.NotBefore.HasValue && certificate.NotBefore > DateTime.UtcNow)
+                    || (certificate.NotAfter.HasValue && certificate.NotAfter < DateTime.UtcNow))
                     throw new EncryptionCertificateHasExpired();
 
                 InitJVM();

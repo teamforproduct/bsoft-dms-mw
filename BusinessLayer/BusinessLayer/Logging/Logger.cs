@@ -78,7 +78,7 @@ namespace BL.Logic.Logging
             int loggerLevel = 0;//TODO Get it from settings
             if ((int)info.LogType >= loggerLevel)
             {
-                info.Date = DateTime.Now;
+                info.Date = DateTime.UtcNow;
                 info.AgentId = ctx.CurrentAgentId;
                 _systemDb.AddLog(ctx, info);
             }

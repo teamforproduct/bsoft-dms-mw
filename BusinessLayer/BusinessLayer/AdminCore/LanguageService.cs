@@ -35,11 +35,11 @@ namespace BL.Logic.AdminCore
             if (languageList.ContainsKey(key))
             {
                 var so = languageList[key];
-                if ((DateTime.Now - so.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
+                if ((DateTime.UtcNow - so.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
                 {
                     var lst = _languageDb.GetAdminLanguage(context);
                     so.StoreObject = lst;
-                    so.LastUsage = DateTime.Now;
+                    so.LastUsage = DateTime.UtcNow;
                     return lst;
                 }
                 return so.StoreObject as AdminLanguageInfo;
@@ -47,7 +47,7 @@ namespace BL.Logic.AdminCore
             var nlst = _languageDb.GetAdminLanguage(context);
             var nso = new StoreInfo
             {
-                LastUsage = DateTime.Now,
+                LastUsage = DateTime.UtcNow,
                 StoreObject = nlst
             };
             languageList.Add(key, nso);

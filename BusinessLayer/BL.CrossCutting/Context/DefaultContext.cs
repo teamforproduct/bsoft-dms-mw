@@ -187,6 +187,6 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public DateTime CreateDate { get; } = DateTime.Now;
+        public DateTime CreateDate { get; } = DateTime.UtcNow;
     }
 }

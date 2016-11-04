@@ -102,7 +102,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DictionarySubscriptionStates:Аgreement@l##", "Аgreement", "Согласование", "Узгодження");
             AddALV(list, "##l@DictionarySubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение", "Затвердження");
 
-            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied! Object: {0} Action: {1}", "Отказано в доступе! Объект: {0} Действие: {1}", "Відмовлено в доступі! Об'єкт: {0} Дія: {1}");
+            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied! Action: {0}", "Отказано в доступе! Действие: {0}", "Відмовлено в доступі! Дія: {0}");
             AddALV(list, "##l@DmsExceptions:CannotAccessToFile@l##", "Cannot access to user file!", "Файл пользователя не доступен!", "Файл користувача не доступний !");
             AddALV(list, "##l@DmsExceptions:CannotSaveFile@l##", "Error when save user file!", "Ошибка при сохранения файла пользователя!", "Помилка при збереження файлу користувача !");
             AddALV(list, "##l@DmsExceptions:ClientIsNotFound@l##", "Client not found", "Клиент не найден", "Клієнт не найден");

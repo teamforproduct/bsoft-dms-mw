@@ -27,8 +27,8 @@ namespace BL.CrossCutting.Helpers
         public static void Verify(LicenceInfo licence)
         {
             if (licence.IsDateLimit
-                && licence.FirstStart > DateTime.Now
-                && licence.FirstStart.AddDays(licence.DateLimit.GetValueOrDefault()) > DateTime.Now)
+                && licence.FirstStart > DateTime.UtcNow
+                && licence.FirstStart.AddDays(licence.DateLimit.GetValueOrDefault()) > DateTime.UtcNow)
             {
                 throw new LicenceExpired();
             }

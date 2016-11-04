@@ -198,7 +198,7 @@ namespace BL.Model.Exception
         private const string _MESSAGE = "##l@DmsExceptions:AccessIsDenied@l##";
         //TODO: DmsExceptions:передавать параметры
         public AccessIsDenied() : base(_MESSAGE) { }
-        public AccessIsDenied(string ObjectName, string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ObjectName, ActionName }; }
+        public AccessIsDenied(string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ActionName }; }
         public AccessIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 

@@ -21,20 +21,21 @@ namespace DMS_WebAPI.Infrastructure
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            var currentContext = HttpContext.Current;
-            currentContext.Response.Clear();
-            currentContext.Response.StatusCode = (int)HttpStatusCode.OK;
+            var httpContext = HttpContext.Current;
+            httpContext.Response.Clear();
+            httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
             //TODO Remove
-            if (currentContext.IsDebuggingEnabled)
+            if (httpContext.IsDebuggingEnabled)
             {
-                currentContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
-            currentContext.Response.ContentType = "application/json";
+            httpContext.Response.ContentType = "application/json";
+
             if (context.Exception is DmsExceptions)
             {
                 if (context.Exception is UserUnauthorized)
                 {
-                    currentContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 }
             }
             else
@@ -43,16 +44,19 @@ namespace DMS_WebAPI.Infrastructure
             }
 
             var exc = context.Exception;
-            var languageService = DmsResolver.Current.Get<ILanguages>();
+            
 
             string msgExp = string.Empty;
+
+            
+            
             //#if DEBUG
             //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
             while (exc != null)
             {
                 var m = exc.Message;
 
-                m = languageService.ReplaceLanguageLabel(DmsResolver.Current.Get<UserContext>().Get(), m);
+                m = GetTranslation(m);
 
                 if (exc is DmsExceptions)
                 {
@@ -69,7 +73,7 @@ namespace DMS_WebAPI.Infrastructure
             };
 
             // Если в результате подстановки параметров подставили лейблы, нужно их перевести
-            msgExp = languageService.ReplaceLanguageLabel(DmsResolver.Current.Get<UserContext>().Get(), msgExp);
+            msgExp = GetTranslation(msgExp);
 
             //#else
             //msgExp = exc.Message;
@@ -81,8 +85,11 @@ namespace DMS_WebAPI.Infrastructure
             //json = ReplaceLanguageLabel(currentContext, json);
 
 
-            currentContext.Response.Write(json);
-            currentContext.Response.End();
+            httpContext.Response.Write(json);
+            httpContext.Response.End();
+
+
+
             #region log to file
             try
             {
@@ -95,7 +102,7 @@ namespace DMS_WebAPI.Infrastructure
                 errorMessage += "ERROR!!!\r\n";
                 try
                 {
-                    HttpContext cnt = currentContext;
+                    HttpContext cnt = httpContext;
                     errorMessage += $"URL:{cnt.Request.Url.ToString()}\r\n";
                 }
                 catch
@@ -109,8 +116,8 @@ namespace DMS_WebAPI.Infrastructure
 
                 try
                 {
-                    currentContext.Request.InputStream.Position = 0;
-                    errorMessage += $"Request Body:{new System.IO.StreamReader(currentContext.Request.InputStream).ReadToEnd()}\r\n";
+                    httpContext.Request.InputStream.Position = 0;
+                    errorMessage += $"Request Body:{new System.IO.StreamReader(httpContext.Request.InputStream).ReadToEnd()}\r\n";
                 }
                 catch { }
 
@@ -118,7 +125,7 @@ namespace DMS_WebAPI.Infrastructure
                 try
                 {
                     System.IO.StreamWriter sw;
-                    string path = currentContext.Server.MapPath("~/SiteErrors.txt");
+                    string path = httpContext.Server.MapPath("~/SiteErrors.txt");
                     try
                     {
                         System.IO.FileInfo ff = new System.IO.FileInfo(path);
@@ -134,7 +141,7 @@ namespace DMS_WebAPI.Infrastructure
                     sw = System.IO.File.AppendText(path);
                     try
                     {
-                        string line = DateTime.Now.ToString("o") + "\r\n" + errorMessage;
+                        string line = DateTime.UtcNow.ToString("o") + "\r\n" + errorMessage;
                         sw.WriteLine(line);
                     }
                     catch
@@ -164,6 +171,23 @@ namespace DMS_WebAPI.Infrastructure
             catch
             { }
             return Message;
+        }
+
+        private string GetTranslation(string text)
+        {
+            var httpContext = HttpContext.Current;
+            IContext defContext = null;
+
+            try
+            {
+                defContext = DmsResolver.Current.Get<UserContext>().Get();
+            }
+            catch 
+            { }
+
+            var languageService = DmsResolver.Current.Get<ILanguages>();
+            if (defContext == null) return languageService.ReplaceLanguageLabel(httpContext, text);
+            else return languageService.ReplaceLanguageLabel(defContext, text);
         }
     }
 }

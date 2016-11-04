@@ -56,12 +56,12 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 .GroupBy(x => new { x.SourcePositionId, x.TargetPositionId, x.TargetAgentId })
                 .Select(x => new InternalDocumentPaperList
                 {
-                    Date = DateTime.Now,
+                    Date = DateTime.UtcNow,
                     Description = Model.Description,
                     Events = x.Select(y => new InternalDocumentEvent
                     {
                         Id = y.Id,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = _context.CurrentAgentId,
                     }).ToList()
                 }).ToList();

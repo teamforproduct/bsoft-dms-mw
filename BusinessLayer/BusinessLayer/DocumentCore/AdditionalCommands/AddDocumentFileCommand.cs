@@ -117,7 +117,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             var att = new InternalDocumentAttachedFile
             {
                 DocumentId = Model.DocumentId,
-                Date = DateTime.Now,
+                Date = DateTime.UtcNow,
                 PostedFileData = Model.PostedFileData,
                 Type = Model.Type,
                 IsMainVersion = Model.Type == EnumFileTypes.Additional || (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId == _context.CurrentPositionId) || _context.IsAdmin,

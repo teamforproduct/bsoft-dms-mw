@@ -485,7 +485,7 @@ namespace BL.Database.Documents
                         InternalSign = docHash.InternalSign,
                         CertificateSign = docHash.CertificateSign,
                         CertificateId = subscription.CertificateId,
-                        CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.Now : (DateTime?)null,
+                        CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
                         CertificatePositionId = subscription.CertificatePositionId,
                         CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
 
@@ -552,7 +552,7 @@ namespace BL.Database.Documents
                     subscriptionDb.InternalSign = docHash.InternalSign;
                     subscriptionDb.CertificateSign = docHash.CertificateSign;
                     subscriptionDb.CertificateId = subscription.CertificateId;
-                    subscriptionDb.CertificateSignCreateDate = DateTime.Now;
+                    subscriptionDb.CertificateSignCreateDate = DateTime.UtcNow;
                     subscriptionDb.CertificatePositionId = subscription.CertificatePositionId;
                     subscriptionDb.CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId;
 
@@ -1753,7 +1753,7 @@ namespace BL.Database.Documents
                      IsInitial = model.IsInitial,
                      AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO),
                      LastChangeUserId = context.CurrentAgentId,
-                     LastChangeDate = DateTime.Now,
+                     LastChangeDate = DateTime.UtcNow,
                  }).ToList();
 
                 return items;

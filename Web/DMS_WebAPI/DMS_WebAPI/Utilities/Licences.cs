@@ -107,7 +107,7 @@ namespace DMS_WebAPI.Utilities
                 docProc.GetCountDocuments(ctx, licence);
             }
 
-            if (licence.CountDocument > _TrialMaxCountDocuments || (licence.DateFirstDocument ?? DateTime.Now).AddDays(_TrialDurationInDays) < DateTime.Now)
+            if (licence.CountDocument > _TrialMaxCountDocuments || (licence.DateFirstDocument ?? DateTime.UtcNow).AddDays(_TrialDurationInDays) < DateTime.UtcNow)
             {
                 throw new LicenceError();
             }
@@ -115,8 +115,8 @@ namespace DMS_WebAPI.Utilities
         private object VerifyLicenceInfo(LicenceInfo licence, bool isThrowException)
         {
             if (licence.IsDateLimit
-                && licence.FirstStart > DateTime.Now
-                && licence.FirstStart.AddDays(licence.DateLimit.GetValueOrDefault()) > DateTime.Now)
+                && licence.FirstStart > DateTime.UtcNow
+                && licence.FirstStart.AddDays(licence.DateLimit.GetValueOrDefault()) > DateTime.UtcNow)
             {
                 if (isThrowException)
                 {

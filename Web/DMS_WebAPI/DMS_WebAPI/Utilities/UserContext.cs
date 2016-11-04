@@ -73,7 +73,7 @@ namespace DMS_WebAPI.Utilities
 
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
-                contextValue.LastUsage = DateTime.Now;
+                contextValue.LastUsage = DateTime.UtcNow;
 
                 var request_ctx = new DefaultContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
@@ -120,7 +120,7 @@ namespace DMS_WebAPI.Utilities
 
             var contextValue = _casheContexts[token];
 
-            contextValue.LastUsage = DateTime.Now;
+            contextValue.LastUsage = DateTime.UtcNow;
             var context = (IContext)contextValue.StoreObject;
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
@@ -182,7 +182,7 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, clientId, new List<DatabaseModel> { db });
 
-            contextValue.LastUsage = DateTime.Now;
+            contextValue.LastUsage = DateTime.UtcNow;
 
             context.CurrentClientId = clientId;
 
@@ -230,18 +230,18 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
 
-            contextValue.LastUsage = DateTime.Now;
+            contextValue.LastUsage = DateTime.UtcNow;
 
             context.CurrentClientId = client.Id;
         }
 
         private void Save(IContext val)
         {
-            _casheContexts.Add(Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
+            _casheContexts.Add(Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
         private void Save(string token, IContext val)
         {
-            _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.Now });
+            _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
 
         public void VerifyLicence(int clientId, IEnumerable<DatabaseModel> dbs)
@@ -290,7 +290,7 @@ namespace DMS_WebAPI.Utilities
 
         public void RemoveByTimeout()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var keys = _casheContexts.Where(x => x.Value.LastUsage.AddDays(_TIME_OUT) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {

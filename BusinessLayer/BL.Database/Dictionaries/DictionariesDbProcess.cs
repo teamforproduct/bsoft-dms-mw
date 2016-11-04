@@ -69,7 +69,7 @@ namespace BL.Database.Dictionaries
         //            IsEmployee = (role == EnumDictionaryAgentTypes.isEmployee ? !agent.IsEmployee : agent.IsEmployee),
         //            IsIndividual = (role == EnumDictionaryAgentTypes.isIndividual ? !agent.IsIndividual : agent.IsIndividual),
         //            Description = agent.Description,
-        //            LastChangeDate = DateTime.Now,
+        //            LastChangeDate = DateTime.UtcNow,
         //            LastChangeUserId = context.CurrentAgentId,
         //            IsActive = agent.IsActive
         //        };
@@ -4149,6 +4149,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context))
             {
+                var now = DateTime.UtcNow;
+
                 return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Where(x => x.Id == id)
                     .Select(x => new FrontDictionaryPosition
                     {
@@ -4168,8 +4170,8 @@ namespace BL.Database.Dictionaries
                         DepartmentName = x.Department.Name,
                         Order = x.Order,
                         PositionExecutors = x.PositionExecutors.
-                            Where(y => DateTime.Now > y.StartDate).
-                            Where(y => DateTime.Now < y.EndDate).
+                            Where(y => now > y.StartDate).
+                            Where(y => now < y.EndDate).
                             Where(y => y.IsActive == true).
                             OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Agent.Name).
                             Select(y => new FrontDictionaryPositionExecutor
@@ -4683,7 +4685,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.MaxValue;
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
@@ -4713,7 +4715,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.MaxValue;
 
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
@@ -5956,7 +5958,7 @@ namespace BL.Database.Dictionaries
                     savTag.Color = model.Color;
                     savTag.IsActive = model.IsActive;
                     savTag.LastChangeUserId = ctx.CurrentAgentId;
-                    savTag.LastChangeDate = DateTime.Now;
+                    savTag.LastChangeDate = DateTime.UtcNow;
                     dbContext.SaveChanges();
                 }
                 else

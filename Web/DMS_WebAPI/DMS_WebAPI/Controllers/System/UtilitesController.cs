@@ -50,6 +50,19 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(HttpContext.Current.Request, this);
         }
 
+        /// <summary>
+        /// Возвращает дату в том виде, в котором она пришла в контроллер
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetDate")]
+        public IHttpActionResult GetDate(DateTime date)
+        {
+            return new JsonResult(new { Date = date , DateToString = date.ToString(), DateToLocalTime = date.ToLocalTime() ,
+                DateNow = DateTime.Now,
+                DateNowUTC = DateTime.UtcNow
+            }, this);
+        }
 
         [HttpPost]
         [Route("SetUsers")]

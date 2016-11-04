@@ -42,7 +42,7 @@ namespace BL.Logic.EncryptionCore.Certificate
             var item = new InternalEncryptionCertificate
             {
                 Name = Model.Name,
-                CreateDate = DateTime.Now,
+                CreateDate = DateTime.UtcNow,
                 NotBefore = Model.NotBefore,
                 NotAfter = Model.NotAfter,
                 AgentId = !_context.IsAdmin ? _context.CurrentAgentId : Model.AgentId ?? _context.CurrentAgentId,

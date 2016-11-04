@@ -165,7 +165,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var dateNow = DateTime.Now;
+                var dateNow = DateTime.UtcNow;
                 var qry = dbContext.DictionaryPositionExecutorsSet
                     .Where(x => dateNow >= x.StartDate && dateNow <= x.EndDate && x.AgentId == context.CurrentAgentId);
                 var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
@@ -1024,8 +1024,6 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
-
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
                 qry = GetWhereUserRole(ref qry, filter);
@@ -1036,8 +1034,6 @@ namespace BL.Database.Admins
                     RoleId = x.Id,
                     RolePositionId = x.PositionExecutor.PositionId,
                     UserId = x.UserId,
-                    //StartDate = x.PositionExecutor.StartDate,
-                    //EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
                 }).ToList();
 
             }
@@ -1187,13 +1183,13 @@ namespace BL.Database.Admins
             if (filter.StartDate.HasValue)
             {
                 // PSS ссылка может отсутствовать
-                qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.Now));
+                qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.UtcNow));
             }
 
             if (filter.EndDate.HasValue)
             {
                 // PSS ссылка может отсутствовать
-                qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.Now));
+                qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.UtcNow));
             }
 
             return qry;

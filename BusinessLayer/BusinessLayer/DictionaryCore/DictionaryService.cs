@@ -997,7 +997,7 @@ namespace BL.Logic.DictionaryCore
                     Name = string.Concat("Компания №", string.Format("{0:00}", c)),
                     FullName = string.Concat("Компания номер ", string.Format("{0:00}", c)),
                     IsActive = true,
-                    LastChangeDate = DateTime.Now,
+                    LastChangeDate = DateTime.UtcNow,
                     LastChangeUserId = context.CurrentAgentId
                 });
 
@@ -1015,7 +1015,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         CompanyId = compID,
                         ParentId = depParId,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1028,7 +1028,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 1,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1039,7 +1039,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 2,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1050,7 +1050,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 3,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1061,7 +1061,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 4,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1072,7 +1072,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 5,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1093,8 +1093,8 @@ namespace BL.Logic.DictionaryCore
             {
                 executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
                 {
-                    StartDate = DateTime.Now.StartOfDay(),
-                    EndDate = DateTime.Now.EndOfDay(),
+                    StartDate = DateTime.UtcNow.StartOfDay(),
+                    EndDate = DateTime.UtcNow.EndOfDay(),
                     IsActive = filter.IsActive
                 });
             }

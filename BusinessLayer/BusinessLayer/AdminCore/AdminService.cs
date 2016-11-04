@@ -60,11 +60,11 @@ namespace BL.Logic.AdminCore
             if (accList.ContainsKey(key))
             {
                 var so = accList[key];
-                if ((DateTime.Now - so.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
+                if ((DateTime.UtcNow - so.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
                 {
                     var lst = _adminDb.GetAdminAccesses(context);
                     so.StoreObject = lst;
-                    so.LastUsage = DateTime.Now;
+                    so.LastUsage = DateTime.UtcNow;
                     return lst;
                 }
                 return so.StoreObject as AdminAccessInfo;
@@ -72,7 +72,7 @@ namespace BL.Logic.AdminCore
             var nlst = _adminDb.GetAdminAccesses(context);
             var nso = new StoreInfo
             {
-                LastUsage = DateTime.Now,
+                LastUsage = DateTime.UtcNow,
                 StoreObject = nlst
             };
             accList.Add(key, nso);
@@ -154,7 +154,7 @@ namespace BL.Logic.AdminCore
                     actionName = a.Description;
                 }
 
-                throw new AccessIsDenied("Obj", actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                throw new AccessIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
             }
             return res;
 

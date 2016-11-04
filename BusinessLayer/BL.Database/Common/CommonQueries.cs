@@ -1230,11 +1230,11 @@ namespace BL.Database.Common
                 {
                     if (filter.IsOverDue.Value)
                     {
-                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date :DateTime.Now));
+                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date :DateTime.UtcNow));
                     }
                     else
                     {
-                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.Now)));
+                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow)));
                     }
                 }
                 
@@ -1480,7 +1480,7 @@ namespace BL.Database.Common
                     var qryGroupsCounter = qrys.Select(qry => qry.GroupBy(y => new
                     {
                         IsClosed = y.OffEventId.HasValue,
-                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.Now,
+                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
                         SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
                         TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
@@ -2935,7 +2935,7 @@ namespace BL.Database.Common
                             Id = subscription.Id,
                             SubscriptionStateId = (int)subscription.SubscriptionStates,
                             LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                            LastChangeDate = DateTime.Now
+                            LastChangeDate = DateTime.UtcNow
                         };
                         dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
                         var entry = dbContext.Entry(subscriptionDb);
@@ -2952,7 +2952,7 @@ namespace BL.Database.Common
                             sendList.StartEventId = null;
                             sendList.CloseEventId = null;
                             sendList.LastChangeUserId = ctx.CurrentAgentId;
-                            sendList.LastChangeDate = DateTime.Now;
+                            sendList.LastChangeDate = DateTime.UtcNow;
                         }
 
                         dbContext.SaveChanges();
@@ -3235,7 +3235,7 @@ namespace BL.Database.Common
             var att = new InternalDocumentAttachedFile
             {
                 DocumentId = doc.Id,
-                Date = DateTime.Now,
+                Date = DateTime.UtcNow,
                 PostedFileData = null,
                 FileData = pdf.FileContent,
                 Type = EnumFileTypes.SubscribePdf,
@@ -3457,7 +3457,7 @@ namespace BL.Database.Common
 
                 if (filter.IsActive.HasValue)
                 {
-                    var now = DateTime.Now;
+                    var now = DateTime.UtcNow;
                     if (filter.IsActive.Value)
                     {
                         qry = qry.Where(x => (!x.NotBefore.HasValue || x.NotBefore < now) && (!x.NotAfter.HasValue || x.NotAfter > now));

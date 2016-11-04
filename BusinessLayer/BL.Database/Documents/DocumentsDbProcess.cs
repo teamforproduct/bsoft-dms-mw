@@ -274,7 +274,7 @@ namespace BL.Database.Documents
                         .Concat(doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue && x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
                             x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)))
                             .GroupBy(x => x.DocumentId)
-                            .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) })
+                            .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow) })
                             .FirstOrDefault(),
 
                     NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
