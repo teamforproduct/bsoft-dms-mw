@@ -5,6 +5,7 @@ using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Database;
+using BL.Model.Enums;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
@@ -118,6 +119,14 @@ namespace DMS_WebAPI.Utilities
         public string ReplaceLanguageLabel(int languageId, string text)
         {
             string errorMessage = text;
+
+            if (languageId < 1)
+            {
+                // запрашиваю из кэша переводы
+                var languageInfo = GetLanguageInfo();
+                var language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
+                if (language != null) languageId = language.Id;
+            }
 
             try
             {

@@ -20,10 +20,14 @@ namespace DMS_WebAPI.Models
         {
             var items = new List<AdminLanguages>();
 
-            items.Add(new AdminLanguages { Id = (int)EnumLanguages.ru, Code = EnumLanguages.ru.ToString(), Name = "Русский", IsDefault = (int)EnumLanguages.ru == (int)EnumSystemLanguageId.LanguageId });
-            items.Add(new AdminLanguages { Id = (int)EnumLanguages.en, Code = EnumLanguages.en.ToString(), Name = "English", IsDefault = (int)EnumLanguages.en == (int)EnumSystemLanguageId.LanguageId });
-            items.Add(new AdminLanguages { Id = (int)EnumLanguages.ua, Code = EnumLanguages.ua.ToString(), Name = "Українська", IsDefault = (int)EnumLanguages.ua == (int)EnumSystemLanguageId.LanguageId });
-
+            items.Add(new AdminLanguages { Id = 570, Code = "ru", Name = "Русский", IsDefault = true});
+            items.Add(new AdminLanguages { Id = 045, Code = "en", Name = "English", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 720, Code = "uk", Name = "Українська", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 790, Code = "cs", Name = "Čeština", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 481, Code = "de", Name = "Deutsch", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 745, Code = "fr", Name = "Français", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 740, Code = "pl", Name = "Polszczyzna", IsDefault = false });
+            
             return items;
         }
 
@@ -32,21 +36,21 @@ namespace DMS_WebAPI.Models
             list.Add(new AdminLanguageValues()
             {
                 Id = ++IdSequence,
-                LanguageId = (int)EnumLanguages.ru,
+                LanguageId = 570,
                 Label = label,
                 Value = RusLang
             });
             list.Add(new AdminLanguageValues()
             {
                 Id = ++IdSequence,
-                LanguageId = (int)EnumLanguages.en,
+                LanguageId = 045,
                 Label = label,
                 Value = EngLang
             });
             list.Add(new AdminLanguageValues()
             {
                 Id = ++IdSequence,
-                LanguageId = (int)EnumLanguages.ua,
+                LanguageId = 720,
                 Label = label,
                 Value = UaLang
             });

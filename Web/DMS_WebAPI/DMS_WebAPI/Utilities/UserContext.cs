@@ -188,7 +188,7 @@ namespace DMS_WebAPI.Utilities
 
             context.CurrentDB = db;
 
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetUserForLogin(context, context.CurrentEmployee.UserId);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetUserForContext(context, context.CurrentEmployee.UserId);
 
             if (agentUser != null)
             {

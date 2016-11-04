@@ -204,7 +204,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public Employee GetUserForLogin(IContext ctx, string userId)
+        public Employee GetUserForContext(IContext ctx, string userId)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -215,7 +215,7 @@ namespace BL.Database.Admins
                     {
                         AgentId = x.Id,
                         Name = x.Agent.Name,
-                        LanguageId = x.Agent.AgentUser.LanguageId ?? (int)EnumSystemLanguageId.LanguageId,
+                        LanguageId = x.Agent.AgentUser.LanguageId ?? -1,
                         IsActive = x.IsActive
                     }).FirstOrDefault();
                 transaction.Complete();

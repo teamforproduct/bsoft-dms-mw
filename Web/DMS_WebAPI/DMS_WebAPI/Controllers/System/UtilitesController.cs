@@ -20,9 +20,11 @@ using BL.Logic.DependencyInjection;
 using DMS_WebAPI.Utilities;
 using System.Reflection;
 using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.SystemCore.IncomingModel;
 
 namespace DMS_WebAPI.Controllers
 {
+    [Authorize]
     [RoutePrefix("api/v2/Utilities")]
     public class UtilitiesController : ApiController
     {
@@ -56,9 +58,29 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetDate")]
-        public IHttpActionResult GetDate(DateTime date)
+        public IHttpActionResult GetDate([FromUri]ModifyDate item)
         {
-            return new JsonResult(new { Date = date , DateToString = date.ToString(), DateToLocalTime = date.ToLocalTime() ,
+            return new JsonResult(new
+            {
+                Item = item,
+                Date = item.Date,
+                DateToString = item.Date.ToString(),
+                DateToLocalTime = item.Date.ToLocalTime(),
+                DateNow = DateTime.Now,
+                DateNowUTC = DateTime.UtcNow
+            }, this);
+        }
+
+        [HttpPost]
+        [Route("SetDate")]
+        public IHttpActionResult SetDate([FromBody]ModifyDate item)
+        {
+            return new JsonResult(new
+            {
+                Item = item,
+                Date = item.Date,
+                DateToString = item.Date.ToString(),
+                DateToLocalTime = item.Date.ToLocalTime(),
                 DateNow = DateTime.Now,
                 DateNowUTC = DateTime.UtcNow
             }, this);

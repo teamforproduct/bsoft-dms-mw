@@ -377,9 +377,7 @@
     <Compile Include="Enums\EnumSort.cs" />
     <Compile Include="Enums\EnumCopyMode.cs" />
     <Compile Include="Enums\EnumPositionExecutionTypes.cs" />
-    <Compile Include="Enums\EnumLanguages.cs" />
     <Compile Include="Enums\EnumSystemPositions.cs" />
-    <Compile Include="Enums\EnumSystemLanguageId.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
     <Compile Include="Enums\EnumPropertyActions.cs" />
@@ -451,6 +449,7 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemLog.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemValueType.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemSetting.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifyDate.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifySystemSetting.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
