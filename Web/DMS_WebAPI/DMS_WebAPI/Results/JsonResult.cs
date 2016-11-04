@@ -86,7 +86,7 @@ namespace DMS_WebAPI.Results
 
             var languageService = DmsResolver.Current.Get<Languages>();
 
-            json = languageService.ReplaceLanguageLabel(DmsResolver.Current.Get<UserContext>().Get(), json);
+            json = languageService.ReplaceLanguageLabel(DmsResolver.Current.Get<UserContexts>().Get(), json);
 
             HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(json, Encoding.UTF8, "application/json");

@@ -35,7 +35,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutor filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositionExecutors(cxt, filter);
             return new JsonResult(tmpItems, this);
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryPositionExecutor(cxt, id);
             return new JsonResult(tmpItem, this);
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrent([FromUri] FilterDictionaryPositionExecutor filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetCurrentPositionExecutors(cxt,  filter);
             return new JsonResult(tmpItems, this);
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrentByAgent([FromUri] int agentId, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetCurrentPositionExecutorsByAgent(cxt, agentId, filter);
             return new JsonResult(tmpItems, this);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryPositionExecutors</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryPositionExecutor model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, cxt, model);
             return Get( new FilterDictionaryPositionExecutor() { IDs = new List<int> { tmpItem } });
@@ -112,7 +112,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPositionExecutor
 
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, cxt, model);
             return Get(new FilterDictionaryPositionExecutor() { IDs = new List<int> { model.Id } });
@@ -124,7 +124,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryPositionExecutors</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, cxt, id);

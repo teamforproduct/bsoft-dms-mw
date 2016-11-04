@@ -34,7 +34,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(List<FrontAdminSubordination>))]
         public IHttpActionResult Get([FromUri] FilterAdminSubordination filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAdminSubordinations(ctx, filter);
             return new JsonResult(tmpItems, this);
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
             stopWatch.Stop();
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.GetAdminSubordinations(ctx, new FilterAdminSubordination() { IDs = new List<int> { id } });
             stopWatch.Stop();
@@ -85,7 +85,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, positionId, filter);
             stopWatch.Stop();
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DuplicateSubordinations, cxt, model);
             stopWatch.Stop();
@@ -122,7 +122,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordinationByDepartment, cxt, model);
             stopWatch.Stop();
@@ -141,7 +141,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordinationByCompany, cxt, model);
             stopWatch.Stop();
@@ -160,7 +160,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, cxt, model);
             stopWatch.Stop();
@@ -179,7 +179,7 @@ namespace DMS_WebAPI.Controllers.Admins
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetAllSubordination, cxt, model);
             stopWatch.Stop();
@@ -195,7 +195,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("IsSendAllForExecution")] //IsSetDefaultsForExecution
         public IHttpActionResult IsSendAllForExecution()
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
             var tmpItems = tmpService.GetSubordinationsSendAllForExecution(cxt);//, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION });
             return new JsonResult(tmpItems, this);
@@ -210,7 +210,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("IsSendAllForInforming")]
         public IHttpActionResult IsSendAllForInforming()
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
             var tmpItems = tmpService.GetSubordinationsSendAllForInforming(cxt);
             return new JsonResult(tmpItems, this);

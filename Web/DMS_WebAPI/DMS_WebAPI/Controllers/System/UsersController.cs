@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetUserInfo()
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var dicProc = DmsResolver.Current.Get<IDictionaryService>();
 
             var agent = dicProc.GetDictionaryAgent(context, context.CurrentAgentId);
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public IHttpActionResult AvailablePositions()
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var admProc = DmsResolver.Current.Get<IAdminService>();
             return new JsonResult(admProc.GetPositionsByCurrentUser(context), this);
         }
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public IHttpActionResult ChoosenPositions()
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             return new JsonResult(context.CurrentPositionsIdList, this);
         }
 
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.Controllers
         [Route("ChoosenPositions")]
         public IHttpActionResult Post([FromBody]List<int> positionsIdList)
         {
-            var user_context = DmsResolver.Current.Get<UserContext>();
+            var user_context = DmsResolver.Current.Get<UserContexts>();
             var context = user_context.Get();
             var admProc = DmsResolver.Current.Get<IAdminService>();
             admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetServers()
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
 
             var dbProc = new WebAPIDbProcess();
 
@@ -107,12 +107,13 @@ namespace DMS_WebAPI.Controllers
         [HttpPost]
         public IHttpActionResult SetServers([FromBody]SetUserServer model)
         {
-            var mngContext = DmsResolver.Current.Get<UserContext>();
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
 
 
 
             var dbProc = new WebAPIDbProcess();
 
+            // Получаю первый попавшийся сервер, в который сконфигурен пользователь
             var db = dbProc.GetServerByUser(User.Identity.GetUserId(), model);
             if (db == null)
             {
@@ -139,7 +140,7 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetClients()
         {
-            var context = DmsResolver.Current.Get<UserContext>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
 
             var dbProc = new WebAPIDbProcess();
 
@@ -157,7 +158,7 @@ namespace DMS_WebAPI.Controllers
         [HttpPost]
         public IHttpActionResult SetClients([FromBody]int clientId)
         {
-            var mngContext = DmsResolver.Current.Get<UserContext>();
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
 
             var ctx = mngContext.Get();
 

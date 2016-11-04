@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Запись плана работы над документом</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetSendList(ctx, id), this);
         }
@@ -34,7 +34,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult GetByDocument(int documentId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetSendLists(ctx, documentId), this);
         }
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись плана работы над документом</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
             return Get(newId);
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененные записи плана работы над документом</returns>
         public IHttpActionResult Put([FromBody]ModifyDocumentSendListByStandartSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentSendList, ctx, model);
             return GetByDocument(model.DocumentId);
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSendList model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentSendList, ctx, model);
             return Get(id);
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentSendList, ctx, id);
             return GetByDocument(docId);
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult LaunchItem(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var aplan = DmsResolver.Current.Get<IAutoPlanService>();
             aplan.ManualRunAutoPlan(ctx, id, null);
             return Get(id);
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult Actions(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             var actions = cmdService.GetDocumentSendListActions(ctx, id);
 

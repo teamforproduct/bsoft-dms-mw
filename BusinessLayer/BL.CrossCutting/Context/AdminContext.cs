@@ -40,7 +40,7 @@ namespace BL.CrossCutting.Context
 
         public AdminContext(IContext ctx)
         {
-            var def = ctx as DefaultContext;
+            var def = ctx as UserContext;
             if (def != null)
             {
                 CurrentDB = new DatabaseModel

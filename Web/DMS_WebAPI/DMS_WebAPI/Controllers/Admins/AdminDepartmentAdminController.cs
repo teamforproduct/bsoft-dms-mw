@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(List<FrontDictionaryAgentEmployee>))]
         public IHttpActionResult Get(int DepartmentId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.GetDepartmentAdmins(ctx, DepartmentId);
             return new JsonResult(tmpItem, this);
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminUserRole</returns>
         public IHttpActionResult Post([FromBody]ModifyAdminDepartmentAdmin model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddDepartmentAdmin, cxt, model);
             return Get((int)tmpItem);
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminUserRole</returns> 
         public IHttpActionResult Delete([FromUri]ModifyAdminDepartmentAdmin model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
             tmpService.ExecuteAction(EnumAdminActions.DeleteDepartmentAdmin, cxt, model);

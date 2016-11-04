@@ -2512,5 +2512,40 @@ namespace BL.Database.SystemDb
         }
 
         #endregion
+
+        public int AddSystemDate(IContext ctx, DateTime date)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var item = new SystemDate
+                {
+                    Date = date,
+                };
+                dbContext.SystemDateSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
+
+                dbContext.SaveChanges();
+                return item.Id;
+            }
+        }
+
+        public DateTime GetSystemDate(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.SystemDateSet.ToList();
+
+                var res = DateTime.Now.AddYears(-50);
+
+                if (qry?.Count>0)
+                    res = qry.LastOrDefault().Date;
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
     }
 }

@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Encryption
                 paging = new UIPaging();
             }
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
             var items = encryptionProc.GetCertificates(ctx, filter, paging);
 
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Encryption
         /// <returns></returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
             var res = encryptionProc.GetCertificate(ctx, id);
 
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.Controllers.Encryption
         /// <returns></returns>
         public IHttpActionResult Post([FromUri]AddEncryptionCertificate model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Encryption
         public IHttpActionResult Put(int id, ModifyEncryptionCertificate model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
 
             var itemId = (int)encryptionProc.ExecuteAction(EnumEncryptionActions.ModifyEncryptionCertificate, ctx, model);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.Controllers.Encryption
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
             encryptionProc.ExecuteAction(EnumEncryptionActions.DeleteEncryptionCertificate, ctx, id);
             return new JsonResult(null, this);

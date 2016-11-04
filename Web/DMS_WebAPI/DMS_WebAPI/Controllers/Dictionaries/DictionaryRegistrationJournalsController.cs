@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryRegistrationJournals
         public IHttpActionResult Get([FromUri] FilterDictionaryRegistrationJournal filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryRegistrationJournals(ctx, filter);
             return new JsonResult(tmpDicts, this);
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryRegistrationJournals/5
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryRegistrationJournal(ctx, id);
             return new JsonResult(tmpDict, this);
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>FrontDictionaryRegistrationJournals</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryRegistrationJournal model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, ctx, model));
         }
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryRegistrationJournal
 
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyRegistrationJournal, ctx, model);
             return Get(model.Id);
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>FrontDictionaryRegistrationJournal</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteRegistrationJournal, ctx, id);

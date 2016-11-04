@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //var timeM = new System.Diagnostics.Stopwatch();
             //var timeDB = new System.Diagnostics.Stopwatch();
             //timeM.Start();
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             //timeDB.Start();
             var docs = docProc.GetDocuments(ctx, filter, paging);
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Controllers.Documents
             if (model.Filter == null) model.Filter = new FilterBase();
             if (model.Paging == null) model.Paging = new UIPaging();
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docs = docProc.GetDocuments(ctx, model.Filter, model.Paging);
             var res = new JsonResult(docs, this);
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.Controllers.Documents
             //var timeDB1 = new System.Diagnostics.Stopwatch();
             //var timeDB2 = new System.Diagnostics.Stopwatch();
             //timeM.Start();
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             //timeDB.Start();
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
@@ -137,7 +137,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             timeDB.Start();
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var timeDB = new System.Diagnostics.Stopwatch();
             timeM.Start();
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             timeDB.Start();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocument, ctx, id);

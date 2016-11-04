@@ -5,12 +5,16 @@ using BL.CrossCutting.DependencyInjection;
 
 namespace DMS_WebAPI.Utilities
 {
-    public class UserContextWorkerService
+    /// <summary>
+    /// Очищает устаревшие пользовательские контексты из коллекции UserContexts методом RemoveByTimeout
+    /// Пользовательский контекст удаляется если не используется 1 минуту
+    /// </summary>
+    public class UserContextsWorkerService
     {
         private Task _initializeThread;
         private Timer _timer;
         private int _USER_CONTEXT_TIMEOUT_MIN = 1;
-        public UserContextWorkerService()
+        public UserContextsWorkerService()
         {
         }
         public void Initialize()
@@ -42,7 +46,7 @@ namespace DMS_WebAPI.Utilities
        {
             try
             {
-                DmsResolver.Current.Get<UserContext>().RemoveByTimeout();
+                DmsResolver.Current.Get<UserContexts>().RemoveByTimeout();
             }
             catch (Exception ex)
             {

@@ -180,7 +180,7 @@ namespace DMS_WebAPI.Infrastructure
 
             try
             {
-                defContext = DmsResolver.Current.Get<UserContext>().Get();
+                defContext = DmsResolver.Current.Get<UserContexts>().Get();
             }
             catch 
             { }

@@ -23,6 +23,7 @@ namespace DMS_WebAPI.Models
             items.Add(new AdminLanguages { Id = 570, Code = "ru", Name = "Русский", IsDefault = true});
             items.Add(new AdminLanguages { Id = 045, Code = "en", Name = "English", IsDefault = false });
             items.Add(new AdminLanguages { Id = 720, Code = "uk", Name = "Українська", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 090, Code = "be", Name = "Беларуский", IsDefault = false });
             items.Add(new AdminLanguages { Id = 790, Code = "cs", Name = "Čeština", IsDefault = false });
             items.Add(new AdminLanguages { Id = 481, Code = "de", Name = "Deutsch", IsDefault = false });
             items.Add(new AdminLanguages { Id = 745, Code = "fr", Name = "Français", IsDefault = false });
@@ -75,7 +76,8 @@ namespace DMS_WebAPI.Models
 
             AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован", "Користувач не авторизований");
             AddALV(list, "##l@DmsExceptions:UserAccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
-            AddALV(list, "##l@DmsExceptions:UserIsDeactivated@l##", "User \"{0}\" is deactivated", "Пользователь \"{0}\" деактивирован", "Користувач \"{0}\" деактивовано");
+            AddALV(list, "##l@DmsExceptions:UserIsDeactivated@l##", "Employee \"{0}\" is deactivated", "Пользователь \"{0}\" деактивирован", "Користувач \"{0}\" деактивовано");
+            AddALV(list, "##l@DmsExceptions:UserNotExecuteAnyPosition@l##", "Employee \"{0}\" does not execute any position", "Сотрудник \"{0}\" не занимает ни одной должности", "Співробітник \"{0}\" не займає жодної посади");
 
             AddALV(list, "##l@System@l##", "System", "Система", "Система");
             AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");

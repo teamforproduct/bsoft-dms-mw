@@ -4685,7 +4685,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.MaxValue;
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
@@ -4715,7 +4715,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.MaxValue;
+                DateTime? maxDateTime = DateTime.Now.AddYears(50); 
 
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
@@ -4744,6 +4744,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
                     Id = x.Id,
@@ -4754,7 +4756,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId =x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate == DateTime.MaxValue ? (DateTime?)null : x.EndDate,
+                    EndDate = x.EndDate == maxDateTime ? (DateTime?)null : x.EndDate,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
                 }).ToList();

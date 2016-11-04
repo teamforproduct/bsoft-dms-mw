@@ -88,7 +88,7 @@
     <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Interfaces\ISystemCommand.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
-    <Compile Include="Context\DefaultContext.cs" />
+    <Compile Include="Context\UserContext.cs" />
     <Compile Include="DependencyInjection\CrossCuttingModule.cs" />
     <Compile Include="DependencyInjection\IResolver.cs" />
     <Compile Include="DependencyInjection\NinjectResolver.cs" />

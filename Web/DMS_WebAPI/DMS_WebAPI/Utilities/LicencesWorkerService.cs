@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var webProc = new WebAPIDbProcess();
 
-                var userContext = DmsResolver.Current.Get<UserContext>();
+                var userContext = DmsResolver.Current.Get<UserContexts>();
 
                 var clients = webProc.GetClients(null);
 
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Utilities
                     userContext.VerifyLicence(client.Id, dbs);
                 }
 
-                DmsResolver.Current.Get<UserContext>().RemoveByTimeout();
+                DmsResolver.Current.Get<UserContexts>().RemoveByTimeout();
             }
             catch (Exception ex)
             {

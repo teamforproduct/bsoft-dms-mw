@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Encryption
         [HttpPost]
         public IHttpActionResult VerifyPdf()
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
 
             var res = false;

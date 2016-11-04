@@ -209,6 +209,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                var now = DateTime.UtcNow;
+
                 // для авторизации 
                 var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
@@ -216,7 +218,8 @@ namespace BL.Database.Admins
                         AgentId = x.Id,
                         Name = x.Agent.Name,
                         LanguageId = x.Agent.AgentUser.LanguageId ?? -1,
-                        IsActive = x.IsActive
+                        IsActive = x.IsActive & x.Agent.AgentEmployee.IsActive,
+                        PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(),
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;

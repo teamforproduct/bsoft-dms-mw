@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers
         // GET: api/SystemFormats
         public IHttpActionResult Get([FromUri] FilterSystemSetting filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             var tmpItem = tmpService.GetSystemSettings(ctx, filter);
             return new JsonResult(tmpItem, this);
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers
         [ResponseType(typeof(FrontSystemSetting))]
         public IHttpActionResult Post([FromBody]ModifySystemSetting model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             var tmpItem = tmpService.ExecuteAction(EnumSystemActions.SetSetting, cxt, model);
             return Get(new FilterSystemSetting() { Key = (string)tmpItem });

@@ -9,7 +9,7 @@ using System;
 
 namespace BL.CrossCutting.Context
 {
-    public class DefaultContext : IContext
+    public class UserContext : IContext
     {
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
@@ -18,13 +18,13 @@ namespace BL.CrossCutting.Context
         private DatabaseModel _currentDb;
         public Employee CurrentEmployee { get; set; }
 
-        public DefaultContext()
+        public UserContext()
         {
         }
 
-        public DefaultContext(IContext ctx)
+        public UserContext(IContext ctx)
         {
-            var def = ctx as DefaultContext;
+            var def = ctx as UserContext;
             if (def != null)
             {
                 try

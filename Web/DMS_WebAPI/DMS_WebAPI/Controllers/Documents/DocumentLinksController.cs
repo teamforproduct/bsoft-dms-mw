@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Cписок id связоных документов</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             return new JsonResult(docProc.GetLinkedDocumentIds(ctx, id), this);
         }

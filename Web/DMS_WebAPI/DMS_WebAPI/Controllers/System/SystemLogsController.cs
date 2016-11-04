@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers
         // GET: api/SystemFormats
         public IHttpActionResult Get([FromUri] FilterSystemLog filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpSysProc = DmsResolver.Current.Get<ILogger>();
             var tmpDicts = tmpSysProc.GetSystemLogs(ctx, filter, paging);
             var res = new JsonResult(tmpDicts, this);

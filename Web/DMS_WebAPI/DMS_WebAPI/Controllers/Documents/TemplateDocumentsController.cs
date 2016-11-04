@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns>Список шаблонов документов</returns>
         public IHttpActionResult Get()
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpDocs = tmpDocProc.GetTemplateDocuments(ctx);
             return new JsonResult(tmpDocs, this);
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns>Шаблон документа</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
             var tmpDoc = tmpDocProc.GetTemplateDocument(ctx, id);
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyTemplateDocument model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocument,ctx,model);
             return Get((int)tmpTemplate);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocument model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocument, ctx, model);
             return Get((int)tmpTemplate);
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers
        /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
             tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocument, ctx, id);

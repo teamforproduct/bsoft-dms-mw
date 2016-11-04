@@ -16,7 +16,6 @@ namespace BL.Database.DBModel.Dictionary
             this.AgentContacts = new HashSet<DictionaryAgentContacts>();
             this.AgentAccounts = new HashSet<DictionaryAgentAccounts>();
             this.Certificates = new HashSet<EncryptionCertificates>();
-
         }
 
         public int Id { get; set; }

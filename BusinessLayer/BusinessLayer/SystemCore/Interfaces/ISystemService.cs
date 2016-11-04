@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
+using System;
 
 namespace BL.Logic.SystemCore.Interfaces
 {
@@ -28,6 +29,9 @@ namespace BL.Logic.SystemCore.Interfaces
         IEnumerable<ITreeItem> GetSystemActionForDIP(IContext context, int roleId, FilterTree filter);
         void RefreshSystemActions(IContext context);
         void RefreshSystemObjects(IContext context);
+
+        int AddSystemDate(IContext ctx, DateTime date);
+        DateTime GetSystemDate(IContext ctx);
 
     }
 }

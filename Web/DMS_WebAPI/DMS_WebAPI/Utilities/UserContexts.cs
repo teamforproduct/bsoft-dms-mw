@@ -12,7 +12,10 @@ using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.Utilities
 {
-    public class UserContext
+    /// <summary>
+    /// Коллекция пользовательских контекстов
+    /// </summary>
+    public class UserContexts
     {
         private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
@@ -36,7 +39,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var ctx = (IContext)contextValue.StoreObject;
 
-                var request_ctx = new DefaultContext(ctx);
+                var request_ctx = new UserContext(ctx);
                 request_ctx.SetCurrentPosition(null);
                 return request_ctx;
             }
@@ -59,11 +62,11 @@ namespace DMS_WebAPI.Utilities
                 throw new UserUnauthorized();
             }
 
-            var contextValue = _casheContexts[token];
+            var storeInfo = _casheContexts[token];
 
             try
             {
-                var ctx = (IContext)contextValue.StoreObject;
+                var ctx = (IContext)storeInfo.StoreObject;
 
                 //TODO Licence
                 //if (ctx.ClientLicence?.LicenceError != null)
@@ -73,9 +76,10 @@ namespace DMS_WebAPI.Utilities
 
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
-                contextValue.LastUsage = DateTime.UtcNow;
+                // KeepAlive: Продление жизни пользовательского контекста
+                storeInfo.LastUsage = DateTime.UtcNow;
 
-                var request_ctx = new DefaultContext(ctx);
+                var request_ctx = new UserContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
 
                 return request_ctx;
@@ -87,7 +91,7 @@ namespace DMS_WebAPI.Utilities
         }
 
         /// <summary>
-        /// Remove setting value by its name.
+        /// Удаляет пользовательский контекст из коллекции
         /// </summary>
         /// <returns>Typed setting value.</returns>
         public IContext Remove(string token = null)
@@ -111,27 +115,17 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void SetUserPositions(string token, List<int> positionsIdList)
-        {
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
-
-            var contextValue = _casheContexts[token];
-
-            contextValue.LastUsage = DateTime.UtcNow;
-            var context = (IContext)contextValue.StoreObject;
-            context.CurrentPositionsIdList = positionsIdList;
-            context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
-        }
+        
 
 
         /// <summary>
-        /// Add new server to the list of available servers
+        /// Формирование пользовательского контекста. 
+        /// Этап №1
+        /// Добавляет пользовательский контекст с базовыми параметрами (token, userId, clientCode)
         /// </summary>
         /// <param name="token"></param>
-        /// <param name="userId"></param>
+        /// <param name="userId">Id Web-пользователя</param>
+        /// <param name="clientCode">доменное имя клиента</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         public IContext Set(string token, string userId, string clientCode)
@@ -140,7 +134,7 @@ namespace DMS_WebAPI.Utilities
             if (!_casheContexts.ContainsKey(token))
             {
                 var context =
-                new DefaultContext
+                new UserContext
                 {
                     CurrentEmployee = new BL.Model.Users.Employee
                     {
@@ -157,7 +151,9 @@ namespace DMS_WebAPI.Utilities
         }
 
         /// <summary>
-        /// Add new server to the list of available servers
+        /// Формирование пользовательского контекста. 
+        /// Этап №2
+        /// Добавляет к существующему пользовательскому контексту доступные лицензии, указанную базу, профиль пользователя
         /// </summary>
         /// <param name="db">new server parameters</param>
         /// <param name="clientId">clientId</param>
@@ -171,9 +167,9 @@ namespace DMS_WebAPI.Utilities
                 throw new UserUnauthorized();
             }
 
-            var contextValue = _casheContexts[token];
+            var storeInfo = _casheContexts[token];
 
-            var context = (IContext)contextValue.StoreObject;
+            var context = (IContext)storeInfo.StoreObject;
 
             var dbProc = new WebAPIDbProcess();
             context.ClientLicence = dbProc.GetClientLicenceActive(clientId);
@@ -182,7 +178,8 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, clientId, new List<DatabaseModel> { db });
 
-            contextValue.LastUsage = DateTime.UtcNow;
+            // KeepAlive: Продление жизни пользовательского контекста
+            storeInfo.LastUsage = DateTime.UtcNow;
 
             context.CurrentClientId = clientId;
 
@@ -194,6 +191,8 @@ namespace DMS_WebAPI.Utilities
             {
                 if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
 
+                if (agentUser.PositionExecutorsCount == 0) throw new UserNotExecuteAnyPosition(agentUser.Name);
+
                 context.CurrentEmployee.AgentId = agentUser.AgentId;
                 context.CurrentEmployee.Name = agentUser.Name;
                 context.CurrentEmployee.LanguageId = agentUser.LanguageId;
@@ -203,6 +202,29 @@ namespace DMS_WebAPI.Utilities
                 throw new UserAccessIsDenied();
             }
 
+        }
+
+        /// <summary>
+        /// Формирование пользовательского контекста. 
+        /// Этап №3
+        /// Добавляет к существующему пользовательскому контексту список занимаемых должностей и AccessLevel
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="positionsIdList"></param>
+        public void SetUserPositions(string token, List<int> positionsIdList)
+        {
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var storeInfo = _casheContexts[token];
+
+            // KeepAlive: Продление жизни пользовательского контекста
+            storeInfo.LastUsage = DateTime.UtcNow;
+            var context = (IContext)storeInfo.StoreObject;
+            context.CurrentPositionsIdList = positionsIdList;
+            context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
         }
 
         /// <summary>
@@ -219,9 +241,9 @@ namespace DMS_WebAPI.Utilities
                 throw new UserUnauthorized();
             }
 
-            var contextValue = _casheContexts[token];
+            var storeInfo = _casheContexts[token];
 
-            var context = (IContext)contextValue.StoreObject;
+            var context = (IContext)storeInfo.StoreObject;
 
             var dbProc = new WebAPIDbProcess();
             context.ClientLicence = dbProc.GetClientLicenceActive(client.Id);
@@ -230,7 +252,8 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
 
-            contextValue.LastUsage = DateTime.UtcNow;
+            // KeepAlive: Продление жизни пользовательского контекста
+            storeInfo.LastUsage = DateTime.UtcNow;
 
             context.CurrentClientId = client.Id;
         }
@@ -348,9 +371,21 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        /// <summary>
+        /// Очистка всех пользовательских контекстов
+        /// </summary>
         public void ClearCache()
         {
             _casheContexts.Clear();
         }
+        
+        /// <summary>
+        /// Количество активных пользователей
+        /// </summary>
+        public int Count
+        {
+           get { return _casheContexts.Count; }
+        }
+
     }
 }

@@ -229,6 +229,7 @@
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\System\SystemUIElements.cs" />
     <Compile Include="DBModel\System\SystemPatterns.cs" />
+    <Compile Include="DBModel\System\SystemDate.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentFiles.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />
@@ -370,6 +371,14 @@
     <Compile Include="Migrations\201611022123300_AddImageToAgents.cs" />
     <Compile Include="Migrations\201611022123300_AddImageToAgents.Designer.cs">
       <DependentUpon>201611022123300_AddImageToAgents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611041225028_SystemDate.cs" />
+    <Compile Include="Migrations\201611041225028_SystemDate.Designer.cs">
+      <DependentUpon>201611041225028_SystemDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611042001383_Add_FK_Employees-PositionExecutors.cs" />
+    <Compile Include="Migrations\201611042001383_Add_FK_Employees-PositionExecutors.Designer.cs">
+      <DependentUpon>201611042001383_Add_FK_Employees-PositionExecutors.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -525,6 +534,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611022123300_AddImageToAgents.resx">
       <DependentUpon>201611022123300_AddImageToAgents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611041225028_SystemDate.resx">
+      <DependentUpon>201611041225028_SystemDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611042001383_Add_FK_Employees-PositionExecutors.resx">
+      <DependentUpon>201611042001383_Add_FK_Employees-PositionExecutors.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

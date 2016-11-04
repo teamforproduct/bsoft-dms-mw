@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Запись ограничительного списка</returns>
         private IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetRestrictedSendList(ctx, id), this);
         }
@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Записи ограничительного списка</returns>
         private IHttpActionResult GetByDocument(int documentId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetRestrictedSendLists(ctx, documentId), this);
         }
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененные записи ограничительного списка</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentRestrictedSendList, ctx, model);
             return Get(newId);
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная записи ограничительного списка</returns>
         public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, ctx, model);
             return GetByDocument(model.DocumentId);
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             int docId = (int)docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentRestrictedSendList, ctx, id);
             return GetByDocument(docId);

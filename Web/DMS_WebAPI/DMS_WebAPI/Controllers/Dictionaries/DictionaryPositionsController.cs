@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
             return new JsonResult(tmpItems, this);
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetPositionList(ctx, filter);
             return new JsonResult(tmpItems, this);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryPosition(ctx, id);
             return new JsonResult(tmpItem, this);
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [Route("SetPositionOrder")]
         public IHttpActionResult SetPositionOrder([FromUri] int positionId, [FromUri] int order)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             tmpItem.SetPositionOrder(cxt, positionId, order);
 
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryPositions</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryPosition model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             int Id = (int)tmpItem.ExecuteAction(EnumDictionaryActions.AddPosition, cxt, model);
             return Get(new FilterDictionaryPosition { IDs = new List<int> { Id } });
@@ -109,7 +109,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPosition
 
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             tmpItem.ExecuteAction(EnumDictionaryActions.ModifyPosition, cxt, model);
             return Get(new FilterDictionaryPosition { IDs = new List<int> { model.Id } }); 
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryPositions</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpItem.ExecuteAction(EnumDictionaryActions.DeletePosition, cxt, id);

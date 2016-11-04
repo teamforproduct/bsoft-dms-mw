@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Список доступных тегов для выставленых должностей</returns>
         public IHttpActionResult Get([FromUri]FilterDictionaryTag filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryTags(ctx, filter);
             return new JsonResult(tmpDicts, this);
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Тег. Если тег не найден или недоступен для выставленных должностей вернеться ошибка</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryTag(ctx, id);
             return new JsonResult(tmpDict, this);
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Тег</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryTag model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDictProc.ExecuteAction(EnumDictionaryActions.AddTag, ctx, model));
         }
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryTag model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             tmpDictProc.ExecuteAction(EnumDictionaryActions.ModifyTag, ctx, model);
             return Get(model.Id);
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Возвращает id удаленной записи</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteTag, ctx, id);

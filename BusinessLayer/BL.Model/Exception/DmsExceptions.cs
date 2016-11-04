@@ -216,6 +216,13 @@ namespace BL.Model.Exception
         public UserIsDeactivated(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class UserNotExecuteAnyPosition : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNotExecuteAnyPosition@l##";
+        public UserNotExecuteAnyPosition(string UserName) : base(_MESSAGE) { Parameters = new List<string> { UserName }; }
+        public UserNotExecuteAnyPosition(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
 
     public class DocumentHasAlreadyHasLink : DmsExceptions
     {

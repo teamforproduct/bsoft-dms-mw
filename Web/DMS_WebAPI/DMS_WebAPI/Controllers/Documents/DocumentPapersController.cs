@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Paper</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             return new JsonResult(docProc.GetDocumentPaper(ctx, id),this);
         }
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Список Papers</returns>
         public IHttpActionResult Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             return new JsonResult(docProc.GetDocumentPapers(ctx, filter, paging), this);
         }
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentPapers model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, ctx, model);
             return Get(new FilterDocumentPaper {Id = newIds }, null);
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentPapers model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentPaper, ctx, model);
             return Get(model.Id);
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentPaper, ctx, id);
             return new JsonResult(null, this);
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult MarkOwnerDocumentPaper(MarkOwnerDocumentPaper model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.MarkOwnerDocumentPaper, ctx, model);
             return Get(model.Id);
@@ -107,7 +107,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult MarkСorruptionDocumentPaper(PaperEvent model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.MarkСorruptionDocumentPaper, ctx, model);
             return Get(model.Id);
@@ -122,7 +122,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PlanDocumentPaperEvent(List<PlanMovementPaper> model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.PlanDocumentPaperEvent, ctx, model);
             return Get(new FilterDocumentPaper { Id = model.Select(x => x.Id).ToList() }, null);
@@ -137,7 +137,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult CancelPlanDocumentPaperEvent(PaperList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.CancelPlanDocumentPaperEvent, ctx, model);
             return Get( new FilterDocumentPaper {Id = model.PaperId, PaperListId = model.PaperListId}, null);
@@ -152,7 +152,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendDocumentPaperEvent(PaperList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.SendDocumentPaperEvent, ctx, model);
             return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId }, null);
@@ -167,7 +167,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult CancelSendDocumentPaperEvent(PaperList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.CancelSendDocumentPaperEvent, ctx, model);
             return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId }, null);
@@ -182,7 +182,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RecieveDocumentPaperEvent(PaperList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.RecieveDocumentPaperEvent, ctx, model);
             return Get(new FilterDocumentPaper { Id = model.PaperId, PaperListId = model.PaperListId }, null);
@@ -197,7 +197,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult Actions(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             var actions = cmdService.GetDocumentPaperActions(ctx, id);
 

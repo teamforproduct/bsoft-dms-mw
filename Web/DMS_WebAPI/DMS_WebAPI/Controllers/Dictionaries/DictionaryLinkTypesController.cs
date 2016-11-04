@@ -13,7 +13,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryLinkTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryLinkType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryLinkTypes(ctx, filter);
             return new JsonResult(tmpDicts, this);
@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryLinkTypes/5
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryLinkType(ctx, id);
             return new JsonResult(tmpDict, this);

@@ -383,8 +383,8 @@
     <Compile Include="Utilities\WebAPIDbProcess.cs" />
     <Compile Include="Utilities\Languages.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
-    <Compile Include="Utilities\UserContextWorkerService.cs" />
-    <Compile Include="Utilities\UserContext.cs" />
+    <Compile Include="Utilities\UserContextsWorkerService.cs" />
+    <Compile Include="Utilities\UserContexts.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\CryptoExts\x64\CryptoExts.dll" />

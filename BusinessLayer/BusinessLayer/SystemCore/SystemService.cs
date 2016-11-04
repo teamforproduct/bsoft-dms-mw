@@ -195,5 +195,16 @@ namespace BL.Logic.SystemCore
             }
 
         }
+
+        public int AddSystemDate(IContext ctx, DateTime date)
+        {
+            return _systemDb.AddSystemDate(ctx, date);
+        }
+
+        public DateTime GetSystemDate(IContext ctx)
+        {
+            return _systemDb.GetSystemDate(ctx);
+        }
+
     }
 }

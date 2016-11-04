@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminPositionRole</returns>
         public IHttpActionResult Post([FromBody]AddClientContent model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IClientService>();
             tmpService.AddNewClient(cxt, model);
             return new JsonResult(model, this);
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("AddDefaultRoles")]
         public IHttpActionResult AddDefaultRoles()
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IClientService>();
             tmpService.AddClientRoles(cxt);
             return new JsonResult(true, this);

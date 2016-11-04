@@ -60,7 +60,8 @@ namespace DMS_WebAPI
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
             clearTrashDocumentsService.Initialize(dbs);
 
-            var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
+            // Очистка устаревших пользовательских контекстов
+            var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
             userContextService.Initialize();
 
             var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();

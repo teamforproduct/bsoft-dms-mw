@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [HttpGet]
         public IHttpActionResult GetMainMenu()
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAdminMainMenu(ctx);
             return new JsonResult(tmpItems, this);

@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers
         [Route("Logout")]
         public IHttpActionResult Logout()
         {
-            DmsResolver.Current.Get<UserContext>().Remove();
+            DmsResolver.Current.Get<UserContexts>().Remove();
 
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 

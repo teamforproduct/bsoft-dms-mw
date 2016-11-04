@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Properties
     {
         public IHttpActionResult Get([FromUri] FilterProperty filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
             var tmpItems = tmpServ.GetProperies(ctx, filter);
             return new JsonResult(tmpItems, this);
@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers.Properties
 
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
             var tmpItems = tmpServ.GetProperty(ctx, id);
             return new JsonResult(tmpItems, this);
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Properties
 
         public IHttpActionResult Post([FromBody]ModifyProperty model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
             return Get((int)tmpServ.ExecuteAction(EnumPropertyActions.AddProperty,  ctx, model));
         }
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Properties
         public IHttpActionResult Put(int id, [FromBody]ModifyProperty model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
             tmpServ.ExecuteAction(EnumPropertyActions.ModifyProperty, ctx, model);
             return Get(model.Id);
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Properties
 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
 
             tmpServ.ExecuteAction(EnumPropertyActions.DeleteProperty, ctx, id);

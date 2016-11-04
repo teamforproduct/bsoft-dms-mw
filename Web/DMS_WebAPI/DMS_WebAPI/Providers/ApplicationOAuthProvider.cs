@@ -143,12 +143,14 @@ namespace DMS_WebAPI.Providers
                 }
                 catch (Exception ex) { }
 
+                // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                var mngContext = DmsResolver.Current.Get<UserContext>();
+                var mngContext = DmsResolver.Current.Get<UserContexts>();
 
+                // Добавляю пользовательский контекст в коллекцию
                 var ctx = mngContext.Set(token, userId, clientCode);
             }
 

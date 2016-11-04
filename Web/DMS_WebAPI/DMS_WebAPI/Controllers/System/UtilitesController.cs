@@ -21,6 +21,7 @@ using DMS_WebAPI.Utilities;
 using System.Reflection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.SystemCore.IncomingModel;
+using BL.Logic.SystemCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -60,25 +61,25 @@ namespace DMS_WebAPI.Controllers
         [Route("GetDate")]
         public IHttpActionResult GetDate([FromUri]ModifyDate item)
         {
-            return new JsonResult(new
-            {
-                Item = item,
-                Date = item.Date,
-                DateToString = item.Date.ToString(),
-                DateToLocalTime = item.Date.ToLocalTime(),
-                DateNow = DateTime.Now,
-                DateNowUTC = DateTime.UtcNow
-            }, this);
+            return SetDate(item);
         }
 
         [HttpPost]
         [Route("SetDate")]
         public IHttpActionResult SetDate([FromBody]ModifyDate item)
         {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+
+            tmpService.AddSystemDate(ctx, item.Date);
+
+            var dateFromBase = tmpService.GetSystemDate(ctx);
+
             return new JsonResult(new
             {
                 Item = item,
                 Date = item.Date,
+                DateFromBase = dateFromBase,
                 DateToString = item.Date.ToString(),
                 DateToLocalTime = item.Date.ToLocalTime(),
                 DateNow = DateTime.Now,
@@ -90,10 +91,10 @@ namespace DMS_WebAPI.Controllers
         [Route("SetUsers")]
         public IHttpActionResult SetUsers()
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            var tmpItems = tmpDict.GetInternalContacts(ctx,
+            var tmpItems = tmpService.GetInternalContacts(ctx,
                 new BL.Model.DictionaryCore.FilterModel.FilterDictionaryContact
                 {
                     ContactTypeIDs = new List<int> { 28 },
@@ -103,6 +104,14 @@ namespace DMS_WebAPI.Controllers
             var dbProc = new WebAPIDbProcess();
             dbProc.AddUsersTemp( tmpItems);
             return new JsonResult(null, this);
+        }
+
+        [HttpGet]
+        [Route("GetUserContextsCount")]
+        public IHttpActionResult GetUserContextsCount()
+        {
+            var count = DmsResolver.Current.Get<UserContexts>().Count;
+            return new JsonResult(count, this);
         }
 
     }

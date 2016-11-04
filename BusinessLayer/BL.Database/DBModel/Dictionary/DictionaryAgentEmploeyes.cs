@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +7,12 @@ namespace BL.Database.DBModel.Dictionary
 {
     public class DictionaryAgentEmployees
     {
+
+        public DictionaryAgentEmployees()
+        {
+            this.PositionExecutors = new HashSet<DictionaryPositionExecutors>();
+        }
+
         public int Id { get; set; }
         [Index("IX_PersonnelNumber", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
@@ -24,6 +31,8 @@ namespace BL.Database.DBModel.Dictionary
         //[ForeignKey("AgentPersonId")]
         //public virtual DictionaryAgentPersons AgentPerson { get; set; }
 
+        [ForeignKey("AgentId")]
+        public virtual ICollection<DictionaryPositionExecutors> PositionExecutors { get; set; }
 
     }
 }
