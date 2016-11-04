@@ -154,9 +154,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [Route("SetLanguage")]
         public IHttpActionResult SetLanguage(int id, int languageId)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployeeLanguage, ctx, new ModifyDictionaryAgentUser { Id = id, LanguageId = languageId } );
+            contexts.UpdateLanguageId(id, languageId);
+
             return new JsonResult(null, this);
         }
     }

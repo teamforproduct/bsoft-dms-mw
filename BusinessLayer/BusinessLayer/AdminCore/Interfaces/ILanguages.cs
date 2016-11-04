@@ -17,7 +17,6 @@ namespace BL.Logic.AdminCore.Interfaces
         string ReplaceLanguageLabel(IContext Context, string text);
         IEnumerable<InternalAdminLanguage> GetLanguages(FilterAdminLanguage filter);
         IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter);
-
-
+        string GetTranslation(string text);
     }
 }

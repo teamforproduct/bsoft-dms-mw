@@ -175,19 +175,8 @@ namespace DMS_WebAPI.Infrastructure
 
         private string GetTranslation(string text)
         {
-            var httpContext = HttpContext.Current;
-            IContext defContext = null;
-
-            try
-            {
-                defContext = DmsResolver.Current.Get<UserContexts>().Get();
-            }
-            catch 
-            { }
-
             var languageService = DmsResolver.Current.Get<ILanguages>();
-            if (defContext == null) return languageService.ReplaceLanguageLabel(httpContext, text);
-            else return languageService.ReplaceLanguageLabel(defContext, text);
+            return languageService.GetTranslation(text);
         }
     }
 }

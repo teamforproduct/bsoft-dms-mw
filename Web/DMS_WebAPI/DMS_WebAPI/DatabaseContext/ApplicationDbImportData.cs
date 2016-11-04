@@ -74,10 +74,14 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:WrongParameterValueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!", "Параметри комманди невірні !");
             AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна", "Запис не унікальна");
 
-            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request.", "Пользователь не авторизован", "Користувач не авторизований");
+            AddALV(list, "##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##", "The user name or password is incorrect", "Неверно введен логин или пароль", "Помилка в логіні або паролі");
+            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request", "Пользователь не авторизован", "Користувач не авторизований");
             AddALV(list, "##l@DmsExceptions:UserAccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
             AddALV(list, "##l@DmsExceptions:UserIsDeactivated@l##", "Employee \"{0}\" is deactivated", "Пользователь \"{0}\" деактивирован", "Користувач \"{0}\" деактивовано");
             AddALV(list, "##l@DmsExceptions:UserNotExecuteAnyPosition@l##", "Employee \"{0}\" does not execute any position", "Сотрудник \"{0}\" не занимает ни одной должности", "Співробітник \"{0}\" не займає жодної посади");
+            AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
+            AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
+
 
             AddALV(list, "##l@System@l##", "System", "Система", "Система");
             AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
@@ -205,8 +209,6 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UserFileNotExists@l##", "User file does not exists on Filestore!", "Пользовательский файл не существует в файловом хранилище", "Призначений для користувача файл не існує в файловому сховищі");
             AddALV(list, "##l@DmsExceptions:UserHasNoAccessToDocument@l##", "User could not access this document!", "Пользователь не может получить доступ к этот документ!", "Користувач не може отримати доступ до цей документ !");
             AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "User Name already exists", "Имя пользователя уже существует", "Ім'я користувача вже існує");
-            AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Сотрудник для текущего пользователя не может быть определен!", "Співробітник для поточного користувача не може бути визначений !");
-            AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Позиция для текущего пользователя не может быть определена!", "Позиція для поточного користувача не може бути визначена !");
             AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!", "Очікування вже закрито !");
             AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!", "Користувач не має доступу до цих очікувань !");
             AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана", "Некоректний пункт плану");

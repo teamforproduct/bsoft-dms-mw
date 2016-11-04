@@ -269,6 +269,24 @@ namespace DMS_WebAPI.Utilities
             AddAdminLanguageValues(ApplicationDbImportData.GetAdminLanguageValues());
         }
 
+        public string GetTranslation(string text)
+        {
+            var httpContext = HttpContext.Current;
+            IContext defContext = null;
+
+            try
+            {
+                defContext = DmsResolver.Current.Get<UserContexts>().Get();
+
+                if (defContext.CurrentEmployee.LanguageId <= 0) defContext = null;
+            }
+            catch
+            { }
+
+            if (defContext == null) return ReplaceLanguageLabel(httpContext, text);
+            else return ReplaceLanguageLabel(defContext, text);
+        }
+
         #endregion
 
         #region [+] DbProcess

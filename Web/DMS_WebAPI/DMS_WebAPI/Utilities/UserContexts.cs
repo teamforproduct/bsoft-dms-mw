@@ -371,6 +371,18 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public void UpdateLanguageId(int agentId, int languageId)
+        {
+            var contexts = _casheContexts
+                        .Select(x => (IContext)x.Value.StoreObject)
+                        .Where(x => x.CurrentEmployee.AgentId == agentId).ToList();
+
+            foreach (var context in contexts)
+            {
+                context.CurrentEmployee.LanguageId = languageId;
+            }
+        }
+
         /// <summary>
         /// Очистка всех пользовательских контекстов
         /// </summary>
