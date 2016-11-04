@@ -109,7 +109,7 @@ namespace BL.Database.Admins
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
-                    RolePositionExecutorAgentName = x.Agent.Name,//x.Position.ExecutorAgent.Name,
+                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name,
                     RolePositionExecutorTypeName = x.PositionExecutorType.Name,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,

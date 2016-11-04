@@ -95,7 +95,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context)
         {
-            return _adminDb.GetAvailablePositions(context, context.CurrentAgentId );
+            return _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
         }
         #endregion
 
@@ -146,15 +146,20 @@ namespace BL.Logic.AdminCore
             }
             if (!res && isThrowExeception)
             {
-                string actionName = string.Empty;
-                var a = data.Actions.Where(x => x.Id == model.DocumentActionId).FirstOrDefault();
-
-                if (a != null)
+                if (model.DocumentActionId == null)
+                { throw new AccessIsDenied(); }
+                else
                 {
-                    actionName = a.Description;
-                }
+                    string actionName = string.Empty;
+                    var a = data.Actions.Where(x => x.Id == model.DocumentActionId).FirstOrDefault();
 
-                throw new AccessIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                    if (a != null)
+                    {
+                        actionName = a.Description;
+                    }
+
+                    throw new ActionIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                }
             }
             return res;
 

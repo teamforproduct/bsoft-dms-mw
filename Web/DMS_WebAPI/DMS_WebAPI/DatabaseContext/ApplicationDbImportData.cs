@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Models
         {
             var items = new List<AdminLanguages>();
 
-            items.Add(new AdminLanguages { Id = 570, Code = "ru", Name = "Русский", IsDefault = true});
+            items.Add(new AdminLanguages { Id = 570, Code = "ru", Name = "Русский", IsDefault = true });
             items.Add(new AdminLanguages { Id = 045, Code = "en", Name = "English", IsDefault = false });
             items.Add(new AdminLanguages { Id = 720, Code = "uk", Name = "Українська", IsDefault = false });
             items.Add(new AdminLanguages { Id = 090, Code = "be", Name = "Беларуский", IsDefault = false });
@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Models
             items.Add(new AdminLanguages { Id = 481, Code = "de", Name = "Deutsch", IsDefault = false });
             items.Add(new AdminLanguages { Id = 745, Code = "fr", Name = "Français", IsDefault = false });
             items.Add(new AdminLanguages { Id = 740, Code = "pl", Name = "Polszczyzna", IsDefault = false });
-            
+
             return items;
         }
 
@@ -112,7 +112,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DictionarySubscriptionStates:Аgreement@l##", "Аgreement", "Согласование", "Узгодження");
             AddALV(list, "##l@DictionarySubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение", "Затвердження");
 
-            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied! Action: {0}", "Отказано в доступе! Действие: {0}", "Відмовлено в доступі! Дія: {0}");
+            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
+            AddALV(list, "##l@DmsExceptions:ActionIsDenied@l##", "Action \"{0}\" is Denied!", "Действие \"{0}\" запрещено", "Дія \"{0}\" заборонено");
             AddALV(list, "##l@DmsExceptions:CannotAccessToFile@l##", "Cannot access to user file!", "Файл пользователя не доступен!", "Файл користувача не доступний !");
             AddALV(list, "##l@DmsExceptions:CannotSaveFile@l##", "Error when save user file!", "Ошибка при сохранения файла пользователя!", "Помилка при збереження файлу користувача !");
             AddALV(list, "##l@DmsExceptions:ClientIsNotFound@l##", "Client not found", "Клиент не найден", "Клієнт не найден");
