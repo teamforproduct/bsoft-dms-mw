@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
             AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
 
-
+            
             AddALV(list, "##l@System@l##", "System", "Система", "Система");
             AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
             AddALV(list, "##l@DictionaryDocumentDirections:Internal@l##", "Internal", "Собственный", "Власний");
@@ -231,6 +231,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "Task Is Not Defined", "Задача не определена", "Завдання не визначена");
             AddALV(list, "##l@DmsExceptions:ContriolHasNotBeenChanged@l##", "Contriol Has Not Been Changed", "Параметры контроля не изменены", "Параметри контролю не змінені");
 
+            AddALV(list, "##l@Message:PositionIsVacant@l##", "Position is vacant", "Должность вакантна", "Посада вакантна");
 
             // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
 

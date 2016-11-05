@@ -100,6 +100,7 @@ namespace BL.Database.Admins
                 var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 var now = DateTime.UtcNow;
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
 
                 qry = qry.Where(x => x.AgentId == agentId & x.IsActive == true & now >= x.StartDate & now <=x.EndDate);
 
@@ -109,10 +110,10 @@ namespace BL.Database.Admins
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
-                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name,
+                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name ?? "##l@Message:PositionIsVacant@l##",
                     RolePositionExecutorTypeName = x.PositionExecutorType.Name,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                 }).ToList();
 
                 var roleList = res.Select(s => s.RolePositionId).ToList();
