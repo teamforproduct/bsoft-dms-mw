@@ -152,9 +152,13 @@ namespace BL.Logic.ClientCore
 
             #region [+] AddressTypes ...
             // Pss Локализация для типов адресов
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "MainAddress", "а.осн.", "Основной"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "а.раб.", "Рабочий"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "HomeAddress", "а.дом.", "Домашний"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "##l@AddressTypesCode:Working@l##", "##l@AddressTypes:Working@l##"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "LegalAddress", "##l@AddressTypesCode:Legal@l##", "##l@AddressTypes:Legal@l##"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "ActualAddress", "##l@AddressTypesCode:Actual@l##", "##l@AddressTypes:Actual@l##"));
+            _DictDb.AddAddressType(context, GetNewAddressType(context, "CurrentAddress", "##l@AddressTypesCode:Current@l##", "##l@AddressTypes:Current@l##"));
+
+
+
             #endregion
 
             #region [+] Agent-Employee ...
@@ -258,28 +262,27 @@ namespace BL.Logic.ClientCore
         /// <returns></returns>
         public void AddClientRoles(IContext context)
         {
-            //pss локализиция наименований ролей
-            _AdminService.AddNamedRole(context, "Admin", "Администратор", GetRoleActionsForAdmin(context));
+            _AdminService.AddNamedRole(context, "Admin", "##l@Roles:Administrator@l##", GetRoleActionsForAdmin(context));
 
-            _AdminService.AddNamedRole(context, "DocumentReview", "Просмотр документов", GetRoleActionsForDocumentReview());
+            _AdminService.AddNamedRole(context, "DocumentReview", "##l@Roles:ViewDocuments@l##", GetRoleActionsForDocumentReview());
 
-            _AdminService.AddNamedRole(context, "DocumentActions", "Выполнения действий по документу", GetRoleActionsForDocumentReview());
+            _AdminService.AddNamedRole(context, "DocumentActions", "##l@Roles:ExecuteDocumentActions@l##", GetRoleActionsForDocumentReview());
 
-            _AdminService.AddNamedRole(context, "DocumentControl", "Управление контролем по документу", GetRoleActionsForDocumentControl());
+            _AdminService.AddNamedRole(context, "DocumentControl", "##l@Roles:ControlDocumentActions@l##", GetRoleActionsForDocumentControl());
 
-            _AdminService.AddNamedRole(context, "DocumentSigning", "Подписание документа", GetRoleActionsForSigning());
+            _AdminService.AddNamedRole(context, "DocumentSigning", "##l@Roles:SigningDocumentActions@l##", GetRoleActionsForSigning());
 
-            _AdminService.AddNamedRole(context, "DocumentPapers", "Управление бумажными носителями по документу", GetRoleActionsForPapers());
+            _AdminService.AddNamedRole(context, "DocumentPapers", "##l@Roles:PaperActions@l##", GetRoleActionsForPapers());
 
-            _AdminService.AddNamedRole(context, "DocumentAccess", "Управление доступом к документам", GetRoleActionsForDocumentAccess());
+            _AdminService.AddNamedRole(context, "DocumentAccess", "##l@Roles:AccessDocumentActions@l##", GetRoleActionsForDocumentAccess());
 
-            _AdminService.AddNamedRole(context, "DictionariesDMS", "Управление справочниками документоооборота", GetRoleActionsForDictionaryDMS());
+            _AdminService.AddNamedRole(context, "DictionariesDMS", "##l@Roles:DmsDictionaryActions@l##", GetRoleActionsForDictionaryDMS());
 
-            _AdminService.AddNamedRole(context, "DictionaryAgents", "Управление справочником контрагентов", GetRoleActionsForDictionaryAgents());
+            _AdminService.AddNamedRole(context, "DictionaryAgents", "##l@Roles:DictionaryAgentActions@l##", GetRoleActionsForDictionaryAgents());
 
-            _AdminService.AddNamedRole(context, "DictionaryAgentContacts", "Управление справочником контактных лиц котрагентов", GetRoleActionsForDictionaryAgentContats());
+            _AdminService.AddNamedRole(context, "DictionaryAgentContacts", "##l@Roles:DictionaryAgentContactActions@l##", GetRoleActionsForDictionaryAgentContats());
 
-            _AdminService.AddNamedRole(context, "DictionaryStaffList", "Управление структурой организации", GetRoleActionsForDictionaryStaffList());
+            _AdminService.AddNamedRole(context, "DictionaryStaffList", "##l@Roles:StaffListActions@l##", GetRoleActionsForDictionaryStaffList());
 
         }
 

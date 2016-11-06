@@ -63,175 +63,21 @@ namespace DMS_WebAPI.Models
 
             var list = new List<AdminLanguageValues>();
 
+            list.AddRange(GetDmsExceptions());
             list.AddRange(GetObjects());
             list.AddRange(GetActions());
 
             list.AddRange(GetAdminAccessLevels());
             list.AddRange(GetDictionaryEventTypes());
+            list.AddRange(GetAdminRoles());
+            list.AddRange(GetDMSExpressions());
+            list.AddRange(GetPositionExecutorTypes());
+            list.AddRange(GetMessages());
+            list.AddRange(GetAddressTypes());
+            list.AddRange(GetLinkTypes());
 
-            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}", "Вхідна модель недійсна! {0}");
-            AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!", "Тип параметра комманди вказано невірно !");
-            AddALV(list, "##l@DmsExceptions:WrongParameterValueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!", "Параметри комманди невірні !");
-            AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна", "Запис не унікальна");
-
-            AddALV(list, "##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##", "The user name or password is incorrect", "Неверно введен логин или пароль", "Помилка в логіні або паролі");
-            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request", "Пользователь не авторизован", "Користувач не авторизований");
-            AddALV(list, "##l@DmsExceptions:UserAccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
-            AddALV(list, "##l@DmsExceptions:UserIsDeactivated@l##", "Employee \"{0}\" is deactivated", "Пользователь \"{0}\" деактивирован", "Користувач \"{0}\" деактивовано");
-            AddALV(list, "##l@DmsExceptions:UserNotExecuteAnyPosition@l##", "Employee \"{0}\" does not execute any position", "Сотрудник \"{0}\" не занимает ни одной должности", "Співробітник \"{0}\" не займає жодної посади");
-            AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
-            AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
-
-            
             AddALV(list, "##l@System@l##", "System", "Система", "Система");
-            AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
-            AddALV(list, "##l@DictionaryDocumentDirections:Internal@l##", "Internal", "Собственный", "Власний");
-            AddALV(list, "##l@DictionaryDocumentDirections:Outcoming@l##", "Outcoming", "Иcходящий", "Іcходящій");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:AdditionalEvents@l##", "Secondary events", "Второстепенные события", "Другорядні події");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:DocumentMoovement@l##", "Facts movement documents", "Факты движения документов", "Факти руху документів");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:ImportantEvents@l##", "Important events", "Важные события", "Важливі події");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:Internal@l##", "Own notes", "Собственные примечания", "Власні примітки");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:Message@l##", "Messages", "Сообщения", "Повідомлення");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:PaperMoovement@l##", "Paper movement", "Движение БН", "Рух ПН");
-            AddALV(list, "##l@DictionarySendTypes:SendForConsideration@l##", "For consideration", "Для рассмотрения", "Для розгляду");
-            AddALV(list, "##l@DictionarySendTypes:SendForControl@l##", "In control", "На контроль(отв.исп.)", "На контроль (отв");
-            AddALV(list, "##l@DictionarySendTypes:SendForExecution@l##", "For execution", "Соисполнителю", "Співвиконавцю");
-            AddALV(list, "##l@DictionarySendTypes:SendForInformation@l##", "For information", "Для сведения", "Для довідки");
-            AddALV(list, "##l@DictionarySendTypes:SendForInformationExternal@l##", "For information external agents", "Для сведения внешнему агенту", "Для відомості зовнішньому агенту");
-            AddALV(list, "##l@DictionarySendTypes:SendForResponsibleExecution@l##", "ResponsibleExecution", "Исполненителю(отв.исп.)", "Ісполненітелю (отв");
-            AddALV(list, "##l@DictionarySendTypes:SendForSigning@l##", "For signing", "На подпись", "На підпис");
-            AddALV(list, "##l@DictionarySendTypes:SendForVisaing@l##", "For visaing", "На визирование", "На візування");
-            AddALV(list, "##l@DictionarySendTypes:SendForАgreement@l##", "For agreement", "На согласование", "На узгодження");
-            AddALV(list, "##l@DictionarySendTypes:SendForАpproval@l##", "For approval", "На утверждение", "На затвердження");
-            AddALV(list, "##l@DictionarySubordinationTypes:Execution@l##", "Execution", "Исполнение", "Виконання");
-            AddALV(list, "##l@DictionarySubordinationTypes:Informing@l##", "Informing", "Информирование", "Інформування");
-            AddALV(list, "##l@DictionarySubscriptionStates:No@l##", "No", "Нет", "Ні");
-            AddALV(list, "##l@DictionarySubscriptionStates:Sign@l##", "Sign", "Подпись", "Підпис");
-            AddALV(list, "##l@DictionarySubscriptionStates:Violated@l##", "Violated", "Нарушена", "Порушена");
-            AddALV(list, "##l@DictionarySubscriptionStates:Visa@l##", "Visa", "Виза", "Віза");
-            AddALV(list, "##l@DictionarySubscriptionStates:Аgreement@l##", "Аgreement", "Согласование", "Узгодження");
-            AddALV(list, "##l@DictionarySubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение", "Затвердження");
 
-            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
-            AddALV(list, "##l@DmsExceptions:ActionIsDenied@l##", "Action \"{0}\" is Denied!", "Действие \"{0}\" запрещено", "Дія \"{0}\" заборонено");
-            AddALV(list, "##l@DmsExceptions:CannotAccessToFile@l##", "Cannot access to user file!", "Файл пользователя не доступен!", "Файл користувача не доступний !");
-            AddALV(list, "##l@DmsExceptions:CannotSaveFile@l##", "Error when save user file!", "Ошибка при сохранения файла пользователя!", "Помилка при збереження файлу користувача !");
-            AddALV(list, "##l@DmsExceptions:ClientIsNotFound@l##", "Client not found", "Клиент не найден", "Клієнт не найден");
-            AddALV(list, "##l@DmsExceptions:ClientNameAlreadyExists@l##", "Client Name already exists", "Имя клиента уже существует", "Ім'я клієнта вже існує");
-            AddALV(list, "##l@DmsExceptions:ClientCodeAlreadyExists@l##", "Domain \"{0}\" already exists", "Доменное имя \"{0}\" уже занято", "Доменне ім'я {0} вже зайнято");
-            AddALV(list, "##l@DmsExceptions:ClientVerificationCodeIncorrect@l##", "Verification code is invalid", "Проверочный код неверен", "Код перевірки невірний");
-            AddALV(list, "##l@DmsExceptions:CommandNotDefinedError@l##", "The desired command for \"{0}\" not found", "Команда для \"{0}\" не найдена", "Команда для {0} не знайдено");
-            AddALV(list, "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##", "Couldn\"t change attribute LaunchPlan", "Невозможно изменить атрибут LaunchPlan", "Неможливо змінити атрибут LaunchPlan");
-            AddALV(list, "##l@DmsExceptions:CouldNotChangeFavourite@l##", "Couldn\"t change attribute Favourite", "Невозможно изменить атрибут Favourite", "Неможливо змінити атрибут Favourite");
-            AddALV(list, "##l@DmsExceptions:CouldNotChangeIsInWork@l##", "Couldn\"t change attribute IsInWork", "Невозможно изменить атрибут IsInWork", "Неможливо змінити атрибут IsInWork");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformThisOperation@l##", "Could Not Perform This Operation!", "Операция не выполнена!", "Операція не виконана !");
-            AddALV(list, "##l@DmsExceptions:CryptographicError@l##", "Encryption Error", "Ошибка шифрования", "Помилка шифрування");
-            AddALV(list, "##l@DmsExceptions:DatabaseError@l##", "An error occurred while accessing the database!", "Ошибка при обращении к базе данных!", "Помилка при зверненні до бази даних !");
-            AddALV(list, "##l@DmsExceptions:DatabaseIsNotFound@l##", "Database not found", "База данных не найдена", "База даних не знайдено");
-            AddALV(list, "##l@DmsExceptions:DatabaseIsNotSet@l##", "The database is not set", "База данных не установлена", "База даних не встановлена");
-
-            AddALV(list, "##l@DmsExceptions:AdminRecordNotUnique@l##", "Setting record should be unique!", "Настроечная запись должена быть уникальна!", "Настроювальна запис должена бути унікальна !");
-            AddALV(list, "##l@DmsExceptions:AdminRecordCouldNotBeAdded@l##", "You could not add this setting data!", "Вы не можете добавить настроечные данные", "Ви не можете додати налагоджувальні дані");
-            AddALV(list, "##l@DmsExceptions:AdminRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить настроечные данные", "Ви не можете видалити конфігураційні дані");
-            AddALV(list, "##l@DmsExceptions:AdminRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!", "Елемент довідника не найден !");
-
-            AddALV(list, "##l@DmsExceptions:DictionaryAddressTypeCodeNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryAddressTypeNameNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryContactTypeCodeNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryContactTypeNameNotUnique@l##", "", "", "");
-
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentBankMFOCodeNotUnique@l##", "Bank \"{0}\" MFO \"{1}\" сode should be unique!", "Банк \"{0}\" c МФО \"{1}\" уже есть в справочнике", "Банк {0} c МФО {1} вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyOKPOCodeNotUnique@l##", "Company \"{0}\" OKPO сode should be unique!", "Юридическое лицо с указанным ОКПО уже есть в справочнике", "Юридична особа із зазначеним ОКПО вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##", "Company \"{0}\" tax сode should be unique!", "Юридическое лицо с указанным ИНН уже есть в справочнике", "Юридична особа із зазначеним ІПН вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyVATCodeNotUnique@l##", "Company \"{0}\" VAT сode should be unique!", "Юридическое лицо с указанным номером свидетельства НДС уже есть в справочнике", "Юридична особа із зазначеним номером свідоцтва ПДВ вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##", "Employee \"{0}\" passport should be unique!", "Сотрудник с указанными паспортными данными уже есть в справочнике", "Співробітник з зазначеними паспортними даними вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##", "Employee \"{0}\" personnel number should be unique!", "Сотрудник с указанным табельным номером уже есть в справочнике", "Співробітник з зазначеним табельною номером вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeeTaxCodeNotUnique@l##", "Employee \"{0}\" tax code should be unique!", "Сотрудник с указанным ИНН уже есть в справочнике", "Співробітник з зазначеним ІПН вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##", "Agent name \"{0}\" should be unique!", "Агент \"{0}\" уже есть в справочнике", "Агент {0} вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonPassportNotUnique@l##", "Person \"{0}\" passport should be unique!", "Физлицо с указанными паспортными данными уже есть в справочнике", "Фізособа з зазначеними паспортними даними вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##", "Person \"{0}\" tax code should be unique!", "Физлицо с указанным ИНН уже есть в справочнике", "Фізособа із зазначеним ІПН вже є в довіднику");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##", "Agent contact type should be unique!", "Контакт с указанным типом уже есть у этого агента", "Контакт із зазначеним типом вже є у цього агента");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##", "Agent contact should be unique!", "Указанный контакт уже есть у этого агента", "Зазначений контакт вже є у цього агента");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressNameNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressTypeNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryAgentAccountNumberNotUnique@l##", "", "", "");
-
-            AddALV(list, "##l@DmsExceptions:DictionaryCostomDictionaryNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryCostomDictionaryTypeNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionarysdDepartmentNotBeSubordinated@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryDepartmentNameNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryDocumentSubjectNameNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryDocumentTypeNameNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorIsInvalidPeriod@l##", "", "Период исполнения задан неверно!", "Період виконання заданий невірно!");
-            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##", "", "Сотрудник \"{1}\" не может быть назначен на должность повторно \"{0}\" c {2} по {3}", "Співробітник {1} не може бути призначений на посаду повторно {0} c {2} по {3}");
-            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorPersonalNotUnique@l##", "", "На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}", "На посаду {0} штатно призначений {1} c {2} по {3}");
-            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorIONotUnique@l##", "", "На должность \"{0}\" назначен исполняющий обязанности \"{1}\" c {2} по {3}", "На посаду {0} призначений виконуючий обов'язки {1} c {2} по {3}");
-            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorReferentNotUnique@l##", "", "На должность \"{0}\" назначен референт \"{1}\" c {2} по {3}", "На посаду {0} призначений референт {1} c {2} по {3}");
-            AddALV(list, "##l@DmsExceptions:DictionaryRegistrationJournalNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListContentNotUnique@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:DictionaryTagNotUnique@l##", "", "", "");
-
-
-
-            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Вы не можете добавить данные в этот справочник", "Ви не можете додати дані в цей довідник");
-            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить данные из этого справочника", "Ви не можете видалити дані з цього довідника");
-            AddALV(list, "##l@DmsExceptions:DictionaryRecordNotUnique@l##", "Dictionary record should be unique!", "Элемент справочника должен быть уникален!", "Елемент довідника повинен бути унікальний !");
-            AddALV(list, "##l@DmsExceptions:DictionaryRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!", "Елемент довідника не найден !");
-            AddALV(list, "##l@DmsExceptions:DictionarySystemRecordCouldNotBeDeleted@l##", "Dictionary system record was not deleted!", "Невозможно удалить предустановленные записи справочника", "Неможливо видалити встановлені записи довідника");
-            AddALV(list, "##l@DmsExceptions:DictionaryTagNotFoundOrUserHasNoAccess@l##", "User could not access this tag!", "Пользователь не имеет доступа к этому тегу!", "Користувач не має доступу до цього тегу !");
-            AddALV(list, "##l@DmsExceptions:DocumentCannotBeModifiedOrDeleted@l##", "Document cannot be Modified or Deleted!", "Документ не может быть изменен или удален!", "Документ не може бути змінений або видалений !");
-            AddALV(list, "##l@DmsExceptions:DocumentCouldNotBeRegistered@l##", "Document registration has non been successfull! Try again!", "Регистрационный документ не была успешной! Попробуй еще раз!", "Реєстраційний документ не була успішною! Спробуй ще раз!");
-            AddALV(list, "##l@DmsExceptions:DocumentFileWasChangedExternally@l##", "The document file has been modified from the outside", "Файл документа был изменен извне", "Файл документа був змінений ззовні");
-            AddALV(list, "##l@DmsExceptions:DocumentHasAlreadyHasLink@l##", "Document has already has link!", "Документ уже имеет ссылку!", "Документ вже має посилання !");
-            AddALV(list, "##l@DmsExceptions:DocumentHasAlredyBeenRegistered@l##", "Document has already been registered!", "Документ уже зарегистрирован!", "Документ уже зареєстрований !");
-            AddALV(list, "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##", "User could not access this document!", "Документ не доступен!", "Документ не доступний !");
-            AddALV(list, "##l@DmsExceptions:DocumentRestrictedSendListDoesNotMatchTheTemplate@l##", "Document Restricted SendList does not match the template", "Разрешающий список рассылок для документа не соответствует шаблону", "Дозволяє список розсилок для документа не відповідає шаблоном");
-            AddALV(list, "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##", "Duplicate Entry DocumentRestrictSendList", "Дублирование записей в разрешающем списке рассылке для документа", "Дублювання записів в дозвільному списку розсилки для документа");
-            AddALV(list, "##l@DmsExceptions:DocumentSendListDoesNotMatchTheTemplate@l##", "Document SendList does not match the template", "Список рассылок для документа не соответствует шаблону", "Список розсилок для документа не відповідає шаблоном");
-            AddALV(list, "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##", "DocumentSendList not found in DocumentRestrictedSendList", "Получатель не найден в разрешающем списке рассылок для документа", "Одержувач не найден в дозвільному списку розсилок для документа");
-            AddALV(list, "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##", "The private key can not be exported", "Приватный ключ нельзя экспортировать", "Приватний ключ не можна експортувати");
-            AddALV(list, "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", "The certificate was not found", "Сертификат не был найден", "Сертифікат не був знайдений");
-            AddALV(list, "##l@DmsExceptions:EventNotFoundOrUserHasNoAccess@l##", "User could not access this event!", "Пользователь не имеет доступа к этому событию!", "Користувач не має доступу до цієї події !");
-            AddALV(list, "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##", "Executor agent for position is not defined!", "Исполнитель для должности не определен!", "Виконавець для посади не визначений !");
-            AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##", "You have exceeded the allowed number of connected users", "Превышено разрешенное количество подключенных пользователей", "Перевищено дозволену кількість підключених користувачів");
-            AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##", "You have exceeded the allowed number of registered users", "Превышено разрешенное количество зарегистрированных пользователей", "Перевищено дозволену кількість зареєстрованих користувачів");
-            AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Срок лицензии истек", "Термін ліцензії закінчився");
-            AddALV(list, "##l@DmsExceptions:LicenceInformationError@l##", "The licence is not valid", "Лицензия недействительна", "Ліцензія недійсна");
-            AddALV(list, "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##", "Need information about correspondent!", "Нужна информация о корреспонденте!", "Потрібна інформація про кореспондента !");
-            AddALV(list, "##l@DmsExceptions:NotFilledWithAdditionalRequiredAttributes@l##", "Not filled with additional required attributes!", "Не заполнены обязательные дополнительные атрибуты!", "Чи не заповнені обов'язкові додаткові атрибути !");
-            AddALV(list, "##l@DmsExceptions:PaperListNotFoundOrUserHasNoAccess@l##", "Paper list not found or user has no access", "Список бумага не найдена или пользователь не имеет доступа", "Список папір не знайдена або користувач не має доступу");
-            AddALV(list, "##l@DmsExceptions:PaperNotFoundOrUserHasNoAccess@l##", "Paper not found or user has no access", "Бумага не найдена или пользователь не имеет доступа", "Папір не знайдено або користувач не має доступу");
-            AddALV(list, "##l@DmsExceptions:PlanPointHasAlredyBeenLaunched@l##", "Plan Point has already been Launched!", "Пункт плана уже запущен!", "Пункт плану вже запущений !");
-            AddALV(list, "##l@DmsExceptions:TaskNotFoundOrUserHasNoAccess@l##", "Task not found", "Task не найден", "Task не найден");
-            AddALV(list, "##l@DmsExceptions:TemplateDocumentIsNotValid@l##", "The document template is not valid", "Шаблон документа не корректен", "Шаблон документу не коректний");
-            AddALV(list, "##l@DmsExceptions:TemplateDocumentNotFoundOrUserHasNoAccess@l##", "User could not access this template document!", "Пользователь не имеет доступ к этот шаблону документа!", "Користувач не має доступ до цей шаблоном документа !");
-            AddALV(list, "##l@DmsExceptions:UnknownDocumentFile@l##", "Could not find appropriate document file!", "Не удалось найти соответствующий файл документа!", "Не вдалося знайти відповідний файл документа !");
-            AddALV(list, "##l@DmsExceptions:UserFileNotExists@l##", "User file does not exists on Filestore!", "Пользовательский файл не существует в файловом хранилище", "Призначений для користувача файл не існує в файловому сховищі");
-            AddALV(list, "##l@DmsExceptions:UserHasNoAccessToDocument@l##", "User could not access this document!", "Пользователь не может получить доступ к этот документ!", "Користувач не може отримати доступ до цей документ !");
-            AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "User Name already exists", "Имя пользователя уже существует", "Ім'я користувача вже існує");
-            AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!", "Очікування вже закрито !");
-            AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!", "Користувач не має доступу до цих очікувань !");
-            AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана", "Некоректний пункт плану");
-
-
-
-            //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
-            //TODO Требуется локализация (перевод ошибок)
-            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "Controler Has Already Been Defined", "Контролер уже определен", "Контролер вже визначено");
-            AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "", "", "");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "Could Not Perform Operation With Paper", "Невозможно осуществить операцию с бумажными носителями", "Неможливо здійснити операцію з паперовими носіями");
-            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "Encryption Certificate Has Been Expired", "Сертификат просрочен", "Сертифікат прострочений");
-            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NobodyIsChosen", "Никто не выбран", "Ніхто не обраний");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "Responsible Executor Has Already Been Defined", "Ответственный исполнитель уже определен", "Відповідальний виконавець вже визначено");
-            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "Responsible Executor Is Not Defined", "Ответственный исполнитель не определен", "Відповідальний виконавець не визначений");
-            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "Signing Type Is Not Allowed", "Недопустимый тип подписи", "Неприпустимий тип підпису");
-            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "Subordination Has Been Violated", "Нарушена субординация", "Порушена субординація");
-            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "Target Is Not Defined", "Получатель не определен", "Одержувач не визначений");
-            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "Task Is Not Defined", "Задача не определена", "Завдання не визначена");
-            AddALV(list, "##l@DmsExceptions:ContriolHasNotBeenChanged@l##", "Contriol Has Not Been Changed", "Параметры контроля не изменены", "Параметри контролю не змінені");
-
-            AddALV(list, "##l@Message:PositionIsVacant@l##", "Position is vacant", "Должность вакантна", "Посада вакантна");
 
             // после добавления переводов можно обновить их в базе api/v2/Languages/RefreshLanguageValues
 
@@ -502,6 +348,192 @@ namespace DMS_WebAPI.Models
 
             return list;
         }
+        public static List<AdminLanguageValues> GetDmsExceptions()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}", "Вхідна модель недійсна! {0}");
+            AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!", "Тип параметра комманди вказано невірно !");
+            AddALV(list, "##l@DmsExceptions:WrongParameterValueError@l##", "Parameters commands incorrect!", "Параметры комманды неверные!", "Параметри комманди невірні !");
+            AddALV(list, "##l@DmsExceptions:RecordNotUnique@l##", "Record is not Unique", "Запись не уникальна", "Запис не унікальна");
+
+            AddALV(list, "##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##", "The user name or password is incorrect", "Неверно введен логин или пароль", "Помилка в логіні або паролі");
+            AddALV(list, "##l@DmsExceptions:UserUnauthorized@l##", "Authorization has been denied for this request", "Пользователь не авторизован", "Користувач не авторизований");
+            AddALV(list, "##l@DmsExceptions:UserAccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
+            AddALV(list, "##l@DmsExceptions:UserIsDeactivated@l##", "Employee \"{0}\" is deactivated", "Пользователь \"{0}\" деактивирован", "Користувач \"{0}\" деактивовано");
+            AddALV(list, "##l@DmsExceptions:UserNotExecuteAnyPosition@l##", "Employee \"{0}\" does not execute any position", "Сотрудник \"{0}\" не занимает ни одной должности", "Співробітник \"{0}\" не займає жодної посади");
+            AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
+            AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
+
+            AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
+            AddALV(list, "##l@DmsExceptions:ActionIsDenied@l##", "Action \"{0}\" is Denied!", "Действие \"{0}\" запрещено", "Дія \"{0}\" заборонено");
+            AddALV(list, "##l@DmsExceptions:CannotAccessToFile@l##", "Cannot access to user file!", "Файл пользователя не доступен!", "Файл користувача не доступний !");
+            AddALV(list, "##l@DmsExceptions:CannotSaveFile@l##", "Error when save user file!", "Ошибка при сохранения файла пользователя!", "Помилка при збереження файлу користувача !");
+            AddALV(list, "##l@DmsExceptions:ClientIsNotFound@l##", "Client not found", "Клиент не найден", "Клієнт не найден");
+            AddALV(list, "##l@DmsExceptions:ClientNameAlreadyExists@l##", "Client Name already exists", "Имя клиента уже существует", "Ім'я клієнта вже існує");
+            AddALV(list, "##l@DmsExceptions:ClientCodeAlreadyExists@l##", "Domain \"{0}\" already exists", "Доменное имя \"{0}\" уже занято", "Доменне ім'я {0} вже зайнято");
+            AddALV(list, "##l@DmsExceptions:ClientVerificationCodeIncorrect@l##", "Verification code is invalid", "Проверочный код неверен", "Код перевірки невірний");
+            AddALV(list, "##l@DmsExceptions:CommandNotDefinedError@l##", "The desired command for \"{0}\" not found", "Команда для \"{0}\" не найдена", "Команда для {0} не знайдено");
+            AddALV(list, "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##", "Couldn\"t change attribute LaunchPlan", "Невозможно изменить атрибут LaunchPlan", "Неможливо змінити атрибут LaunchPlan");
+            AddALV(list, "##l@DmsExceptions:CouldNotChangeFavourite@l##", "Couldn\"t change attribute Favourite", "Невозможно изменить атрибут Favourite", "Неможливо змінити атрибут Favourite");
+            AddALV(list, "##l@DmsExceptions:CouldNotChangeIsInWork@l##", "Couldn\"t change attribute IsInWork", "Невозможно изменить атрибут IsInWork", "Неможливо змінити атрибут IsInWork");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformThisOperation@l##", "Could Not Perform This Operation!", "Операция не выполнена!", "Операція не виконана !");
+            AddALV(list, "##l@DmsExceptions:CryptographicError@l##", "Encryption Error", "Ошибка шифрования", "Помилка шифрування");
+            AddALV(list, "##l@DmsExceptions:DatabaseError@l##", "An error occurred while accessing the database!", "Ошибка при обращении к базе данных!", "Помилка при зверненні до бази даних !");
+            AddALV(list, "##l@DmsExceptions:DatabaseIsNotFound@l##", "Database not found", "База данных не найдена", "База даних не знайдено");
+            AddALV(list, "##l@DmsExceptions:DatabaseIsNotSet@l##", "The database is not set", "База данных не установлена", "База даних не встановлена");
+
+            AddALV(list, "##l@DmsExceptions:AdminRecordNotUnique@l##", "Setting record should be unique!", "Настроечная запись должена быть уникальна!", "Настроювальна запис должена бути унікальна !");
+            AddALV(list, "##l@DmsExceptions:AdminRecordCouldNotBeAdded@l##", "You could not add this setting data!", "Вы не можете добавить настроечные данные", "Ви не можете додати налагоджувальні дані");
+            AddALV(list, "##l@DmsExceptions:AdminRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить настроечные данные", "Ви не можете видалити конфігураційні дані");
+            AddALV(list, "##l@DmsExceptions:AdminRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!", "Елемент довідника не найден !");
+
+            AddALV(list, "##l@DmsExceptions:DictionaryAddressTypeCodeNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryAddressTypeNameNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryContactTypeCodeNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryContactTypeNameNotUnique@l##", "", "", "");
+
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentBankMFOCodeNotUnique@l##", "Bank \"{0}\" MFO \"{1}\" сode should be unique!", "Банк \"{0}\" c МФО \"{1}\" уже есть в справочнике", "Банк {0} c МФО {1} вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyOKPOCodeNotUnique@l##", "Company \"{0}\" OKPO сode should be unique!", "Юридическое лицо с указанным ОКПО уже есть в справочнике", "Юридична особа із зазначеним ОКПО вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyTaxCodeNotUnique@l##", "Company \"{0}\" tax сode should be unique!", "Юридическое лицо с указанным ИНН уже есть в справочнике", "Юридична особа із зазначеним ІПН вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentCompanyVATCodeNotUnique@l##", "Company \"{0}\" VAT сode should be unique!", "Юридическое лицо с указанным номером свидетельства НДС уже есть в справочнике", "Юридична особа із зазначеним номером свідоцтва ПДВ вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##", "Employee \"{0}\" passport should be unique!", "Сотрудник с указанными паспортными данными уже есть в справочнике", "Співробітник з зазначеними паспортними даними вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##", "Employee \"{0}\" personnel number should be unique!", "Сотрудник с указанным табельным номером уже есть в справочнике", "Співробітник з зазначеним табельною номером вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentEmployeeTaxCodeNotUnique@l##", "Employee \"{0}\" tax code should be unique!", "Сотрудник с указанным ИНН уже есть в справочнике", "Співробітник з зазначеним ІПН вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentNameNotUnique@l##", "Agent name \"{0}\" should be unique!", "Агент \"{0}\" уже есть в справочнике", "Агент {0} вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonPassportNotUnique@l##", "Person \"{0}\" passport should be unique!", "Физлицо с указанными паспортными данными уже есть в справочнике", "Фізособа з зазначеними паспортними даними вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentPersonTaxCodeNotUnique@l##", "Person \"{0}\" tax code should be unique!", "Физлицо с указанным ИНН уже есть в справочнике", "Фізособа із зазначеним ІПН вже є в довіднику");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##", "Agent contact type should be unique!", "Контакт с указанным типом уже есть у этого агента", "Контакт із зазначеним типом вже є у цього агента");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##", "Agent contact should be unique!", "Указанный контакт уже есть у этого агента", "Зазначений контакт вже є у цього агента");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressNameNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentAddressTypeNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryAgentAccountNumberNotUnique@l##", "", "", "");
+
+            AddALV(list, "##l@DmsExceptions:DictionaryCostomDictionaryNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryCostomDictionaryTypeNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionarysdDepartmentNotBeSubordinated@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryDepartmentNameNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryDocumentSubjectNameNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryDocumentTypeNameNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorIsInvalidPeriod@l##", "", "Период исполнения задан неверно!", "Період виконання заданий невірно!");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorNotUnique@l##", "", "Сотрудник \"{1}\" не может быть назначен на должность повторно \"{0}\" c {2} по {3}", "Співробітник {1} не може бути призначений на посаду повторно {0} c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorPersonalNotUnique@l##", "", "На должность \"{0}\" штатно назначен \"{1}\" c {2} по {3}", "На посаду {0} штатно призначений {1} c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorIONotUnique@l##", "", "На должность \"{0}\" назначен исполняющий обязанности \"{1}\" c {2} по {3}", "На посаду {0} призначений виконуючий обов'язки {1} c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryPositionExecutorReferentNotUnique@l##", "", "На должность \"{0}\" назначен референт \"{1}\" c {2} по {3}", "На посаду {0} призначений референт {1} c {2} по {3}");
+            AddALV(list, "##l@DmsExceptions:DictionaryRegistrationJournalNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryStandartSendListContentNotUnique@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:DictionaryTagNotUnique@l##", "", "", "");
+
+
+
+            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Вы не можете добавить данные в этот справочник", "Ви не можете додати дані в цей довідник");
+            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить данные из этого справочника", "Ви не можете видалити дані з цього довідника");
+            AddALV(list, "##l@DmsExceptions:DictionaryRecordNotUnique@l##", "Dictionary record should be unique!", "Элемент справочника должен быть уникален!", "Елемент довідника повинен бути унікальний !");
+            AddALV(list, "##l@DmsExceptions:DictionaryRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!", "Елемент довідника не найден !");
+            AddALV(list, "##l@DmsExceptions:DictionarySystemRecordCouldNotBeDeleted@l##", "Dictionary system record was not deleted!", "Невозможно удалить предустановленные записи справочника", "Неможливо видалити встановлені записи довідника");
+            AddALV(list, "##l@DmsExceptions:DictionaryTagNotFoundOrUserHasNoAccess@l##", "User could not access this tag!", "Пользователь не имеет доступа к этому тегу!", "Користувач не має доступу до цього тегу !");
+            AddALV(list, "##l@DmsExceptions:DocumentCannotBeModifiedOrDeleted@l##", "Document cannot be Modified or Deleted!", "Документ не может быть изменен или удален!", "Документ не може бути змінений або видалений !");
+            AddALV(list, "##l@DmsExceptions:DocumentCouldNotBeRegistered@l##", "Document registration has non been successfull! Try again!", "Регистрационный документ не была успешной! Попробуй еще раз!", "Реєстраційний документ не була успішною! Спробуй ще раз!");
+            AddALV(list, "##l@DmsExceptions:DocumentFileWasChangedExternally@l##", "The document file has been modified from the outside", "Файл документа был изменен извне", "Файл документа був змінений ззовні");
+            AddALV(list, "##l@DmsExceptions:DocumentHasAlreadyHasLink@l##", "Document has already has link!", "Документ уже имеет ссылку!", "Документ вже має посилання !");
+            AddALV(list, "##l@DmsExceptions:DocumentHasAlredyBeenRegistered@l##", "Document has already been registered!", "Документ уже зарегистрирован!", "Документ уже зареєстрований !");
+            AddALV(list, "##l@DmsExceptions:DocumentNotFoundOrUserHasNoAccess@l##", "User could not access this document!", "Документ не доступен!", "Документ не доступний !");
+            AddALV(list, "##l@DmsExceptions:DocumentRestrictedSendListDoesNotMatchTheTemplate@l##", "Document Restricted SendList does not match the template", "Разрешающий список рассылок для документа не соответствует шаблону", "Дозволяє список розсилок для документа не відповідає шаблоном");
+            AddALV(list, "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##", "Duplicate Entry DocumentRestrictSendList", "Дублирование записей в разрешающем списке рассылке для документа", "Дублювання записів в дозвільному списку розсилки для документа");
+            AddALV(list, "##l@DmsExceptions:DocumentSendListDoesNotMatchTheTemplate@l##", "Document SendList does not match the template", "Список рассылок для документа не соответствует шаблону", "Список розсилок для документа не відповідає шаблоном");
+            AddALV(list, "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##", "DocumentSendList not found in DocumentRestrictedSendList", "Получатель не найден в разрешающем списке рассылок для документа", "Одержувач не найден в дозвільному списку розсилок для документа");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificatePrivateKeyСanNotBeExported@l##", "The private key can not be exported", "Приватный ключ нельзя экспортировать", "Приватний ключ не можна експортувати");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateWasNotFound@l##", "The certificate was not found", "Сертификат не был найден", "Сертифікат не був знайдений");
+            AddALV(list, "##l@DmsExceptions:EventNotFoundOrUserHasNoAccess@l##", "User could not access this event!", "Пользователь не имеет доступа к этому событию!", "Користувач не має доступу до цієї події !");
+            AddALV(list, "##l@DmsExceptions:ExecutorAgentForPositionIsNotDefined@l##", "Executor agent for position is not defined!", "Исполнитель для должности не определен!", "Виконавець для посади не визначений !");
+            AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##", "You have exceeded the allowed number of connected users", "Превышено разрешенное количество подключенных пользователей", "Перевищено дозволену кількість підключених користувачів");
+            AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##", "You have exceeded the allowed number of registered users", "Превышено разрешенное количество зарегистрированных пользователей", "Перевищено дозволену кількість зареєстрованих користувачів");
+            AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Срок лицензии истек", "Термін ліцензії закінчився");
+            AddALV(list, "##l@DmsExceptions:LicenceInformationError@l##", "The licence is not valid", "Лицензия недействительна", "Ліцензія недійсна");
+            AddALV(list, "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##", "Need information about correspondent!", "Нужна информация о корреспонденте!", "Потрібна інформація про кореспондента !");
+            AddALV(list, "##l@DmsExceptions:NotFilledWithAdditionalRequiredAttributes@l##", "Not filled with additional required attributes!", "Не заполнены обязательные дополнительные атрибуты!", "Чи не заповнені обов'язкові додаткові атрибути !");
+            AddALV(list, "##l@DmsExceptions:PaperListNotFoundOrUserHasNoAccess@l##", "Paper list not found or user has no access", "Список бумага не найдена или пользователь не имеет доступа", "Список папір не знайдена або користувач не має доступу");
+            AddALV(list, "##l@DmsExceptions:PaperNotFoundOrUserHasNoAccess@l##", "Paper not found or user has no access", "Бумага не найдена или пользователь не имеет доступа", "Папір не знайдено або користувач не має доступу");
+            AddALV(list, "##l@DmsExceptions:PlanPointHasAlredyBeenLaunched@l##", "Plan Point has already been Launched!", "Пункт плана уже запущен!", "Пункт плану вже запущений !");
+            AddALV(list, "##l@DmsExceptions:TaskNotFoundOrUserHasNoAccess@l##", "Task not found", "Task не найден", "Task не найден");
+            AddALV(list, "##l@DmsExceptions:TemplateDocumentIsNotValid@l##", "The document template is not valid", "Шаблон документа не корректен", "Шаблон документу не коректний");
+            AddALV(list, "##l@DmsExceptions:TemplateDocumentNotFoundOrUserHasNoAccess@l##", "User could not access this template document!", "Пользователь не имеет доступ к этот шаблону документа!", "Користувач не має доступ до цей шаблоном документа !");
+            AddALV(list, "##l@DmsExceptions:UnknownDocumentFile@l##", "Could not find appropriate document file!", "Не удалось найти соответствующий файл документа!", "Не вдалося знайти відповідний файл документа !");
+            AddALV(list, "##l@DmsExceptions:UserFileNotExists@l##", "User file does not exists on Filestore!", "Пользовательский файл не существует в файловом хранилище", "Призначений для користувача файл не існує в файловому сховищі");
+            AddALV(list, "##l@DmsExceptions:UserHasNoAccessToDocument@l##", "User could not access this document!", "Пользователь не может получить доступ к этот документ!", "Користувач не може отримати доступ до цей документ !");
+            AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "User Name already exists", "Имя пользователя уже существует", "Ім'я користувача вже існує");
+            AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!", "Очікування вже закрито !");
+            AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!", "Користувач не має доступу до цих очікувань !");
+            AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана", "Некоректний пункт плану");
+
+
+
+            //pss 23.09.2016 Выявил DmsExceptions которые не имели перевода 
+            //TODO Требуется локализация (перевод ошибок)
+            AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "Controler Has Already Been Defined", "Контролер уже определен", "Контролер вже визначено");
+            AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "", "", "");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "Could Not Perform Operation With Paper", "Невозможно осуществить операцию с бумажными носителями", "Неможливо здійснити операцію з паперовими носіями");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "Encryption Certificate Has Been Expired", "Сертификат просрочен", "Сертифікат прострочений");
+            AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NobodyIsChosen", "Никто не выбран", "Ніхто не обраний");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "Responsible Executor Has Already Been Defined", "Ответственный исполнитель уже определен", "Відповідальний виконавець вже визначено");
+            AddALV(list, "##l@DmsExceptions:ResponsibleExecutorIsNotDefined@l##", "Responsible Executor Is Not Defined", "Ответственный исполнитель не определен", "Відповідальний виконавець не визначений");
+            AddALV(list, "##l@DmsExceptions:SigningTypeNotAllowed@l##", "Signing Type Is Not Allowed", "Недопустимый тип подписи", "Неприпустимий тип підпису");
+            AddALV(list, "##l@DmsExceptions:SubordinationHasBeenViolated@l##", "Subordination Has Been Violated", "Нарушена субординация", "Порушена субординація");
+            AddALV(list, "##l@DmsExceptions:TargetIsNotDefined@l##", "Target Is Not Defined", "Получатель не определен", "Одержувач не визначений");
+            AddALV(list, "##l@DmsExceptions:TaskIsNotDefined@l##", "Task Is Not Defined", "Задача не определена", "Завдання не визначена");
+            AddALV(list, "##l@DmsExceptions:ContriolHasNotBeenChanged@l##", "Contriol Has Not Been Changed", "Параметры контроля не изменены", "Параметри контролю не змінені");
+
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
+
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetMessages()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@Message:PositionIsVacant@l##", "Position is vacant", "Должность вакантна", "Посада вакантна");
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
+
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetDMSExpressions()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
+            AddALV(list, "##l@DictionaryDocumentDirections:Internal@l##", "Internal", "Собственный", "Власний");
+            AddALV(list, "##l@DictionaryDocumentDirections:Outcoming@l##", "Outcoming", "Иcходящий", "Іcходящій");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:AdditionalEvents@l##", "Secondary events", "Второстепенные события", "Другорядні події");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:DocumentMoovement@l##", "Facts movement documents", "Факты движения документов", "Факти руху документів");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:ImportantEvents@l##", "Important events", "Важные события", "Важливі події");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:Internal@l##", "Own notes", "Собственные примечания", "Власні примітки");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:Message@l##", "Messages", "Сообщения", "Повідомлення");
+            AddALV(list, "##l@DictionaryImportanceEventTypes:PaperMoovement@l##", "Paper movement", "Движение БН", "Рух ПН");
+            AddALV(list, "##l@DictionarySendTypes:SendForConsideration@l##", "For consideration", "Для рассмотрения", "Для розгляду");
+            AddALV(list, "##l@DictionarySendTypes:SendForControl@l##", "In control", "На контроль(отв.исп.)", "На контроль (отв");
+            AddALV(list, "##l@DictionarySendTypes:SendForExecution@l##", "For execution", "Соисполнителю", "Співвиконавцю");
+            AddALV(list, "##l@DictionarySendTypes:SendForInformation@l##", "For information", "Для сведения", "Для довідки");
+            AddALV(list, "##l@DictionarySendTypes:SendForInformationExternal@l##", "For information external agents", "Для сведения внешнему агенту", "Для відомості зовнішньому агенту");
+            AddALV(list, "##l@DictionarySendTypes:SendForResponsibleExecution@l##", "ResponsibleExecution", "Исполненителю(отв.исп.)", "Ісполненітелю (отв");
+            AddALV(list, "##l@DictionarySendTypes:SendForSigning@l##", "For signing", "На подпись", "На підпис");
+            AddALV(list, "##l@DictionarySendTypes:SendForVisaing@l##", "For visaing", "На визирование", "На візування");
+            AddALV(list, "##l@DictionarySendTypes:SendForАgreement@l##", "For agreement", "На согласование", "На узгодження");
+            AddALV(list, "##l@DictionarySendTypes:SendForАpproval@l##", "For approval", "На утверждение", "На затвердження");
+            AddALV(list, "##l@DictionarySubordinationTypes:Execution@l##", "Execution", "Исполнение", "Виконання");
+            AddALV(list, "##l@DictionarySubordinationTypes:Informing@l##", "Informing", "Информирование", "Інформування");
+            AddALV(list, "##l@DictionarySubscriptionStates:No@l##", "No", "Нет", "Ні");
+            AddALV(list, "##l@DictionarySubscriptionStates:Sign@l##", "Sign", "Подпись", "Підпис");
+            AddALV(list, "##l@DictionarySubscriptionStates:Violated@l##", "Violated", "Нарушена", "Порушена");
+            AddALV(list, "##l@DictionarySubscriptionStates:Visa@l##", "Visa", "Виза", "Віза");
+            AddALV(list, "##l@DictionarySubscriptionStates:Аgreement@l##", "Аgreement", "Согласование", "Узгодження");
+            AddALV(list, "##l@DictionarySubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение", "Затвердження");
+            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
+
+            return list;
+        }
 
         public static List<AdminLanguageValues> GetAdminAccessLevels()
         {
@@ -520,82 +552,84 @@ namespace DMS_WebAPI.Models
         {
             var list = new List<AdminLanguageValues>();
 
-            AddALV(list, "##l@EventTypes:ПоступилВходящийДокумент", "Receive an incoming document", "Поступил входящий документ", "Вступив вхідний документ");
-            AddALV(list, "##l@EventTypes:AddNewDocument", "Created project", "Создан проект", "Створено проект");
-            AddALV(list, "##l@EventTypes:AddDocumentFile", "Added file", "Добавлен файл", "Доданий файл");
-            AddALV(list, "##l@EventTypes:RanameDocumentFile", "Changed file", "Изменен файл", "Змінено файл");
-            AddALV(list, "##l@EventTypes:ModifyDocumentFile", "Delete the file", "Удален файл", "Вилучений файл");
-            AddALV(list, "##l@EventTypes:DeleteDocumentFileVersion", "Design document", "Исполнение документа", "Виконання документа");
-            AddALV(list, "##l@EventTypes:DeleteDocumentFile", "The signing of the document", "Подписание документа", "Підписання документа");
-            AddALV(list, "##l@EventTypes:RejectDocumentFile", "The sight of the document", "Визирование документа", "Візування документа");
-            AddALV(list, "##l@EventTypes:AcceptDocumentFile", "Adoption of the document", "Утверждение документа", "Затвердження документа");
-            AddALV(list, "##l@EventTypes:SendForInformation", "Approval of the document", "Согласование документа", "Узгодження документа");
-            AddALV(list, "##l@EventTypes:ChangeExecutor", "Directed by reference", "Направлен для сведения", "Направлений для відомості");
-            AddALV(list, "##l@EventTypes:ChangePosition", "Submitted project management", "Передано управление проектом", "Передано управління проектом");
-            AddALV(list, "##l@EventTypes:SendForExecution", "Changing position in the document", "Замена должности в документе", "Заміна посади в документі");
-            AddALV(list, "##l@EventTypes:SendForExecutionChange", "It aims for execution", "Направлен для исполнения", "Направлений для виконання");
-            AddALV(list, "##l@EventTypes:SendForControl", "Changed parameters are sent for execution", "Изменены параметры направлен для исполнения", "Змінені параметри спрямований для виконання");
-            AddALV(list, "##l@EventTypes:SendForResponsibleExecution", "It aims to control", "Направлен для контроля", "Направлений для контролю");
-            AddALV(list, "##l@EventTypes:SendForResponsibleExecutionChange", "Changed parameters are sent to the control", "Изменены параметры направлен для контроля", "Змінені параметри спрямований для контролю");
-            AddALV(list, "##l@EventTypes:SendForConsideration", "Directed to otvispolneniya", "Направлен для отв.исполнения", "Направлений для отвісполненія");
-            AddALV(list, "##l@EventTypes:SendForInformationExternal", "Changed parameters are sent to otvispolneniya", "Изменены параметры направлен для отв.исполнения", "Змінені параметри спрямований для отвісполненія");
-            AddALV(list, "##l@EventTypes:SendForVisaing", "Submitted for consideration", "Направлен для рассмотрения", "Направлений для розгляду");
-            AddALV(list, "##l@EventTypes:AffixVisaing", "Considered positive", "Рассмотрен положительно", "Розглянуто позитивно");
-            AddALV(list, "##l@EventTypes:RejectVisaing", "Is considered negative", "Рассмотрен отрицательно", "Розглянуто негативно");
-            AddALV(list, "##l@EventTypes:WithdrawVisaing", "Directed by reference external agents", "Направлен для сведения внешнему агенту", "Направлений для відомості зовнішньому агенту");
-            AddALV(list, "##l@EventTypes:SendForАgreement", "Directed at the sight", "Направлен на визирование", "Спрямований на візування");
-            AddALV(list, "##l@EventTypes:AffixАgreement", "It endorses", "Завизирован", "Завізований");
-            AddALV(list, "##l@EventTypes:RejectАgreement", "Denied in sight", "Отказано в визировании", "Відмовлено в візуванні");
-            AddALV(list, "##l@EventTypes:WithdrawАgreement", "Withdrawn from sight", "Отозван с визирования", "Відкликаний з візування");
-            AddALV(list, "##l@EventTypes:SendForАpproval", "It aims for approval", "Направлен на согласование", "Направлений на узгодження");
-            AddALV(list, "##l@EventTypes:AffixАpproval", "Agreed", "Согласован", "Погоджено");
-            AddALV(list, "##l@EventTypes:RejectАpproval", "Denied agreement", "Отказано в согласовании", "Відмовлено в погодженні");
-            AddALV(list, "##l@EventTypes:WithdrawАpproval", "Withdrawn from the agreement", "Отозван с согласования", "Відкликаний з узгодження");
-            AddALV(list, "##l@EventTypes:SendForSigning", "Submitted for approval", "Направлен на утверждение", "Направлений на затвердження");
-            AddALV(list, "##l@EventTypes:AffixSigning", "Approved", "Утвержден", "Затверджено");
-            AddALV(list, "##l@EventTypes:RejectSigning", "It denied in a statement", "Отказано в утверждении", "Відмовлено в утвердженні");
-            AddALV(list, "##l@EventTypes:WithdrawSigning", "Withdrawn from the approval", "Отозван с утверждения", "Відкликаний з утвердження");
-            AddALV(list, "##l@EventTypes:ControlOn", "I sent for signature", "Направлен на подпись", "Направлений на підпис");
-            AddALV(list, "##l@EventTypes:ControlOff", "Signed", "Подписан", "Підписано");
-            AddALV(list, "##l@EventTypes:ControlChange", "It refused to sign", "Отказано в подписании", "Відмовлено в підписанні");
-            AddALV(list, "##l@EventTypes:ControlTargetChange", "Withdrawn from the signing", "Отозван с подписания", "Відкликаний з підписання");
-            AddALV(list, "##l@EventTypes:MarkExecution", "To take control", "Взят на контроль", "Взято на контроль");
-            AddALV(list, "##l@EventTypes:AcceptResult", "Out of control", "Снят с контроля", "Знятий з контролю");
-            AddALV(list, "##l@EventTypes:RejectResult", "Change the control parameters", "Изменить параметры контроля", "Змінити параметри контролю");
-            AddALV(list, "##l@EventTypes:SendMessage", "Change the control parameters for the artist", "Изменить параметры контроля для исполнителя", "Змінити параметри контролю для виконавця");
-            AddALV(list, "##l@EventTypes:AddNewPaper", "The order is made", "Поручение выполнено", "Доручення виконано");
-            AddALV(list, "##l@EventTypes:MarkOwnerDocumentPaper", "The result is adopted", "Результат принят", "Результат прийнятий");
-            AddALV(list, "##l@EventTypes:MarkСorruptionDocumentPaper", "The result is rejected", "Результат отклонен", "Результат відхилений");
-            AddALV(list, "##l@EventTypes:MoveDocumentPaper", "Document controls", "Контролирую документ", "Контролюю документ");
-            AddALV(list, "##l@EventTypes:AddLink", "It is the responsibility of the Executive", "Являюсь ответственным исполнителем", "Є відповідальним виконавцем");
-            AddALV(list, "##l@EventTypes:DeleteLink", "I am a co-executor", "Являюсь соисполнителем", "Є співвиконавцем");
-            AddALV(list, "##l@EventTypes:AddNote", "Accepted", "Принято", "Прийнято");
-            AddALV(list, "##l@EventTypes:TaskFormulation", "Canceled", "Отменено", "Скасовано");
-            AddALV(list, "##l@EventTypes:Registered", "Changed the text", "Изменен текст", "Змінено текст");
-            AddALV(list, "##l@EventTypes:LaunchPlan", "Established execution time", "Установлен срок исполнения", "Встановлено термін виконання");
-            AddALV(list, "##l@EventTypes:StopPlan", "Changed the date of performance", "Изменен срок исполнения", "Змінено термін виконання");
-            AddALV(list, "##l@EventTypes:SetInWork", "Appointed Executive Responsibility", "Назначен ответсвенный исполнитель", "Призначено відповідальний виконавець");
-            AddALV(list, "##l@EventTypes:SetOutWork", "Revoke the appointment of the Executive Responsibility", "Отменено назначение ответсвенным исполнителем", "Скасовано призначення відповідальним виконавцем");
-            AddALV(list, "##l@EventTypes:ОчереднойСрокИсполнения", "The next execution time", "Очередной срок исполнения", "Черговий термін виконання");
-            AddALV(list, "##l@EventTypes:ИстекаетСрокИсполнения", "Deadline Deadline", "Истекает срок исполнения", "Закінчується строк виконання");
-            AddALV(list, "##l@EventTypes:СрокИсполненияИстек", "Deadline expired", "Срок исполнения истек", "Термін виконання закінчився");
-            AddALV(list, "##l@EventTypes:НаправленоСообщение", "It sent a message", "Направлено сообщение", "Направлено повідомлення");
-            AddALV(list, "##l@EventTypes:ДобавленБумажныйНоситель", "Added a paper carrier", "Добавлен бумажный носитель", "Доданий паперовий носій");
-            AddALV(list, "##l@EventTypes:ОтметкаНахожденияБумажногоНосителяУСебя", "Stamp paper carrier location at", "Отметка нахождения бумажного носителя у себя", "Відмітка знаходження паперового носія у себе");
-            AddALV(list, "##l@EventTypes:ОтметкаПорчиБумажногоНосителя", "Mark damage paper", "Отметка порчи бумажного носителя", "Відмітка псування паперового носія");
-            AddALV(list, "##l@EventTypes:ПереданыБумажныеНосители", "Transferred paper", "Переданы бумажные носители", "Передано паперові носії");
-            AddALV(list, "##l@EventTypes:Примечание", "Note", "Примечание", "Примітка");
-            AddALV(list, "##l@EventTypes:ФормулировкаЗадачи", "Problem Statement", "Формулировка задачи", "Формулювання завдання");
-            AddALV(list, "##l@EventTypes:ПереданНаРассмотрениеРуководителю", "Referred to the supervisor", "Передан на рассмотрение руководителю", "Передано на розгляд керівнику");
-            AddALV(list, "##l@EventTypes:ПолученПослеРассмотренияРуководителем", "Obtained after consideration of the head", "Получен после рассмотрения руководителем", "Отримано після розгляду керівником");
-            AddALV(list, "##l@EventTypes:НаправленНаРегистрацию", "Directed at registration", "Направлен на регистрацию", "Направлений на реєстрацію");
-            AddALV(list, "##l@EventTypes:Зарегистрирован", "Joined", "Зарегистрирован", "З нами");
-            AddALV(list, "##l@EventTypes:ОтказаноВРегистрации", "Denied registration", "Отказано в регистрации", "Відмовлено в реєстрації");
-            AddALV(list, "##l@EventTypes:ОтозванПроект", "Withdraw the draft", "Отозван проект", "Відкликаний проект");
-            AddALV(list, "##l@EventTypes:ЗапущеноИсполнениеПланаРаботыПоДокументу", "Started by execution of the work plan document", "Запущено исполнение плана работы по документу", "Запущено виконання плану роботи по документу");
-            AddALV(list, "##l@EventTypes:ОстановленоИсполнениеПланаРаботыПоДокументу", "It stops the execution of the document work plan", "Остановлено исполнение плана работы по документу", "Зупинено виконання плану роботи по документу");
-            AddALV(list, "##l@EventTypes:РаботаВозобновлена", "Work resumed", "Работа возобновлена", "Робота відновлено");
-            AddALV(list, "##l@EventTypes:РаботаЗавершена", "Job completed", "Работа завершена", "Робота завершена");
+            AddALV(list, "##l@EventTypes:ПоступилВходящийДокумент@l##", "Receive an incoming document", "Поступил входящий документ", "Вступив вхідний документ");
+            AddALV(list, "##l@EventTypes:AddNewDocument@l##", "Created project", "Создан проект", "Створено проект");
+            AddALV(list, "##l@EventTypes:AddDocumentFile@l##", "Added file", "Добавлен файл", "Доданий файл");
+            AddALV(list, "##l@EventTypes:RanameDocumentFile@l##", "Changed file", "Изменен файл", "Змінено файл");
+            AddALV(list, "##l@EventTypes:ModifyDocumentFile@l##", "Delete the file", "Удален файл", "Вилучений файл");
+            AddALV(list, "##l@EventTypes:DeleteDocumentFileVersion@l##", "Design document", "Исполнение документа", "Виконання документа");
+            AddALV(list, "##l@EventTypes:DeleteDocumentFile@l##", "The signing of the document", "Подписание документа", "Підписання документа");
+            AddALV(list, "##l@EventTypes:RejectDocumentFile@l##", "The sight of the document", "Визирование документа", "Візування документа");
+            AddALV(list, "##l@EventTypes:AcceptDocumentFile@l##", "Adoption of the document", "Утверждение документа", "Затвердження документа");
+            AddALV(list, "##l@EventTypes:SendForInformation@l##", "Approval of the document", "Согласование документа", "Узгодження документа");
+            AddALV(list, "##l@EventTypes:ChangeExecutor@l##", "Directed by reference", "Направлен для сведения", "Направлений для відомості");
+            AddALV(list, "##l@EventTypes:ChangePosition@l##", "Submitted project management", "Передано управление проектом", "Передано управління проектом");
+            AddALV(list, "##l@EventTypes:SendForExecution@l##", "Changing position in the document", "Замена должности в документе", "Заміна посади в документі");
+            AddALV(list, "##l@EventTypes:SendForExecutionChange@l##", "It aims for execution", "Направлен для исполнения", "Направлений для виконання");
+            AddALV(list, "##l@EventTypes:SendForControl@l##", "Changed parameters are sent for execution", "Изменены параметры направлен для исполнения", "Змінені параметри спрямований для виконання");
+            AddALV(list, "##l@EventTypes:SendForResponsibleExecution@l##", "It aims to control", "Направлен для контроля", "Направлений для контролю");
+            AddALV(list, "##l@EventTypes:SendForResponsibleExecutionChange@l##", "Changed parameters are sent to the control", "Изменены параметры направлен для контроля", "Змінені параметри спрямований для контролю");
+            AddALV(list, "##l@EventTypes:SendForConsideration@l##", "Directed to otvispolneniya", "Направлен для отв.исполнения", "Направлений для отвісполненія");
+            AddALV(list, "##l@EventTypes:SendForInformationExternal@l##", "Changed parameters are sent to otvispolneniya", "Изменены параметры направлен для отв.исполнения", "Змінені параметри спрямований для отвісполненія");
+            AddALV(list, "##l@EventTypes:SendForVisaing@l##", "Submitted for consideration", "Направлен для рассмотрения", "Направлений для розгляду");
+            AddALV(list, "##l@EventTypes:AffixVisaing@l##", "Considered positive", "Рассмотрен положительно", "Розглянуто позитивно");
+            AddALV(list, "##l@EventTypes:RejectVisaing@l##", "Is considered negative", "Рассмотрен отрицательно", "Розглянуто негативно");
+            AddALV(list, "##l@EventTypes:WithdrawVisaing@l##", "Directed by reference external agents", "Направлен для сведения внешнему агенту", "Направлений для відомості зовнішньому агенту");
+            AddALV(list, "##l@EventTypes:SendForАgreement@l##", "Directed at the sight", "Направлен на визирование", "Спрямований на візування");
+            AddALV(list, "##l@EventTypes:AffixАgreement@l##", "It endorses", "Завизирован", "Завізований");
+            AddALV(list, "##l@EventTypes:RejectАgreement@l##", "Denied in sight", "Отказано в визировании", "Відмовлено в візуванні");
+            AddALV(list, "##l@EventTypes:WithdrawАgreement@l##", "Withdrawn from sight", "Отозван с визирования", "Відкликаний з візування");
+            AddALV(list, "##l@EventTypes:SendForАpproval@l##", "It aims for approval", "Направлен на согласование", "Направлений на узгодження");
+            AddALV(list, "##l@EventTypes:AffixАpproval@l##", "Agreed", "Согласован", "Погоджено");
+            AddALV(list, "##l@EventTypes:RejectАpproval@l##", "Denied agreement", "Отказано в согласовании", "Відмовлено в погодженні");
+            AddALV(list, "##l@EventTypes:WithdrawАpproval@l##", "Withdrawn from the agreement", "Отозван с согласования", "Відкликаний з узгодження");
+            AddALV(list, "##l@EventTypes:SendForSigning@l##", "Submitted for approval", "Направлен на утверждение", "Направлений на затвердження");
+            AddALV(list, "##l@EventTypes:AffixSigning@l##", "Approved", "Утвержден", "Затверджено");
+            AddALV(list, "##l@EventTypes:RejectSigning@l##", "It denied in a statement", "Отказано в утверждении", "Відмовлено в утвердженні");
+            AddALV(list, "##l@EventTypes:WithdrawSigning@l##", "Withdrawn from the approval", "Отозван с утверждения", "Відкликаний з утвердження");
+            AddALV(list, "##l@EventTypes:ControlOn@l##", "I sent for signature", "Направлен на подпись", "Направлений на підпис");
+            AddALV(list, "##l@EventTypes:ControlOff@l##", "Signed", "Подписан", "Підписано");
+            AddALV(list, "##l@EventTypes:ControlChange@l##", "It refused to sign", "Отказано в подписании", "Відмовлено в підписанні");
+            AddALV(list, "##l@EventTypes:ControlTargetChange@l##", "Withdrawn from the signing", "Отозван с подписания", "Відкликаний з підписання");
+            AddALV(list, "##l@EventTypes:MarkExecution@l##", "To take control", "Взят на контроль", "Взято на контроль");
+            AddALV(list, "##l@EventTypes:AcceptResult@l##", "Out of control", "Снят с контроля", "Знятий з контролю");
+            AddALV(list, "##l@EventTypes:RejectResult@l##", "Change the control parameters", "Изменить параметры контроля", "Змінити параметри контролю");
+            AddALV(list, "##l@EventTypes:SendMessage@l##", "Change the control parameters for the artist", "Изменить параметры контроля для исполнителя", "Змінити параметри контролю для виконавця");
+            AddALV(list, "##l@EventTypes:AddNewPaper@l##", "The order is made", "Поручение выполнено", "Доручення виконано");
+            AddALV(list, "##l@EventTypes:MarkOwnerDocumentPaper@l##", "The result is adopted", "Результат принят", "Результат прийнятий");
+            AddALV(list, "##l@EventTypes:MarkСorruptionDocumentPaper@l##", "The result is rejected", "Результат отклонен", "Результат відхилений");
+            AddALV(list, "##l@EventTypes:MoveDocumentPaper@l##", "Document controls", "Контролирую документ", "Контролюю документ");
+            AddALV(list, "##l@EventTypes:AddLink@l##", "It is the responsibility of the Executive", "Являюсь ответственным исполнителем", "Є відповідальним виконавцем");
+            AddALV(list, "##l@EventTypes:DeleteLink@l##", "I am a co-executor", "Являюсь соисполнителем", "Є співвиконавцем");
+            AddALV(list, "##l@EventTypes:AddNote@l##", "Accepted", "Принято", "Прийнято");
+            AddALV(list, "##l@EventTypes:TaskFormulation@l##", "Canceled", "Отменено", "Скасовано");
+            AddALV(list, "##l@EventTypes:Registered@l##", "Changed the text", "Изменен текст", "Змінено текст");
+            AddALV(list, "##l@EventTypes:LaunchPlan@l##", "Established execution time", "Установлен срок исполнения", "Встановлено термін виконання");
+            AddALV(list, "##l@EventTypes:StopPlan@l##", "Changed the date of performance", "Изменен срок исполнения", "Змінено термін виконання");
+            AddALV(list, "##l@EventTypes:SetInWork@l##", "Appointed Executive Responsibility", "Назначен ответсвенный исполнитель", "Призначено відповідальний виконавець");
+            AddALV(list, "##l@EventTypes:SetOutWork@l##", "Revoke the appointment of the Executive Responsibility", "Отменено назначение ответсвенным исполнителем", "Скасовано призначення відповідальним виконавцем");
+            AddALV(list, "##l@EventTypes:ОчереднойСрокИсполнения@l##", "The next execution time", "Очередной срок исполнения", "Черговий термін виконання");
+            AddALV(list, "##l@EventTypes:ИстекаетСрокИсполнения@l##", "Deadline Deadline", "Истекает срок исполнения", "Закінчується строк виконання");
+            AddALV(list, "##l@EventTypes:СрокИсполненияИстек@l##", "Deadline expired", "Срок исполнения истек", "Термін виконання закінчився");
+            AddALV(list, "##l@EventTypes:НаправленоСообщение@l##", "It sent a message", "Направлено сообщение", "Направлено повідомлення");
+            AddALV(list, "##l@EventTypes:ДобавленБумажныйНоситель@l##", "Added a paper carrier", "Добавлен бумажный носитель", "Доданий паперовий носій");
+            AddALV(list, "##l@EventTypes:ОтметкаНахожденияБумажногоНосителяУСебя@l##", "Stamp paper carrier location at", "Отметка нахождения бумажного носителя у себя", "Відмітка знаходження паперового носія у себе");
+            AddALV(list, "##l@EventTypes:ОтметкаПорчиБумажногоНосителя@l##", "Mark damage paper", "Отметка порчи бумажного носителя", "Відмітка псування паперового носія");
+            AddALV(list, "##l@EventTypes:ПереданыБумажныеНосители@l##", "Transferred paper", "Переданы бумажные носители", "Передано паперові носії");
+            AddALV(list, "##l@EventTypes:Примечание@l##", "Note", "Примечание", "Примітка");
+            AddALV(list, "##l@EventTypes:ФормулировкаЗадачи@l##", "Problem Statement", "Формулировка задачи", "Формулювання завдання");
+            AddALV(list, "##l@EventTypes:ПереданНаРассмотрениеРуководителю@l##", "Referred to the supervisor", "Передан на рассмотрение руководителю", "Передано на розгляд керівнику");
+            AddALV(list, "##l@EventTypes:ПолученПослеРассмотренияРуководителем@l##", "Obtained after consideration of the head", "Получен после рассмотрения руководителем", "Отримано після розгляду керівником");
+            AddALV(list, "##l@EventTypes:НаправленНаРегистрацию@l##", "Directed at registration", "Направлен на регистрацию", "Направлений на реєстрацію");
+            AddALV(list, "##l@EventTypes:Зарегистрирован@l##", "Joined", "Зарегистрирован", "З нами");
+            AddALV(list, "##l@EventTypes:ОтказаноВРегистрации@l##", "Denied registration", "Отказано в регистрации", "Відмовлено в реєстрації");
+            AddALV(list, "##l@EventTypes:ОтозванПроект@l##", "Withdraw the draft", "Отозван проект", "Відкликаний проект");
+            AddALV(list, "##l@EventTypes:ЗапущеноИсполнениеПланаРаботыПоДокументу@l##", "Started by execution of the work plan document", "Запущено исполнение плана работы по документу", "Запущено виконання плану роботи по документу");
+            AddALV(list, "##l@EventTypes:ОстановленоИсполнениеПланаРаботыПоДокументу@l##", "It stops the execution of the document work plan", "Остановлено исполнение плана работы по документу", "Зупинено виконання плану роботи по документу");
+            AddALV(list, "##l@EventTypes:РаботаВозобновлена@l##", "Work resumed", "Работа возобновлена", "Робота відновлено");
+            AddALV(list, "##l@EventTypes:РаботаЗавершена@l##", "Job completed", "Работа завершена", "Робота завершена");
+
+
 
 
 
@@ -604,8 +638,61 @@ namespace DMS_WebAPI.Models
             return list;
         }
 
+        public static List<AdminLanguageValues> GetAdminRoles()
+        {
+            var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@Roles:Administrator@l##", "Administrator", "Администратор", "Адміністратор");
+            AddALV(list, "##l@Roles:ViewDocuments@l##", "View documents", "Просмотр документов", "Перегляд документів");
+            AddALV(list, "##l@Roles:ExecuteDocumentActions@l##", "Perform actions on the document", "Выполнения действий по документу", "Виконання дій по документу");
+            AddALV(list, "##l@Roles:ControlDocumentActions@l##", "the control of the Office for the document", "Управление контролем по документу", "Управління контролем по документу");
+            AddALV(list, "##l@Roles:SigningDocumentActions@l##", "The signing of the document", "Подписание документа", "Підписання документа");
+            AddALV(list, "##l@Roles:PaperActions@l##", "Management paper-based records", "Управление бумажными носителями по документу", "Управління паперовими носіями по документу");
+            AddALV(list, "##l@Roles:AccessDocumentActions@l##", "Control access to documents", "Управление доступом к документам", "Управління доступом до документів");
+            AddALV(list, "##l@Roles:DmsDictionaryActions@l##", "Managing directories dokumentoooborota", "Управление справочниками документоооборота", "Управління довідниками документоооборота");
+            AddALV(list, "##l@Roles:DictionaryAgentActions@l##", "Management handbook counterparties", "Управление справочником агентов", "Управління довідником агентів");
+            AddALV(list, "##l@Roles:DictionaryAgentContactActions@l##", "Management Contact Directory kotragentov", "Управление справочником контактных лиц котрагентов", "Управління довідником контактних осіб котрагентов");
+            AddALV(list, "##l@Roles:StaffListActions@l##", "Management structure of the organization", "Управление структурой организации", "Управління структурою організації");
 
 
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetPositionExecutorTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@PositionExecutorTypes:Personal@l##", "Appointed to the post", "Назначен на должность", "Призначено на посаду");
+            AddALV(list, "##l@PositionExecutorTypes:IO@l##", "Performed duties", "Исполяет обязанности", "Виконує обов'язки");
+            AddALV(list, "##l@PositionExecutorTypes:Referent@l##", "It is the reviewer", "Является референтом", "Є референтом");
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetAddressTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@AddressTypes:Working@l##", "working", "рабочий", "робочий");
+            AddALV(list, "##l@AddressTypes:Legal@l##", "legal", "юридический", "юридичний");
+            AddALV(list, "##l@AddressTypes:Actual@l##", "actual", "фактический", "фактичний");
+            AddALV(list, "##l@AddressTypes:Current@l##", "current", "текущий", "поточний");
+
+            AddALV(list, "##l@AddressTypesCode:Working@l##", "wrk.", "раб.", "роб.");
+            AddALV(list, "##l@AddressTypesCode:Legal@l##", "leg.", "юр.", "юр.");
+            AddALV(list, "##l@AddressTypesCode:Actual@l##", "act.", "факт.", "факт.");
+            AddALV(list, "##l@AddressTypesCode:Current@l##", "cur.", "тек.", "пот.");
+            return list;
+        }
+        public static List<AdminLanguageValues> GetLinkTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@LinkTypes:Answer@l##", "In reply", "В ответ", "У відповідь");
+            AddALV(list, "##l@LinkTypes:Execution@l##", "In pursuance of", "Во исполнение", "На виконання");
+            AddALV(list, "##l@LinkTypes:Additionally@l##", "In addition", "В дополнение", "На додаток");
+            AddALV(list, "##l@LinkTypes:Repeatedly@l##", "Repeatedly", "Повторно", "Повторно");
+            AddALV(list, "##l@LinkTypes:Change@l##", "To change", "Во изменение", "На зміну");
+            AddALV(list, "##l@LinkTypes:Cancel@l##", "In cancellation", "В отмену", "В скасування");
+
+            return list;
+        }
         #endregion
 
 

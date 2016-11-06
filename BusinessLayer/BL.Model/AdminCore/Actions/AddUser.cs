@@ -13,5 +13,6 @@ namespace BL.Model.AdminCore.Actions
         [Required]
         public string UserId { get; set; }
 
+
     }
 }

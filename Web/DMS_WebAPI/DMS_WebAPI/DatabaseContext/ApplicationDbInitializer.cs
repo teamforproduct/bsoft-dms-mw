@@ -1,5 +1,4 @@
-﻿using BL.Database.DatabaseContext;
-using DMS_WebAPI.DBModel;
+﻿using DMS_WebAPI.DBModel;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
