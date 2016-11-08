@@ -674,7 +674,7 @@ namespace BL.Model.Exception
     public class DictionaryAgentEmployeePersonnelNumberNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##";
-        public DictionaryAgentEmployeePersonnelNumberNotUnique(string PersonnelNumber) : base(_MESSAGE) { Parameters = new List<string> { PersonnelNumber }; }
+        public DictionaryAgentEmployeePersonnelNumberNotUnique(int PersonnelNumber) : base(_MESSAGE) { Parameters = new List<string> { PersonnelNumber.ToString() }; }
         public DictionaryAgentEmployeePersonnelNumberNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 

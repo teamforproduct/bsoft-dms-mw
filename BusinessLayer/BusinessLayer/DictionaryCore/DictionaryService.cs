@@ -235,11 +235,6 @@ namespace BL.Logic.DictionaryCore
 
         }
 
-        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context)
-        {
-            return _dictDb.GetAgentEmployeePersonnelNumber(context);
-        }
-
         public FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId)
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);

@@ -2131,7 +2131,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.PersonnelNumber.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
+                        ObjectText = x.agent.PersonnelNumber + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
                     }).ToList());
                 }
 

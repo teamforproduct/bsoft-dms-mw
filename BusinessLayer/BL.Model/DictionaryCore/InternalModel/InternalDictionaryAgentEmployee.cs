@@ -130,7 +130,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// табельный номер
         /// </summary>
-        public string PersonnelNumber { get; set; }
+        public int PersonnelNumber { get; set; }
         #endregion
 
         #region [+] AgentUser ...
@@ -153,7 +153,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Пароль
         /// </summary>
-        public string PasswordHash { get; set; }
 
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением

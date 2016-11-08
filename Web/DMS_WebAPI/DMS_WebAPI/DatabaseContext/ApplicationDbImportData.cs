@@ -342,6 +342,11 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@AdminActions:SetSubordination@l##", "Set subordination", "Управление правилами рассылки", "Управління правилами розсилки");
             AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения", "Додати адміністратора підрозділу");
             AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения", "Видалити адміністратора підрозділу");
+            AddALV(list, "##l@AdminActions:ChangeLogin@l##", "Change login", "Изменить логин", "Додати роль");
+            AddALV(list, "##l@AdminActions:ChangePassword@l##", "Change password", "Изменить пароль", "Додати роль");
+            AddALV(list, "##l@AdminActions:ChangeLockout@l##", "Change lockout", "Добавить роль", "Додати роль");
+            AddALV(list, "##l@AdminActions:KillSessions@l##", "Kill sessions", "Выйти на всех устройствах", "Вийти на всіх пристроях");
+
             AddALV(list, "##l@SystemActions:SetSetting@l##", "Add setting", "Добавить настройку", "Додати настройку");
 
             // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.

@@ -33,14 +33,19 @@ namespace BL.Logic.DictionaryCore
             _adminService.VerifyAccess(_context, CommandType, false);
 
             Model.Name?.Trim();
-            Model.PersonnelNumber?.Trim();
             Model.PassportSerial?.Trim();
             Model.TaxCode?.Trim();
 
-            // Обрезаю время для даты рождения и даты получения паспорта
-            //if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
+            // вычисляю табельный номер. если не передан
+            if (Model.PersonnelNumber < 1)
+            {
+                Model.PersonnelNumber = _dictDb.GetAgentEmployeePersonnelNumber(_context);
+            }
 
-            //if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
+            // Обрезаю время для даты рождения и даты получения паспорта
+            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
+
+            if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
 
             if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
@@ -54,7 +59,7 @@ namespace BL.Logic.DictionaryCore
 
             if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
             {
-                PersonnelNumberExact = Model.PersonnelNumber,
+                PersonnelNumber = Model.PersonnelNumber,
                 NotContainsIDs = new List<int> { Model.Id }
             }))
             {

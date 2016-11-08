@@ -81,7 +81,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// табельный номер сотрудника
         /// </summary>
-        public string PersonnelNumber { get; set; }
+        public int PersonnelNumber { get; set; }
         #endregion
 
         #region [+] User ...
