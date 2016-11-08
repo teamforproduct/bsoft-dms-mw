@@ -33,5 +33,7 @@ namespace BL.Logic.SystemCore.Interfaces
         int AddSystemDate(IContext ctx, DateTime date);
         DateTime GetSystemDate(IContext ctx);
 
+        void CheckSystemActions();
+
     }
 }
