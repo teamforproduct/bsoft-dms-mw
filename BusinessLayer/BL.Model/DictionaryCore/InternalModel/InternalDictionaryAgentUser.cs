@@ -19,7 +19,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             UserId = model.UserId;
             Login = model.Login;
-            PasswordHash = model.PasswordHash;
+            //PasswordHash = model.PasswordHash;
             IsActive = model.IsActive;
         }
 
@@ -30,7 +30,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             //UserId = model.UserId;
             Login = model.Login;
-            PasswordHash = model.PasswordHash;
+            //PasswordHash = model.PasswordHash;
             LastChangeDate = model.LastChangeDate;
             LastChangeUserId = model.LastChangeUserId;
         }
@@ -48,11 +48,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-
-        /// <summary>
-        /// Пароль
-        /// </summary>
-        public string PasswordHash { get; set; }
 
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением

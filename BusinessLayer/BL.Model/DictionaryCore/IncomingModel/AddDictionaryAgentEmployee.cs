@@ -25,14 +25,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Пароль
         /// </summary>
-        [IgnoreDataMember]
-        public string PasswordHash { get; set; }
 
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
-        [IgnoreDataMember]
-        public int? LanguageId { get; set; }
+        public int LanguageId { get; set; }
 
         /// <summary>
         /// Связь с WEB - USER

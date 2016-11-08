@@ -244,10 +244,15 @@ namespace BL.Logic.DictionaryCore
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);
 
+            string fileContect = string.Empty;
+
+            if (userPicture.Image != null)
+                fileContect = Convert.ToBase64String(userPicture.Image);
+
             var uPic = new FrontDictionaryAgentUserPicture()
             {
                 Id = userPicture.Id,
-                FileContent = Convert.ToBase64String(userPicture.Image)
+                FileContent = fileContect
             };
 
             return uPic;

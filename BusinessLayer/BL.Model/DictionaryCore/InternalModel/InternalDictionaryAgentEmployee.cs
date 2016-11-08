@@ -39,7 +39,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             //UserId = model.UserId;
             //Login = model.Login;
-            PasswordHash = model.PasswordHash;
+            //PasswordHash = model.PasswordHash;
             Login = model.Login;
             Phone = model.Phone;
             #endregion

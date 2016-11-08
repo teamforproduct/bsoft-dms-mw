@@ -123,11 +123,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [HttpGet]
         [Route("GetImage")]
         [ResponseType(typeof(List<FrontDictionaryAgentUserPicture>))]
-        public IHttpActionResult GetImage([FromUri] int employeeId)
+        public IHttpActionResult GetImage([FromUri] int AgentId)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentUserPicture(ctx, employeeId);
+            var tmpItems = tmpService.GetDictionaryAgentUserPicture(ctx, AgentId);
             return new JsonResult(tmpItems, this);
         }
 

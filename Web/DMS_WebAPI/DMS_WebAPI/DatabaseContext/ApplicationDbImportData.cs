@@ -364,6 +364,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UserNotExecuteAnyPosition@l##", "Employee \"{0}\" does not execute any position", "Сотрудник \"{0}\" не занимает ни одной должности", "Співробітник \"{0}\" не займає жодної посади");
             AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
             AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
+            AddALV(list, "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##", "Change password required", "Необходимо изменить пароль", "Необхідно змінити пароль");
+            AddALV(list, "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##", "Email сonfirm required", "Необходимо подтвердить емейл", "Необхідно підтвердити емейл");
 
             AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
             AddALV(list, "##l@DmsExceptions:ActionIsDenied@l##", "Action \"{0}\" is Denied!", "Действие \"{0}\" запрещено", "Дія \"{0}\" заборонено");
