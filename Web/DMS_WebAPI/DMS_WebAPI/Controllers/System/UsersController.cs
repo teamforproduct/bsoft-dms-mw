@@ -24,6 +24,8 @@ using BL.Model.Users;
 using DMS_WebAPI.Models;
 using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
+using BL.CrossCutting.Context;
+using BL.Model.Constants;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -137,10 +139,7 @@ namespace DMS_WebAPI.Controllers
                 throw new DatabaseIsNotFound();
             }
 
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
-
-            mngContext.Set(db, model.ClientId, user.IsChangePasswordRequired);
+            mngContext.Set(db, model.ClientId);
             var ctx = mngContext.Get();
 
             var logger = DmsResolver.Current.Get<ILogger>();
@@ -279,7 +278,7 @@ namespace DMS_WebAPI.Controllers
             if (user == null)
                 throw new UserNameIsNotDefined();
 
-            user.LockoutEnabled = model.IsLockout;
+            user.IsLockout = model.IsLockout;
 
             var result = await userManager.UpdateAsync(user);
 
@@ -364,12 +363,23 @@ namespace DMS_WebAPI.Controllers
 
                 callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 
-                var htmlContent = String.Format(
-                        @"Thank you for updating your email. Please confirm the email by clicking this link: 
-        <br><a href='{0}'>Confirm new email</a>",
-                        callbackurl);
+                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.PartialViewNameChangeLoginAgentUserVerificationEmail);
 
-                var msSetting = new BL.Model.SystemCore.InternalModel.InternalSendMailParameters
+                var settings = DmsResolver.Current.Get<ISettings>();
+
+                var adminCtx = new AdminContext(ctx);
+
+                var msSetting = new BL.Model.SystemCore.InternalModel.InternalSendMailParameters(
+                    new BL.Model.SystemCore.InternalModel.InternalSendMailServerParameters
+                    {
+                        CheckInterval = settings.GetSetting<int>(adminCtx, SettingConstants.MAIL_TIMEOUT_MIN),
+                        ServerType = (MailServerType)settings.GetSetting<int>(adminCtx, SettingConstants.MAIL_SERVER_TYPE),
+                        FromAddress = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_SYSTEMMAIL),
+                        Login = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_LOGIN),
+                        Pass = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_PASS),
+                        Server = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_NAME),
+                        Port = settings.GetSetting<int>(adminCtx, SettingConstants.MAIL_SERVER_PORT)
+                    })
                 {
                     Body = htmlContent,
                     ToAddress = model.NewEmail,
@@ -383,6 +393,9 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(null, this);
         }
 
+        [Route("ConfirmEmailAgentUser")]
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<IHttpActionResult> ConfirmEmailAgentUser(string userId, string code)
         {
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();

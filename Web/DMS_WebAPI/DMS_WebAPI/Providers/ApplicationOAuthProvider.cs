@@ -158,12 +158,17 @@ namespace DMS_WebAPI.Providers
                 if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
                     throw new EmailConfirmRequiredAgentUser();
 
+                if (user.IsLockout)
+                    throw new LockoutAgentUser();
+
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
                 var mngContext = DmsResolver.Current.Get<UserContexts>();
 
                 // Добавляю пользовательский контекст в коллекцию
-                var ctx = mngContext.Set(token, userId, clientCode);
+                var ctx = mngContext.Set(token, userId, clientCode, user.IsChangePasswordRequired);
+
+                context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
             }
 
             return Task.FromResult<object>(null);

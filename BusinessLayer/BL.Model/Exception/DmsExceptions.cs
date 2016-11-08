@@ -936,4 +936,11 @@ namespace BL.Model.Exception
         public EmailConfirmRequiredAgentUser() : base(_MESSAGE) { }
         public EmailConfirmRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class LockoutAgentUser : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:LockoutAgentUser@l##";
+        public LockoutAgentUser() : base(_MESSAGE) { }
+        public LockoutAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 }

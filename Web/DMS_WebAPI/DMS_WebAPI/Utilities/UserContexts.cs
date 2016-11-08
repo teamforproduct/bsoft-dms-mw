@@ -119,7 +119,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        
+
 
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="clientCode">доменное имя клиента</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, string userId, string clientCode)
+        public IContext Set(string token, string userId, string clientCode, bool IsChangePasswordRequired)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -147,6 +147,9 @@ namespace DMS_WebAPI.Utilities
                         ClientCode = clientCode
                     }
                 };
+
+                context.IsChangePasswordRequired = IsChangePasswordRequired;
+
                 Save(token, context);
                 return context;
             }
@@ -161,10 +164,9 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <param name="db">new server parameters</param>
         /// <param name="clientId">clientId</param>
-        /// <param name="IsChangePasswordRequired">IsChangePasswordRequired</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public void Set(DatabaseModel db, int clientId, bool IsChangePasswordRequired)
+        public void Set(DatabaseModel db, int clientId)
         {
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -189,8 +191,6 @@ namespace DMS_WebAPI.Utilities
             context.CurrentClientId = clientId;
 
             context.CurrentDB = db;
-
-            context.IsChangePasswordRequired = IsChangePasswordRequired;
 
             var agentUser = DmsResolver.Current.Get<IAdminService>().GetUserForContext(context, context.CurrentEmployee.UserId);
 
@@ -263,6 +263,26 @@ namespace DMS_WebAPI.Utilities
             storeInfo.LastUsage = DateTime.UtcNow;
 
             context.CurrentClientId = client.Id;
+        }
+
+        /// <summary>
+        /// UpdateChangePasswordRequired
+        /// </summary>
+        /// <param name="IsChangePasswordRequired"></param>
+        /// <param name="userId">Id Web-пользователя</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void UpdateChangePasswordRequired(string userId, bool IsChangePasswordRequired)
+        {
+            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            foreach (var key in keys)
+            {
+                try
+                {
+                    ((IContext)(_casheContexts[key].StoreObject)).IsChangePasswordRequired = IsChangePasswordRequired;
+                }
+                catch { }
+            }
         }
 
         private void Save(IContext val)
@@ -374,7 +394,7 @@ namespace DMS_WebAPI.Utilities
 
             var licenceError = new Licences().Verify(regCode, lic, dbs, false);
 
-            if (licenceError!=null)
+            if (licenceError != null)
             {
                 if (licenceError is LicenceExceededNumberOfConnectedUsers)
                 {
@@ -407,13 +427,13 @@ namespace DMS_WebAPI.Utilities
         {
             _casheContexts.Clear();
         }
-        
+
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
         public int Count
         {
-           get { return _casheContexts.Count; }
+            get { return _casheContexts.Count; }
         }
 
     }

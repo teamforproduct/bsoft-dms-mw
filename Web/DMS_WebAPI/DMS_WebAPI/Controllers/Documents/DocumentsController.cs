@@ -10,6 +10,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -107,8 +108,8 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Добавленный документ</returns>
         public IHttpActionResult Post([FromBody]AddDocumentByTemplateDocument model)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
+            var timeM = new Stopwatch();
+            var timeDB = new Stopwatch();
             timeM.Start();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
@@ -133,8 +134,8 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocument model)
         {
             model.Id = id;
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
+            var timeM = new Stopwatch();
+            var timeDB = new Stopwatch();
             timeM.Start();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -159,8 +160,8 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var timeM = new System.Diagnostics.Stopwatch();
-            var timeDB = new System.Diagnostics.Stopwatch();
+            var timeM = new Stopwatch();
+            var timeDB = new Stopwatch();
             timeM.Start();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

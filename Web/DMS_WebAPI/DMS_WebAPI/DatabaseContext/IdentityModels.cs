@@ -23,6 +23,7 @@ namespace DMS_WebAPI.Models
 
         public bool IsChangePasswordRequired { get; set; }
         public bool IsEmailConfirmRequired { get; set; }
+        public bool IsLockout { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

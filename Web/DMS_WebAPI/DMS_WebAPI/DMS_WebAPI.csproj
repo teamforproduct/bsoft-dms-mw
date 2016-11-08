@@ -345,6 +345,7 @@
     <Compile Include="Controllers\WebAPI\ClientsController.cs" />
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
+    <Compile Include="Controllers\System\WebPartialViewController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
@@ -370,6 +371,10 @@
     <Compile Include="Migrations\201611072147542_User_Settings.Designer.cs">
       <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611082050340_LockoutAgentUser.cs" />
+    <Compile Include="Migrations\201611082050340_LockoutAgentUser.Designer.cs">
+      <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -382,6 +387,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\RenderPartialView.cs" />
     <Compile Include="Utilities\Licences.cs" />
     <Compile Include="Utilities\LicencesWorkerService.cs" />
     <Compile Include="Utilities\WebAPIDbProcess.cs" />
@@ -487,6 +493,7 @@
     <Content Include="Views\CreateClient\CreateClient.cshtml" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
+    <Content Include="Views\WebPartialView\ChangeLoginAgentUserVerificationEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
@@ -515,10 +522,14 @@
     <EmbeddedResource Include="Migrations\201611072147542_User_Settings.resx">
       <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611082050340_LockoutAgentUser.resx">
+      <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
