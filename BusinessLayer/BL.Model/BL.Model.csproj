@@ -126,6 +126,7 @@
     <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
+    <Compile Include="AdminCore\WebUser\AddWebUser.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Common\DictionaryItem.cs" />
@@ -368,6 +369,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
     <Compile Include="Enums\EnumAdminActions.cs" />
     <Compile Include="Enums\EnumAccessLevels.cs" />
+    <Compile Include="Enums\EnumLinkTypes.cs" />
     <Compile Include="Enums\EnumSystemActions.cs" />
     <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />

@@ -235,25 +235,28 @@ namespace BL.Logic.DictionaryCore
 
         }
 
-        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context)
-        {
-            return _dictDb.GetAgentEmployeePersonnelNumber(context);
-        }
-
         public FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId)
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);
 
+            string fileContect = string.Empty;
+
+            if (userPicture.Image != null)
+                fileContect = Convert.ToBase64String(userPicture.Image);
+
             var uPic = new FrontDictionaryAgentUserPicture()
             {
                 Id = userPicture.Id,
-                FileContent = Convert.ToBase64String(userPicture.Image)
+                FileContent = fileContect
             };
 
             return uPic;
         }
 
-
+        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        {
+            _dictDb.SetAgentUserUserId(context, User);
+        }
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress

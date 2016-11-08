@@ -96,7 +96,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// табельный номер
         /// </summary>
-        public string PersonnelNumber { get; set; }
+        public int PersonnelNumber { get; set; }
         #endregion
 
     }

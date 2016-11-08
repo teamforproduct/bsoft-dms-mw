@@ -196,6 +196,11 @@ namespace BL.Logic.SystemCore
 
         }
 
+        public void CheckSystemActions()
+        {
+            DmsDbImportData.CheckSystemActions();
+        }
+
         public int AddSystemDate(IContext ctx, DateTime date)
         {
             return _systemDb.AddSystemDate(ctx, date);

@@ -277,7 +277,6 @@ namespace BL.Database.Common
                 Id = item.Id,
                 UserId = item.UserId,
                 LanguageId = item.LanguageId,
-                //Picture = item.Picture,
                 IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,

@@ -52,11 +52,11 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
-        FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context);
         FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId);
 
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
+        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress

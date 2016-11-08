@@ -875,21 +875,24 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public FrontDictionaryAgentEmployee GetAgentEmployeePersonnelNumber(IContext context)
+        public int GetAgentEmployeePersonnelNumber(IContext context)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var tmp = dbContext.DictionaryAgentEmployeesSet.AsEnumerable();
 
-                if (!tmp.Any())
+
+                if (!tmp.Any(x=>1==1))
                 {
-                    return new FrontDictionaryAgentEmployee { PersonnelNumber = "1" };
+                    return 1;
                 }
 
-                return new FrontDictionaryAgentEmployee
-                {
-                    PersonnelNumber = (tmp.Max(y => Convert.ToInt32(y.PersonnelNumber)) + 1).ToString()
-                };
+                var res = tmp.Max(y => y.PersonnelNumber) + 1;
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1038,18 +1041,9 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => x.Agent.AgentPerson.LastName == filter.LastNameExact);
             }
 
-            if (!string.IsNullOrEmpty(filter.PersonnelNumberExact))
+            if (filter.PersonnelNumber != null)
             {
-                qry = qry.Where(x => x.Agent.AgentEmployee.PersonnelNumber == filter.PersonnelNumberExact);
-            }
-
-            if (!string.IsNullOrEmpty(filter.PersonnelNumber))
-            {
-                var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.PersonnelNumber).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PersonnelNumber == value).Expand());
-
-                qry = qry.Where(filterContains);
+                qry = qry.Where(x => x.Agent.AgentEmployee.PersonnelNumber == filter.PersonnelNumber);
             }
 
             if (!string.IsNullOrEmpty(filter.Passport))
@@ -1207,6 +1201,19 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LanguageId).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentUser(context, User);
+
+                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.UserId).IsModified = true;
                 dbContext.SaveChanges();
             }
         }

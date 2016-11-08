@@ -342,6 +342,11 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@AdminActions:SetSubordination@l##", "Set subordination", "Управление правилами рассылки", "Управління правилами розсилки");
             AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения", "Додати адміністратора підрозділу");
             AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения", "Видалити адміністратора підрозділу");
+            AddALV(list, "##l@AdminActions:ChangeLogin@l##", "Change login", "Изменить логин", "Додати роль");
+            AddALV(list, "##l@AdminActions:ChangePassword@l##", "Change password", "Изменить пароль", "Додати роль");
+            AddALV(list, "##l@AdminActions:ChangeLockout@l##", "Change lockout", "Добавить роль", "Додати роль");
+            AddALV(list, "##l@AdminActions:KillSessions@l##", "Kill sessions", "Выйти на всех устройствах", "Вийти на всіх пристроях");
+
             AddALV(list, "##l@SystemActions:SetSetting@l##", "Add setting", "Добавить настройку", "Додати настройку");
 
             // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
@@ -364,6 +369,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UserNotExecuteAnyPosition@l##", "Employee \"{0}\" does not execute any position", "Сотрудник \"{0}\" не занимает ни одной должности", "Співробітник \"{0}\" не займає жодної посади");
             AddALV(list, "##l@DmsExceptions:UserNameIsNotDefined@l##", "Employee for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
             AddALV(list, "##l@DmsExceptions:UserPositionIsNotDefined@l##", "Position for the current user could not be defined!", "Контекст пользователя еще не сформирован. НЕЛЬЗЯ ДЕРГАТЬ АПИ!", "Контекст користувача ще не сформований. СМИКАТИ АПІ ЗАБОРОНЕНО!");
+            AddALV(list, "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##", "Change password required", "Необходимо изменить пароль", "Необхідно змінити пароль");
+            AddALV(list, "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##", "Email сonfirm required", "Необходимо подтвердить емейл", "Необхідно підтвердити емейл");
 
             AddALV(list, "##l@DmsExceptions:AccessIsDenied@l##", "Access is Denied!", "Отказано в доступе!", "Відмовлено в доступі!");
             AddALV(list, "##l@DmsExceptions:ActionIsDenied@l##", "Action \"{0}\" is Denied!", "Действие \"{0}\" запрещено", "Дія \"{0}\" заборонено");
@@ -462,7 +469,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UnknownDocumentFile@l##", "Could not find appropriate document file!", "Не удалось найти соответствующий файл документа!", "Не вдалося знайти відповідний файл документа !");
             AddALV(list, "##l@DmsExceptions:UserFileNotExists@l##", "User file does not exists on Filestore!", "Пользовательский файл не существует в файловом хранилище", "Призначений для користувача файл не існує в файловому сховищі");
             AddALV(list, "##l@DmsExceptions:UserHasNoAccessToDocument@l##", "User could not access this document!", "Пользователь не может получить доступ к этот документ!", "Користувач не може отримати доступ до цей документ !");
-            AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "User Name already exists", "Имя пользователя уже существует", "Ім'я користувача вже існує");
+            AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "Login \"{0}\" already exists", "Сотрудник с логином \"{0}\" уже существует", "Співробітник з логіном \"{0}\" вже існує");
             AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!", "Очікування вже закрито !");
             AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!", "Користувач не має доступу до цих очікувань !");
             AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана", "Некоректний пункт плану");

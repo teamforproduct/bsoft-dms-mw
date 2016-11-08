@@ -87,25 +87,6 @@ namespace DMS_WebAPI.Controllers
             }, this);
         }
 
-        [HttpPost]
-        [Route("SetUsers")]
-        public IHttpActionResult SetUsers()
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-
-            var tmpItems = tmpService.GetInternalContacts(ctx,
-                new BL.Model.DictionaryCore.FilterModel.FilterDictionaryContact
-                {
-                    ContactTypeIDs = new List<int> { 28 },
-                    NotContainsAgentIDs = new List<int> { 1036, 1040, 1489 }
-                });
-
-            var dbProc = new WebAPIDbProcess();
-            dbProc.AddUsersTemp( tmpItems);
-            return new JsonResult(null, this);
-        }
-
         [HttpGet]
         [Route("GetUserContextsCount")]
         public IHttpActionResult GetUserContextsCount()

@@ -803,7 +803,7 @@ namespace BL.Database.SystemDb
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
-
+                
                 var res = qry.Select(x => new FrontSystemFormula
                 {
                     Id = x.Id,
@@ -2131,7 +2131,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.PersonnelNumber.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
+                        ObjectText = x.agent.PersonnelNumber + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
                     }).ToList());
                 }
 
@@ -2495,6 +2495,7 @@ namespace BL.Database.SystemDb
             {
                 //that is totaly wrong but delete 10000 elements with normal EF method is madness
                 dbContext.Database.ExecuteSqlCommand("DELETE FROM [DMS].[FullTextIndexCashes] WHERE [Id] <=" + deleteBis);
+                //dbContext.FullTextIndexCashSet.Where(10000 elements).Delete()
             }
         }
 

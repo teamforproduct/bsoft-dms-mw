@@ -42,7 +42,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
         FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
         IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
-        FrontDictionaryAgentEmployee GetAgentEmployeePersonnelNumber(IContext context);
+        int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
 
@@ -53,6 +53,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void SetAgentImage(IContext context, InternalDictionaryAgentImage User);
         InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id);
         void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
         #endregion
 
         #region DictionaryAgentAddress

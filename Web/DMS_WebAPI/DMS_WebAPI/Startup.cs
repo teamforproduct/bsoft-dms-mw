@@ -17,6 +17,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Web;
+using BL.Logic.SystemCore.Interfaces;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -30,7 +31,8 @@ namespace DMS_WebAPI
 
             ConfigureAuth(app);
 
-            //DmsDbImportData.CheckSystemActions();
+            var systemService = DmsResolver.Current.Get<ISystemService>();
+            systemService.CheckSystemActions();
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
             //var tt = Database.Exists("DefaultConnection");
