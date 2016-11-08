@@ -20,6 +20,9 @@ namespace DMS_WebAPI.Models
         }
 
         public virtual ICollection<AspNetUserServers> UserServers { get; set; }
+
+        public bool IsChangePasswordRequired { get; set; }
+        public bool IsEmailConfirmRequired { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

@@ -62,6 +62,8 @@ namespace BL.CrossCutting.Context
                     AgentId = (int)EnumSystemUsers.AdminUser,
                     ClientId = ctx.CurrentClientId
                 };
+
+                IsChangePasswordRequired = ctx.IsChangePasswordRequired;
             }
         }
 
@@ -109,5 +111,7 @@ namespace BL.CrossCutting.Context
         }
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
+
+        public bool IsChangePasswordRequired { get; set; }
     }
 }

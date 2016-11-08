@@ -60,6 +60,7 @@ namespace BL.CrossCutting.Context
                 };
 
                 ClientLicence = ctx.ClientLicence;
+                IsChangePasswordRequired = ctx.IsChangePasswordRequired;
 
                 try
                 {
@@ -188,5 +189,7 @@ namespace BL.CrossCutting.Context
         }
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
+
+        public bool IsChangePasswordRequired { get; set; }
     }
 }

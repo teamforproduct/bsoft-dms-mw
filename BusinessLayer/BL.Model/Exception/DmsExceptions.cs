@@ -922,4 +922,18 @@ namespace BL.Model.Exception
         public EncryptionCertificatePrivateKeyСanNotBeExported() : base(_MESSAGE) { }
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class ChangePasswordRequiredAgentUser : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##";
+        public ChangePasswordRequiredAgentUser() : base(_MESSAGE) { }
+        public ChangePasswordRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class EmailConfirmRequiredAgentUser : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##";
+        public EmailConfirmRequiredAgentUser() : base(_MESSAGE) { }
+        public EmailConfirmRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 }

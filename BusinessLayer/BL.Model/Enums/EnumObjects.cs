@@ -42,7 +42,7 @@
         DictionaryAgentClientCompanies = 218, // Компании
         DictionaryPositionExecutorTypes = 219, // Типы исполнителей
         DictionaryPositionExecutors = 220, // Исполнители должности
-        //DictionaryAgentUsers = 221, // Контрагенты - пользователи
+        DictionaryAgentUsers = 221, // Контрагенты - пользователи
 
         TemplateDocument = 251, // Шаблоны документов
         TemplateDocumentSendList = 252, // Списки рассылки в шаблонах

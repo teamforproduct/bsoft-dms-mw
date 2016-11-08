@@ -1,5 +1,4 @@
-﻿using BL.Logic.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
+﻿using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -19,6 +18,12 @@ using System.Web.Http.Description;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.DictionaryCore.FrontModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.Owin;
+using BL.Model.Users;
+using DMS_WebAPI.Models;
+using BL.Logic.SystemServices.MailWorker;
+using System.Configuration;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -117,7 +122,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [Route("Servers")]
         [HttpPost]
-        public IHttpActionResult SetServers([FromBody]SetUserServer model)
+        public async Task<IHttpActionResult> SetServers([FromBody]SetUserServer model)
         {
             var mngContext = DmsResolver.Current.Get<UserContexts>();
 
@@ -132,7 +137,10 @@ namespace DMS_WebAPI.Controllers
                 throw new DatabaseIsNotFound();
             }
 
-            mngContext.Set(db, model.ClientId);
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
+
+            mngContext.Set(db, model.ClientId, user.IsChangePasswordRequired);
             var ctx = mngContext.Get();
 
             var logger = DmsResolver.Current.Get<ILogger>();
@@ -186,6 +194,248 @@ namespace DMS_WebAPI.Controllers
 
 
             return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Изменение пароля
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("ChangePasswordAgentUser")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ChangePasswordAgentUser(ChangePasswordAgentUser model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangePasswordAgentUser, ctx, model.AgentId);
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(userId);
+
+            var result = await userManager.ResetPasswordAsync(userId, token, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            if (model.IsChangePasswordRequired)
+            {
+                ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                    throw new UserNameIsNotDefined();
+
+                user.IsChangePasswordRequired = true;
+
+                result = await userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+            }
+
+            if (model.IsKillSessions)
+                mngContext.KillSessions(model.AgentId);
+
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Блокировка пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("ChangeLockoutAgentUser")]
+        [HttpPut]
+        public async Task<IHttpActionResult> ChangeLockoutAgentUser(ChangeLockoutAgentUser model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLockoutAgentUser, ctx, model.AgentId);
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            user.LockoutEnabled = model.IsLockout;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            if (model.IsKillSessions)
+                mngContext.KillSessions(model.AgentId);
+
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Убиение всех активных сессий пользователя
+        /// </summary>
+        /// <param name="agentId"></param>
+        /// <returns></returns>
+        [Route("KillSessionsAgentUser")]
+        [HttpPut]
+        public IHttpActionResult KillSessionsAgentUser(int agentId)
+        {
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.KillSessionsAgentUser, ctx, agentId);
+
+            mngContext.KillSessions(agentId);
+
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("ChangeLoginAgentUser")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ChangeLoginAgentUser(ChangeLoginAgentUser model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLoginAgentUser, ctx, model.AgentId);
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            user.UserName = model.NewEmail;
+            user.Email = model.NewEmail;
+            user.IsEmailConfirmRequired = model.IsVerificationRequired;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            mngContext.KillSessions(model.AgentId);
+
+            if (model.IsVerificationRequired)
+            {
+                var emailConfirmationCode = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
+
+                var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "/api/v2/Users/ConfirmEmailAgentUser").AbsoluteUri;
+
+                callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
+
+                var htmlContent = String.Format(
+                        @"Thank you for updating your email. Please confirm the email by clicking this link: 
+        <br><a href='{0}'>Confirm new email</a>",
+                        callbackurl);
+
+                var msSetting = new BL.Model.SystemCore.InternalModel.InternalSendMailParameters
+                {
+                    Body = htmlContent,
+                    ToAddress = model.NewEmail,
+                    Subject = "Email confirmation",
+                };
+
+                var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+                mailService.SendMessage(ctx, msSetting);
+            }
+
+            return new JsonResult(null, this);
+        }
+
+        public async Task<IHttpActionResult> ConfirmEmailAgentUser(string userId, string code)
+        {
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var result = await userManager.ConfirmEmailAsync(userId, code);
+
+            if (result.Succeeded)
+            {
+                ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+                if (user == null)
+                    throw new UserNameIsNotDefined();
+
+                user.IsEmailConfirmRequired = false;
+
+                result = await userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+            }
+
+            return new JsonResult(null, this);
+        }
+
+        private IHttpActionResult GetErrorResult(IdentityResult result)
+        {
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            if (!result.Succeeded)
+            {
+                if (result.Errors != null)
+                {
+                    foreach (string error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    // No ModelState errors are available to send, so just return an empty BadRequest.
+                    return BadRequest();
+                }
+
+                return BadRequest(ModelState);
+            }
+
+            return null;
         }
     }
 }

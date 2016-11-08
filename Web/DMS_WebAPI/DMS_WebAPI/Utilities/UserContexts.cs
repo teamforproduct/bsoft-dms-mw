@@ -53,8 +53,9 @@ namespace DMS_WebAPI.Utilities
         /// Gets setting value by its name.
         /// </summary>
         /// <param name="currentPositionId"></param>
+        /// <param name="isThrowExeception"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null)
+        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true)
         {
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -81,6 +82,9 @@ namespace DMS_WebAPI.Utilities
 
                 var request_ctx = new UserContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
+
+                if (isThrowExeception && request_ctx.IsChangePasswordRequired)
+                    throw new ChangePasswordRequiredAgentUser();
 
                 return request_ctx;
             }
@@ -157,9 +161,10 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <param name="db">new server parameters</param>
         /// <param name="clientId">clientId</param>
+        /// <param name="IsChangePasswordRequired">IsChangePasswordRequired</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public void Set(DatabaseModel db, int clientId)
+        public void Set(DatabaseModel db, int clientId, bool IsChangePasswordRequired)
         {
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -184,6 +189,8 @@ namespace DMS_WebAPI.Utilities
             context.CurrentClientId = clientId;
 
             context.CurrentDB = db;
+
+            context.IsChangePasswordRequired = IsChangePasswordRequired;
 
             var agentUser = DmsResolver.Current.Get<IAdminService>().GetUserForContext(context, context.CurrentEmployee.UserId);
 
@@ -315,6 +322,16 @@ namespace DMS_WebAPI.Utilities
         {
             var now = DateTime.UtcNow;
             var keys = _casheContexts.Where(x => x.Value.LastUsage.AddDays(_TIME_OUT) <= now).Select(x => x.Key).ToArray();
+            foreach (var key in keys)
+            {
+                _casheContexts.Remove(key);
+            }
+        }
+
+        public void KillSessions(int agentId)
+        {
+            var now = DateTime.Now;
+            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 _casheContexts.Remove(key);

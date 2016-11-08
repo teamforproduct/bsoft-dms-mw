@@ -28,7 +28,7 @@ namespace BL.Database.DatabaseContext
             context.DictionarySubordinationTypesSet.AddRange(DmsDbImportData.GetDictionarySubordinationTypes());
             context.DictionarySubscriptionStatesSet.AddRange(DmsDbImportData.GetDictionarySubscriptionStates());
             context.DictionaryPositionExecutorTypesSet.AddRange(DmsDbImportData.GetDictionaryPositionExecutorTypes());
-            context.DictionaryLinkTypesSet.AddRange(DmsDbImportData.GetDictionaryLinkTypes());
+            //context.DictionaryLinkTypesSet.AddRange(DmsDbImportData.GetDictionaryLinkTypes());
             context.DictionaryFileTypesSet.AddRange(DmsDbImportData.GetDictionaryFileTypes());
             context.DictionarySigningTypesSet.AddRange(DmsDbImportData.GetDictionarySigningTypes());
 

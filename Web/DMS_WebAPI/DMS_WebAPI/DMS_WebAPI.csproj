@@ -366,6 +366,10 @@
     <Compile Include="Migrations\201606162106554_InitialMigration.Designer.cs">
       <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611072147542_User_Settings.cs" />
+    <Compile Include="Migrations\201611072147542_User_Settings.Designer.cs">
+      <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -507,6 +511,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201606162106554_InitialMigration.resx">
       <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611072147542_User_Settings.resx">
+      <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

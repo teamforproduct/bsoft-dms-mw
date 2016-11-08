@@ -151,6 +151,13 @@ namespace DMS_WebAPI.Providers
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
+                var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+
+                ApplicationUser user = userManager.FindById(userId);
+
+                if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
+                    throw new EmailConfirmRequiredAgentUser();
+
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
                 var mngContext = DmsResolver.Current.Get<UserContexts>();
