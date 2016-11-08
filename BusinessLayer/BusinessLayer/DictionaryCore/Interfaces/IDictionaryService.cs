@@ -56,6 +56,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
+        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress

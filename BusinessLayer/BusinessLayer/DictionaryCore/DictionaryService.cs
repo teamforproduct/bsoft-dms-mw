@@ -253,7 +253,10 @@ namespace BL.Logic.DictionaryCore
             return uPic;
         }
 
-
+        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        {
+            _dictDb.SetAgentUserUserId(context, User);
+        }
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress

@@ -50,6 +50,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void SetAgentImage(IContext context, InternalDictionaryAgentImage User);
         InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id);
         void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
         #endregion
 
         #region DictionaryAgentAddress

@@ -878,15 +878,21 @@ namespace BL.Database.Dictionaries
         public int GetAgentEmployeePersonnelNumber(IContext context)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var tmp = dbContext.DictionaryAgentEmployeesSet.AsEnumerable();
 
-                if (!tmp.Any())
+
+                if (!tmp.Any(x=>1==1))
                 {
                     return 1;
                 }
 
-                return tmp.Max(y => y.PersonnelNumber) + 1;
+                var res = tmp.Max(y => y.PersonnelNumber) + 1;
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1195,6 +1201,19 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LanguageId).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentUser(context, User);
+
+                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.UserId).IsModified = true;
                 dbContext.SaveChanges();
             }
         }

@@ -118,7 +118,7 @@ namespace BL.Model.Exception
     public class UserNameAlreadyExists : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserNameAlreadyExists@l##";
-        public UserNameAlreadyExists() : base(_MESSAGE) { }
+        public UserNameAlreadyExists(string Login) : base(_MESSAGE) { Parameters = new List<string> { Login }; }
         public UserNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 

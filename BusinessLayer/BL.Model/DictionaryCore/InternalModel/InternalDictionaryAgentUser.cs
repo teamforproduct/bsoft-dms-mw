@@ -28,7 +28,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Id = model.Id;
             IsActive = model.IsActive;
             LanguageId = model.LanguageId;
-            //UserId = model.UserId;
+            UserId = model.UserId;
             Login = model.Login;
             //PasswordHash = model.PasswordHash;
             LastChangeDate = model.LastChangeDate;

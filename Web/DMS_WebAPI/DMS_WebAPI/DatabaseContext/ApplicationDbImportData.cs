@@ -469,7 +469,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:UnknownDocumentFile@l##", "Could not find appropriate document file!", "Не удалось найти соответствующий файл документа!", "Не вдалося знайти відповідний файл документа !");
             AddALV(list, "##l@DmsExceptions:UserFileNotExists@l##", "User file does not exists on Filestore!", "Пользовательский файл не существует в файловом хранилище", "Призначений для користувача файл не існує в файловому сховищі");
             AddALV(list, "##l@DmsExceptions:UserHasNoAccessToDocument@l##", "User could not access this document!", "Пользователь не может получить доступ к этот документ!", "Користувач не може отримати доступ до цей документ !");
-            AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "User Name already exists", "Имя пользователя уже существует", "Ім'я користувача вже існує");
+            AddALV(list, "##l@DmsExceptions:UserNameAlreadyExists@l##", "Login \"{0}\" already exists", "Сотрудник с логином \"{0}\" уже существует", "Співробітник з логіном \"{0}\" вже існує");
             AddALV(list, "##l@DmsExceptions:WaitHasAlreadyClosed@l##", "Wait has already closed!", "Ожидание уже закрыто!", "Очікування вже закрито !");
             AddALV(list, "##l@DmsExceptions:WaitNotFoundOrUserHasNoAccess@l##", "User could not access this wait!", "Пользователь не имеет доступа к этим ожиданиям!", "Користувач не має доступу до цих очікувань !");
             AddALV(list, "##l@DmsExceptions:WrongDocumentSendListEntry@l##", "Plan item is wrong.", "Некорректный пункт плана", "Некоректний пункт плану");

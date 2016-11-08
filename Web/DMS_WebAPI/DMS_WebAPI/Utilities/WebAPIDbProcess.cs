@@ -741,7 +741,7 @@ namespace DMS_WebAPI.Utilities
                             ClientId = client.Id,
                             ServerId = serverId,
                         });
-                            
+
                         #endregion Create user
 
                         #region add user to role admin
@@ -768,14 +768,14 @@ namespace DMS_WebAPI.Utilities
                     }
                 }
             }
-            catch (UserNameAlreadyExists)
-            {
-                throw new UserNameAlreadyExists();
-            }
-            catch (ClientNameAlreadyExists)
-            {
-                throw new ClientNameAlreadyExists();
-            }
+            //catch (UserNameAlreadyExists)
+            //{
+            //    throw new UserNameAlreadyExists( model );
+            //}
+            //catch (ClientNameAlreadyExists)
+            //{
+            //    throw new ClientNameAlreadyExists();
+            //}
             catch (Exception ex)
             {
                 throw new DictionaryRecordCouldNotBeAdded();
@@ -786,23 +786,44 @@ namespace DMS_WebAPI.Utilities
         public int AddUserEmployee(AddDictionaryAgentEmployee model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            string userId = string.Empty;
+            // Проверяю не используется ли логин
+            if (ExistsUser(model.Login)) throw new UserNameAlreadyExists(model.Login);
 
-            var userId = AddUser(new BL.Model.AdminCore.WebUser.AddWebUser
+            // пробую создать сотрудника
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model);
+
+            if (tmpItem > 0)
             {
-                Email = model.Login,
-                // Здесь (или после подтверждения адреса) нужна генерация пароля и отправка на почту
-                Password = "P@ssw0rd",
-                // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
-                ClientId = ctx.CurrentClientId,
-                ServerId = ctx.CurrentDB.Id,
+                userId = AddUser(new BL.Model.AdminCore.WebUser.AddWebUser
+                {
+                    Email = model.Login,
+                    // Здесь (или после подтверждения адреса) нужна генерация пароля и отправка на почту
+                    Password = "P@ssw0rd",
+                    // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
+                    ClientId = ctx.CurrentClientId,
+                    ServerId = ctx.CurrentDB.Id,
 
+                });
+            }
+
+            // обновляю сотрудника 
+            tmpService.SetAgentUserUserId(ctx, new InternalDictionaryAgentUser {
+                Id = tmpItem,
+                UserId = userId
             });
 
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            return tmpItem;
 
-            return (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model);
         }
 
+        public bool ExistsUser(string email)
+        {
+            var owinContext = HttpContext.Current.Request.GetOwinContext();
+            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+            return userManager.FindByName(email) != null;
+        }
 
         public string AddUser(AddWebUser model)
         {
@@ -810,13 +831,11 @@ namespace DMS_WebAPI.Utilities
             var userManager = owinContext.GetUserManager<ApplicationUserManager>();
 
             using (var dbContext = new ApplicationDbContext())
-            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            //using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
 
-                if (userManager.FindByName(model.Email) != null)
-                {
-                    throw new UserNameAlreadyExists();
-                }
+                if (ExistsUser(model.Email)) throw new UserNameAlreadyExists(model.Email);
 
                 var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
@@ -979,14 +998,14 @@ namespace DMS_WebAPI.Utilities
                     }
                 }
             }
-            catch (UserNameAlreadyExists)
-            {
-                throw new UserNameAlreadyExists();
-            }
-            catch (ClientNameAlreadyExists)
-            {
-                throw new ClientNameAlreadyExists();
-            }
+            //catch (UserNameAlreadyExists)
+            //{
+            //    throw new UserNameAlreadyExists();
+            //}
+            //catch (ClientNameAlreadyExists)
+            //{
+            //    throw new ClientNameAlreadyExists();
+            //}
             catch (Exception ex)
             {
                 throw new DictionaryRecordCouldNotBeAdded();
@@ -1100,7 +1119,7 @@ namespace DMS_WebAPI.Utilities
 
                         if (userManager.FindByName(email) != null)
                         {
-                            throw new UserNameAlreadyExists();
+                            throw new UserNameAlreadyExists(model.Admin.Email);
                         }
 
                         var user = new ApplicationUser() { UserName = email, Email = email };
@@ -1161,7 +1180,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (UserNameAlreadyExists)
             {
-                throw new UserNameAlreadyExists();
+                throw new UserNameAlreadyExists(model.Admin.Email);
             }
             catch (ClientNameAlreadyExists)
             {
