@@ -352,6 +352,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.ChangeLockoutAgentUser, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.KillSessionsAgentUser, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.ChangeLoginAgentUser, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.GetAgentUserInfo, EnumObjects.DictionaryAgentUsers));
 
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 

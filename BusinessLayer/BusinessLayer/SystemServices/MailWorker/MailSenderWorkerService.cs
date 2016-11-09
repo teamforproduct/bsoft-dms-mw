@@ -134,6 +134,27 @@ namespace BL.Logic.SystemServices.MailWorker
             }
         }
 
+        public void SendMessage(IContext ctx, string toAddress, string subject, string body)
+        {
+            var msSetting = new InternalSendMailParameters(
+                    new InternalSendMailServerParameters
+                    {
+                        CheckInterval = _settings.GetSetting<int>(ctx, SettingConstants.MAIL_TIMEOUT_MIN),
+                        ServerType = (MailServerType)_settings.GetSetting<int>(ctx, SettingConstants.MAIL_SERVER_TYPE),
+                        FromAddress = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_SYSTEMMAIL),
+                        Login = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_LOGIN),
+                        Pass = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_PASS),
+                        Server = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_NAME),
+                        Port = _settings.GetSetting<int>(ctx, SettingConstants.MAIL_SERVER_PORT)
+                    })
+            {
+                Body = body,
+                ToAddress = toAddress,
+                Subject = subject,
+            };
+            SendMessage(ctx, msSetting);
+        }
+
         public override void Dispose()
         {
             foreach (var tmr in _timers.Values)
