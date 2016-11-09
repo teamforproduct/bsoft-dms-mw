@@ -53,8 +53,9 @@ namespace DMS_WebAPI.Utilities
         /// Gets setting value by its name.
         /// </summary>
         /// <param name="currentPositionId"></param>
+        /// <param name="isThrowExeception"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null)
+        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true)
         {
             string token = Token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -81,6 +82,9 @@ namespace DMS_WebAPI.Utilities
 
                 var request_ctx = new UserContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
+
+                if (isThrowExeception && request_ctx.IsChangePasswordRequired)
+                    throw new ChangePasswordRequiredAgentUser();
 
                 return request_ctx;
             }
@@ -115,7 +119,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        
+
 
 
         /// <summary>
@@ -128,7 +132,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="clientCode">доменное имя клиента</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, string userId, string clientCode)
+        public IContext Set(string token, string userId, string clientCode, bool IsChangePasswordRequired)
         {
             token = token.ToLower();
             if (!_casheContexts.ContainsKey(token))
@@ -143,6 +147,9 @@ namespace DMS_WebAPI.Utilities
                         ClientCode = clientCode
                     }
                 };
+
+                context.IsChangePasswordRequired = IsChangePasswordRequired;
+
                 Save(token, context);
                 return context;
             }
@@ -258,6 +265,26 @@ namespace DMS_WebAPI.Utilities
             context.CurrentClientId = client.Id;
         }
 
+        /// <summary>
+        /// UpdateChangePasswordRequired
+        /// </summary>
+        /// <param name="IsChangePasswordRequired"></param>
+        /// <param name="userId">Id Web-пользователя</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void UpdateChangePasswordRequired(string userId, bool IsChangePasswordRequired)
+        {
+            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            foreach (var key in keys)
+            {
+                try
+                {
+                    ((IContext)(_casheContexts[key].StoreObject)).IsChangePasswordRequired = IsChangePasswordRequired;
+                }
+                catch { }
+            }
+        }
+
         private void Save(IContext val)
         {
             _casheContexts.Add(Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
@@ -321,6 +348,16 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void KillSessions(int agentId)
+        {
+            var now = DateTime.Now;
+            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            foreach (var key in keys)
+            {
+                _casheContexts.Remove(key);
+            }
+        }
+
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
         {
             if (clientId <= 0) return;
@@ -357,7 +394,7 @@ namespace DMS_WebAPI.Utilities
 
             var licenceError = new Licences().Verify(regCode, lic, dbs, false);
 
-            if (licenceError!=null)
+            if (licenceError != null)
             {
                 if (licenceError is LicenceExceededNumberOfConnectedUsers)
                 {
@@ -390,13 +427,13 @@ namespace DMS_WebAPI.Utilities
         {
             _casheContexts.Clear();
         }
-        
+
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
         public int Count
         {
-           get { return _casheContexts.Count; }
+            get { return _casheContexts.Count; }
         }
 
     }

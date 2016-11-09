@@ -137,6 +137,14 @@
 
         #endregion
 
+        #region [+] Action over AgentUser
+        ChangePasswordAgentUser = 221001,
+        ChangeLockoutAgentUser = 221002,
+        KillSessionsAgentUser = 221003,
+        ChangeLoginAgentUser = 221004,
+
+        #endregion
+
         // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
 
     }

@@ -47,6 +47,9 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryAgentEmployee
 
         #region DictionaryAgentUser
+
+        InternalDictionaryAgentUser GetInternalAgentUser(IContext context, int id);
+
         void SetAgentImage(IContext context, InternalDictionaryAgentImage User);
         InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id);
         void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);

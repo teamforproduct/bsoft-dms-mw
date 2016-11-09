@@ -483,6 +483,9 @@
     <Compile Include="Common\IListItem.cs" />
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
+    <Compile Include="Users\ChangeLockoutAgentUser.cs" />
+    <Compile Include="Users\ChangeLoginAgentUser.cs" />
+    <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetLicences.cs" />

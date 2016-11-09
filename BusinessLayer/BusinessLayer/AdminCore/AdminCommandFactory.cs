@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Verify;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -107,9 +108,24 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.DeleteDepartmentAdmin:
                     cmd = DmsResolver.Current.Get<DeleteDepartmentAdminCommand>();
                     break;
-                
 
 
+
+                #endregion
+
+                #region AdminSubordinations
+                case EnumAdminActions.ChangePasswordAgentUser:
+                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
+                    break;
+                case EnumAdminActions.ChangeLockoutAgentUser:
+                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
+                    break;
+                case EnumAdminActions.KillSessionsAgentUser:
+                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
+                    break;
+                case EnumAdminActions.ChangeLoginAgentUser:
+                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
+                    break;
                 #endregion
 
                 default:

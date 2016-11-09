@@ -87,6 +87,8 @@ namespace BL.Database.DatabaseContext
 
             items.Add(GetSystemObjects(EnumObjects.SystemSettings));
 
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentUsers));
+
             return items;
         }
 
@@ -345,6 +347,11 @@ namespace BL.Database.DatabaseContext
 
             items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
+
+            items.Add(GetSysAct(EnumAdminActions.ChangePasswordAgentUser, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.ChangeLockoutAgentUser, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.KillSessionsAgentUser, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.ChangeLoginAgentUser, EnumObjects.DictionaryAgentUsers));
 
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
@@ -803,12 +810,12 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryLinkTypes>();
 
-            items.Add(GetDictionaryLinkType( EnumLinkTypes.Answer, false)); 
-            items.Add(GetDictionaryLinkType(EnumLinkTypes.Execution , true));
-            items.Add(GetDictionaryLinkType(EnumLinkTypes.Additionally, false)); 
+            items.Add(GetDictionaryLinkType(EnumLinkTypes.Answer, false));
+            items.Add(GetDictionaryLinkType(EnumLinkTypes.Execution, true));
+            items.Add(GetDictionaryLinkType(EnumLinkTypes.Additionally, false));
             items.Add(GetDictionaryLinkType(EnumLinkTypes.Repeatedly, false));
             items.Add(GetDictionaryLinkType(EnumLinkTypes.Change, false));
-            items.Add(GetDictionaryLinkType(EnumLinkTypes.Cancel, true)); 
+            items.Add(GetDictionaryLinkType(EnumLinkTypes.Cancel, true));
 
             return items;
         }

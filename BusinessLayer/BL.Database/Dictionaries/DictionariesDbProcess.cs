@@ -1232,6 +1232,18 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public InternalDictionaryAgentUser GetInternalAgentUser(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentUser
+                {
+                    Id = x.Id,
+                    UserId = x.UserId
+                }).FirstOrDefault();
+            }
+        }
+
         public InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
