@@ -35,8 +35,9 @@ namespace DMS_WebAPI.Controllers.Admins
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRoleActions(ctx, filter);
-            stopWatch.Stop();
-            return new JsonResult(tmpItems, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -50,8 +51,9 @@ namespace DMS_WebAPI.Controllers.Admins
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.GetRoleActions(ctx, new FilterAdminRoleAction() { IDs = new List<int> { id } });
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         [HttpGet]
@@ -63,8 +65,9 @@ namespace DMS_WebAPI.Controllers.Admins
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             var tmpItem = tmpService.GetSystemActionForDIP(ctx, roleId, filter);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -93,8 +96,9 @@ namespace DMS_WebAPI.Controllers.Admins
 
             tmpService.ExecuteAction(EnumAdminActions.DeleteRoleAction, cxt, new ModifyAdminRoleAction() { RoleId = roleId , ActionId = actionId });
             FrontAdminRoleAction tmpItem = new FrontAdminRoleAction() { RoleId = roleId, ActionId = actionId };
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         [HttpPost]
@@ -105,8 +109,9 @@ namespace DMS_WebAPI.Controllers.Admins
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetRoleActionByObject, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
     }

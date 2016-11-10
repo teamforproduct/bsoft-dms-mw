@@ -88,8 +88,9 @@ namespace DMS_WebAPI.Controllers
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositions(context);
-            stopWatch.Stop();
-            return new JsonResult(tmpItems, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>

@@ -47,5 +47,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual ICollection<DictionaryPositions> Positions { get; set; }
         //public virtual DictionaryPositions ChiefPosition { get; set; }
 
+        //[ForeignKey("DepartmentId")]
+        public virtual ICollection<DictionaryRegistrationJournals> RegistrationJournals { get; set; }
+
     }
 }

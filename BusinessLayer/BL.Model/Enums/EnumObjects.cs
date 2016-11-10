@@ -64,7 +64,7 @@
         AdminPositionRoles = 702,
         AdminUserRoles = 703,
         AdminSubordination = 704,
-        //DepartmentAdmin = 705,
+        AdminRegistrationJournalPositions = 706,
 
 
         SystemSettings = 900,

@@ -1530,6 +1530,207 @@ namespace BL.Database.Admins
 
         #endregion
 
+        #region [+] RegistrationJournalPositions ...
+        public int AddRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
+                dbContext.AdminRegistrationJournalPositionsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
+
+        public void AddRegistrationJournalPositions(IContext context, List<InternalRegistrationJournalPosition> list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var items = AdminModelConverter.GetDbRegistrationJournalPositions(context, list);
+                dbContext.AdminRegistrationJournalPositionsSet.AddRange(items);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void UpdateRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
+                dbContext.AdminRegistrationJournalPositionsSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
+
+        public void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+                dbContext.AdminRegistrationJournalPositionsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
+
+        public InternalRegistrationJournalPosition GetInternalRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+                return qry.Select(x => new InternalRegistrationJournalPosition
+                {
+                    Id = x.Id,
+                    PositionId = x.PositionId,
+                    RegistrationJournalId = x.RegJournalId,
+                    RegJournalAccessTypeId = x.RegJournalAccessTypeId,
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<InternalRegistrationJournalPosition> GetInternalRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                var res= qry.Select(x => new InternalRegistrationJournalPosition
+                {
+                    Id = x.Id,
+                    PositionId = x.PositionId,
+                    RegistrationJournalId = x.RegJournalId,
+                    RegJournalAccessTypeId = x.RegJournalAccessTypeId,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+
+        //public IEnumerable<FrontAdminRegistrationJournalPosition> GetRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    {
+        //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+        //        qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+        //        //qry = qry.OrderBy(x => x.Name);
+
+        //        return qry.Select(x => new FrontAdminRegistrationJournalPosition
+        //        {
+        //            Id = x.Id,
+        //            SourcePositionId = x.SourcePositionId,
+        //            SourcePositionName = x.SourcePosition.Name,
+        //            TargetPositionId = x.TargetPositionId,
+        //            TargetPositionName = x.TargetPosition.Name,
+        //            RegistrationJournalPositionTypeId = (EnumRegistrationJournalPositionTypes)x.RegistrationJournalPositionTypeId,
+        //            RegistrationJournalPositionTypeName = x.RegistrationJournalPositionType.Name
+        //        }).ToList();
+        //    }
+        //}
+
+        
+
+        //public List<int> GetRegistrationJournalPositionTargetIDs(IContext context, FilterAdminRegistrationJournalPosition filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    {
+        //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+        //        qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+        //        //qry = qry.OrderBy(x => x.Name);
+
+        //        return qry.Select(x => x.TargetPositionId).ToList();
+        //    }
+        //}
+
+        public bool ExistsRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+                return qry.Any(); ;
+            }
+        }
+
+        private static IQueryable<AdminRegistrationJournalPositions> GetWhereRegistrationJournalPosition(ref IQueryable<AdminRegistrationJournalPositions> qry, FilterAdminRegistrationJournalPosition filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.True<AdminRegistrationJournalPositions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.PositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.PositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.RegistrationJournalIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.RegistrationJournalIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RegJournalId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+
+            if (filter.RegistrationJournalAccessTypeIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.RegistrationJournalAccessTypeIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RegJournalAccessTypeId == (int)value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+        }
+
+        #endregion
+
         #region [+] MainMenu ...
         public IEnumerable<TreeItem> GetMainMenu(IContext context)
         {

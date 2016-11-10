@@ -1104,7 +1104,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 3 || levelCount == 0)
             {
-                positions = _dictDb.GetPositionsForTree(context, new FilterDictionaryPosition()
+                positions = _dictDb.GetPositionsForStaffList(context, new FilterDictionaryPosition()
                 {
                     IsActive = filter.IsActive
                 });
@@ -1121,7 +1121,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
                 {
                     IsActive = filter.IsActive
                 });

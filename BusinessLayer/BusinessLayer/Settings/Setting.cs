@@ -207,6 +207,15 @@ namespace BL.Logic.Settings
 
         public bool GetSubordinationsSendAllForInforming(IContext ctx) =>
              GetSetting<bool>(ctx, SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_INFORMING, SettingConstants.DefaultSubordinationsSendAllForInforming());
+
+
+        public bool GetRJournalPositionSetAllForViewing(IContext ctx) =>
+             GetSetting<bool>(ctx, SettingConstants.RJOURNAL_POSITIONS_SET_ALL_FOR_VIEWING, SettingConstants.DefaultRJournalPositionSetAllForViewing());
+
+        public bool GetRJournalPositionSetAllForRegistration(IContext ctx) =>
+             GetSetting<bool>(ctx, SettingConstants.RJOURNAL_POSITIONS_SET_ALL_FOR_REGISTRATION, SettingConstants.DefaultRJournalPositionSetAllForRegistration());
         #endregion
+
+
     }
 }

@@ -40,8 +40,9 @@ namespace DMS_WebAPI.Controllers
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             tmpService.RefreshSystemActions(cxt);
-            stopWatch.Stop();
-            return new JsonResult("Done", this, stopWatch.Elapsed);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         [HttpPost]
@@ -53,8 +54,9 @@ namespace DMS_WebAPI.Controllers
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             tmpService.RefreshSystemObjects(cxt);
-            stopWatch.Stop();
-            return new JsonResult("Done", this, stopWatch.Elapsed);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
     }

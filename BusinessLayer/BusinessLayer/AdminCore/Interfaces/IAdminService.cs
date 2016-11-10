@@ -72,9 +72,8 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<ITreeItem> GetSubordinationsDIP(IContext context, int positionId, FilterAdminSubordinationTree filter);
         #endregion
 
-        #region [+] MainMenu ...
-        IEnumerable<TreeItem> GetAdminMainMenu(IContext context);
+        #region [+] RegistrationJournalPositions ...
+        IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter);
         #endregion
-
     }
 }

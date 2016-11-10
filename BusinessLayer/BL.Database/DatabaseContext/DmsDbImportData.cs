@@ -342,11 +342,17 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.DuplicateSubordinations, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
             items.Add(GetSysAct(EnumAdminActions.SetAllSubordination, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
 
+            items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPosition, EnumObjects.AdminRegistrationJournalPositions));
+            items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPositionByCompany, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
+            items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPositionByDepartment, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
+            items.Add(GetSysAct(EnumAdminActions.SetDefaultRegistrationJournalPosition, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
+            items.Add(GetSysAct(EnumAdminActions.DuplicateRegistrationJournalPositions, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
+            items.Add(GetSysAct(EnumAdminActions.SetAllRegistrationJournalPosition, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
+
+
             items.Add(GetSysAct(EnumAdminActions.AddDepartmentAdmin, EnumObjects.DictionaryDepartments));
             items.Add(GetSysAct(EnumAdminActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments));
 
-            items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
 
             items.Add(GetSysAct(EnumAdminActions.ChangePasswordAgentUser, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.ChangeLockoutAgentUser, EnumObjects.DictionaryAgentUsers));
@@ -354,6 +360,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.ChangeLoginAgentUser, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.GetAgentUserInfo, EnumObjects.DictionaryAgentUsers));
 
+            items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
+            items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
             return items;
@@ -781,6 +789,29 @@ namespace BL.Database.DatabaseContext
             items.Add(new DictionarySubordinationTypes { Id = 2, Code = "Execution", Name = "##l@DictionarySubordinationTypes:Execution@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
 
             return items;
+        }
+
+        public static List<DicRegJournalAccessTypes> GetDictionaryRegistrationJournalAccessTypes()
+        {
+            var items = new List<DicRegJournalAccessTypes>();
+
+            items.Add(GetDictionaryRegistrationJournalAccessType(EnumRegistrationJournalAccessTypes.View));
+            items.Add(GetDictionaryRegistrationJournalAccessType(EnumRegistrationJournalAccessTypes.Registration));
+
+            return items;
+        }
+
+        private static DicRegJournalAccessTypes GetDictionaryRegistrationJournalAccessType(EnumRegistrationJournalAccessTypes id)
+        {
+            string name = "##l@" + "DictionaryRegistrationJournalAccessTypes" + ":" + id.ToString() + "@l##";
+            return new DicRegJournalAccessTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
         }
 
         public static List<DictionarySubscriptionStates> GetDictionarySubscriptionStates()

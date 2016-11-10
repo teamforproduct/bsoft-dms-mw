@@ -12,7 +12,7 @@ namespace BL.Model.AdminCore.IncomingModel
     /// <summary>
     /// Дублирование настройки рассылки для должностей
     /// </summary>
-    public class CopyAdminSubordinations
+    public class CopyAdminSettingsByPosition
     {
 
         /// <summary>

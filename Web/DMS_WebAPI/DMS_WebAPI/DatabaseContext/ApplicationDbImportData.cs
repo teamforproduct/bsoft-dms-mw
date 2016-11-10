@@ -340,6 +340,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@AdminActions:SetPositionRole@l##", "Set position roles", "Управление ролями должности", "Управління ролями посади");
             AddALV(list, "##l@AdminActions:SetUserRole@l##", "Set user roles", "Управление ролями пользователя", "Управління ролями користувача");
             AddALV(list, "##l@AdminActions:SetSubordination@l##", "Set subordination", "Управление правилами рассылки", "Управління правилами розсилки");
+            AddALV(list, "##l@AdminActions:SetRegistrationJournalPosition@l##", "Set registration lournal for position", "Управление журналами регистрации", "Управління журналами реєстрації");
             AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения", "Додати адміністратора підрозділу");
             AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения", "Видалити адміністратора підрозділу");
             AddALV(list, "##l@AdminActions:ChangeLogin@l##", "Change login", "Изменить логин", "Додати роль");
@@ -434,7 +435,7 @@ namespace DMS_WebAPI.Models
 
 
 
-            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Вы не можете добавить данные в этот справочник", "Ви не можете додати дані в цей довідник");
+            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Возникла ошибка при добавлении данных", "Виникла помилка при додаванні даних");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить данные из этого справочника", "Ви не можете видалити дані з цього довідника");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordNotUnique@l##", "Dictionary record should be unique!", "Элемент справочника должен быть уникален!", "Елемент довідника повинен бути унікальний !");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!", "Елемент довідника не найден !");
@@ -671,6 +672,14 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@PositionExecutorTypes:Personal@l##", "Appointed to the post", "Назначен на должность", "Призначено на посаду");
             AddALV(list, "##l@PositionExecutorTypes:IO@l##", "Performed duties", "Исполяет обязанности", "Виконує обов'язки");
             AddALV(list, "##l@PositionExecutorTypes:Referent@l##", "It is the reviewer", "Является референтом", "Є референтом");
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetRegistrationJournalAccessTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@DictionaryRegistrationJournalAccessTypes:View@l##", "View documents", "Просмотр документов", "Перегляд документів");
+            AddALV(list, "##l@DictionaryRegistrationJournalAccessTypes:Registration@l##", "Registration documents", "Регистрация документов", "Реєстрація документів");
             return list;
         }
 

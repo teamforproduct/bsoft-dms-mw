@@ -6,6 +6,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -16,25 +17,8 @@ namespace DMS_WebAPI.Controllers.Admins
     [RoutePrefix("api/v2/AdminActions")]
     public class AdminActionsController : ApiController
     {
-        /// <summary>
-        /// Список элементов меню, доступный пользователю
-        /// </summary>
-        /// <returns>Меню</returns>
-        [Route("GetMainMenu")]
-        [HttpGet]
-        public IHttpActionResult GetMainMenu()
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAdminMainMenu(ctx);
-            return new JsonResult(tmpItems, this);
-        }
+        Stopwatch stopWatch = new Stopwatch();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
         //[Route("AddNewClient")]
         //[HttpPost]
         //public IHttpActionResult AddNewClient([FromBody]AddClient model)

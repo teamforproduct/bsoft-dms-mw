@@ -26,6 +26,7 @@ namespace BL.Database.DatabaseContext
             context.DictionaryResultTypesSet.AddRange(DmsDbImportData.GetDictionaryResultTypes());
             context.DictionarySendTypesSet.AddRange(DmsDbImportData.GetDictionarySendTypes());
             context.DictionarySubordinationTypesSet.AddRange(DmsDbImportData.GetDictionarySubordinationTypes());
+            context.DictionaryRegistrationJournalAccessTypesSet.AddRange(DmsDbImportData.GetDictionaryRegistrationJournalAccessTypes());
             context.DictionarySubscriptionStatesSet.AddRange(DmsDbImportData.GetDictionarySubscriptionStates());
             context.DictionaryPositionExecutorTypesSet.AddRange(DmsDbImportData.GetDictionaryPositionExecutorTypes());
             context.DictionaryLinkTypesSet.AddRange(DmsDbImportData.GetDictionaryLinkTypes());

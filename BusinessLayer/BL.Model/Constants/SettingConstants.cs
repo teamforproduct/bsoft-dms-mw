@@ -108,6 +108,27 @@ namespace BL.Model.Constants
             };
         }
 
-        
+        public static string RJOURNAL_POSITIONS_SET_ALL_FOR_VIEWING = "RJOURNAL_POSITIONS_SET_ALL_FOR_VIEWING";
+        public static InternalSystemSetting DefaultRJournalPositionSetAllForViewing()
+        {
+            return new InternalSystemSetting
+            {
+                Key = RJOURNAL_POSITIONS_SET_ALL_FOR_VIEWING,
+                Value = "true",
+                ValueType = Enums.EnumValueTypes.Bool,
+            };
+        }
+
+
+        public static string RJOURNAL_POSITIONS_SET_ALL_FOR_REGISTRATION = "RJOURNAL_POSITIONS_SET_ALL_FOR_REGISTRATION";
+        public static InternalSystemSetting DefaultRJournalPositionSetAllForRegistration()
+        {
+            return new InternalSystemSetting
+            {
+                Key = RJOURNAL_POSITIONS_SET_ALL_FOR_REGISTRATION,
+                Value = "true",
+                ValueType = Enums.EnumValueTypes.Bool,
+            };
+        }        
     }
 }
