@@ -6,6 +6,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
+using System.Transactions;
 
 namespace BL.Logic.AdminCore
 {
@@ -24,33 +25,32 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
-                    // ощищаю настроки для Model.TargetPositionId
-                    _adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination() { SourcePositionId = Model.TargetPositionId });
-                }
-
-                // выгребаю все настройки для Model.SourcePosition
-                var items = _adminDb.GetSubordinations(_context, new FilterAdminSubordination() { SourcePositionIDs = new List<int> { Model.SourcePositionId } });
-
-                // добавляю 
-                foreach (var item in items)
-                {
-                    // подменил SourcePosition
-                    var model = new ModifyAdminSubordination()
+                    if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
                     {
-                        SourcePositionId = Model.TargetPositionId,
-                        TargetPositionId = item.TargetPositionId,
-                        SubordinationTypeId = item.SubordinationTypeId
-                    };
+                        // ощищаю настроки для Model.TargetPositionId
+                        _adminDb.DeleteRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { PositionIDs = new List<int> { Model.TargetPositionId } });
+                    }
 
-                    if (!_adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
+                    // выгребаю все настройки для Model.SourcePosition
+                    var items = _adminDb.GetInternalRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { PositionIDs = new List<int> { Model.SourcePositionId } });
+
+                    // добавляю 
+                    foreach (var item in items)
                     {
-                        SourcePositionIDs = new List<int> { model.SourcePositionId },
-                        TargetPositionIDs = new List<int> { model.TargetPositionId },
-                        SubordinationTypeIDs = new List<EnumSubordinationTypes>() { model.SubordinationTypeId }
-                    }))
-                        _adminDb.AddSubordination(_context, CommonAdminUtilities.SubordinationModifyToInternal(_context, model));
+                        // подменил SourcePosition
+                        var model = new ModifyAdminRegistrationJournalPosition()
+                        {
+                            PositionId = Model.TargetPositionId,
+                            RegistrationJournalId = item.RegistrationJournalId,
+                            RegJournalAccessTypeId = (EnumRegistrationJournalAccessTypes)item.RegJournalAccessTypeId
+                        };
+
+                        SetRegistrationJournalPosition(model);
+                    }
+
+                    transaction.Complete();
                 }
 
                 return null;

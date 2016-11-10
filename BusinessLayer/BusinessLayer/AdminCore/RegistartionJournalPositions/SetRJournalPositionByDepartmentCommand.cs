@@ -46,10 +46,7 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        private void SetRegistrationJournalPosition(ModifyAdminRegistrationJournalPosition model)
-        {
-            _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetRegistrationJournalPosition , _context, model);
-        }
+        
 
         private void SetRegistrationJournalPositionByDepartment(int departmentId)
         {

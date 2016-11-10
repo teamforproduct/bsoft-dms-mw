@@ -10,20 +10,20 @@ namespace BL.Logic.AdminCore
 {
     public class SetAllRJournalPositionsCommand : BaseRJournalPositionCommand
     {
-        private ModifyAdminSubordinations Model
+        private ModifyAdminRegistrationJournalPositions Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordinations)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordinations)_param;
+                if (!(_param is ModifyAdminRegistrationJournalPositions)) throw new WrongParameterTypeError();
+                return (ModifyAdminRegistrationJournalPositions)_param;
             }
         }
 
         public override object Execute()
         {
-            SetAll(Model.PositionId, Model.IsChecked,
-                Model.SubordinationTypeId == BL.Model.Enums.EnumSubordinationTypes.Execution,
-                Model.SubordinationTypeId == BL.Model.Enums.EnumSubordinationTypes.Informing);
+            SetAll(Model.PositionId, Model.IsChecked, 
+                Model.RegJournalAccessTypeId == BL.Model.Enums.EnumRegistrationJournalAccessTypes.View,
+                Model.RegJournalAccessTypeId == BL.Model.Enums.EnumRegistrationJournalAccessTypes.Registration);
             return null;
         }
 
