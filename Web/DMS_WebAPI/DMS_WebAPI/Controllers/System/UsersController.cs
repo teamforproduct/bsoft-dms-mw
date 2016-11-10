@@ -7,7 +7,6 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Exception;
 using BL.Logic.DictionaryCore.Interfaces;
-using System.Linq;
 using Microsoft.AspNet.Identity;
 using BL.Model.WebAPI.IncomingModel;
 using BL.CrossCutting.Interfaces;
@@ -24,8 +23,6 @@ using BL.Model.Users;
 using DMS_WebAPI.Models;
 using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
-using BL.CrossCutting.Context;
-using BL.Model.Constants;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -50,6 +47,32 @@ namespace DMS_WebAPI.Controllers
             var agent = dicProc.GetDictionaryAgent(context, context.CurrentAgentId);
 
             return new JsonResult(agent, this);
+        }
+
+        /// <summary>
+        /// Получение информации о пользователе
+        /// </summary>
+        /// <returns></returns>
+        [Route("AgentUserInfo")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAgentUserInfo(int agentId)
+        {
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.GetAgentUserInfo, ctx, agentId);
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+
+            return new JsonResult(user, this);
         }
 
         /// <summary>
@@ -368,27 +391,8 @@ namespace DMS_WebAPI.Controllers
 
                 var settings = DmsResolver.Current.Get<ISettings>();
 
-                var adminCtx = new AdminContext(ctx);
-
-                var msSetting = new BL.Model.SystemCore.InternalModel.InternalSendMailParameters(
-                    new BL.Model.SystemCore.InternalModel.InternalSendMailServerParameters
-                    {
-                        CheckInterval = settings.GetSetting<int>(adminCtx, SettingConstants.MAIL_TIMEOUT_MIN),
-                        ServerType = (MailServerType)settings.GetSetting<int>(adminCtx, SettingConstants.MAIL_SERVER_TYPE),
-                        FromAddress = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_SYSTEMMAIL),
-                        Login = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_LOGIN),
-                        Pass = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_PASS),
-                        Server = settings.GetSetting<string>(adminCtx, SettingConstants.MAIL_SERVER_NAME),
-                        Port = settings.GetSetting<int>(adminCtx, SettingConstants.MAIL_SERVER_PORT)
-                    })
-                {
-                    Body = htmlContent,
-                    ToAddress = model.NewEmail,
-                    Subject = "Email confirmation",
-                };
-
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                mailService.SendMessage(ctx, msSetting);
+                mailService.SendMessage(ctx, model.NewEmail, "Email confirmation", htmlContent);
             }
 
             return new JsonResult(null, this);

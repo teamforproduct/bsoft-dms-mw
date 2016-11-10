@@ -174,6 +174,7 @@
         ChangeLockoutAgentUser = 221002,
         KillSessionsAgentUser = 221003,
         ChangeLoginAgentUser = 221004,
+        GetAgentUserInfo = 221005,
 
         #endregion
 

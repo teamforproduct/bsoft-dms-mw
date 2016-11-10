@@ -139,15 +139,10 @@ namespace BL.Logic.AdminCore
 
                 #region AdminSubordinations
                 case EnumAdminActions.ChangePasswordAgentUser:
-                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
-                    break;
                 case EnumAdminActions.ChangeLockoutAgentUser:
-                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
-                    break;
                 case EnumAdminActions.KillSessionsAgentUser:
-                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
-                    break;
                 case EnumAdminActions.ChangeLoginAgentUser:
+                case EnumAdminActions.GetAgentUserInfo:
                     cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
                     break;
                 #endregion
