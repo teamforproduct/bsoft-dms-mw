@@ -98,7 +98,7 @@ namespace BL.Database.Admins.Interfaces
         int AddRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
         void AddRegistrationJournalPositions(IContext context, List<InternalRegistrationJournalPosition> list);
         void UpdateRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
-        //void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
+        void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
         //void DeleteRegistrationJournalPositionsBySourcePositionId(IContext context, InternalRegistrationJournalPosition model);
         //void DeleteRegistrationJournalPositionsByTargetPositionId(IContext context, InternalRegistrationJournalPosition model);
         void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter);

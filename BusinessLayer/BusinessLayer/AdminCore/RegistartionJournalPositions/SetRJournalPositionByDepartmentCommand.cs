@@ -14,12 +14,12 @@ namespace BL.Logic.AdminCore
 {
     public class SetRJournalPositionByDepartmentCommand : BaseRJournalPositionCommand
     {
-        private ModifyAdminSubordinationByDepartment Model
+        private ModifyAdminRegistrationJournalPositionByDepartment Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordinationByDepartment)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordinationByDepartment)_param;
+                if (!(_param is ModifyAdminRegistrationJournalPositionByDepartment)) throw new WrongParameterTypeError();
+                return (ModifyAdminRegistrationJournalPositionByDepartment)_param;
             }
         }
 
@@ -30,10 +30,10 @@ namespace BL.Logic.AdminCore
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
                 {
                     // Устанавливаю рассылку для должностей заданного отдела
-                    SetSubordinationByDepartment(Model.DepartmentId);
+                    SetRegistrationJournalPositionByDepartment(Model.DepartmentId);
 
                     // Устанавливаю рассылку для должностей дочерних отделов
-                    SetSubordinationByChildDepartments(Model.DepartmentId);
+                    SetRegistrationJournalPositionByChildDepartments(Model.DepartmentId);
 
                     transaction.Complete();
                 }
@@ -46,31 +46,28 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        private void SetSubordination(ModifyAdminSubordination model)
-        {
-            _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
-        }
+        
 
-        private void SetSubordinationByDepartment(int departmentId)
+        private void SetRegistrationJournalPositionByDepartment(int departmentId)
         {
-            var positions = _dictDb.GetPositions(_context, new FilterDictionaryPosition() { DepartmentIDs = new List<int> { departmentId } });
+            var journals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal() { DepartmentIDs = new List<int> { departmentId } });
 
-            if (positions.Count() > 0)
+            if (journals.Count() > 0)
             {
-                foreach (var position in positions)
+                foreach (var journal in journals)
                 {
-                    SetSubordination(new ModifyAdminSubordination()
+                    SetRegistrationJournalPosition(new ModifyAdminRegistrationJournalPosition()
                     {
                         IsChecked = Model.IsChecked,
-                        SourcePositionId = Model.SourcePositionId,
-                        TargetPositionId = position.Id,
-                        SubordinationTypeId = Model.SubordinationTypeId
+                        PositionId = Model.PositionId,
+                        RegistrationJournalId = journal.Id,
+                        RegJournalAccessTypeId = Model.RegJournalAccessTypeId
                     });
                 }
             }
         }
 
-        private void SetSubordinationByChildDepartments(int departmentId)
+        private void SetRegistrationJournalPositionByChildDepartments(int departmentId)
         {
             var departments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment() { ParentIDs = new List<int> { departmentId } });
 
@@ -78,8 +75,8 @@ namespace BL.Logic.AdminCore
             {
                 foreach (var department in departments)
                 {
-                    SetSubordinationByDepartment(department.Id);
-                    SetSubordinationByChildDepartments(department.Id);
+                    SetRegistrationJournalPositionByDepartment(department.Id);
+                    SetRegistrationJournalPositionByChildDepartments(department.Id);
                 }
             }
         }

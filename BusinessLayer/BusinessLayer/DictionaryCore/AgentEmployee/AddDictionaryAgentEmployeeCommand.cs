@@ -14,6 +14,18 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
+        private AddDictionaryAgentEmployee Model
+        {
+            get
+            {
+                if (!(_param is AddDictionaryAgentEmployee))
+                {
+                    throw new WrongParameterTypeError();
+                }
+                return (AddDictionaryAgentEmployee)_param;
+            }
+        }
+
         public override object Execute()
         {
             try

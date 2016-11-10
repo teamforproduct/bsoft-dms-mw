@@ -1564,6 +1564,25 @@ namespace BL.Database.Admins
             }
         }
 
+        public void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRegistrationJournalPositions dbModel = null;
+                if (model.Id == 0)
+                {
+                    dbModel = dbContext.AdminRegistrationJournalPositionsSet.
+                        FirstOrDefault(x => x.PositionId == model.PositionId && x.RegJournalId == model.RegistrationJournalId && x.RegJournalAccessTypeId == model.RegJournalAccessTypeId);
+                }
+                else
+                {
+                    dbModel = dbContext.AdminRegistrationJournalPositionsSet.FirstOrDefault(x => x.Id == model.Id);
+                }
+                dbContext.AdminRegistrationJournalPositionsSet.Remove(dbModel);
+                dbContext.SaveChanges();
+            }
+        }
+
         public void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
         {
             using (var dbContext = new DmsContext(context))

@@ -11,7 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
-        protected ModifyDictionaryAgentEmployee Model
+        private ModifyDictionaryAgentEmployee Model
         {
             get
             {
@@ -92,6 +92,8 @@ namespace BL.Logic.DictionaryCore
                     throw new DictionaryAgentEmployeeTaxCodeNotUnique(Model.TaxCode);
                 }
             }
+
+            //добавить проверку на FullName
 
             return true;
         }

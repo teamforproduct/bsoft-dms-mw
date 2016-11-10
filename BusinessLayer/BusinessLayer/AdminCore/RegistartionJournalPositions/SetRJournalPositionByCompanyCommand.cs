@@ -13,12 +13,12 @@ namespace BL.Logic.AdminCore
 {
     public class SetRJournalPositionByCompanyCommand : BaseRJournalPositionCommand
     {
-        private ModifyAdminSubordinationByCompany Model
+        private ModifyAdminRegistrationJournalPositionByCompany Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordinationByCompany)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordinationByCompany)_param;
+                if (!(_param is ModifyAdminRegistrationJournalPositionByCompany)) throw new WrongParameterTypeError();
+                return (ModifyAdminRegistrationJournalPositionByCompany)_param;
             }
         }
 
@@ -34,7 +34,7 @@ namespace BL.Logic.AdminCore
                     {
                         foreach (var department in departments)
                         {
-                            SetSubordinationByDepartment(department.Id);
+                            SetRJournalPositionByDepartment(department.Id);
                         }
                     }
                     transaction.Complete();
@@ -48,25 +48,21 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        private void SetSubordination(ModifyAdminSubordination model)
-        {
-            _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
-        }
 
-        private void SetSubordinationByDepartment(int departmentId)
+        private void SetRJournalPositionByDepartment(int departmentId)
         {
-            var positions = _dictDb.GetPositions(_context, new FilterDictionaryPosition() { DepartmentIDs = new List<int> { departmentId } });
+            var journals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal() { DepartmentIDs = new List<int> { departmentId } });
 
-            if (positions.Count() > 0)
+            if (journals.Count() > 0)
             {
-                foreach (var position in positions)
+                foreach (var journal in journals)
                 {
-                    SetSubordination(new ModifyAdminSubordination()
+                    SetRegistrationJournalPosition(new ModifyAdminRegistrationJournalPosition()
                     {
                         IsChecked = Model.IsChecked,
-                        SourcePositionId = Model.SourcePositionId,
-                        TargetPositionId = position.Id,
-                        SubordinationTypeId = Model.SubordinationTypeId
+                        PositionId = Model.PositionId,
+                        RegistrationJournalId = journal.Id,
+                        RegJournalAccessTypeId = Model.RegJournalAccessTypeId
                     });
                 }
             }

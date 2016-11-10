@@ -11,12 +11,12 @@ namespace BL.Logic.AdminCore
 {
     public class SetRJournalPositionCommand : BaseRJournalPositionCommand
     {
-        private ModifyAdminSubordination Model
+        private ModifyAdminRegistrationJournalPosition Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordination)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordination)_param;
+                if (!(_param is ModifyAdminRegistrationJournalPosition)) throw new WrongParameterTypeError();
+                return (ModifyAdminRegistrationJournalPosition)_param;
             }
         }
 
@@ -24,24 +24,24 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                var row = new InternalAdminSubordination()
+                var row = new InternalRegistrationJournalPosition()
                 {
-                    SourcePositionId = Model.SourcePositionId,
-                    TargetPositionId = Model.TargetPositionId,
-                    SubordinationTypeId = (int)Model.SubordinationTypeId
+                    PositionId = Model.PositionId,
+                    RegistrationJournalId = Model.RegistrationJournalId,
+                    RegJournalAccessTypeId = (int)Model.RegJournalAccessTypeId
                 };
 
                 CommonDocumentUtilities.SetLastChange(_context, row);
 
-                var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
+                var exists = _adminDb.ExistsRegistrationJournalPosition(_context, new FilterAdminRegistrationJournalPosition()
                 {
-                    SourcePositionIDs = new List<int>() { row.SourcePositionId },
-                    TargetPositionIDs = new List<int>() { row.TargetPositionId },
-                    SubordinationTypeIDs = new List<EnumSubordinationTypes>() { (EnumSubordinationTypes)row.SubordinationTypeId }
+                    PositionIDs = new List<int>() { row.PositionId },
+                    RegistrationJournalIDs = new List<int>() { row.RegistrationJournalId },
+                    RegistrationJournalAccessTypeIDs = new List<EnumRegistrationJournalAccessTypes>() { (EnumRegistrationJournalAccessTypes)row.RegJournalAccessTypeId }
                 });
 
-                if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
-                else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
+                if (exists && !Model.IsChecked) _adminDb.DeleteRegistrationJournalPosition(_context, row);
+                else if (!exists && Model.IsChecked) _adminDb.AddRegistrationJournalPosition(_context, row);
 
                 return null;
             }

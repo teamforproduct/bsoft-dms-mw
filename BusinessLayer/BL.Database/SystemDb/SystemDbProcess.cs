@@ -1458,6 +1458,8 @@ namespace BL.Database.SystemDb
             }
         }
 
+        private string Concat(params object[] values) => string.Join(" ", values);
+
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
@@ -1485,7 +1487,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " "
+                    ObjectText = Concat(x.PersonnelNumber, x.Description, x.Agent.Name, x.Agent.AgentPerson.FullName, x.Agent.AgentPerson.BirthDate, x.Agent.AgentPerson.PassportDate, x.Agent.AgentPerson.PassportNumber, x.Agent.AgentPerson.PassportSerial, x.Agent.AgentPerson.PassportText, x.Agent.AgentPerson.TaxCode)
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -2123,7 +2125,7 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees).Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees).Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, employee = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2131,7 +2133,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.PersonnelNumber + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
+                        ObjectText = Concat(x.employee.PersonnelNumber, x.employee.Description, x.employee.Agent.Name, x.employee.Agent.AgentPerson.FullName, x.employee.Agent.AgentPerson.BirthDate, x.employee.Agent.AgentPerson.PassportDate, x.employee.Agent.AgentPerson.PassportNumber, x.employee.Agent.AgentPerson.PassportSerial, x.employee.Agent.AgentPerson.PassportText, x.employee.Agent.AgentPerson.TaxCode)
                     }).ToList());
                 }
 
