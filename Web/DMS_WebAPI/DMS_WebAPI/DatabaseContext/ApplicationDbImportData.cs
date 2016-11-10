@@ -435,7 +435,7 @@ namespace DMS_WebAPI.Models
 
 
 
-            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Вы не можете добавить данные в этот справочник", "Ви не можете додати дані в цей довідник");
+            AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeAdded@l##", "You could not add this dictionary data!", "Возникла ошибка при добавлении данных", "Виникла помилка при додаванні даних");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordCouldNotBeDeleted@l##", "You could not delete from this dictionary data!", "Вы не можете удалить данные из этого справочника", "Ви не можете видалити дані з цього довідника");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordNotUnique@l##", "Dictionary record should be unique!", "Элемент справочника должен быть уникален!", "Елемент довідника повинен бути унікальний !");
             AddALV(list, "##l@DmsExceptions:DictionaryRecordWasNotFound@l##", "Dictionary record was not found!", "Элемент справочника не найден!", "Елемент довідника не найден !");
