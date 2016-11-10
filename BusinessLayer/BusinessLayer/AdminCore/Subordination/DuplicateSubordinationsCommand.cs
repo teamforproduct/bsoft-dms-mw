@@ -11,12 +11,12 @@ namespace BL.Logic.AdminCore
 {
     public class DuplicateSubordinationsCommand : BaseSubordinationCommand
     {
-        private CopyAdminSubordinations Model
+        private CopyAdminSettingsByPosition Model
         {
             get
             {
-                if (!(_param is CopyAdminSubordinations)) throw new WrongParameterTypeError();
-                return (CopyAdminSubordinations)_param;
+                if (!(_param is CopyAdminSettingsByPosition)) throw new WrongParameterTypeError();
+                return (CopyAdminSettingsByPosition)_param;
             }
         }
 

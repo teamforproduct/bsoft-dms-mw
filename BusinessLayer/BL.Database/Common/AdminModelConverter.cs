@@ -126,5 +126,30 @@ namespace BL.Database.Common
             return items;
         }
 
+
+        public static AdminRegistrationJournalPositions GetDbRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition item)
+        {
+            return item == null ? null : new AdminRegistrationJournalPositions
+            {
+                Id = item.Id,
+                PositionId = item.PositionId,
+                RegJournalId = item.RegistrationJournalId,
+                RegJournalAccessTypeId = item.RegJournalAccessTypeId
+            };
+        }
+
+        public static List<AdminRegistrationJournalPositions> GetDbRegistrationJournalPositions(IContext context, List<InternalRegistrationJournalPosition> list)
+        {
+            var items = new List<AdminRegistrationJournalPositions>();
+
+            foreach (var item in list)
+            {
+                items.Add(GetDbRegistrationJournalPosition(context, item));
+            }
+
+            return items;
+        }
+
+
     }
 }

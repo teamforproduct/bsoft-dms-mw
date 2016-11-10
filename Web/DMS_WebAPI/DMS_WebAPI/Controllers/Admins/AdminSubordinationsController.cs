@@ -26,6 +26,8 @@ namespace DMS_WebAPI.Controllers.Admins
     [RoutePrefix("api/v2/AdminSubordinations")]
     public class AdminSubordinationsController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Возвращает список должностей на которых разрешена рассылка документов
         /// </summary>
@@ -34,26 +36,29 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(List<FrontAdminSubordination>))]
         public IHttpActionResult Get([FromUri] FilterAdminSubordination filter)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAdminSubordinations(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
-        /// Разрешает должности выполнять рассылку на другую должность с учетом типа расслки
+        /// Разрешает должности выполнять рассылку на другую должность с учетом типа рассылки
         /// </summary>
         /// <param name="model">ModifyAdminSubordination</param>
         /// <returns>FrontAdminSubordination</returns>
         public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -64,13 +69,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(FrontAdminSubordination))]
         public IHttpActionResult Get(int id)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.GetAdminSubordinations(ctx, new FilterAdminSubordination() { IDs = new List<int> { id } });
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -83,13 +88,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("GetSubordinationsDIP")]
         public IHttpActionResult GetSubordinationsDIP([FromUri] int positionId, [FromUri] FilterAdminSubordinationTree filter)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, positionId, filter);
-            stopWatch.Stop();
-            return new JsonResult(tmpItems, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -99,15 +104,15 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns></returns>
         [HttpPost]
         [Route("DuplicateSubordinations")]
-        public IHttpActionResult DuplicateSubordinations([FromBody] CopyAdminSubordinations model)
+        public IHttpActionResult DuplicateSubordinations([FromBody] CopyAdminSettingsByPosition model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DuplicateSubordinations, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -120,13 +125,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("SetByDepartment")]
         public IHttpActionResult SetByDepartment([FromBody] ModifyAdminSubordinationByDepartment model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordinationByDepartment, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -139,13 +144,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("SetByCompany")]
         public IHttpActionResult SetByCompany([FromBody] ModifyAdminSubordinationByCompany model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordinationByCompany, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -156,15 +161,15 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns></returns>
         [HttpPost]
         [Route("SetDefault")]
-        public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultSubordination model)
+        public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -177,13 +182,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("SetAll")]
         public IHttpActionResult SetAll([FromBody] ModifyAdminSubordinations model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetAllSubordination, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -195,10 +200,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("IsSendAllForExecution")] //IsSetDefaultsForExecution
         public IHttpActionResult IsSendAllForExecution()
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItems = tmpService.GetSubordinationsSendAllForExecution(cxt);//, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION });
-            return new JsonResult(tmpItems, this);
+            var tmpItem = tmpService.GetSubordinationsSendAllForExecution(cxt);//, new FilterSystemSetting() { Key = SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION });
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -210,10 +218,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("IsSendAllForInforming")]
         public IHttpActionResult IsSendAllForInforming()
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItems = tmpService.GetSubordinationsSendAllForInforming(cxt);
-            return new JsonResult(tmpItems, this);
+            var tmpItem = tmpService.GetSubordinationsSendAllForInforming(cxt);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
     }

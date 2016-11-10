@@ -21,6 +21,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> DepartmentIDs { get; set; }
 
         /// <summary>
+        /// Список должностей
+        /// </summary>
+        public List<int> DepartmentByPositionIDs { get; set; }
+
+        /// <summary>
         /// Входящий от внешнего агента
         /// </summary>
         public bool? IsIncoming { get; set; }

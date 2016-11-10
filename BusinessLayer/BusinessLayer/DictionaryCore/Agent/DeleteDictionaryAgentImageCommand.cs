@@ -37,7 +37,9 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                _dictDb.SetAgentImage(_context, new InternalDictionaryAgentImage { Id = Model });
+                var item = new InternalDictionaryAgentImage { Id = Model, Image = new byte[] { } };
+                CommonDocumentUtilities.SetLastChange(_context, item);
+                _dictDb.SetAgentImage(_context, item);
                 return null;
             }
             catch (Exception ex)

@@ -102,6 +102,9 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.SetAllSubordination:
                     cmd = DmsResolver.Current.Get<SetAllSubordinationsCommand>();
                     break;
+
+
+
                 case EnumAdminActions.AddDepartmentAdmin:
                     cmd = DmsResolver.Current.Get<AddDepartmentAdminCommand>();
                     break;
@@ -111,6 +114,27 @@ namespace BL.Logic.AdminCore
 
 
 
+                #endregion
+
+                #region RegistrationJournalPosition
+                case EnumAdminActions.SetRegistrationJournalPosition:
+                    cmd = DmsResolver.Current.Get<SetRJournalPositionCommand>();
+                    break;
+                case EnumAdminActions.DuplicateRegistrationJournalPositions:
+                    cmd = DmsResolver.Current.Get<DuplicateRJournalPositionCommand>();
+                    break;
+                case EnumAdminActions.SetRegistrationJournalPositionByDepartment:
+                    cmd = DmsResolver.Current.Get<SetRJournalPositionByDepartmentCommand>();
+                    break;
+                case EnumAdminActions.SetRegistrationJournalPositionByCompany:
+                    cmd = DmsResolver.Current.Get<SetRJournalPositionByCompanyCommand>();
+                    break;
+                case EnumAdminActions.SetDefaultRegistrationJournalPosition:
+                    cmd = DmsResolver.Current.Get<SetDefaultRJournalPositionsCommand>();
+                    break;
+                case EnumAdminActions.SetAllRegistrationJournalPosition:
+                    cmd = DmsResolver.Current.Get<SetAllRJournalPositionsCommand>();
+                    break;
                 #endregion
 
                 #region AdminSubordinations

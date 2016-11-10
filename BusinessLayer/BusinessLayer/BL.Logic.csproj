@@ -112,6 +112,13 @@
     <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
     <Compile Include="AdminCore\RoleAction\SetRoleActionByObjectCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\BaseRJournalPositionCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\DuplicateRJournalPositionCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetAllRJournalPositionsCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetDefaultRJournalPositionsCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetRJournalPositionByCompanyCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetRJournalPositionByDepartmentCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetRJournalPositionCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetAllSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetDefaultSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\DuplicateSubordinationsCommand.cs" />

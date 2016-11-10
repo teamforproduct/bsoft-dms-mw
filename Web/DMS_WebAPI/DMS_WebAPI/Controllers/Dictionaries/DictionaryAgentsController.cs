@@ -108,7 +108,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model));
+            tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model);
+            return new JsonResult(null, this);
         }
 
         [HttpDelete]
@@ -117,7 +118,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, AgentId));
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, AgentId);
+            return new JsonResult(null, this);
         }
 
         [HttpGet]

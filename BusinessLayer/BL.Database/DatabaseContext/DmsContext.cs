@@ -73,6 +73,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminPositionRoles> AdminPositionRolesSet { get; set; }
         public virtual DbSet<AdminUserRoles> AdminUserRolesSet { get; set; }
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
+        public virtual DbSet<AdminRegistrationJournalPositions> AdminRegistrationJournalPositionsSet { get; set; }
 
         public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
         public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
@@ -107,6 +108,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryPositionExecutors> DictionaryPositionExecutorsSet { get; set; }
         public virtual DbSet<DictionaryPositionExecutorTypes> DictionaryPositionExecutorTypesSet { get; set; }
         public virtual DbSet<DictionaryRegistrationJournals> DictionaryRegistrationJournalsSet { get; set; }
+        public virtual DbSet<DicRegJournalAccessTypes> DictionaryRegistrationJournalAccessTypesSet { get; set; }
         public virtual DbSet<DictionaryResultTypes> DictionaryResultTypesSet { get; set; }
         public virtual DbSet<DictionarySubscriptionStates> DictionarySubscriptionStatesSet { get; set; }
         public virtual DbSet<DictionarySendTypes> DictionarySendTypesSet { get; set; }

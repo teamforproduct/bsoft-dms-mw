@@ -9,6 +9,7 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -20,6 +21,8 @@ namespace DMS_WebAPI.Controllers.Admins
     [RoutePrefix("api/v2/AdminRoles")]
     public class AdminRolesController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Возвращает списоок ролей
         /// </summary>
@@ -28,10 +31,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(List<FrontAdminRole>))]
         public IHttpActionResult Get([FromUri] FilterAdminRole filter)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAdminRoles(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -42,10 +48,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(FrontAdminRole))]
         public IHttpActionResult Get(int id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.GetAdminRoles(ctx, new FilterAdminRole() { IDs = new List<int> { id } });
-            return new JsonResult(tmpItem, this);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -55,6 +64,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminRole</returns>
         public IHttpActionResult Post([FromBody]ModifyAdminRole model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddRole, cxt, model);
@@ -69,6 +79,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminRole</returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyAdminRole model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
@@ -82,12 +93,15 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminRole</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
             tmpService.ExecuteAction(EnumAdminActions.DeleteRole, cxt, id);
-            FrontAdminRole tmpItem = new FrontAdminRole() { Id = id };
-            return new JsonResult(tmpItem, this);
+            var tmpItem = new FrontAdminRole() { Id = id };
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
     }
 }

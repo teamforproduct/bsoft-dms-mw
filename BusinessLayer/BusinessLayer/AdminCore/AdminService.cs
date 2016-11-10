@@ -429,13 +429,13 @@ namespace BL.Logic.AdminCore
             var res = Tree.Get(flatList, new FilterTree() { });
 
             // растановка галочек для групп(компании, отделы)
-            SetCheckForDepartmentsAndCompanies(res);
+            SetCheckForDepartmentsAndCompaniesDIPSubordinations(res);
 
-            if (filter.IsChecked)
+            if (filter.IsChecked??false)
             {
                 var safeList = new List<string>();
 
-                FormSafeList(res, safeList, filter);
+                FormSafeListDIPSubordinations(res, safeList, filter);
 
                 if (safeList.Count > 0)
                 {
@@ -455,7 +455,7 @@ namespace BL.Logic.AdminCore
             return Tree.GetList(res);
         }
 
-        private void FormSafeList(List<TreeItem> tree, List<string> safeList, FilterTree filter)
+        private void FormSafeListDIPSubordinations(List<TreeItem> tree, List<string> safeList, FilterTree filter)
         {
             if (tree != null)
             {
@@ -471,12 +471,12 @@ namespace BL.Logic.AdminCore
                     }
                     //}
 
-                    FormSafeList((List<TreeItem>)item.Childs, safeList, filter);
+                    FormSafeListDIPSubordinations((List<TreeItem>)item.Childs, safeList, filter);
                 }
             }
         }
 
-        private void SetCheckForDepartmentsAndCompanies(List<TreeItem> tree)
+        private void SetCheckForDepartmentsAndCompaniesDIPSubordinations(List<TreeItem> tree)
         {
             if (tree == null) return;
 
@@ -484,7 +484,7 @@ namespace BL.Logic.AdminCore
             {
                 if (item.IsList ?? true) continue;
 
-                SetCheckForDepartmentsAndCompanies((List<TreeItem>)item.Childs);
+                SetCheckForDepartmentsAndCompaniesDIPSubordinations((List<TreeItem>)item.Childs);
 
                 var child = (FrontDIPSubordinationsBase)item;
 
@@ -494,7 +494,7 @@ namespace BL.Logic.AdminCore
                 bool infGr = false;
                 bool excGr = false;
 
-                GetCheckCount((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
+                GetCheckCountDIPSubordinations((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
 
                 if (infGr) { child.IsExecution = 2; }
                 else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
@@ -505,7 +505,7 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        private void GetCheckCount(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
+        private void GetCheckCountDIPSubordinations(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
         {
             int allCount = 0;
             int infCount = 0;
@@ -562,10 +562,151 @@ namespace BL.Logic.AdminCore
 
         #endregion
 
-        #region [+] MainMenu ...
-        public IEnumerable<TreeItem> GetAdminMainMenu(IContext context)
+        #region [+] RegistrationJournalPosition ...
+        public IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter)
         {
-            return _adminDb.GetMainMenu(context);
+
+            int levelCount = filter?.LevelCount ?? 0;
+            IEnumerable<TreeItem> journals = null;
+            IEnumerable<TreeItem> departments = null;
+            IEnumerable<TreeItem> companies = null;
+
+            if (levelCount >= 3 || levelCount == 0)
+            {
+                journals = _dictDb.GetRegistrationJournalsForDIPRJournalPositions(context, positionId, new FilterDictionaryRegistrationJournal()
+                {
+                    IsActive = filter.IsActive,
+                });
+            }
+
+            if (levelCount >= 2 || levelCount == 0)
+            {
+                departments = _dictDb.GetDepartmentsForDIPRJournalPositions(context, positionId, new FilterDictionaryDepartment()
+                {
+                    IsActive = filter.IsActive,
+                });
+            }
+
+            if (levelCount >= 1 || levelCount == 0)
+            {
+                companies = _dictDb.GetAgentClientCompaniesForDIPRJournalPositions(context, positionId, new FilterDictionaryAgentClientCompany()
+                {
+                    IsActive = filter.IsActive
+                });
+            }
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            if (companies != null) flatList.AddRange(companies);
+            if (journals != null) flatList.AddRange(journals);
+            if (departments != null) flatList.AddRange(departments);
+
+            // для растановки галочек дерево нельзя сужать
+            var res = Tree.Get(flatList, new FilterTree() { });
+
+            // растановка галочек для групп(компании, отделы)
+            SetCheckForDepartmentsAndCompaniesDIPRJournalPositions(res);
+
+            if (filter.IsChecked ?? false)
+            {
+                var safeList = new List<string>();
+
+                FormSafeListDIPRJournalPositions(res, safeList, filter);
+
+                if (safeList.Count > 0)
+                {
+                    flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    res = Tree.Get(flatList, filter);
+                }
+                else
+                {
+                    res = null;
+                }
+            }
+            else
+            {
+                res = Tree.Get(flatList, filter);
+            }
+
+            return Tree.GetList(res);
+        }
+
+        private void FormSafeListDIPRJournalPositions(List<TreeItem> tree, List<string> safeList, FilterTree filter)
+        {
+            if (tree != null)
+            {
+                foreach (var item in tree)
+                {
+                    //if (item.ObjectId == (int)EnumObjects.DictionaryPositions)
+                    //{
+                    var pos = (FrontDIPRegistrationJournalPositionsBase)item;
+
+                    if (pos.IsViewing > 0 || pos.IsRegistration > 0)
+                    {
+                        safeList.AddRange(item.Path.Split('/'));
+                    }
+                    //}
+
+                    FormSafeListDIPRJournalPositions((List<TreeItem>)item.Childs, safeList, filter);
+                }
+            }
+        }
+
+        private void SetCheckForDepartmentsAndCompaniesDIPRJournalPositions(List<TreeItem> tree)
+        {
+            if (tree == null) return;
+
+            foreach (var item in tree)
+            {
+                if (item.IsList ?? true) continue;
+
+                SetCheckForDepartmentsAndCompaniesDIPRJournalPositions((List<TreeItem>)item.Childs);
+
+                var child = (FrontDIPRegistrationJournalPositionsBase)item;
+
+                int allCount = 0;
+                int infCount = 0;
+                int excCount = 0;
+                bool infGr = false;
+                bool excGr = false;
+
+                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
+
+                if (infGr) { child.IsViewing = 2; }
+                else { child.IsViewing = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
+
+                if (infGr) { child.IsRegistration = 2; }
+                else { child.IsRegistration = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+
+            }
+        }
+
+        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
+        {
+            int allCount = 0;
+            int infCount = 0;
+            int excCount = 0;
+            bool infGr = false;
+            bool excGr = false;
+
+            foreach (var item in tree)
+            {
+                var child = (FrontDIPRegistrationJournalPositionsBase)item;
+
+                allCount++;
+                if (child.IsViewing > 0) infCount++;
+                if (child.IsRegistration > 0) excCount++;
+
+                if (child.IsViewing == 2) infGr = true;
+                if (child.IsRegistration == 2) excGr = true;
+
+            }
+
+            AllCount = allCount;
+            InfCount = infCount;
+            ExcCount = excCount;
+            InfGr = infGr;
+            ExcGr = excGr;
         }
         #endregion
 

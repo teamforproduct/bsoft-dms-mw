@@ -123,17 +123,49 @@
         SetAllSubordination = 704006,
         #endregion
 
+        #region [+] RegistrationJournalPositions ...
+
+        /// <summary>
+        /// Совокупность действий по управлению субординацией
+        /// </summary>
+        SetRegistrationJournalPosition = 706001,
+
+        /// <summary>
+        /// Копирование рассылки
+        /// </summary>
+        DuplicateRegistrationJournalPositions = 706002,
+        /// <summary>
+        /// Совокупность действий по управлению субординацией для всего подразделения
+        /// </summary>
+        SetRegistrationJournalPositionByDepartment = 706003,
+
+        /// <summary>
+        /// Совокупность действий по управлению субординацией для всей компании
+        /// </summary>
+        SetRegistrationJournalPositionByCompany = 706004,
+
+        /// <summary>
+        /// Совокупность действий по управлению субординацией для всей компании
+        /// </summary>
+        SetDefaultRegistrationJournalPosition = 706005,
+
+        /// <summary>
+        /// Разрешить все
+        /// </summary>
+        SetAllRegistrationJournalPosition = 706006,
+        #endregion
+
         #region [+] DepartmentAdmin ...
 
         /// <summary>
         /// Добавить администратора подразделения
         /// </summary>
-        AddDepartmentAdmin = 705001,
+        AddDepartmentAdmin = 210001,
 
         /// <summary>
         /// Удалить администратора подразделения
         /// </summary>
-        DeleteDepartmentAdmin = 705002,
+        DeleteDepartmentAdmin = 210002,
 
         #endregion
 
