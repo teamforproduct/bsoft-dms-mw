@@ -53,15 +53,16 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DictionaryContacts));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAddresses));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryDepartments));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryPositions));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentBanks));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentUsers));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAccounts));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDepartments));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositions));
             items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendListContent));
             items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendLists));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies));
             items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutorTypes));
             items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutors));
             items.Add(GetSystemObjects(EnumObjects.TemplateDocument));
@@ -84,10 +85,10 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.AdminUserRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
             //items.Add(GetSystemObjects(EnumObjects.DepartmentAdmin));
+            items.Add(GetSystemObjects(EnumObjects.AdminRegistrationJournalPositions));
 
             items.Add(GetSystemObjects(EnumObjects.SystemSettings));
 
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentUsers));
 
             return items;
         }

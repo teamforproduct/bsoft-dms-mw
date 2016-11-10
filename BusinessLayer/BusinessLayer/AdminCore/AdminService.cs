@@ -431,7 +431,7 @@ namespace BL.Logic.AdminCore
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPSubordinations(res);
 
-            if (filter.IsChecked??false)
+            if (filter.IsChecked ?? false)
             {
                 var safeList = new List<string>();
 
@@ -440,6 +440,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    filter.IsChecked = false;
                     res = Tree.Get(flatList, filter);
                 }
                 else
@@ -616,6 +617,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    filter.IsChecked = false;
                     res = Tree.Get(flatList, filter);
                 }
                 else
