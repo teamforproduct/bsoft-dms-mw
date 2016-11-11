@@ -15,6 +15,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.Constants;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Tree;
+using BL.Model.DictionaryCore.FilterModel;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -133,6 +134,25 @@ namespace DMS_WebAPI.Controllers.Admins
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRegistrationJournalPositionsDIP(ctx, positionId, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает список должностей, которые имеют доступ к журналу
+        /// </summary>
+        /// <param name="journalId"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetPositions")]
+        public IHttpActionResult GetPositions([FromUri] int journalId, [FromUri] FilterDictionaryPosition filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetPositionsByJournalDIP(ctx, journalId, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

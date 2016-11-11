@@ -7,24 +7,35 @@ using BL.Database.DBModel.System;
 
 namespace BL.Database.DBModel.Document
 {
-    public class DocumentFiles
+    public class Files
     {
         public int Id { get; set; }
-        [Index("IX_DocumentNameExtensionVersion", 1, IsUnique = true)]
-        [Index("IX_DocumentOrderNumberVersion", 1, IsUnique = true)]
-        //[Obsolete("!!!",true)]
-        public int DocumentId { get; set; }
+
+        [Index("IX_EntityObjectNameExtensionVersion", 1, IsUnique = true)]
+        [Index("IX_EntityObjectOrderNumberVersion", 1, IsUnique = true)]
+        public int EntityId { get; set; }
+
+        [Index("IX_EntityObjectNameExtensionVersion", 2, IsUnique = true)]
+        [Index("IX_EntityObjectOrderNumberVersion", 2, IsUnique = true)]
+        public int ObjectId { get; set; }
+
+        
         [MaxLength(200)]
-        [Index("IX_DocumentNameExtensionVersion", 2, IsUnique = true)]
+        [Index("IX_EntityObjectNameExtensionVersion", 3, IsUnique = true)]
         public string Name { get; set; }
-        [Index("IX_DocumentOrderNumberVersion", 2, IsUnique = true)]
+
+
+        [Index("IX_EntityObjectOrderNumberVersion", 3, IsUnique = true)]
         public int OrderNumber { get; set; }
-        [Index("IX_DocumentNameExtensionVersion", 4, IsUnique = true)]
-        [Index("IX_DocumentOrderNumberVersion", 3, IsUnique = true)]
+
+        [Index("IX_EntityObjectNameExtensionVersion", 5, IsUnique = true)]
+        [Index("IX_EntityObjectOrderNumberVersion", 4, IsUnique = true)]
         public int Version { get; set; }
+
         [MaxLength(200)]
-        [Index("IX_DocumentNameExtensionVersion", 3, IsUnique = true)]
+        [Index("IX_EntityObjectNameExtensionVersion", 4, IsUnique = true)]
         public string Extension { get; set; }
+
         [MaxLength(2000)]
         public string FileType { get; set; }
         public long FileSize { get; set; }
@@ -49,8 +60,13 @@ namespace BL.Database.DBModel.Document
         public DateTime LastChangeDate { get; set; }
 
 
-        [ForeignKey("DocumentId")]
+        [ForeignKey("EntityId")]
         public virtual Documents Document { get; set; }
+
+        [ForeignKey("EntityId")]
+        public virtual DictionaryAgents Admin { get; set; }
+
+
         [ForeignKey("ExecutorPositionId")]
         public virtual DictionaryPositions ExecutorPosition { get; set; }
         [ForeignKey("ExecutorPositionExecutorAgentId")]
@@ -58,6 +74,5 @@ namespace BL.Database.DBModel.Document
 
         [ForeignKey("TypeId")]
         public virtual DictionaryFileTypes Type { get; set; }
-
     }
 }

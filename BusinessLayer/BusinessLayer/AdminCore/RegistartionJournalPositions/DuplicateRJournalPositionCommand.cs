@@ -44,7 +44,8 @@ namespace BL.Logic.AdminCore
                         {
                             PositionId = Model.TargetPositionId,
                             RegistrationJournalId = item.RegistrationJournalId,
-                            RegJournalAccessTypeId = (EnumRegistrationJournalAccessTypes)item.RegJournalAccessTypeId
+                            RegJournalAccessTypeId = (EnumRegistrationJournalAccessTypes)item.RegJournalAccessTypeId,
+                            IsChecked = true,
                         };
 
                         SetRegistrationJournalPosition(model);

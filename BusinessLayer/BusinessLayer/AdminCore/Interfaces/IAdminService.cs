@@ -74,6 +74,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] RegistrationJournalPositions ...
         IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter);
+        IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter);
         #endregion
     }
 }

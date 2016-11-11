@@ -564,6 +564,29 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] RegistrationJournalPosition ...
+
+
+        public IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter)
+        {
+            var journalPositions = _adminDb.GetInternalRegistrationJournalPositions(context , new FilterAdminRegistrationJournalPosition()
+            { RegistrationJournalIDs = new List<int> { journalId } });
+
+            var posList = journalPositions.Select(x => x.PositionId).ToList();
+
+            if (posList.Count == 0) return null;
+
+            if (filter == null) filter = new FilterDictionaryPosition();
+
+            if (filter.IDs?.Count > 0)
+            { filter.IDs.AddRange(posList);  }
+            else
+            { filter.IDs = posList; }
+
+            var positions = _dictDb.GetPositionsForDIPRegistrationJournals(context, journalId, filter);
+
+            return positions;
+        }
+
         public IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter)
         {
 

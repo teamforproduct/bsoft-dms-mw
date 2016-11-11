@@ -871,7 +871,7 @@ namespace BL.Database.Dictionaries
                         Description = z.Description
                     })
                 }).FirstOrDefault();
- 
+
             }
         }
 
@@ -883,7 +883,7 @@ namespace BL.Database.Dictionaries
                 var tmp = dbContext.DictionaryAgentEmployeesSet.AsEnumerable();
 
 
-                if (!tmp.Any(x=>1==1))
+                if (!tmp.Any(x => 1 == 1))
                 {
                     return 1;
                 }
@@ -921,7 +921,7 @@ namespace BL.Database.Dictionaries
                     PassportText = x.Agent.AgentPerson.PassportText,
                     PassportDate = x.Agent.AgentPerson.PassportDate,
                     BirthDate = x.Agent.AgentPerson.BirthDate,
-                    
+
                     LanguageId = x.Agent.AgentUser.LanguageId,
 
                     //Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
@@ -1100,7 +1100,7 @@ namespace BL.Database.Dictionaries
 
             if (filter.RoleIDs?.Count > 0)
             {
-                qry = qry.Where(x => x.Agent.UserRoles.Any(y => filter.RoleIDs.Any( RoleId => y.RoleId == RoleId)));
+                qry = qry.Where(x => x.Agent.UserRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
             }
 
             if (paging != null)
@@ -2673,7 +2673,7 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => x.AccountNumber == filter.AccountNumberExact);
             }
 
-            
+
 
             if (filter.IsActive.HasValue)
             {
@@ -3148,7 +3148,7 @@ namespace BL.Database.Dictionaries
 
                 qry = DepartmentGetWhere(ref qry, filter);
 
-                qry.Update( x => new DictionaryDepartments { FullPath = codePreffix + "/"+ x.Code });
+                qry.Update(x => new DictionaryDepartments { FullPath = codePreffix + "/" + x.Code });
             }
         }
 
@@ -4214,7 +4214,7 @@ namespace BL.Database.Dictionaries
 
                     dbContext.DictionaryPositionExecutorsSet.Where(filterPositionExecutors).Delete();
                     #endregion
-                    
+
                     // удаляю саму должность
                     dbContext.DictionaryPositionsSet.RemoveRange(dbContext.DictionaryPositionsSet.
                         Where(x => x.Department.Company.ClientId == context.CurrentClientId).
@@ -4396,7 +4396,21 @@ namespace BL.Database.Dictionaries
                 }).ToList();
             }
         }
+        public IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsForDIPRegistrationJournals(IContext context, int registrationJournalId, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
 
+                return qry.Select(x => new FrontDIPRegistrationJournalPositions
+                {
+                    Id = x.Id,
+                    PositionName = x.Name,
+                    IsViewing = x.PositionRegistrationJournals.Where(y => y.PositionId == x.Id & y.RegJournalId == registrationJournalId & y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View).Any(),
+                    IsRegistration = x.PositionRegistrationJournals.Where(y => y.PositionId == x.Id & y.RegJournalId == registrationJournalId & y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration).Any(),
+                }).ToList();
+            }
+        }
         public IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
@@ -4810,7 +4824,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.Now.AddYears(50); 
+                DateTime? maxDateTime = DateTime.Now.AddYears(50);
 
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
@@ -4848,7 +4862,7 @@ namespace BL.Database.Dictionaries
                     AgentId = x.AgentId,
                     PositionId = x.PositionId,
                     PositionExecutorTypeId = x.PositionExecutorTypeId,
-                    AccessLevelId =x.AccessLevelId,
+                    AccessLevelId = x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate == maxDateTime ? (DateTime?)null : x.EndDate,
@@ -4892,7 +4906,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
+
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter)
         {
@@ -5227,12 +5241,14 @@ namespace BL.Database.Dictionaries
             }
         }
 
+
+
         public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(context))
             {
                 var qry = GetRegistrationJournalsQuery(context, dbContext, filter);
-                
+
                 return qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
                     Id = x.Id,
@@ -5407,7 +5423,7 @@ namespace BL.Database.Dictionaries
                 filterContains = filter.DepartmentByPositionIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
 
-                qry = qry. Where(x=>x.Department.Positions.AsQueryable().Any(filterContains));
+                qry = qry.Where(x => x.Department.Positions.AsQueryable().Any(filterContains));
             }
 
             // Условие по IsIncoming

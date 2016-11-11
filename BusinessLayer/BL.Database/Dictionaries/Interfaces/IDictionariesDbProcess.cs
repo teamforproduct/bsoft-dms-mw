@@ -10,6 +10,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.Enums;
+using BL.Model.AdminCore.FrontModel;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -208,7 +209,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
-
+        IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsForDIPRegistrationJournals(IContext context, int registrationJournalId, FilterDictionaryPosition filter);
         IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
