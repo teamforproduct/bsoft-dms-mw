@@ -61,8 +61,8 @@ namespace DMS_WebAPI.Controllers
 
             var ctx = mngContext.Get();
 
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.GetAgentUserInfo, ctx, agentId);
+            var dicService = DmsResolver.Current.Get<IDictionaryService>();
+            var userId = dicService.GetDictionaryAgentUserId(ctx, agentId);
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers
                 throw new UserNameIsNotDefined();
 
 
-            return new JsonResult(user, this);
+            return new JsonResult(new { UserName = user.UserName, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
         }
 
         /// <summary>
