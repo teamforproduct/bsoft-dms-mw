@@ -48,14 +48,14 @@ namespace BL.Logic.DictionaryCore
             if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
 
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
-            {
-                NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            {
-                throw new DictionaryAgentNameNotUnique(Model.Name);
-            }
+            //if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
+            //{
+            //    NameExact = Model.Name,
+            //    NotContainsIDs = new List<int> { Model.Id }
+            //}))
+            //{
+            //    throw new DictionaryAgentNameNotUnique(Model.Name);
+            //}
 
             if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
             {

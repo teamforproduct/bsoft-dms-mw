@@ -34,12 +34,12 @@ namespace BL.Logic.DictionaryCore
             Model.OKPOCode?.Trim();
             Model.VATCode?.Trim();
 
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
-            {
-                NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            { throw new DictionaryAgentNameNotUnique(Model.Name); }
+            //if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
+            //{
+            //    NameExact = Model.Name,
+            //    NotContainsIDs = new List<int> { Model.Id }
+            //}))
+            //{ throw new DictionaryAgentNameNotUnique(Model.Name); }
 
             if (!string.IsNullOrEmpty(Model.TaxCode))
             {

@@ -34,14 +34,14 @@ namespace BL.Logic.DictionaryCore
 
             Model.Name?.Trim();
 
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
-            {
-                NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            {
-                throw new DictionaryAgentNameNotUnique(Model.Name);
-            }
+            //if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
+            //{
+            //    NameExact = Model.Name,
+            //    NotContainsIDs = new List<int> { Model.Id }
+            //}))
+            //{
+            //    throw new DictionaryAgentNameNotUnique(Model.Name);
+            //}
             return true;
         }
 

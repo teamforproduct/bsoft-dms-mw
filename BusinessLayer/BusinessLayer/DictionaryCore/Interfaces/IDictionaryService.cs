@@ -165,9 +165,10 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         // Журналы регистрации
         #region DictionaryRegistrationJournals
-        FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id);
+        FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id);
 
-        IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter);
         #endregion DictionaryRegistrationJournals
 
         // Компании

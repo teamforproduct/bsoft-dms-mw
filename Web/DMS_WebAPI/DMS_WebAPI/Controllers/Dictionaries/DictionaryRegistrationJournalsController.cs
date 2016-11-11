@@ -7,10 +7,14 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.Tree;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryRegistrationJournals")]
     public class DictionaryRegistrationJournalsController : ApiController
     {
         /// <summary>
@@ -23,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryRegistrationJournals(ctx, filter);
+            var tmpDicts = tmpDictProc.GetRegistrationJournals(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -37,8 +41,25 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryRegistrationJournal(ctx, id);
+            var tmpDict = tmpDictProc.GetRegistrationJournal(ctx, id);
             return new JsonResult(tmpDict, this);
+        }
+
+        /// <summary>
+        /// Возвращает дерево Компании-Отделы-Журналы регистрации
+        /// </summary>
+        /// <param name="filter">TreeItem</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetTree")]
+        [ResponseType(typeof(List<TreeItem>))]
+        [ResponseType(typeof(List<FrontDictionaryDepartmentTreeItem>))]
+        public IHttpActionResult GetTree([FromUri] FilterTree filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetRegistrationJournalsTree(ctx, filter);
+            return new JsonResult(tmpDicts, this);
         }
 
         /// <summary>

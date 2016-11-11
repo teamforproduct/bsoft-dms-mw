@@ -15,15 +15,15 @@ namespace BL.Logic.TreeBuilder
         public static List<TreeItem> Get(List<TreeItem> flatList, FilterTree filter)
         {
 
-            bool startWithCondition = (filter.StartWithTreeId ?? string.Empty) != string.Empty;
+            bool startWithCondition = (filter?.StartWithTreeId ?? string.Empty) != string.Empty;
 
-            bool notStartWithCondition = (filter.WithoutTreeId ?? string.Empty) != string.Empty;
+            bool notStartWithCondition = (filter?.WithoutTreeId ?? string.Empty) != string.Empty;
 
             int level = -1;
 
             var res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
 
-            if ((filter.Name ?? string.Empty) != string.Empty || (filter.IsChecked ?? false == true))
+            if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true))
             {
                 var safeList = new List<string>();
 
@@ -89,7 +89,7 @@ namespace BL.Logic.TreeBuilder
                         item.Level = level;
                         item.Path = ((path == string.Empty) ? "" : (path + "/")) + item.TreeId;
                         list.Add(item);
-                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId, WithoutTreeId = filter.WithoutTreeId }, ref level, ref notStartWithCondition, item.Path);
+                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId, WithoutTreeId = filter?.WithoutTreeId }, ref level, ref notStartWithCondition, item.Path);
                     }
                 }
 

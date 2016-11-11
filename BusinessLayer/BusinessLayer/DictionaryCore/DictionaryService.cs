@@ -802,13 +802,13 @@ namespace BL.Logic.DictionaryCore
 
         // Журналы регистрации
         #region DictionaryRegistrationJournals
-        public FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
+        public FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id)
         {
 
             return _dictDb.GetRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
 
             var newFilter = new FilterDictionaryRegistrationJournal();
@@ -843,6 +843,53 @@ namespace BL.Logic.DictionaryCore
 
             return _dictDb.GetRegistrationJournals(context, newFilter);
         }
+
+        public IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter)
+        {
+
+            int levelCount = filter?.LevelCount ?? 0;
+            IEnumerable<TreeItem> journals = null;
+            IEnumerable<TreeItem> departments = null;
+            IEnumerable<TreeItem> companies = null;
+
+            if (levelCount >= 3 || levelCount == 0)
+            {
+                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, new FilterDictionaryRegistrationJournal()
+                {
+                    IsActive = filter?.IsActive
+                });
+            }
+
+            if (levelCount >= 2 || levelCount == 0)
+            {
+                departments = _dictDb.GetDepartmentsForRegistrationJournals(context, new FilterDictionaryDepartment()
+                {
+                    IsActive = filter?.IsActive,
+                    //IDs = filter.DepartmentIDs
+                });
+            }
+
+            if (levelCount >= 1 || levelCount == 0)
+            {
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
+                {
+                    IsActive = filter?.IsActive
+                });
+            }
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            if (companies != null) flatList.AddRange(companies);
+            if (journals != null) flatList.AddRange(journals);
+            if (departments != null) flatList.AddRange(departments);
+
+            var res = Tree.Get(flatList, filter);
+
+            //AddCodePathDepartment(res);
+
+            return res;
+        }
+
         #endregion DictionaryRegistrationJournals
 
         // Компании
@@ -1112,7 +1159,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 2 || levelCount == 0)
             {
-                departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+                departments = _dictDb.GetDepartmentsForStaffList(context, new FilterDictionaryDepartment()
                 {
                     IsActive = filter.IsActive,
                     IDs = filter.DepartmentIDs
@@ -1141,25 +1188,6 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        private void AddCodePathDepartment(IEnumerable<ITreeItem> treeItems, string path = "")
-        {
-            string prefix = "";
-
-            if (treeItems == null) return;
-
-            foreach (var item in treeItems)
-            {
-
-                if (item.ObjectId == (int)EnumObjects.DictionaryDepartments)
-                {
-                    prefix = ((path == string.Empty) ? "" : (path + "/")) + (item as FrontDictionaryDepartmentTreeItem).Code;
-                    item.Name = prefix + " " + item.Name;
-                }
-
-                if (item.Childs.Count() > 0) AddCodePathDepartment(item.Childs, prefix);
-
-            }
-        }
 
         #endregion
 
