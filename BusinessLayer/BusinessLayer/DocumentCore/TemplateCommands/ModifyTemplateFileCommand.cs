@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override object Execute()
         {
 
-            fl.DocumentId = Model.DocumentId;
+            fl.EntityId = Model.DocumentId;
             fl.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             //fl.FileContent = Convert.FromBase64String(Model.FileData);
             fl.FileType = Model.FileType;

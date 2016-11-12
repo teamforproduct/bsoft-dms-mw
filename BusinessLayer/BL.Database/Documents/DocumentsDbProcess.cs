@@ -736,7 +736,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
-                    DocumentId = x.DocumentId,
+                    EntityId = x.DocumentId,
                     Extension = x.Extention,
                     Name = x.Name,
                     FileType = x.FileType,
@@ -889,7 +889,7 @@ namespace BL.Database.Documents
                     if (document.DocumentFiles != null)
                         foreach (var fl in document.DocumentFiles)
                         {
-                            fl.DocumentId = doc.Id;
+                            fl.EntityId = doc.Id;
                         }
                     dbContext.SaveChanges();
                     //TODO Papers

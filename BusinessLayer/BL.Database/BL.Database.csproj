@@ -185,7 +185,6 @@
     <Compile Include="DBModel\Dictionary\DictionarySubscriptionStates.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
     <Compile Include="DBModel\Document\DocumentEventReaders_DELETE.cs" />
-    <Compile Include="DBModel\Files\Files.cs" />
     <Compile Include="DBModel\Document\DocumentPaperLists.cs" />
     <Compile Include="DBModel\Document\DocumentPapers.cs" />
     <Compile Include="DBModel\Document\DocumentSubscriptions.cs" />
@@ -399,6 +398,14 @@
     <Compile Include="Migrations\201611111835077_Files.Designer.cs">
       <DependentUpon>201611111835077_Files.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611121447145_DocumentFilesExtension.cs" />
+    <Compile Include="Migrations\201611121447145_DocumentFilesExtension.Designer.cs">
+      <DependentUpon>201611121447145_DocumentFilesExtension.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611121813483_DocumentFilesExtension+ClietId.cs" />
+    <Compile Include="Migrations\201611121813483_DocumentFilesExtension+ClietId.Designer.cs">
+      <DependentUpon>201611121813483_DocumentFilesExtension+ClietId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -571,6 +578,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611111835077_Files.resx">
       <DependentUpon>201611111835077_Files.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611121447145_DocumentFilesExtension.resx">
+      <DependentUpon>201611121447145_DocumentFilesExtension.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611121813483_DocumentFilesExtension+ClietId.resx">
+      <DependentUpon>201611121813483_DocumentFilesExtension+ClietId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

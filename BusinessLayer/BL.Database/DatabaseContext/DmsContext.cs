@@ -123,7 +123,6 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }
-        public virtual DbSet<Files> DocumentFileObjectsSet { get; set; }
         public virtual DbSet<DocumentLinks> DocumentLinksSet { get; set; }
         public virtual DbSet<DocumentAccesses> DocumentAccessesSet { get; set; }
         public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }

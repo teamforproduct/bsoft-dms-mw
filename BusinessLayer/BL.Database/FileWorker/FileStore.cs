@@ -39,7 +39,7 @@ namespace BL.Database.FileWorker
         private string GetFullDocumentFilePath(IContext ctx, FrontTemplateAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.EntityId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
 
@@ -47,14 +47,14 @@ namespace BL.Database.FileWorker
         private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.EntityId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
             return path;
         }
 
         private string GetFullDocumentFilePath(IContext ctx, InternalTemplateAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.EntityId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
 
@@ -336,7 +336,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.EntityId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }

@@ -8,6 +8,7 @@ using BL.Model.SystemCore.InternalModel;
 using System;
 using BL.Model.EncryptionCore.InternalModel;
 using BL.Database.DBModel.Encryption;
+using BL.CrossCutting.Interfaces;
 
 namespace BL.Database.Common
 {
@@ -261,28 +262,40 @@ namespace BL.Database.Common
 
         public static DocumentFiles GetDbDocumentFile(InternalDocumentAttachedFile docFile)
         {
-            return new DocumentFiles
+
+            var res =
+             new DocumentFiles
+             {
+                 //ClientId = context.CurrentClientId,
+
+                 Id = docFile.Id,
+                 EntityId = docFile.EntityId,
+                 ObjectId = (int)docFile.ObjectId,
+                 OrderNumber = docFile.OrderInDocument,
+                 Version = docFile.Version,
+                 Extension = docFile.Extension,
+                 Hash = docFile.Hash,
+                 FileType = docFile.FileType,
+                 FileSize = docFile.FileSize,
+                 TypeId = (int)docFile.Type,
+                 IsDeleted = docFile.IsDeleted,
+                 IsMainVersion = docFile.IsMainVersion,
+                 IsWorkedOut = docFile.IsWorkedOut,
+                 Description = docFile.Description,
+                 LastChangeDate = docFile.LastChangeDate,
+                 LastChangeUserId = docFile.LastChangeUserId,
+                 Name = docFile.Name,
+                 Date = docFile.Date,
+                 ExecutorPositionId = docFile.ExecutorPositionId,
+                 ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
+             };
+
+            if (docFile.ObjectId == Model.Enums.EnumObjects.Documents)
             {
-                Id = docFile.Id,
-                DocumentId = docFile.DocumentId,
-                OrderNumber = docFile.OrderInDocument,
-                Version = docFile.Version,
-                Extension = docFile.Extension,
-                Hash = docFile.Hash,
-                FileType = docFile.FileType,
-                FileSize = docFile.FileSize,
-                TypeId = (int)docFile.Type,
-                IsDeleted = docFile.IsDeleted,
-                IsMainVersion = docFile.IsMainVersion,
-                IsWorkedOut = docFile.IsWorkedOut,
-                Description = docFile.Description,
-                LastChangeDate = docFile.LastChangeDate,
-                LastChangeUserId = docFile.LastChangeUserId,
-                Name = docFile.Name,
-                Date = docFile.Date,
-                ExecutorPositionId = docFile.ExecutorPositionId,
-                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
-            };
+                res.DocumentId = res.EntityId;
+            }
+
+            return res;
         }
 
         public static IEnumerable<DocumentFiles> GetDbDocumentFiles(IEnumerable<InternalDocumentAttachedFile> docFile)
@@ -334,7 +347,7 @@ namespace BL.Database.Common
             return new TemplateDocumentFiles
             {
                 Id = docFile.Id,
-                DocumentId = docFile.DocumentId,
+                DocumentId = docFile.EntityId,
                 OrderNumber = docFile.OrderInDocument,
                 Extention = docFile.Extension,
                 Hash = docFile.Hash,
