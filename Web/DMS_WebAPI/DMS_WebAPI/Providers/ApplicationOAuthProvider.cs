@@ -159,7 +159,7 @@ namespace DMS_WebAPI.Providers
                     throw new EmailConfirmRequiredAgentUser();
 
                 if (user.IsLockout)
-                    throw new LockoutAgentUser();
+                    throw new UserIsDeactivated(user.UserName);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 

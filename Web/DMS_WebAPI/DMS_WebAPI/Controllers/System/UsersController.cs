@@ -238,7 +238,7 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangePasswordAgentUser, ctx, model.AgentId);
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangePassword, ctx, model.AgentId);
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
@@ -293,7 +293,7 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLockoutAgentUser, ctx, model.AgentId);
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLockout, ctx, model.AgentId);
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
@@ -331,7 +331,7 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.KillSessionsAgentUser, ctx, agentId);
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, agentId);
 
             mngContext.KillSessions(agentId);
 
@@ -357,7 +357,7 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLoginAgentUser, ctx, model.AgentId);
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLogin, ctx, model.AgentId);
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 

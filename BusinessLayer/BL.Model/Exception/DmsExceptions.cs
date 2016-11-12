@@ -18,9 +18,9 @@ namespace BL.Model.Exception
     {
         public DmsExceptions(string message) : base(message) { }
         public DmsExceptions(string message, System.Exception ex) : base(message, ex) { }
-
         public List<string> Parameters { set; get; }
     }
+
     #region [+] LicenceError ... 
 
 
@@ -29,7 +29,7 @@ namespace BL.Model.Exception
     /// </summary>
     public class LicenceError : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:LicenceInformationError@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceError@l##";
         public LicenceError() : base(_MESSAGE) { }
         public LicenceError(System.Exception ex) : base(_MESSAGE, ex) { }
     }
@@ -474,7 +474,7 @@ namespace BL.Model.Exception
     }
     public class CouldNotPerformOperation : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformThisOperation@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformOperation@l##";
         public CouldNotPerformOperation() : base(_MESSAGE) { }
         public CouldNotPerformOperation(System.Exception ex) : base(_MESSAGE, ex) { }
     }
@@ -937,10 +937,10 @@ namespace BL.Model.Exception
         public EmailConfirmRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class LockoutAgentUser : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:LockoutAgentUser@l##";
-        public LockoutAgentUser() : base(_MESSAGE) { }
-        public LockoutAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+    //public class LockoutAgentUser : DmsExceptions
+    //{
+    //    private const string _MESSAGE = "##l@DmsExceptions:LockoutAgentUser@l##";
+    //    public LockoutAgentUser() : base(_MESSAGE) { }
+    //    public LockoutAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    //}
 }

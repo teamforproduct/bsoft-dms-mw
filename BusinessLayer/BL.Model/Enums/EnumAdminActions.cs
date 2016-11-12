@@ -170,11 +170,10 @@
         #endregion
 
         #region [+] Action over AgentUser
-        ChangePasswordAgentUser = 221001,
-        ChangeLockoutAgentUser = 221002,
-        KillSessionsAgentUser = 221003,
-        ChangeLoginAgentUser = 221004,
-        GetAgentUserInfo = 221005,
+        ChangePassword = 221001,
+        ChangeLockout = 221002,
+        KillSessions = 221003,
+        ChangeLogin = 221004,
 
         #endregion
 

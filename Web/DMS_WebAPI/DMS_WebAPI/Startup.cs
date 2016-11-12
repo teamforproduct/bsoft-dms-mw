@@ -34,8 +34,11 @@ namespace DMS_WebAPI
             var systemService = DmsResolver.Current.Get<ISystemService>();
             systemService.CheckSystemActions();
 
-            //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
-            //var tt = Database.Exists("DefaultConnection");
+            ApplicationDbImportData.CheckLanguages();
+
+
+        //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
+        //var tt = Database.Exists("DefaultConnection");
 
             var dbProc = new WebAPIDbProcess();
 

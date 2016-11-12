@@ -63,18 +63,22 @@ namespace DMS_WebAPI.Models
 
             var list = new List<AdminLanguageValues>();
 
-            list.AddRange(GetDmsExceptions());
-            list.AddRange(GetObjects());
             list.AddRange(GetActions());
-
-            list.AddRange(GetAdminAccessLevels());
-            list.AddRange(GetDictionaryEventTypes());
-            list.AddRange(GetAdminRoles());
-            list.AddRange(GetDMSExpressions());
-            list.AddRange(GetPositionExecutorTypes());
-            list.AddRange(GetMessages());
             list.AddRange(GetAddressTypes());
+            list.AddRange(GetAdminAccessLevels());
+            list.AddRange(GetAdminRoles());
+            list.AddRange(GetDictionaryEventTypes());
+            list.AddRange(GetDmsExceptions());
+            list.AddRange(GetDocumentDirections());
+            list.AddRange(GetImportanceEventTypes());
             list.AddRange(GetLinkTypes());
+            list.AddRange(GetMessages());
+            list.AddRange(GetObjects());
+            list.AddRange(GetPositionExecutorTypes());
+            list.AddRange(GetRegistrationJournalAccessTypes());
+            list.AddRange(GetSendTypes());
+            list.AddRange(GetSubordinationTypes());
+            list.AddRange(GetSubscriptionStates());
 
             AddALV(list, "##l@System@l##", "System", "Система", "Система");
 
@@ -87,53 +91,67 @@ namespace DMS_WebAPI.Models
         {
             var list = new List<AdminLanguageValues>();
 
-            AddALV(list, "##l@Objects:Documents@l##", "Documents", "Документы", "Документи");
-            AddALV(list, "##l@Objects:DocumentAccesses@l##", "Document accesses", "Документы - доступы", "Документи - доступи");
-            AddALV(list, "##l@Objects:DocumentRestrictedSendLists@l##", "Document restricted send lists", "Документы - ограничения рассылки", "Документи - обмеження розсилки");
-            AddALV(list, "##l@Objects:DocumentSendLists@l##", "Document send lists", "Документы - план работы", "Документи - план роботи");
-            AddALV(list, "##l@Objects:DocumentFiles@l##", "Document files", "Документы - файлы", "Документи - файли");
-            AddALV(list, "##l@Objects:DocumentLinks@l##", "Document links", "Документы - связи", "Документи - зв'язку");
-            AddALV(list, "##l@Objects:DocumentSendListStages@l##", "Document send list stages", "Документы - этапы плана работ", "Документи - етапи плану робіт");
-            AddALV(list, "##l@Objects:DocumentEvents@l##", "Document events", "Документы - события", "Документи - події");
-            AddALV(list, "##l@Objects:DocumentWaits@l##", "Document waits", "Документы - ожидания", "Документи - очікування");
-            AddALV(list, "##l@Objects:DocumentSubscriptions@l##", "Document subscriptions", "Документы - подписи", "Документи - підписи");
-            AddALV(list, "##l@Objects:DocumentTasks@l##", "Document tasks", "Документы - задачи", "Документи - завдання");
-            AddALV(list, "##l@Objects:DocumentPapers@l##", "Document papers", "Документы - бумажные носители", "Документи - паперові носії");
-            AddALV(list, "##l@Objects:DocumentPaperEvents@l##", "Document paper events", "Документы - события по бумажным носителям", "Документи - події по паперових носіїв");
-            AddALV(list, "##l@Objects:DocumentPaperLists@l##", "Document paper lists", "Документы - реестры передачи бумажных носителей", "Документи - реєстри передачі паперових носіїв");
-            AddALV(list, "##l@Objects:DocumentSavedFilters@l##", "Document saved filters", "Документы - сохраненные фильтры", "Документи - збережені фільтри");
-            AddALV(list, "##l@Objects:DocumentTags@l##", "Document tags", "Документы - тэги", "Документи - теги");
-            AddALV(list, "##l@Objects:DictionaryDocumentType@l##", "Dictionary document type", "Типы документов", "Типи документів");
+            AddALV(list, "##l@Objects:AdminPositionRoles@l##", "", "Роли должности", "");
+            AddALV(list, "##l@Objects:AdminRegistrationJournalPositions@l##", "", "Журналы должности", "");
+            AddALV(list, "##l@Objects:AdminRoleAction@l##", "", "Действия роли", "");
+            AddALV(list, "##l@Objects:AdminRoles@l##", "", "Роли", "");
+            AddALV(list, "##l@Objects:AdminSubordination@l##", "", "Рассылка", "");
+            AddALV(list, "##l@Objects:AdminUserRoles@l##", "", "Роли сотрудника", "");
+
+
+            AddALV(list, "##l@Objects:CustomDictionaries@l##", "Custom dictionaries", "Пользовательские словари", "Словники");
+            AddALV(list, "##l@Objects:CustomDictionaryTypes@l##", "Custom dictionary types", "Типы пользовательских словарей", "Типи словників");
             AddALV(list, "##l@Objects:DictionaryAddressType@l##", "Dictionary address type", "Типы адресов", "Типи адрес");
-            AddALV(list, "##l@Objects:DictionaryDocumentSubjects@l##", "Dictionary document subjects", "Тематики документов", "Тематики документів");
-            AddALV(list, "##l@Objects:DictionaryRegistrationJournals@l##", "Dictionary registration journals", "Журналы регистрации", "Журнали реєстрації");
-            AddALV(list, "##l@Objects:DictionaryContactType@l##", "Dictionary contact type", "Типы контактов", "Типи контактів");
-            AddALV(list, "##l@Objects:DictionaryAgents@l##", "Dictionary agents", "Контрагенты", "Контрагенти");
-            AddALV(list, "##l@Objects:DictionaryContacts@l##", "Dictionary contacts", "Контакты", "Контакти");
-            AddALV(list, "##l@Objects:DictionaryAgentAddresses@l##", "Dictionary agent addresses", "Адреса", "Адреси");
-            AddALV(list, "##l@Objects:DictionaryAgentPersons@l##", "Dictionary agent persons", "Физические лица", "Фізичні особи");
-            AddALV(list, "##l@Objects:DictionaryDepartments@l##", "Dictionary departments", "Структура предприятия", "Структура підприємства");
-            AddALV(list, "##l@Objects:DictionaryPositions@l##", "Dictionary positions", "Штатное расписание", "Штатний розклад");
-            AddALV(list, "##l@Objects:DictionaryAgentEmployees@l##", "Dictionary agent employees", "Сотрудники", "Співробітники");
-            AddALV(list, "##l@Objects:DictionaryAgentCompanies@l##", "Dictionary agent companies", "Юридические лица", "Юридичні особи");
-            AddALV(list, "##l@Objects:DictionaryAgentBanks@l##", "Dictionary agent banks", "Контрагенты - банки", "Контрагенти - банки");
             AddALV(list, "##l@Objects:DictionaryAgentAccounts@l##", "Dictionary agent accounts", "Расчетные счета", "Розрахункові рахунки");
+            AddALV(list, "##l@Objects:DictionaryAgentAddresses@l##", "Dictionary agent addresses", "Адреса", "Адреси");
+            AddALV(list, "##l@Objects:DictionaryAgentBanks@l##", "Dictionary agent banks", "Контрагенты - банки", "Контрагенти - банки");
+            AddALV(list, "##l@Objects:DictionaryAgentClientCompanies@l##", "Dictionary agent client companies", "Компании", "Компанії");
+            AddALV(list, "##l@Objects:DictionaryAgentCompanies@l##", "Dictionary agent companies", "Юридические лица", "Юридичні особи");
+            AddALV(list, "##l@Objects:DictionaryAgentEmployees@l##", "Dictionary agent employees", "Сотрудники", "Співробітники");
+            AddALV(list, "##l@Objects:DictionaryAgentPersons@l##", "Dictionary agent persons", "Физические лица", "Фізичні особи");
+            AddALV(list, "##l@Objects:DictionaryAgents@l##", "Dictionary agents", "Контрагенты", "Контрагенти");
+            AddALV(list, "##l@Objects:DictionaryAgentUsers@l##", "Dictionary agent users", "Пользователь-Сотрудник", "");
+            AddALV(list, "##l@Objects:DictionaryContacts@l##", "Dictionary contacts", "Контакты", "Контакти");
+            AddALV(list, "##l@Objects:DictionaryContactType@l##", "Dictionary contact type", "Типы контактов", "Типи контактів");
+            AddALV(list, "##l@Objects:DictionaryDepartments@l##", "Dictionary departments", "Структура предприятия", "Структура підприємства");
+            AddALV(list, "##l@Objects:DictionaryDocumentSubjects@l##", "Dictionary document subjects", "Тематики документов", "Тематики документів");
+            AddALV(list, "##l@Objects:DictionaryDocumentType@l##", "Dictionary document type", "Типы документов", "Типи документів");
+            AddALV(list, "##l@Objects:DictionaryPositionExecutors@l##", "Dictionary position executors", "Исполнители должности", "Виконавці посади");
+            AddALV(list, "##l@Objects:DictionaryPositionExecutorTypes@l##", "Dictionary position executor types", "Типы исполнителей", "Типи виконавців");
+            AddALV(list, "##l@Objects:DictionaryPositions@l##", "Dictionary positions", "Штатное расписание", "Штатний розклад");
+            AddALV(list, "##l@Objects:DictionaryRegistrationJournals@l##", "Dictionary registration journals", "Журналы регистрации", "Журнали реєстрації");
             AddALV(list, "##l@Objects:DictionaryStandartSendListContent@l##", "Dictionary standart send list content", "Типовые списки рассылки (содержание)", "Типові списки розсилки (зміст)");
             AddALV(list, "##l@Objects:DictionaryStandartSendLists@l##", "Dictionary standart send lists", "Типовые списки рассылки", "Типові списки розсилки");
-            AddALV(list, "##l@Objects:DictionaryAgentClientCompanies@l##", "Dictionary agent client companies", "Компании", "Компанії");
-            AddALV(list, "##l@Objects:DictionaryPositionExecutorTypes@l##", "Dictionary position executor types", "Типы исполнителей", "Типи виконавців");
-            AddALV(list, "##l@Objects:DictionaryPositionExecutors@l##", "Dictionary position executors", "Исполнители должности", "Виконавці посади");
-            AddALV(list, "##l@Objects:TemplateDocument@l##", "Template document", "Шаблоны документов", "Шаблони документів");
-            AddALV(list, "##l@Objects:TemplateDocumentSendList@l##", "Template document send list", "Списки рассылки в шаблонах", "Списки розсилки в шаблонах");
-            AddALV(list, "##l@Objects:TemplateDocumentRestrictedSendList@l##", "Template document restricted send list", "Ограничительные списки рассылки в шаблонах", "Обмежувальні списки розсилки в шаблонах");
-            AddALV(list, "##l@Objects:TemplateDocumentTask@l##", "Template document task", "Задачи в шаблонах", "Завдання в шаблонах");
-            AddALV(list, "##l@Objects:TemplateDocumentAttachedFiles@l##", "Template document attached files", "Прикрепленные к шаблонам файлы", "Прикріплені до шаблонів файли");
             AddALV(list, "##l@Objects:DictionaryTag@l##", "Dictionary tag", "Теги", "Теги");
-            AddALV(list, "##l@Objects:CustomDictionaryTypes@l##", "Custom dictionary types", "Типы пользовательских словарей", "Типи словників");
-            AddALV(list, "##l@Objects:CustomDictionaries@l##", "Custom dictionaries", "Пользовательские словари", "Словники");
+            AddALV(list, "##l@Objects:DocumentAccesses@l##", "Document accesses", "Документы - доступы", "Документи - доступи");
+            AddALV(list, "##l@Objects:DocumentEvents@l##", "Document events", "Документы - события", "Документи - події");
+            AddALV(list, "##l@Objects:DocumentFiles@l##", "Document files", "Документы - файлы", "Документи - файли");
+            AddALV(list, "##l@Objects:DocumentLinks@l##", "Document links", "Документы - связи", "Документи - зв'язку");
+            AddALV(list, "##l@Objects:DocumentPaperEvents@l##", "Document paper events", "Документы - события по бумажным носителям", "Документи - події по паперових носіїв");
+            AddALV(list, "##l@Objects:DocumentPaperLists@l##", "Document paper lists", "Документы - реестры передачи бумажных носителей", "Документи - реєстри передачі паперових носіїв");
+            AddALV(list, "##l@Objects:DocumentPapers@l##", "Document papers", "Документы - бумажные носители", "Документи - паперові носії");
+            AddALV(list, "##l@Objects:DocumentRestrictedSendLists@l##", "Document restricted send lists", "Документы - ограничения рассылки", "Документи - обмеження розсилки");
+            AddALV(list, "##l@Objects:Documents@l##", "Documents", "Документы", "Документи");
+            AddALV(list, "##l@Objects:DocumentSavedFilters@l##", "Document saved filters", "Документы - сохраненные фильтры", "Документи - збережені фільтри");
+            AddALV(list, "##l@Objects:DocumentSendLists@l##", "Document send lists", "Документы - план работы", "Документи - план роботи");
+            AddALV(list, "##l@Objects:DocumentSendListStages@l##", "Document send list stages", "Документы - этапы плана работ", "Документи - етапи плану робіт");
+            AddALV(list, "##l@Objects:DocumentSubscriptions@l##", "Document subscriptions", "Документы - подписи", "Документи - підписи");
+            AddALV(list, "##l@Objects:DocumentTags@l##", "Document tags", "Документы - тэги", "Документи - теги");
+            AddALV(list, "##l@Objects:DocumentTasks@l##", "Document tasks", "Документы - задачи", "Документи - завдання");
+            AddALV(list, "##l@Objects:DocumentWaits@l##", "Document waits", "Документы - ожидания", "Документи - очікування");
+            AddALV(list, "##l@Objects:EncryptionCertificates@l##", "", "", "");
             AddALV(list, "##l@Objects:Properties@l##", "Properties", "Динамические аттрибуты", "Динамічні атрибути");
             AddALV(list, "##l@Objects:PropertyLinks@l##", "Property links", "Связи динамических аттрибутов с объектами системы", "Зв'язки динамічних атрибутів з об'єктами системи");
             AddALV(list, "##l@Objects:PropertyValues@l##", "Property values", "Значения динамических аттрибутов", "Значення динамічних атрибутів");
+            AddALV(list, "##l@Objects:TemplateDocument@l##", "Template document", "Шаблоны документов", "Шаблони документів");
+            AddALV(list, "##l@Objects:TemplateDocumentAttachedFiles@l##", "Template document attached files", "Прикрепленные к шаблонам файлы", "Прикріплені до шаблонів файли");
+            AddALV(list, "##l@Objects:TemplateDocumentRestrictedSendList@l##", "Template document restricted send list", "Ограничительные списки рассылки в шаблонах", "Обмежувальні списки розсилки в шаблонах");
+            AddALV(list, "##l@Objects:TemplateDocumentSendList@l##", "Template document send list", "Списки рассылки в шаблонах", "Списки розсилки в шаблонах");
+            AddALV(list, "##l@Objects:TemplateDocumentTask@l##", "Template document task", "Задачи в шаблонах", "Завдання в шаблонах");
+            AddALV(list, "##l@Objects:System@l##", "System", "System", "System");
+            AddALV(list, "##l@Objects:SystemActions@l##", "SystemActions", "SystemActions", "SystemActions");
+            AddALV(list, "##l@Objects:SystemObjects@l##", "SystemObjects", "SystemObjects", "SystemObjects");
+            AddALV(list, "##l@Objects:SystemSettings@l##", "SystemSettings", "SystemSettings", "SystemSettings");
 
             // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
 
@@ -144,6 +162,48 @@ namespace DMS_WebAPI.Models
         {
             var list = new List<AdminLanguageValues>();
 
+            AddALV(list, "##l@AdminActions:AddPositionRole@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:AddRoleAction@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:AddUserRole@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:DeletePositionRole@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:DeleteRoleAction@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:DeleteUserRole@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:DuplicatePositionRoles@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:DuplicateRegistrationJournalPositions@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:DuplicateSubordinations@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetAllRegistrationJournalPosition@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetAllSubordination@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetDefaultRegistrationJournalPosition@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetDefaultSubordination@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetRegistrationJournalPositionByCompany@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetRegistrationJournalPositionByDepartment@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetRoleActionByObject@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetSubordinationByCompany@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:SetSubordinationByDepartment@l##", "", "", "");
+            AddALV(list, "##l@AdminActions:AddRole@l##", "Add role", "Добавить роль", "Додати роль");
+            AddALV(list, "##l@AdminActions:ModifyRole@l##", "Modify role", "Изменить роль", "Змінити роль");
+            AddALV(list, "##l@AdminActions:DeleteRole@l##", "Delete role", "Удалить роль", "Видалити роль");
+            AddALV(list, "##l@AdminActions:SetRoleAction@l##", "Set role actions", "Управление действиями роли", "Управління діями ролі");
+            AddALV(list, "##l@AdminActions:SetPositionRole@l##", "Set position roles", "Управление ролями должности", "Управління ролями посади");
+            AddALV(list, "##l@AdminActions:SetUserRole@l##", "Set user roles", "Управление ролями пользователя", "Управління ролями користувача");
+            AddALV(list, "##l@AdminActions:SetSubordination@l##", "Set subordination", "Управление правилами рассылки", "Управління правилами розсилки");
+            AddALV(list, "##l@AdminActions:SetRegistrationJournalPosition@l##", "Set registration lournal for position", "Управление журналами регистрации", "Управління журналами реєстрації");
+            AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения", "Додати адміністратора підрозділу");
+            AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения", "Видалити адміністратора підрозділу");
+            AddALV(list, "##l@AdminActions:ChangeLogin@l##", "Change login", "Изменить логин", "Додати роль");
+            AddALV(list, "##l@AdminActions:ChangePassword@l##", "Change password", "Изменить пароль", "Додати роль");
+            AddALV(list, "##l@AdminActions:ChangeLockout@l##", "Change lockout", "Добавить роль", "Додати роль");
+            AddALV(list, "##l@AdminActions:KillSessions@l##", "Kill sessions", "Выйти на всех устройствах", "Вийти на всіх пристроях");
+
+
+
+            AddALV(list, "##l@DocumentActions:CopyDocumentSendList@l##", "", "", "");
+            AddALV(list, "##l@DocumentActions:ReportDocumentForDigitalSignature@l##", "", "", "");
+            AddALV(list, "##l@DocumentActions:ReportRegisterTransmissionDocuments@l##", "", "", "");
+            AddALV(list, "##l@DocumentActions:SendDocument@l##", "", "", "");
+            AddALV(list, "##l@DocumentActions:Undefined@l##", "", "", "");
+            AddALV(list, "##l@DocumentActions:VerifySigning@l##", "", "", "");
+            AddALV(list, "##l@DocumentActions:ViewDocument@l##", "", "", "");
             AddALV(list, "##l@DocumentActions:AddDocument@l##", "Add document", "Создать документ по шаблону", "Створити документ за шаблоном");
             AddALV(list, "##l@DocumentActions:CopyDocument@l##", "Copy document", "Создать документ копированием", "Створити документ копіюванням");
             AddALV(list, "##l@DocumentActions:ModifyDocument@l##", "Modify document", "Изменить документ", "Змінити документ");
@@ -251,6 +311,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DocumentActions:AddTemplateAttachedFile@l##", "Add template attached file", "Добавить файл в шаблон", "Додати файл в шаблон");
             AddALV(list, "##l@DocumentActions:ModifyTemplateAttachedFile@l##", "Modify template attached file", "Изменить файл в шаблоне", "Змінити файл в шаблоні");
             AddALV(list, "##l@DocumentActions:DeleteTemplateAttachedFile@l##", "Delete template attached file", "Удалить файл в шаблоне", "Видалити файл в шаблоні");
+
+            AddALV(list, "##l@DictionaryActions:ModifyAgentEmployeeLanguage@l##", "", "", "");
             AddALV(list, "##l@DictionaryActions:AddDocumentType@l##", "Add document type", "Добавить тип документа", "Додати тип документа");
             AddALV(list, "##l@DictionaryActions:ModifyDocumentType@l##", "Modify document type", "Изменить тип документа", "Змінити тип документа");
             AddALV(list, "##l@DictionaryActions:DeleteDocumentType@l##", "Delete document type", "Удалить тип документа", "Видалити тип документа");
@@ -269,8 +331,8 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DictionaryActions:AddAgent@l##", "Add agent", "Добавить контрагента", "Додати контрагента");
             AddALV(list, "##l@DictionaryActions:ModifyAgent@l##", "Modify agent", "Изменить контрагента", "Змінити контрагента");
             AddALV(list, "##l@DictionaryActions:DeleteAgent@l##", "Delete agent", "Удалить контрагента", "Видалити контрагента");
-            AddALV(list, "##l@DictionaryActions:SetAgentPicture@l##", "Set agent picture", "Установить картинку контрагента", "Змінити аватар контрагента");
-            AddALV(list, "##l@DictionaryActions:DeleteAgentPicture@l##", "Delete agent picture", "Удалить картинку контрагента", "Видалити аватар контрагента");
+            AddALV(list, "##l@DictionaryActions:SetAgentImage@l##", "Set agent picture", "Установить картинку контрагента", "Змінити аватар контрагента");
+            AddALV(list, "##l@DictionaryActions:DeleteAgentImage@l##", "Delete agent picture", "Удалить картинку контрагента", "Видалити аватар контрагента");
             AddALV(list, "##l@DictionaryActions:AddAgentContact@l##", "Add agent contact", "Добавить контакт", "Додати контакт");
             AddALV(list, "##l@DictionaryActions:ModifyAgentContact@l##", "Modify agent contact", "Изменить контакт", "Змінити контакт");
             AddALV(list, "##l@DictionaryActions:DeleteAgentContact@l##", "Delete agent contact", "Удалить контакт", "Видалити контакт");
@@ -322,32 +384,25 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DictionaryActions:AddCustomDictionary@l##", "Add custom dictionary", "Добавить запись пользовательского словаря", "Додати запис словника");
             AddALV(list, "##l@DictionaryActions:ModifyCustomDictionary@l##", "Modify custom dictionary", "Изменить запись пользовательского словаря", "Змінити запис словника");
             AddALV(list, "##l@DictionaryActions:DeleteCustomDictionary@l##", "Delete custom dictionary", "Удалить запись пользовательского словаря", "Видалити запис словника");
-            AddALV(list, "##l@PropertyAction:AddProperty@l##", "Add property", "Добавить динамический аттрибут", "Додати динамічний атрибут");
-            AddALV(list, "##l@PropertyAction:ModifyProperty@l##", "Modify property", "Изменить динамический аттрибут", "Змінити динамічний атрибут");
-            AddALV(list, "##l@PropertyAction:DeleteProperty@l##", "Delete property", "Удалить динамический аттрибут", "Видалити динамічний атрибут");
-            AddALV(list, "##l@PropertyAction:AddPropertyLink@l##", "Add property link", "Добавить связь динамических аттрибутов", "Додати зв'язок динамічних атрибутів");
-            AddALV(list, "##l@PropertyAction:ModifyPropertyLink@l##", "Modify property link", "Изменить связь динамических аттрибутов", "Змінити зв'язок динамічних атрибутів");
-            AddALV(list, "##l@PropertyAction:DeletePropertyLink@l##", "Delete property link", "Удалить связь динамических аттрибутов", "Видалити зв'язок динамічних атрибутів");
-            AddALV(list, "##l@PropertyAction:ModifyPropertyValues@l##", "Modify property values", "Изменить значение динамических аттрибутов", "Змінити значення динамічних атрибутів");
+
+            AddALV(list, "##l@PropertyActions:AddProperty@l##", "Add property", "Добавить динамический аттрибут", "Додати динамічний атрибут");
+            AddALV(list, "##l@PropertyActions:ModifyProperty@l##", "Modify property", "Изменить динамический аттрибут", "Змінити динамічний атрибут");
+            AddALV(list, "##l@PropertyActions:DeleteProperty@l##", "Delete property", "Удалить динамический аттрибут", "Видалити динамічний атрибут");
+            AddALV(list, "##l@PropertyActions:AddPropertyLink@l##", "Add property link", "Добавить связь динамических аттрибутов", "Додати зв'язок динамічних атрибутів");
+            AddALV(list, "##l@PropertyActions:ModifyPropertyLink@l##", "Modify property link", "Изменить связь динамических аттрибутов", "Змінити зв'язок динамічних атрибутів");
+            AddALV(list, "##l@PropertyActions:DeletePropertyLink@l##", "Delete property link", "Удалить связь динамических аттрибутов", "Видалити зв'язок динамічних атрибутів");
+            AddALV(list, "##l@PropertyActions:ModifyPropertyValues@l##", "Modify property values", "Изменить значение динамических аттрибутов", "Змінити значення динамічних атрибутів");
+
             AddALV(list, "##l@EncryptionActions:AddEncryptionCertificate@l##", "Add encryption certificate", "Добавить сертификат", "Додати сертифікат");
             AddALV(list, "##l@EncryptionActions:ModifyEncryptionCertificate@l##", "Modify encryption certificate", "Изменить сертификат", "Змінити сертифікат");
             AddALV(list, "##l@EncryptionActions:VerifyPdf@l##", "Verify pdf", "Проверка Pdf", "Перевірка Pdf");
             AddALV(list, "##l@EncryptionActions:DeleteEncryptionCertificate@l##", "Delete encryption certificate", "Удалить сертификат", "Видалити сертифікат");
-            AddALV(list, "##l@AdminActions:AddRole@l##", "Add role", "Добавить роль", "Додати роль");
-            AddALV(list, "##l@AdminActions:ModifyRole@l##", "Modify role", "Изменить роль", "Змінити роль");
-            AddALV(list, "##l@AdminActions:DeleteRole@l##", "Delete role", "Удалить роль", "Видалити роль");
-            AddALV(list, "##l@AdminActions:SetRoleAction@l##", "Set role actions", "Управление действиями роли", "Управління діями ролі");
-            AddALV(list, "##l@AdminActions:SetPositionRole@l##", "Set position roles", "Управление ролями должности", "Управління ролями посади");
-            AddALV(list, "##l@AdminActions:SetUserRole@l##", "Set user roles", "Управление ролями пользователя", "Управління ролями користувача");
-            AddALV(list, "##l@AdminActions:SetSubordination@l##", "Set subordination", "Управление правилами рассылки", "Управління правилами розсилки");
-            AddALV(list, "##l@AdminActions:SetRegistrationJournalPosition@l##", "Set registration lournal for position", "Управление журналами регистрации", "Управління журналами реєстрації");
-            AddALV(list, "##l@AdminActions:AddDepartmentAdmin@l##", "Add department admin", "Добавить администратора подразделения", "Додати адміністратора підрозділу");
-            AddALV(list, "##l@AdminActions:DeleteDepartmentAdmin@l##", "Delete department admin", "Удалить администратора подразделения", "Видалити адміністратора підрозділу");
-            AddALV(list, "##l@AdminActions:ChangeLogin@l##", "Change login", "Изменить логин", "Додати роль");
-            AddALV(list, "##l@AdminActions:ChangePassword@l##", "Change password", "Изменить пароль", "Додати роль");
-            AddALV(list, "##l@AdminActions:ChangeLockout@l##", "Change lockout", "Добавить роль", "Додати роль");
-            AddALV(list, "##l@AdminActions:KillSessions@l##", "Kill sessions", "Выйти на всех устройствах", "Вийти на всіх пристроях");
+            
 
+
+
+
+            AddALV(list, "##l@SystemActions:Login@l##", "", "Авторизоваться", "");
             AddALV(list, "##l@SystemActions:SetSetting@l##", "Add setting", "Добавить настройку", "Додати настройку");
 
             // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
@@ -357,6 +412,8 @@ namespace DMS_WebAPI.Models
         public static List<AdminLanguageValues> GetDmsExceptions()
         {
             var list = new List<AdminLanguageValues>();
+
+            AddALV(list, "##l@DmsExceptions:DmsExceptions@l##", "DmsExceptions", "Базовое исключение", "");
 
             AddALV(list, "##l@DmsExceptions:IncomingModelIsNotValid@l##", "Incoming Model is not valid! {0}", "Входящая модель недействительна! {0}", "Вхідна модель недійсна! {0}");
             AddALV(list, "##l@DmsExceptions:WrongParameterTypeError@l##", "Parameter type commands is incorrect!", "Тип параметра комманды указан неверно!", "Тип параметра комманди вказано невірно !");
@@ -385,7 +442,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##", "Couldn\"t change attribute LaunchPlan", "Невозможно изменить атрибут LaunchPlan", "Неможливо змінити атрибут LaunchPlan");
             AddALV(list, "##l@DmsExceptions:CouldNotChangeFavourite@l##", "Couldn\"t change attribute Favourite", "Невозможно изменить атрибут Favourite", "Неможливо змінити атрибут Favourite");
             AddALV(list, "##l@DmsExceptions:CouldNotChangeIsInWork@l##", "Couldn\"t change attribute IsInWork", "Невозможно изменить атрибут IsInWork", "Неможливо змінити атрибут IsInWork");
-            AddALV(list, "##l@DmsExceptions:CouldNotPerformThisOperation@l##", "Could Not Perform This Operation!", "Операция не выполнена!", "Операція не виконана !");
+            AddALV(list, "##l@DmsExceptions:CouldNotPerformOperation@l##", "Could Not Perform Operation!", "Операция не выполнена!", "Операція не виконана !");
             AddALV(list, "##l@DmsExceptions:CryptographicError@l##", "Encryption Error", "Ошибка шифрования", "Помилка шифрування");
             AddALV(list, "##l@DmsExceptions:DatabaseError@l##", "An error occurred while accessing the database!", "Ошибка при обращении к базе данных!", "Помилка при зверненні до бази даних !");
             AddALV(list, "##l@DmsExceptions:DatabaseIsNotFound@l##", "Database not found", "База данных не найдена", "База даних не знайдено");
@@ -458,7 +515,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfConnectedUsers@l##", "You have exceeded the allowed number of connected users", "Превышено разрешенное количество подключенных пользователей", "Перевищено дозволену кількість підключених користувачів");
             AddALV(list, "##l@DmsExceptions:LicenceExceededNumberOfRegisteredUsers@l##", "You have exceeded the allowed number of registered users", "Превышено разрешенное количество зарегистрированных пользователей", "Перевищено дозволену кількість зареєстрованих користувачів");
             AddALV(list, "##l@DmsExceptions:LicenceExpired@l##", "Licence expired", "Срок лицензии истек", "Термін ліцензії закінчився");
-            AddALV(list, "##l@DmsExceptions:LicenceInformationError@l##", "The licence is not valid", "Лицензия недействительна", "Ліцензія недійсна");
+            AddALV(list, "##l@DmsExceptions:LicenceError@l##", "The licence is not valid", "Лицензия недействительна", "Ліцензія недійсна");
             AddALV(list, "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##", "Need information about correspondent!", "Нужна информация о корреспонденте!", "Потрібна інформація про кореспондента !");
             AddALV(list, "##l@DmsExceptions:NotFilledWithAdditionalRequiredAttributes@l##", "Not filled with additional required attributes!", "Не заполнены обязательные дополнительные атрибуты!", "Чи не заповнені обов'язкові додаткові атрибути !");
             AddALV(list, "##l@DmsExceptions:PaperListNotFoundOrUserHasNoAccess@l##", "Paper list not found or user has no access", "Список бумага не найдена или пользователь не имеет доступа", "Список папір не знайдена або користувач не має доступу");
@@ -482,6 +539,7 @@ namespace DMS_WebAPI.Models
             AddALV(list, "##l@DmsExceptions:ControlerHasAlreadyBeenDefined@l##", "Controler Has Already Been Defined", "Контролер уже определен", "Контролер вже визначено");
             AddALV(list, "##l@DmsExceptions:CouldNotModifyTemplateDocument@l##", "", "", "");
             AddALV(list, "##l@DmsExceptions:CouldNotPerformOperationWithPaper@l##", "Could Not Perform Operation With Paper", "Невозможно осуществить операцию с бумажными носителями", "Неможливо здійснити операцію з паперовими носіями");
+            AddALV(list, "##l@DmsExceptions:EncryptionCertificateDigitalSignatureFailed@l##", "", "", "");
             AddALV(list, "##l@DmsExceptions:EncryptionCertificateHasExpired@l##", "Encryption Certificate Has Been Expired", "Сертификат просрочен", "Сертифікат прострочений");
             AddALV(list, "##l@DmsExceptions:NobodyIsChosen@l##", "NobodyIsChosen", "Никто не выбран", "Ніхто не обраний");
             AddALV(list, "##l@DmsExceptions:ResponsibleExecutorHasAlreadyBeenDefined@l##", "Responsible Executor Has Already Been Defined", "Ответственный исполнитель уже определен", "Відповідальний виконавець вже визначено");
@@ -502,42 +560,6 @@ namespace DMS_WebAPI.Models
             var list = new List<AdminLanguageValues>();
 
             AddALV(list, "##l@Message:PositionIsVacant@l##", "Position is vacant", "Должность вакантна", "Посада вакантна");
-            // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
-
-            return list;
-        }
-
-        public static List<AdminLanguageValues> GetDMSExpressions()
-        {
-            var list = new List<AdminLanguageValues>();
-
-            AddALV(list, "##l@DictionaryDocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
-            AddALV(list, "##l@DictionaryDocumentDirections:Internal@l##", "Internal", "Собственный", "Власний");
-            AddALV(list, "##l@DictionaryDocumentDirections:Outcoming@l##", "Outcoming", "Иcходящий", "Іcходящій");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:AdditionalEvents@l##", "Secondary events", "Второстепенные события", "Другорядні події");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:DocumentMoovement@l##", "Facts movement documents", "Факты движения документов", "Факти руху документів");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:ImportantEvents@l##", "Important events", "Важные события", "Важливі події");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:Internal@l##", "Own notes", "Собственные примечания", "Власні примітки");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:Message@l##", "Messages", "Сообщения", "Повідомлення");
-            AddALV(list, "##l@DictionaryImportanceEventTypes:PaperMoovement@l##", "Paper movement", "Движение БН", "Рух ПН");
-            AddALV(list, "##l@DictionarySendTypes:SendForConsideration@l##", "For consideration", "Для рассмотрения", "Для розгляду");
-            AddALV(list, "##l@DictionarySendTypes:SendForControl@l##", "In control", "На контроль(отв.исп.)", "На контроль (отв");
-            AddALV(list, "##l@DictionarySendTypes:SendForExecution@l##", "For execution", "Соисполнителю", "Співвиконавцю");
-            AddALV(list, "##l@DictionarySendTypes:SendForInformation@l##", "For information", "Для сведения", "Для довідки");
-            AddALV(list, "##l@DictionarySendTypes:SendForInformationExternal@l##", "For information external agents", "Для сведения внешнему агенту", "Для відомості зовнішньому агенту");
-            AddALV(list, "##l@DictionarySendTypes:SendForResponsibleExecution@l##", "ResponsibleExecution", "Исполненителю(отв.исп.)", "Ісполненітелю (отв");
-            AddALV(list, "##l@DictionarySendTypes:SendForSigning@l##", "For signing", "На подпись", "На підпис");
-            AddALV(list, "##l@DictionarySendTypes:SendForVisaing@l##", "For visaing", "На визирование", "На візування");
-            AddALV(list, "##l@DictionarySendTypes:SendForАgreement@l##", "For agreement", "На согласование", "На узгодження");
-            AddALV(list, "##l@DictionarySendTypes:SendForАpproval@l##", "For approval", "На утверждение", "На затвердження");
-            AddALV(list, "##l@DictionarySubordinationTypes:Execution@l##", "Execution", "Исполнение", "Виконання");
-            AddALV(list, "##l@DictionarySubordinationTypes:Informing@l##", "Informing", "Информирование", "Інформування");
-            AddALV(list, "##l@DictionarySubscriptionStates:No@l##", "No", "Нет", "Ні");
-            AddALV(list, "##l@DictionarySubscriptionStates:Sign@l##", "Sign", "Подпись", "Підпис");
-            AddALV(list, "##l@DictionarySubscriptionStates:Violated@l##", "Violated", "Нарушена", "Порушена");
-            AddALV(list, "##l@DictionarySubscriptionStates:Visa@l##", "Visa", "Виза", "Віза");
-            AddALV(list, "##l@DictionarySubscriptionStates:Аgreement@l##", "Аgreement", "Согласование", "Узгодження");
-            AddALV(list, "##l@DictionarySubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение", "Затвердження");
             // Спасибо за то, что добавил перевод! Удачных идей и быстрого кода.
 
             return list;
@@ -669,20 +691,56 @@ namespace DMS_WebAPI.Models
         public static List<AdminLanguageValues> GetPositionExecutorTypes()
         {
             var list = new List<AdminLanguageValues>();
-            AddALV(list, "##l@PositionExecutorTypes:Personal@l##", "Appointed to the post", "Назначен на должность", "Призначено на посаду");
-            AddALV(list, "##l@PositionExecutorTypes:IO@l##", "Performed duties", "Исполяет обязанности", "Виконує обов'язки");
-            AddALV(list, "##l@PositionExecutorTypes:Referent@l##", "It is the reviewer", "Является референтом", "Є референтом");
+            AddALV(list, "##l@PositionExecutionTypes:Personal@l##", "Appointed to the post", "Назначен на должность", "Призначено на посаду");
+            AddALV(list, "##l@PositionExecutionTypes:IO@l##", "Performed duties", "Исполяет обязанности", "Виконує обов'язки");
+            AddALV(list, "##l@PositionExecutionTypes:Referent@l##", "It is the reviewer", "Является референтом", "Є референтом");
+            return list;
+        }
+        public static List<AdminLanguageValues> GetDocumentDirections()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@DocumentDirections:Incoming@l##", "Incoming", "Входящий", "Вхідний");
+            AddALV(list, "##l@DocumentDirections:Internal@l##", "Internal", "Собственный", "Власний");
+            AddALV(list, "##l@DocumentDirections:Outcoming@l##", "Outcoming", "Иcходящий", "Іcходящій");
+            return list;
+        }
+
+        public static List<AdminLanguageValues> GetImportanceEventTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@ImportanceEventTypes:AdditionalEvents@l##", "Secondary events", "Второстепенные события", "Другорядні події");
+            AddALV(list, "##l@ImportanceEventTypes:DocumentMoovement@l##", "Facts movement documents", "Факты движения документов", "Факти руху документів");
+            AddALV(list, "##l@ImportanceEventTypes:ImportantEvents@l##", "Important events", "Важные события", "Важливі події");
+            AddALV(list, "##l@ImportanceEventTypes:Internal@l##", "Own notes", "Собственные примечания", "Власні примітки");
+            AddALV(list, "##l@ImportanceEventTypes:Message@l##", "Messages", "Сообщения", "Повідомлення");
+            AddALV(list, "##l@ImportanceEventTypes:PaperMoovement@l##", "Paper movement", "Движение БН", "Рух ПН");
+
             return list;
         }
 
         public static List<AdminLanguageValues> GetRegistrationJournalAccessTypes()
         {
             var list = new List<AdminLanguageValues>();
-            AddALV(list, "##l@DictionaryRegistrationJournalAccessTypes:View@l##", "View documents", "Просмотр документов", "Перегляд документів");
-            AddALV(list, "##l@DictionaryRegistrationJournalAccessTypes:Registration@l##", "Registration documents", "Регистрация документов", "Реєстрація документів");
+            AddALV(list, "##l@RegistrationJournalAccessTypes:View@l##", "View documents", "Просмотр документов", "Перегляд документів");
+            AddALV(list, "##l@RegistrationJournalAccessTypes:Registration@l##", "Registration documents", "Регистрация документов", "Реєстрація документів");
             return list;
         }
+        public static List<AdminLanguageValues> GetSendTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@SendTypes:SendForConsideration@l##", "For consideration", "Для рассмотрения", "Для розгляду");
+            AddALV(list, "##l@SendTypes:SendForControl@l##", "In control", "На контроль(отв.исп.)", "На контроль (отв");
+            AddALV(list, "##l@SendTypes:SendForExecution@l##", "For execution", "Соисполнителю", "Співвиконавцю");
+            AddALV(list, "##l@SendTypes:SendForInformation@l##", "For information", "Для сведения", "Для довідки");
+            AddALV(list, "##l@SendTypes:SendForInformationExternal@l##", "For information external agents", "Для сведения внешнему агенту", "Для відомості зовнішньому агенту");
+            AddALV(list, "##l@SendTypes:SendForResponsibleExecution@l##", "ResponsibleExecution", "Исполненителю(отв.исп.)", "Ісполненітелю (отв");
+            AddALV(list, "##l@SendTypes:SendForSigning@l##", "For signing", "На подпись", "На підпис");
+            AddALV(list, "##l@SendTypes:SendForVisaing@l##", "For visaing", "На визирование", "На візування");
+            AddALV(list, "##l@SendTypes:SendForАgreement@l##", "For agreement", "На согласование", "На узгодження");
+            AddALV(list, "##l@SendTypes:SendForАpproval@l##", "For approval", "На утверждение", "На затвердження");
 
+            return list;
+        }
         public static List<AdminLanguageValues> GetAddressTypes()
         {
             var list = new List<AdminLanguageValues>();
@@ -709,6 +767,25 @@ namespace DMS_WebAPI.Models
 
             return list;
         }
+
+        public static List<AdminLanguageValues> GetSubordinationTypes()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@SubordinationTypes:Execution@l##", "Execution", "Исполнение", "Виконання");
+            AddALV(list, "##l@SubordinationTypes:Informing@l##", "Informing", "Информирование", "Інформування");
+            return list;
+        }
+        public static List<AdminLanguageValues> GetSubscriptionStates()
+        {
+            var list = new List<AdminLanguageValues>();
+            AddALV(list, "##l@SubscriptionStates:No@l##", "No", "Нет", "Ні");
+            AddALV(list, "##l@SubscriptionStates:Sign@l##", "Sign", "Подпись", "Підпис");
+            AddALV(list, "##l@SubscriptionStates:Violated@l##", "Violated", "Нарушена", "Порушена");
+            AddALV(list, "##l@SubscriptionStates:Visa@l##", "Visa", "Виза", "Віза");
+            AddALV(list, "##l@SubscriptionStates:Аgreement@l##", "Аgreement", "Согласование", "Узгодження");
+            AddALV(list, "##l@SubscriptionStates:Аpproval@l##", "Аpproval", "Утверждение", "Затвердження");
+            return list;
+        }
         #endregion
 
 
@@ -723,6 +800,109 @@ namespace DMS_WebAPI.Models
             items.Add(new AspNetLicences { Id = 4, Name = "Unlimited", Description = "", NamedNumberOfConnections = 50, ConcurenteNumberOfConnections = null, DurationDay = null, Functionals = null, IsActive = true });
 
             return items;
+        }
+
+        public static void CheckLanguages()
+        {
+            var f = GetLabelsFromEnums();
+            f.AddRange(GetLabelsFromExceptions());
+
+            var d = GetAdminLanguageValues().Where(x => x.LanguageId == 570).Select(x => x.Label).ToList();
+
+            var toAdd = new List<string>();
+            var toRem = new List<string>();
+
+            foreach (var item in f)
+            {
+                if (!ExistLabel(item, d))
+                { toAdd.Add(item); }
+
+            }
+
+            foreach (var item in d)
+            {
+                if (!ExistLabel(item, f))
+                { toRem.Add(item); }
+
+            }
+
+            var s = string.Empty;
+
+            foreach (var item in toAdd.OrderBy(x => x))
+            {
+                s += "AddALV(list, \"" + item + "\", \"\", \"\", \"\");\r\n";
+            }
+
+            //foreach (var item in toRem.OrderBy(x => x))
+            //{
+            //    s += "- " + item + "\r\n";
+            //}
+
+            if (!string.IsNullOrEmpty(s))
+                throw new Exception(string.Format("Так не пойдет! Нужно поддерживать переводы в актуальном состоянии Add {0} Del {1} \r\n", toAdd.Count, toRem.Count) + s);
+
+
+        }
+
+        private static bool ExistLabel(string label, List<string> items)
+        {
+            foreach (var i in items)
+            {
+                if (i == label) return true;
+            }
+
+            return false;
+        }
+
+        private static List<string> GetLabelsFromEnums()
+        {
+            var list = new List<string>();
+
+            list.AddRange(GetListByEnum<EnumAccessLevels>());
+            list.AddRange(GetListByEnum<EnumPositionExecutionTypes>());
+            list.AddRange(GetListByEnum<EnumRegistrationJournalAccessTypes>());
+            list.AddRange(GetListByEnum<EnumDocumentDirections>());
+            list.AddRange(GetListByEnum<EnumEventTypes>());
+            list.AddRange(GetListByEnum<EnumImportanceEventTypes>());
+            list.AddRange(GetListByEnum<EnumLinkTypes>());
+            list.AddRange(GetListByEnum<EnumSendTypes>());
+            list.AddRange(GetListByEnum<EnumSubordinationTypes>());
+            list.AddRange(GetListByEnum<EnumSubscriptionStates>());
+
+            list.AddRange(GetListByEnum<EnumObjects>());
+            list.AddRange(GetListByEnum<EnumSystemActions>());
+            list.AddRange(GetListByEnum<EnumAdminActions>());
+            list.AddRange(GetListByEnum<EnumDictionaryActions>());
+            list.AddRange(GetListByEnum<EnumDocumentActions>());
+            list.AddRange(GetListByEnum<EnumEncryptionActions>());
+            list.AddRange(GetListByEnum<EnumPropertyActions>());
+            return list;
+
+        }
+        private static List<string> GetLabelsFromExceptions()
+        {
+            var list = new List<string>();
+            list.AddRange(QQQ("BL.Model.Exception", "##l@DmsExceptions:", "@l##"));
+            return list;
+
+        }
+        private static List<string> QQQ(string nspace = "...", string prefix = "", string suffix = "")
+        {
+            var qry = from t in System.Reflection.Assembly.GetAssembly(typeof(BL.Model.Exception.AccessIsDenied)).GetTypes()
+                    where t.IsClass && t.Namespace == nspace
+                    select prefix + t.Name + suffix;
+            return qry.ToList();//.ForEach(t => Console.WriteLine(t.Name));
+        }
+
+        public static List<string> GetListByEnum<T>()
+        {
+            var array = (T[])(Enum.GetValues(typeof(T)).Cast<T>());
+            var enumName = typeof(T).Name.Replace("Enum", "");
+            return array
+              .Select(a =>
+                 "##l@" + enumName + ":" + a.ToString() + "@l##"
+              )
+              .ToList();
         }
 
     }

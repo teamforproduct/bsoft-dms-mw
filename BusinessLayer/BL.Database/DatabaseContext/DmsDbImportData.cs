@@ -355,11 +355,10 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments));
 
 
-            items.Add(GetSysAct(EnumAdminActions.ChangePasswordAgentUser, EnumObjects.DictionaryAgentUsers));
-            items.Add(GetSysAct(EnumAdminActions.ChangeLockoutAgentUser, EnumObjects.DictionaryAgentUsers));
-            items.Add(GetSysAct(EnumAdminActions.KillSessionsAgentUser, EnumObjects.DictionaryAgentUsers));
-            items.Add(GetSysAct(EnumAdminActions.ChangeLoginAgentUser, EnumObjects.DictionaryAgentUsers));
-            items.Add(GetSysAct(EnumAdminActions.GetAgentUserInfo, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.ChangePassword, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.ChangeLockout, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.KillSessions, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.ChangeLogin, EnumObjects.DictionaryAgentUsers));
 
             items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
@@ -518,7 +517,7 @@ namespace BL.Database.DatabaseContext
 
         private static AdminAccessLevels GetAdminAccessLevel(EnumAccessLevels id)
         {
-            string name = "##l@" + "AccessLevels" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new AdminAccessLevels()
             {
                 Id = (int)id,
@@ -594,7 +593,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryDocumentDirections GetDictionaryDocumentDirection(EnumDocumentDirections id)
         {
-            string name = "##l@" + "DictionaryDocumentDirections" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new DictionaryDocumentDirections()
             {
                 Id = (int)id,
@@ -691,7 +690,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryEventTypes GetDictionaryEventType(EnumEventTypes id, EnumImportanceEventTypes importanceEventTypeId, string waitDescription = null)
         {
-            string name = "##l@" + "DictionaryEventTypes" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new DictionaryEventTypes()
             {
                 Id = (int)id,
@@ -722,7 +721,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryImportanceEventTypes GetDictionaryImportanceEventType(EnumImportanceEventTypes id)
         {
-            string name = "##l@" + "DictionaryImportanceEventTypes" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new DictionaryImportanceEventTypes()
             {
                 Id = (int)id,
@@ -752,7 +751,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryResultTypes GetDictionaryResultType(EnumResultTypes id, bool IsExecute, bool IsActive)
         {
-            string name = "##l@" + "DictionaryResultTypes" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new DictionaryResultTypes()
             {
                 Id = (int)id,
@@ -804,7 +803,7 @@ namespace BL.Database.DatabaseContext
 
         private static DicRegJournalAccessTypes GetDictionaryRegistrationJournalAccessType(EnumRegistrationJournalAccessTypes id)
         {
-            string name = "##l@" + "DictionaryRegistrationJournalAccessTypes" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new DicRegJournalAccessTypes()
             {
                 Id = (int)id,
@@ -819,15 +818,30 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionarySubscriptionStates>();
 
-            items.Add(new DictionarySubscriptionStates { Id = 1, Code = "No", Name = "##l@DictionarySubscriptionStates:No@l##", IsSuccess = false, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySubscriptionStates { Id = 2, Code = "Violated", Name = "##l@DictionarySubscriptionStates:Violated@l##", IsSuccess = false, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySubscriptionStates { Id = 11, Code = "Visa", Name = "##l@DictionarySubscriptionStates:Visa@l##", IsSuccess = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySubscriptionStates { Id = 12, Code = "Аgreement", Name = "##l@DictionarySubscriptionStates:Аgreement@l##", IsSuccess = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySubscriptionStates { Id = 13, Code = "Аpproval", Name = "##l@DictionarySubscriptionStates:Аpproval@l##", IsSuccess = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySubscriptionStates { Id = 14, Code = "Sign", Name = "##l@DictionarySubscriptionStates:Sign@l##", IsSuccess = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionarySubscriptionState(EnumSubscriptionStates.No, false));
+            items.Add(GetDictionarySubscriptionState(EnumSubscriptionStates.Violated, false));
+            items.Add(GetDictionarySubscriptionState(EnumSubscriptionStates.Visa, true));
+            items.Add(GetDictionarySubscriptionState(EnumSubscriptionStates.Аgreement, true));
+            items.Add(GetDictionarySubscriptionState(EnumSubscriptionStates.Аpproval, true));
+            items.Add(GetDictionarySubscriptionState(EnumSubscriptionStates.Sign, true));
 
             return items;
         }
+
+        private static DictionarySubscriptionStates GetDictionarySubscriptionState(EnumSubscriptionStates id, bool isSuccess)
+        {
+            string name = "##l@" + id.GetType().Name.Replace("Enum", "") + ":" + id.ToString() + "@l##";
+            return new DictionarySubscriptionStates()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                IsSuccess = isSuccess,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
         public static List<DictionaryPositionExecutorTypes> GetDictionaryPositionExecutorTypes()
         {
             var items = new List<DictionaryPositionExecutorTypes>();
@@ -855,7 +869,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryLinkTypes GetDictionaryLinkType(EnumLinkTypes id, bool IsImportant)
         {
-            string name = "##l@" + "LinkTypes" + ":" + id.ToString() + "@l##";
+            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
             return new DictionaryLinkTypes()
             {
                 Id = (int)id,
