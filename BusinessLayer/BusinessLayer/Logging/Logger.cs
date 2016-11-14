@@ -73,20 +73,22 @@ namespace BL.Logic.Logging
             return null;
         }
 
-        private void AddLogToDb(IContext ctx, LogInfo info)
+        private int? AddLogToDb(IContext ctx, LogInfo info)
         {
             int loggerLevel = 0;//TODO Get it from settings
             if ((int)info.LogType >= loggerLevel)
             {
                 info.Date = DateTime.UtcNow;
                 info.AgentId = ctx.CurrentAgentId;
-                _systemDb.AddLog(ctx, info);
+                var id = _systemDb.AddLog(ctx, info);
+                return id;
             }
+            return null;
         }
 
-        public void Trace(IContext ctx, string message, params object[] args)
+        public int? Trace(IContext ctx, string message, params object[] args)
         {
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Trace,
                 Message = message,
@@ -95,11 +97,11 @@ namespace BL.Logic.Logging
         }
 
 
-        public void Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null)
+        public int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null)
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Information,
                 Message = message,
@@ -111,9 +113,9 @@ namespace BL.Logic.Logging
             });
         }
 
-        public void Warning(IContext ctx, string message, params object[] args)
+        public int? Warning(IContext ctx, string message, params object[] args)
         {
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Warning,
                 Message = message,
@@ -121,9 +123,9 @@ namespace BL.Logic.Logging
             });
         }
 
-        public void Error(IContext ctx, string message, params object[] args)
+        public int? Error(IContext ctx, string message, params object[] args)
         {
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
@@ -131,9 +133,9 @@ namespace BL.Logic.Logging
             });
         }
 
-        public void Error(IContext ctx, Exception exception, string message = null, params object[] args)
+        public int? Error(IContext ctx, Exception exception, string message = null, params object[] args)
         {
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
@@ -142,9 +144,9 @@ namespace BL.Logic.Logging
             });
         }
 
-        public void Fatal(IContext ctx, string message, params object[] args)
+        public int? Fatal(IContext ctx, string message, params object[] args)
         {
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
@@ -152,9 +154,9 @@ namespace BL.Logic.Logging
             });
         }
 
-        public void Fatal(IContext ctx, Exception exception, string message = null, params object[] args)
+        public int? Fatal(IContext ctx, Exception exception, string message = null, params object[] args)
         {
-            AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new LogInfo
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
