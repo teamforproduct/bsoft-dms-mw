@@ -3248,7 +3248,8 @@ namespace BL.Database.Common
 
                 WasChangedExternal = false,
                 ExecutorPositionId = positionId,
-                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId
+                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId,
+                ObjectId = EnumObjects.Documents
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
