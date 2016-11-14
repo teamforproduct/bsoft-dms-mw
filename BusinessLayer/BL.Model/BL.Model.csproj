@@ -159,6 +159,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserSettings.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />

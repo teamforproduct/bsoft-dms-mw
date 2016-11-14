@@ -148,5 +148,22 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             return new JsonResult(null, this);
         }
+
+        /// <summary>
+        /// Устанавливает настройки для пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("SetSettings")]
+        public IHttpActionResult SetSettings(int id, ModifyDictionaryAgentUserSettings model)
+        {
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
+            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+//            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployeeLanguage, ctx, new ModifyDictionaryAgentUser { Id = id, LanguageId = languageId });
+
+            return new JsonResult(null, this);
+        }
     }
 }

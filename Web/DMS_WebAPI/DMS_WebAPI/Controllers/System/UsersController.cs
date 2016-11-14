@@ -39,13 +39,13 @@ namespace DMS_WebAPI.Controllers
         /// <returns>список должностей</returns>
         [Route("UserInfo")]
         [HttpGet]
-        [ResponseType(typeof(FrontDictionaryAgent))]
+        [ResponseType(typeof(FrontDictionaryAgentUser))]
         public IHttpActionResult GetUserInfo()
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var dicProc = DmsResolver.Current.Get<IDictionaryService>();
 
-            var agent = dicProc.GetDictionaryAgent(context, context.CurrentAgentId);
+            var agent = dicProc.GetDictionaryAgentUser(context, context.CurrentAgentId);
 
             return new JsonResult(agent, this);
         }

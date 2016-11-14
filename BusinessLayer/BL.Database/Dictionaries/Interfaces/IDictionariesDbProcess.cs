@@ -21,6 +21,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgent(IContext context, InternalDictionaryAgent addr);
         void DeleteAgent(IContext context, int agentId);
         FrontDictionaryAgent GetAgent(IContext context, int id);
+        FrontDictionaryAgentUser GetAgentUser(IContext context, int id);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
         bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents

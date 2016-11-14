@@ -48,6 +48,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgent(context, id);
         }
 
+
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgent();
@@ -500,6 +501,14 @@ namespace BL.Logic.DictionaryCore
         }
 
         #endregion DictionaryAgentCompanies
+
+        #region DictionaryAgentBanks
+        public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
+        {
+
+            return _dictDb.GetAgentUser(context, id);
+        }
+        #endregion DictionaryAgentBanks
 
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
