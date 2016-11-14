@@ -1219,16 +1219,51 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<InternalDictionaryAgentUser> GetAgentUser(IContext context, int id)
+        public FrontDictionaryAgentUser GetAgentUser(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             {
                 // Where(x => x.ClientId == context.CurrentClientId).
-                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentUser
+                return dbContext.DictionaryAgentUsersSet.Where(x => x.Id == id).Select(x => new FrontDictionaryAgentUser
                 {
                     Id = x.Id,
-                    LanguageId = x.LanguageId
-                }).ToList();
+                    LanguageId = x.LanguageId,
+                    LanguageName = x.Language.Code,
+                    IsActive = x.IsActive,
+                    IsSendEMail = false, //TODO
+                    Name = x.Agent.Name,
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    {
+                        Id = y.Id,
+                        AgentId = y.AgentId,
+                        ContactType = new FrontDictionaryContactType
+                        {
+                            Id = y.ContactType.Id,
+                            Code = y.ContactType.Code,
+                            Name = y.ContactType.Name,
+                            IsActive = y.ContactType.IsActive
+                        },
+                        Value = y.Contact,
+                        IsActive = y.IsActive,
+                        Description = y.Description
+                    }),
+                    Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+                    {
+                        Id = z.Id,
+                        AgentId = z.AgentId,
+                        AddressType = new FrontDictionaryAddressType
+                        {
+                            Id = z.AddressType.Id,
+                            Name = z.AddressType.Name,
+                            IsActive = z.AddressType.IsActive
+                        },
+                        PostCode = z.PostCode,
+                        Address = z.Address,
+                        IsActive = z.IsActive,
+                        Description = z.Description
+                    })
+
+                }).FirstOrDefault();
             }
         }
 
