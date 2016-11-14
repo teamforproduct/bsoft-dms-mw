@@ -91,12 +91,12 @@ namespace DMS_WebAPI.Models
         {
             var list = new List<AdminLanguageValues>();
 
-            AddALV(list, "##l@Objects:AdminPositionRoles@l##", "", "Роли должности", "");
-            AddALV(list, "##l@Objects:AdminRegistrationJournalPositions@l##", "", "Журналы должности", "");
-            AddALV(list, "##l@Objects:AdminRoleAction@l##", "", "Действия роли", "");
-            AddALV(list, "##l@Objects:AdminRoles@l##", "", "Роли", "");
-            AddALV(list, "##l@Objects:AdminSubordination@l##", "", "Рассылка", "");
-            AddALV(list, "##l@Objects:AdminUserRoles@l##", "", "Роли сотрудника", "");
+            AddALV(list, "##l@Objects:AdminPositionRoles@l##", "", "Роли должности", "Ролі посади");
+            AddALV(list, "##l@Objects:AdminRegistrationJournalPositions@l##", "", "Журналы должности", "Журнали посади");
+            AddALV(list, "##l@Objects:AdminRoleAction@l##", "", "Действия роли", "Дії ролі");
+            AddALV(list, "##l@Objects:AdminRoles@l##", "", "Роли", "Ролі");
+            AddALV(list, "##l@Objects:AdminSubordination@l##", "", "Рассылка", "Розсилка");
+            AddALV(list, "##l@Objects:AdminUserRoles@l##", "", "Роли сотрудника", "Ролі співробітника");
 
 
             AddALV(list, "##l@Objects:CustomDictionaries@l##", "Custom dictionaries", "Пользовательские словари", "Словники");
