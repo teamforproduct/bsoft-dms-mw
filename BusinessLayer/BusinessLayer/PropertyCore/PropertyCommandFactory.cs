@@ -33,7 +33,7 @@ namespace BL.Logic.PropertyCore
                     cmd = DmsResolver.Current.Get<ModifyPropertyLinkCommand>();
                     break;
                 default:
-                    throw new CommandNotDefinedError();
+                    throw new CommandNotDefinedError(act.ToString());
             }
             cmd.InitializeCommand(act, ctx, param);
             return cmd;

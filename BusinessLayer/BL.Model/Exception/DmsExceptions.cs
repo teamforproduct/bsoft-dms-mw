@@ -170,7 +170,7 @@ namespace BL.Model.Exception
     public class CommandNotDefinedError : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CommandNotDefinedError@l##";
-        public CommandNotDefinedError() : base(_MESSAGE) { }
+        public CommandNotDefinedError(string CommandName) : base(_MESSAGE) { Parameters = new List<string> { CommandName }; }
         public CommandNotDefinedError(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 

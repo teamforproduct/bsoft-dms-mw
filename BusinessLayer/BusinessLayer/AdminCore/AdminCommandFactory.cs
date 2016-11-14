@@ -142,10 +142,12 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.ChangeLockout:
                 case EnumAdminActions.KillSessions:
                 case EnumAdminActions.ChangeLogin:
+                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
+                    break;
                 #endregion
 
                 default:
-                    throw new CommandNotDefinedError();
+                    throw new CommandNotDefinedError(act.ToString());
             }
             cmd.InitializeCommand(act, ctx, param);
             return cmd;
