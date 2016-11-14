@@ -23,6 +23,7 @@ using BL.Model.Users;
 using DMS_WebAPI.Models;
 using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
+using System.Web.Script.Serialization;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -170,7 +171,14 @@ namespace DMS_WebAPI.Controllers
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
             var userAgent = HttpContext.Current.Request.UserAgent;
             var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
-            var message = $"{HttpContext.Current.Request.UserHostAddress}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
+            var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
+            if (string.IsNullOrEmpty(ip))
+                ip = HttpContext.Current.Request.UserHostAddress;
+            var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
+            //{HttpContext.Current.Request.UserHostAddress}
+            //var js = new JavaScriptSerializer();
+            //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
+            //message += $"; {HttpContext.Current.Request.Headers["X-Real-IP"]}";
             logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
             return new JsonResult(null, this);
         }
