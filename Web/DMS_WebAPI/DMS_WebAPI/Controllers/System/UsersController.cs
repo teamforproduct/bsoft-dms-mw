@@ -179,7 +179,8 @@ namespace DMS_WebAPI.Controllers
             //var js = new JavaScriptSerializer();
             //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
             //message += $"; {HttpContext.Current.Request.Headers["X-Real-IP"]}";
-            logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
+            ctx.LoginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
+            ctx.LoginLogInfo = message;
             return new JsonResult(null, this);
         }
 

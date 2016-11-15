@@ -91,7 +91,6 @@ namespace BL.CrossCutting.Context
             }
         }
 
-
         public List<int> CurrentPositionsIdList
         {
             get
@@ -154,6 +153,7 @@ namespace BL.CrossCutting.Context
         }
 
         public bool IsAdmin => false;
+
         public LicenceInfo ClientLicence { get; set; }
 
         public DatabaseModel CurrentDB
@@ -191,5 +191,10 @@ namespace BL.CrossCutting.Context
         public DateTime CreateDate { get; } = DateTime.UtcNow;
 
         public bool IsChangePasswordRequired { get; set; }
+
+        public int? LoginLogId { get; set; }
+
+        public string LoginLogInfo { get; set; }
+
     }
 }

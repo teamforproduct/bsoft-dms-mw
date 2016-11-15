@@ -110,8 +110,8 @@ namespace BL.Logic.Settings
                 }
                 else
                 {
-                    // ... записываю дефолт в _casheSettings
-                    MergeCasheSettings(ctx, defaulValue);
+                    // ... записываю val в _casheSettings
+                    MergeCasheSettings(ctx, val.FirstOrDefault());
                 }
                 
             }

@@ -20,5 +20,7 @@ namespace BL.CrossCutting.Interfaces
         int CurrentClientId{ get; set; }
         DateTime CreateDate { get; }
         bool IsChangePasswordRequired { get; set; }
+        int? LoginLogId { get; set; }
+        string LoginLogInfo { get; set; }
     }
 }
