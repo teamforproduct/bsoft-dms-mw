@@ -255,6 +255,7 @@
     <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
+    <Compile Include="Logging\UserContexts.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
     <Compile Include="SystemCore\SystemCommandFactory.cs" />

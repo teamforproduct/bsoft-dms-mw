@@ -383,6 +383,7 @@
     <Compile Include="Enums\EnumAdminActions.cs" />
     <Compile Include="Enums\EnumAccessLevels.cs" />
     <Compile Include="Enums\EnumLinkTypes.cs" />
+    <Compile Include="Enums\EnumMessageLevelTypes.cs" />
     <Compile Include="Enums\EnumRegistrationJournalAccessTypes.cs" />
     <Compile Include="Enums\EnumSystemActions.cs" />
     <Compile Include="Enums\EnumSigningTypes.cs" />
@@ -439,6 +440,7 @@
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemSession.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemLog.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemPattern.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemSetting.cs" />
@@ -454,6 +456,7 @@
     <Compile Include="SystemCore\Filters\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemAction.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyValue.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemLicencesInfo.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemObjectForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemActionForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemAction.cs" />

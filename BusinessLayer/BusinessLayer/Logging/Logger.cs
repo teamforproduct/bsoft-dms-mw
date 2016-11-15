@@ -9,6 +9,8 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
 using System.Web.Script.Serialization;
 using System.Linq;
+using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Logic.Logging
@@ -23,6 +25,86 @@ namespace BL.Logic.Logging
         {
             _systemDb = dbProcess;
 
+        }
+
+        public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, List<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging)
+        {
+            List<FrontSystemSession> res;
+            if (filter?.IsOnlyActive ?? false)
+            {
+                var qry = sessions.AsQueryable();
+                if (filter != null)
+                {
+                    if (filter.ExecutorAgentIDs?.Count > 0)
+                    {
+                        qry = qry.Where(x => x.AgentId != null && filter.ExecutorAgentIDs.Contains(x.AgentId.Value));
+                    }
+                    if (filter.CreateDateFrom.HasValue)
+                    {
+                        qry = qry.Where(x => x.CreateDate >= filter.CreateDateFrom.Value);
+                    }
+
+                    if (filter.CreateDateTo.HasValue)
+                    {
+                        qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
+                    }
+                    if (!String.IsNullOrEmpty(filter.LoginLogInfo))
+                    {
+                        qry = qry.Where(x => x.LoginLogInfo.Contains(filter.LoginLogInfo));
+                    }
+                    qry = qry.OrderByDescending(x => x.CreateDate);
+                }
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontSystemSession>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+                        qry = qry.Skip(skip).Take(take);
+                    }
+                }
+                res = qry.ToList();
+            }
+            else
+            {
+                res = _systemDb.GetSystemLogs(context,
+                    new FilterSystemLog
+                    {
+                        ObjectIDs = new List<int> { (int)EnumObjects.System },
+                        ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                        ExecutorAgentIDs = filter?.ExecutorAgentIDs,
+                        LogDateFrom = filter?.CreateDateFrom,
+                        LogDateTo = filter?.CreateDateTo,
+                        Message = filter?.LoginLogInfo,
+                    }, paging).Select(x => new FrontSystemSession
+                    {
+                        CreateDate = x.LogDate,
+                        LoginLogId = x.Id,
+                        LoginLogInfo = x.Message,
+                        AgentId = x.ExecutorAgentId,
+                        Name = x.ExecutorAgent,
+                        ClientId = x.ClientId ?? 0,
+                    }).ToList();
+                res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
+                    .ForEach(r =>
+                    {
+                        r.x.Token = r.y.Token;
+                        r.x.LastUsage = r.y.LastUsage;
+                        r.x.UserId = r.y.UserId;
+                        r.x.IsActive = true;
+                    });
+            }
+            return res;
         }
 
         public IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging)
@@ -54,7 +136,7 @@ namespace BL.Logic.Logging
             {
                 var model = logObject as FrontDictionaryDepartment;
                 return string.Format("{0}\r\n{1}",
-                    model.CompanyName,model.Name);
+                    model.CompanyName, model.Name);
             }
             if (logObject is FrontDictionaryPosition)
             {

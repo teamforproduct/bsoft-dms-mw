@@ -49,6 +49,26 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public List<FrontSystemSession> GetContextList()
+        {
+            var res = _casheContexts
+                .Where(x => x.Value.StoreObject is IContext)
+                .Select(x => new FrontSystemSession
+                {
+                    Token = x.Key,
+                    LastUsage  = x.Value.LastUsage,
+                    CreateDate = (x.Value.StoreObject as IContext).CreateDate,
+                    LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
+                    LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
+                    UserId = (x.Value.StoreObject as IContext).CurrentEmployee.UserId,
+                    AgentId = (x.Value.StoreObject as IContext).CurrentEmployee.AgentId,
+                    Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
+                    ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
+                })
+                .ToList();
+            return res;
+        }
+
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
@@ -118,10 +138,7 @@ namespace DMS_WebAPI.Utilities
                 throw new Exception();
             }
         }
-
-
-
-
+        
         /// <summary>
         /// Формирование пользовательского контекста. 
         /// Этап №1
@@ -209,6 +226,29 @@ namespace DMS_WebAPI.Utilities
                 throw new UserAccessIsDenied();
             }
 
+        }
+
+        /// <summary>
+        /// Формирование пользовательского контекста. 
+        /// Добавляет к существующему пользовательскому контексту информации по логу
+        /// </summary>
+        /// <param name="db">new server parameters</param>
+        /// <param name="clientId">clientId</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public void Set(int? loginLogId, string loginLogInfo)
+        {
+            string token = Token.ToLower();
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var storeInfo = _casheContexts[token];
+
+            var context = (IContext)storeInfo.StoreObject;
+            context.LoginLogId = loginLogId;
+            context.LoginLogInfo = loginLogInfo;
         }
 
         /// <summary>

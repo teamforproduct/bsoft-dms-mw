@@ -3,11 +3,13 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using System;
 using System.Collections.Generic;
+using BL.CrossCutting.Context;
 
 namespace BL.CrossCutting.Interfaces
 {
     public interface ILogger
     {
+        IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, List<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         int? Trace(IContext ctx, string message, params object[] args);
         int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null);
