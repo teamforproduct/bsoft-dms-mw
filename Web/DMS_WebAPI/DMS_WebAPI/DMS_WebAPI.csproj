@@ -453,6 +453,14 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="App_Data\LanguageValues\messages_be_BY.properties" />
+    <Content Include="App_Data\LanguageValues\messages_cs_CZ.properties" />
+    <Content Include="App_Data\LanguageValues\messages_de_DE.properties" />
+    <Content Include="App_Data\LanguageValues\messages_en_US.properties" />
+    <Content Include="App_Data\LanguageValues\messages_fr_FR.properties" />
+    <Content Include="App_Data\LanguageValues\messages_pl_PL.properties" />
+    <Content Include="App_Data\LanguageValues\messages_ru_RU.properties" />
+    <Content Include="App_Data\LanguageValues\messages_uk_UA.properties" />
     <None Include="Properties\PublishProfiles\DEV_IRF_DMS.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\PROD_IRF_DMS.pubxml" />

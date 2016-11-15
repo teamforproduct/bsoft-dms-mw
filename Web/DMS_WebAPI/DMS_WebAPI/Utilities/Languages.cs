@@ -10,6 +10,7 @@ using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
@@ -163,7 +164,7 @@ namespace DMS_WebAPI.Utilities
             return text;
         }
 
-        
+
 
         /// <summary>
         /// переводит текст с лейблами ##l@(.*?)@l##
@@ -265,8 +266,8 @@ namespace DMS_WebAPI.Utilities
         {
             // сбрасываю кэш
             _language = null;
-            DeleteAllAdminLanguageValues();
-            AddAdminLanguageValues(ApplicationDbImportData.GetAdminLanguageValues());
+            //DeleteAllAdminLanguageValues();
+            //AddAdminLanguageValues(ApplicationDbImportData.GetAdminLanguageValues());
         }
 
         public string GetTranslation(string text)
@@ -293,11 +294,11 @@ namespace DMS_WebAPI.Utilities
 
         private AdminLanguageInfo GetAdminLanguageStruct()
         {
+            var res = new AdminLanguageInfo();
+
             using (var dbContext = new ApplicationDbContext())
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var res = new AdminLanguageInfo();
-
                 res.Languages = dbContext.AdminLanguagesSet.Select(x => new InternalAdminLanguage
                 {
                     Id = x.Id,
@@ -306,87 +307,191 @@ namespace DMS_WebAPI.Utilities
                     IsDefault = x.IsDefault
                 }).ToList();
 
-                res.LanguageValues = dbContext.AdminLanguageValuesSet.Select(x => new InternalAdminLanguageValue
-                {
-                    Id = x.Id,
-                    LanguageId = x.LanguageId,
-                    Label = x.Label,
-                    Value = x.Value
-                }).ToList();
+                //res.LanguageValues = dbContext.AdminLanguageValuesSet.Select(x => new InternalAdminLanguageValue
+                //{
+                //    Id = x.Id,
+                //    LanguageId = x.LanguageId,
+                //    Label = x.Label,
+                //    Value = x.Value
+                //}).ToList();
 
                 transaction.Complete();
-
-                return res;
             }
+
+            foreach (var item in res.Languages)
+            {
+                
+                var list = GetLanguageValues( item.Id);
+
+                res.LanguageValues.AddRange(list);
+            }
+
+            return res;
         }
 
-        private int AddAdminLanguageValue(InternalAdminLanguageValue model)
+        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(int languageId)
         {
-            using (var dbContext = new ApplicationDbContext())
+
+            // ХАЛЯВА
+            var filePath = @"";
+            switch (languageId)
             {
-                var item = new AdminLanguageValues
+                case 45: //English
+                    filePath += @"messages_en_US.properties";
+                    break;
+                case 740: //Polszczyzna
+                    filePath += @"messages_pl_PL.properties";
+                    break;
+                case 90: //Беларуский
+                    filePath += @"messages_be_BY.properties";
+                    break;
+                case 481: // Deutsch
+                    filePath += @"messages_de_DE.properties";
+                    break;
+                case 745: //Francais
+                    filePath += @"messages_fr_FR.properties";
+                    break;
+                case 570: //Русский
+                    filePath += @"messages_ru_RU.properties";
+                    break;
+                case 720: //Українська
+                    filePath += @"messages_uk_UA.properties";
+                    break;
+                case 790: //Cestina
+                    filePath += @"messages_cs_CZ.properties";
+                    break;
+                default:
+                    filePath += @"messages_ru_RU.properties";
+                    break;
+            }
+
+            filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "LanguageValues", filePath);
+
+            //------------------------------------------------------
+
+            var list = new List<InternalAdminLanguageValue>();
+
+            if (filePath.Trim() == string.Empty) return list;
+
+            StreamReader reader;
+
+            try
+            {
+                reader = File.OpenText(filePath);
+            }
+            catch (Exception)
+            {
+
+                return list;
+            }
+
+            
+            string input;
+
+            // построчно считываю файл с переводами.
+            while ((input = reader.ReadLine()) != null)
+            {
+                if (input.Trim() == string.Empty) continue;
+
+                var label = string.Empty;
+                var value = string.Empty;
+
+                try
                 {
-                    LanguageId = model.LanguageId,
-                    Label = model.Label,
-                    Value = model.Value
-                };
-                dbContext.AdminLanguageValuesSet.Add(item);
-                dbContext.SaveChanges();
-                model.Id = item.Id;
-                return item.Id;
-            }
-        }
+                    label = input.Split('=')[0].Trim();
+                }
+                catch { }
 
-
-        private void AddAdminLanguageValues(List<AdminLanguageValues> list)
-        {
-            using (var dbContext = new ApplicationDbContext())
-            {
-                dbContext.AdminLanguageValuesSet.AddRange(list);
-                dbContext.SaveChanges();
-            }
-        }
-
-        private void UpdateAdminLanguageValue(InternalAdminLanguageValue model)
-        {
-            using (var dbContext = new ApplicationDbContext())
-            {
-                var item = new AdminLanguageValues
+                try
                 {
-                    Id = model.Id,
-                    LanguageId = model.LanguageId,
-                    Label = model.Label,
-                    Value = model.Value
-                };
-                dbContext.AdminLanguageValuesSet.Attach(item);
-                var entity = dbContext.Entry(item);
+                    value = input.Split('=')[1].Trim();
+                }
+                catch { }
 
-                entity.Property(x => x.LanguageId).IsModified = true;
-                entity.Property(x => x.Label).IsModified = true;
-                entity.Property(x => x.Value).IsModified = true;
-                dbContext.SaveChanges();
+
+                list.Add(new InternalAdminLanguageValue()
+                {
+                    Id = -1,
+                    LanguageId = languageId,
+                    Label = label,
+                    Value = value
+                });
             }
+
+            reader.Close();
+
+            return list;
         }
 
-        private void DeleteAdminLanguageValue(InternalAdminLanguageValue model)
-        {
-            using (var dbContext = new ApplicationDbContext())
-            {
-                dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet.Where(x => x.Id == model.Id));
-                dbContext.SaveChanges();
-            }
-        }
 
-        private void DeleteAllAdminLanguageValues()
-        {
-            using (var dbContext = new ApplicationDbContext())
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-                dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
+
+        //private int AddAdminLanguageValue(InternalAdminLanguageValue model)
+        //{
+        //    using (var dbContext = new ApplicationDbContext())
+        //    {
+        //        var item = new AdminLanguageValues
+        //        {
+        //            LanguageId = model.LanguageId,
+        //            Label = model.Label,
+        //            Value = model.Value
+        //        };
+        //        dbContext.AdminLanguageValuesSet.Add(item);
+        //        dbContext.SaveChanges();
+        //        model.Id = item.Id;
+        //        return item.Id;
+        //    }
+        //}
+
+
+        //private void AddAdminLanguageValues(List<AdminLanguageValues> list)
+        //{
+        //    using (var dbContext = new ApplicationDbContext())
+        //    {
+        //        dbContext.AdminLanguageValuesSet.AddRange(list);
+        //        dbContext.SaveChanges();
+        //    }
+        //}
+
+        //private void UpdateAdminLanguageValue(InternalAdminLanguageValue model)
+        //{
+        //    using (var dbContext = new ApplicationDbContext())
+        //    {
+        //        var item = new AdminLanguageValues
+        //        {
+        //            Id = model.Id,
+        //            LanguageId = model.LanguageId,
+        //            Label = model.Label,
+        //            Value = model.Value
+        //        };
+        //        dbContext.AdminLanguageValuesSet.Attach(item);
+        //        var entity = dbContext.Entry(item);
+
+        //        entity.Property(x => x.LanguageId).IsModified = true;
+        //        entity.Property(x => x.Label).IsModified = true;
+        //        entity.Property(x => x.Value).IsModified = true;
+        //        dbContext.SaveChanges();
+        //    }
+        //}
+
+        //private void DeleteAdminLanguageValue(InternalAdminLanguageValue model)
+        //{
+        //    using (var dbContext = new ApplicationDbContext())
+        //    {
+        //        dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet.Where(x => x.Id == model.Id));
+        //        dbContext.SaveChanges();
+        //    }
+        //}
+
+        //private void DeleteAllAdminLanguageValues()
+        //{
+        //    using (var dbContext = new ApplicationDbContext())
+        //    using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    {
+        //        dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
+        //        dbContext.SaveChanges();
+        //        transaction.Complete();
+        //    }
+        //}
 
 
         #endregion
