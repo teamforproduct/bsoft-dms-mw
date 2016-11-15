@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\AdminContext.cs" />
+    <Compile Include="Context\FrontSystemSession.cs" />
     <Compile Include="CryptographicWorker\CryptoService.cs" />
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

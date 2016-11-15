@@ -81,7 +81,8 @@ namespace BL.Database.SystemDb
                     ObjectName = x.Object.Description,
                     ActionId = x.ActionId,
                     ActionName = x.Action.Description,
-                    RecordId = x.RecordId
+                    RecordId = x.RecordId,
+                    ClientId = x.ClientId,
                 }).ToList();
                 transaction.Complete();
                 return res;

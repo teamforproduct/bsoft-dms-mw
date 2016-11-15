@@ -440,6 +440,7 @@
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemSession.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemLog.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemPattern.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemSetting.cs" />
