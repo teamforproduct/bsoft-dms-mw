@@ -32,8 +32,11 @@ namespace BL.Logic.AdminCore
                     // Устанавливаю рассылку для должностей заданного отдела
                     SetRegistrationJournalPositionByDepartment(Model.DepartmentId);
 
-                    // Устанавливаю рассылку для должностей дочерних отделов
-                    SetRegistrationJournalPositionByChildDepartments(Model.DepartmentId);
+                    if (!Model.IgnoreChildDepartments)
+                    {
+                        // Устанавливаю рассылку для должностей дочерних отделов
+                        SetRegistrationJournalPositionByChildDepartments(Model.DepartmentId);
+                    }
 
                     transaction.Complete();
                 }
@@ -46,7 +49,7 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        
+
 
         private void SetRegistrationJournalPositionByDepartment(int departmentId)
         {

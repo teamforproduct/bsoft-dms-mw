@@ -37,7 +37,8 @@ namespace BL.Logic.AdminCore
                     DepartmentId = position.DepartmentId,
                     IsChecked = true,
                     PositionId = Model.PositionId,
-                    RegJournalAccessTypeId = EnumRegistrationJournalAccessTypes.View
+                    RegJournalAccessTypeId = EnumRegistrationJournalAccessTypes.View,
+                    IgnoreChildDepartments = true,
                 });
 
                 SetRegistrationJournalPositionByDepartment(new ModifyAdminRegistrationJournalPositionByDepartment
@@ -45,7 +46,8 @@ namespace BL.Logic.AdminCore
                     DepartmentId = position.DepartmentId,
                     IsChecked = true,
                     PositionId = Model.PositionId,
-                    RegJournalAccessTypeId = EnumRegistrationJournalAccessTypes.Registration
+                    RegJournalAccessTypeId = EnumRegistrationJournalAccessTypes.Registration,
+                    IgnoreChildDepartments = true,
                 });
 
                 transaction.Complete();

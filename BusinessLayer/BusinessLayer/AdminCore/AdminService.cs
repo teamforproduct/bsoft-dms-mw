@@ -24,6 +24,7 @@ using BL.CrossCutting.Extensions;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
 using System.Transactions;
+using BL.Database.Common;
 
 namespace BL.Logic.AdminCore
 {
@@ -440,7 +441,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
-                    filter.IsChecked = false;
+                    filter.IsChecked = null;
                     res = Tree.Get(flatList, filter);
                 }
                 else
@@ -460,17 +461,31 @@ namespace BL.Logic.AdminCore
         {
             if (tree != null)
             {
+                //var existsNameFilter = !string.IsNullOrEmpty(filter.Name);
+
+                //string[] arrName = null;
+
+                //if (existsNameFilter)
+                //{ arrName = CommonFilterUtilites.GetWhereExpressions(filter.Name.ToLower()); }
+
                 foreach (var item in tree)
                 {
-                    //if (item.ObjectId == (int)EnumObjects.DictionaryPositions)
-                    //{
+                    var addToSafeList = true;
+
                     var pos = (FrontDIPSubordinationsBase)item;
 
-                    if (pos.IsExecution > 0 || pos.IsInforming > 0)
-                    {
-                        safeList.AddRange(item.Path.Split('/'));
-                    }
+                    //if (existsNameFilter & addToSafeList)
+                    //{
+                    //    // Поиск присходит по специальному полю для поиска
+                    //    addToSafeList = (item.SearchText.ToLower().ContainsArray(arrName));
                     //}
+
+                    if (addToSafeList)
+                    {
+                        addToSafeList = pos.IsExecution > 0 || pos.IsInforming > 0;
+                    }
+
+                    if (addToSafeList) safeList.AddRange(item.Path.Split('/'));
 
                     FormSafeListDIPSubordinations((List<TreeItem>)item.Childs, safeList, filter);
                 }
@@ -568,7 +583,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter)
         {
-            var journalPositions = _adminDb.GetInternalRegistrationJournalPositions(context , new FilterAdminRegistrationJournalPosition()
+            var journalPositions = _adminDb.GetInternalRegistrationJournalPositions(context, new FilterAdminRegistrationJournalPosition()
             { RegistrationJournalIDs = new List<int> { journalId } });
 
             var posList = journalPositions.Select(x => x.PositionId).ToList();
@@ -578,7 +593,7 @@ namespace BL.Logic.AdminCore
             if (filter == null) filter = new FilterDictionaryPosition();
 
             if (filter.IDs?.Count > 0)
-            { filter.IDs.AddRange(posList);  }
+            { filter.IDs.AddRange(posList); }
             else
             { filter.IDs = posList; }
 
@@ -640,7 +655,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
-                    filter.IsChecked = false;
+                    filter.IsChecked = null;
                     res = Tree.Get(flatList, filter);
                 }
                 else
@@ -660,17 +675,31 @@ namespace BL.Logic.AdminCore
         {
             if (tree != null)
             {
+                //var existsNameFilter = !string.IsNullOrEmpty(filter.Name);
+
+                //string[] arrName = null;
+
+                //if (existsNameFilter)
+                //{ arrName = CommonFilterUtilites.GetWhereExpressions(filter.Name.ToLower()); }
+
                 foreach (var item in tree)
                 {
-                    //if (item.ObjectId == (int)EnumObjects.DictionaryPositions)
-                    //{
+                    var addToSafeList = true;
+
                     var pos = (FrontDIPRegistrationJournalPositionsBase)item;
 
-                    if (pos.IsViewing > 0 || pos.IsRegistration > 0)
-                    {
-                        safeList.AddRange(item.Path.Split('/'));
-                    }
+                    //if (existsNameFilter & addToSafeList)
+                    //{
+                    //    // Поиск присходит по специальному полю для поиска
+                    //    addToSafeList = (item.SearchText.ToLower().ContainsArray(arrName));
                     //}
+
+                    if (addToSafeList)
+                    {
+                        addToSafeList = pos.IsViewing > 0 || pos.IsRegistration > 0;
+                    }
+
+                    if (addToSafeList) safeList.AddRange(item.Path.Split('/'));
 
                     FormSafeListDIPRJournalPositions((List<TreeItem>)item.Childs, safeList, filter);
                 }
