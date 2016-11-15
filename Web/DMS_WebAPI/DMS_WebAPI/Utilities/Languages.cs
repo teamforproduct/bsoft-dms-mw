@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Utilities
     /// </summary>
     public class Languages : ILanguages
     {
-        private const int _MINUTES_TO_UPDATE_INFO = 5;// int.MaxValue; 
+        private const int _MINUTES_TO_UPDATE_INFO = int.MaxValue; 
 
         private const string _PATTERN = "##l@(.*?)@l##";
 

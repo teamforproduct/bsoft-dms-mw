@@ -81,7 +81,7 @@ namespace DMS_WebAPI.Models
 
             foreach (var item in toAdd.OrderBy(x => x))
             {
-                s += "AddALV(list, \"" + item + "\", \"\", \"\", \"\");\r\n";
+                s += item + "=\r\n";
             }
 
             //foreach (var item in toRem.OrderBy(x => x))
@@ -109,10 +109,14 @@ namespace DMS_WebAPI.Models
         {
             var list = new List<string>();
 
+            list.AddRange(GetListByEnum<EnumAddressTypes>());
+            list.AddRange(GetListByEnum<EnumContactTypes>());
+
             list.AddRange(GetListByEnum<EnumAccessLevels>());
             list.AddRange(GetListByEnum<EnumPositionExecutionTypes>());
             list.AddRange(GetListByEnum<EnumRegistrationJournalAccessTypes>());
             list.AddRange(GetListByEnum<EnumDocumentDirections>());
+            list.AddRange(GetListByEnum<EnumDocumentTypes>());
             list.AddRange(GetListByEnum<EnumEventTypes>());
             list.AddRange(GetListByEnum<EnumImportanceEventTypes>());
             list.AddRange(GetListByEnum<EnumLinkTypes>());

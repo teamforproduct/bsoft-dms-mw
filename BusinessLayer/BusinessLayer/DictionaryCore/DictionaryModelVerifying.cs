@@ -21,6 +21,8 @@ namespace BL.Logic.DictionaryCore
             Model.Code?.Trim();
             Model.Name?.Trim();
 
+            //if (dictDb.ExistsContactTypeSpecCode(context, Model.Id)) throw new ();
+
             var spr = dictDb.GetInternalDictionaryContactType(context, new FilterDictionaryContactType
             {
                 NameExact = Model.Name,

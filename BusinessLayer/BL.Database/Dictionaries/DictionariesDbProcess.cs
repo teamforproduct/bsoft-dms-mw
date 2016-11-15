@@ -1494,8 +1494,13 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAddressTypesSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
+                // Все поля кроме SpecCode
+                entity.Property(x => x.Code).IsModified = true;
+                entity.Property(x => x.Name).IsModified = true;
+                entity.Property(x => x.IsActive).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Update);
-                entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
             }
         }
@@ -1513,6 +1518,15 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public bool ExistsAddressTypeSpecCode(IContext context, int addressTypeId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var res = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == context.CurrentClientId & x.Id == addressTypeId & x.SpecCode != null).Any();
+
+                return res;
+            }
+        }
 
         public InternalDictionaryAddressType GetInternalDictionaryAddressType(IContext context, FilterDictionaryAddressType filter)
         {
@@ -2822,6 +2836,16 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
             }
         }
+        public bool ExistsContactTypeSpecCode(IContext context, int contactTypeId)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var res = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId & x.Id == contactTypeId & x.SpecCode != null).Any();
+
+                return res;
+            }
+        }
+
         public int AddContactType(IContext context, InternalDictionaryContactType model)
         {
             using (var dbContext = new DmsContext(context))

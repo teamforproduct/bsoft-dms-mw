@@ -34,6 +34,8 @@ namespace BL.Logic.DictionaryCore
             Model.Code?.Trim();
             Model.Name?.Trim();
 
+            //if (_dictDb.ExistsAddressTypeSpecCode(_context, Model.Id)) throw new ();
+
             var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType
             {
                 CodeExact = Model.Code,

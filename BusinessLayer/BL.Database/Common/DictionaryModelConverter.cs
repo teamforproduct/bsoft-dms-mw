@@ -328,6 +328,7 @@ namespace BL.Database.Common
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
                 Code = item.Code,
+                SpecCode = item.SpecCode,
                 Name = item.Name,
                 IsActive = item.IsActive
             };
