@@ -19,7 +19,7 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_UserId", 1, IsUnique = true)]
         public string UserId { get; set; }
         public int? LanguageId { get; set; }
-        
+        public bool IsSendEMail { get; set; }
         /// <summary>
         /// Определяет может ли пользователь войти в систему
         /// </summary>
