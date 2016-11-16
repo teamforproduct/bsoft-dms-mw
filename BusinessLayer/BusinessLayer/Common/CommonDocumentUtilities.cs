@@ -242,9 +242,9 @@ namespace BL.Logic.Common
                 TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = eventDate ?? DateTime.Now,
-                CreateDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
+                Date = eventDate ?? DateTime.UtcNow,
+                CreateDate = DateTime.UtcNow,
             };
         }
 
@@ -294,11 +294,11 @@ namespace BL.Logic.Common
             {
                 DocumentId = sendListModel.DocumentId,
                 DueDate = eventType == EnumEventTypes.ControlOn
-                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.SelfDueDay.Value) }.Max()
-                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
+                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value) }.Max()
+                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value) }.Max(),
                 AttentionDate = eventType == EnumEventTypes.ControlOn ? sendListModel.SelfAttentionDate : null,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
                 OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (

@@ -1397,7 +1397,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
+                var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(
                         x =>
@@ -2540,7 +2540,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = dbContext.SystemDateSet.ToList();
 
-                var res = DateTime.Now.AddYears(-50);
+                var res = DateTime.UtcNow.AddYears(-50);
 
                 if (qry?.Count>0)
                     res = qry.LastOrDefault().Date;

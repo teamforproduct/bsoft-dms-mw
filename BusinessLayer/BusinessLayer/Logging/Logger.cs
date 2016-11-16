@@ -27,12 +27,12 @@ namespace BL.Logic.Logging
 
         }
 
-        public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, List<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging)
+        public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, IQueryable<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging)
         {
             List<FrontSystemSession> res;
             if (filter?.IsOnlyActive ?? false)
             {
-                var qry = sessions.AsQueryable();
+                var qry = sessions;
                 if (filter != null)
                 {
                     if (filter.ExecutorAgentIDs?.Count > 0)

@@ -49,9 +49,9 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public List<FrontSystemSession> GetContextList()
+        public IQueryable<FrontSystemSession> GetContextListQuery()
         {
-            var res = _casheContexts
+            var res = _casheContexts.AsQueryable()
                 .Where(x => x.Value.StoreObject is IContext)
                 .Select(x => new FrontSystemSession
                 {
@@ -64,8 +64,7 @@ namespace DMS_WebAPI.Utilities
                     AgentId = (x.Value.StoreObject as IContext).CurrentEmployee.AgentId,
                     Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
                     ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
-                })
-                .ToList();
+                });
             return res;
         }
 
@@ -390,7 +389,7 @@ namespace DMS_WebAPI.Utilities
 
         public void KillSessions(int agentId)
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {

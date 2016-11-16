@@ -793,7 +793,7 @@ namespace BL.Database.Common
             }
 
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
             var isNeedRegistrationFullNumber = !(filter?.Event?.DocumentId?.Any() ?? false);
 
             var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
@@ -1503,7 +1503,7 @@ namespace BL.Database.Common
                     paging.Counters = new UICounters
                     {
                         //Counter1 = qrys.Sum(qry => qry.Count(y => !y.OffEventId.HasValue)),
-                        //Counter2 = qrys.Sum(qry => qry.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)),
+                        //Counter2 = qrys.Sum(qry => qry.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow)),
                         //Counter3 = qrys.Sum(qry => qry.Count()),
                         Counter1 = groupsCounter.Where(y => !y.IsClosed).Sum(y => y.RecordCount),
                         Counter2 = groupsCounter.Where(y => y.IsOverDue).Sum(y => y.RecordCount),
@@ -1554,7 +1554,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
             var isNeedRegistrationFullNumber = !(filter?.Wait?.DocumentId?.Any() ?? false);
 
             var qryFE = dbContext.DocumentWaitsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
@@ -1947,7 +1947,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
@@ -2969,9 +2969,9 @@ namespace BL.Database.Common
                         //    //TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
                         //    TargetAgentId = ctx.CurrentAgentId,
                         //    LastChangeUserId = ctx.CurrentAgentId,
-                        //    LastChangeDate = DateTime.Now,
-                        //    Date = DateTime.Now,
-                        //    CreateDate = DateTime.Now,
+                        //    LastChangeDate = DateTime.UtcNow,
+                        //    Date = DateTime.UtcNow,
+                        //    CreateDate = DateTime.UtcNow,
                         //};
 
                         //dbContext.DocumentEventsSet.Add(eventDb);
@@ -3059,7 +3059,7 @@ namespace BL.Database.Common
 
             doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
 
             doc.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { doc.Id } })
                 .Select(x => new InternalDocumentWait
@@ -3266,7 +3266,7 @@ namespace BL.Database.Common
                 att.OrderInDocument = ordInDoc;
             }
 
-            att.LastChangeDate = DateTime.Now;
+            att.LastChangeDate = DateTime.UtcNow;
             att.LastChangeUserId = ctx.CurrentAgentId;
 
             fileStore.SaveFile(ctx, att);

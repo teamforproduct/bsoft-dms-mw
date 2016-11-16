@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
-            var sesions = ctxs.GetContextList();
+            var sesions = ctxs.GetContextListQuery();
             var tmpSysProc = DmsResolver.Current.Get<ILogger>();
             var tmpDicts = tmpSysProc.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpDicts, this);
