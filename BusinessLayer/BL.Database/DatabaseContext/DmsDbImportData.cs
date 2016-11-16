@@ -3,6 +3,7 @@ using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
 using BL.Model.Common;
 using BL.Model.Constants;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using LinqKit;
 using System;
@@ -17,6 +18,8 @@ namespace BL.Database.DatabaseContext
     {
 
         private static int IdSequence = 0;
+
+        private static string GetLabel(string group, string itemName) => "##l@" + group.Trim() + ":" + itemName.Trim() + "@l##";
 
         #region [+] SystemObjects ...
 
@@ -95,7 +98,7 @@ namespace BL.Database.DatabaseContext
 
         private static SystemObjects GetSystemObjects(EnumObjects id)
         {
-            string description = "##l@" + "Objects" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("Objects", id.ToString());
 
             return new SystemObjects()
             {
@@ -451,37 +454,37 @@ namespace BL.Database.DatabaseContext
 
         private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = "##l@" + "AdminActions" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("AdminActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = "##l@" + "EncryptionActions" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("EncryptionActions",  id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = "##l@" + "PropertyActions" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("PropertyActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = "##l@" + "DictionaryActions" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("DictionaryActions", id.ToString()); 
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = "##l@" + "DocumentActions" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("DocumentActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = "##l@" + "SystemActions" + ":" + id.ToString() + "@l##";
+            string description = GetLabel("SystemActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
@@ -517,7 +520,7 @@ namespace BL.Database.DatabaseContext
 
         private static AdminAccessLevels GetAdminAccessLevel(EnumAccessLevels id)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new AdminAccessLevels()
             {
                 Id = (int)id,
@@ -593,7 +596,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryDocumentDirections GetDictionaryDocumentDirection(EnumDocumentDirections id)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryDocumentDirections()
             {
                 Id = (int)id,
@@ -690,7 +693,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryEventTypes GetDictionaryEventType(EnumEventTypes id, EnumImportanceEventTypes importanceEventTypeId, string waitDescription = null)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryEventTypes()
             {
                 Id = (int)id,
@@ -721,7 +724,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryImportanceEventTypes GetDictionaryImportanceEventType(EnumImportanceEventTypes id)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryImportanceEventTypes()
             {
                 Id = (int)id,
@@ -751,7 +754,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryResultTypes GetDictionaryResultType(EnumResultTypes id, bool IsExecute, bool IsActive)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryResultTypes()
             {
                 Id = (int)id,
@@ -767,28 +770,56 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionarySendTypes>();
 
-            items.Add(new DictionarySendTypes { Id = 10, Code = null, Name = "##l@DictionarySendTypes:SendForResponsibleExecution@l##", IsImportant = true, SubordinationTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 20, Code = null, Name = "##l@DictionarySendTypes:SendForControl@l##", IsImportant = true, SubordinationTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 30, Code = null, Name = "##l@DictionarySendTypes:SendForExecution@l##", IsImportant = true, SubordinationTypeId = 2, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 40, Code = null, Name = "##l@DictionarySendTypes:SendForInformation@l##", IsImportant = false, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 45, Code = null, Name = "##l@DictionarySendTypes:SendForInformationExternal@l##", IsImportant = false, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 50, Code = null, Name = "##l@DictionarySendTypes:SendForConsideration@l##", IsImportant = false, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 250, Code = null, Name = "##l@DictionarySendTypes:SendForVisaing@l##", IsImportant = true, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 260, Code = null, Name = "##l@DictionarySendTypes:SendForАgreement@l##", IsImportant = true, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 270, Code = null, Name = "##l@DictionarySendTypes:SendForАpproval@l##", IsImportant = true, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySendTypes { Id = 280, Code = null, Name = "##l@DictionarySendTypes:SendForSigning@l##", IsImportant = true, SubordinationTypeId = 1, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForResponsibleExecution, isImportant : true, subordinationTypeId : 2));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForControl, isImportant : true, subordinationTypeId : 2));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForExecution, isImportant : true, subordinationTypeId : 2));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformation, isImportant : false, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformationExternal, isImportant : false, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForConsideration, isImportant : false, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForVisaing, isImportant : true, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForАgreement, isImportant : true, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForАpproval, isImportant : true, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForSigning, isImportant : true, subordinationTypeId : 1));
 
             return items;
+        }
+
+        private static DictionarySendTypes GetDictionarySendType(EnumSendTypes id, bool isImportant, int subordinationTypeId)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new DictionarySendTypes()
+            {
+                Id = (int)id,
+                Code = null,
+                Name = name,
+                IsImportant = isImportant,
+                SubordinationTypeId = subordinationTypeId,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
         }
 
         public static List<DictionarySubordinationTypes> GetDictionarySubordinationTypes()
         {
             var items = new List<DictionarySubordinationTypes>();
 
-            items.Add(new DictionarySubordinationTypes { Id = 1, Code = "Informing", Name = "##l@DictionarySubordinationTypes:Informing@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySubordinationTypes { Id = 2, Code = "Execution", Name = "##l@DictionarySubordinationTypes:Execution@l##", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionarySubordinationType(EnumSubordinationTypes.Informing));
+            items.Add(GetDictionarySubordinationType(EnumSubordinationTypes.Execution));
 
             return items;
+        }
+
+        private static DictionarySubordinationTypes GetDictionarySubordinationType(EnumSubordinationTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new DictionarySubordinationTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
         }
 
         public static List<DicRegJournalAccessTypes> GetDictionaryRegistrationJournalAccessTypes()
@@ -803,7 +834,7 @@ namespace BL.Database.DatabaseContext
 
         private static DicRegJournalAccessTypes GetDictionaryRegistrationJournalAccessType(EnumRegistrationJournalAccessTypes id)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DicRegJournalAccessTypes()
             {
                 Id = (int)id,
@@ -830,7 +861,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionarySubscriptionStates GetDictionarySubscriptionState(EnumSubscriptionStates id, bool isSuccess)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum", "") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySubscriptionStates()
             {
                 Id = (int)id,
@@ -846,9 +877,9 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryPositionExecutorTypes>();
 
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Personal, Code = EnumPositionExecutionTypes.Personal.ToString(), Name = "##l@PositionExecutorTypes:Personal@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.IO, Code = EnumPositionExecutionTypes.IO.ToString(), Name = "##l@PositionExecutorTypes:IO@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Referent, Code = EnumPositionExecutionTypes.Referent.ToString(), Name = "##l@PositionExecutorTypes:Referent@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Personal, Code = EnumPositionExecutionTypes.Personal.ToString(), Name = "##l@PositionExecutionTypes:Personal@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.IO, Code = EnumPositionExecutionTypes.IO.ToString(), Name = "##l@PositionExecutionTypes:IO@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Referent, Code = EnumPositionExecutionTypes.Referent.ToString(), Name = "##l@PositionExecutionTypes:Referent@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
 
             return items;
         }
@@ -869,7 +900,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryLinkTypes GetDictionaryLinkType(EnumLinkTypes id, bool IsImportant)
         {
-            string name = "##l@" + id.GetType().Name.Replace("Enum","") + ":" + id.ToString() + "@l##";
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryLinkTypes()
             {
                 Id = (int)id,
@@ -880,5 +911,64 @@ namespace BL.Database.DatabaseContext
             };
         }
 
+
+        public static List<InternalDictionaryDocumentType> GetDocumentTypes()
+        {
+            var items = new List<InternalDictionaryDocumentType>();
+
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Agreement));
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Commission));
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Decree));
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Letter));
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Memo));
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Order));
+            items.Add(GetDocumentTypes(EnumDocumentTypes.Protocol));
+
+
+            return items;
+        }
+
+        private static InternalDictionaryDocumentType GetDocumentTypes(EnumDocumentTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new InternalDictionaryDocumentType()
+            {
+                Id = (int)id,
+                Name = name,
+                IsActive = true,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
+
+        public static List<InternalDictionaryAddressType> GetAddressTypes()
+        {
+            var items = new List<InternalDictionaryAddressType>();
+
+            items.Add(GetAddressType(EnumAddressTypes.Actual));
+            items.Add(GetAddressType(EnumAddressTypes.Current));
+            items.Add(GetAddressType(EnumAddressTypes.Legal));
+            items.Add(GetAddressType(EnumAddressTypes.Working));
+            return items;
+        }
+
+        private static InternalDictionaryAddressType GetAddressType(EnumAddressTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string code = GetLabel("AddressTypesCode", id.ToString());
+            return new InternalDictionaryAddressType()
+            {
+                Id = (int)id,
+                Name = name,
+                Code = code,
+                SpecCode = id.ToString(),
+                IsActive = true,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
     }
+
 }

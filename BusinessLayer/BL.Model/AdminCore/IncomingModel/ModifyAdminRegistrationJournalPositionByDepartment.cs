@@ -46,5 +46,11 @@ namespace BL.Model.AdminCore.IncomingModel
         [Required]
         public bool IsChecked { get; set; }
 
+        
+        /// <summary>
+        /// Не применять к дочерним отделам
+        /// </summary>
+        public bool IgnoreChildDepartments { get; set; }
+
     }
 }

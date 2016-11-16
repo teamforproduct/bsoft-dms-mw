@@ -28,6 +28,14 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string Name { get; set; }
         public bool IsDefault { get; set; }
+
+        /// <summary>
+        /// Язык
+        /// </summary>
+        //[MaxLength(2000)]
+        //public string FileName { get; set; }
+
+
         public virtual ICollection<AdminLanguageValues> LanguageValues { get; set; }
     }
 }

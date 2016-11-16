@@ -22,6 +22,7 @@ using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using System.Transactions;
 using BL.Model.SystemCore.InternalModel;
+using BL.Database.DatabaseContext;
 
 namespace BL.Logic.ClientCore
 {
@@ -65,20 +66,6 @@ namespace BL.Logic.ClientCore
 
         }
 
-        private InternalDictionaryAddressType GetNewAddressType(IContext context, string specCode, string code, string name)
-        {
-            var res = new InternalDictionaryAddressType()
-            {
-                //SpecCode = specCode,
-                Code = code,
-                Name = name,
-                IsActive = true
-            };
-
-            CommonDocumentUtilities.SetLastChange(context, res);
-
-            return res;
-        }
 
         public static List<SystemSettings> GetSystemSettings()
         {
@@ -119,9 +106,9 @@ namespace BL.Logic.ClientCore
             };
         }
 
-
         public void AddNewClient(IContext context, AddClientContent client)
         {
+            
             //GetSystemSettings
 
             #region [+] ContactsTypes ...
@@ -151,14 +138,10 @@ namespace BL.Logic.ClientCore
             #endregion
 
             #region [+] AddressTypes ...
-            // Pss Локализация для типов адресов
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "##l@AddressTypesCode:Working@l##", "##l@AddressTypes:Working@l##"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "LegalAddress", "##l@AddressTypesCode:Legal@l##", "##l@AddressTypes:Legal@l##"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "ActualAddress", "##l@AddressTypesCode:Actual@l##", "##l@AddressTypes:Actual@l##"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "CurrentAddress", "##l@AddressTypesCode:Current@l##", "##l@AddressTypes:Current@l##"));
-
-
-
+            foreach (var item in DmsDbImportData.GetAddressTypes())
+            {
+                _DictDb.AddAddressType(context, item);
+            };
             #endregion
 
             #region [+] Agent-Employee ...
@@ -218,36 +201,10 @@ namespace BL.Logic.ClientCore
 
             #region [+] DocumentsTypes ...
 
-            InternalDictionaryDocumentType doctype = null;
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Письмо", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Приказ", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Распоряжение", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Служебная записка", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Поручение", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Протокол", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Договор", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
+            foreach (var item in DmsDbImportData.GetDocumentTypes())
+            {
+                _DictDb.AddDocumentType(context, item);
+            };
             // добавить шаблоны под каждый тип
 
             #endregion

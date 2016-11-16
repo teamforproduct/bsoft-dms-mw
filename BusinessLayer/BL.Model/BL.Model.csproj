@@ -382,6 +382,8 @@
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
     <Compile Include="Enums\EnumAdminActions.cs" />
     <Compile Include="Enums\EnumAccessLevels.cs" />
+    <Compile Include="Enums\EnumAddressTypes.cs" />
+    <Compile Include="Enums\EnumDocumentTypes.cs" />
     <Compile Include="Enums\EnumLinkTypes.cs" />
     <Compile Include="Enums\EnumMessageLevelTypes.cs" />
     <Compile Include="Enums\EnumRegistrationJournalAccessTypes.cs" />

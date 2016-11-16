@@ -13,7 +13,7 @@ namespace DMS_WebAPI.Models
 
             context.AdminLanguagesSet.AddRange(ApplicationDbImportData.GetAdminLanguages());
 
-            context.AdminLanguageValuesSet.AddRange(ApplicationDbImportData.GetAdminLanguageValues());
+            //context.AdminLanguageValuesSet.AddRange(ApplicationDbImportData.GetAdminLanguageValues());
 
             base.Seed(context);
         }

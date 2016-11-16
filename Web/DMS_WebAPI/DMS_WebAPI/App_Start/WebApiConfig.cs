@@ -41,6 +41,7 @@ namespace DMS_WebAPI
 
             config.SetDocumentationProvider(new XmlDocumentationProvider(Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "Documentation"), new string[] { "BL.Model.XML", "DMS_WebAPI.XML" }));
             //config.SetDocumentationProvider(new XmlDocumentationProvider(HttpContext.Current.Server.MapPath("~/bin")));
+
         }
     }
 }
