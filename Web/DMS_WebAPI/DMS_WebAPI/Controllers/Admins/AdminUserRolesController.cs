@@ -131,7 +131,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("DeleteByPositionExecutor")]
+        [Route("DeleteByUser")]
         public IHttpActionResult DeleteByUser([FromUri] int id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

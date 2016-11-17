@@ -11,6 +11,11 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryContactType : DictionaryBaseFilterParameters
     {
+        /// <summary>
+        /// Строка, для полнотекстового поиска
+        /// </summary>
+        public string FullTextSearchString { get; set; }
+
         public string Code {get; set;}
 
         public string CodeExact { get; set; }
