@@ -135,7 +135,7 @@ namespace BL.Logic.AdminCore
                     .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
                 // test it really good!
                 res = qry.Any(x => x.Act.Id == model.DocumentActionId
-                && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
+                && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.AgentId == model.UserId)
                 && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
                 && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId))));
             }
@@ -143,7 +143,7 @@ namespace BL.Logic.AdminCore
             {
                 var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new { URole = u, PR = r });
 
-                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.UserId == model.UserId).Select(x => x.PR.PositionId)).Any();
+                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.AgentId == model.UserId).Select(x => x.PR.PositionId)).Any();
             }
             if (!res && isThrowExeception)
             {
@@ -287,6 +287,11 @@ namespace BL.Logic.AdminCore
                 executorFilter.PositionIDs = new List<int> { filter.PositionId ?? -1 };
             }
 
+            if (filter.PositionExecutorId != null)
+            {
+                executorFilter.IDs = new List<int> { filter.PositionExecutorId ?? -1 };
+            }
+
             // определяю назначения с ролями должности, которые исполняет сотрудник на указанном отрезке времени
             var executors = _dictDb.GetPositionExecutorsDIPUserRoles(context, executorFilter);
 
@@ -427,7 +432,7 @@ namespace BL.Logic.AdminCore
             if (departments != null) flatList.AddRange(departments);
 
             // для растановки галочек дерево нельзя сужать
-            var res = Tree.Get(flatList, new FilterTree() { });
+            var res = Tree.Get(flatList, new FilterTree() { RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryPositions } });
 
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPSubordinations(res);
@@ -622,6 +627,7 @@ namespace BL.Logic.AdminCore
             {
                 departments = _dictDb.GetDepartmentsForDIPRJournalPositions(context, positionId, new FilterDictionaryDepartment()
                 {
+                    //IDs = journals.Select(x=>x.d)
                     IsActive = filter.IsActive,
                 });
             }
@@ -641,7 +647,7 @@ namespace BL.Logic.AdminCore
             if (departments != null) flatList.AddRange(departments);
 
             // для растановки галочек дерево нельзя сужать
-            var res = Tree.Get(flatList, new FilterTree() { });
+            var res = Tree.Get(flatList, new FilterTree() { RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryRegistrationJournals } });
 
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPRJournalPositions(res);

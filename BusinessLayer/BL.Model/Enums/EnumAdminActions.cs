@@ -76,6 +76,8 @@
         /// <summary>
         /// Удалить 
         /// </summary>
+        DeleteUserRoleByUser = 703007,
+        DeleteUserRoleByPositionExecutor = 703008,
         DeleteUserRole = 703009,
         #endregion
 

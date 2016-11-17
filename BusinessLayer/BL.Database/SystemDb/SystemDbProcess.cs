@@ -1846,7 +1846,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            DocumentId = x.fl.EntityId,
+                            DocumentId = x.fl.DocumentId,
                             ItemType = EnumObjects.DocumentFiles,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,

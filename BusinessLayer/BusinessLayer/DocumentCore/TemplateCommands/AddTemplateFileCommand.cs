@@ -58,7 +58,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             var att = new InternalTemplateAttachedFile
             {
-                EntityId = Model.DocumentId,
+                DocumentId = Model.DocumentId,
                 OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
                 //FileContent = Convert.FromBase64String(Model.FileData),
                 Type = Model.Type,

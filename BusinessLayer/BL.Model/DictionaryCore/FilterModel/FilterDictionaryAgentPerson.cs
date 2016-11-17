@@ -11,9 +11,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     {
 
         /// <summary>
-        /// Список AgentCompanyId
+        /// Ссылка на организацию для контактных лиц
         /// </summary>
-        public List<int> AgentCompanyId { get; set; }
+        public List<int> AgentCompanyIDs{ get; set; }
 
         /// <summary>
         /// Отрывок из паспортных данных
