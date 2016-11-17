@@ -517,11 +517,11 @@ namespace BL.Logic.AdminCore
 
                 GetCheckCountDIPSubordinations((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
 
-                if (infGr) { child.IsExecution = 2; }
-                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
-
                 if (infGr) { child.IsInforming = 2; }
                 else { child.IsInforming = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+
+                if (excGr) { child.IsExecution = 2; }
+                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
 
             }
         }
@@ -725,48 +725,48 @@ namespace BL.Logic.AdminCore
                 var child = (FrontDIPRegistrationJournalPositionsBase)item;
 
                 int allCount = 0;
-                int infCount = 0;
-                int excCount = 0;
-                bool infGr = false;
-                bool excGr = false;
+                int viewCount = 0;
+                int regCount = 0;
+                bool viewGr = false;
+                bool regGr = false;
 
-                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
+                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out viewCount, out regCount, out viewGr, out regGr);
 
-                if (infGr) { child.IsViewing = 2; }
-                else { child.IsViewing = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
+                if (viewGr) { child.IsViewing = 2; }
+                else { child.IsViewing = (allCount == viewCount) ? 1 : (viewCount == 0) ? 0 : 2; }
 
-                if (infGr) { child.IsRegistration = 2; }
-                else { child.IsRegistration = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+                if (regGr) { child.IsRegistration = 2; }
+                else { child.IsRegistration = (allCount == regCount) ? 1 : (regCount == 0) ? 0 : 2; }
 
             }
         }
 
-        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
+        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int ViewCount, out int RegCount, out bool ViewGr, out bool RegGr)
         {
             int allCount = 0;
-            int infCount = 0;
-            int excCount = 0;
-            bool infGr = false;
-            bool excGr = false;
+            int vCount = 0;
+            int rCount = 0;
+            bool vGr = false;
+            bool rGr = false;
 
             foreach (var item in tree)
             {
                 var child = (FrontDIPRegistrationJournalPositionsBase)item;
 
                 allCount++;
-                if (child.IsViewing > 0) infCount++;
-                if (child.IsRegistration > 0) excCount++;
+                if (child.IsViewing > 0) vCount++;
+                if (child.IsRegistration > 0) rCount++;
 
-                if (child.IsViewing == 2) infGr = true;
-                if (child.IsRegistration == 2) excGr = true;
+                if (child.IsViewing == 2) vGr = true;
+                if (child.IsRegistration == 2) rGr = true;
 
             }
 
             AllCount = allCount;
-            InfCount = infCount;
-            ExcCount = excCount;
-            InfGr = infGr;
-            ExcGr = excGr;
+            ViewCount = vCount;
+            RegCount = rCount;
+            ViewGr = vGr;
+            RegGr = rGr;
         }
         #endregion
 
