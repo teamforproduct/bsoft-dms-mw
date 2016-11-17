@@ -100,7 +100,7 @@ namespace BL.Database.Admins
                 var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 var now = DateTime.UtcNow;
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 qry = qry.Where(x => x.AgentId == agentId & x.IsActive == true & now >= x.StartDate & now <=x.EndDate);
 

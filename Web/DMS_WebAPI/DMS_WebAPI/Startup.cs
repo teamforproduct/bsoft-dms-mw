@@ -65,8 +65,8 @@ namespace DMS_WebAPI
             autoPlanService.Initialize(dbs);
 #endif
             //TODO
-            var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
-            clearTrashDocumentsService.Initialize(dbs);
+            //var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
+            //clearTrashDocumentsService.Initialize(dbs);
 
             // Очистка устаревших пользовательских контекстов
             var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();

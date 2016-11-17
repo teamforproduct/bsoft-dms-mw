@@ -564,7 +564,7 @@ namespace BL.Database.Documents
 
                 var docIds = new List<int> { res.Id };
 
-                var maxDateTime = DateTime.Now.AddYears(50);
+                var maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 res.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
                     .Select(x => new InternalDocumentWait

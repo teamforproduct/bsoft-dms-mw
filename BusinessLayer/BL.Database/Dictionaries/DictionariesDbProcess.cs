@@ -4853,7 +4853,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {
@@ -4883,7 +4883,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 return qry.Select(x => new FrontDictionaryPositionExecutor
                 {
@@ -4912,7 +4912,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 return qry.Select(x => new InternalDictionaryPositionExecutor
                 {

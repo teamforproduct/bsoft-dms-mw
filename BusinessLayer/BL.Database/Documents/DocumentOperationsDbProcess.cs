@@ -575,7 +575,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var maxDateTime = DateTime.Now.AddYears(50);
+                var maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.OnEventId == eventId)
