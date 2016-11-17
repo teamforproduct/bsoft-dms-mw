@@ -23,11 +23,6 @@ namespace BL.Model.AdminCore.IncomingModel
         public int Id { get; set; }
 
         /// <summary>
-        /// Пользователь
-        /// </summary>
-        public int? UserId { get; set; }
-
-        /// <summary>
         /// Роль
         /// </summary>
         [Required]
@@ -36,7 +31,8 @@ namespace BL.Model.AdminCore.IncomingModel
         /// <summary>
         /// Назначение, от должности которого унаследованы роли
         /// </summary>
-        public int? PositionExecutorId { get; set; }
+        [Required]
+        public int PositionExecutorId { get; set; }
 
     }
 }

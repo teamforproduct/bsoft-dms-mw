@@ -263,7 +263,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentEmployee, EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployee, EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentEmployee, EnumObjects.DictionaryAgentEmployees));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployeeLanguage, EnumObjects.DictionaryAgentEmployees, isVisible: false , grantId : (int)EnumDictionaryActions.ModifyAgentEmployee));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployeeLanguage, EnumObjects.DictionaryAgentEmployees, isVisible: false, grantId: (int)EnumDictionaryActions.ModifyAgentEmployee));
 
             items.Add(GetSysAct(EnumDictionaryActions.AddDepartment, EnumObjects.DictionaryDepartments));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyDepartment, EnumObjects.DictionaryDepartments));
@@ -338,6 +338,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));
             items.Add(GetSysAct(EnumAdminActions.AddUserRole, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
             items.Add(GetSysAct(EnumAdminActions.DeleteUserRole, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
+            items.Add(GetSysAct(EnumAdminActions.DeleteUserRoleByPositionExecutor, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
+            items.Add(GetSysAct(EnumAdminActions.DeleteUserRoleByUser, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
 
             items.Add(GetSysAct(EnumAdminActions.SetSubordination, EnumObjects.AdminSubordination));
             items.Add(GetSysAct(EnumAdminActions.SetSubordinationByCompany, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
@@ -460,7 +462,7 @@ namespace BL.Database.DatabaseContext
 
         private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = GetLabel("EncryptionActions",  id.ToString());
+            string description = GetLabel("EncryptionActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
@@ -472,7 +474,7 @@ namespace BL.Database.DatabaseContext
 
         private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
-            string description = GetLabel("DictionaryActions", id.ToString()); 
+            string description = GetLabel("DictionaryActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
@@ -770,16 +772,16 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionarySendTypes>();
 
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForResponsibleExecution, isImportant : true, subordinationTypeId : 2));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForControl, isImportant : true, subordinationTypeId : 2));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForExecution, isImportant : true, subordinationTypeId : 2));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformation, isImportant : false, subordinationTypeId : 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformationExternal, isImportant : false, subordinationTypeId : 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForConsideration, isImportant : false, subordinationTypeId : 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForVisaing, isImportant : true, subordinationTypeId : 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForАgreement, isImportant : true, subordinationTypeId : 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForАpproval, isImportant : true, subordinationTypeId : 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForSigning, isImportant : true, subordinationTypeId : 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForResponsibleExecution, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForControl, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForExecution, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformation, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformationExternal, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForConsideration, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForVisaing, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForАgreement, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForАpproval, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(EnumSendTypes.SendForSigning, isImportant: true, subordinationTypeId: 1));
 
             return items;
         }

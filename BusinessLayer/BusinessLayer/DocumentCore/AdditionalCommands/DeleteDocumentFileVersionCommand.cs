@@ -99,7 +99,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             var docFile = new InternalDocumentAttachedFile
             {
-                EntityId = Model.DocumentId,
+                DocumentId = Model.DocumentId,
                 OrderInDocument = Model.OrderInDocument,
                 Version = Model.Version ?? 0,
                 IsDeleted = _file.IsDeleted

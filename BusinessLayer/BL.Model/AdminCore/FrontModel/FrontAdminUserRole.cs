@@ -25,6 +25,11 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public int? RoleId { get; set; }
 
+        /// <summary>
+        /// Назначение
+        /// </summary>
+        public int? PositionExecutorId { get; set; }
+
         ///// <summary>
         ///// Дата назначения роли
         ///// </summary>
@@ -56,17 +61,6 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public int? RolePositionId { get; set; }
 
-        /// <summary>
-        /// Наименование должности
-        /// </summary>
-        public string RolePositionName { get; set; }
-
-        /// <summary>
-        /// Имя сотрудника
-        /// </summary>
-        public string RolePositionExecutorAgentName { get; set; }
-
-        public int? NewEventsCount { get; set; }
 
     }
 }

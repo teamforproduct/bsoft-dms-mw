@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             var docFile = new InternalTemplateAttachedFile
             {
-                EntityId = Model.DocumentId,
+                DocumentId = Model.DocumentId,
                 OrderInDocument = Model.OrderInDocument
             };
 

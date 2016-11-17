@@ -2,6 +2,7 @@
 using BL.Model.AdminCore.IncomingModel;
 using System;
 using BL.Model.Enums;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Model.AdminCore.InternalModel
 {
@@ -13,7 +14,6 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalAdminUserRole(ModifyAdminUserRole model)
         {
             Id = model.Id;
-            UserId = model.UserId;
             RoleId = model.RoleId;
             PositionExecutorId = model.PositionExecutorId;
         }
@@ -23,23 +23,33 @@ namespace BL.Model.AdminCore.InternalModel
         /// </summary>
         public int Id { get; set; }
 
-        public int? UserId { get; set; }
-
-        public int RoleId { get; set; }
-
-        //public DateTime StartDate { get; set; }
-
-        //public DateTime? EndDate { get; set; }
-        
         /// <summary>
-        /// Должность, от которой унаследована роль
+        /// Роль
         /// </summary>
-        //public int? PositionId { get; set; }
-
+        public int RoleId { get; set; }
+        
         /// <summary>
         /// Назначение, от которой унаследована роль
         /// </summary>
-        public int? PositionExecutorId { get; set; }
+        public int PositionExecutorId { get; set; }
+
+
+
+
+
+        #region [+] Выноска параметров ...
+        public int AgentId { get; set; }
+
+        /// <summary>
+        /// Должность, от которой унаследована роль
+        /// </summary>
+        public int PositionId { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        #endregion
 
     }
 }

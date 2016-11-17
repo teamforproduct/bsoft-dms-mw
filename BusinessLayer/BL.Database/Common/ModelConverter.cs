@@ -269,8 +269,7 @@ namespace BL.Database.Common
                  //ClientId = context.CurrentClientId,
 
                  Id = docFile.Id,
-                 EntityId = docFile.EntityId,
-                 ObjectId = (int)docFile.ObjectId,
+                 DocumentId = docFile.DocumentId,
                  OrderNumber = docFile.OrderInDocument,
                  Version = docFile.Version,
                  Extension = docFile.Extension,
@@ -289,11 +288,6 @@ namespace BL.Database.Common
                  ExecutorPositionId = docFile.ExecutorPositionId,
                  ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
              };
-
-            if (docFile.ObjectId == Model.Enums.EnumObjects.Documents)
-            {
-                res.DocumentId = res.EntityId;
-            }
 
             return res;
         }
@@ -347,7 +341,7 @@ namespace BL.Database.Common
             return new TemplateDocumentFiles
             {
                 Id = docFile.Id,
-                DocumentId = docFile.EntityId,
+                DocumentId = docFile.DocumentId,
                 OrderNumber = docFile.OrderInDocument,
                 Extention = docFile.Extension,
                 Hash = docFile.Hash,

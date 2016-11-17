@@ -410,6 +410,10 @@
     <Compile Include="Migrations\201611162011043_IsSendEMail.Designer.cs">
       <DependentUpon>201611162011043_IsSendEMail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611171116050_DocumentFilesBack.cs" />
+    <Compile Include="Migrations\201611171116050_DocumentFilesBack.Designer.cs">
+      <DependentUpon>201611171116050_DocumentFilesBack.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -591,6 +595,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611162011043_IsSendEMail.resx">
       <DependentUpon>201611162011043_IsSendEMail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611171116050_DocumentFilesBack.resx">
+      <DependentUpon>201611171116050_DocumentFilesBack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

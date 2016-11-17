@@ -116,8 +116,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             var res = new List<int>();
             var att = new InternalDocumentAttachedFile
             {
-                EntityId = Model.DocumentId,
-                ObjectId = EnumObjects.Documents,
+                DocumentId = Model.DocumentId,
                 Date = DateTime.UtcNow,
                 PostedFileData = Model.PostedFileData,
                 Type = Model.Type,
@@ -140,7 +139,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             else
             {
-                att.Version = _operationDb.GetFileNextVersion(_context, att.EntityId, ordInDoc);
+                att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
                 att.OrderInDocument = ordInDoc;
             }
 
@@ -149,7 +148,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             CommonDocumentUtilities.SetLastChange(_context, att);
             if (_document.IsRegistered.HasValue)
             {
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.EntityId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
+                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
             }
             res.Add(_operationDb.AddNewFileOrVersion(_context, att));
             // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 

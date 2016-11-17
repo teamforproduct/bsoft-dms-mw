@@ -91,7 +91,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             Date = x.fl.Date,
                             Name = x.fl.Name,
-                            EntityId = x.fl.DocumentId,
+                            DocumentId = x.fl.DocumentId,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
                             ExecutorPositionId = x.fl.ExecutorPositionId,
@@ -135,7 +135,7 @@ namespace BL.Database.Documents
                             Date = x.fl.Date,
                             Name = x.fl.Name,
                             Extension = x.fl.Extension,
-                            EntityId = x.fl.DocumentId,
+                            DocumentId = x.fl.DocumentId,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
                             ExecutorPositionId = x.fl.ExecutorPositionId,
@@ -185,7 +185,7 @@ namespace BL.Database.Documents
                 if (docFile.IsMainVersion)
                 {
                     foreach (var docFileId in dbContext.DocumentFilesSet
-                                            .Where(x => x.DocumentId == docFile.EntityId && x.OrderNumber == docFile.OrderInDocument)
+                                            .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
                                             .Select(x => x.Id).ToList())
                     {
                         var file = new DBModel.Document.DocumentFiles
@@ -219,7 +219,7 @@ namespace BL.Database.Documents
                 if (docFile.IsMainVersion)
                 {
                     foreach (var docFileId in dbContext.DocumentFilesSet
-                              .Where(x => x.DocumentId == docFile.EntityId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id)
+                              .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id)
                               .Select(x => x.Id).ToList())
                     {
                         var file = new DBModel.Document.DocumentFiles
@@ -331,7 +331,7 @@ namespace BL.Database.Documents
 
                 var docFileQry = dbContext.DocumentFilesSet
                                         .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                        .Where(x => x.DocumentId == docFile.EntityId && x.OrderNumber == docFile.OrderInDocument)
+                                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
                                         .AsQueryable();
 
                 if (docFile.Version > 0)

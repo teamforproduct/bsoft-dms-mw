@@ -1207,7 +1207,7 @@ namespace BL.Database.Common
                 {
                     Id = x.Id,
                     Date = x.Date,
-                    EntityId = x.DocumentId,
+                    DocumentId = x.DocumentId,
                     Extension = x.Extension,
                     FileContent = x.Content,
                     FileType = x.FileType,
@@ -3266,7 +3266,7 @@ namespace BL.Database.Common
                     {
                         var fileBytes = fileStore.GetFile(ctx, new InternalDocumentAttachedFile
                         {
-                            EntityId = file.EntityId,
+                            DocumentId = file.DocumentId,
                             OrderInDocument = file.OrderInDocument,
                             Version = file.Version,
                             Name = file.Name,
@@ -3306,7 +3306,7 @@ namespace BL.Database.Common
 
             var att = new InternalDocumentAttachedFile
             {
-                EntityId = doc.Id,
+                DocumentId = doc.Id,
                 Date = DateTime.UtcNow,
                 PostedFileData = null,
                 FileData = pdf.FileContent,
@@ -3321,20 +3321,19 @@ namespace BL.Database.Common
                 WasChangedExternal = false,
                 ExecutorPositionId = positionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId,
-                ObjectId = EnumObjects.Documents
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
 
-            var ordInDoc = operationDb.CheckFileForDocument(ctx, att.EntityId, att.Name, att.Extension);
+            var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
             if (ordInDoc == -1)
             {
                 att.Version = 1;
-                att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.EntityId);
+                att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
             }
             else
             {
-                att.Version = operationDb.GetFileNextVersion(ctx, att.EntityId, ordInDoc);
+                att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
                 att.OrderInDocument = ordInDoc;
             }
 
@@ -3345,7 +3344,7 @@ namespace BL.Database.Common
 
             operationDb.AddNewFileOrVersion(ctx, att);
 
-            return new FilterDocumentFileIdentity { DocumentId = att.EntityId, OrderInDocument = att.OrderInDocument, Version = att.Version };
+            return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
         }
 
         public static bool VerifyDocumentHash(string hash, InternalDocument doc, bool isFull = false)
@@ -3413,7 +3412,7 @@ namespace BL.Database.Common
                         .Where(x => x.IsVisibleInMenu &&
                                     (!x.IsGrantable ||
                                         x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                                        y.Role.UserRoles.Any(z => z.UserId == context.CurrentAgentId)))
+                                        y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
                         );
 
                     var actLst = qry.Select(a => new InternalSystemActionForDocument

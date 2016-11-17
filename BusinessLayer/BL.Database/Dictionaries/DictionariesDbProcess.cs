@@ -612,10 +612,10 @@ namespace BL.Database.Dictionaries
             }
 
             // Список AgentCompanyId
-            if (filter.AgentCompanyId?.Count > 0)
+            if (filter.AgentCompanyIDs?.Count > 0)
             {
                 var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
-                filterContains = filter.AgentCompanyId.Aggregate(filterContains,
+                filterContains = filter.AgentCompanyIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.AgentCompanyId == value).Expand());
 
                 qry = qry.Where(filterContains);
@@ -1100,7 +1100,13 @@ namespace BL.Database.Dictionaries
 
             if (filter.RoleIDs?.Count > 0)
             {
-                qry = qry.Where(x => x.Agent.UserRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
+                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                filterContains = filter.RoleIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                //qry = qry.Where(x => x.PositionExecutors.UserRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
+
+                qry = qry.Where(x => x.PositionExecutors.Any(y => y.UserRoles.Any(z => filter.RoleIDs.Contains(z.RoleId))));
             }
 
             if (paging != null)

@@ -127,6 +127,8 @@
     <Compile Include="AdminCore\Subordination\SetSubordinationCommand.cs" />
     <Compile Include="AdminCore\Subordination\BaseSubordinationCommand.cs" />
     <Compile Include="AdminCore\UserRole\AddUserRoleCommand.cs" />
+    <Compile Include="AdminCore\UserRole\DeleteUserRolesByUserCommand.cs" />
+    <Compile Include="AdminCore\UserRole\DeleteUserRolesByPositionExecutorCommand.cs" />
     <Compile Include="AdminCore\UserRole\DeleteUserRoleCommand.cs" />
     <Compile Include="AdminCore\UserRole\BaseUserRoleCommand.cs" />
     <Compile Include="AdminCore\UserRole\ModifyUserRoleCommand.cs" />

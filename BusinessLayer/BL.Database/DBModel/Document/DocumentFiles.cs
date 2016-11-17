@@ -10,40 +10,24 @@ namespace BL.Database.DBModel.Document
     public class DocumentFiles
     {
         public int Id { get; set; }
-
-        /// <summary>
-        /// Id сущности любого объекта (ид документа, ид агента, ид локали...)
-        /// </summary>
-        [Index("IX_EntityObjectNameExtensionVersion", 1, IsUnique = true)]
-        [Index("IX_EntityObjectOrderNumberVersion", 1, IsUnique = true)]
-        public int EntityId { get; set; }
-
-        /// <summary>
-        /// Id объекта из SystemObjects
-        /// </summary>
-        [Index("IX_EntityObjectNameExtensionVersion", 2, IsUnique = true)]
-        [Index("IX_EntityObjectOrderNumberVersion", 2, IsUnique = true)]
-        public int ObjectId { get; set; }
-
-        /// <summary>
-        /// Для документов в  DocumentId содержится EntityId, чтобы не нарушать работоспрособность существующего кода и  public virtual Document
-        /// </summary>
-        // NULLABLE!!!!
+        
+        [Index("IX_DocumentNameExtensionVersion", 1, IsUnique = true)]
+        [Index("IX_DocumentOrderNumberVersion", 1, IsUnique = true)]
         public int DocumentId { get; set; }
 
-        [MaxLength(200)]
-        [Index("IX_EntityObjectNameExtensionVersion", 3, IsUnique = true)]
+        [MaxLength(2000)]
+        [Index("IX_DocumentNameExtensionVersion", 2, IsUnique = true)]
         public string Name { get; set; }
 
-        [Index("IX_EntityObjectOrderNumberVersion", 3, IsUnique = true)]
+        [Index("IX_DocumentOrderNumberVersion", 2, IsUnique = true)]
         public int OrderNumber { get; set; }
 
-        [Index("IX_EntityObjectNameExtensionVersion", 5, IsUnique = true)]
-        [Index("IX_EntityObjectOrderNumberVersion", 4, IsUnique = true)]
+        [Index("IX_DocumentNameExtensionVersion", 4, IsUnique = true)]
+        [Index("IX_DocumentOrderNumberVersion", 3, IsUnique = true)]
         public int Version { get; set; }
 
-        [MaxLength(20)]
-        [Index("IX_EntityObjectNameExtensionVersion", 4, IsUnique = true)]
+        [MaxLength(2000)]
+        [Index("IX_DocumentNameExtensionVersion", 3, IsUnique = true)]
         public string Extension { get; set; }
 
         [MaxLength(2000)]
@@ -73,8 +57,6 @@ namespace BL.Database.DBModel.Document
         [Index("IX_LastChangeDate",1)]
         public DateTime LastChangeDate { get; set; }
 
-        [Index("IX_ClientId", 1)]
-        public int ClientId { get; set; }
 
 
         [ForeignKey("DocumentId")]
@@ -89,7 +71,5 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("TypeId")]
         public virtual DictionaryFileTypes Type { get; set; }
 
-        [ForeignKey("ObjectId")]
-        public virtual SystemObjects Object { get; set; }
     }
 }
