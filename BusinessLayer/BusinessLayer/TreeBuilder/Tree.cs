@@ -23,6 +23,8 @@ namespace BL.Logic.TreeBuilder
 
             var res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
 
+            if (filter?.RemoveEmptyBranches == true) RemoveEmptyBranches(res);
+
             if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true))
             {
                 var safeList = new List<string>();
@@ -42,6 +44,8 @@ namespace BL.Logic.TreeBuilder
 
             return res;
         }
+
+
 
         public static List<ITreeItem> GetList(List<TreeItem> tree)
         {
@@ -159,6 +163,26 @@ namespace BL.Logic.TreeBuilder
                 return (item.TreeId == (filter.StartWithTreeId ?? string.Empty));
             }
         }
+
+        private static void RemoveEmptyBranches(IEnumerable<ITreeItem> tree)
+        {
+            foreach (var item in tree)
+            {
+                if (item.IsList ?? false) continue;
+
+                RemoveEmptyBranches(item.Childs);
+
+                if (!ExistsLists(item.Childs))
+                {
+                    item.Childs = null;
+                }
+
+            }
+
+        }
+
+        private static bool ExistsLists(IEnumerable<ITreeItem> list) => list.Select(x => x.IsList == true).Any();
+
 
     }
 }

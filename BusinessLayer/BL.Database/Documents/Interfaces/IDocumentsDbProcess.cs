@@ -70,5 +70,9 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging);
 
         #endregion DocumentAccesses
+
+        IEnumerable<InternalDocumentEvent> GetEventsNatively(IContext ctx, FilterDocumentEventNatively filter);
+
+        bool ExistsEventsNatively(IContext ctx, FilterDocumentEventNatively filter);
     }
 }

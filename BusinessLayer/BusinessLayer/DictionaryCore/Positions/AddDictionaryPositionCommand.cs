@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.Logic.AdminCore;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -34,6 +35,8 @@ namespace BL.Logic.DictionaryCore
                 // Добавляю рассылку (subordinations). 
                 // Если SUBORDINATIONS_SEND_ALL_FOR_EXECUTION и SUBORDINATIONS_SEND_ALL_FOR_EXECUTION включены, то разрешаю рассылку на всех
 
+                // Включаю доступ к журналам в своем отделе
+
 
 
                 return positionId;
@@ -43,5 +46,11 @@ namespace BL.Logic.DictionaryCore
                 throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }
+
+        private void SetDefaultRJournalPositions(SetDefaultRJournalPositionsCommand model)
+        {
+            _adminService.ExecuteAction(EnumAdminActions.SetRegistrationJournalPositionByDepartment, _context, model);
+        }
+
     }
 }

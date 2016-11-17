@@ -48,5 +48,10 @@ namespace BL.Model.Tree
         /// Только отмеченные
         /// </summary>
         public bool? IsChecked { get; set; }
+
+        /// <summary>
+        /// Удаляет ветви, которые не заканчиваются листами
+        /// </summary>
+        public bool? RemoveEmptyBranches { get; set; }
     }
 }

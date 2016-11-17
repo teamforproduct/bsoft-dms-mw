@@ -287,6 +287,11 @@ namespace BL.Logic.AdminCore
                 executorFilter.PositionIDs = new List<int> { filter.PositionId ?? -1 };
             }
 
+            if (filter.PositionExecutorId != null)
+            {
+                executorFilter.IDs = new List<int> { filter.PositionExecutorId ?? -1 };
+            }
+
             // определяю назначения с ролями должности, которые исполняет сотрудник на указанном отрезке времени
             var executors = _dictDb.GetPositionExecutorsDIPUserRoles(context, executorFilter);
 
@@ -622,6 +627,7 @@ namespace BL.Logic.AdminCore
             {
                 departments = _dictDb.GetDepartmentsForDIPRJournalPositions(context, positionId, new FilterDictionaryDepartment()
                 {
+                    //IDs = journals.Select(x=>x.d)
                     IsActive = filter.IsActive,
                 });
             }

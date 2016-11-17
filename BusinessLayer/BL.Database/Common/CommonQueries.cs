@@ -466,6 +466,78 @@ namespace BL.Database.Common
             return res;
         }
 
+
+        public static IQueryable<DocumentEvents> GetEventsNativelyQuery(IContext ctx, DmsContext dbContext, FilterDocumentEventNatively filter)
+        {
+            var qry = dbContext.DocumentEventsSet.AsQueryable();
+
+            if (filter.Date?.IsActive == true)
+            {
+                qry = qry.Where(x => x.Date >= filter.Date.DateBeg & x.Date <= filter.Date.DateEnd);
+            }
+
+            if (filter.ReadDate?.IsActive == true)
+            {
+                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.Date.DateBeg.Value && x.ReadDate <= filter.Date.DateEnd.Value); 
+            }
+
+            if (filter.SourcePositionIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.SourcePositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.SourcePositionExecutorAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.SourcePositionExecutorAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.SourceAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.SourceAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourceAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.TargetPositionIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.TargetPositionExecutorAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.TargetPositionExecutorAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TargetPositionExecutorAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.ReadAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.ReadAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.ReadAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+
+        }
+
+
         public static List<IQueryable<DocumentEvents>> GetDocumentEventQueryWithoutUnion(IContext ctx, DmsContext dbContext, FilterDocumentEvent filter, bool isVerifyAccessLevel = true)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
@@ -1062,7 +1134,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any()??false);
+            var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
 
             var qryFE = dbContext.DocumentFilesSet.Where(x => qry.Select(y => y.Id).Contains(x.Id))
                             .OrderByDescending(x => x.LastChangeDate)
@@ -1230,14 +1302,14 @@ namespace BL.Database.Common
                 {
                     if (filter.IsOverDue.Value)
                     {
-                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date :DateTime.UtcNow));
+                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow));
                     }
                     else
                     {
                         qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow)));
                     }
                 }
-                
+
 
                 if (filter.DueDateFromDate.HasValue)
                 {
@@ -1487,18 +1559,18 @@ namespace BL.Database.Common
                     })
                     .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
                                         ).ToList();
-                     groupsCounter = qryGroupsCounter
-                                        .SelectMany(z => z)
-                                        .GroupBy(z => z.Group)
-                                        .Select(z => new FrontDocumentWait
-                                        {
-                                            IsClosed = z.Key.IsClosed,
-                                            IsOverDue = z.Key.IsOverDue,
-                                            DueDate = z.Key.DueDate,
-                                            SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
-                                            TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
-                                            RecordCount = z.Sum(c => c.RecordCount)
-                                        }).ToList(); 
+                    groupsCounter = qryGroupsCounter
+                                       .SelectMany(z => z)
+                                       .GroupBy(z => z.Group)
+                                       .Select(z => new FrontDocumentWait
+                                       {
+                                           IsClosed = z.Key.IsClosed,
+                                           IsOverDue = z.Key.IsOverDue,
+                                           DueDate = z.Key.DueDate,
+                                           SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
+                                           TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
+                                           RecordCount = z.Sum(c => c.RecordCount)
+                                       }).ToList();
 
                     paging.Counters = new UICounters
                     {
