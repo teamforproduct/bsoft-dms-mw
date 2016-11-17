@@ -482,8 +482,8 @@ namespace BL.Database.Documents
 
                         SigningTypeId = (int)subscription.SigningType,
 
-                        InternalSign = docHash.InternalSign,
-                        CertificateSign = docHash.CertificateSign,
+                        InternalSign = docHash?.InternalSign,
+                        CertificateSign = docHash?.CertificateSign,
                         CertificateId = subscription.CertificateId,
                         CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
                         CertificatePositionId = subscription.CertificatePositionId,
