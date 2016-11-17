@@ -21,7 +21,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public FrontTemplateAttachedFile(InternalTemplateAttachedFile doc)
         {
             Id = doc.Id;
-            DocumentId = doc.DocumentId;
+            EntityId = doc.EntityId;
             OrderInDocument = doc.OrderInDocument;
             FileContent = doc.FileContent;
             Name = doc.Name;

@@ -25,7 +25,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryAgentBanks(ctx, filter, paging);
             var res= new JsonResult(tmpDicts, this);
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryCompanies/5
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryAgentBank(ctx, id);
             return new JsonResult(tmpDict, this);
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>добавленную запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryAgentBank model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentBank, ctx, model));
         }
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>добавленную запись</returns>
         public IHttpActionResult PostToExistingAgent(int AgentId, [FromBody]ModifyDictionaryAgentBank model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             model.Id = AgentId;
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentBank, ctx, model));
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentBank model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentBank, ctx, model);
             return Get(model.Id);
@@ -93,7 +93,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>ИД удаленной записи</returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentBank, ctx, id);

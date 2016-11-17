@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BL.Database.DBModel.Admin;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -35,7 +37,12 @@ namespace BL.Database.DBModel.Dictionary
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+
         [ForeignKey("DepartmentId")]
         public virtual DictionaryDepartments Department { get; set; }
+
+
+        [ForeignKey("RegJournalId")]
+        public virtual ICollection<AdminRegistrationJournalPositions> PositionsRegistrationJournal { get; set; }
     }
 }

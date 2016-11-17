@@ -18,6 +18,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> AgentIDs { get; set; }
 
         /// <summary>
+        /// не содержит агентов 
+        /// </summary>
+        public List<int> NotContainsAgentIDs { get; set; }
+        
+        /// <summary>
         /// по типам контактов
         /// </summary>
         public List<int> ContactTypeIDs { get; set; }

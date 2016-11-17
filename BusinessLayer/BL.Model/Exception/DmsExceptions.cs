@@ -18,9 +18,9 @@ namespace BL.Model.Exception
     {
         public DmsExceptions(string message) : base(message) { }
         public DmsExceptions(string message, System.Exception ex) : base(message, ex) { }
-
         public List<string> Parameters { set; get; }
     }
+
     #region [+] LicenceError ... 
 
 
@@ -29,7 +29,7 @@ namespace BL.Model.Exception
     /// </summary>
     public class LicenceError : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:LicenceInformationError@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:LicenceError@l##";
         public LicenceError() : base(_MESSAGE) { }
         public LicenceError(System.Exception ex) : base(_MESSAGE, ex) { }
     }
@@ -118,7 +118,7 @@ namespace BL.Model.Exception
     public class UserNameAlreadyExists : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserNameAlreadyExists@l##";
-        public UserNameAlreadyExists() : base(_MESSAGE) { }
+        public UserNameAlreadyExists(string Login) : base(_MESSAGE) { Parameters = new List<string> { Login }; }
         public UserNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -170,7 +170,7 @@ namespace BL.Model.Exception
     public class CommandNotDefinedError : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CommandNotDefinedError@l##";
-        public CommandNotDefinedError() : base(_MESSAGE) { }
+        public CommandNotDefinedError(string CommandName) : base(_MESSAGE) { Parameters = new List<string> { CommandName }; }
         public CommandNotDefinedError(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -198,8 +198,16 @@ namespace BL.Model.Exception
         private const string _MESSAGE = "##l@DmsExceptions:AccessIsDenied@l##";
         //TODO: DmsExceptions:передавать параметры
         public AccessIsDenied() : base(_MESSAGE) { }
-        public AccessIsDenied(string ObjectName, string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ObjectName, ActionName }; }
         public AccessIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class ActionIsDenied : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ActionIsDenied@l##";
+        //TODO: DmsExceptions:передавать параметры
+        public ActionIsDenied() : base(_MESSAGE) { }
+        public ActionIsDenied(string ActionName) : base(_MESSAGE) { Parameters = new List<string> { ActionName }; }
+        public ActionIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class UserAccessIsDenied : DmsExceptions
@@ -214,6 +222,13 @@ namespace BL.Model.Exception
         private const string _MESSAGE = "##l@DmsExceptions:UserIsDeactivated@l##";
         public UserIsDeactivated (string UserName) : base(_MESSAGE) { Parameters = new List<string> { UserName }; }
         public UserIsDeactivated(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserNotExecuteAnyPosition : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNotExecuteAnyPosition@l##";
+        public UserNotExecuteAnyPosition(string UserName) : base(_MESSAGE) { Parameters = new List<string> { UserName }; }
+        public UserNotExecuteAnyPosition(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
 
@@ -459,7 +474,7 @@ namespace BL.Model.Exception
     }
     public class CouldNotPerformOperation : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformThisOperation@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:CouldNotPerformOperation@l##";
         public CouldNotPerformOperation() : base(_MESSAGE) { }
         public CouldNotPerformOperation(System.Exception ex) : base(_MESSAGE, ex) { }
     }
@@ -659,7 +674,7 @@ namespace BL.Model.Exception
     public class DictionaryAgentEmployeePersonnelNumberNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePersonnelNumberNotUnique@l##";
-        public DictionaryAgentEmployeePersonnelNumberNotUnique(string PersonnelNumber) : base(_MESSAGE) { Parameters = new List<string> { PersonnelNumber }; }
+        public DictionaryAgentEmployeePersonnelNumberNotUnique(int PersonnelNumber) : base(_MESSAGE) { Parameters = new List<string> { PersonnelNumber.ToString() }; }
         public DictionaryAgentEmployeePersonnelNumberNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -907,4 +922,25 @@ namespace BL.Model.Exception
         public EncryptionCertificatePrivateKeyСanNotBeExported() : base(_MESSAGE) { }
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class ChangePasswordRequiredAgentUser : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##";
+        public ChangePasswordRequiredAgentUser() : base(_MESSAGE) { }
+        public ChangePasswordRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class EmailConfirmRequiredAgentUser : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##";
+        public EmailConfirmRequiredAgentUser() : base(_MESSAGE) { }
+        public EmailConfirmRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    //public class LockoutAgentUser : DmsExceptions
+    //{
+    //    private const string _MESSAGE = "##l@DmsExceptions:LockoutAgentUser@l##";
+    //    public LockoutAgentUser() : base(_MESSAGE) { }
+    //    public LockoutAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
+    //}
 }

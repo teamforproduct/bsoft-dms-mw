@@ -11,7 +11,7 @@ namespace BL.Model.SystemCore.InternalModel
         public InternalMailProcessed()
         {
             ProcessedEventIds = new List<int>();
-            ProcessedDate = DateTime.Now;
+            ProcessedDate = DateTime.UtcNow;
         }
 
         /// <summary>

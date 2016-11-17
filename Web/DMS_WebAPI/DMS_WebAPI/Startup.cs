@@ -17,7 +17,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Web;
-using BL.Database.DatabaseContext;
+using BL.Logic.SystemCore.Interfaces;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -31,10 +31,14 @@ namespace DMS_WebAPI
 
             ConfigureAuth(app);
 
-            DmsDbImportData.CheckSystemActions();
+            var systemService = DmsResolver.Current.Get<ISystemService>();
+            systemService.CheckSystemActions();
 
-            //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
-            //var tt = Database.Exists("DefaultConnection");
+            ApplicationDbImportData.CheckLanguages();
+
+
+        //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
+        //var tt = Database.Exists("DefaultConnection");
 
             var dbProc = new WebAPIDbProcess();
 
@@ -49,18 +53,23 @@ namespace DMS_WebAPI
             //mailService.Initialize(dbs);
 
             //TODO
+#if !DEBUG
             var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             indexService.Initialize(dbs);
-            //TODO
+#endif
+
+
 #if !DEBUG
+            //TODO
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
 #endif
             //TODO
-            var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
-            clearTrashDocumentsService.Initialize(dbs);
+            //var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
+            //clearTrashDocumentsService.Initialize(dbs);
 
-            var userContextService = DmsResolver.Current.Get<UserContextWorkerService>();
+            // Очистка устаревших пользовательских контекстов
+            var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
             userContextService.Initialize();
 
             var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();

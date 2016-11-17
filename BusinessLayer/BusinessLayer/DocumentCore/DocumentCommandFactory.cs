@@ -337,7 +337,7 @@ namespace BL.Logic.DocumentCore
                     return null;
                     break;
                 default:
-                    throw new CommandNotDefinedError();
+                    throw new CommandNotDefinedError(act.ToString());
             }
             cmd.InitializeCommand(ctx, doc, param, act);
             return cmd;

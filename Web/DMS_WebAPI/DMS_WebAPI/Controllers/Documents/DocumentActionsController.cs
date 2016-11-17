@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Массив команд</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             var actions = cmdService.GetDocumentActions(ctx, id);
 
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult ActionsByEvent(int eventId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             var actions = cmdService.GetDocumentActions(ctx, null, eventId);
 
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult DeleteFavourite(ChangeFavourites model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteFavourite, ctx, model);
 
@@ -69,7 +69,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddFavourite(ChangeFavourites model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddFavourite, ctx, model);
 
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocumentBase model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var nextNumb = docProc.GetNextRegisterDocumentNumber(ctx, model);
             return new JsonResult(nextNumb, this);
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.RegisterDocument, ctx, model);
 
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddDocumentLink(AddDocumentLink model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentLink, ctx, model);
 
@@ -138,7 +138,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult DeleteDocumentLink(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentLink, ctx, id);
 
@@ -155,7 +155,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult StartWork(ChangeWorkStatus model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.StartWork, ctx, model);
 
@@ -172,7 +172,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult FinishWork(ChangeWorkStatus model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.FinishWork, ctx, model);
 
@@ -189,7 +189,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendMessage(SendMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.SendMessage, ctx, model);
 
@@ -206,7 +206,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddNote(AddNote model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddNote, ctx, model);
 
@@ -223,7 +223,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOn(ControlOn model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ControlOn, ctx, model);
 
@@ -240,7 +240,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlChange(ControlChange model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlChange, ctx, model);
 
@@ -258,7 +258,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendForExecutionChange(ControlChange model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForExecutionChange, ctx, model);
 
@@ -292,7 +292,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SendForResponsibleExecutionChange(ControlChange model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.SendForResponsibleExecutionChange, ctx, model);
 
@@ -309,7 +309,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlTargetChange(ControlTargetChange model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlTargetChange, ctx, model);
 
@@ -326,7 +326,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ControlOff(ControlOff model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var documentId = (int)docProc.ExecuteAction(EnumDocumentActions.ControlOff, ctx, model);
 
@@ -343,7 +343,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult CopyDocument(CopyDocument model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CopyDocument, ctx, model);
             
@@ -359,7 +359,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangeExecutor(ChangeExecutor model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ChangeExecutor, ctx, model);
 
@@ -376,7 +376,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ChangePosition(ChangePosition model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ChangePosition, ctx, model);
 
@@ -393,7 +393,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult LaunchPlan(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             //TODO change
             docProc.ExecuteAction(EnumDocumentActions.LaunchPlan, ctx, id);
@@ -411,7 +411,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult MarkDocumentEventAsRead(MarkDocumentEventAsRead model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.MarkDocumentEventAsRead, ctx, model);
             
@@ -427,7 +427,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult StopPlan(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             //TODO change
             docProc.ExecuteAction(EnumDocumentActions.StopPlan, ctx, id);
@@ -445,7 +445,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult MarkExecution(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.MarkExecution, ctx, model);
             
@@ -462,7 +462,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RejectResult(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectResult, ctx, model);
             
@@ -479,7 +479,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AcceptResult(ControlOff model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AcceptResult, ctx, model);
 
@@ -496,7 +496,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RejectSigning(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectSigning, ctx, model);
             
@@ -512,7 +512,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RejectVisaing(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectVisaing, ctx, model);
 
@@ -528,7 +528,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RejectАgreement(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАgreement, ctx, model);
 
@@ -544,7 +544,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult RejectАpproval(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.RejectАpproval, ctx, model);
@@ -562,7 +562,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult WithdrawSigning(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawSigning, ctx, model);
@@ -579,7 +579,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult WithdrawVisaing(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawVisaing, ctx, model);
             
@@ -595,7 +595,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult WithdrawАgreement(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАgreement, ctx, model);
@@ -612,7 +612,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult WithdrawАpproval(SendEventMessage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.WithdrawАpproval, ctx, model);
 
@@ -629,7 +629,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AffixSigning(AffixSigning model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixSigning, ctx, model);
@@ -647,7 +647,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult SelfAffixSigning(SelfAffixSigning model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.SelfAffixSigning, ctx, model);
@@ -665,7 +665,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult VerifySigning(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.VerifySigning, ctx, id);
@@ -683,7 +683,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AffixVisaing(AffixSigning model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixVisaing, ctx, model);
@@ -700,7 +700,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AffixАgreement(AffixSigning model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАgreement, ctx, model);
             
@@ -716,7 +716,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AffixАpproval(AffixSigning model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AffixАpproval, ctx, model);
 
@@ -733,7 +733,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ReportRegistrationCardDocument(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, ctx, id);
             
@@ -749,7 +749,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ReportRegisterTransmissionDocuments(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var res = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, ctx, id);
             
@@ -765,7 +765,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var res = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, ctx, model);
 
@@ -781,7 +781,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult ManualStartAutoPlan()
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var ap = DmsResolver.Current.Get<IAutoPlanService>();
             var res = ap.ManualRunAutoPlan(ctx);
             

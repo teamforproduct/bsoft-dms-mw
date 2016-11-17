@@ -35,7 +35,7 @@ namespace BL.Logic.EncryptionCore
                     cmd = DmsResolver.Current.Get<VerifyPdfCommand>();
                     break;
                 default:
-                    throw new CommandNotDefinedError();
+                    throw new CommandNotDefinedError(act.ToString());
             }
             cmd.InitializeCommand(act, ctx, param);
             return cmd;

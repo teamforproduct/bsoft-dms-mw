@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Task</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
             return new JsonResult(docProc.GetDocumentTask(ctx, id),this);
         }
@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Список Tasks</returns>
         public IHttpActionResult Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
             return new JsonResult(docProc.GetTasks(ctx, filter, paging), this);
         }
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns>Измененная запись</returns>
         public IHttpActionResult Post([FromBody]ModifyDocumentTasks model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentTask, ctx, model);
             return Get(newId);
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentTasks model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentTask, ctx, model);
             return Get(model.Id);
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentTask, ctx, id);
             return new JsonResult(null, this);

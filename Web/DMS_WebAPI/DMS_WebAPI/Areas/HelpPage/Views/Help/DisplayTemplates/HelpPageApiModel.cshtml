@@ -11,7 +11,7 @@
 <div>
     <p>@description.Documentation</p>
 
-    <h2>Request Information</h2>
+    <h2>Параметры запроса</h2>
 
     <h3>URI Parameters</h3>
     @Html.DisplayFor(m => m.UriParameters, "Parameters")
@@ -39,17 +39,22 @@
         @Html.DisplayFor(m => m.SampleRequests, "Samples")
     }
 
-    <h2>Response Information</h2>
+   
 
-    <h3>Resource Description</h3>
+    @*<h3>Resource Description</h3>*@
 
-    <p>@description.ResponseDescription.Documentation</p>
+   
 
     @if (Model.ResourceDescription != null)
     {
-        @Html.DisplayFor(m => m.ResourceDescription.ModelType, "ModelDescriptionLink", new { modelDescription = Model.ResourceDescription })
-        if (Model.ResourceProperties != null)
-        {
+        <h2>
+          Запрос возвращает:
+          @Html.DisplayFor(m => m.ResourceDescription.ModelType, "ModelDescriptionLink", new { modelDescription = Model.ResourceDescription })
+        </h2>
+        <p>@*@description.ResponseDescription.Documentation*@</p>
+
+      if (Model.ResourceProperties != null)
+      {
             @Html.DisplayFor(m => m.ResourceProperties, "Parameters")
         }
     }

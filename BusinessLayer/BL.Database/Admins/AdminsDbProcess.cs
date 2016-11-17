@@ -71,6 +71,7 @@ namespace BL.Database.Admins
                 {
                     Id = x.Id,
                     Code = x.Code,
+                    Description = x.Description,
                     GrantId = x.GrantId,
                     IsGrantable = x.IsGrantable,
                     IsGrantableByRecordId = x.IsGrantableByRecordId,
@@ -86,6 +87,55 @@ namespace BL.Database.Admins
                     RoleId = x.RoleId,
                     ActionId = x.ActionId
                 }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext ctx , int agentId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+
+                var now = DateTime.UtcNow;
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
+
+                qry = qry.Where(x => x.AgentId == agentId & x.IsActive == true & now >= x.StartDate & now <=x.EndDate);
+
+                qry = qry.OrderBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Position.Order);
+
+                var res = qry.Select(x => new FrontAvailablePositions
+                {
+                    RolePositionId = x.PositionId,
+                    RolePositionName = x.Position.Name,
+                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name ?? "##l@Message:PositionIsVacant@l##",
+                    RolePositionExecutorTypeName = x.PositionExecutorType.Name,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
+                }).ToList();
+
+                var roleList = res.Select(s => s.RolePositionId).ToList();
+
+                var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                                .Where(filterNewEventTargetPositionContains)
+                                .GroupBy(g => g.TargetPositionId)
+                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                var newevnt = neweventQry.ToList();
+
+                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
+
+                //TODO
+                //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
+                //{
+                //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
+                //}
                 transaction.Complete();
                 return res;
             }
@@ -164,7 +214,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var dateNow = DateTime.Now;
+                var dateNow = DateTime.UtcNow;
                 var qry = dbContext.DictionaryPositionExecutorsSet
                     .Where(x => dateNow >= x.StartDate && dateNow <= x.EndDate && x.AgentId == context.CurrentAgentId);
                 var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
@@ -203,19 +253,22 @@ namespace BL.Database.Admins
             }
         }
 
-        public Employee GetUserForLogin(IContext ctx, string userId)
+        public Employee GetUserForContext(IContext ctx, string userId)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
+                var now = DateTime.UtcNow;
+
                 // для авторизации 
                 var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
                     {
                         AgentId = x.Id,
                         Name = x.Agent.Name,
-                        LanguageId = x.Agent.AgentUser.LanguageId ?? (int)EnumSystemLanguageId.LanguageId,
-                        IsActive = x.IsActive
+                        LanguageId = x.Agent.AgentUser.LanguageId ?? -1,
+                        IsActive = x.IsActive & x.Agent.AgentEmployee.IsActive,
+                        PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(),
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -484,6 +537,7 @@ namespace BL.Database.Admins
                 var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRoleActionsSet.Remove(dbModel);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -557,12 +611,9 @@ namespace BL.Database.Admins
 
                 qry = GetWhereRoleAction(ref qry, filter);
 
-                var res = qry.Select(x => new FrontAdminRoleAction
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
+                var res = qry.Any();
                 transaction.Complete();
-                return res != null;
+                return res;
             }
         }
 
@@ -733,12 +784,13 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminRolesSet.Where(x => x.Id == id).Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-
-                return qry.Select(x => new FrontAdminPositionRole
+                var res = qry.Select(x => new FrontAdminPositionRole
                 {
                     Id = x.Id,
                     RoleName = x.Name,
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -775,13 +827,17 @@ namespace BL.Database.Admins
 
                 qry = GetWherePositionRole(ref qry, filter);
 
-                return qry.Select(x => new FrontAdminPositionRole
+                var res = qry.Select(x => new FrontAdminPositionRole
                 {
                     Id = x.Id,
                     RoleId = x.RoleId,
                     RoleName = x.Role.Name,
                     PositionId = x.PositionId,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -816,13 +872,17 @@ namespace BL.Database.Admins
 
                 qry = qry.OrderBy(x => x.Name);
 
-                return qry.Select(x => new FrontAdminPositionRole
+                var res = qry.Select(x => new FrontAdminPositionRole
                 {
                     Id = x.Id,
                     RoleId = x.Id,
                     RoleName = x.Name,
                     IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any()
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -835,12 +895,11 @@ namespace BL.Database.Admins
 
                 qry = GetWherePositionRole(ref qry, filter);
 
-                var res = qry.Select(x => new FrontAdminPositionRole
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
+                var res = qry.Any();
 
-                return res != null;
+                transaction.Complete();
+
+                return res ;
             }
         }
 
@@ -965,7 +1024,7 @@ namespace BL.Database.Admins
 
                 qry = GetWhereUserRole(ref qry, filter);
 
-                return qry.Select(x => new InternalAdminUserRole
+                var res= qry.Select(x => new InternalAdminUserRole
                 {
                     Id = x.Id,
                     UserId = x.UserId ?? x.PositionExecutor.AgentId,
@@ -977,6 +1036,10 @@ namespace BL.Database.Admins
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -989,7 +1052,7 @@ namespace BL.Database.Admins
 
                 qry = GetWhereUserRole(ref qry, filter);
 
-                return qry.Select(x => new InternalAdminUserRole
+                var res = qry.Select(x => new InternalAdminUserRole
                 {
                     Id = x.Id,
                     UserId = x.UserId ?? x.PositionExecutor.AgentId,
@@ -1001,6 +1064,10 @@ namespace BL.Database.Admins
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1014,7 +1081,11 @@ namespace BL.Database.Admins
 
                 qry = GetWhereUserRole(ref qry, filter);
 
-                return qry.Select(x => x.RoleId).ToList();
+                var res = qry.Select(x => x.RoleId).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1023,22 +1094,21 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                DateTime? maxDateTime = DateTime.Now.AddYears(50);
-
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
                 qry = GetWhereUserRole(ref qry, filter);
 
-                return qry.Select(x => new FrontAdminUserRole
+                var res = qry.Select(x => new FrontAdminUserRole
                 {
                     Id = x.Id,
                     RoleId = x.Id,
                     RolePositionId = x.PositionExecutor.PositionId,
                     UserId = x.UserId,
-                    //StartDate = x.PositionExecutor.StartDate,
-                    //EndDate = x.PositionExecutor.EndDate == DateTime.MaxValue ? (DateTime?)null : x.PositionExecutor.EndDate,
                 }).ToList();
 
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1105,12 +1175,11 @@ namespace BL.Database.Admins
 
                 qry = GetWhereUserRole(ref qry, filter);
 
-                var res = qry.Select(x => new FrontAdminUserRole
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
+                var res = qry.Any();
 
-                return res != null;
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1186,13 +1255,13 @@ namespace BL.Database.Admins
             if (filter.StartDate.HasValue)
             {
                 // PSS ссылка может отсутствовать
-                qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.Now));
+                qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.UtcNow));
             }
 
             if (filter.EndDate.HasValue)
             {
                 // PSS ссылка может отсутствовать
-                qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.Now));
+                qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.UtcNow));
             }
 
             return qry;
@@ -1335,7 +1404,7 @@ namespace BL.Database.Admins
         public IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1343,7 +1412,7 @@ namespace BL.Database.Admins
 
                 //qry = qry.OrderBy(x => x.Name);
 
-                return qry.Select(x => new FrontAdminSubordination
+                var res = qry.Select(x => new FrontAdminSubordination
                 {
                     Id = x.Id,
                     SourcePositionId = x.SourcePositionId,
@@ -1353,13 +1422,17 @@ namespace BL.Database.Admins
                     SubordinationTypeId = (EnumSubordinationTypes)x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
         public IEnumerable<InternalAdminSubordination> GetInternalSubordinations(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1367,7 +1440,7 @@ namespace BL.Database.Admins
 
                 //qry = qry.OrderBy(x => x.Name);
 
-                return qry.Select(x => new InternalAdminSubordination
+                var res = qry.Select(x => new InternalAdminSubordination
                 {
                     Id = x.Id,
                     SourcePositionId = x.SourcePositionId,
@@ -1376,13 +1449,17 @@ namespace BL.Database.Admins
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
         public List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1390,25 +1467,28 @@ namespace BL.Database.Admins
 
                 //qry = qry.OrderBy(x => x.Name);
 
-                return qry.Select(x => x.TargetPositionId).ToList();
+                var res = qry.Select(x => x.TargetPositionId).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 
         public bool ExistsSubordination(IContext context, FilterAdminSubordination filter)
         {
             using (var dbContext = new DmsContext(context))
-            //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
                 qry = GetWhereSubordination(ref qry, filter);
 
-                var res = qry.Select(x => new FrontAdminSubordination
-                {
-                    Id = x.Id
-                }).FirstOrDefault();
+                var res = qry.Any();
 
-                return res != null;
+                transaction.Complete();
+
+                return res;
             }
         }
 
@@ -1481,43 +1561,226 @@ namespace BL.Database.Admins
 
         #endregion
 
-        #region [+] MainMenu ...
-        public IEnumerable<TreeItem> GetMainMenu(IContext context)
+        #region [+] RegistrationJournalPositions ...
+        public int AddRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
         {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
+                dbContext.AdminRegistrationJournalPositionsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                return dbModel.Id;
+            }
+        }
 
-            TreeItem itemDictDMS = new TreeItem { Id = 20, Name = "Документооборот" };
+        public void AddRegistrationJournalPositions(IContext context, List<InternalRegistrationJournalPosition> list)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var items = AdminModelConverter.GetDbRegistrationJournalPositions(context, list);
+                dbContext.AdminRegistrationJournalPositionsSet.AddRange(items);
+                dbContext.SaveChanges();
+            }
+        }
 
-            itemDictDMS.Childs = new List<ITreeItem> {
-                            new TreeItem { Id = 30, Name = "Типы документов", Description = "document-types" },
-                            new TreeItem { Id = 31, Name = "Журналы регистрации", Description = "journals" },
-                            new TreeItem { Id = 32, Name = "Тематики документов", Description = "" },
-                            new TreeItem { Id = 33, Name = "Шаблоны документов", Description = "" },
-                            };
+        public void UpdateRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
+                dbContext.AdminRegistrationJournalPositionsSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+            }
+        }
 
-            TreeItem itemDict = new TreeItem { Id = 4, Name = "Справочники" };
+        public void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                AdminRegistrationJournalPositions dbModel = null;
+                if (model.Id == 0)
+                {
+                    dbModel = dbContext.AdminRegistrationJournalPositionsSet.
+                        FirstOrDefault(x => x.PositionId == model.PositionId && x.RegJournalId == model.RegistrationJournalId && x.RegJournalAccessTypeId == model.RegJournalAccessTypeId);
+                }
+                else
+                {
+                    dbModel = dbContext.AdminRegistrationJournalPositionsSet.FirstOrDefault(x => x.Id == model.Id);
+                }
+                dbContext.AdminRegistrationJournalPositionsSet.Remove(dbModel);
+                dbContext.SaveChanges();
+            }
+        }
 
-            itemDict.Childs = new List<ITreeItem> {
-                itemDictDMS,
-                new TreeItem { Id = 22, Name = "Физлица", Description = "agent-persons" },
-                new TreeItem { Id = 23, Name = "Банки", Description = "agent-banks" },
-                new TreeItem { Id = 24, Name = "Юрлица", Description = "agent-companies" },
-                new TreeItem { Id = 25, Name = "-" },
-                new TreeItem { Id = 26, Name = "Теги", Description = "tags" },
-                new TreeItem { Id = 27, Name = "Клиентские справочники", Description = "" }
-            };
+        public void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+                dbContext.AdminRegistrationJournalPositionsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
 
-            List<TreeItem> menus = new List<TreeItem> {
-                    new TreeItem {Id = 1, Name = "Сотрудники", Description = "agent-employees"},
-                    new TreeItem {Id = 2, Name = "Роли"},
-                    new TreeItem {Id = 3, Name = "Структура"},
-                    itemDict,
-                    new TreeItem {Id = 5, Name = "Документы", Description = "docs"},
-                    new TreeItem {Id = 6, Name = "События", Description = "events"},
-                    new TreeItem {Id = 7, Name = "Файлы", Description = "attachments"},
-                    new TreeItem {Id = 8, Name = "Ожидания", Description = "documentWaits"}
-            };
+        public InternalRegistrationJournalPosition GetInternalRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
-            return menus;
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+                return qry.Select(x => new InternalRegistrationJournalPosition
+                {
+                    Id = x.Id,
+                    PositionId = x.PositionId,
+                    RegistrationJournalId = x.RegJournalId,
+                    RegJournalAccessTypeId = x.RegJournalAccessTypeId,
+                }).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<InternalRegistrationJournalPosition> GetInternalRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+                //qry = qry.OrderBy(x => x.Name);
+
+                var res= qry.Select(x => new InternalRegistrationJournalPosition
+                {
+                    Id = x.Id,
+                    PositionId = x.PositionId,
+                    RegistrationJournalId = x.RegJournalId,
+                    RegJournalAccessTypeId = x.RegJournalAccessTypeId,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+
+        //public IEnumerable<FrontAdminRegistrationJournalPosition> GetRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    {
+        //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+        //        qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+        //        //qry = qry.OrderBy(x => x.Name);
+
+        //        return qry.Select(x => new FrontAdminRegistrationJournalPosition
+        //        {
+        //            Id = x.Id,
+        //            SourcePositionId = x.SourcePositionId,
+        //            SourcePositionName = x.SourcePosition.Name,
+        //            TargetPositionId = x.TargetPositionId,
+        //            TargetPositionName = x.TargetPosition.Name,
+        //            RegistrationJournalPositionTypeId = (EnumRegistrationJournalPositionTypes)x.RegistrationJournalPositionTypeId,
+        //            RegistrationJournalPositionTypeName = x.RegistrationJournalPositionType.Name
+        //        }).ToList();
+        //    }
+        //}
+
+        
+
+        //public List<int> GetRegistrationJournalPositionTargetIDs(IContext context, FilterAdminRegistrationJournalPosition filter)
+        //{
+        //    using (var dbContext = new DmsContext(context))
+        //    //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    {
+        //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+        //        qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+        //        //qry = qry.OrderBy(x => x.Name);
+
+        //        return qry.Select(x => x.TargetPositionId).ToList();
+        //    }
+        //}
+
+        public bool ExistsRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+
+                var res = qry.Any();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        private static IQueryable<AdminRegistrationJournalPositions> GetWhereRegistrationJournalPosition(ref IQueryable<AdminRegistrationJournalPositions> qry, FilterAdminRegistrationJournalPosition filter)
+        {
+            // Список первичных ключей
+            if (filter.IDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.IDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            // Исключение списка первичных ключей
+            if (filter.NotContainsIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.True<AdminRegistrationJournalPositions>();
+                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                    (current, value) => current.And(e => e.Id != value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.PositionIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.PositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.RegistrationJournalIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.RegistrationJournalIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RegJournalId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+
+            if (filter.RegistrationJournalAccessTypeIDs?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+
+                filterContains = filter.RegistrationJournalAccessTypeIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.RegJournalAccessTypeId == (int)value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
         }
 
         #endregion
@@ -1529,7 +1792,11 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                return dbContext.SystemActionsSet.Select(x => new InternalAdminRoleAction { ActionId = x.Id }).ToList();
+                var res = dbContext.SystemActionsSet.Select(x => new InternalAdminRoleAction { ActionId = x.Id }).ToList();
+
+                transaction.Complete();
+
+                return res;
             }
         }
 

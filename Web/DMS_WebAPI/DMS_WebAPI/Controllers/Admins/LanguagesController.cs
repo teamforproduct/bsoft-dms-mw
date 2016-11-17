@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminPositions</returns>
         public IHttpActionResult Get([FromUri] FilterAdminLanguageValue filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ILanguageService>();
             var tmpItems = tmpService.GetAdminLanguageValues(ctx, filter);
             return new JsonResult(tmpItems, this);
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("GetDefaults")]
         public IHttpActionResult GetDefaults([FromUri] FilterAdminLanguageValue filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ILanguages>();
             var tmpItems = tmpService.GetLanguageValues(filter);
             return new JsonResult(tmpItems, this);
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("GetLanguages")]
         public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ILanguages>();
             var tmpItems = tmpService.GetLanguages(filter);
             return new JsonResult(tmpItems, this);
@@ -68,7 +68,7 @@ namespace DMS_WebAPI.Controllers.Admins
         [Route("GetUserLanguages")]
         public IHttpActionResult GetUserLanguages([FromUri] int agentId, [FromUri] FilterAdminLanguage filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ILanguageService>();
             var tmpItems = tmpService.GetAdminUserLanguages(ctx, agentId, filter);
             return new JsonResult(tmpItems, this);

@@ -13,9 +13,10 @@ using System.Web;
 namespace DMS_WebAPI.Controllers
 {
     /// <summary>
-    /// Форматы значений для формул
+    /// Логи
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/SystemLogs")]
     public class SystemLogsController : ApiController
     {
         /// <summary>
@@ -27,9 +28,29 @@ namespace DMS_WebAPI.Controllers
         // GET: api/SystemFormats
         public IHttpActionResult Get([FromUri] FilterSystemLog filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpSysProc = DmsResolver.Current.Get<ILogger>();
             var tmpDicts = tmpSysProc.GetSystemLogs(ctx, filter, paging);
+            var res = new JsonResult(tmpDicts, this);
+            res.Paging = paging;
+            return res;
+        }
+
+        /// <summary>
+        /// Сессии пользователей
+        /// </summary>
+        /// <param name="filter">модель фильтров сессий</param>
+        /// <param name="paging">параметры пейджинга</param>
+        /// <returns></returns>
+        [Route("Sessions")]
+        [HttpGet]
+        public IHttpActionResult Sessions([FromUri] FilterSystemSession filter, [FromUri]UIPaging paging)
+        {
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            var ctx = ctxs.Get();
+            var sesions = ctxs.GetContextListQuery();
+            var tmpSysProc = DmsResolver.Current.Get<ILogger>();
+            var tmpDicts = tmpSysProc.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;

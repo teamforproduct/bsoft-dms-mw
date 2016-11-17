@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetStaffList(ctx, filter);
             return new JsonResult(tmpItems, this);
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         public IHttpActionResult Post()
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.AddStaffList(ctx);
             return new JsonResult(new { success = true, msg = "Еще 10 000 ведер и золотой ключик наш" } , this);

@@ -90,13 +90,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
-#endregion
+        #endregion
 
         #region [+] Employee ...
         /// <summary>
         /// табельный номер
         /// </summary>
-        public string PersonnelNumber { get; set; }
+        public int PersonnelNumber { get; set; }
         #endregion
 
     }

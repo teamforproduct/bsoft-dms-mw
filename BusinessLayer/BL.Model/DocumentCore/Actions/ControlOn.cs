@@ -28,7 +28,7 @@ namespace BL.Model.DocumentCore.Actions
             DocumentId = sendList.DocumentId;
             TaskName = sendList.TaskName;
             Description = sendList.Description;
-            DueDate = new[] {sendList.DueDate ?? DateTime.Now, DateTime.Now.AddDays(sendList.DueDay ?? 0)}.Max();
+            DueDate = new[] {sendList.DueDate ?? DateTime.UtcNow, DateTime.UtcNow.AddDays(sendList.DueDay ?? 0)}.Max();
         }
         */
         /// <summary>

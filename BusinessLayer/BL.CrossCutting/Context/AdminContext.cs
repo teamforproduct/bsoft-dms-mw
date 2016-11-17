@@ -40,7 +40,7 @@ namespace BL.CrossCutting.Context
 
         public AdminContext(IContext ctx)
         {
-            var def = ctx as DefaultContext;
+            var def = ctx as UserContext;
             if (def != null)
             {
                 CurrentDB = new DatabaseModel
@@ -62,6 +62,8 @@ namespace BL.CrossCutting.Context
                     AgentId = (int)EnumSystemUsers.AdminUser,
                     ClientId = ctx.CurrentClientId
                 };
+
+                IsChangePasswordRequired = ctx.IsChangePasswordRequired;
             }
         }
 
@@ -108,6 +110,12 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public DateTime CreateDate { get; } = DateTime.Now;
+        public DateTime CreateDate { get; } = DateTime.UtcNow;
+
+        public bool IsChangePasswordRequired { get; set; }
+
+        public int? LoginLogId { get; set; }
+
+        public string LoginLogInfo { get; set; }
     }
 }

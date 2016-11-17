@@ -81,7 +81,8 @@ namespace BL.Database.SystemDb
                     ObjectName = x.Object.Description,
                     ActionId = x.ActionId,
                     ActionName = x.Action.Description,
-                    RecordId = x.RecordId
+                    RecordId = x.RecordId,
+                    ClientId = x.ClientId,
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -803,7 +804,7 @@ namespace BL.Database.SystemDb
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
-
+                
                 var res = qry.Select(x => new FrontSystemFormula
                 {
                     Id = x.Id,
@@ -1396,7 +1397,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var date = DateTime.Now.AddMinutes(-timeMinForClearTrashDocuments);
+                var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(
                         x =>
@@ -1458,6 +1459,8 @@ namespace BL.Database.SystemDb
             }
         }
 
+        private string Concat(params object[] values) => string.Join(" ", values);
+
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
@@ -1485,7 +1488,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " "
+                    ObjectText = Concat(x.PersonnelNumber, x.Description, x.Agent.Name, x.Agent.AgentPerson.FullName, x.Agent.AgentPerson.BirthDate, x.Agent.AgentPerson.PassportDate, x.Agent.AgentPerson.PassportNumber, x.Agent.AgentPerson.PassportSerial, x.Agent.AgentPerson.PassportText, x.Agent.AgentPerson.TaxCode)
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1843,7 +1846,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            DocumentId = x.fl.DocumentId,
+                            DocumentId = x.fl.EntityId,
                             ItemType = EnumObjects.DocumentFiles,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -2123,7 +2126,7 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees).Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees).Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, employee = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2131,7 +2134,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.PersonnelNumber.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.Agent.Name.Trim()
+                        ObjectText = Concat(x.employee.PersonnelNumber, x.employee.Description, x.employee.Agent.Name, x.employee.Agent.AgentPerson.FullName, x.employee.Agent.AgentPerson.BirthDate, x.employee.Agent.AgentPerson.PassportDate, x.employee.Agent.AgentPerson.PassportNumber, x.employee.Agent.AgentPerson.PassportSerial, x.employee.Agent.AgentPerson.PassportText, x.employee.Agent.AgentPerson.TaxCode)
                     }).ToList());
                 }
 
@@ -2495,6 +2498,7 @@ namespace BL.Database.SystemDb
             {
                 //that is totaly wrong but delete 10000 elements with normal EF method is madness
                 dbContext.Database.ExecuteSqlCommand("DELETE FROM [DMS].[FullTextIndexCashes] WHERE [Id] <=" + deleteBis);
+                //dbContext.FullTextIndexCashSet.Where(10000 elements).Delete()
             }
         }
 
@@ -2512,5 +2516,40 @@ namespace BL.Database.SystemDb
         }
 
         #endregion
+
+        public int AddSystemDate(IContext ctx, DateTime date)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                var item = new SystemDate
+                {
+                    Date = date,
+                };
+                dbContext.SystemDateSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
+
+                dbContext.SaveChanges();
+                return item.Id;
+            }
+        }
+
+        public DateTime GetSystemDate(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = dbContext.SystemDateSet.ToList();
+
+                var res = DateTime.UtcNow.AddYears(-50);
+
+                if (qry?.Count>0)
+                    res = qry.LastOrDefault().Date;
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
     }
 }

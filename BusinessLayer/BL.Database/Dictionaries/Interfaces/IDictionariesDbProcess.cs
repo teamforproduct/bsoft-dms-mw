@@ -10,6 +10,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.Enums;
+using BL.Model.AdminCore.FrontModel;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -20,6 +21,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgent(IContext context, InternalDictionaryAgent addr);
         void DeleteAgent(IContext context, int agentId);
         FrontDictionaryAgent GetAgent(IContext context, int id);
+        FrontDictionaryAgentUser GetAgentUser(IContext context, int id);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
         bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
@@ -42,14 +44,18 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
         FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
         IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
-        FrontDictionaryAgentEmployee GetAgentEmployeePersonnelNumber(IContext context);
+        int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
 
         #region DictionaryAgentUser
+
+        InternalDictionaryAgentUser GetInternalAgentUser(IContext context, int id);
+
         void SetAgentImage(IContext context, InternalDictionaryAgentImage User);
         InternalDictionaryAgentImage GetInternalAgentImage(IContext context, int id);
         void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
         #endregion
 
         #region DictionaryAgentAddress
@@ -71,6 +77,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAddressType(IContext context, InternalDictionaryAddressType addrType);
         void DeleteAddressType(IContext context, InternalDictionaryAddressType addrType);
         int AddAddressType(IContext context, InternalDictionaryAddressType addrType);
+        bool ExistsAddressTypeSpecCode(IContext context, int addressTypeId);
         IEnumerable<FrontDictionaryAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter);
 
         #endregion
@@ -109,7 +116,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateContact(IContext context, InternalDictionaryContact contact);
         void DeleteContact(IContext context, InternalDictionaryContact contact);
         int AddContact(IContext context, InternalDictionaryContact contact);
-        IEnumerable<FrontDictionaryContact> GetContacts(IContext context, int agentId, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryContact> GetContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter);
         IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts);
         #endregion
 
@@ -122,6 +130,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateContactType(IContext context, InternalDictionaryContactType contactType);
         void DeleteContactType(IContext context, InternalDictionaryContactType contactType);
         int AddContactType(IContext context, InternalDictionaryContactType contactType);
+        bool ExistsContactTypeSpecCode(IContext context, int contactTypeId);
         IEnumerable<FrontDictionaryContactType> GetContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 
@@ -135,9 +144,10 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<InternalDictionaryDepartment> GetInternalDepartments(IContext context, FilterDictionaryDepartment filter);
 
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
-        IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForTree(IContext context, FilterDictionaryDepartment filter);
-        IEnumerable<FrontDIPSubordinationsDepartment> GetDepartmentsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryDepartment filter);
-
+        IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForStaffList(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<TreeItem> GetDepartmentsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryDepartment filter);
+        IEnumerable<TreeItem> GetDepartmentsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryDepartment filter);
         string GetDepartmentPrefix(IContext context, int parentId);
 
         #endregion DictionaryDepartments
@@ -199,10 +209,10 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context, FilterDictionaryPosition filter);
-        IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForTree(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
-
+        IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsForDIPRegistrationJournals(IContext context, int registrationJournalId, FilterDictionaryPosition filter);
         IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
@@ -236,6 +246,8 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
         InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<TreeItem> GetRegistrationJournalsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         #region [+] DictionaryAgentClientCompanies ...
@@ -245,8 +257,9 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
         InternalDictionaryAgentClientCompany GetInternalAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
         IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForTree(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<FrontDIPSubordinationsClientCompany> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentClientCompany filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentClientCompany filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentClientCompany filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentClientCompany filter);
         #endregion
 
         #region DictionaryResultTypes

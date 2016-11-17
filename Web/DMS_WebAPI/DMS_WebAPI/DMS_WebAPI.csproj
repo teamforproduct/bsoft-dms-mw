@@ -30,7 +30,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>App_Data\Documentation\DMS_WebAPI.XML</DocumentationFile>
@@ -258,6 +258,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\Admins\AdminDepartmentAdminController.cs" />
+    <Compile Include="Controllers\Admins\AdminRegistrationJournalPositionsController.cs" />
     <Compile Include="Controllers\Admins\LanguagesController.cs" />
     <Compile Include="Controllers\Admins\AdminSubordinationsController.cs" />
     <Compile Include="Controllers\Admins\AdminActionsController.cs" />
@@ -303,7 +304,7 @@
     <Compile Include="Controllers\System\SystemLogsController.cs" />
     <Compile Include="Controllers\System\SystemActionsController.cs" />
     <Compile Include="Controllers\System\SystemSettingsController.cs" />
-    <Compile Include="Controllers\System\VersionController.cs" />
+    <Compile Include="Controllers\System\UtilitesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentsController.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="Controllers\WebAPI\ClientsController.cs" />
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
+    <Compile Include="Controllers\System\WebPartialViewController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
@@ -366,6 +368,14 @@
     <Compile Include="Migrations\201606162106554_InitialMigration.Designer.cs">
       <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611072147542_User_Settings.cs" />
+    <Compile Include="Migrations\201611072147542_User_Settings.Designer.cs">
+      <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611082050340_LockoutAgentUser.cs" />
+    <Compile Include="Migrations\201611082050340_LockoutAgentUser.Designer.cs">
+      <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -378,13 +388,14 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\RenderPartialView.cs" />
     <Compile Include="Utilities\Licences.cs" />
     <Compile Include="Utilities\LicencesWorkerService.cs" />
     <Compile Include="Utilities\WebAPIDbProcess.cs" />
     <Compile Include="Utilities\Languages.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
-    <Compile Include="Utilities\UserContextWorkerService.cs" />
-    <Compile Include="Utilities\UserContext.cs" />
+    <Compile Include="Utilities\UserContextsWorkerService.cs" />
+    <Compile Include="Utilities\UserContexts.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\CryptoExts\x64\CryptoExts.dll" />
@@ -442,6 +453,14 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="App_Data\LanguageValues\messages_be_BY.properties" />
+    <Content Include="App_Data\LanguageValues\messages_cs_CZ.properties" />
+    <Content Include="App_Data\LanguageValues\messages_de_DE.properties" />
+    <Content Include="App_Data\LanguageValues\messages_en_US.properties" />
+    <Content Include="App_Data\LanguageValues\messages_fr_FR.properties" />
+    <Content Include="App_Data\LanguageValues\messages_pl_PL.properties" />
+    <Content Include="App_Data\LanguageValues\messages_ru_RU.properties" />
+    <Content Include="App_Data\LanguageValues\messages_uk_UA.properties" />
     <None Include="Properties\PublishProfiles\DEV_IRF_DMS.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\PROD_IRF_DMS.pubxml" />
@@ -483,6 +502,7 @@
     <Content Include="Views\CreateClient\CreateClient.cshtml" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
+    <Content Include="Views\WebPartialView\ChangeLoginAgentUserVerificationEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
@@ -494,10 +514,6 @@
     <ProjectReference Include="..\..\..\BusinessLayer\BL.CrossCutting\BL.CrossCutting.csproj">
       <Project>{4722ffa8-aa00-4202-a811-6ea91327ac6b}</Project>
       <Name>BL.CrossCutting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\BusinessLayer\BL.Database\BL.Database.csproj">
-      <Project>{1d06a1b8-1333-4a3a-b127-373415adc3d4}</Project>
-      <Name>BL.Database</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\BusinessLayer\BL.Model\BL.Model.csproj">
       <Project>{03391e8b-074e-4bed-ae8e-5fc4883aeddf}</Project>
@@ -512,10 +528,17 @@
     <EmbeddedResource Include="Migrations\201606162106554_InitialMigration.resx">
       <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611072147542_User_Settings.resx">
+      <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611082050340_LockoutAgentUser.resx">
+      <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

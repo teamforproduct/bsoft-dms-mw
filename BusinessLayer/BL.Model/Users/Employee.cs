@@ -31,13 +31,11 @@
 
         // деактивированный пользователь не может войти в систему
         public bool IsActive { get; set; }
-        ///// <summary>
-        ///// ЛОгин
-        ///// </summary>
-        //public string Login { get; set; }
-        ///// <summary>
-        ///// Пароль
-        ///// </summary>
-        //public string Password { get; set; }
+
+        /// <summary>
+        /// Количество должностей исполняемых на данный момент
+        /// </summary>
+        public int PositionExecutorsCount { get; set; }
+
     }
 }

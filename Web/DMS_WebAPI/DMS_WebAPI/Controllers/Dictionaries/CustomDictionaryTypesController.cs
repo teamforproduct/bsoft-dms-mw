@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Cписок словарей</returns>
         public IHttpActionResult Get([FromUri] FilterCustomDictionaryType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetCustomDictionaryTypes(ctx, filter);
             return new JsonResult(tmpDicts, this);
@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetCustomDictionaryType(ctx, id);
             return new JsonResult(tmpDict, this);
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Измененная запись словаря</returns>
         public IHttpActionResult Post([FromBody]ModifyCustomDictionaryType model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddCustomDictionaryType,  ctx, model));
         }
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyCustomDictionaryType model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyCustomDictionaryType, ctx, model);
             return Get(model.Id);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         public IHttpActionResult Delete(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteCustomDictionaryType, ctx, id);
             return new JsonResult(null, this);

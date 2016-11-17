@@ -25,7 +25,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
             var res = docFileProc.GetUserFile(ctx, model);
 
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult GetFileList([FromUri]FilterBase filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
             if (paging == null)
             {
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.Controllers.Documents
             if (model.Filter.File == null) model.Filter.File = new FilterDocumentFile();
             if (model.Paging == null) model.Paging = new UIPaging();
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
             var res = new JsonResult(docFileProc.GetDocumentFiles(ctx, model.Filter, model.Paging), this);
             res.Paging = model.Paging;
@@ -93,7 +93,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Post([FromUri]AddDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Put(ModifyDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             var fileId = (int)docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentFile, ctx, model);
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [Route("RenameFile")]
         public IHttpActionResult PutRenameFile(ModifyDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.RenameDocumentFile, ctx, model);
@@ -146,7 +146,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFile, ctx, model);
             return new JsonResult(null, this);
@@ -161,7 +161,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult Actions(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             var actions = cmdService.GetDocumentFileActions(ctx, id);
 
@@ -177,7 +177,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpGet]
         public IHttpActionResult ActionsByFile(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var cmdService = DmsResolver.Current.Get<ICommandService>();
             var actions = cmdService.GetDocumentFileActions(ctx, null, id);
 
@@ -193,7 +193,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -215,7 +215,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PostAccept(ChangeWorkOutDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.AcceptDocumentFile, ctx, model);
@@ -231,7 +231,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PostReject(ChangeWorkOutDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.RejectDocumentFile, ctx, model);
@@ -247,7 +247,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult PostAcceptMainVersion(ChangeWorkOutDocumentFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
 
             docProc.ExecuteAction(EnumDocumentActions.AcceptMainVersionDocumentFile, ctx, model);
@@ -263,7 +263,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpDelete]
         public IHttpActionResult DeleteFileVersion([FromUri]FilterDocumentFileIdentity model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersion, ctx, model);
             return new JsonResult(null, this);
@@ -278,7 +278,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpDelete]
         public IHttpActionResult DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteDocumentFileVersionRecord, ctx, model);
             return new JsonResult(null, this);

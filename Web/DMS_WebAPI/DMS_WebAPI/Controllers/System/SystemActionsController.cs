@@ -25,7 +25,7 @@ namespace DMS_WebAPI.Controllers
         // GET: api/SystemActions
         public IHttpActionResult Get([FromUri] FilterSystemAction filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
             var tmpDicts = tmpSysProc.GetSystemActions(ctx, filter);
             return new JsonResult(tmpDicts, this);
@@ -37,11 +37,12 @@ namespace DMS_WebAPI.Controllers
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             tmpService.RefreshSystemActions(cxt);
-            stopWatch.Stop();
-            return new JsonResult("Done", this, stopWatch.Elapsed);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         [HttpPost]
@@ -50,11 +51,12 @@ namespace DMS_WebAPI.Controllers
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             tmpService.RefreshSystemObjects(cxt);
-            stopWatch.Stop();
-            return new JsonResult("Done", this, stopWatch.Elapsed);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
     }

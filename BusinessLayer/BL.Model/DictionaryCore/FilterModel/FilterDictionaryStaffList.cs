@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     {
 
         /// <summary>
-        /// Сужение по отделам
+        /// Сужение по отделам. Отсекает дочерние отделы
         /// </summary>
         public List<int> DepartmentIDs { get; set; }
         

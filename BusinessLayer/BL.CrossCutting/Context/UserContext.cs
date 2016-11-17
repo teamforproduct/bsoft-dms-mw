@@ -9,7 +9,7 @@ using System;
 
 namespace BL.CrossCutting.Context
 {
-    public class DefaultContext : IContext
+    public class UserContext : IContext
     {
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
@@ -18,13 +18,13 @@ namespace BL.CrossCutting.Context
         private DatabaseModel _currentDb;
         public Employee CurrentEmployee { get; set; }
 
-        public DefaultContext()
+        public UserContext()
         {
         }
 
-        public DefaultContext(IContext ctx)
+        public UserContext(IContext ctx)
         {
-            var def = ctx as DefaultContext;
+            var def = ctx as UserContext;
             if (def != null)
             {
                 try
@@ -60,6 +60,7 @@ namespace BL.CrossCutting.Context
                 };
 
                 ClientLicence = ctx.ClientLicence;
+                IsChangePasswordRequired = ctx.IsChangePasswordRequired;
 
                 try
                 {
@@ -89,7 +90,6 @@ namespace BL.CrossCutting.Context
                 }
             }
         }
-
 
         public List<int> CurrentPositionsIdList
         {
@@ -153,6 +153,7 @@ namespace BL.CrossCutting.Context
         }
 
         public bool IsAdmin => false;
+
         public LicenceInfo ClientLicence { get; set; }
 
         public DatabaseModel CurrentDB
@@ -187,6 +188,13 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public DateTime CreateDate { get; } = DateTime.Now;
+        public DateTime CreateDate { get; } = DateTime.UtcNow;
+
+        public bool IsChangePasswordRequired { get; set; }
+
+        public int? LoginLogId { get; set; }
+
+        public string LoginLogInfo { get; set; }
+
     }
 }

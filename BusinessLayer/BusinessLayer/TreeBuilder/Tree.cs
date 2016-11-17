@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.Extensions;
 using BL.Database.Common;
 using BL.Model.Common;
+using BL.Model.Enums;
 using BL.Model.Tree;
 using System;
 using System.Collections.Generic;
@@ -15,15 +16,29 @@ namespace BL.Logic.TreeBuilder
         public static List<TreeItem> Get(List<TreeItem> flatList, FilterTree filter)
         {
 
-            bool startWithCondition = (filter.StartWithTreeId ?? string.Empty) != string.Empty;
+            bool startWithCondition = (filter?.StartWithTreeId ?? string.Empty) != string.Empty;
 
-            bool notStartWithCondition = (filter.WithoutTreeId ?? string.Empty) != string.Empty;
+            bool notStartWithCondition = (filter?.WithoutTreeId ?? string.Empty) != string.Empty;
 
             int level = -1;
 
             var res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
 
-            if ((filter.Name ?? string.Empty) != string.Empty || (filter.IsChecked ?? false == true))
+            if (filter?.RemoveEmptyBranchesByObject?.Count() > 0)
+            {
+                var safeList = new List<string>();
+
+                GetSafeListFunk(res, safeList, x => filter.RemoveEmptyBranchesByObject.Contains((EnumObjects)x.ObjectId));
+
+                if (safeList.Count > 0)
+                {
+                    flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
+                }
+
+            }
+
+            if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true))
             {
                 var safeList = new List<string>();
 
@@ -42,6 +57,8 @@ namespace BL.Logic.TreeBuilder
 
             return res;
         }
+
+
 
         public static List<ITreeItem> GetList(List<TreeItem> tree)
         {
@@ -89,7 +106,7 @@ namespace BL.Logic.TreeBuilder
                         item.Level = level;
                         item.Path = ((path == string.Empty) ? "" : (path + "/")) + item.TreeId;
                         list.Add(item);
-                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId, WithoutTreeId = filter.WithoutTreeId }, ref level, ref notStartWithCondition, item.Path);
+                        item.Childs = GetBranch(flatList, new FilterTree() { StartWithTreeParentId = item.TreeId, WithoutTreeId = filter?.WithoutTreeId }, ref level, ref notStartWithCondition, item.Path);
                     }
                 }
 
@@ -134,6 +151,21 @@ namespace BL.Logic.TreeBuilder
             }
         }
 
+        private static void GetSafeListFunk(List<TreeItem> tree, List<string> safeList, Func<TreeItem, bool> funk)
+        {
+            if (tree != null)
+            {
+                foreach (var item in tree)
+                {
+                    var addToSafeList = funk(item);
+
+                    if (addToSafeList) safeList.AddRange(item.Path.Split('/'));
+
+                    GetSafeListFunk((List<TreeItem>)item.Childs, safeList, funk);
+                }
+            }
+        }
+
         private static bool IsNeighbourItem(TreeItem item, FilterTree filter)
         {
             //if (item.IsUsed) return false;
@@ -159,6 +191,30 @@ namespace BL.Logic.TreeBuilder
                 return (item.TreeId == (filter.StartWithTreeId ?? string.Empty));
             }
         }
+
+
+
+
+
+        private static void RemoveEmptyBranches(IEnumerable<ITreeItem> tree)
+        {
+            foreach (var item in tree)
+            {
+                if (item.IsList ?? false) continue;
+
+                RemoveEmptyBranches(item.Childs);
+
+                if (!ExistsLists(item.Childs))
+                {
+                    item.Childs = null;
+                }
+
+            }
+
+        }
+
+        private static bool ExistsLists(IEnumerable<ITreeItem> list) => list.Select(x => x.IsList == true).Any();
+
 
     }
 }

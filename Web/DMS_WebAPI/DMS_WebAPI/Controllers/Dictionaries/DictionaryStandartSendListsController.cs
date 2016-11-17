@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryStandartSendLists
         public IHttpActionResult Get([FromUri] FilterDictionaryStandartSendList filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryStandartSendLists(ctx, filter);
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryStandartSendLists/5
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryStandartSendList(ctx, id);
             return new JsonResult(tmpDict, this);
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryStandartSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddStandartSendList, ctx, model));
         }
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryStandartSendList model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyStandartSendList, ctx, model);
             return Get(model.Id);
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Возвращает id удаленной записи</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteStandartSendList, ctx, id);

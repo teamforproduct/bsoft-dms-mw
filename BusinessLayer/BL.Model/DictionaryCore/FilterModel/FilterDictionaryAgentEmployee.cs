@@ -20,12 +20,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// табельный номер
         /// </summary>
-        public string PersonnelNumber { get; set; }
-
-        /// <summary>
-        /// табельный номер
-        /// </summary>
-        public string PersonnelNumberExact { get; set; }
+        public int? PersonnelNumber { get; set; }
 
         /// <summary>
         /// Отрывок из паспортных данных

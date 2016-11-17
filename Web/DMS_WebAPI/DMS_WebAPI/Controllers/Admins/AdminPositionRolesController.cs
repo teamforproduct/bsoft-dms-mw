@@ -23,6 +23,8 @@ namespace DMS_WebAPI.Controllers.Admins
     [RoutePrefix("api/v2/AdminPositionRoles")]
     public class AdminPositionRolesController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Возвращает роли должностей
         /// </summary>
@@ -31,15 +33,17 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
         public IHttpActionResult Get([FromUri] int positionId, [FromUri] FilterAdminRole filter)
         {
-
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();
 
             filter.PositionIDs.Add(positionId);
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetPositionRoles(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -50,10 +54,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(FrontAdminPositionRole))]
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.GetPositionRole(ctx, id);
-            return new JsonResult(tmpItem, this);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -64,7 +71,8 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(FrontAdminPositionRole))]
         public IHttpActionResult Post([FromBody]ModifyAdminPositionRole model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddPositionRole, cxt, model);
             return Get((int)tmpItem);
@@ -92,11 +100,14 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminPositionRole</returns> 
         public IHttpActionResult Delete([FromUri] int positionId, [FromUri] int roleId)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, new ModifyAdminPositionRole() { PositionId = positionId, RoleId = roleId });
-            FrontAdminPositionRole tmpItem = new FrontAdminPositionRole() { PositionId = positionId, RoleId = roleId };
-            return new JsonResult(tmpItem, this);
+            var tmpItem = new FrontAdminPositionRole() { PositionId = positionId, RoleId = roleId };
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -106,15 +117,15 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns></returns>
         [HttpPost]
         [Route("Duplicate")]
-        public IHttpActionResult Duplicate([FromBody] CopyAdminSubordinations model)
+        public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DuplicatePositionRoles, cxt, model);
-            stopWatch.Stop();
-            return new JsonResult(tmpItem, this, stopWatch.Elapsed);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
     }
 }

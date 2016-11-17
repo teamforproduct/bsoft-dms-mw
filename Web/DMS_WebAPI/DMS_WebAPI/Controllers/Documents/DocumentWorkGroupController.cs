@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [ResponseType(typeof(List<FrontDocumentSubscription>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var subscriptions = docProc.GetDocumentWorkGroup(ctx, filter, paging);
             var res = new JsonResult(subscriptions, this);

@@ -8,6 +8,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
 using BL.Database.DBModel.System;
+using System;
 
 namespace BL.Database.SystemDb
 {
@@ -114,5 +115,9 @@ namespace BL.Database.SystemDb
         void FullTextIndexDeleteCash(IContext ctx, int deleteBis);
 
         #endregion
+
+        int AddSystemDate(IContext ctx, DateTime date);
+        DateTime GetSystemDate(IContext ctx);
+
     }
 }

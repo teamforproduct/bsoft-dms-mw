@@ -16,6 +16,7 @@ using BL.Model.Exception;
 using System.IO;
 using System.Web;
 using Newtonsoft.Json;
+using BL.Logic.AdminCore.Interfaces;
 
 namespace DMS_WebAPI.Providers
 {
@@ -65,8 +66,12 @@ namespace DMS_WebAPI.Providers
 
             if (user == null)
             {
+
+                var languageService = DmsResolver.Current.Get<ILanguages>();
+                var errText = languageService.GetTranslation("##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##");
+
                 // pss локализация
-                context.SetError("invalid_grant", "The user name or password is incorrect.");
+                context.SetError("invalid_grant", errText);
                 return;
             }
 
@@ -143,13 +148,27 @@ namespace DMS_WebAPI.Providers
                 }
                 catch (Exception ex) { }
 
+                // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
+
+                var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+
+                ApplicationUser user = userManager.FindById(userId);
+
+                if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
+                    throw new EmailConfirmRequiredAgentUser();
+
+                if (user.IsLockout)
+                    throw new UserIsDeactivated(user.UserName);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                var mngContext = DmsResolver.Current.Get<UserContext>();
+                var mngContext = DmsResolver.Current.Get<UserContexts>();
 
-                var ctx = mngContext.Set(token, userId, clientCode);
+                // Добавляю пользовательский контекст в коллекцию
+                var ctx = mngContext.Set(token, userId, clientCode, user.IsChangePasswordRequired);
+
+                context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
             }
 
             return Task.FromResult<object>(null);

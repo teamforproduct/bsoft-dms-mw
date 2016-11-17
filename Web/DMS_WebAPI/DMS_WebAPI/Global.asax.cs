@@ -40,6 +40,8 @@ namespace DMS_WebAPI
                 // 64-bit
                 LoadLibraryHandle = LoadLibrary(Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "CryptoExts", "x64", "CryptoExts.dll"));
             }
+
+
         }
         protected void Application_End(object sender, EventArgs e)
         {

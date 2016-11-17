@@ -11,6 +11,19 @@ namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
+
+        private ModifyDictionaryAgentEmployee Model
+        {
+            get
+            {
+                if (!(_param is ModifyDictionaryAgentEmployee))
+                {
+                    throw new WrongParameterTypeError();
+                }
+                return (ModifyDictionaryAgentEmployee)_param;
+            }
+        }
+
         public override object Execute()
         {
             try

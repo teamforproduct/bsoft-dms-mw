@@ -13,35 +13,8 @@ using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryPositionCommand : BaseDictionaryCommand
+    public class ModifyDictionaryPositionCommand : BaseDictionaryPositionCommand
     {
-
-        private ModifyDictionaryPosition Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryPosition))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryPosition)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyPosition(_context, _dictDb, Model);
-
-            return true;
-        }
 
         public override object Execute()
         {
@@ -56,6 +29,7 @@ namespace BL.Logic.DictionaryCore
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
 
                     _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
+
                     transaction.Complete();
                 }
             }

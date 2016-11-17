@@ -82,11 +82,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientContent.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontDIPRegistrationJournalPositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminUserLanguage.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontAvailablePositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesRoles.cs" />
-    <Compile Include="AdminCore\IncomingModel\CopyAdminSubordinations.cs" />
+    <Compile Include="AdminCore\IncomingModel\CopyAdminSettingsByPosition.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRoleActionByObject.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminRegistrationJournalPosition.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminRegistrationJournalPositionByCompany.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminRegistrationJournalPositionByDepartment.cs" />
+    <Compile Include="AdminCore\IncomingModel\ModifyAdminRegistrationJournalPositions.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinations.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDefaultSubordination.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByCompany.cs" />
@@ -120,11 +127,13 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminPositionRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
+    <Compile Include="AdminCore\WebUser\AddWebUser.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
     <Compile Include="Common\DictionaryItem.cs" />
@@ -150,13 +159,18 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUserPicture.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPUserRolesExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
@@ -183,6 +197,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserSettings.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />
@@ -210,6 +225,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
+    <Compile Include="DocumentCore\Filters\FilterDocumentEventNatively.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
@@ -367,6 +383,11 @@
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentTask.cs" />
     <Compile Include="Enums\EnumAdminActions.cs" />
     <Compile Include="Enums\EnumAccessLevels.cs" />
+    <Compile Include="Enums\EnumAddressTypes.cs" />
+    <Compile Include="Enums\EnumDocumentTypes.cs" />
+    <Compile Include="Enums\EnumLinkTypes.cs" />
+    <Compile Include="Enums\EnumMessageLevelTypes.cs" />
+    <Compile Include="Enums\EnumRegistrationJournalAccessTypes.cs" />
     <Compile Include="Enums\EnumSystemActions.cs" />
     <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />
@@ -377,9 +398,7 @@
     <Compile Include="Enums\EnumSort.cs" />
     <Compile Include="Enums\EnumCopyMode.cs" />
     <Compile Include="Enums\EnumPositionExecutionTypes.cs" />
-    <Compile Include="Enums\EnumLanguages.cs" />
     <Compile Include="Enums\EnumSystemPositions.cs" />
-    <Compile Include="Enums\EnumSystemLanguageId.cs" />
     <Compile Include="Enums\EnumSystemUsers.cs" />
     <Compile Include="Enums\EnumContactTypes.cs" />
     <Compile Include="Enums\EnumPropertyActions.cs" />
@@ -424,6 +443,7 @@
     <Compile Include="Enums\EnumLogTypes.cs" />
     <Compile Include="Reports\FrontModel\FrontReport.cs" />
     <Compile Include="Reports\Interfaces\IReports.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemSession.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemLog.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemPattern.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemSetting.cs" />
@@ -439,6 +459,7 @@
     <Compile Include="SystemCore\Filters\FilterSystemUIElement.cs" />
     <Compile Include="SystemCore\Filters\FilterSystemAction.cs" />
     <Compile Include="SystemCore\FrontModel\FrontPropertyValue.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSystemLicencesInfo.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemObjectForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemActionForDIP.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemAction.cs" />
@@ -451,6 +472,7 @@
     <Compile Include="SystemCore\FrontModel\FrontSystemLog.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemValueType.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemSetting.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifyDate.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifySystemSetting.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyValue.cs" />
     <Compile Include="SystemCore\IncomingModel\ModifyPropertyLink.cs" />
@@ -481,6 +503,9 @@
     <Compile Include="Common\IListItem.cs" />
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
+    <Compile Include="Users\ChangeLockoutAgentUser.cs" />
+    <Compile Include="Users\ChangeLoginAgentUser.cs" />
+    <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetLicences.cs" />

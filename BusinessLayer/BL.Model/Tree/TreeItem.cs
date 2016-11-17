@@ -36,7 +36,7 @@ namespace BL.Model.Tree
         /// <summary>
         /// Уникальный ключ родительского элемента
         /// </summary>
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public string TreeParentId { get; set; }
 
         /// <summary>

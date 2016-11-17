@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             var res = docFileProc.GetTemplateAttachedFiles(ctx, model,templateId);
 
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             return new JsonResult(docFileProc.GetTemplateAttachedFile(ctx, id), this);
         }
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Controllers.Documents
        /// <returns></returns>
         public IHttpActionResult Post([FromUri]ModifyTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         public IHttpActionResult Delete([FromUri]ModifyTemplateAttachedFile model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, model);
             return new JsonResult(null, this);

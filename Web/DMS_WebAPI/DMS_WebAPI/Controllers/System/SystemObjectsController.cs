@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers
         // GET: api/SystemObjects
         public IHttpActionResult Get([FromUri] FilterSystemObject filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
             var tmpDicts = tmpSysProc.GetSystemObjects(ctx, filter);
             return new JsonResult(tmpDicts, this);

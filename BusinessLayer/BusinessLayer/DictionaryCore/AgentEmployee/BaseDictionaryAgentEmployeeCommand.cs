@@ -11,7 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
-        protected ModifyDictionaryAgentEmployee Model
+        private ModifyDictionaryAgentEmployee Model
         {
             get
             {
@@ -33,28 +33,33 @@ namespace BL.Logic.DictionaryCore
             _adminService.VerifyAccess(_context, CommandType, false);
 
             Model.Name?.Trim();
-            Model.PersonnelNumber?.Trim();
             Model.PassportSerial?.Trim();
             Model.TaxCode?.Trim();
 
-            // Обрезаю время для даты рождения и даты получения паспорта
-            //if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
-
-            //if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
-
-
-            if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
+            // вычисляю табельный номер. если не передан
+            if (Model.PersonnelNumber < 1)
             {
-                NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            {
-                throw new DictionaryAgentNameNotUnique(Model.Name);
+                Model.PersonnelNumber = _dictDb.GetAgentEmployeePersonnelNumber(_context);
             }
+
+            // Обрезаю время для даты рождения и даты получения паспорта
+            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
+
+            if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
+
+
+            //if (_dictDb.ExistsAgents(_context, new FilterDictionaryAgent()
+            //{
+            //    NameExact = Model.Name,
+            //    NotContainsIDs = new List<int> { Model.Id }
+            //}))
+            //{
+            //    throw new DictionaryAgentNameNotUnique(Model.Name);
+            //}
 
             if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
             {
-                PersonnelNumberExact = Model.PersonnelNumber,
+                PersonnelNumber = Model.PersonnelNumber,
                 NotContainsIDs = new List<int> { Model.Id }
             }))
             {
@@ -87,6 +92,8 @@ namespace BL.Logic.DictionaryCore
                     throw new DictionaryAgentEmployeeTaxCodeNotUnique(Model.TaxCode);
                 }
             }
+
+            //добавить проверку на FullName
 
             return true;
         }

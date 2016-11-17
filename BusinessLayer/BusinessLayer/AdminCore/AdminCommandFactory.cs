@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Verify;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -101,19 +102,52 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.SetAllSubordination:
                     cmd = DmsResolver.Current.Get<SetAllSubordinationsCommand>();
                     break;
+
+
+
                 case EnumAdminActions.AddDepartmentAdmin:
                     cmd = DmsResolver.Current.Get<AddDepartmentAdminCommand>();
                     break;
                 case EnumAdminActions.DeleteDepartmentAdmin:
                     cmd = DmsResolver.Current.Get<DeleteDepartmentAdminCommand>();
                     break;
-                
+
 
 
                 #endregion
 
+                #region RegistrationJournalPosition
+                case EnumAdminActions.SetRegistrationJournalPosition:
+                    cmd = DmsResolver.Current.Get<SetRJournalPositionCommand>();
+                    break;
+                case EnumAdminActions.DuplicateRegistrationJournalPositions:
+                    cmd = DmsResolver.Current.Get<DuplicateRJournalPositionCommand>();
+                    break;
+                case EnumAdminActions.SetRegistrationJournalPositionByDepartment:
+                    cmd = DmsResolver.Current.Get<SetRJournalPositionByDepartmentCommand>();
+                    break;
+                case EnumAdminActions.SetRegistrationJournalPositionByCompany:
+                    cmd = DmsResolver.Current.Get<SetRJournalPositionByCompanyCommand>();
+                    break;
+                case EnumAdminActions.SetDefaultRegistrationJournalPosition:
+                    cmd = DmsResolver.Current.Get<SetDefaultRJournalPositionsCommand>();
+                    break;
+                case EnumAdminActions.SetAllRegistrationJournalPosition:
+                    cmd = DmsResolver.Current.Get<SetAllRJournalPositionsCommand>();
+                    break;
+                #endregion
+
+                #region AdminSubordinations
+                case EnumAdminActions.ChangePassword:
+                case EnumAdminActions.ChangeLockout:
+                case EnumAdminActions.KillSessions:
+                case EnumAdminActions.ChangeLogin:
+                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
+                    break;
+                #endregion
+
                 default:
-                    throw new CommandNotDefinedError();
+                    throw new CommandNotDefinedError(act.ToString());
             }
             cmd.InitializeCommand(act, ctx, param);
             return cmd;

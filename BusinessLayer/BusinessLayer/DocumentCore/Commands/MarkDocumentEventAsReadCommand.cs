@@ -52,8 +52,8 @@ namespace BL.Logic.DocumentCore.Commands
             foreach (var x in _events)
                 {
                     x.LastChangeUserId = _context.CurrentAgentId;
-                    x.LastChangeDate = DateTime.Now;
-                    x.ReadDate = DateTime.Now;
+                    x.LastChangeDate = DateTime.UtcNow;
+                    x.ReadDate = DateTime.UtcNow;
                     x.ReadAgentId = _context.CurrentAgentId;
                 }
             _documentDb.MarkDocumentEventAsRead(_context, _events);

@@ -10,6 +10,7 @@ using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using BL.Model.DictionaryCore.FrontModel;
 using System.Web.Http.Description;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -19,6 +20,8 @@ namespace DMS_WebAPI.Controllers.Admins
     [Authorize]
     public class AdminDepartmentAdminsController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Возвращает список имен сотрудников-администраторов для подразделения
         /// </summary>
@@ -27,10 +30,13 @@ namespace DMS_WebAPI.Controllers.Admins
         [ResponseType(typeof(List<FrontDictionaryAgentEmployee>))]
         public IHttpActionResult Get(int DepartmentId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetDepartmentAdmins(ctx, DepartmentId);
-            return new JsonResult(tmpItem, this);
+            var tmpItems = tmpService.GetDepartmentAdmins(ctx, DepartmentId);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -40,7 +46,8 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminUserRole</returns>
         public IHttpActionResult Post([FromBody]ModifyAdminDepartmentAdmin model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddDepartmentAdmin, cxt, model);
             return Get((int)tmpItem);
@@ -52,12 +59,14 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminUserRole</returns> 
         public IHttpActionResult Delete([FromUri]ModifyAdminDepartmentAdmin model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-
             tmpService.ExecuteAction(EnumAdminActions.DeleteDepartmentAdmin, cxt, model);
-            FrontDictionaryAgentEmployee tmpItem = new FrontDictionaryAgentEmployee() { Id = model.EmployeeId };
-            return new JsonResult(tmpItem, this);
+            var tmpItem = new FrontDictionaryAgentEmployee() { Id = model.EmployeeId };
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
     }
 }

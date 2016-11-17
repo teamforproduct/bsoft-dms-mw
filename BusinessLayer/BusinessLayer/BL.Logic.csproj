@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\OutDebug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -112,6 +112,13 @@
     <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
     <Compile Include="AdminCore\RoleAction\SetRoleActionByObjectCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\BaseRJournalPositionCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\DuplicateRJournalPositionCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetAllRJournalPositionsCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetDefaultRJournalPositionsCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetRJournalPositionByCompanyCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetRJournalPositionByDepartmentCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetRJournalPositionCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetAllSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetDefaultSubordinationsCommand.cs" />
     <Compile Include="AdminCore\Subordination\DuplicateSubordinationsCommand.cs" />
@@ -132,6 +139,7 @@
     <Compile Include="AdminCore\PositionRole\AddPositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DeletePositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\ModifyPositionRoleCommand.cs" />
+    <Compile Include="AdminCore\Verify\VerifyAccessCommand.cs" />
     <Compile Include="ClientsCore\ClientService.cs" />
     <Compile Include="ClientsCore\Interfaces\IClientService.cs" />
     <Compile Include="Common\BaseSystemCommand.cs" />
@@ -208,6 +216,7 @@
     <Compile Include="DictionaryCore\AgentClientCompany\ModifyDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\Positions\AddDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\Positions\DeleteDictionaryPositionCommand.cs" />
+    <Compile Include="DictionaryCore\Positions\BaseDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\Positions\ModifyDictionaryPositionCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryService.cs" />
     <Compile Include="DictionaryCore\Department\AddDictionaryDepartmentCommand.cs" />
@@ -246,6 +255,7 @@
     <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
+    <Compile Include="Logging\UserContexts.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
     <Compile Include="SystemCore\SystemCommandFactory.cs" />

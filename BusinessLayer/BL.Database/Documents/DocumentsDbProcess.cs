@@ -210,15 +210,15 @@ namespace BL.Database.Documents
 
                         var qryTagCounters = dbContext.DictionaryTagsSet//.Where(filterContainsPosition)
                             .Select(x => new FrontDocumentTag
-                                {
-                                    TagId = x.Id,
-                                    PositionId = x.PositionId,
-                                    PositionName = x.Position.Name,
-                                    Color = x.Color,
-                                    Name = x.Name,
-                                    IsSystem = !x.PositionId.HasValue,
-                                    DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
-                                })
+                            {
+                                TagId = x.Id,
+                                PositionId = x.PositionId,
+                                PositionName = x.Position.Name,
+                                Color = x.Color,
+                                Name = x.Name,
+                                IsSystem = !x.PositionId.HasValue,
+                                DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                            })
                                 .Where(x => x.DocCount > 0);
                         var tagCounters = qryTagCounters.ToList();
                         return new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
@@ -274,7 +274,7 @@ namespace BL.Database.Documents
                         .Concat(doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue && x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
                             x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)))
                             .GroupBy(x => x.DocumentId)
-                            .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.Now) })
+                            .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow) })
                             .FirstOrDefault(),
 
                     NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
@@ -564,7 +564,7 @@ namespace BL.Database.Documents
 
                 var docIds = new List<int> { res.Id };
 
-                var maxDateTime = DateTime.Now.AddYears(50);
+                var maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 res.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
                     .Select(x => new InternalDocumentWait
@@ -736,7 +736,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
-                    DocumentId = x.DocumentId,
+                    EntityId = x.DocumentId,
                     Extension = x.Extention,
                     Name = x.Name,
                     FileType = x.FileType,
@@ -889,7 +889,7 @@ namespace BL.Database.Documents
                     if (document.DocumentFiles != null)
                         foreach (var fl in document.DocumentFiles)
                         {
-                            fl.DocumentId = doc.Id;
+                            fl.EntityId = doc.Id;
                         }
                     dbContext.SaveChanges();
                     //TODO Papers
@@ -1670,5 +1670,47 @@ namespace BL.Database.Documents
         }
 
         #endregion DocumentAccesses
+
+        public IEnumerable<InternalDocumentEvent> GetEventsNatively(IContext ctx, FilterDocumentEventNatively filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = CommonQueries.GetEventsNativelyQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new InternalDocumentEvent
+                {
+                    Id = x.Id,
+                    Date = x.Date,
+                    ReadDate = x.ReadDate,
+                    SourcePositionId = x.SourcePositionId,
+                    SourceAgentId = x.SourceAgentId,
+                    SourcePositionExecutorAgentId = x.SourcePositionExecutorAgentId,
+                    TargetPositionId = x.TargetPositionId,
+                    TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
+                    //...
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public bool ExistsEventsNatively(IContext ctx, FilterDocumentEventNatively filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = CommonQueries.GetEventsNativelyQuery(ctx, dbContext, filter);
+
+                var res = qry.Any();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
     }
 }

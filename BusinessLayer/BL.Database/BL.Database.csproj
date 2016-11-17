@@ -33,7 +33,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\OutDebug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -158,6 +158,7 @@
     <Compile Include="DBModel\Admin\AdminPositionRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRoleActions.cs" />
     <Compile Include="DBModel\Admin\AdminRoles.cs" />
+    <Compile Include="DBModel\Admin\AdminRegistrationJournalPositions.cs" />
     <Compile Include="DBModel\Admin\AdminSubordinations.cs" />
     <Compile Include="DBModel\Admin\AdminUserRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRoleTypes.cs" />
@@ -180,6 +181,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryPositionExecutorTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResidentTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryResultTypes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryRegistrationJournalAccessTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySubscriptionStates.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
     <Compile Include="DBModel\Document\DocumentEventReaders_DELETE.cs" />
@@ -229,6 +231,7 @@
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\System\SystemUIElements.cs" />
     <Compile Include="DBModel\System\SystemPatterns.cs" />
+    <Compile Include="DBModel\System\SystemDate.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentFiles.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />
@@ -370,6 +373,42 @@
     <Compile Include="Migrations\201611022123300_AddImageToAgents.cs" />
     <Compile Include="Migrations\201611022123300_AddImageToAgents.Designer.cs">
       <DependentUpon>201611022123300_AddImageToAgents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611041225028_SystemDate.cs" />
+    <Compile Include="Migrations\201611041225028_SystemDate.Designer.cs">
+      <DependentUpon>201611041225028_SystemDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611042001383_Add_FK_Employees-PositionExecutors.cs" />
+    <Compile Include="Migrations\201611042001383_Add_FK_Employees-PositionExecutors.Designer.cs">
+      <DependentUpon>201611042001383_Add_FK_Employees-PositionExecutors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611081658470_ChangePersonelNumberType.cs" />
+    <Compile Include="Migrations\201611081658470_ChangePersonelNumberType.Designer.cs">
+      <DependentUpon>201611081658470_ChangePersonelNumberType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611091929318_RegJournalPositions.cs" />
+    <Compile Include="Migrations\201611091929318_RegJournalPositions.Designer.cs">
+      <DependentUpon>201611091929318_RegJournalPositions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611111002025_OffUniqueIndexForAgents.cs" />
+    <Compile Include="Migrations\201611111002025_OffUniqueIndexForAgents.Designer.cs">
+      <DependentUpon>201611111002025_OffUniqueIndexForAgents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611111835077_Files.cs" />
+    <Compile Include="Migrations\201611111835077_Files.Designer.cs">
+      <DependentUpon>201611111835077_Files.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611121447145_DocumentFilesExtension.cs" />
+    <Compile Include="Migrations\201611121447145_DocumentFilesExtension.Designer.cs">
+      <DependentUpon>201611121447145_DocumentFilesExtension.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611121813483_DocumentFilesExtension+ClietId.cs" />
+    <Compile Include="Migrations\201611121813483_DocumentFilesExtension+ClietId.Designer.cs">
+      <DependentUpon>201611121813483_DocumentFilesExtension+ClietId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611162011043_IsSendEMail.cs" />
+    <Compile Include="Migrations\201611162011043_IsSendEMail.Designer.cs">
+      <DependentUpon>201611162011043_IsSendEMail.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -525,6 +564,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611022123300_AddImageToAgents.resx">
       <DependentUpon>201611022123300_AddImageToAgents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611041225028_SystemDate.resx">
+      <DependentUpon>201611041225028_SystemDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611042001383_Add_FK_Employees-PositionExecutors.resx">
+      <DependentUpon>201611042001383_Add_FK_Employees-PositionExecutors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611081658470_ChangePersonelNumberType.resx">
+      <DependentUpon>201611081658470_ChangePersonelNumberType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611091929318_RegJournalPositions.resx">
+      <DependentUpon>201611091929318_RegJournalPositions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611111002025_OffUniqueIndexForAgents.resx">
+      <DependentUpon>201611111002025_OffUniqueIndexForAgents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611111835077_Files.resx">
+      <DependentUpon>201611111835077_Files.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611121447145_DocumentFilesExtension.resx">
+      <DependentUpon>201611121447145_DocumentFilesExtension.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611121813483_DocumentFilesExtension+ClietId.resx">
+      <DependentUpon>201611121813483_DocumentFilesExtension+ClietId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611162011043_IsSendEMail.resx">
+      <DependentUpon>201611162011043_IsSendEMail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

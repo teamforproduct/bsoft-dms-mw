@@ -59,5 +59,9 @@ namespace BL.Database.DBModel.Dictionary
         public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
         public virtual ICollection<DictionaryPositionExecutors> PositionExecutors { get; set; }
 
+        [ForeignKey("PositionId")]
+        public virtual ICollection<AdminRegistrationJournalPositions> PositionRegistrationJournals { get; set; }
+
+
     }
 }

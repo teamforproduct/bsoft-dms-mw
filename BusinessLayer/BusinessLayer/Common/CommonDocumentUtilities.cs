@@ -77,7 +77,7 @@ namespace BL.Logic.Common
 
         public static void SetAtrributesForNewDocument(IContext context, InternalDocument document)
         {
-            document.CreateDate = DateTime.Now;
+            document.CreateDate = DateTime.UtcNow.Date;
             document.ExecutorPositionId = context.CurrentPositionId;
             document.IsRegistered = null;
             document.IsLaunchPlan = false;
@@ -181,7 +181,7 @@ namespace BL.Logic.Common
                 AccessLevel = accessLevel ?? EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
                 LastChangeUserId = context.CurrentAgentId,
                 PositionId = positionId ?? context.CurrentPositionId
             };
@@ -211,9 +211,9 @@ namespace BL.Logic.Common
                 TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.TargetPositionId),
                 TargetAgentId = model.TargetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
+                Date = DateTime.UtcNow,
+                CreateDate = DateTime.UtcNow,
             };
         }
 
@@ -242,9 +242,9 @@ namespace BL.Logic.Common
                 TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
-                Date = eventDate ?? DateTime.Now,
-                CreateDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
+                Date = eventDate ?? DateTime.UtcNow,
+                CreateDate = DateTime.UtcNow,
             };
         }
 
@@ -263,7 +263,7 @@ namespace BL.Logic.Common
                 DocumentId = documentId,
                 OnEvent = onEvent,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -275,7 +275,7 @@ namespace BL.Logic.Common
                 DueDate = controlOnModel.DueDate,
                 AttentionDate = controlOnModel.AttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
                 OnEvent = eventType == null ? null : GetNewDocumentEvent(context, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, taskId, isAvailableWithinTask)
             };
         }
@@ -294,11 +294,11 @@ namespace BL.Logic.Common
             {
                 DocumentId = sendListModel.DocumentId,
                 DueDate = eventType == EnumEventTypes.ControlOn
-                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.SelfDueDay.Value) }.Max()
-                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.Now.AddDays(sendListModel.DueDay.Value) }.Max(),
+                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value) }.Max()
+                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value) }.Max(),
                 AttentionDate = eventType == EnumEventTypes.ControlOn ? sendListModel.SelfAttentionDate : null,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
                 OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (
@@ -326,7 +326,7 @@ namespace BL.Logic.Common
                 DocumentId = sendListModel.DocumentId,
                 SubscriptionStates = EnumSubscriptionStates.No,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
                 SendEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
@@ -375,7 +375,7 @@ namespace BL.Logic.Common
                         Name = task,
                         Description = description,
                         LastChangeUserId = context.CurrentAgentId,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                     }
                 };
             }
@@ -413,7 +413,7 @@ namespace BL.Logic.Common
                 SelfDueDay = model.SelfDueDay,
                 SelfAttentionDate = model.SelfAttentionDate,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
 
             };
         }
@@ -426,7 +426,7 @@ namespace BL.Logic.Common
                 DocumentId = model.DocumentId,
                 PositionId = model.PositionId,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
 
             };
         }
@@ -446,7 +446,7 @@ namespace BL.Logic.Common
                 Events = GetNewDocumentPaperEvents(context, model.DocumentId, null, EnumEventTypes.AddNewPaper),
                 IsInWork = true,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -467,8 +467,8 @@ namespace BL.Logic.Common
                 DocumentId = documentId,
                 PaperId = paperId ?? 0,
                 EventType = eventType,
-                Date = DateTime.Now,
-                CreateDate = DateTime.Now,
+                Date = DateTime.UtcNow,
+                CreateDate = DateTime.UtcNow,
                 Description = description,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
@@ -477,13 +477,13 @@ namespace BL.Logic.Common
                 TargetPositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId) : null,
                 TargetAgentId = targetAgentId,
                 PaperPlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
-                PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.Now : null,
+                PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.UtcNow : null,
                 PaperSendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
-                PaperSendDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                PaperSendDate = IsMarkRecieve ? (DateTime?)DateTime.UtcNow : null,
                 PaperRecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
-                PaperRecieveDate = IsMarkRecieve ? (DateTime?)DateTime.Now : null,
+                PaperRecieveDate = IsMarkRecieve ? (DateTime?)DateTime.UtcNow : null,
                 LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.Now,
+                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -758,7 +758,7 @@ namespace BL.Logic.Common
         {
             return new InternalTemplateAttachedFile
             {
-                DocumentId = src.DocumentId,
+                EntityId = src.EntityId,
                 Extension = src.Extension,
                 Name = src.Name,
                 FileType = src.FileType,
@@ -787,7 +787,7 @@ namespace BL.Logic.Common
                 FileContent = src.FileContent,
                 Hash = src.Hash,
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
-                Date = DateTime.Now,
+                Date = DateTime.UtcNow,
                 Version = newVersion ?? 1,
                 WasChangedExternal = false,
                 ExecutorPositionId = src.ExecutorPositionId,

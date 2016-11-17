@@ -8,10 +8,6 @@ namespace BL.Model.AdminCore.FilterModel
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
     public class FilterAdminSubordinationTree : Tree.FilterTree
     {
-        /// <summary>
-        /// Включает режим просмотра
-        /// </summary>
-        public bool IsChecked { set; get; }
         
     }
 }

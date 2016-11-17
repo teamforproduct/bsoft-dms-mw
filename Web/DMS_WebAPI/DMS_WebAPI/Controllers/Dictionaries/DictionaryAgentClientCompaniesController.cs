@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryAgentClientCompany>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentClientCompany filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryAgentClientCompanies(cxt, filter);
             return new JsonResult(tmpDicts, this);
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryAgentClientCompany(cxt, id);
             return new JsonResult(tmpDict, this);
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryCompanies</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryAgentClientCompany model)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentClientCompany, cxt, model));
         }
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryCompany
 
             model.Id = id;
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentClientCompany, cxt, model);
             return Get(model.Id);
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryCompanies</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentClientCompany, cxt, id);

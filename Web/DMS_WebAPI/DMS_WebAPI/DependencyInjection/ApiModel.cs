@@ -8,8 +8,8 @@ namespace DMS_WebAPI.DependencyInjection
     {
         public override void Load()
         {
-            Bind<UserContext>().ToSelf().InSingletonScope();
-            Bind<UserContextWorkerService>().ToSelf().InSingletonScope();
+            Bind<UserContexts>().ToSelf().InSingletonScope();
+            Bind<UserContextsWorkerService>().ToSelf().InSingletonScope();
             Bind<LicencesWorkerService>().ToSelf().InSingletonScope();
             //Bind<Languages>().ToSelf().InSingletonScope();
             Bind<ILanguages>().To <Languages>().InSingletonScope();

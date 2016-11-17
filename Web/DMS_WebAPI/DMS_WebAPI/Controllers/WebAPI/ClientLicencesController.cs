@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         /// <returns></returns>
         public IHttpActionResult Post(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var dbProc = new WebAPIDbProcess();
             var itemId = dbProc.AddClientLicence(ctx, id);
             return Get(itemId);
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         [HttpPost]
         public IHttpActionResult PostSetLicenceKey(SetClientLicenceKey model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var dbProc = new WebAPIDbProcess();
             var itemId = dbProc.SetClientLicenceKey(ctx, model);
             return Get(itemId);

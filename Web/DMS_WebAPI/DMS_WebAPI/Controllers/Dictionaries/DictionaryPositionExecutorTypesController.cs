@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryPositionExecutorType
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryPositionExecutorTypes(cxt, filter);
             return new JsonResult(tmpDicts, this);
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryPositionExecutorType/5
         public IHttpActionResult Get(int id)
         {
-            var cxt = DmsResolver.Current.Get<UserContext>().Get();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryPositionExecutorType(cxt, id);
             return new JsonResult(tmpDict, this);

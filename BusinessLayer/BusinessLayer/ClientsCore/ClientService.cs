@@ -22,6 +22,7 @@ using BL.Logic.AdminCore;
 using BL.Logic.AdminCore.Interfaces;
 using System.Transactions;
 using BL.Model.SystemCore.InternalModel;
+using BL.Database.DatabaseContext;
 
 namespace BL.Logic.ClientCore
 {
@@ -65,20 +66,6 @@ namespace BL.Logic.ClientCore
 
         }
 
-        private InternalDictionaryAddressType GetNewAddressType(IContext context, string specCode, string code, string name)
-        {
-            var res = new InternalDictionaryAddressType()
-            {
-                //SpecCode = specCode,
-                Code = code,
-                Name = name,
-                IsActive = true
-            };
-
-            CommonDocumentUtilities.SetLastChange(context, res);
-
-            return res;
-        }
 
         public static List<SystemSettings> GetSystemSettings()
         {
@@ -119,9 +106,9 @@ namespace BL.Logic.ClientCore
             };
         }
 
-
         public void AddNewClient(IContext context, AddClientContent client)
         {
+            
             //GetSystemSettings
 
             #region [+] ContactsTypes ...
@@ -151,10 +138,10 @@ namespace BL.Logic.ClientCore
             #endregion
 
             #region [+] AddressTypes ...
-            // Pss Локализация для типов адресов
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "MainAddress", "а.осн.", "Основной"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "WorkAddress", "а.раб.", "Рабочий"));
-            _DictDb.AddAddressType(context, GetNewAddressType(context, "HomeAddress", "а.дом.", "Домашний"));
+            foreach (var item in DmsDbImportData.GetAddressTypes())
+            {
+                _DictDb.AddAddressType(context, item);
+            };
             #endregion
 
             #region [+] Agent-Employee ...
@@ -214,36 +201,10 @@ namespace BL.Logic.ClientCore
 
             #region [+] DocumentsTypes ...
 
-            InternalDictionaryDocumentType doctype = null;
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Письмо", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Приказ", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Распоряжение", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Служебная записка", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Поручение", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Протокол", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
-            doctype = new InternalDictionaryDocumentType() { Name = "Договор", IsActive = true };
-            CommonDocumentUtilities.SetLastChange(context, doctype);
-            _DictDb.AddDocumentType(context, doctype);
-
+            foreach (var item in DmsDbImportData.GetDocumentTypes())
+            {
+                _DictDb.AddDocumentType(context, item);
+            };
             // добавить шаблоны под каждый тип
 
             #endregion
@@ -258,28 +219,27 @@ namespace BL.Logic.ClientCore
         /// <returns></returns>
         public void AddClientRoles(IContext context)
         {
-            //pss локализиция наименований ролей
-            _AdminService.AddNamedRole(context, "Admin", "Администратор", GetRoleActionsForAdmin(context));
+            _AdminService.AddNamedRole(context, "Admin", "##l@Roles:Administrator@l##", GetRoleActionsForAdmin(context));
 
-            _AdminService.AddNamedRole(context, "DocumentReview", "Просмотр документов", GetRoleActionsForDocumentReview());
+            _AdminService.AddNamedRole(context, "DocumentReview", "##l@Roles:ViewDocuments@l##", GetRoleActionsForDocumentReview());
 
-            _AdminService.AddNamedRole(context, "DocumentActions", "Выполнения действий по документу", GetRoleActionsForDocumentReview());
+            _AdminService.AddNamedRole(context, "DocumentActions", "##l@Roles:ExecuteDocumentActions@l##", GetRoleActionsForDocumentReview());
 
-            _AdminService.AddNamedRole(context, "DocumentControl", "Управление контролем по документу", GetRoleActionsForDocumentControl());
+            _AdminService.AddNamedRole(context, "DocumentControl", "##l@Roles:ControlDocumentActions@l##", GetRoleActionsForDocumentControl());
 
-            _AdminService.AddNamedRole(context, "DocumentSigning", "Подписание документа", GetRoleActionsForSigning());
+            _AdminService.AddNamedRole(context, "DocumentSigning", "##l@Roles:SigningDocumentActions@l##", GetRoleActionsForSigning());
 
-            _AdminService.AddNamedRole(context, "DocumentPapers", "Управление бумажными носителями по документу", GetRoleActionsForPapers());
+            _AdminService.AddNamedRole(context, "DocumentPapers", "##l@Roles:PaperActions@l##", GetRoleActionsForPapers());
 
-            _AdminService.AddNamedRole(context, "DocumentAccess", "Управление доступом к документам", GetRoleActionsForDocumentAccess());
+            _AdminService.AddNamedRole(context, "DocumentAccess", "##l@Roles:AccessDocumentActions@l##", GetRoleActionsForDocumentAccess());
 
-            _AdminService.AddNamedRole(context, "DictionariesDMS", "Управление справочниками документоооборота", GetRoleActionsForDictionaryDMS());
+            _AdminService.AddNamedRole(context, "DictionariesDMS", "##l@Roles:DmsDictionaryActions@l##", GetRoleActionsForDictionaryDMS());
 
-            _AdminService.AddNamedRole(context, "DictionaryAgents", "Управление справочником контрагентов", GetRoleActionsForDictionaryAgents());
+            _AdminService.AddNamedRole(context, "DictionaryAgents", "##l@Roles:DictionaryAgentActions@l##", GetRoleActionsForDictionaryAgents());
 
-            _AdminService.AddNamedRole(context, "DictionaryAgentContacts", "Управление справочником контактных лиц котрагентов", GetRoleActionsForDictionaryAgentContats());
+            _AdminService.AddNamedRole(context, "DictionaryAgentContacts", "##l@Roles:DictionaryAgentContactActions@l##", GetRoleActionsForDictionaryAgentContats());
 
-            _AdminService.AddNamedRole(context, "DictionaryStaffList", "Управление структурой организации", GetRoleActionsForDictionaryStaffList());
+            _AdminService.AddNamedRole(context, "DictionaryStaffList", "##l@Roles:StaffListActions@l##", GetRoleActionsForDictionaryStaffList());
 
         }
 

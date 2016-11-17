@@ -16,14 +16,13 @@ namespace BL.Database.DBModel.Dictionary
             this.AgentContacts = new HashSet<DictionaryAgentContacts>();
             this.AgentAccounts = new HashSet<DictionaryAgentAccounts>();
             this.Certificates = new HashSet<EncryptionCertificates>();
-
         }
 
         public int Id { get; set; }
-        [Index("IX_Name", 2, IsUnique = true)]
+        //[Index("IX_Name", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
-        [Index("IX_Name", 1, IsUnique = true)]
+        //[Index("IX_Name", 1, IsUnique = true)]
         [MaxLength(400)]
         public string Name { get; set; }
         public byte[] Image { get; set; }

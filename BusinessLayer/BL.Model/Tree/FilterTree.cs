@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -48,5 +49,10 @@ namespace BL.Model.Tree
         /// Только отмеченные
         /// </summary>
         public bool? IsChecked { get; set; }
+
+        /// <summary>
+        /// Удаляет ветви, которые не заканчиваются листами
+        /// </summary>
+        public List<EnumObjects> RemoveEmptyBranchesByObject { get; set; }
     }
 }

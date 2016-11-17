@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Controllers
         [Route("Logout")]
         public IHttpActionResult Logout()
         {
-            DmsResolver.Current.Get<UserContext>().Remove();
+            DmsResolver.Current.Get<UserContexts>().Remove();
 
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
@@ -135,6 +135,21 @@ namespace DMS_WebAPI.Controllers
             {
                 return GetErrorResult(result);
             }
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
+
+            user.IsChangePasswordRequired = false;
+
+            result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            var user_context = DmsResolver.Current.Get<UserContexts>();
+            user_context.UpdateChangePasswordRequired(user.Id, false);
 
             return Ok();
         }

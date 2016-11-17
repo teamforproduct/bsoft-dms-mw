@@ -16,6 +16,7 @@ using System.Web.Http;
 using System.Web.Script.Serialization;
 using BL.CrossCutting.DependencyInjection;
 using System.Text;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Results
 {
@@ -27,10 +28,10 @@ namespace DMS_WebAPI.Results
         string _msg;
         object _meta;
         UIPaging _paging;
-        string _spentTime; // время выполнения запроса
+        Stopwatch _stopwatch; // время выполнения запроса
 
         public UIPaging Paging { set { _paging = value; } }
-
+        public Stopwatch SpentTime { set { _stopwatch = value; } }
         public JsonResult(object data, ApiController controller)
         {
             _data = data;
@@ -39,12 +40,7 @@ namespace DMS_WebAPI.Results
             _msg = string.Empty;
             _meta = null;
             _paging = null;
-            _spentTime = null;
-        }
-
-        public JsonResult(object data, ApiController controller, TimeSpan SpentTime) : this(data, controller)
-        {
-            SetSpentTime(SpentTime);
+            _stopwatch = null;
         }
 
         public JsonResult(object data, object meta, ApiController controller) : this(data, controller)
@@ -77,16 +73,27 @@ namespace DMS_WebAPI.Results
         }
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
+
+            string spentTimeStr = null;
+            if (_stopwatch != null)
+            {
+                if (_stopwatch.IsRunning) _stopwatch.Stop();
+
+                var spentTime = _stopwatch.Elapsed;
+
+                spentTimeStr = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                spentTime.Hours, spentTime.Minutes, spentTime.Seconds, spentTime.Milliseconds / 10);
+            }
+
             var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
             //settings.DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
             // По наблюдениям: Если задать  DateTimeZoneHandling.Utc то локальная дата будет переведена в utc и будет отображена c буквой Z:
             //settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
             // Если форматом отрезать милисекунды, то Z перестает отображаться
-            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = _spentTime}, settings);
+            var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = spentTimeStr }, settings);
 
             var languageService = DmsResolver.Current.Get<Languages>();
-
-            json = languageService.ReplaceLanguageLabel(HttpContext.Current, json);
+            json = languageService.GetTranslation(json);
 
             HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -94,10 +101,5 @@ namespace DMS_WebAPI.Results
             return Task.FromResult(response);
         }
 
-        private void SetSpentTime(TimeSpan SpentTime)
-        {
-            _spentTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-        SpentTime.Hours, SpentTime.Minutes, SpentTime.Seconds, SpentTime.Milliseconds / 10);
-        }
     }
 }

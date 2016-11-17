@@ -21,6 +21,8 @@ namespace BL.Logic.DictionaryCore
             Model.Code?.Trim();
             Model.Name?.Trim();
 
+            //if (dictDb.ExistsContactTypeSpecCode(context, Model.Id)) throw new ();
+
             var spr = dictDb.GetInternalDictionaryContactType(context, new FilterDictionaryContactType
             {
                 NameExact = Model.Name,
@@ -98,22 +100,6 @@ namespace BL.Logic.DictionaryCore
             {
                 throw new DictionaryDocumentTypeNameNotUnique(Model.Name);
             }
-        }
-
-        public static void VerifyPosition(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryPosition Model)
-        {
-            //var fdd = new FilterDictionaryPosition { Name = Model.Name, NotContainsIDs = new List<int> { Model.Id } };
-
-            //if (Model.ParentId != null)
-            //{
-            //    fdd.ParentIDs = new List<int> { Model.ParentId.Value };
-            //}
-
-            //// Находим запись с таким-же именем в этой-же папке
-            //if (_dictDb.ExistsPosition(_context, fdd))
-            //{
-            //    throw new DictionaryRecordNotUnique();
-            //}
         }
 
         public static void VerifyRegistrationJournal(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryRegistrationJournal Model)

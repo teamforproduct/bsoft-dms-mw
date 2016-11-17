@@ -17,9 +17,9 @@ namespace BL.Database.Admins.Interfaces
     {
         #region [+] General ...
         AdminAccessInfo GetAdminAccesses(IContext context);
-        Employee GetUserForLogin(IContext ctx, string userId);
+        Employee GetUserForContext(IContext ctx, string userId);
 
-        IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter);
+        IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext ctx, int adminId);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
@@ -93,8 +93,19 @@ namespace BL.Database.Admins.Interfaces
         IEnumerable<InternalAdminSubordination> GetInternalSubordinations(IContext context, FilterAdminSubordination filter);
         #endregion
 
-        #region [+] MainMenu ...
-        IEnumerable<TreeItem> GetMainMenu(IContext context);
+
+        #region [+] RegistrationJournalPosition ...
+        int AddRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
+        void AddRegistrationJournalPositions(IContext context, List<InternalRegistrationJournalPosition> list);
+        void UpdateRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
+        void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model);
+        //void DeleteRegistrationJournalPositionsBySourcePositionId(IContext context, InternalRegistrationJournalPosition model);
+        //void DeleteRegistrationJournalPositionsByTargetPositionId(IContext context, InternalRegistrationJournalPosition model);
+        void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter);
+        bool ExistsRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter);
+        InternalRegistrationJournalPosition GetInternalRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter);
+        //IEnumerable<FrontAdminRegistrationJournalPosition> GetRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter);
+        IEnumerable<InternalRegistrationJournalPosition> GetInternalRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter);
         #endregion
 
         #region [+] AddNewClient ...

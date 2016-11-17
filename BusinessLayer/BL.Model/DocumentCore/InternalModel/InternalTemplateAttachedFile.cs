@@ -15,9 +15,15 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Id { get; set; }
 
         /// <summary>
-        /// ИД документа
+        /// ИД элемента
         /// </summary>
-        public int DocumentId { get; set; }
+        public int EntityId { get; set; }
+
+        /// <summary>
+        /// Id объекта из SystemActions
+        /// </summary>
+        public EnumObjects ObjectId { get; set; }
+
         /// <summary>
         /// Номер вложения в документе
         /// </summary>

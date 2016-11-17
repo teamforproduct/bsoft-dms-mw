@@ -48,6 +48,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgent(context, id);
         }
 
+
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgent();
@@ -235,25 +236,35 @@ namespace BL.Logic.DictionaryCore
 
         }
 
-        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployeePersonnelNumber(IContext context)
-        {
-            return _dictDb.GetAgentEmployeePersonnelNumber(context);
-        }
-
         public FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId)
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);
 
+            string fileContect = string.Empty;
+
+            if (userPicture.Image != null)
+                fileContect = Convert.ToBase64String(userPicture.Image);
+
             var uPic = new FrontDictionaryAgentUserPicture()
             {
                 Id = userPicture.Id,
-                FileContent = Convert.ToBase64String(userPicture.Image)
+                FileContent = fileContect
             };
 
             return uPic;
         }
 
+        public string GetDictionaryAgentUserId(IContext context, int employeeId)
+        {
+            var user = _dictDb.GetInternalAgentUser(context, employeeId);
 
+            return user.UserId;
+        }
+
+        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        {
+            _dictDb.SetAgentUserUserId(context, User);
+        }
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
@@ -491,15 +502,28 @@ namespace BL.Logic.DictionaryCore
 
         #endregion DictionaryAgentCompanies
 
+        #region DictionaryAgentBanks
+        public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
+        {
+
+            return _dictDb.GetAgentUser(context, id);
+        }
+        #endregion DictionaryAgentBanks
+
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
             return _dictDb.GetContact(context, id);
         }
 
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, int agentId, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
         {
-            return _dictDb.GetContacts(context, agentId, filter);
+            return _dictDb.GetContacts(context, filter);
+        }
+
+        public IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter)
+        {
+            return _dictDb.GetInternalContacts(context, filter);
         }
         #endregion
 
@@ -754,6 +778,27 @@ namespace BL.Logic.DictionaryCore
         {
             return _dictDb.GetPositionExecutors(context, filter);
         }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutorsByAgent(IContext context, int agentId, FilterDictionaryPositionExecutor filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { agentId };
+            else filter.AgentIDs.Add(agentId);
+
+            return GetCurrentPositionExecutors(context, filter);
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
+            filter.IsActive = true;
+
+            return _dictDb.GetPositionExecutors(context, filter);
+        }
         #endregion DictionaryPositinExecutors
 
         // Типы исполнителей
@@ -773,13 +818,13 @@ namespace BL.Logic.DictionaryCore
 
         // Журналы регистрации
         #region DictionaryRegistrationJournals
-        public FrontDictionaryRegistrationJournal GetDictionaryRegistrationJournal(IContext context, int id)
+        public FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id)
         {
 
             return _dictDb.GetRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetDictionaryRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
 
             var newFilter = new FilterDictionaryRegistrationJournal();
@@ -814,6 +859,53 @@ namespace BL.Logic.DictionaryCore
 
             return _dictDb.GetRegistrationJournals(context, newFilter);
         }
+
+        public IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter)
+        {
+
+            int levelCount = filter?.LevelCount ?? 0;
+            IEnumerable<TreeItem> journals = null;
+            IEnumerable<TreeItem> departments = null;
+            IEnumerable<TreeItem> companies = null;
+
+            if (levelCount >= 3 || levelCount == 0)
+            {
+                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, new FilterDictionaryRegistrationJournal()
+                {
+                    IsActive = filter?.IsActive
+                });
+            }
+
+            if (levelCount >= 2 || levelCount == 0)
+            {
+                departments = _dictDb.GetDepartmentsForRegistrationJournals(context, new FilterDictionaryDepartment()
+                {
+                    IsActive = filter?.IsActive,
+                    //IDs = filter.DepartmentIDs
+                });
+            }
+
+            if (levelCount >= 1 || levelCount == 0)
+            {
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
+                {
+                    IsActive = filter?.IsActive
+                });
+            }
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            if (companies != null) flatList.AddRange(companies);
+            if (journals != null) flatList.AddRange(journals);
+            if (departments != null) flatList.AddRange(departments);
+
+            var res = Tree.Get(flatList, filter);
+
+            //AddCodePathDepartment(res);
+
+            return res;
+        }
+
         #endregion DictionaryRegistrationJournals
 
         // Компании
@@ -971,7 +1063,7 @@ namespace BL.Logic.DictionaryCore
                     Name = string.Concat("Компания №", string.Format("{0:00}", c)),
                     FullName = string.Concat("Компания номер ", string.Format("{0:00}", c)),
                     IsActive = true,
-                    LastChangeDate = DateTime.Now,
+                    LastChangeDate = DateTime.UtcNow,
                     LastChangeUserId = context.CurrentAgentId
                 });
 
@@ -989,7 +1081,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         CompanyId = compID,
                         ParentId = depParId,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1002,7 +1094,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 1,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1013,7 +1105,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 2,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1024,7 +1116,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 3,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1035,7 +1127,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 4,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1046,7 +1138,7 @@ namespace BL.Logic.DictionaryCore
                         IsActive = true,
                         DepartmentId = depId,
                         Order = 5,
-                        LastChangeDate = DateTime.Now,
+                        LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = context.CurrentAgentId
                     });
 
@@ -1067,15 +1159,15 @@ namespace BL.Logic.DictionaryCore
             {
                 executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
                 {
-                    StartDate = DateTime.Now.StartOfDay(),
-                    EndDate = DateTime.Now.EndOfDay(),
+                    StartDate = DateTime.UtcNow.StartOfDay(),
+                    EndDate = DateTime.UtcNow.EndOfDay(),
                     IsActive = filter.IsActive
                 });
             }
 
             if (levelCount >= 3 || levelCount == 0)
             {
-                positions = _dictDb.GetPositionsForTree(context, new FilterDictionaryPosition()
+                positions = _dictDb.GetPositionsForStaffList(context, new FilterDictionaryPosition()
                 {
                     IsActive = filter.IsActive
                 });
@@ -1083,7 +1175,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 2 || levelCount == 0)
             {
-                departments = _dictDb.GetDepartmentsForTree(context, new FilterDictionaryDepartment()
+                departments = _dictDb.GetDepartmentsForStaffList(context, new FilterDictionaryDepartment()
                 {
                     IsActive = filter.IsActive,
                     IDs = filter.DepartmentIDs
@@ -1092,7 +1184,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForTree(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
                 {
                     IsActive = filter.IsActive
                 });
@@ -1112,25 +1204,6 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        private void AddCodePathDepartment(IEnumerable<ITreeItem> treeItems, string path = "")
-        {
-            string prefix = "";
-
-            if (treeItems == null) return;
-
-            foreach (var item in treeItems)
-            {
-
-                if (item.ObjectId == (int)EnumObjects.DictionaryDepartments)
-                {
-                    prefix = ((path == string.Empty) ? "" : (path + "/")) + (item as FrontDictionaryDepartmentTreeItem).Code;
-                    item.Name = prefix + " " + item.Name;
-                }
-
-                if (item.Childs.Count() > 0) AddCodePathDepartment(item.Childs, prefix);
-
-            }
-        }
 
         #endregion
 

@@ -22,10 +22,10 @@ namespace BL.Logic.AdminCore.Interfaces
         object ExecuteAction(EnumAdminActions act, IContext context, object param);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
-        IEnumerable<FrontAdminUserRole> GetPositionsByCurrentUser(IContext context);
+        IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
-        Employee GetUserForLogin(IContext context, string userId);
+        Employee GetUserForContext(IContext context, string userId);
 
         #endregion
 
@@ -72,9 +72,9 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<ITreeItem> GetSubordinationsDIP(IContext context, int positionId, FilterAdminSubordinationTree filter);
         #endregion
 
-        #region [+] MainMenu ...
-        IEnumerable<TreeItem> GetAdminMainMenu(IContext context);
+        #region [+] RegistrationJournalPositions ...
+        IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter);
+        IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter);
         #endregion
-
     }
 }

@@ -7,10 +7,14 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.Tree;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
+    [RoutePrefix("api/v2/DictionaryRegistrationJournals")]
     public class DictionaryRegistrationJournalsController : ApiController
     {
         /// <summary>
@@ -21,9 +25,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryRegistrationJournals
         public IHttpActionResult Get([FromUri] FilterDictionaryRegistrationJournal filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryRegistrationJournals(ctx, filter);
+            var tmpDicts = tmpDictProc.GetRegistrationJournals(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -35,10 +39,27 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryRegistrationJournals/5
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryRegistrationJournal(ctx, id);
+            var tmpDict = tmpDictProc.GetRegistrationJournal(ctx, id);
             return new JsonResult(tmpDict, this);
+        }
+
+        /// <summary>
+        /// Возвращает дерево Компании-Отделы-Журналы регистрации
+        /// </summary>
+        /// <param name="filter">TreeItem</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetTree")]
+        [ResponseType(typeof(List<TreeItem>))]
+        [ResponseType(typeof(List<FrontDictionaryDepartmentTreeItem>))]
+        public IHttpActionResult GetTree([FromUri] FilterTree filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetRegistrationJournalsTree(ctx, filter);
+            return new JsonResult(tmpDicts, this);
         }
 
         /// <summary>
@@ -48,7 +69,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>FrontDictionaryRegistrationJournals</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryRegistrationJournal model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, ctx, model));
         }
@@ -64,7 +85,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryRegistrationJournal
 
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyRegistrationJournal, ctx, model);
             return Get(model.Id);
@@ -76,7 +97,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>FrontDictionaryRegistrationJournal</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteRegistrationJournal, ctx, id);

@@ -466,6 +466,78 @@ namespace BL.Database.Common
             return res;
         }
 
+
+        public static IQueryable<DocumentEvents> GetEventsNativelyQuery(IContext ctx, DmsContext dbContext, FilterDocumentEventNatively filter)
+        {
+            var qry = dbContext.DocumentEventsSet.AsQueryable();
+
+            if (filter.Date?.IsActive == true)
+            {
+                qry = qry.Where(x => x.Date >= filter.Date.DateBeg & x.Date <= filter.Date.DateEnd);
+            }
+
+            if (filter.ReadDate?.IsActive == true)
+            {
+                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.Date.DateBeg.Value && x.ReadDate <= filter.Date.DateEnd.Value); 
+            }
+
+            if (filter.SourcePositionIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.SourcePositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.SourcePositionExecutorAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.SourcePositionExecutorAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.SourceAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.SourceAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.SourceAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.TargetPositionIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.TargetPositionExecutorAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.TargetPositionExecutorAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.TargetPositionExecutorAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            if (filter.ReadAgentIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                filterContains = filter.ReadAgentIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.ReadAgentId == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
+            return qry;
+
+        }
+
+
         public static List<IQueryable<DocumentEvents>> GetDocumentEventQueryWithoutUnion(IContext ctx, DmsContext dbContext, FilterDocumentEvent filter, bool isVerifyAccessLevel = true)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
@@ -793,7 +865,7 @@ namespace BL.Database.Common
             }
 
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
             var isNeedRegistrationFullNumber = !(filter?.Event?.DocumentId?.Any() ?? false);
 
             var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
@@ -1062,7 +1134,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any()??false);
+            var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
 
             var qryFE = dbContext.DocumentFilesSet.Where(x => qry.Select(y => y.Id).Contains(x.Id))
                             .OrderByDescending(x => x.LastChangeDate)
@@ -1135,7 +1207,7 @@ namespace BL.Database.Common
                 {
                     Id = x.Id,
                     Date = x.Date,
-                    DocumentId = x.DocumentId,
+                    EntityId = x.DocumentId,
                     Extension = x.Extension,
                     FileContent = x.Content,
                     FileType = x.FileType,
@@ -1230,14 +1302,14 @@ namespace BL.Database.Common
                 {
                     if (filter.IsOverDue.Value)
                     {
-                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date :DateTime.Now));
+                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow));
                     }
                     else
                     {
-                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.Now)));
+                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow)));
                     }
                 }
-                
+
 
                 if (filter.DueDateFromDate.HasValue)
                 {
@@ -1480,30 +1552,30 @@ namespace BL.Database.Common
                     var qryGroupsCounter = qrys.Select(qry => qry.GroupBy(y => new
                     {
                         IsClosed = y.OffEventId.HasValue,
-                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.Now,
+                        IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
                         SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
                         TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
                     })
                     .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
                                         ).ToList();
-                     groupsCounter = qryGroupsCounter
-                                        .SelectMany(z => z)
-                                        .GroupBy(z => z.Group)
-                                        .Select(z => new FrontDocumentWait
-                                        {
-                                            IsClosed = z.Key.IsClosed,
-                                            IsOverDue = z.Key.IsOverDue,
-                                            DueDate = z.Key.DueDate,
-                                            SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
-                                            TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
-                                            RecordCount = z.Sum(c => c.RecordCount)
-                                        }).ToList(); 
+                    groupsCounter = qryGroupsCounter
+                                       .SelectMany(z => z)
+                                       .GroupBy(z => z.Group)
+                                       .Select(z => new FrontDocumentWait
+                                       {
+                                           IsClosed = z.Key.IsClosed,
+                                           IsOverDue = z.Key.IsOverDue,
+                                           DueDate = z.Key.DueDate,
+                                           SourcePositionExecutorAgentName = z.Key.SourcePositionExecutorAgentName,
+                                           TargetPositionExecutorAgentName = z.Key.TargetPositionExecutorAgentName,
+                                           RecordCount = z.Sum(c => c.RecordCount)
+                                       }).ToList();
 
                     paging.Counters = new UICounters
                     {
                         //Counter1 = qrys.Sum(qry => qry.Count(y => !y.OffEventId.HasValue)),
-                        //Counter2 = qrys.Sum(qry => qry.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.Now)),
+                        //Counter2 = qrys.Sum(qry => qry.Count(s => !s.OffEventId.HasValue && s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow)),
                         //Counter3 = qrys.Sum(qry => qry.Count()),
                         Counter1 = groupsCounter.Where(y => !y.IsClosed).Sum(y => y.RecordCount),
                         Counter2 = groupsCounter.Where(y => y.IsOverDue).Sum(y => y.RecordCount),
@@ -1554,7 +1626,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
             var isNeedRegistrationFullNumber = !(filter?.Wait?.DocumentId?.Any() ?? false);
 
             var qryFE = dbContext.DocumentWaitsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
@@ -1947,7 +2019,7 @@ namespace BL.Database.Common
                 }
             }
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
 
             var subscriptions = subscriptionsRes.Select(x => new FrontDocumentSubscription
             {
@@ -2935,7 +3007,7 @@ namespace BL.Database.Common
                             Id = subscription.Id,
                             SubscriptionStateId = (int)subscription.SubscriptionStates,
                             LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                            LastChangeDate = DateTime.Now
+                            LastChangeDate = DateTime.UtcNow
                         };
                         dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
                         var entry = dbContext.Entry(subscriptionDb);
@@ -2952,7 +3024,7 @@ namespace BL.Database.Common
                             sendList.StartEventId = null;
                             sendList.CloseEventId = null;
                             sendList.LastChangeUserId = ctx.CurrentAgentId;
-                            sendList.LastChangeDate = DateTime.Now;
+                            sendList.LastChangeDate = DateTime.UtcNow;
                         }
 
                         dbContext.SaveChanges();
@@ -2969,9 +3041,9 @@ namespace BL.Database.Common
                         //    //TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
                         //    TargetAgentId = ctx.CurrentAgentId,
                         //    LastChangeUserId = ctx.CurrentAgentId,
-                        //    LastChangeDate = DateTime.Now,
-                        //    Date = DateTime.Now,
-                        //    CreateDate = DateTime.Now,
+                        //    LastChangeDate = DateTime.UtcNow,
+                        //    Date = DateTime.UtcNow,
+                        //    CreateDate = DateTime.UtcNow,
                         //};
 
                         //dbContext.DocumentEventsSet.Add(eventDb);
@@ -3059,7 +3131,7 @@ namespace BL.Database.Common
 
             doc.SendLists = CommonQueries.GetInternalDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
 
-            var maxDateTime = DateTime.Now.AddYears(50);
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
 
             doc.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { doc.Id } })
                 .Select(x => new InternalDocumentWait
@@ -3194,7 +3266,7 @@ namespace BL.Database.Common
                     {
                         var fileBytes = fileStore.GetFile(ctx, new InternalDocumentAttachedFile
                         {
-                            DocumentId = file.DocumentId,
+                            EntityId = file.EntityId,
                             OrderInDocument = file.OrderInDocument,
                             Version = file.Version,
                             Name = file.Name,
@@ -3234,8 +3306,8 @@ namespace BL.Database.Common
 
             var att = new InternalDocumentAttachedFile
             {
-                DocumentId = doc.Id,
-                Date = DateTime.Now,
+                EntityId = doc.Id,
+                Date = DateTime.UtcNow,
                 PostedFileData = null,
                 FileData = pdf.FileContent,
                 Type = EnumFileTypes.SubscribePdf,
@@ -3248,31 +3320,32 @@ namespace BL.Database.Common
 
                 WasChangedExternal = false,
                 ExecutorPositionId = positionId,
-                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId
+                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId,
+                ObjectId = EnumObjects.Documents
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
 
-            var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
+            var ordInDoc = operationDb.CheckFileForDocument(ctx, att.EntityId, att.Name, att.Extension);
             if (ordInDoc == -1)
             {
                 att.Version = 1;
-                att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
+                att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.EntityId);
             }
             else
             {
-                att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
+                att.Version = operationDb.GetFileNextVersion(ctx, att.EntityId, ordInDoc);
                 att.OrderInDocument = ordInDoc;
             }
 
-            att.LastChangeDate = DateTime.Now;
+            att.LastChangeDate = DateTime.UtcNow;
             att.LastChangeUserId = ctx.CurrentAgentId;
 
             fileStore.SaveFile(ctx, att);
 
             operationDb.AddNewFileOrVersion(ctx, att);
 
-            return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
+            return new FilterDocumentFileIdentity { DocumentId = att.EntityId, OrderInDocument = att.OrderInDocument, Version = att.Version };
         }
 
         public static bool VerifyDocumentHash(string hash, InternalDocument doc, bool isFull = false)
@@ -3457,7 +3530,7 @@ namespace BL.Database.Common
 
                 if (filter.IsActive.HasValue)
                 {
-                    var now = DateTime.Now;
+                    var now = DateTime.UtcNow;
                     if (filter.IsActive.Value)
                     {
                         qry = qry.Where(x => (!x.NotBefore.HasValue || x.NotBefore < now) && (!x.NotAfter.HasValue || x.NotAfter > now));

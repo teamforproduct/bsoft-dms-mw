@@ -34,7 +34,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             //TODO Краткий формат если фильтр не указан или содержит несколько типов
             //     Формат конкретного типа, если тип явно указан в фильтре
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDicts = tmpDictProc.GetDictionaryAgents(ctx, filter,paging);
             var res=new JsonResult(tmpDicts, this);
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Агент</returns>
         public IHttpActionResult Get(int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
             var tmpDict = tmpDictProc.GetDictionaryAgent(ctx, id);
             return new JsonResult(tmpDict, this);
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryAgent model)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgent, ctx, model));
         }
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgent model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgent, ctx, model);
             return Get(model.Id);
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Delete([FromUri] int id)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgent, ctx, id);
@@ -106,28 +106,30 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
 
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model));
+            tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model);
+            return new JsonResult(null, this);
         }
 
         [HttpDelete]
         [Route("DeleteImage")]
         public IHttpActionResult DeleteImage([FromUri] int AgentId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, AgentId));
+            tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentImage, ctx, AgentId);
+            return new JsonResult(null, this);
         }
 
         [HttpGet]
         [Route("GetImage")]
         [ResponseType(typeof(List<FrontDictionaryAgentUserPicture>))]
-        public IHttpActionResult GetImage([FromUri] int employeeId)
+        public IHttpActionResult GetImage([FromUri] int AgentId)
         {
-            var ctx = DmsResolver.Current.Get<UserContext>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentUserPicture(ctx, employeeId);
+            var tmpItems = tmpService.GetDictionaryAgentUserPicture(ctx, AgentId);
             return new JsonResult(tmpItems, this);
         }
 

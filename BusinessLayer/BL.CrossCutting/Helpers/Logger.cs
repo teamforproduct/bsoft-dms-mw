@@ -15,7 +15,7 @@ namespace BL.CrossCutting.Helpers
                 System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
                 try
                 {
-                    string line = $"{System.DateTime.Now.ToString("o")};{text};";
+                    string line = $"{System.DateTime.UtcNow.ToString("o")};{text};";
                     sw.WriteLine(line);
                 }
                 catch
@@ -41,7 +41,7 @@ namespace BL.CrossCutting.Helpers
                 System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
                 try
                 {
-                    string line = $"{method};{System.DateTime.Now.ToString("o")};{time}";
+                    string line = $"{method};{System.DateTime.UtcNow.ToString("o")};{time}";
                     sw.WriteLine(line);
                 }
                 catch
