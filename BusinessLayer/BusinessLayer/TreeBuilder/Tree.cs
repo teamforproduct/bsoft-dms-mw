@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.Extensions;
 using BL.Database.Common;
 using BL.Model.Common;
+using BL.Model.Enums;
 using BL.Model.Tree;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,19 @@ namespace BL.Logic.TreeBuilder
 
             var res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
 
-            if (filter?.RemoveEmptyBranches == true) RemoveEmptyBranches(res);
+            if (filter?.RemoveEmptyBranchesByObject?.Count() > 0)
+            {
+                var safeList = new List<string>();
+
+                GetSafeListFunk(res, safeList, x => filter.RemoveEmptyBranchesByObject.Contains((EnumObjects)x.ObjectId));
+
+                if (safeList.Count > 0)
+                {
+                    flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    res = GetBranch(flatList, filter, ref level, ref notStartWithCondition, string.Empty, startWithCondition);
+                }
+
+            }
 
             if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true))
             {
@@ -138,6 +151,21 @@ namespace BL.Logic.TreeBuilder
             }
         }
 
+        private static void GetSafeListFunk(List<TreeItem> tree, List<string> safeList, Func<TreeItem, bool> funk)
+        {
+            if (tree != null)
+            {
+                foreach (var item in tree)
+                {
+                    var addToSafeList = funk(item);
+
+                    if (addToSafeList) safeList.AddRange(item.Path.Split('/'));
+
+                    GetSafeListFunk((List<TreeItem>)item.Childs, safeList, funk);
+                }
+            }
+        }
+
         private static bool IsNeighbourItem(TreeItem item, FilterTree filter)
         {
             //if (item.IsUsed) return false;
@@ -163,6 +191,10 @@ namespace BL.Logic.TreeBuilder
                 return (item.TreeId == (filter.StartWithTreeId ?? string.Empty));
             }
         }
+
+
+
+
 
         private static void RemoveEmptyBranches(IEnumerable<ITreeItem> tree)
         {

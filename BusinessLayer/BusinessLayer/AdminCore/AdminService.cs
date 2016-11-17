@@ -432,7 +432,7 @@ namespace BL.Logic.AdminCore
             if (departments != null) flatList.AddRange(departments);
 
             // для растановки галочек дерево нельзя сужать
-            var res = Tree.Get(flatList, new FilterTree() { });
+            var res = Tree.Get(flatList, new FilterTree() { RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryPositions } });
 
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPSubordinations(res);
@@ -647,7 +647,7 @@ namespace BL.Logic.AdminCore
             if (departments != null) flatList.AddRange(departments);
 
             // для растановки галочек дерево нельзя сужать
-            var res = Tree.Get(flatList, new FilterTree() { });
+            var res = Tree.Get(flatList, new FilterTree() { RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryRegistrationJournals } });
 
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPRJournalPositions(res);

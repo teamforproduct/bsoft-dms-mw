@@ -32,14 +32,14 @@ namespace BL.Logic.AdminCore
 
                 _adminDb.DeleteRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { PositionIDs = new List<int> { Model.PositionId } });
 
-                SetRegistrationJournalPositionByDepartment(new ModifyAdminRegistrationJournalPositionByDepartment
-                {
-                    DepartmentId = position.DepartmentId,
-                    IsChecked = true,
-                    PositionId = Model.PositionId,
-                    RegJournalAccessTypeId = EnumRegistrationJournalAccessTypes.View,
-                    IgnoreChildDepartments = true,
-                });
+                //SetRegistrationJournalPositionByDepartment(new ModifyAdminRegistrationJournalPositionByDepartment
+                //{
+                //    DepartmentId = position.DepartmentId,
+                //    IsChecked = true,
+                //    PositionId = Model.PositionId,
+                //    RegJournalAccessTypeId = EnumRegistrationJournalAccessTypes.View,
+                //    IgnoreChildDepartments = true,
+                //});
 
                 SetRegistrationJournalPositionByDepartment(new ModifyAdminRegistrationJournalPositionByDepartment
                 {
