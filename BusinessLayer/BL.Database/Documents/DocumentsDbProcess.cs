@@ -347,7 +347,7 @@ namespace BL.Database.Documents
                     d => d.Id,
                     t => t.DocumentId,
                     (d, t) => { d.DocumentTags = t.ToList(); return d; }).ToList();
-
+                transaction.Complete();
                 return docs;
             }
         }
