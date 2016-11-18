@@ -210,15 +210,15 @@ namespace BL.Database.Documents
 
                         var qryTagCounters = dbContext.DictionaryTagsSet//.Where(filterContainsPosition)
                             .Select(x => new FrontDocumentTag
-                                {
-                                    TagId = x.Id,
-                                    PositionId = x.PositionId,
-                                    PositionName = x.Position.Name,
-                                    Color = x.Color,
-                                    Name = x.Name,
-                                    IsSystem = !x.PositionId.HasValue,
-                                    DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
-                                })
+                            {
+                                TagId = x.Id,
+                                PositionId = x.PositionId,
+                                PositionName = x.Position.Name,
+                                Color = x.Color,
+                                Name = x.Name,
+                                IsSystem = !x.PositionId.HasValue,
+                                DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                            })
                                 .Where(x => x.DocCount > 0);
                         var tagCounters = qryTagCounters.ToList();
                         return new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
@@ -347,7 +347,7 @@ namespace BL.Database.Documents
                     d => d.Id,
                     t => t.DocumentId,
                     (d, t) => { d.DocumentTags = t.ToList(); return d; }).ToList();
-
+                transaction.Complete();
                 return docs;
             }
         }
@@ -736,7 +736,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
-                    EntityId = x.DocumentId,
+                    DocumentId = x.DocumentId,
                     Extension = x.Extention,
                     Name = x.Name,
                     FileType = x.FileType,
@@ -889,7 +889,7 @@ namespace BL.Database.Documents
                     if (document.DocumentFiles != null)
                         foreach (var fl in document.DocumentFiles)
                         {
-                            fl.EntityId = doc.Id;
+                            fl.DocumentId = doc.Id;
                         }
                     dbContext.SaveChanges();
                     //TODO Papers
@@ -1042,6 +1042,7 @@ namespace BL.Database.Documents
                     //TODO придумать с удалением для полнотекста
                     dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.SaveChanges();
+                    dbContext.DocumentTagsSet.RemoveRange(dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
@@ -1670,5 +1671,47 @@ namespace BL.Database.Documents
         }
 
         #endregion DocumentAccesses
+
+        public IEnumerable<InternalDocumentEvent> GetEventsNatively(IContext ctx, FilterDocumentEventNatively filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = CommonQueries.GetEventsNativelyQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new InternalDocumentEvent
+                {
+                    Id = x.Id,
+                    Date = x.Date,
+                    ReadDate = x.ReadDate,
+                    SourcePositionId = x.SourcePositionId,
+                    SourceAgentId = x.SourceAgentId,
+                    SourcePositionExecutorAgentId = x.SourcePositionExecutorAgentId,
+                    TargetPositionId = x.TargetPositionId,
+                    TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
+                    //...
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public bool ExistsEventsNatively(IContext ctx, FilterDocumentEventNatively filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = CommonQueries.GetEventsNativelyQuery(ctx, dbContext, filter);
+
+                var res = qry.Any();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
     }
 }

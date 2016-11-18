@@ -40,7 +40,7 @@ namespace BL.Logic.DictionaryCore
                        AgentIDs = new List<int> { Model.AgentId }
                    });
 
-            if (spr.Count() != 0) throw new DictionaryAgentContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
+            if (spr.Count() != 0) throw new DictionaryContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
 
             // У одного агента не должно быть два контакта с одинаковыми значениями
             spr = _dictDb.GetContacts(_context, 
@@ -51,7 +51,7 @@ namespace BL.Logic.DictionaryCore
                        AgentIDs = new List<int> { Model.AgentId }
                    });
 
-            if (spr.Count() != 0) throw new DictionaryAgentContactNotUnique(Model.Value);
+            if (spr.Count() != 0) throw new DictionaryContactNotUnique(Model.Value);
             return true;
         }
 

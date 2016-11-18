@@ -8,24 +8,11 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgent : DictionaryBaseFilterParameters
     {
+        /// <summary>
+        /// Строка, для полнотекстового поиска
+        /// </summary>
+        public string FullTextSearchString { get; set; }
 
-        ///// <summary>
-        ///// является физлицом
-        ///// </summary>
-        //public bool? IsIndividual { get; set; }
-        ///// <summary>
-        ///// ъявляется юрлицом
-        ///// </summary>
-        //public bool? IsCompany { get; set; }
-        ///// <summary>
-        ///// является сотрудником
-        ///// </summary>
-        //public bool? IsEmployee { get; set; }
-        ///// <summary>
-        ///// является банком
-        ///// </summary>
-        //public bool? IsBank { get; set; }
-        
         /// <summary>
         /// Первая буква наименования
         /// </summary>

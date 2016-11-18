@@ -36,7 +36,7 @@ namespace BL.Model.AdminCore.FilterModel
         /// <summary>
         /// Роли
         /// </summary>
-        public List<int> RoleIDs { get; set; }
+        //public List<int> RoleIDs { get; set; }
 
         /// <summary>
         /// Должности
@@ -44,9 +44,9 @@ namespace BL.Model.AdminCore.FilterModel
         public int? PositionId { get; set; }
 
         /// <summary>
-        /// Рассматриваемый период
+        /// Назначение
         /// </summary>
-        //public Period Period { get; set; }
+        public int? PositionExecutorId { get; set; }
 
         /// <summary>
         /// Дата начала

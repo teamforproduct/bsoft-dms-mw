@@ -28,6 +28,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Журтнал
         /// </summary>
         public int? RegistrationJournalId { get; set; }
-        
+
     }
 }

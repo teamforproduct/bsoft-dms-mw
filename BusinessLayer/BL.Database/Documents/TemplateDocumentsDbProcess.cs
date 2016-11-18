@@ -630,7 +630,7 @@ namespace BL.Database.Documents
                         .Select(x => new FrontTemplateAttachedFile
                         {
                             Id = x.fl.Id,
-                            EntityId = x.fl.DocumentId,
+                            DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extention,
                             //FileContent = x.fl.Content,
                             Type = (EnumFileTypes)x.fl.TypeId,
@@ -662,7 +662,7 @@ namespace BL.Database.Documents
                         .Select(x => new FrontTemplateAttachedFile
                         {
                             Id = x.fl.Id,
-                            EntityId = x.fl.DocumentId,
+                            DocumentId = x.fl.DocumentId,
                             Extension = x.fl.Extention,
                             //FileContent = x.fl.Content,
                             Type = (EnumFileTypes)x.fl.TypeId,
@@ -737,7 +737,7 @@ namespace BL.Database.Documents
             {
                 dbContext.TemplateDocumentFilesSet.RemoveRange(
                     dbContext.TemplateDocumentFilesSet.Where(x=>x.Document.ClientId == ctx.CurrentClientId).Where(
-                        x => x.DocumentId == docFile.EntityId && x.OrderNumber == docFile.OrderInDocument));
+                        x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
                 CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
                 dbContext.SaveChanges();
 

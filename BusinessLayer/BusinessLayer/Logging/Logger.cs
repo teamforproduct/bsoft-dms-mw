@@ -43,7 +43,6 @@ namespace BL.Logic.Logging
                     {
                         qry = qry.Where(x => x.CreateDate >= filter.CreateDateFrom.Value);
                     }
-
                     if (filter.CreateDateTo.HasValue)
                     {
                         qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
@@ -51,6 +50,10 @@ namespace BL.Logic.Logging
                     if (!String.IsNullOrEmpty(filter.LoginLogInfo))
                     {
                         qry = qry.Where(x => x.LoginLogInfo.Contains(filter.LoginLogInfo));
+                    }
+                    if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(filter.ExecutorAgentName));
                     }
                     qry = qry.OrderByDescending(x => x.CreateDate);
                 }
@@ -83,12 +86,13 @@ namespace BL.Logic.Logging
                         ObjectIDs = new List<int> { (int)EnumObjects.System },
                         ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                         ExecutorAgentIDs = filter?.ExecutorAgentIDs,
+                        ExecutorAgentName = filter?.ExecutorAgentName,
                         LogDateFrom = filter?.CreateDateFrom,
                         LogDateTo = filter?.CreateDateTo,
                         Message = filter?.LoginLogInfo,
                     }, paging).Select(x => new FrontSystemSession
                     {
-                        CreateDate = x.LogDate,
+                        CreateDate = DateTime.SpecifyKind(x.LogDate,DateTimeKind.Utc),
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
                         AgentId = x.ExecutorAgentId,
@@ -98,6 +102,7 @@ namespace BL.Logic.Logging
                 res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
                     .ForEach(r =>
                     {
+                        r.x.CreateDate = r.y.CreateDate;
                         r.x.Token = r.y.Token;
                         r.x.LastUsage = r.y.LastUsage;
                         r.x.UserId = r.y.UserId;

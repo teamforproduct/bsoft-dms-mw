@@ -131,20 +131,29 @@ namespace BL.Logic.AdminCore
                     model.PositionId = context.CurrentPositionId;
                 }
 
-                var qry = data.ActionAccess
-                    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
-                    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
-                // test it really good!
-                res = qry.Any(x => x.Act.Id == model.DocumentActionId
-                && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
-                && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId))));
+                var actionId = model.DocumentActionId;
+
+                while (!res && actionId.HasValue)
+                {
+                    var qry = data.ActionAccess
+                        .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
+                        .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
+                    // test it really good!
+                    res = qry.Any(x => x.Act.Id == actionId.Value
+                        && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.AgentId == model.UserId)
+                        && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
+                        && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId))));
+                    if (!res)
+                    {
+                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x=>x.GrantId).FirstOrDefault();
+                    }
+                }
             }
             else
             {
                 var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new { URole = u, PR = r });
 
-                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.UserId == model.UserId).Select(x => x.PR.PositionId)).Any();
+                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.AgentId == model.UserId).Select(x => x.PR.PositionId)).Any();
             }
             if (!res && isThrowExeception)
             {
@@ -288,6 +297,11 @@ namespace BL.Logic.AdminCore
                 executorFilter.PositionIDs = new List<int> { filter.PositionId ?? -1 };
             }
 
+            if (filter.PositionExecutorId != null)
+            {
+                executorFilter.IDs = new List<int> { filter.PositionExecutorId ?? -1 };
+            }
+
             // определяю назначения с ролями должности, которые исполняет сотрудник на указанном отрезке времени
             var executors = _dictDb.GetPositionExecutorsDIPUserRoles(context, executorFilter);
 
@@ -428,7 +442,7 @@ namespace BL.Logic.AdminCore
             if (departments != null) flatList.AddRange(departments);
 
             // для растановки галочек дерево нельзя сужать
-            var res = Tree.Get(flatList, new FilterTree() { });
+            var res = Tree.Get(flatList, new FilterTree() { RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryPositions } });
 
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPSubordinations(res);
@@ -513,11 +527,11 @@ namespace BL.Logic.AdminCore
 
                 GetCheckCountDIPSubordinations((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
 
-                if (infGr) { child.IsExecution = 2; }
-                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
-
                 if (infGr) { child.IsInforming = 2; }
                 else { child.IsInforming = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+
+                if (excGr) { child.IsExecution = 2; }
+                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
 
             }
         }
@@ -623,6 +637,7 @@ namespace BL.Logic.AdminCore
             {
                 departments = _dictDb.GetDepartmentsForDIPRJournalPositions(context, positionId, new FilterDictionaryDepartment()
                 {
+                    //IDs = journals.Select(x=>x.d)
                     IsActive = filter.IsActive,
                 });
             }
@@ -642,7 +657,7 @@ namespace BL.Logic.AdminCore
             if (departments != null) flatList.AddRange(departments);
 
             // для растановки галочек дерево нельзя сужать
-            var res = Tree.Get(flatList, new FilterTree() { });
+            var res = Tree.Get(flatList, new FilterTree() { RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryRegistrationJournals } });
 
             // растановка галочек для групп(компании, отделы)
             SetCheckForDepartmentsAndCompaniesDIPRJournalPositions(res);
@@ -720,48 +735,48 @@ namespace BL.Logic.AdminCore
                 var child = (FrontDIPRegistrationJournalPositionsBase)item;
 
                 int allCount = 0;
-                int infCount = 0;
-                int excCount = 0;
-                bool infGr = false;
-                bool excGr = false;
+                int viewCount = 0;
+                int regCount = 0;
+                bool viewGr = false;
+                bool regGr = false;
 
-                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
+                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out viewCount, out regCount, out viewGr, out regGr);
 
-                if (infGr) { child.IsViewing = 2; }
-                else { child.IsViewing = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
+                if (viewGr) { child.IsViewing = 2; }
+                else { child.IsViewing = (allCount == viewCount) ? 1 : (viewCount == 0) ? 0 : 2; }
 
-                if (infGr) { child.IsRegistration = 2; }
-                else { child.IsRegistration = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+                if (regGr) { child.IsRegistration = 2; }
+                else { child.IsRegistration = (allCount == regCount) ? 1 : (regCount == 0) ? 0 : 2; }
 
             }
         }
 
-        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
+        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int ViewCount, out int RegCount, out bool ViewGr, out bool RegGr)
         {
             int allCount = 0;
-            int infCount = 0;
-            int excCount = 0;
-            bool infGr = false;
-            bool excGr = false;
+            int vCount = 0;
+            int rCount = 0;
+            bool vGr = false;
+            bool rGr = false;
 
             foreach (var item in tree)
             {
                 var child = (FrontDIPRegistrationJournalPositionsBase)item;
 
                 allCount++;
-                if (child.IsViewing > 0) infCount++;
-                if (child.IsRegistration > 0) excCount++;
+                if (child.IsViewing > 0) vCount++;
+                if (child.IsRegistration > 0) rCount++;
 
-                if (child.IsViewing == 2) infGr = true;
-                if (child.IsRegistration == 2) excGr = true;
+                if (child.IsViewing == 2) vGr = true;
+                if (child.IsRegistration == 2) rGr = true;
 
             }
 
             AllCount = allCount;
-            InfCount = infCount;
-            ExcCount = excCount;
-            InfGr = infGr;
-            ExcGr = excGr;
+            ViewCount = vCount;
+            RegCount = rCount;
+            ViewGr = vGr;
+            RegGr = rGr;
         }
         #endregion
 

@@ -123,6 +123,10 @@ namespace BL.Database.SystemDb
                         (current, value) => current.Or(e => e.ExecutorAgentId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
+                if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
+                {
+                    qry = qry.Where(x => x.Agent.Name.Contains(filter.ExecutorAgentName));
+                }
                 if (filter.RecordIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<SystemLogs>();
@@ -458,7 +462,7 @@ namespace BL.Database.SystemDb
         //        //filterContains = GetWhereSystemActions(x.Actions, filterAction);
 
         //        //CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-        //        //    (current, value) => current.Or(e => e.Description == value).Expand());
+        //        //    (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
         //        //qry = qry.Where(filterContains);
 
@@ -582,7 +586,7 @@ namespace BL.Database.SystemDb
                 {
                     var filterContains = PredicateBuilder.False<SystemObjects>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Description == value).Expand());
+                        (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -751,7 +755,7 @@ namespace BL.Database.SystemDb
             {
                 var filterContains = PredicateBuilder.False<SystemActions>();
                 filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Description == value).Expand());
+                    (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -804,7 +808,7 @@ namespace BL.Database.SystemDb
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
-                
+
                 var res = qry.Select(x => new FrontSystemFormula
                 {
                     Id = x.Id,
@@ -1203,7 +1207,7 @@ namespace BL.Database.SystemDb
                             y => y.ObjectId == (int)EnumObjects.Documents && y.Filers == x.Filers))
                     .Where(x => x != null);
 
-                var res= qry.Select(x => new FrontPropertyValue
+                var res = qry.Select(x => new FrontPropertyValue
                 {
                     PropertyLinkId = x.Id,
                     PropertyCode = x.Property.Code
@@ -1288,7 +1292,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
-                var res= qry.Select(x => new BaseSystemUIElement
+                var res = qry.Select(x => new BaseSystemUIElement
                 {
                     PropertyLinkId = x.Id,
                     ObjectCode = filter.Object.ToString(),
@@ -1426,7 +1430,7 @@ namespace BL.Database.SystemDb
                 switch (objType)
                 {
                     case EnumObjects.Documents:
-                        res =  dbContext.DocumentsSet.Count(x => x.TemplateDocument.ClientId == ctx.CurrentClientId);
+                        res = dbContext.DocumentsSet.Count(x => x.TemplateDocument.ClientId == ctx.CurrentClientId);
                         break;
                     case EnumObjects.DocumentSendLists:
                         res = dbContext.DocumentSendListsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
@@ -1846,7 +1850,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            DocumentId = x.fl.EntityId,
+                            DocumentId = x.fl.DocumentId,
                             ItemType = EnumObjects.DocumentFiles,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -1874,7 +1878,7 @@ namespace BL.Database.SystemDb
                                 x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                         }).ToList());
 
-            transaction.Complete();
+                transaction.Complete();
             }
 
             return res;
@@ -1978,7 +1982,7 @@ namespace BL.Database.SystemDb
                     transaction.Complete();
                     return res;
                 }
-            transaction.Complete();
+                transaction.Complete();
             }
             return res;
         }
@@ -2542,7 +2546,7 @@ namespace BL.Database.SystemDb
 
                 var res = DateTime.UtcNow.AddYears(-50);
 
-                if (qry?.Count>0)
+                if (qry?.Count > 0)
                     res = qry.LastOrDefault().Date;
 
                 transaction.Complete();
