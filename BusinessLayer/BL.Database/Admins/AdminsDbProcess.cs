@@ -468,7 +468,7 @@ namespace BL.Database.Admins
                 var filterContains = PredicateBuilder.False<AdminRoles>();
 
                 filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Name == value).Expand());
+                    (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -483,7 +483,7 @@ namespace BL.Database.Admins
                 var filterContains = PredicateBuilder.False<AdminRoles>();
 
                 filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Description == value).Expand());
+                    (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
                 qry = qry.Where(filterContains);
             }
