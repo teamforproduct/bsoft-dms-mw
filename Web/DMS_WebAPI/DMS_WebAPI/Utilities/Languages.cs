@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
 using System.Web;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Utilities
 {
