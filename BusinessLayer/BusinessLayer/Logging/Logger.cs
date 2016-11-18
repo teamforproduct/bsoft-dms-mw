@@ -43,7 +43,6 @@ namespace BL.Logic.Logging
                     {
                         qry = qry.Where(x => x.CreateDate >= filter.CreateDateFrom.Value);
                     }
-
                     if (filter.CreateDateTo.HasValue)
                     {
                         qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
@@ -51,6 +50,10 @@ namespace BL.Logic.Logging
                     if (!String.IsNullOrEmpty(filter.LoginLogInfo))
                     {
                         qry = qry.Where(x => x.LoginLogInfo.Contains(filter.LoginLogInfo));
+                    }
+                    if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
+                    {
+                        qry = qry.Where(x => x.Name.Contains(filter.ExecutorAgentName));
                     }
                     qry = qry.OrderByDescending(x => x.CreateDate);
                 }
@@ -83,6 +86,7 @@ namespace BL.Logic.Logging
                         ObjectIDs = new List<int> { (int)EnumObjects.System },
                         ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                         ExecutorAgentIDs = filter?.ExecutorAgentIDs,
+                        ExecutorAgentName = filter?.ExecutorAgentName,
                         LogDateFrom = filter?.CreateDateFrom,
                         LogDateTo = filter?.CreateDateTo,
                         Message = filter?.LoginLogInfo,

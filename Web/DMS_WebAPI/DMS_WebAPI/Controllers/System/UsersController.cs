@@ -239,7 +239,8 @@ namespace DMS_WebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState, false, this);
+                //return BadRequest(ModelState);
             }
 
             var mngContext = DmsResolver.Current.Get<UserContexts>();
@@ -257,7 +258,8 @@ namespace DMS_WebAPI.Controllers
 
             if (!result.Succeeded)
             {
-                return GetErrorResult(result);
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
             }
 
             if (model.IsChangePasswordRequired)
@@ -273,7 +275,8 @@ namespace DMS_WebAPI.Controllers
 
                 if (!result.Succeeded)
                 {
-                    return GetErrorResult(result);
+                    return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                    //return GetErrorResult(result);
                 }
             }
 
