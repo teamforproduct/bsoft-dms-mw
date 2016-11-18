@@ -4599,7 +4599,7 @@ namespace BL.Database.Dictionaries
             {
                 var filterContains = PredicateBuilder.False<DictionaryPositions>();
                 filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Name == value).Expand());
+                    (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
                 qry = qry.Where(filterContains);
             }
