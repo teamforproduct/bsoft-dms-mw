@@ -17,6 +17,10 @@ namespace BL.Model.SystemCore.Filters
         /// </summary>
         public List<int> ExecutorAgentIDs { get; set; }
         /// <summary>
+        /// Имя пользователя
+        /// </summary>
+        public string ExecutorAgentName { get; set; }
+        /// <summary>
         /// Массив ИД объектов системы
         /// </summary>
         public List<int> ObjectIDs { get; set; }

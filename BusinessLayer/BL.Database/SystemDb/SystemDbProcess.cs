@@ -123,6 +123,10 @@ namespace BL.Database.SystemDb
                         (current, value) => current.Or(e => e.ExecutorAgentId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
+                if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
+                {
+                    qry = qry.Where(x => x.Agent.Name.Contains(filter.ExecutorAgentName));
+                }
                 if (filter.RecordIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<SystemLogs>();

@@ -155,7 +155,7 @@ namespace DMS_WebAPI.Controllers
             var user_context = DmsResolver.Current.Get<UserContexts>();
             user_context.UpdateChangePasswordRequired(user.Id, false);
 
-            return new JsonResult(null, true, this);
+            return new JsonResult(null, this);
             //return Ok();
         }
 

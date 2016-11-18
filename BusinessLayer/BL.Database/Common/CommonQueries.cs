@@ -35,6 +35,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.Reports.FrontModel;
 using System.Data.Entity.Core.Objects;
 using System.Threading.Tasks;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.Common
 {
@@ -43,7 +44,7 @@ namespace BL.Database.Common
         #region Documents
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool isVerifyExecutorPosition = false, bool isVerifyAccessLevel = true)
         {
-            var qry1 = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
             {
                 if (userAccesses == null)
@@ -52,27 +53,37 @@ namespace BL.Database.Common
                     filterContains = isVerifyAccessLevel
                         ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                         : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
-                    qry1 = qry1.Where(x => x.Accesses.AsQueryable().Where(filterContains).Any());
+                    qry = qry.Where(x => x.Accesses.AsQueryable().Where(filterContains).Any());
                 }
+                else
+                    qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Id));
 
                 if (isVerifyExecutorPosition)
                 {
                     var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
-                    qry1 = qry1.Where(filterExecutorPositionContains);
+                    qry = qry.Where(filterExecutorPositionContains);
                 }
+                else
+                {
+                    var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                    filterPositionsIdList = ctx.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    if (dbContext.AdminRegistrationJournalPositionsSet
+                        .Where(filterPositionsIdList).Where(x => x.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
+                        .Select(x => x.RegJournalId).Any())
+                    {
+                        var qryRJA = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable()
+                            .Where(x => x.RegistrationJournalId.HasValue
+                                        && dbContext.AdminRegistrationJournalPositionsSet
+                                            .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
+                                            .Select(y => y.RegJournalId).Contains(x.RegistrationJournalId.Value));
+                        var qryCont = qry.Concat(qryRJA);
+                        qry = qry.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
+                    }
+                }                
             }
-            if (userAccesses != null)
-            {
-                qry1 = qry1.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Id));
-            }
-            return qry1;
-
-            var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
-            var qry2 = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable().Where(x => x.RegistrationJournalId == 1164);
-            var qryCont = qry1;//.Concat(qry2);
-            qry = qry.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
             return qry;
+
         }
 
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(IContext ctx, DmsContext dbContext, FilterDocument filter, bool isVerifyAccessLevel = true)
