@@ -262,23 +262,23 @@ namespace DMS_WebAPI.Controllers
                 //return GetErrorResult(result);
             }
 
-            if (model.IsChangePasswordRequired)
+            //if (model.IsChangePasswordRequired)
+            //{
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
+
+            result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
             {
-                ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-                if (user == null)
-                    throw new UserNameIsNotDefined();
-
-                user.IsChangePasswordRequired = true;
-
-                result = await userManager.UpdateAsync(user);
-
-                if (!result.Succeeded)
-                {
-                    return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-                    //return GetErrorResult(result);
-                }
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
             }
+            //}
 
             if (model.IsKillSessions)
                 mngContext.KillSessions(model.AgentId);
