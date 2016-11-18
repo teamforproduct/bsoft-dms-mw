@@ -92,7 +92,7 @@ namespace BL.Logic.Logging
                         Message = filter?.LoginLogInfo,
                     }, paging).Select(x => new FrontSystemSession
                     {
-                        CreateDate = x.LogDate,
+                        CreateDate = DateTime.SpecifyKind(x.LogDate,DateTimeKind.Utc),
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
                         AgentId = x.ExecutorAgentId,
@@ -102,6 +102,7 @@ namespace BL.Logic.Logging
                 res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
                     .ForEach(r =>
                     {
+                        r.x.CreateDate = r.y.CreateDate;
                         r.x.Token = r.y.Token;
                         r.x.LastUsage = r.y.LastUsage;
                         r.x.UserId = r.y.UserId;
