@@ -597,35 +597,35 @@ namespace BL.Model.Exception
         public DictionaryAddressTypeCodeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class DictionaryAgentAddressTypeNotUnique : DmsExceptions
+    public class DictionaryAddressTypeNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentAddressTypeNotUnique@l##";
-        public DictionaryAgentAddressTypeNotUnique() : base(_MESSAGE) { }
-        public DictionaryAgentAddressTypeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAddressTypeNotUnique@l##";
+        public DictionaryAddressTypeNotUnique() : base(_MESSAGE) { }
+        public DictionaryAddressTypeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class DictionaryAgentAddressNameNotUnique : DmsExceptions
+    public class DictionaryAddressNameNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentAddressNameNotUnique@l##";
-        public DictionaryAgentAddressNameNotUnique(string PostCode, string Address) : base(_MESSAGE) { Parameters = new List<string> { PostCode, Address }; }
-        public DictionaryAgentAddressNameNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAddressNameNotUnique@l##";
+        public DictionaryAddressNameNotUnique(string PostCode, string Address) : base(_MESSAGE) { Parameters = new List<string> { PostCode, Address }; }
+        public DictionaryAddressNameNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     /// <summary>
     /// Ошибка возникает при попытке добавить контакт агенту с и  имя агента
     /// </summary>
-    public class DictionaryAgentContactNotUnique : DmsExceptions
+    public class DictionaryContactNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentContactNotUnique@l##";
-        public DictionaryAgentContactNotUnique(string value) : base(_MESSAGE) { Parameters = new List<string> { value }; }
-        public DictionaryAgentContactNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryContactNotUnique@l##";
+        public DictionaryContactNotUnique(string value) : base(_MESSAGE) { Parameters = new List<string> { value }; }
+        public DictionaryContactNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class DictionaryAgentContactTypeNotUnique : DmsExceptions
+    public class DictionaryContactTypeNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentContactTypeNotUnique@l##";
-        public DictionaryAgentContactTypeNotUnique(string AgentName, string Value) : base(_MESSAGE) { Parameters = new List<string> { AgentName, Value }; }
-        public DictionaryAgentContactTypeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryContactTypeNotUnique@l##";
+        public DictionaryContactTypeNotUnique(string AgentName, string Value) : base(_MESSAGE) { Parameters = new List<string> { AgentName, Value }; }
+        public DictionaryContactTypeNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     /// <summary>

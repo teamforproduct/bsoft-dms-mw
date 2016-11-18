@@ -390,7 +390,7 @@ namespace BL.Database.DatabaseContext
                 string s = string.Empty;
                 foreach (var item in list)
                 {
-                    s += item.Value.ToString() + " - " + item.Name + "\r\n";
+                    s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
                 }
                 throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
             }
@@ -446,6 +446,7 @@ namespace BL.Database.DatabaseContext
             return array
               .Select(a => new EnumModel
               {
+                  EnumName = typeof(T).Name,
                   Value = Convert.ToInt32(a),
                   Name = a.ToString(),
               })
@@ -613,7 +614,6 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryEventTypes>();
 
-            items.Add(GetDictionaryEventType(EnumEventTypes.ПоступилВходящийДокумент, EnumImportanceEventTypes.DocumentMoovement, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.AddNewDocument, EnumImportanceEventTypes.DocumentMoovement, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.AddDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.RanameDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
@@ -669,26 +669,6 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionaryEventType(EnumEventTypes.StopPlan, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.SetInWork, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.SetOutWork, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ОчереднойСрокИсполнения, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ИстекаетСрокИсполнения, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.СрокИсполненияИстек, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.НаправленоСообщение, EnumImportanceEventTypes.Internal, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ДобавленБумажныйНоситель, EnumImportanceEventTypes.PaperMoovement, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ОтметкаНахожденияБумажногоНосителяУСебя, EnumImportanceEventTypes.PaperMoovement, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ОтметкаПорчиБумажногоНосителя, EnumImportanceEventTypes.PaperMoovement, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ПереданыБумажныеНосители, EnumImportanceEventTypes.PaperMoovement, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.Примечание, EnumImportanceEventTypes.Message, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ФормулировкаЗадачи, EnumImportanceEventTypes.Message, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ПереданНаРассмотрениеРуководителю, EnumImportanceEventTypes.AdditionalEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ПолученПослеРассмотренияРуководителем, EnumImportanceEventTypes.AdditionalEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.НаправленНаРегистрацию, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.Зарегистрирован, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ОтказаноВРегистрации, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ОтозванПроект, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ЗапущеноИсполнениеПланаРаботыПоДокументу, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.ОстановленоИсполнениеПланаРаботыПоДокументу, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.РаботаВозобновлена, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.РаботаЗавершена, EnumImportanceEventTypes.ImportantEvents, null));
 
             return items;
         }
