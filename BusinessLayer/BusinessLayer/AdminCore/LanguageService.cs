@@ -12,6 +12,7 @@ using BL.Model.AdminCore.FilterModel;
 using System.Text.RegularExpressions;
 using BL.Model.AdminCore.InternalModel;
 using BL.Database.DatabaseContext;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.AdminCore
 {

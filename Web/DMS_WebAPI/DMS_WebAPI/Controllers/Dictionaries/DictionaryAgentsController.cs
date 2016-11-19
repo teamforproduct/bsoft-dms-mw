@@ -11,6 +11,7 @@ using BL.Model.SystemCore;
 using System.Web;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using BL.Logic.SystemServices.TempStorage;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -75,7 +76,15 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+            var avaFile = tmpStore.ExtractStoreObject(EnumObjects.DictionaryAgents, model.Id, 0);
+            if (avaFile is HttpPostedFile)
+            {
+                model.PostedFileData = avaFile as HttpPostedFile;
+            }
+
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgent, ctx, model);
             return Get(model.Id);
         }
@@ -107,8 +116,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.PostedFileData = file;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model);
+            var tmpStore= DmsResolver.Current.Get<ITempStorageService>();
+            tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.AgentId, 0, file);
             return new JsonResult(null, this);
         }
 

@@ -29,6 +29,7 @@ using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
+using BL.Logic.SystemServices.TempStorage;
 using BL.Model.Enums;
 using Ninject.Modules;
 
@@ -61,7 +62,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
             Bind<IClearTrashDocumentsService>().To<ClearTrashDocumentsService>().InSingletonScope();
-
+            Bind<ITempStorageService>().To<TempStorageService>().InSingletonScope();
             Bind<ISystemService>().To<SystemService>().InSingletonScope();
         }
 
