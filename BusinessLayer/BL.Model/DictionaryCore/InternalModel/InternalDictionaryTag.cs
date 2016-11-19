@@ -25,8 +25,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public int? PositionId { get; set; }
         
         public bool IsActive { get; set; }
-        public int LastChangeUserId { get; set; }
-        
-        public DateTime LastChangeDate { get; set; }
+//        public int LastChangeUserId { get; set; }        
+//        public DateTime LastChangeDate { get; set; }
     }
 }

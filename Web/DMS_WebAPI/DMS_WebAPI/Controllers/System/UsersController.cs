@@ -380,7 +380,11 @@ namespace DMS_WebAPI.Controllers
 
             user.UserName = model.NewEmail;
             user.Email = model.NewEmail;
+
             user.IsEmailConfirmRequired = model.IsVerificationRequired;
+
+            if (user.IsEmailConfirmRequired)
+                user.EmailConfirmed = false;
 
             var result = await userManager.UpdateAsync(user);
 

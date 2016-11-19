@@ -125,7 +125,10 @@ namespace BL.Database.SystemDb
                 }
                 if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
                 {
-                    qry = qry.Where(x => x.Agent.Name.Contains(filter.ExecutorAgentName));
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
+                                .Aggregate(filterContains,(current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
                 }
                 if (filter.RecordIDs?.Count > 0)
                 {
@@ -152,15 +155,24 @@ namespace BL.Database.SystemDb
                 }
                 if (!String.IsNullOrEmpty(filter.Message))
                 {
-                    qry = qry.Where(x => x.Message.Contains(filter.Message));
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Message)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.Message.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.LogTrace))
                 {
-                    qry = qry.Where(x => x.LogTrace.Contains(filter.LogTrace));
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LogTrace)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.LogTrace.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.LogException))
                 {
-                    qry = qry.Where(x => x.LogException.Contains(filter.LogException));
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LogException)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.LogException.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
                 }
             }
 

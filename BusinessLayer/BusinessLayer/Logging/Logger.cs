@@ -12,6 +12,10 @@ using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FrontModel;
+using System.Linq;
+using LinqKit;
+using BL.Database.Common;
+using BL.Database.DBModel.System;
 
 namespace BL.Logic.Logging
 {
@@ -49,11 +53,17 @@ namespace BL.Logic.Logging
                     }
                     if (!String.IsNullOrEmpty(filter.LoginLogInfo))
                     {
-                        qry = qry.Where(x => x.LoginLogInfo.Contains(filter.LoginLogInfo));
+                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LoginLogInfo)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.LoginLogInfo.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
                     }
                     if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
                     {
-                        qry = qry.Where(x => x.Name.Contains(filter.ExecutorAgentName));
+                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
                     }
                     qry = qry.OrderByDescending(x => x.CreateDate);
                 }
