@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BL.Model.Database
+namespace BL.Model.SystemCore
 {
     public class StoreInfo
     {

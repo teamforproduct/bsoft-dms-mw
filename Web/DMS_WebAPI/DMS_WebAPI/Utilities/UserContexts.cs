@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.Utilities

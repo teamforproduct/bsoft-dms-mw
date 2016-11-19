@@ -400,6 +400,7 @@
     <Compile Include="SystemServices\QueueWorker\IQueueTask.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
+    <Compile Include="SystemServices\TempStorage\TempStorageService.cs" />
     <Compile Include="TreeBuilder\Tree.cs" />
   </ItemGroup>
   <ItemGroup>

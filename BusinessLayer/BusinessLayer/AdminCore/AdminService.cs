@@ -25,6 +25,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
 using System.Transactions;
 using BL.Database.Common;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.AdminCore
 {
