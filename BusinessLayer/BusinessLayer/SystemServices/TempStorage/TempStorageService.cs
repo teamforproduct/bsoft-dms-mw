@@ -7,7 +7,7 @@ using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.TempStorage
 {
-    public class TempStorageService
+    public class TempStorageService : ITempStorageService
     {
         private List<TempStoreObject> storeObjects;
         private readonly Timer _cleanTimer;
@@ -40,7 +40,7 @@ namespace BL.Logic.SystemServices.TempStorage
             return obj?.StoreObject;
         }
 
-        public object PopStoreObject(EnumObjects ownerType, int ownerId, int objectId)
+        public object ExtractStoreObject(EnumObjects ownerType, int ownerId, int objectId)
         {
             var obj = storeObjects.FirstOrDefault(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
             if (obj!=null) storeObjects.Remove(obj);
