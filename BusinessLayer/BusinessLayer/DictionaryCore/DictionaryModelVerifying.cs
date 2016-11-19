@@ -45,12 +45,12 @@ namespace BL.Logic.DictionaryCore
         {
             Model.Code?.Trim();
 
-            var cd = dictDb.GetInternalCustomDictionary(context, new FilterCustomDictionary
+            var cd = dictDb.GetInternalCustomDictionarys(context, new FilterCustomDictionary
             {
                 //pss Порверить почему IDs
                 IDs = new List<int> { Model.DictionaryTypeId },
                 CodeExact = Model.Code
-            });
+            }).FirstOrDefault();
             if (cd != null && cd.Id != Model.Id)
             {
                 throw new DictionaryCostomDictionaryNotUnique();
@@ -61,10 +61,10 @@ namespace BL.Logic.DictionaryCore
         {
             Model.Code?.Trim();
 
-            var cdt = dictDb.GetInternalCustomDictionaryType(context, new FilterCustomDictionaryType
+            var cdt = dictDb.GetInternalCustomDictionaryTypes(context, new FilterCustomDictionaryType
             {
                 CodeExact = Model.Code
-            });
+            }).FirstOrDefault();
             if (cdt != null && cdt.Id != Model.Id)
             {
                 throw new DictionaryCostomDictionaryTypeNotUnique(Model.Code);
@@ -91,11 +91,11 @@ namespace BL.Logic.DictionaryCore
         {
             Model.Name?.Trim();
 
-            var spr = dictDb.GetInternalDictionaryDocumentType(context, new FilterDictionaryDocumentType
+            var spr = dictDb.GetInternalDictionaryDocumentTypes(context, new FilterDictionaryDocumentType
             {
                 NameExact = Model.Name,
                 NotContainsIDs = new List<int> { Model.Id }
-            });
+            }).FirstOrDefault();
             if (spr != null)
             {
                 throw new DictionaryDocumentTypeNameNotUnique(Model.Name);
