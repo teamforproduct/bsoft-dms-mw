@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Web;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.SystemServices.TempStorage;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 

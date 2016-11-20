@@ -39,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Список (Id, Name) всех сотрудников
+        /// Возвращает список (Id, Name) всех сотрудников
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
