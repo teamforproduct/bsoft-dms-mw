@@ -5403,14 +5403,14 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-            qry = GetWhereRegistrationJournal(ref qry, filter);
+            qry = GetWhereRegistrationJournal(context, dbContext, ref qry, filter);
 
             qry = qry.OrderBy(x => x.Name);
 
             return qry;
         }
 
-        private static IQueryable<DictionaryRegistrationJournals> GetWhereRegistrationJournal(ref IQueryable<DictionaryRegistrationJournals> qry, FilterDictionaryRegistrationJournal filter)
+        private static IQueryable<DictionaryRegistrationJournals> GetWhereRegistrationJournal(IContext context, DmsContext dbContext, ref IQueryable<DictionaryRegistrationJournals> qry, FilterDictionaryRegistrationJournal filter)
         {
             // Список первичных ключей
             if (filter.IDs?.Count > 0)
@@ -5504,6 +5504,15 @@ namespace BL.Database.Dictionaries
             if (filter.IsInternal != null)
             {
                 qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()));
+            }
+
+            if (filter.PositionIdsAccessForRegistration?.Count > 0)
+            {
+                var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                filterPositionsIdList = filter.PositionIdsAccessForRegistration.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                qry = qry.Where(x => dbContext.AdminRegistrationJournalPositionsSet
+                                            .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
+                                            .Select(y => y.RegJournalId).Contains(x.Id));
             }
 
             return qry;
