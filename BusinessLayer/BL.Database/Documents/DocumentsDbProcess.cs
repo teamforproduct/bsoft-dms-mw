@@ -24,6 +24,7 @@ using System.Data.Entity;
 using BL.Model.Reports.FrontModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.Dictionary;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.Documents
 {
@@ -1093,6 +1094,9 @@ namespace BL.Database.Documents
                 }
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == model.RegistrationJournalId)
+                    .Where(x => dbContext.AdminRegistrationJournalPositionsSet
+                                            .Where(y=>y.PositionId == context.CurrentPositionId && y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
+                                            .Select(y => y.RegJournalId).Contains(x.Id))
                     .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
 
                 if (regJournal != null)
