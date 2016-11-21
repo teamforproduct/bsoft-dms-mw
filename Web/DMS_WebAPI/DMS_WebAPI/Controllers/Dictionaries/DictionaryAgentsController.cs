@@ -11,6 +11,7 @@ using BL.Model.SystemCore;
 using System.Web;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using System.Text;
 using BL.Logic.SystemServices.TempStorage;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
@@ -78,11 +79,15 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
-            var avaFile = tmpStore.ExtractStoreObject(EnumObjects.DictionaryAgents, model.Id, 0);
-            if (avaFile is HttpPostedFile)
+            
+            if (model.ImageId.HasValue)
             {
-                model.PostedFileData = avaFile as HttpPostedFile;
+                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
+                if (avaFile is HttpPostedFile)
+                {
+                    model.PostedFileData = avaFile as HttpPostedFile;
+                }
             }
 
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgent, ctx, model);
@@ -142,6 +147,23 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpItems, this);
         }
 
+        [HttpGet]
+        [Route("GetImageOnEdit")]
+        [ResponseType(typeof(FrontDictionaryAgentUserPicture))]
+        public IHttpActionResult GetImageOnEdit([FromUri] int ImageId)
+        {
+            var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+            var img = tmpStore.GetStoreObject(ImageId) as HttpPostedFile;
 
+            byte[] buffer = new byte[img.ContentLength];
+            img.InputStream.Read(buffer, 0, img.ContentLength);
+            var res = new FrontDictionaryAgentUserPicture
+            {
+                Id = 0,
+                FileContent = Encoding.Default.GetString(buffer)
+            };
+
+            return new JsonResult(res, this);
+        }
     }
 }
