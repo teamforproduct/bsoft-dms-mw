@@ -137,12 +137,17 @@ namespace BL.Logic.AdminCore
                 {
                     var qry = data.ActionAccess
                         .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
-                        .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
+                        .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
+                    //var t = qry.Where(x => x.Act.Id == actionId.Value
+                    //                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                    //                        //&& x.Role.PositionId == 5516
+                    //                        ).ToList();
                     // test it really good!
                     res = qry.Any(x => x.Act.Id == actionId.Value
-                        && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.AgentId == model.UserId)
+                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
                         && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                        && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId))));
+                        && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
+                        );
                     if (!res)
                     {
                         actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x=>x.GrantId).FirstOrDefault();
