@@ -26,6 +26,9 @@ using BL.Model.AdminCore.InternalModel;
 using System.Transactions;
 using BL.Database.Common;
 using BL.Model.SystemCore;
+using BL.Database.SystemDb;
+using BL.Model.SystemCore.FrontModel;
+using BL.Model.SystemCore.Filters;
 
 namespace BL.Logic.AdminCore
 {
@@ -33,16 +36,18 @@ namespace BL.Logic.AdminCore
     {
         private readonly IAdminsDbProcess _adminDb;
         private readonly IDictionariesDbProcess _dictDb;
+        private readonly ISystemDbProcess _systemDb;
         private readonly ICommandService _commandService;
 
         private const int _MINUTES_TO_UPDATE_INFO = 5;
 
         private Dictionary<string, StoreInfo> accList;
 
-        public AdminService(IAdminsDbProcess adminDb, IDictionariesDbProcess dictDb, ICommandService commandService)
+        public AdminService(IAdminsDbProcess adminDb, IDictionariesDbProcess dictDb, ISystemDbProcess systemDb, ICommandService commandService)
         {
             _adminDb = adminDb;
             _dictDb = dictDb;
+            _systemDb = systemDb;
             _commandService = commandService;
             accList = new Dictionary<string, StoreInfo>();
         }
@@ -99,6 +104,40 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
         }
+
+        public IEnumerable<FrontSystemAction> GetUserActions(IContext ctx)
+        {
+
+            var positionExecutors = _dictDb.GetInternalPositionExecutors(ctx, new FilterDictionaryPositionExecutor
+            {
+                AgentIDs = new List<int> { ctx.CurrentAgentId },
+                PositionIDs = ctx.CurrentPositionsIdList,
+                IsActive = true,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow,
+            });
+
+            var roles = _adminDb.GetInternalUserRoles(ctx, new FilterAdminUserRole
+            {
+                PositionExecutorIDs = positionExecutors.Select(x => x.Id).ToList(),
+            });
+
+            var actions = _adminDb.GetActionsByRoles(ctx, new FilterAdminRoleAction
+            {
+                RoleIDs = roles.Select(x => x.RoleId).ToList()
+            });
+
+            var res = _systemDb.GetSystemActions(ctx, new FilterSystemAction
+            {
+                IDs = actions,
+                IsGrantable = true,
+                IsVisible = true,
+                IsGrantableByRecordId = false,
+            });
+
+
+            return res;
+        }
         #endregion
 
         #region [+] Verify ...
@@ -150,7 +189,7 @@ namespace BL.Logic.AdminCore
                         );
                     if (!res)
                     {
-                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x=>x.GrantId).FirstOrDefault();
+                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
                     }
                 }
             }

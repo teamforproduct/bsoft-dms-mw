@@ -215,7 +215,8 @@ namespace DMS_WebAPI.Utilities
 
             if (agentUser != null)
             {
-                if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
+                // решили не использовать флаг IsActive
+                //if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
 
                 if (agentUser.PositionExecutorsCount == 0) throw new UserNotExecuteAnyPosition(agentUser.Name);
 

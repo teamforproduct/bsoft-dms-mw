@@ -24,6 +24,7 @@ using DMS_WebAPI.Models;
 using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
 using System.Web.Script.Serialization;
+using BL.Model.SystemCore.FrontModel;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -471,5 +472,27 @@ namespace DMS_WebAPI.Controllers
 
             return null;
         }
+
+        /// <summary>
+        /// Возвращает список действий, которые может выполнять текущий пользователь.
+        /// Список действий зависит от назначений пользователя на должности и может изменяться с течением времени.
+        /// Список действий зависит от выбранных пользователейм должностей из списка доступных.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetActions")]
+        [ResponseType(typeof(List<FrontSystemAction>))]
+        public async Task<IHttpActionResult> GetActions()
+        {
+            //if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetUserActions(ctx);
+            var res = new JsonResult(tmpItems, this);
+            //res.SpentTime = stopWatch;
+            return res;
+        }
+
+        
     }
 }

@@ -49,7 +49,7 @@ namespace BL.Model.Tree
         public bool? IsChecked { get; set; }
 
         /// <summary>
-        /// Удаляет ветви, которые не заканчиваются листами
+        /// Удаляет ветви, которые не содержат листов типа указанного объекта
         /// </summary>
         public List<EnumObjects> RemoveEmptyBranchesByObject { get; set; }
     }
