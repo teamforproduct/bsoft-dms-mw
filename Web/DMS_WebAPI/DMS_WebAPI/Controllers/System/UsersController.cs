@@ -24,6 +24,7 @@ using DMS_WebAPI.Models;
 using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
 using System.Web.Script.Serialization;
+using BL.Model.SystemCore.FrontModel;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -480,6 +481,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetActions")]
+        [ResponseType(typeof(List<FrontSystemAction>))]
         public async Task<IHttpActionResult> GetActions()
         {
             //if (!stopWatch.IsRunning) stopWatch.Restart();
