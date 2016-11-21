@@ -9,7 +9,7 @@ namespace BL.CrossCutting.Context
     public class FrontSystemSession
     {
         public string Token { get; set; }
-        public DateTime LastUsage { get; set; }
+        public DateTime? LastUsage { get; set; }
         public DateTime CreateDate { get; set; }
         public int? LoginLogId { get; set; }
         public string LoginLogInfo { get; set; }
