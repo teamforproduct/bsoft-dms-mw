@@ -12,6 +12,7 @@ using BL.Model.AdminCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
@@ -26,7 +27,7 @@ namespace BL.Logic.AdminCore.Interfaces
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetUserForContext(IContext context, string userId);
-
+        IEnumerable<FrontSystemAction> GetUserActions(IContext ctx);
         #endregion
 
         #region [+] Verify ...

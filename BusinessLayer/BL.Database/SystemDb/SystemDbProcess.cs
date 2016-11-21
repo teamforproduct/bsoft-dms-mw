@@ -127,7 +127,7 @@ namespace BL.Database.SystemDb
                 {
                     var filterContains = PredicateBuilder.False<SystemLogs>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
-                                .Aggregate(filterContains,(current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.RecordIDs?.Count > 0)
@@ -690,6 +690,9 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
+                    ObjectId = x.ObjectId,
+                    ObjectCode = x.Object.Code,
+                    ObjectDescription = x.Object.Description
                 }).ToList();
 
                 transaction.Complete();
@@ -697,6 +700,8 @@ namespace BL.Database.SystemDb
                 return res;
             }
         }
+
+        
 
         public IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter)
         {
