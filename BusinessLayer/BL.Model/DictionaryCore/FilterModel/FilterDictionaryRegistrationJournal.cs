@@ -44,6 +44,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         ///  Внутренний - внутренняя переписка
         /// </summary>
         public bool? IsInternal { get; set; }
-
+        /// <summary>
+        ///  Признак доступен для регистрации документа в журнале
+        /// </summary>
+        public List<int> PositionIdsAccessForRegistration { get; set; }
     }
 }
