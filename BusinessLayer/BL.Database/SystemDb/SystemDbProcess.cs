@@ -220,7 +220,7 @@ namespace BL.Database.SystemDb
                         ExecutorAgentId = model.AgentId,
                         Key = model.Key,
                         Value = model.Value,
-                        ValueType = (int)model.ValueType,
+                        ValueTypeId = (int)model.ValueType,
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();
@@ -231,7 +231,7 @@ namespace BL.Database.SystemDb
 
                 if (model.ValueType > 0)
                 {
-                    cset.ValueType = (int)model.ValueType;
+                    cset.ValueTypeId = (int)model.ValueType;
                 }
 
                 cset.ExecutorAgentId = model.AgentId;
@@ -281,7 +281,7 @@ namespace BL.Database.SystemDb
                 {
                     Key = x.Key,
                     Value = x.Value,
-                    ValueType = (EnumValueTypes)x.ValueType,
+                    ValueType = (EnumValueTypes)x.ValueTypeId,
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
 
