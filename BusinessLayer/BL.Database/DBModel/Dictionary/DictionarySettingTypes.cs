@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BL.Database.DBModel.System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +8,10 @@ namespace BL.Database.DBModel.Dictionary
 {
     public class DictionarySettingTypes
     {
+        public DictionarySettingTypes()
+        {
+            this.Settings = new HashSet<SystemSettings>();
+        }
         public int Id { get; set; }
 
         [MaxLength(400)]
@@ -18,5 +24,7 @@ namespace BL.Database.DBModel.Dictionary
         public int Order { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+        [ForeignKey("SettingTypeId")]
+        public virtual ICollection<SystemSettings> Settings { get; set; }
     }
 }
