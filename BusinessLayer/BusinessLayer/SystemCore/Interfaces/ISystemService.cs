@@ -9,6 +9,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
 using System;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Logic.SystemCore.Interfaces
 {
@@ -21,7 +22,7 @@ namespace BL.Logic.SystemCore.Interfaces
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
         IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext context, FilterSystemValueType filter);
-        IEnumerable<FrontSystemSetting> GetSystemSettings(IContext context, FilterSystemSetting filter);
+        IEnumerable<FrontDictionarySettingType> GetSystemSettings(IContext context, FilterSystemSetting filter);
         FrontSystemObject GetSystemObject(IContext context, int id);
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         FrontSystemAction GetSystemAction(IContext context, int id);

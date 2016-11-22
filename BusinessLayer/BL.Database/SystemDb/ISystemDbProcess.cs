@@ -24,7 +24,8 @@ namespace BL.Database.SystemDb
         #region Settings
         int MergeSetting(IContext ctx, InternalSystemSetting model);
         string GetSettingValue(IContext ctx, FilterSystemSetting filter);
-        IEnumerable<InternalSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter);
+        IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter);
+        IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter);
         #endregion
 
         #region [+] SystemObjects ...

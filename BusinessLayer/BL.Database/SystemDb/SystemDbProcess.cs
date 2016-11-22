@@ -270,7 +270,33 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<InternalSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = GetSettingsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new FrontSystemSetting()
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = x.Value,
+                    Name = x.Name,
+                    Description = x.Description,
+                    ValueTypeCode = x.ValueTypes.Code,
+                    SettingTypeName = x.SettingType.Name, 
+                    Order = x.Order,
+                    OrderSettingType = x.SettingType.Order,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
