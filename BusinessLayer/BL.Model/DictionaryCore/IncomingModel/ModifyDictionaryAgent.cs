@@ -24,6 +24,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int? ResidentTypeId { get; set; }
 
         /// <summary>
+        /// ИД аватарки, если она была загружена
+        /// </summary>
+        public int? ImageId { get; set; }
+
+        /// <summary>
         /// Данные файла
         /// </summary>
         [IgnoreDataMember]
