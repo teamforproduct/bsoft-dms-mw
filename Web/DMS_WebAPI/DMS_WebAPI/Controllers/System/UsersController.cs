@@ -400,7 +400,7 @@ namespace DMS_WebAPI.Controllers
             {
                 var emailConfirmationCode = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
-                var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "/api/v2/Users/ConfirmEmailAgentUser").AbsoluteUri;
+                var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "email-confirmation").AbsoluteUri;
 
                 callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 

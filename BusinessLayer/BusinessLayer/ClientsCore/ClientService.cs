@@ -76,7 +76,7 @@ namespace BL.Logic.ClientCore
                 {
                     Key = SettingConstants.DefaultSubordinationsSendAllForExecution().Key,
                     Value = SettingConstants.DefaultSubordinationsSendAllForExecution().Value,
-                    ValueType = (int)SettingConstants.DefaultSubordinationsSendAllForExecution().ValueType,
+                    ValueTypeId = (int)SettingConstants.DefaultSubordinationsSendAllForExecution().ValueType,
                 }
                 );
 
@@ -85,7 +85,7 @@ namespace BL.Logic.ClientCore
                 {
                     Key = SettingConstants.DefaultSubordinationsSendAllForInforming().Key,
                     Value = SettingConstants.DefaultSubordinationsSendAllForInforming().Value,
-                    ValueType = (int)SettingConstants.DefaultSubordinationsSendAllForInforming().ValueType,
+                    ValueTypeId = (int)SettingConstants.DefaultSubordinationsSendAllForInforming().ValueType,
                 }
                 );
 
@@ -102,7 +102,7 @@ namespace BL.Logic.ClientCore
             {
                 Key = item.Key,
                 Value = item.Value,
-                ValueType = (int)item.ValueType,
+                ValueTypeId = (int)item.ValueType,
             };
         }
 

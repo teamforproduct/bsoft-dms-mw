@@ -99,7 +99,7 @@ namespace BL.Logic.Settings
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
                 // ... вычитываю из базы
-                var val = db.GetSystemSettings(ctx, new FilterSystemSetting { Key = settingKey });
+                var val = db.GetSystemSettingsInternal(ctx, new FilterSystemSetting { Key = settingKey });
 
                 // Если нет в базе...
                 if (val.Count() == 0 & defaulValue != null)

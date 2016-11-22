@@ -220,7 +220,7 @@ namespace BL.Database.SystemDb
                         ExecutorAgentId = model.AgentId,
                         Key = model.Key,
                         Value = model.Value,
-                        ValueType = (int)model.ValueType,
+                        ValueTypeId = (int)model.ValueType,
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();
@@ -231,7 +231,7 @@ namespace BL.Database.SystemDb
 
                 if (model.ValueType > 0)
                 {
-                    cset.ValueType = (int)model.ValueType;
+                    cset.ValueTypeId = (int)model.ValueType;
                 }
 
                 cset.ExecutorAgentId = model.AgentId;
@@ -270,7 +270,33 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<InternalSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = GetSettingsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new FrontSystemSetting()
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = x.Value,
+                    Name = x.Name,
+                    Description = x.Description,
+                    ValueTypeCode = x.ValueTypes.Code,
+                    SettingTypeName = x.SettingType.Name, 
+                    Order = x.Order,
+                    OrderSettingType = x.SettingType.Order,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -281,7 +307,7 @@ namespace BL.Database.SystemDb
                 {
                     Key = x.Key,
                     Value = x.Value,
-                    ValueType = (EnumValueTypes)x.ValueType,
+                    ValueType = (EnumValueTypes)x.ValueTypeId,
                     AgentId = x.ExecutorAgentId,
                 }).ToList();
 
@@ -1552,15 +1578,16 @@ namespace BL.Database.SystemDb
                     ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact + " " + x.ContactType.Code + " " + x.ContactType.Name
                 }).ToList());
 
-                res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
-                {
-                    DocumentId = 0,
-                    ItemType = EnumObjects.DictionaryContactType,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Code + " " + x.Name
-                }).ToList());
+                // не должны добавляться в полнотекст т.к. значения не локализованы
+                //res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
+                //{
+                //    DocumentId = 0,
+                //    ItemType = EnumObjects.DictionaryContactType,
+                //    OperationType = EnumOperationType.AddNew,
+                //    ClientId = ctx.CurrentClientId,
+                //    ObjectId = x.Id,
+                //    ObjectText = x.Code + " " + x.Name
+                //}).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
@@ -1569,18 +1596,19 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address + " " + x.PostCode + " " + x.AddressType.Name
+                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address + " " + x.PostCode //+ " " + x.AddressType.Name // не должны добавляться в полнотекст т.к. значения не локализованы
                 }).ToList());
 
-                res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
-                {
-                    DocumentId = 0,
-                    ItemType = EnumObjects.DictionaryAddressType,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name
-                }).ToList());
+                // не должны добавляться в полнотекст т.к. значения не локализованы
+                //res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
+                //{
+                //    DocumentId = 0,
+                //    ItemType = EnumObjects.DictionaryAddressType,
+                //    OperationType = EnumOperationType.AddNew,
+                //    ClientId = ctx.CurrentClientId,
+                //    ObjectId = x.Id,
+                //    ObjectText = x.Name
+                //}).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
@@ -1592,15 +1620,16 @@ namespace BL.Database.SystemDb
                     ObjectText = x.AccountNumber + " " + x.Name + " " + x.Agent.Name + " " + x.AgentBank.MFOCode + " " + x.AgentBank.Agent.Name
                 }).ToList());
 
-                res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    DocumentId = 0,
-                    ItemType = EnumObjects.DictionaryDocumentType,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name
-                }).ToList());
+                // не должны добавляться в полнотекст т.к. значения не локализованы
+                //res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                //{
+                //    DocumentId = 0,
+                //    ItemType = EnumObjects.DictionaryDocumentType,
+                //    OperationType = EnumOperationType.AddNew,
+                //    ClientId = ctx.CurrentClientId,
+                //    ObjectId = x.Id,
+                //    ObjectText = x.Name
+                //}).ToList());
 
                 res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
@@ -1679,7 +1708,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " " + x.Position.Name + " " + x.PositionExecutorType.Name
+                    ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " " + x.Position.Name //+ " " + x.PositionExecutorType.Name // не должны добавляться в полнотекст т.к. значения не локализованы
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryPositionExecutorTypesSet.Select(x => new FullTextIndexItem
@@ -1703,7 +1732,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Addressee + " " + x.DocumentDirection.Name + " " + x.DocumentSubject.Name + " " + x.DocumentType.Name + " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.FullName
+                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.FullName
                 }).ToList());
 
                 res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1713,7 +1742,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Document.Name + " " + x.SendType.Name + " " + x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
                 }).ToList());
 
                 res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1805,11 +1834,12 @@ namespace BL.Database.SystemDb
                                          x.doc.RegistrationJournal.Department.Name + " "
                                          + x.doc.Description + " "
                                          + x.doc.ExecutorPositionExecutorAgent.Name + " "
-                                         + x.doc.TemplateDocument.DocumentType.Name + " " +
-                                         x.doc.TemplateDocument.DocumentDirection.Name + " " +
-                                         x.doc.DocumentSubject.Name + " "
+                                         //+ x.doc.TemplateDocument.DocumentType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
+                                         //+ x.doc.TemplateDocument.DocumentDirection.Name + " " 
                                          + x.doc.DocumentSubject.Name + " "
-                                         + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " +
+                                         + x.doc.DocumentSubject.Name + " "
+                                         + x.doc.SenderAgent.Name + " " 
+                                         + x.doc.SenderAgentPerson.Agent.Name + " " +
                                          x.doc.SenderNumber + " "
                         }).ToList());
 
@@ -1850,9 +1880,12 @@ namespace BL.Database.SystemDb
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.sl.Id,
                             ObjectText =
-                                x.sl.Description + " " + x.sl.SendType.Name + " " + x.sl.SourcePosition.Name + " " +
-                                x.sl.TargetPosition.Name + " " + x.sl.SourcePositionExecutorAgent.Name + " " +
-                                x.sl.TargetPositionExecutorAgent.Name + " "
+                                x.sl.Description + " "
+                                //+ x.sl.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
+                                + x.sl.SourcePosition.Name + " " +
+                                x.sl.TargetPosition.Name + " " 
+                                + x.sl.SourcePositionExecutorAgent.Name + " " 
+                                + x.sl.TargetPositionExecutorAgent.Name 
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
@@ -1891,8 +1924,9 @@ namespace BL.Database.SystemDb
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.ss.Id,
                             ObjectText =
-                                x.ss.Description + " " + x.ss.SubscriptionState.Name + " " +
-                                x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
+                                x.ss.Description + " "
+                            //+ x.ss.SubscriptionState.Name + " " // не должны добавляться в полнотекст т.к. значения не локализованы
+                            + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " " 
                         }).ToList());
 
                 transaction.Complete();
@@ -1926,9 +1960,9 @@ namespace BL.Database.SystemDb
                                          x.RegistrationJournal.Department.Name + " "
                                          + x.Description + " "
                                          + x.ExecutorPositionExecutorAgent.Name + " "
-                                         + x.TemplateDocument.DocumentType.Name + " " +
-                                         x.TemplateDocument.DocumentDirection.Name + " " +
-                                         x.DocumentSubject.Name + " "
+                                         //+ x.TemplateDocument.DocumentType.Name + " " // не должны добавляться в полнотекст т.к. значения не локализованы
+                                         //+x.TemplateDocument.DocumentDirection.Name + " " 
+                                         + x.DocumentSubject.Name + " "
                                          + x.DocumentSubject.Name + " "
                                          + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " +
                                          x.SenderNumber + " "
@@ -1948,7 +1982,13 @@ namespace BL.Database.SystemDb
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
-                        ObjectText = x.Description + " " + x.AddDescription + " " + x.Task.Task + " " + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " " + x.SourceAgent.Name + " " + x.TargetAgent.Name + " "
+                        ObjectText = x.Description + " " 
+                        + x.AddDescription + " " 
+                        + x.Task.Task + " " 
+                        + x.SourcePositionExecutorAgent.Name + " "  
+                        + x.TargetPositionExecutorAgent.Name + " " 
+                        + x.SourceAgent.Name + " " 
+                        + x.TargetAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
 
                     transaction.Complete();
@@ -1979,7 +2019,12 @@ namespace BL.Database.SystemDb
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
-                        ObjectText = x.Description + " " + x.SendType.Name + " " + x.SourcePosition.Name + " " + x.TargetPosition.Name + " " + x.SourcePositionExecutorAgent.Name + " " + x.TargetPositionExecutorAgent.Name + " "
+                        ObjectText = x.Description + " "
+                        //+ x.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
+                        + x.SourcePosition.Name + " " 
+                        + x.TargetPosition.Name + " " 
+                        + x.SourcePositionExecutorAgent.Name + " " 
+                        + x.TargetPositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
                     transaction.Complete();
                     return res;
@@ -1994,7 +2039,9 @@ namespace BL.Database.SystemDb
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
-                        ObjectText = x.Description + " " + x.SubscriptionState.Name + " " + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
+                        ObjectText = x.Description + " "
+                        //+ x.SubscriptionState.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
+                        + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
                     transaction.Complete();
                     return res;
@@ -2036,9 +2083,9 @@ namespace BL.Database.SystemDb
                                          x.doc.RegistrationJournal.Department.Name + " "
                                          + x.doc.Description + " "
                                          + x.doc.ExecutorPositionExecutorAgent.Name + " "
-                                         + x.doc.TemplateDocument.DocumentType.Name + " " +
-                                         x.doc.TemplateDocument.DocumentDirection.Name + " " +
-                                         x.doc.DocumentSubject.Name + " "
+                                         //+ x.doc.TemplateDocument.DocumentType.Name + " " // не должны добавляться в полнотекст т.к. значения не локализованы
+                                         //+x.doc.TemplateDocument.DocumentDirection.Name + " "
+                                         + x.doc.DocumentSubject.Name + " "
                                          + x.doc.DocumentSubject.Name + " "
                                          + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name + " " +
                                          x.doc.SenderNumber + " "
@@ -2089,7 +2136,12 @@ namespace BL.Database.SystemDb
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.sl.Id,
-                            ObjectText = x.sl.Description + " " + x.sl.SendType.Name + " " + x.sl.SourcePosition.Name + " " + x.sl.TargetPosition.Name + " " + x.sl.SourcePositionExecutorAgent.Name + " " + x.sl.TargetPositionExecutorAgent.Name + " "
+                            ObjectText = x.sl.Description + " "
+                            // + x.sl.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
+                            + x.sl.SourcePosition.Name + " " 
+                            + x.sl.TargetPosition.Name + " " 
+                            + x.sl.SourcePositionExecutorAgent.Name + " " 
+                            + x.sl.TargetPositionExecutorAgent.Name + " "
                         }).Take(() => rowToSelect).ToList());
                 }
 
@@ -2103,7 +2155,9 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.ss.Id,
-                        ObjectText = x.ss.Description + " " + x.ss.SubscriptionState.Name + " " + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
+                        ObjectText = x.ss.Description + " "
+                        //+ x.ss.SubscriptionState.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
+                        + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Take(() => rowToSelect).ToList());
                 }
                 var iDs = res.Select(x => x.Id);
@@ -2218,19 +2272,20 @@ namespace BL.Database.SystemDb
                     }).ToList());
                 }
 
-                if (objectTypesToProcess.Contains(EnumObjects.DictionaryContactType))
-                {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryContactType).Join(dbContext.DictionaryContactTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, contact = d, id = d.Id }).Select(x => new FullTextIndexItem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ClientId = ctx.CurrentClientId,
-                        ObjectId = x.id,
-                        ObjectText = x.contact.Code.Trim() + " " + x.contact.Name.Trim()
-                    }).ToList());
-                }
+                // не должны добавляться в полнотекст т.к. значения не локализованы
+                //if (objectTypesToProcess.Contains(EnumObjects.DictionaryContactType))
+                //{
+                //    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryContactType).Join(dbContext.DictionaryContactTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, contact = d, id = d.Id }).Select(x => new FullTextIndexItem
+                //    {
+                //        Id = x.ind.Id,
+                //        DocumentId = 0,
+                //        ItemType = (EnumObjects)x.ind.ObjectType,
+                //        OperationType = (EnumOperationType)x.ind.OperationType,
+                //        ClientId = ctx.CurrentClientId,
+                //        ObjectId = x.id,
+                //        ObjectText = x.contact.Code.Trim() + " " + x.contact.Name.Trim()
+                //    }).ToList());
+                //}
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentAddresses))
                 {
@@ -2247,19 +2302,19 @@ namespace BL.Database.SystemDb
                     }).ToList());
                 }
 
-                if (objectTypesToProcess.Contains(EnumObjects.DictionaryAddressType))
-                {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAddressType).Join(dbContext.DictionaryAddressTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, address = d, id = d.Id }).Select(x => new FullTextIndexItem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ClientId = ctx.CurrentClientId,
-                        ObjectId = x.id,
-                        ObjectText = x.address.Name.Trim()
-                    }).ToList());
-                }
+                //if (objectTypesToProcess.Contains(EnumObjects.DictionaryAddressType))
+                //{
+                //    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAddressType).Join(dbContext.DictionaryAddressTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, address = d, id = d.Id }).Select(x => new FullTextIndexItem
+                //    {
+                //        Id = x.ind.Id,
+                //        DocumentId = 0,
+                //        ItemType = (EnumObjects)x.ind.ObjectType,
+                //        OperationType = (EnumOperationType)x.ind.OperationType,
+                //        ClientId = ctx.CurrentClientId,
+                //        ObjectId = x.id,
+                //        ObjectText = x.address.Name.Trim()
+                //    }).ToList());
+                //}
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentAccounts))
                 {
@@ -2275,19 +2330,19 @@ namespace BL.Database.SystemDb
                     }).ToList());
                 }
 
-                if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentType))
-                {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDocumentType).Join(dbContext.DictionaryDocumentTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ClientId = ctx.CurrentClientId,
-                        ObjectId = x.id,
-                        ObjectText = x.doc.Name.Trim()
-                    }).ToList());
-                }
+                //if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentType))
+                //{
+                //    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDocumentType).Join(dbContext.DictionaryDocumentTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
+                //    {
+                //        Id = x.ind.Id,
+                //        DocumentId = 0,
+                //        ItemType = (EnumObjects)x.ind.ObjectType,
+                //        OperationType = (EnumOperationType)x.ind.OperationType,
+                //        ClientId = ctx.CurrentClientId,
+                //        ObjectId = x.id,
+                //        ObjectText = x.doc.Name.Trim()
+                //    }).ToList());
+                //}
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentSubjects))
                 {
@@ -2370,7 +2425,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Task + " " + x.doc.Description + " " + x.doc.SendType.Name + x.doc.StandartSendList.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
+                        ObjectText = x.doc.Task + " " + x.doc.Description + " " + /*x.doc.SendType.Name +*/ x.doc.StandartSendList.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
                     }).ToList());
                 }
 
@@ -2412,7 +2467,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Agent.Name + " " + x.doc.EndDate + " " + x.doc.Position.Name + " " + x.doc.PositionExecutorType.Name
+                        ObjectText = x.doc.Description + " " + x.doc.Agent.Name + " " + x.doc.EndDate + " " + x.doc.Position.Name //+ " " + x.doc.PositionExecutorType.Name
                     }).ToList());
                 }
 
@@ -2430,7 +2485,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " + x.doc.DocumentDirection.Name + " " + x.doc.DocumentSubject.Name + " " + x.doc.DocumentType.Name + " " + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.FullName
+                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " /*+ x.doc.DocumentDirection.Name + " "*/ + x.doc.DocumentSubject.Name + " " /*+ x.doc.DocumentType.Name + " "*/ + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.FullName
                     }).ToList());
                 }
 

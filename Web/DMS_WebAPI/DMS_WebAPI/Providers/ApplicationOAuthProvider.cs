@@ -175,8 +175,8 @@ namespace DMS_WebAPI.Providers
                 //    httpContext.Response.Flush();
                 //}
 
-                if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
-                    throw new EmailConfirmRequiredAgentUser();
+                //if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
+                //    throw new EmailConfirmRequiredAgentUser();
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 

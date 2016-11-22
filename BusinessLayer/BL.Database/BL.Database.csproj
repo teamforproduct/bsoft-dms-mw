@@ -173,6 +173,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentUsers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
+    <Compile Include="DBModel\Dictionary\DictionarySettingTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySigningTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryFileTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryLinkTypes.cs" />
@@ -414,6 +415,18 @@
     <Compile Include="Migrations\201611171116050_DocumentFilesBack.Designer.cs">
       <DependentUpon>201611171116050_DocumentFilesBack.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611221117313_SystemSettings.cs" />
+    <Compile Include="Migrations\201611221117313_SystemSettings.Designer.cs">
+      <DependentUpon>201611221117313_SystemSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611221125362_SystemSettings2.cs" />
+    <Compile Include="Migrations\201611221125362_SystemSettings2.Designer.cs">
+      <DependentUpon>201611221125362_SystemSettings2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611221132149_SystemSettings3.cs" />
+    <Compile Include="Migrations\201611221132149_SystemSettings3.Designer.cs">
+      <DependentUpon>201611221132149_SystemSettings3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -598,6 +611,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611171116050_DocumentFilesBack.resx">
       <DependentUpon>201611171116050_DocumentFilesBack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611221117313_SystemSettings.resx">
+      <DependentUpon>201611221117313_SystemSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611221125362_SystemSettings2.resx">
+      <DependentUpon>201611221125362_SystemSettings2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611221132149_SystemSettings3.resx">
+      <DependentUpon>201611221132149_SystemSettings3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

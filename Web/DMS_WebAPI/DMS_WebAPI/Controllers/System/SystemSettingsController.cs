@@ -11,6 +11,7 @@ using BL.Model.SystemCore.IncomingModel;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Enums;
 using BL.CrossCutting.Interfaces;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -27,6 +28,7 @@ namespace DMS_WebAPI.Controllers
         /// <param name="filter"></param>
         /// <returns></returns>
         // GET: api/SystemFormats
+        [ResponseType(typeof(FrontDictionarySettingType))]
         public IHttpActionResult Get([FromUri] FilterSystemSetting filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
