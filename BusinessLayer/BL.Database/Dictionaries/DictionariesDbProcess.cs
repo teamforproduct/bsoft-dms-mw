@@ -1234,7 +1234,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     LanguageId = x.LanguageId,
                     LanguageName = x.Language.Code,
-                    IsActive = x.IsActive,
+                    IsActive = x.Agent.AgentEmployee.IsActive,
                     IsSendEMail = false, //TODO
                     Name = x.Agent.Name,
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact

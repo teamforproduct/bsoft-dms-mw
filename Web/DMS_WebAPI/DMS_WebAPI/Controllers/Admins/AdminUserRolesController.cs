@@ -121,8 +121,10 @@ namespace DMS_WebAPI.Controllers.Admins
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByPositionExecutor, cxt, id);
-            return Get((int)tmpItem);
+            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByPositionExecutor, cxt, id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -137,8 +139,10 @@ namespace DMS_WebAPI.Controllers.Admins
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByUser, cxt, id);
-            return Get((int)tmpItem);
+            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByUser, cxt, id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
 

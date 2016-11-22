@@ -267,7 +267,7 @@ namespace BL.Database.Admins
                         AgentId = x.Id,
                         Name = x.Agent.Name,
                         LanguageId = x.Agent.AgentUser.LanguageId ?? -1,
-                        IsActive = x.IsActive & x.Agent.AgentEmployee.IsActive,
+                        IsActive = x.Agent.AgentEmployee.IsActive,
                         PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(),
                     }).FirstOrDefault();
                 transaction.Complete();

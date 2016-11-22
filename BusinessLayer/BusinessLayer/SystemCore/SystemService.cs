@@ -115,13 +115,13 @@ namespace BL.Logic.SystemCore
             flatList.AddRange(objects);
             flatList.AddRange(actions);
 
-            // перевожу на пользовательский язык лейблы
+            // перевожу на пользовательский язык лейблы в SearchText
 
             var languageService = DmsResolver.Current.Get<ILanguages>();
 
             foreach (var item in flatList)
             {
-                item.Name  = languageService.ReplaceLanguageLabel(context,  item.Name);
+                item.SearchText  = languageService.GetTranslation(item.SearchText);
             }
 
             var res = Tree.GetList( Tree.Get(flatList, filter));
