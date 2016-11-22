@@ -32,26 +32,26 @@ namespace BL.Logic.DictionaryCore
             Model.Value?.Trim();
 
             // У одного агента не должно быть два контакта одинакового типа
-            var spr = _dictDb.GetContacts(_context,
-                   new FilterDictionaryContact
-                   {
-                       NotContainsIDs = new List<int> { Model.Id },
-                       ContactTypeIDs = new List<int> { Model.ContactTypeId },
-                       AgentIDs = new List<int> { Model.AgentId }
-                   });
+            //var spr = _dictDb.GetContacts(_context,
+            //       new FilterDictionaryContact
+            //       {
+            //           NotContainsIDs = new List<int> { Model.Id },
+            //           ContactTypeIDs = new List<int> { Model.ContactTypeId },
+            //           AgentIDs = new List<int> { Model.AgentId }
+            //       });
 
-            if (spr.Count() != 0) throw new DictionaryAgentContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
+            //if (spr.Count() != 0) throw new DictionaryContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
 
             // У одного агента не должно быть два контакта с одинаковыми значениями
-            spr = _dictDb.GetContacts(_context, 
+            var spr = _dictDb.GetContacts(_context, 
                    new FilterDictionaryContact
                    {
                        NotContainsIDs = new List<int> { Model.Id },
                        ContactExact = Model.Value,
                        AgentIDs = new List<int> { Model.AgentId }
-                   });
+                   }).FirstOrDefault();
 
-            if (spr.Count() != 0) throw new DictionaryAgentContactNotUnique(Model.Value);
+            if (spr != null) throw new DictionaryContactNotUnique(spr.Value);
             return true;
         }
 

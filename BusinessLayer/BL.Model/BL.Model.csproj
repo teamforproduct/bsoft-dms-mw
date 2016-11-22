@@ -277,7 +277,7 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
-    <Compile Include="Database\StoreInfo.cs" />
+    <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryLinkType.cs" />
@@ -496,6 +496,7 @@
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPositionInfo.cs" />
     <Compile Include="SystemCore\InternalModel\InternalSendMailParameters.cs" />
+    <Compile Include="SystemCore\TempStoreObject.cs" />
     <Compile Include="SystemCore\UICounters.cs" />
     <Compile Include="SystemCore\UIPaging.cs" />
     <Compile Include="Tree\FilterTree.cs" />

@@ -9,11 +9,15 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgentPerson : DictionaryBaseFilterParameters
     {
+        /// <summary>
+        /// Строка, для полнотекстового поиска
+        /// </summary>
+        public string FullTextSearchString { get; set; }
 
         /// <summary>
-        /// Список AgentCompanyId
+        /// Ссылка на организацию для контактных лиц
         /// </summary>
-        public List<int> AgentCompanyId { get; set; }
+        public List<int> AgentCompanyIDs{ get; set; }
 
         /// <summary>
         /// Отрывок из паспортных данных

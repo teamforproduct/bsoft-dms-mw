@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
@@ -116,15 +115,8 @@ namespace BL.Logic.Settings
                 
             }
 
-            try
-            {
-                var settingValue = _casheSettings[casheKey];
-                return (T)((IConvertible)settingValue).ToType(typeof(T), null);
-            }
-            catch (InvalidCastException)
-            {
-                throw;
-            }
+            var settingValue = _casheSettings[casheKey];
+            return (T)((IConvertible)settingValue).ToType(typeof(T), null);
         }
 
         //public void SaveSetting(IContext ctx, string key, object val)

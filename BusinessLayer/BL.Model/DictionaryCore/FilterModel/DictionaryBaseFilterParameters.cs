@@ -32,11 +32,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по наименованию элементов
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
     
     }
 }

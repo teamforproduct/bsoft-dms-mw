@@ -153,8 +153,6 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
-        FrontDictionaryDocumentDirection GetDocumentDirection(IContext context, int id);
-
         IEnumerable<FrontDictionaryDocumentDirection> GetDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
         #endregion DictionaryDepartments
 
@@ -164,7 +162,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
         void DeleteDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
         bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
-        InternalDictionaryDocumentSubject GetInternalDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
+        IEnumerable<InternalDictionaryDocumentSubject> GetInternalDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         IEnumerable<FrontDictionaryDocumentSubject> GetDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         #endregion DictionaryDocumentSubjects
 
@@ -173,25 +171,19 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDocumentType(IContext context, InternalDictionaryDocumentType docType);
         void DeleteDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDocumentType(IContext context, InternalDictionaryDocumentType docType);
-        InternalDictionaryDocumentType GetInternalDictionaryDocumentType(IContext context, FilterDictionaryDocumentType filter);
+        IEnumerable<InternalDictionaryDocumentType> GetInternalDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
-        FrontDictionaryEventType GetEventType(IContext context, int id);
-
         IEnumerable<FrontDictionaryEventType> GetEventTypes(IContext context, FilterDictionaryEventType filter);
         #endregion DictionaryEventTypes
 
         #region DictionaryImportanceEventTypes
-        FrontDictionaryImportanceEventType GetImportanceEventType(IContext context, int id);
-
         IEnumerable<FrontDictionaryImportanceEventType> GetImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter);
         #endregion DictionaryImportanceEventTypes
 
         #region DictionaryLinkTypes
-        FrontDictionaryLinkType GetLinkType(IContext context, int id);
-
         IEnumerable<FrontDictionaryLinkType> GetLinkTypes(IContext context, FilterDictionaryLinkType filter);
         #endregion DictionaryLinkTypes
 
@@ -200,7 +192,6 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddPosition(IContext context, InternalDictionaryPosition position);
         void UpdatePosition(IContext context, InternalDictionaryPosition position);
         void DeletePositions(IContext context, List<int> list);
-        bool ExistsPosition(IContext context, FilterDictionaryPosition filter);
 
         void UpdatePositionOrder(IContext context, int positionId, int order);
 
@@ -208,7 +199,6 @@ namespace BL.Database.Dictionaries.Interfaces
         FrontDictionaryPosition GetPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
-        IEnumerable<InternalDictionaryPositionWithActions> GetPositionsWithActions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
@@ -224,17 +214,15 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor model);
         void DeleteExecutors(IContext context, List<int> list);
         bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
-        InternalDictionaryPositionExecutor GetInternalPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<InternalDictionaryPositionExecutor> GetInternalPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
-        FrontDictionaryPositionExecutor GetPositionExecutor(IContext context, int id);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
 
         // Типы исполнителей
         #region DictionaryPositionExecutorTypes
-        InternalDictionaryPositionExecutorType GetInternalDictionaryPositionExecutorType(IContext context, FilterDictionaryPositionExecutorType filter);
+        IEnumerable<InternalDictionaryPositionExecutorType> GetInternalDictionaryPositionExecutorType(IContext context, FilterDictionaryPositionExecutorType filter);
         IEnumerable<FrontDictionaryPositionExecutorType> GetPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter);
         #endregion DictionaryPositionExecutorTypes
 
@@ -244,7 +232,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
         void DeleteRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
         bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
-        InternalDictionaryRegistrationJournal GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<InternalDictionaryRegistrationJournal> GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<TreeItem> GetRegistrationJournalsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryRegistrationJournal filter);
         IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
@@ -263,43 +251,35 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region DictionaryResultTypes
-        FrontDictionaryResultType GetResultType(IContext context, int id);
-
         IEnumerable<FrontDictionaryResultType> GetResultTypes(IContext context, FilterDictionaryResultType filter);
         #endregion DictionaryResultTypes
 
         #region DictionarySendTypes
-        FrontDictionarySendType GetSendType(IContext context, int id);
-
         IEnumerable<FrontDictionarySendType> GetSendTypes(IContext context, FilterDictionarySendType filter);
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
-        FrontDictionaryStandartSendListContent GetStandartSendListContent(IContext context, int id);
+        int AddStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
         void UpdateStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
         void DeleteStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
-        int AddStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
         IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        FrontDictionaryStandartSendList GetStandartSendList(IContext context, int id);
+        int AddStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void UpdateStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void DeleteStandartSendList(IContext context, InternalDictionaryStandartSendList list);
-        int AddStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        FrontDictionarySubordinationType GetSubordinationType(IContext context, int id);
-
         IEnumerable<FrontDictionarySubordinationType> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
 
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
 
-        InternalDictionaryTag GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter);
+        IEnumerable<InternalDictionaryTag> GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter);
         IEnumerable<FrontDictionaryTag> GetTags(IContext context, FilterDictionaryTag filter);
         int DocsWithTagCount(IContext context, int tagId);
         int AddTag(IContext context, InternalDictionaryTag model);
@@ -322,9 +302,9 @@ namespace BL.Database.Dictionaries.Interfaces
 
         void DeleteCustomDictionaryType(IContext context, int id);
 
-        InternalCustomDictionaryType GetInternalCustomDictionaryType(IContext context, FilterCustomDictionaryType filter);
+        IEnumerable<InternalCustomDictionaryType> GetInternalCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
 
-        FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id);
+        FrontCustomDictionaryType GetCustomDictionaryTypeWithCustomDictionaries(IContext context, int id);
 
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
         #endregion CustomDictionaryTypes
@@ -336,9 +316,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         void DeleteCustomDictionary(IContext context, int id);
 
-        InternalCustomDictionary GetInternalCustomDictionary(IContext context, FilterCustomDictionary filter);
-
-        FrontCustomDictionary GetCustomDictionary(IContext context, int id);
+        IEnumerable<InternalCustomDictionary> GetInternalCustomDictionarys(IContext context, FilterCustomDictionary filter);
 
         IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
         #endregion CustomDictionaries

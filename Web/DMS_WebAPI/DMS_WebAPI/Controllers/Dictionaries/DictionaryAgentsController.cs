@@ -11,6 +11,8 @@ using BL.Model.SystemCore;
 using System.Web;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using System.Text;
+using BL.Logic.SystemServices.TempStorage;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -75,7 +77,19 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+            
+            if (model.ImageId.HasValue)
+            {
+                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
+                if (avaFile is HttpPostedFile)
+                {
+                    model.PostedFileData = avaFile as HttpPostedFile;
+                }
+            }
+
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgent, ctx, model);
             return Get(model.Id);
         }
@@ -107,8 +121,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.PostedFileData = file;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, ctx, model);
+            var tmpStore= DmsResolver.Current.Get<ITempStorageService>();
+            tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.AgentId, 0, file);
             return new JsonResult(null, this);
         }
 
@@ -133,6 +147,23 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpItems, this);
         }
 
+        [HttpGet]
+        [Route("GetImageOnEdit")]
+        [ResponseType(typeof(FrontDictionaryAgentUserPicture))]
+        public IHttpActionResult GetImageOnEdit([FromUri] int ImageId)
+        {
+            var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+            var img = tmpStore.GetStoreObject(ImageId) as HttpPostedFile;
 
+            byte[] buffer = new byte[img.ContentLength];
+            img.InputStream.Read(buffer, 0, img.ContentLength);
+            var res = new FrontDictionaryAgentUserPicture
+            {
+                Id = 0,
+                FileContent = Encoding.Default.GetString(buffer)
+            };
+
+            return new JsonResult(res, this);
+        }
     }
 }

@@ -41,18 +41,18 @@ namespace BL.Logic.AdminCore
                 {
                     NotContainsIDs = new List<int> { Model.Id },
                     RoleIDs = new List<int> { Model.RoleId },
-                    PositionExecutorIDs = new List<int> { Model.PositionExecutorId ?? 0 },
+                    PositionExecutorIDs = new List<int> { Model.PositionExecutorId},
                 })) throw new AdminRecordNotUnique();
             }
-            if (Model.UserId != null)
-            {
-                if (_adminDb.ExistsUserRole(_context, new FilterAdminUserRole
-                {
-                    NotContainsIDs = new List<int> { Model.Id },
-                    RoleIDs = new List<int> { Model.RoleId },
-                    UserIDs = new List<int> { Model.UserId ?? 0 },
-                })) throw new AdminRecordNotUnique();
-            }
+            //if (Model.UserId != null)
+            //{
+            //    if (_adminDb.ExistsUserRole(_context, new FilterAdminUserRole
+            //    {
+            //        NotContainsIDs = new List<int> { Model.Id },
+            //        RoleIDs = new List<int> { Model.RoleId },
+            //        UserIDs = new List<int> { Model.UserId ?? 0 },
+            //    })) throw new AdminRecordNotUnique();
+            //}
             return true;
         }
 

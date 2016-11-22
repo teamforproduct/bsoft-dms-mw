@@ -24,6 +24,7 @@ using DMS_WebAPI.Models;
 using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
 using System.Web.Script.Serialization;
+using BL.Model.SystemCore.FrontModel;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -239,7 +240,8 @@ namespace DMS_WebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState, false, this);
+                //return BadRequest(ModelState);
             }
 
             var mngContext = DmsResolver.Current.Get<UserContexts>();
@@ -257,25 +259,27 @@ namespace DMS_WebAPI.Controllers
 
             if (!result.Succeeded)
             {
-                return GetErrorResult(result);
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
             }
 
-            if (model.IsChangePasswordRequired)
+            //if (model.IsChangePasswordRequired)
+            //{
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
+
+            result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
             {
-                ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-                if (user == null)
-                    throw new UserNameIsNotDefined();
-
-                user.IsChangePasswordRequired = true;
-
-                result = await userManager.UpdateAsync(user);
-
-                if (!result.Succeeded)
-                {
-                    return GetErrorResult(result);
-                }
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
             }
+            //}
 
             if (model.IsKillSessions)
                 mngContext.KillSessions(model.AgentId);
@@ -377,7 +381,11 @@ namespace DMS_WebAPI.Controllers
 
             user.UserName = model.NewEmail;
             user.Email = model.NewEmail;
+
             user.IsEmailConfirmRequired = model.IsVerificationRequired;
+
+            if (user.IsEmailConfirmRequired)
+                user.EmailConfirmed = false;
 
             var result = await userManager.UpdateAsync(user);
 
@@ -392,7 +400,7 @@ namespace DMS_WebAPI.Controllers
             {
                 var emailConfirmationCode = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
-                var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "/api/v2/Users/ConfirmEmailAgentUser").AbsoluteUri;
+                var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "email-confirmation").AbsoluteUri;
 
                 callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 
@@ -464,5 +472,27 @@ namespace DMS_WebAPI.Controllers
 
             return null;
         }
+
+        /// <summary>
+        /// Возвращает список действий, которые может выполнять текущий пользователь.
+        /// Список действий зависит от назначений пользователя на должности и может изменяться с течением времени.
+        /// Список действий зависит от выбранных пользователейм должностей из списка доступных.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetActions")]
+        [ResponseType(typeof(List<FrontSystemAction>))]
+        public async Task<IHttpActionResult> GetActions()
+        {
+            //if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetUserActions(ctx);
+            var res = new JsonResult(tmpItems, this);
+            //res.SpentTime = stopWatch;
+            return res;
+        }
+
+        
     }
 }

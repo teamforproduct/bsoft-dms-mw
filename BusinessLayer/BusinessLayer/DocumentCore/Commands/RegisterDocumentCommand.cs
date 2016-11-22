@@ -114,10 +114,7 @@ namespace BL.Logic.DocumentCore.Commands
                     //_documentDb.RegisterDocument(_context, _document);
                     throw new DocumentCouldNotBeRegistered();
                 }
-                else
-                {
-                    transaction.Complete();
-                }
+                transaction.Complete();
             }
             return Model.DocumentId;
         }

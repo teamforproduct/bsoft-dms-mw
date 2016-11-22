@@ -88,7 +88,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocumentBase model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var nextNumb = docProc.GetNextRegisterDocumentNumber(ctx, model);
             return new JsonResult(nextNumb, this);

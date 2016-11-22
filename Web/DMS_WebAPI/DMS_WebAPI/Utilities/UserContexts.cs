@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.Utilities
@@ -64,6 +65,8 @@ namespace DMS_WebAPI.Utilities
                     AgentId = (x.Value.StoreObject as IContext).CurrentEmployee.AgentId,
                     Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
                     ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
+                    IsActive = true,
+                    
                 });
             return res;
         }
@@ -212,7 +215,8 @@ namespace DMS_WebAPI.Utilities
 
             if (agentUser != null)
             {
-                if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
+                // решили не использовать флаг IsActive
+                //if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
 
                 if (agentUser.PositionExecutorsCount == 0) throw new UserNotExecuteAnyPosition(agentUser.Name);
 

@@ -72,6 +72,12 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.DeleteUserRole:
                     cmd = DmsResolver.Current.Get<DeleteUserRoleCommand>();
                     break;
+                case EnumAdminActions.DeleteUserRoleByPositionExecutor:
+                    cmd = DmsResolver.Current.Get<DeleteUserRolesByPositionExecutorCommand>();
+                    break;
+                case EnumAdminActions.DeleteUserRoleByUser:
+                    cmd = DmsResolver.Current.Get<DeleteUserRolesByUserCommand>();
+                    break;
                 #endregion
 
                 #region AdminSubordinations

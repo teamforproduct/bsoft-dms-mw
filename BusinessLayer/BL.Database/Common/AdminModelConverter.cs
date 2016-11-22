@@ -82,10 +82,9 @@ namespace BL.Database.Common
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                UserId = item.UserId,
                 RoleId = item.RoleId,
-                //PositionId = item.PositionId,
                 PositionExecutorId = item.PositionExecutorId,
+                //PositionId = item.PositionId,
                 //StartDate = item.StartDate,
                 //EndDate = item.EndDate ?? DateTime.MaxValue
             };

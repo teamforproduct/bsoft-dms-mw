@@ -25,6 +25,10 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
 using System.Transactions;
 using BL.Database.Common;
+using BL.Model.SystemCore;
+using BL.Database.SystemDb;
+using BL.Model.SystemCore.FrontModel;
+using BL.Model.SystemCore.Filters;
 
 namespace BL.Logic.AdminCore
 {
@@ -32,16 +36,18 @@ namespace BL.Logic.AdminCore
     {
         private readonly IAdminsDbProcess _adminDb;
         private readonly IDictionariesDbProcess _dictDb;
+        private readonly ISystemDbProcess _systemDb;
         private readonly ICommandService _commandService;
 
         private const int _MINUTES_TO_UPDATE_INFO = 5;
 
         private Dictionary<string, StoreInfo> accList;
 
-        public AdminService(IAdminsDbProcess adminDb, IDictionariesDbProcess dictDb, ICommandService commandService)
+        public AdminService(IAdminsDbProcess adminDb, IDictionariesDbProcess dictDb, ISystemDbProcess systemDb, ICommandService commandService)
         {
             _adminDb = adminDb;
             _dictDb = dictDb;
+            _systemDb = systemDb;
             _commandService = commandService;
             accList = new Dictionary<string, StoreInfo>();
         }
@@ -98,6 +104,40 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
         }
+
+        public IEnumerable<FrontSystemAction> GetUserActions(IContext ctx)
+        {
+
+            var positionExecutors = _dictDb.GetInternalPositionExecutors(ctx, new FilterDictionaryPositionExecutor
+            {
+                AgentIDs = new List<int> { ctx.CurrentAgentId },
+                PositionIDs = ctx.CurrentPositionsIdList,
+                IsActive = true,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow,
+            });
+
+            var roles = _adminDb.GetInternalUserRoles(ctx, new FilterAdminUserRole
+            {
+                PositionExecutorIDs = positionExecutors.Select(x => x.Id).ToList(),
+            });
+
+            var actions = _adminDb.GetActionsByRoles(ctx, new FilterAdminRoleAction
+            {
+                RoleIDs = roles.Select(x => x.RoleId).ToList()
+            });
+
+            var res = _systemDb.GetSystemActions(ctx, new FilterSystemAction
+            {
+                IDs = actions,
+                IsGrantable = true,
+                IsVisible = true,
+                IsGrantableByRecordId = false,
+            });
+
+
+            return res;
+        }
         #endregion
 
         #region [+] Verify ...
@@ -130,20 +170,34 @@ namespace BL.Logic.AdminCore
                     model.PositionId = context.CurrentPositionId;
                 }
 
-                var qry = data.ActionAccess
-                    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
-                    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.Id, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
-                // test it really good!
-                res = qry.Any(x => x.Act.Id == model.DocumentActionId
-                && data.UserRoles.Where(s => s.RoleId == x.Role.Id).Any(y => y.UserId == model.UserId)
-                && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId))));
+                var actionId = model.DocumentActionId;
+
+                while (!res && actionId.HasValue)
+                {
+                    var qry = data.ActionAccess
+                        .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
+                        .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
+                    //var t = qry.Where(x => x.Act.Id == actionId.Value
+                    //                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                    //                        //&& x.Role.PositionId == 5516
+                    //                        ).ToList();
+                    // test it really good!
+                    res = qry.Any(x => x.Act.Id == actionId.Value
+                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                        && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
+                        && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
+                        );
+                    if (!res)
+                    {
+                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
+                    }
+                }
             }
             else
             {
                 var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new { URole = u, PR = r });
 
-                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.UserId == model.UserId).Select(x => x.PR.PositionId)).Any();
+                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.AgentId == model.UserId).Select(x => x.PR.PositionId)).Any();
             }
             if (!res && isThrowExeception)
             {
@@ -517,11 +571,11 @@ namespace BL.Logic.AdminCore
 
                 GetCheckCountDIPSubordinations((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
 
-                if (infGr) { child.IsExecution = 2; }
-                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
-
                 if (infGr) { child.IsInforming = 2; }
                 else { child.IsInforming = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+
+                if (excGr) { child.IsExecution = 2; }
+                else { child.IsExecution = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
 
             }
         }
@@ -725,48 +779,48 @@ namespace BL.Logic.AdminCore
                 var child = (FrontDIPRegistrationJournalPositionsBase)item;
 
                 int allCount = 0;
-                int infCount = 0;
-                int excCount = 0;
-                bool infGr = false;
-                bool excGr = false;
+                int viewCount = 0;
+                int regCount = 0;
+                bool viewGr = false;
+                bool regGr = false;
 
-                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out infCount, out excCount, out infGr, out excGr);
+                GetCheckCountDIPRJournalPositions((List<TreeItem>)child.Childs, out allCount, out viewCount, out regCount, out viewGr, out regGr);
 
-                if (infGr) { child.IsViewing = 2; }
-                else { child.IsViewing = (allCount == excCount) ? 1 : (excCount == 0) ? 0 : 2; }
+                if (viewGr) { child.IsViewing = 2; }
+                else { child.IsViewing = (allCount == viewCount) ? 1 : (viewCount == 0) ? 0 : 2; }
 
-                if (infGr) { child.IsRegistration = 2; }
-                else { child.IsRegistration = (allCount == infCount) ? 1 : (infCount == 0) ? 0 : 2; }
+                if (regGr) { child.IsRegistration = 2; }
+                else { child.IsRegistration = (allCount == regCount) ? 1 : (regCount == 0) ? 0 : 2; }
 
             }
         }
 
-        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int InfCount, out int ExcCount, out bool InfGr, out bool ExcGr)
+        private void GetCheckCountDIPRJournalPositions(List<TreeItem> tree, out int AllCount, out int ViewCount, out int RegCount, out bool ViewGr, out bool RegGr)
         {
             int allCount = 0;
-            int infCount = 0;
-            int excCount = 0;
-            bool infGr = false;
-            bool excGr = false;
+            int vCount = 0;
+            int rCount = 0;
+            bool vGr = false;
+            bool rGr = false;
 
             foreach (var item in tree)
             {
                 var child = (FrontDIPRegistrationJournalPositionsBase)item;
 
                 allCount++;
-                if (child.IsViewing > 0) infCount++;
-                if (child.IsRegistration > 0) excCount++;
+                if (child.IsViewing > 0) vCount++;
+                if (child.IsRegistration > 0) rCount++;
 
-                if (child.IsViewing == 2) infGr = true;
-                if (child.IsRegistration == 2) excGr = true;
+                if (child.IsViewing == 2) vGr = true;
+                if (child.IsRegistration == 2) rGr = true;
 
             }
 
             AllCount = allCount;
-            InfCount = infCount;
-            ExcCount = excCount;
-            InfGr = infGr;
-            ExcGr = excGr;
+            ViewCount = vCount;
+            RegCount = rCount;
+            ViewGr = vGr;
+            RegGr = rGr;
         }
         #endregion
 

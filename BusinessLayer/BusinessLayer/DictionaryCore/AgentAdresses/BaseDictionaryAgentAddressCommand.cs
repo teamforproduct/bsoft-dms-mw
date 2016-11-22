@@ -39,7 +39,7 @@ namespace BL.Logic.DictionaryCore
             });
             if (spr.Count() != 0)
             {
-                throw new DictionaryAgentAddressTypeNotUnique();
+                throw new DictionaryAddressTypeNotUnique();
             }
 
             spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
@@ -51,7 +51,7 @@ namespace BL.Logic.DictionaryCore
             });
             if (spr.Count() != 0)
             {
-                throw new DictionaryAgentAddressNameNotUnique(Model.PostCode, Model.Address);
+                throw new DictionaryAddressNameNotUnique(Model.PostCode, Model.Address);
             }
             return true;
         }

@@ -18,6 +18,7 @@ using DMS_WebAPI.Providers;
 using DMS_WebAPI.Results;
 using BL.Logic.DependencyInjection;
 using DMS_WebAPI.Utilities;
+using System.Linq;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -125,7 +126,8 @@ namespace DMS_WebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState, false, this);
+                //return BadRequest(ModelState);
             }
 
             IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
@@ -133,7 +135,8 @@ namespace DMS_WebAPI.Controllers
             
             if (!result.Succeeded)
             {
-                return GetErrorResult(result);
+                return new JsonResult(result, false, string.Join(" ",result.Errors), this);
+                //return GetErrorResult(result);
             }
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -145,13 +148,15 @@ namespace DMS_WebAPI.Controllers
 
             if (!result.Succeeded)
             {
-                return GetErrorResult(result);
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
             }
 
             var user_context = DmsResolver.Current.Get<UserContexts>();
             user_context.UpdateChangePasswordRequired(user.Id, false);
 
-            return Ok();
+            return new JsonResult(null, this);
+            //return Ok();
         }
 
         // POST api/Account/SetPassword

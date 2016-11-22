@@ -17,6 +17,8 @@ using System.IO;
 using System.Web;
 using Newtonsoft.Json;
 using BL.Logic.AdminCore.Interfaces;
+using System.Web.Http;
+using System.Net;
 
 namespace DMS_WebAPI.Providers
 {
@@ -154,12 +156,27 @@ namespace DMS_WebAPI.Providers
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
                 ApplicationUser user = userManager.FindById(userId);
-
-                if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
-                    throw new EmailConfirmRequiredAgentUser();
-
+                
                 if (user.IsLockout)
-                    throw new UserIsDeactivated(user.UserName);
+                throw new UserIsDeactivated(user.UserName);
+                //{
+                //    var httpContext = HttpContext.Current;
+                //    httpContext.Response.Clear();
+                //    httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
+
+                //    httpContext.Response.ContentType = "application/json";
+
+                //    var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+
+                //    var json = JsonConvert.SerializeObject(new { success = false, msg = "User Is Deactivated" }, settings);
+
+                //    httpContext.Response.Write(json);
+                //    httpContext.Response.End();
+                //    httpContext.Response.Flush();
+                //}
+
+                //if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
+                //    throw new EmailConfirmRequiredAgentUser();
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 

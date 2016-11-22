@@ -8,7 +8,12 @@ namespace BL.Model.DictionaryCore.FilterModel
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
     public class FilterDictionaryRegistrationJournal : DictionaryBaseFilterParameters
     {
-       
+        /// <summary>
+        /// Строка, для полнотекстового поиска
+        /// </summary>
+        public string FullTextSearchString { get; set; }
+
+
         /// <summary>
         /// Сужение по индексу журнала
         /// </summary>
@@ -39,6 +44,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         ///  Внутренний - внутренняя переписка
         /// </summary>
         public bool? IsInternal { get; set; }
-
+        /// <summary>
+        ///  Признак доступен для регистрации документа в журнале
+        /// </summary>
+        public List<int> PositionIdsAccessForRegistration { get; set; }
     }
 }

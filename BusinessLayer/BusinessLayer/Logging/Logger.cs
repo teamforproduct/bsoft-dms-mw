@@ -12,6 +12,10 @@ using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FrontModel;
+using System.Linq;
+using LinqKit;
+using BL.Database.Common;
+using BL.Database.DBModel.System;
 
 namespace BL.Logic.Logging
 {
@@ -43,14 +47,23 @@ namespace BL.Logic.Logging
                     {
                         qry = qry.Where(x => x.CreateDate >= filter.CreateDateFrom.Value);
                     }
-
                     if (filter.CreateDateTo.HasValue)
                     {
                         qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
                     }
                     if (!String.IsNullOrEmpty(filter.LoginLogInfo))
                     {
-                        qry = qry.Where(x => x.LoginLogInfo.Contains(filter.LoginLogInfo));
+                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LoginLogInfo)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.LoginLogInfo.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
+                    {
+                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
                     }
                     qry = qry.OrderByDescending(x => x.CreateDate);
                 }
@@ -83,12 +96,13 @@ namespace BL.Logic.Logging
                         ObjectIDs = new List<int> { (int)EnumObjects.System },
                         ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                         ExecutorAgentIDs = filter?.ExecutorAgentIDs,
+                        ExecutorAgentName = filter?.ExecutorAgentName,
                         LogDateFrom = filter?.CreateDateFrom,
                         LogDateTo = filter?.CreateDateTo,
                         Message = filter?.LoginLogInfo,
                     }, paging).Select(x => new FrontSystemSession
                     {
-                        CreateDate = x.LogDate,
+                        CreateDate = DateTime.SpecifyKind(x.LogDate,DateTimeKind.Utc),
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
                         AgentId = x.ExecutorAgentId,
@@ -98,6 +112,7 @@ namespace BL.Logic.Logging
                 res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
                     .ForEach(r =>
                     {
+                        r.x.CreateDate = r.y.CreateDate;
                         r.x.Token = r.y.Token;
                         r.x.LastUsage = r.y.LastUsage;
                         r.x.UserId = r.y.UserId;

@@ -25,6 +25,10 @@ namespace BL.Model.SystemCore.Filters
         /// </summary>
         public bool IsOnlyActive { get; set; }
         /// <summary>
+        /// Имя пользователя
+        /// </summary>
+        public string ExecutorAgentName { get; set; }
+        /// <summary>
         /// Дополнительная информация лога
         /// </summary>
         public string LoginLogInfo { get; set; }

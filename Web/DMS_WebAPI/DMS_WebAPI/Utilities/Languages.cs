@@ -4,9 +4,6 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
-using BL.Model.Database;
-using BL.Model.Enums;
-using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
 using System.Web;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Utilities
 {

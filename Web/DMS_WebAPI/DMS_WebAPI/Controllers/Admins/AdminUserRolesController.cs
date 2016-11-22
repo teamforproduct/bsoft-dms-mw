@@ -10,25 +10,46 @@ using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
 using System.Diagnostics;
+using BL.Model.Tree;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
     /// <summary>
-    /// Описывает список ролей, которые доступны конкретному сотруднику-пользователю.
+    /// Описывает список ролей, которые доступны конкретному сотруднику-пользователю в рамках назначения на должность.
     /// При назначении сотрудника да должность роли, назначенные должности, передаются сотруднику (роли могут передаваться не в полном объеме - референт может не иметь права подписания)
     /// </summary>
     [Authorize]
+    [RoutePrefix("api/v2/AdminUserRoles")]
     public class AdminUserRolesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список ролей, которые доступны конкретному сотруднику-пользователю.
+        /// Возвращает cписок назначение - роль - сотрудник, которые доступны конкретному сотруднику-пользователю.
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
         [ResponseType(typeof(List<FrontAdminUserRole>))]
-        public IHttpActionResult Get([FromUri] int userId, [FromUri] FilterDIPAdminUserRole filter)
+        public IHttpActionResult Get([FromUri] FilterAdminUserRole filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetUserRoles(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает иерархическую структуру Назначение=>Cписок ролей, которые доступны конкретному сотруднику-пользователю.
+        /// </summary>
+        /// <param name="filter">Filter parms</param>
+        /// <returns>FrontAdminPositions</returns>
+        [HttpGet]
+        [Route("GetTree")]
+        [ResponseType(typeof(List<TreeItem>))]
+        public IHttpActionResult GetTree([FromUri] int userId, [FromUri] FilterDIPAdminUserRole filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -57,7 +78,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Добавляет роль сотруднику-пользователю
+        /// Добавляет роль сотруднику-пользователю в рамках назначения
         /// </summary>
         /// <param name="model">ModifyAdminUserRole</param>
         /// <returns>FrontAdminUserRole</returns>
@@ -71,7 +92,7 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Отнимает роль у сотрудника-пользователя
+        /// Отнимает роль у сотрудника-пользователя в рамках назначения
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
         public IHttpActionResult Delete([FromUri] int id)
@@ -86,5 +107,40 @@ namespace DMS_WebAPI.Controllers.Admins
             res.SpentTime = stopWatch;
             return res;
         }
+
+
+        /// <summary>
+        /// Удаляет роли сотруднику-пользователю в рамках указанного назначения
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("DeleteByPositionExecutor")]
+        public IHttpActionResult DeleteByPositionExecutor([FromUri] int id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByPositionExecutor, cxt, id);
+            return Get((int)tmpItem);
+        }
+
+        /// <summary>
+        /// Удаляет роли сотруднику-пользователю
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("DeleteByUser")]
+        public IHttpActionResult DeleteByUser([FromUri] int id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByUser, cxt, id);
+            return Get((int)tmpItem);
+        }
+
+
     }
 }

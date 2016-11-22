@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.Tree
 {
@@ -51,7 +49,7 @@ namespace BL.Model.Tree
         public bool? IsChecked { get; set; }
 
         /// <summary>
-        /// Удаляет ветви, которые не заканчиваются листами
+        /// Удаляет ветви, которые не содержат листов типа указанного объекта
         /// </summary>
         public List<EnumObjects> RemoveEmptyBranchesByObject { get; set; }
     }

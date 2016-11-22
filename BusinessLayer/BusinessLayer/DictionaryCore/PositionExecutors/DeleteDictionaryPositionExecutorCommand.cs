@@ -77,7 +77,7 @@ namespace BL.Logic.DictionaryCore
             {
                 TargetPositionIDs = new List<int> { positionExecutor.PositionId },
                 ReadAgentIDs = new List<int> { positionExecutor.AgentId },
-                ReadDate = new BL.Model.Common.Period(positionExecutor.StartDate, positionExecutor.EndDate ?? DateTime.MaxValue)
+                //ReadDate = new BL.Model.Common.Period(positionExecutor.StartDate, positionExecutor.EndDate ?? DateTime.MaxValue)
             })) throw new DictionaryRecordCouldNotBeDeleted();
 
 

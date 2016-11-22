@@ -69,7 +69,6 @@ namespace BL.Database.Admins.Interfaces
         void DeleteUserRole(IContext context, int id);
         void DeleteUserRoles(IContext context, FilterAdminUserRole filter);
         bool ExistsUserRole(IContext context, FilterAdminUserRole filter);
-        InternalAdminUserRole GetInternalUserRole(IContext context, FilterAdminUserRole filter);
         IEnumerable<InternalAdminUserRole> GetInternalUserRoles(IContext context, FilterAdminUserRole filter);
         IEnumerable<InternalAdminPositionRole> GetInternalPositionRoles(IContext context, FilterAdminPositionRole filter);
         IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter);

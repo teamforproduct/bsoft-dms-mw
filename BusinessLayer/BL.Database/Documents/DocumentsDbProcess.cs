@@ -24,6 +24,7 @@ using System.Data.Entity;
 using BL.Model.Reports.FrontModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.Dictionary;
+using BL.Database.DBModel.Admin;
 
 namespace BL.Database.Documents
 {
@@ -347,7 +348,7 @@ namespace BL.Database.Documents
                     d => d.Id,
                     t => t.DocumentId,
                     (d, t) => { d.DocumentTags = t.ToList(); return d; }).ToList();
-
+                transaction.Complete();
                 return docs;
             }
         }
@@ -736,7 +737,7 @@ namespace BL.Database.Documents
                 doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
-                    EntityId = x.DocumentId,
+                    DocumentId = x.DocumentId,
                     Extension = x.Extention,
                     Name = x.Name,
                     FileType = x.FileType,
@@ -889,7 +890,7 @@ namespace BL.Database.Documents
                     if (document.DocumentFiles != null)
                         foreach (var fl in document.DocumentFiles)
                         {
-                            fl.EntityId = doc.Id;
+                            fl.DocumentId = doc.Id;
                         }
                     dbContext.SaveChanges();
                     //TODO Papers
@@ -1042,6 +1043,7 @@ namespace BL.Database.Documents
                     //TODO придумать с удалением для полнотекста
                     dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.SaveChanges();
+                    dbContext.DocumentTagsSet.RemoveRange(dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
                     dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
@@ -1092,6 +1094,9 @@ namespace BL.Database.Documents
                 }
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == model.RegistrationJournalId)
+                    .Where(x => dbContext.AdminRegistrationJournalPositionsSet
+                                            .Where(y=>y.PositionId == context.CurrentPositionId && y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
+                                            .Select(y => y.RegJournalId).Contains(x.Id))
                     .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
 
                 if (regJournal != null)

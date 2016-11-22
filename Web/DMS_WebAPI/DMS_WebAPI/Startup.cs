@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Web;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.SystemServices.TempStorage;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -69,12 +70,14 @@ namespace DMS_WebAPI
             //clearTrashDocumentsService.Initialize(dbs);
 
             // Очистка устаревших пользовательских контекстов
+#if !DEBUG
             var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
             userContextService.Initialize();
-
+#endif
+#if !DEBUG
             var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();
             licencesService.Initialize();
-
+#endif
         }
     }
 }
