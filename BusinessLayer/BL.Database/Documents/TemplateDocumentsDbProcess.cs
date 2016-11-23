@@ -33,18 +33,20 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                    DocumentDirectionName = x.DocumentDirection.Name,
                     IsHard = x.IsHard,
                     IsForProject = x.IsForProject,
                     IsForDocument = x.IsForDocument,
                     DocumentTypeId = x.DocumentTypeId,
+                    DocumentTypeName = x.DocumentType.Name,
                     Name = x.Name,
                     Description = x.Description,
-                    DocumentSubjectId = x.DocumentSubjectId,
-                    LastChangeDate = x.LastChangeDate,
-                    RegistrationJournalId = x.RegistrationJournalId,
-                    DocumentSubjectName = x.DocumentSubject.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    DocumentDirectionName = x.DocumentDirection.Name
+                    //DocumentSubjectId = x.DocumentSubjectId,
+                    //LastChangeDate = x.LastChangeDate,
+                    //RegistrationJournalId = x.RegistrationJournalId,
+                    //DocumentSubjectName = x.DocumentSubject.Name,
+                    //LastChangeUserId = x.LastChangeUserId,
+
                 }).ToList();
             }
         }
@@ -79,31 +81,41 @@ namespace BL.Database.Documents
                             IsForProject = x.IsForProject,
                             IsForDocument = x.IsForDocument,
                             DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                            DocumentDirectionName = x.DocumentDirection.Name,
                             DocumentTypeId = x.DocumentTypeId,
+                            DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
                             DocumentSubjectId = x.DocumentSubjectId,
+                            DocumentSubjectName = x.DocumentSubject.Name,
                             RegistrationJournalId = x.RegistrationJournalId,
+                            RegistrationJournalName = x.RegistrationJournal.Name,
                             SenderAgentId = x.SenderAgentId,
+                            SenderAgentName = x.SenderAgent.Name,
                             SenderAgentPersonId = x.SenderAgentPersonId,
+                            SenderAgentPersonName = x.SenderAgentPerson.Agent.Name,
                             Addressee = x.Addressee,
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
-                            RestrictedSendLists =
-                                x.RestrictedSendLists.Select(y => new FrontTemplateDocumentRestrictedSendLists()
-                                {
-                                    PositionId = y.PositionId,
-                                    AccessLevelId = (int)y.AccessLevelId
-                                }).ToList(),
-                            SendLists = x.SendLists.Select(y => new FrontTemplateDocumentSendLists()
-                            {
-                                SendType = (EnumSendTypes)y.SendTypeId,
-                                TargetPositionId = y.TargetPositionId,
-                                Description = y.Description,
-                                Stage = y.Stage,
-                                Task = y.Task.Task,
-                                DueDay = y.DueDay,
-                                AccessLevelId = (int)y.AccessLevelId
-                            }).ToList()
+                            //RestrictedSendLists =
+                            //    x.RestrictedSendLists.Select(y => new FrontTemplateDocumentRestrictedSendLists
+                            //    {
+                            //        PositionId = y.PositionId,
+                            //        PositionName = y.Position.Name,
+                            //        AccessLevelId = (int)y.AccessLevelId
+                            //    }).ToList(),
+                            //SendLists = x.SendLists.Select(y => new FrontTemplateDocumentSendLists
+                            //{
+                            //    SendType = y.SendTypeId,
+                            //    SendTypeName = y.SendType.Name,
+                            //    TargetPositionId = y.TargetPositionId,
+                            //    TargetPositionName = y.TargetPosition.Name,
+                            //    Description = y.Description,
+                            //    Stage = y.Stage,
+                            //    Task = y.Task.Task,
+                            //    DueDay = y.DueDay,
+                            //    AccessLevelId = (int)y.AccessLevelId,
+                            //    AccessLevelName = y.AccessLevel.Name,
+                            //}).ToList(),                         
                         }).FirstOrDefault();
 
                 if (templateDocument != null)
@@ -264,14 +276,15 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    SendType = (EnumSendTypes)x.SendTypeId,
+                    SendType = x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     Stage = x.Stage,
+                   
                     Task = x.Task.Task,
                     DueDay = x.DueDay,
-                    //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
-                    PositionName = x.TargetPosition.Name,
+                    AccessLevelId = x.AccessLevelId,
+                    TargetPositionName = x.TargetPosition.Name,
                     SendTypeName = x.SendType.Name,
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
@@ -289,14 +302,14 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             DocumentId = x.DocumentId,
-                            SendType = (EnumSendTypes)x.SendTypeId,
+                            SendType = x.SendTypeId,
                             TargetPositionId = x.TargetPositionId,
                             Description = x.Description,
                             Stage = x.Stage,
                             Task = x.Task.Task,
                             DueDay = x.DueDay,
-                            //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
-                            PositionName = x.TargetPosition.Name,
+                            AccessLevelId =  x.AccessLevelId,
+                            TargetPositionName = x.TargetPosition.Name,
                             SendTypeName = x.SendType.Name,
                             AccessLevelName = x.AccessLevel.Name,
                             IsWorkGroup = x.IsWorkGroup,
@@ -403,7 +416,7 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     PositionId = x.Position.Id,
-                    //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
+                    AccessLevelId = x.AccessLevelId,
                     PositionName = x.Position.Name,
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
