@@ -96,8 +96,6 @@ namespace DMS_WebAPI.Infrastructure
                 var ex = context.Exception;
                 var errInfo = string.Empty;
 
-                //if (ex.InnerException != null) ex = ex.InnerException;
-
                 while (ex != null)
                 {
                     var m = ex.Message;
@@ -113,7 +111,10 @@ namespace DMS_WebAPI.Infrastructure
                     ex = ex.InnerException;
                 };
 
-                errInfo += $"StackTrace:\r\n{context.Exception.StackTrace}\r\n";
+                ex = context.Exception;
+                if (ex.InnerException != null) ex = ex.InnerException;
+
+                errInfo += $"StackTrace:\r\n{ex.StackTrace}\r\n";
 
 
                 // stores the error message
