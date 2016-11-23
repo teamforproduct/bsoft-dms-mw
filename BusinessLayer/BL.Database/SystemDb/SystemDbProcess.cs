@@ -285,7 +285,7 @@ namespace BL.Database.SystemDb
                     Name = x.Name,
                     Description = x.Description,
                     ValueTypeCode = x.ValueTypes.Code,
-                    SettingTypeName = x.SettingType.Name, 
+                    SettingTypeName = x.SettingType.Name,
                     Order = x.Order,
                     OrderSettingType = x.SettingType.Order,
                 }).ToList();
@@ -319,21 +319,30 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemSettings> GetWhereSettings(ref IQueryable<SystemSettings> qry, FilterSystemSetting filter)
         {
-            if (!string.IsNullOrEmpty(filter.Key))
+            if (filter != null)
             {
-                qry = qry.Where(x => x.Key == filter.Key);
-            }
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemSettings>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.Key))
+                {
+                    qry = qry.Where(x => x.Key == filter.Key);
+                }
 
-            if (!string.IsNullOrEmpty(filter.Value))
-            {
-                qry = qry.Where(x => x.Value == filter.Value);
-            }
+                if (!string.IsNullOrEmpty(filter.Value))
+                {
+                    qry = qry.Where(x => x.Value == filter.Value);
+                }
 
-            if (filter.AgentId.HasValue)
-            {
-                qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
+                if (filter.AgentId.HasValue)
+                {
+                    qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
+                }
             }
-
             return qry;
         }
 
@@ -727,7 +736,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        
+
 
         public IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter)
         {
@@ -1838,7 +1847,7 @@ namespace BL.Database.SystemDb
                                          //+ x.doc.TemplateDocument.DocumentDirection.Name + " " 
                                          + x.doc.DocumentSubject.Name + " "
                                          + x.doc.DocumentSubject.Name + " "
-                                         + x.doc.SenderAgent.Name + " " 
+                                         + x.doc.SenderAgent.Name + " "
                                          + x.doc.SenderAgentPerson.Agent.Name + " " +
                                          x.doc.SenderNumber + " "
                         }).ToList());
@@ -1883,9 +1892,9 @@ namespace BL.Database.SystemDb
                                 x.sl.Description + " "
                                 //+ x.sl.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
                                 + x.sl.SourcePosition.Name + " " +
-                                x.sl.TargetPosition.Name + " " 
-                                + x.sl.SourcePositionExecutorAgent.Name + " " 
-                                + x.sl.TargetPositionExecutorAgent.Name 
+                                x.sl.TargetPosition.Name + " "
+                                + x.sl.SourcePositionExecutorAgent.Name + " "
+                                + x.sl.TargetPositionExecutorAgent.Name
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
@@ -1926,7 +1935,7 @@ namespace BL.Database.SystemDb
                             ObjectText =
                                 x.ss.Description + " "
                             //+ x.ss.SubscriptionState.Name + " " // не должны добавляться в полнотекст т.к. значения не локализованы
-                            + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " " 
+                            + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                         }).ToList());
 
                 transaction.Complete();
@@ -1982,12 +1991,12 @@ namespace BL.Database.SystemDb
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
-                        ObjectText = x.Description + " " 
-                        + x.AddDescription + " " 
-                        + x.Task.Task + " " 
-                        + x.SourcePositionExecutorAgent.Name + " "  
-                        + x.TargetPositionExecutorAgent.Name + " " 
-                        + x.SourceAgent.Name + " " 
+                        ObjectText = x.Description + " "
+                        + x.AddDescription + " "
+                        + x.Task.Task + " "
+                        + x.SourcePositionExecutorAgent.Name + " "
+                        + x.TargetPositionExecutorAgent.Name + " "
+                        + x.SourceAgent.Name + " "
                         + x.TargetAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
 
@@ -2021,9 +2030,9 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Description + " "
                         //+ x.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
-                        + x.SourcePosition.Name + " " 
-                        + x.TargetPosition.Name + " " 
-                        + x.SourcePositionExecutorAgent.Name + " " 
+                        + x.SourcePosition.Name + " "
+                        + x.TargetPosition.Name + " "
+                        + x.SourcePositionExecutorAgent.Name + " "
                         + x.TargetPositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
                     transaction.Complete();
@@ -2138,9 +2147,9 @@ namespace BL.Database.SystemDb
                             ObjectId = x.sl.Id,
                             ObjectText = x.sl.Description + " "
                             // + x.sl.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
-                            + x.sl.SourcePosition.Name + " " 
-                            + x.sl.TargetPosition.Name + " " 
-                            + x.sl.SourcePositionExecutorAgent.Name + " " 
+                            + x.sl.SourcePosition.Name + " "
+                            + x.sl.TargetPosition.Name + " "
+                            + x.sl.SourcePositionExecutorAgent.Name + " "
                             + x.sl.TargetPositionExecutorAgent.Name + " "
                         }).Take(() => rowToSelect).ToList());
                 }

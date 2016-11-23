@@ -12,6 +12,7 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.Enums;
 using BL.CrossCutting.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -42,13 +43,14 @@ namespace DMS_WebAPI.Controllers
         /// </summary>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
-        [ResponseType(typeof(FrontSystemSetting))]
-        public IHttpActionResult Post([FromBody]ModifySystemSetting model)
+        //[ResponseType(typeof(FrontSystemSetting))]
+        public IHttpActionResult Post([FromBody]List<ModifySystemSetting> model)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             var tmpItem = tmpService.ExecuteAction(EnumSystemActions.SetSetting, cxt, model);
-            return Get(new FilterSystemSetting() { Key = (string)tmpItem });
+            return new JsonResult(null, this);
+            //return Get(new FilterSystemSetting() { Key = (string)tmpItem });
         }
 
         /// <summary>

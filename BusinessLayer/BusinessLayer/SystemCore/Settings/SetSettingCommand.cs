@@ -12,8 +12,13 @@ namespace BL.Logic.SystemCore
         {
             try
             {
-                var model = new InternalSystemSetting(Model);
-                return _systemDb.MergeSetting(_context, model);
+                var res = new List<int>();
+                foreach (var model in Model)
+                {
+                    var modelInt = new InternalSystemSetting(model);
+                    res.Add(_systemDb.MergeSetting(_context, modelInt));
+                }
+                return res;
             }
             catch (Exception ex)
             {
