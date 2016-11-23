@@ -1,4 +1,5 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
+﻿using System;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;
@@ -160,7 +161,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var res = new FrontDictionaryAgentUserPicture
             {
                 Id = 0,
-                FileContent = Encoding.Default.GetString(buffer)
+                FileContent = Convert.ToBase64String(buffer)
             };
 
             return new JsonResult(res, this);
