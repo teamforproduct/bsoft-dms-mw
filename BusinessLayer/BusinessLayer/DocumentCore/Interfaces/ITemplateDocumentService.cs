@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore
 
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
 
-        IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context);
+        IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc);
 

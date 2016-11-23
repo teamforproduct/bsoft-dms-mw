@@ -9,6 +9,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Helper;
 using BL.Database.DBModel.Encryption;
+using System.Data.Entity.Infrastructure;
+using BL.Database.Common;
 
 namespace BL.Database.DatabaseContext
 {
@@ -20,17 +22,24 @@ namespace BL.Database.DatabaseContext
         public DmsContext() : base(ConnectionHelper.GetDefaultConnection(), true)
         {
             _DefaultSchema = ConnectionHelper.GetDefaultSchema();
+
+            ((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized +=
+                    (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
         public DmsContext(IContext context) : base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(context), true)
         {
             _DefaultSchema = context.CurrentDB.DefaultSchema;
+
             this.Database.CommandTimeout = int.MaxValue;
             System.Data.Entity.Database.SetInitializer<DmsContext>(new DmsDbInitializer());
             if (!this.Database.Exists())
             {
                 this.Database.Initialize(true);
             }
+
+            ((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized +=
+                (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -132,13 +141,13 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
         public virtual DbSet<DocumentTags> DocumentTagsSet { get; set; }
-//        public virtual DbSet<DocumentEventReaders> DocumentEventReadersSet { get; set; }
+        //        public virtual DbSet<DocumentEventReaders> DocumentEventReadersSet { get; set; }
         public virtual DbSet<DocumentTasks> DocumentTasksSet { get; set; }
         public virtual DbSet<DocumentTaskAccesses> DocumentTaskAccessesSet { get; set; }
 
         public virtual DbSet<DocumentPapers> DocumentPapersSet { get; set; }
         public virtual DbSet<DocumentPaperLists> DocumentPaperListsSet { get; set; }
-        
+
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendListsSet { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendListsSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }

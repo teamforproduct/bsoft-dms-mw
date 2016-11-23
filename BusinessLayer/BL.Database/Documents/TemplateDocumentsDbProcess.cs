@@ -16,36 +16,116 @@ using System.Transactions;
 using BL.Model.FullTextSearch;
 using LinqKit;
 using System.IO;
+using BL.Model.SystemCore;
+using System;
+using System.Data.Entity;
 
 namespace BL.Database.Documents
 {
     public class TemplateDocumentsDbProcess : CoreDb.CoreDb, ITemplateDocumentsDbProcess
     {
-
         #region TemplateDocuments
 
-        public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
+        public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                return dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FrontTemplateDocument
+                var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId);
+                if (filter != null)
+                {
+                    if (filter.IDs?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.DocumentDirectionId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.DocumentTypeId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.DocumentTypeId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.DocumentSubjectId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.RegistrationJournalId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.RegistrationJournalId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.RegistrationJournalId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (!String.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (!String.IsNullOrEmpty(filter.Description))
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                }
+                qry = qry.OrderByDescending(x => x.Name);
+
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontTemplateDocument>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.Skip(() => skip).Take(() => take);
+                    }
+                }
+
+                var res = qry.Select(x => new FrontTemplateDocument
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                    DocumentDirectionName = x.DocumentDirection.Name,
                     IsHard = x.IsHard,
                     IsForProject = x.IsForProject,
                     IsForDocument = x.IsForDocument,
                     DocumentTypeId = x.DocumentTypeId,
+                    DocumentTypeName = x.DocumentType.Name,
                     Name = x.Name,
                     Description = x.Description,
-                    DocumentSubjectId = x.DocumentSubjectId,
-                    LastChangeDate = x.LastChangeDate,
-                    RegistrationJournalId = x.RegistrationJournalId,
-                    DocumentSubjectName = x.DocumentSubject.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    DocumentDirectionName = x.DocumentDirection.Name
+                    //DocumentSubjectId = x.DocumentSubjectId,
+                    //LastChangeDate = x.LastChangeDate,
+                    //RegistrationJournalId = x.RegistrationJournalId,
+                    //DocumentSubjectName = x.DocumentSubject.Name,
+                    //LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
+                return res;
             }
         }
 
@@ -79,31 +159,41 @@ namespace BL.Database.Documents
                             IsForProject = x.IsForProject,
                             IsForDocument = x.IsForDocument,
                             DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                            DocumentDirectionName = x.DocumentDirection.Name,
                             DocumentTypeId = x.DocumentTypeId,
+                            DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
                             DocumentSubjectId = x.DocumentSubjectId,
+                            DocumentSubjectName = x.DocumentSubject.Name,
                             RegistrationJournalId = x.RegistrationJournalId,
+                            RegistrationJournalName = x.RegistrationJournal.Name,
                             SenderAgentId = x.SenderAgentId,
+                            SenderAgentName = x.SenderAgent.Name,
                             SenderAgentPersonId = x.SenderAgentPersonId,
+                            SenderAgentPersonName = x.SenderAgentPerson.Agent.Name,
                             Addressee = x.Addressee,
                             LastChangeUserId = x.LastChangeUserId,
                             LastChangeDate = x.LastChangeDate,
-                            RestrictedSendLists =
-                                x.RestrictedSendLists.Select(y => new FrontTemplateDocumentRestrictedSendLists()
-                                {
-                                    PositionId = y.PositionId,
-                                    AccessLevelId = (int)y.AccessLevelId
-                                }).ToList(),
-                            SendLists = x.SendLists.Select(y => new FrontTemplateDocumentSendLists()
-                            {
-                                SendType = (EnumSendTypes)y.SendTypeId,
-                                TargetPositionId = y.TargetPositionId,
-                                Description = y.Description,
-                                Stage = y.Stage,
-                                Task = y.Task.Task,
-                                DueDay = y.DueDay,
-                                AccessLevelId = (int)y.AccessLevelId
-                            }).ToList()
+                            //RestrictedSendLists =
+                            //    x.RestrictedSendLists.Select(y => new FrontTemplateDocumentRestrictedSendLists
+                            //    {
+                            //        PositionId = y.PositionId,
+                            //        PositionName = y.Position.Name,
+                            //        AccessLevelId = (int)y.AccessLevelId
+                            //    }).ToList(),
+                            //SendLists = x.SendLists.Select(y => new FrontTemplateDocumentSendLists
+                            //{
+                            //    SendType = y.SendTypeId,
+                            //    SendTypeName = y.SendType.Name,
+                            //    TargetPositionId = y.TargetPositionId,
+                            //    TargetPositionName = y.TargetPosition.Name,
+                            //    Description = y.Description,
+                            //    Stage = y.Stage,
+                            //    Task = y.Task.Task,
+                            //    DueDay = y.DueDay,
+                            //    AccessLevelId = (int)y.AccessLevelId,
+                            //    AccessLevelName = y.AccessLevel.Name,
+                            //}).ToList(),                         
                         }).FirstOrDefault();
 
                 if (templateDocument != null)
@@ -264,14 +354,15 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    SendType = (EnumSendTypes)x.SendTypeId,
+                    SendType = x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     Stage = x.Stage,
+                   
                     Task = x.Task.Task,
                     DueDay = x.DueDay,
-                    //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
-                    PositionName = x.TargetPosition.Name,
+                    AccessLevelId = x.AccessLevelId,
+                    TargetPositionName = x.TargetPosition.Name,
                     SendTypeName = x.SendType.Name,
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
@@ -289,14 +380,14 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             DocumentId = x.DocumentId,
-                            SendType = (EnumSendTypes)x.SendTypeId,
+                            SendType = x.SendTypeId,
                             TargetPositionId = x.TargetPositionId,
                             Description = x.Description,
                             Stage = x.Stage,
                             Task = x.Task.Task,
                             DueDay = x.DueDay,
-                            //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
-                            PositionName = x.TargetPosition.Name,
+                            AccessLevelId =  x.AccessLevelId,
+                            TargetPositionName = x.TargetPosition.Name,
                             SendTypeName = x.SendType.Name,
                             AccessLevelName = x.AccessLevel.Name,
                             IsWorkGroup = x.IsWorkGroup,
@@ -403,7 +494,7 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     PositionId = x.Position.Id,
-                    //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
+                    AccessLevelId = x.AccessLevelId,
                     PositionName = x.Position.Name,
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();

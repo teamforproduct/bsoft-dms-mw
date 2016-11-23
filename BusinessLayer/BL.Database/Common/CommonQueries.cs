@@ -78,7 +78,8 @@ namespace BL.Database.Common
                                             .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                                             .Select(y => y.RegJournalId).Contains(x.RegistrationJournalId.Value));
                         var qryCont = qry.Concat(qryRJA);
-                        qry = qry.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
+                        var qry1 = dbContext.DocumentsSet.AsQueryable();
+                        qry = qry1.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
                     }
                 }                
             }
@@ -936,8 +937,8 @@ namespace BL.Database.Common
                 DocumentId = x.DocumentId,
                 EventType = x.EventType,
                 EventTypeName = x.EventTypeName,
-                Date = x.Date,
-                CreateDate = x.CreateDate,
+                Date = DateTime.SpecifyKind(x.Date,DateTimeKind.Utc),
+                CreateDate = x.CreateDate.HasValue? DateTime.SpecifyKind(x.CreateDate.Value, DateTimeKind.Utc): (DateTime?)null,
                 Task = x.Task,
                 Description = x.Description,
                 AddDescription = x.AddDescription,

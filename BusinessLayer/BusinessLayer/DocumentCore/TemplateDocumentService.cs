@@ -42,9 +42,9 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateDocuments
 
-        public IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context)
+        public IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging)
         {
-            return _templateDb.GetTemplateDocument(context);
+            return _templateDb.GetTemplateDocument(context, filter, paging);
         }
  
         public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)

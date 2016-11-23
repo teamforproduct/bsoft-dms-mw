@@ -5,6 +5,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -12,7 +13,7 @@ namespace BL.Database.Documents.Interfaces
     {
 
         #region TemplateDocument
-        IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx);
+        IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
         int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template, IEnumerable<InternalPropertyValue> properties);

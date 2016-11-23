@@ -31,6 +31,7 @@ namespace BL.Logic.Common
             _param = param;
             _systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
             _systemService = DmsResolver.Current.Get<ISystemService>();
+            _adminService = DmsResolver.Current.Get<IAdminService>();
         }
 
         public InternalDocument Document => null;

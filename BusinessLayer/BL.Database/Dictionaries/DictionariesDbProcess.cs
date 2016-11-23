@@ -15,13 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BL.Model.FullTextSearch;
 using LinqKit;
-using BL.Database.DBModel.Document;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure.Interception;
-using System.Data.Entity.SqlServer;
 using BL.Model.Common;
 using System.Transactions;
-using BL.Model.AdminCore.Clients;
 using BL.Model.Tree;
 using EntityFramework.Extensions;
 using BL.Database.DBModel.Admin;
@@ -792,7 +788,7 @@ namespace BL.Database.Dictionaries
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Update);
 
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -4239,6 +4235,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryPositionsSet.Add(dd);
                 CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, dd.Id);
                 position.Id = dd.Id;
                 transaction.Complete();
                 return dd.Id;
@@ -4264,6 +4261,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.Update);
+                UpdatePositionExecutor(context, position.Id);
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -4282,6 +4280,36 @@ namespace BL.Database.Dictionaries
                 transaction.Complete();
             }
         }
+
+        public void UpdatePositionExecutor(IContext context, int? positionId = null)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = GetTransaction())
+            {
+                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
+                if (positionId.HasValue)
+                    qry = qry.Where(x=>x.Id == positionId.Value);
+
+                var posUpd = qry.Select(x => new
+                {
+                    x.Id,   oldExecutorAgentId = x.ExecutorAgentId ?? 0,
+                    newExecutorAgentId = dbContext.DictionaryPositionExecutorsSet
+                        .Where(y=>  y.PositionId == x.Id && DateTime.UtcNow >= y.StartDate && DateTime.UtcNow <= y.EndDate 
+                                    && (y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.IO || y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal))
+                        .OrderBy(y=>y.PositionExecutorTypeId).Select(y=>y.AgentId).FirstOrDefault()
+                }).Where(x=> x.newExecutorAgentId != x.oldExecutorAgentId)
+                .ToDictionary(x=>x.Id, y => y.newExecutorAgentId != 0 ? y.newExecutorAgentId : (int?)null);
+                if (posUpd.Any())
+                    foreach (var pos in posUpd)
+                    {
+                        var id = pos.Key;
+                        var agentId = pos.Value;
+                        dbContext.DictionaryPositionsSet.Where(x => x.Id == id).Update(x => new DictionaryPositions { ExecutorAgentId = agentId });
+                    }
+                transaction.Complete();
+            }
+        }
+
 
         public void DeletePositions(IContext context, List<int> list)
         {
@@ -4880,6 +4908,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 executor.Id = dc.Id;
+                UpdatePositionExecutor(context, dc.PositionId);
                 transaction.Complete();
                 return dc.Id;
             }
@@ -4895,6 +4924,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Update);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, executor.PositionId);
                 transaction.Complete();
             }
         }

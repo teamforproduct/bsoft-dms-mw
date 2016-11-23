@@ -10,9 +10,10 @@ using BL.Model.SystemCore;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
-using System;
+
 using BL.Model.Common;
 using System.Web;
+using BL.Logic.SystemServices.TempStorage;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {/// <summary>
@@ -109,6 +110,17 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+
+            if (model.ImageId.HasValue)
+            {
+                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
+                if (avaFile is HttpPostedFile)
+                {
+                    model.PostedFileData = avaFile as HttpPostedFile;
+                }
+            }
+
             tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, ctx, model);
             return Get(model.Id);
         }
