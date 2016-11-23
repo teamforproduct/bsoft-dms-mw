@@ -33,9 +33,10 @@ namespace BL.Logic.SystemCore
             return res;
         }
 
-        public SystemService(ISystemDbProcess systemDb)
+        public SystemService(ISystemDbProcess systemDb, ICommandService commandService)
         {
             _systemDb = systemDb;
+            _commandService = commandService;
         }
 
         public void InitializerDatabase(IContext ctx)
