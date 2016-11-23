@@ -11,12 +11,12 @@ namespace BL.Logic.SystemCore
     public class BaseSettingCommand : BaseSystemCommand
     {
 
-        protected ModifySystemSetting Model
+        protected List<ModifySystemSetting> Model
         {
             get
             {
-                if (!(_param is ModifySystemSetting)) throw new WrongParameterTypeError();
-                return (ModifySystemSetting)_param;
+                if (!(_param is List<ModifySystemSetting>)) throw new WrongParameterTypeError();
+                return (List<ModifySystemSetting>)_param;
             }
         }
 
