@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging)
         {
-            return _templateDb.GetTemplateDocument(context);
+            return _templateDb.GetTemplateDocument(context, filter, paging);
         }
  
         public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)

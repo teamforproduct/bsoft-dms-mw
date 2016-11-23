@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Массив ИД шаблонов документов
         /// </summary>
-        public List<int> TemplateDocumentId { get; set; }
+        public List<int> IDs { get; set; }
         /// <summary>
         /// Массив ИД документов полученного из полнотекстового поиска
         /// </summary>
@@ -33,6 +33,10 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД тематик документов
         /// </summary>
         public List<int> DocumentSubjectId { get; set; }
+        /// <summary>
+        /// Отрывок названия
+        /// </summary>
+        public string Name { get; set; }
         /// <summary>
         /// Отрывок краткого содержания
         /// </summary>

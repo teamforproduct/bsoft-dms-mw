@@ -16,20 +16,98 @@ using System.Transactions;
 using BL.Model.FullTextSearch;
 using LinqKit;
 using System.IO;
+using BL.Model.SystemCore;
+using System;
+using System.Data.Entity;
 
 namespace BL.Database.Documents
 {
     public class TemplateDocumentsDbProcess : CoreDb.CoreDb, ITemplateDocumentsDbProcess
     {
-
         #region TemplateDocuments
 
-        public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx)
+        public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                return dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FrontTemplateDocument
+                var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId);
+                if (filter != null)
+                {
+                    if (filter.IDs?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.DocumentDirectionId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.DocumentTypeId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.DocumentTypeId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.DocumentSubjectId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.RegistrationJournalId?.Count() > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = filter.RegistrationJournalId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.RegistrationJournalId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (!String.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (!String.IsNullOrEmpty(filter.Description))
+                    {
+                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                }
+                qry = qry.OrderByDescending(x => x.Name);
+
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontTemplateDocument>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.Skip(() => skip).Take(() => take);
+                    }
+                }
+
+                var res = qry.Select(x => new FrontTemplateDocument
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
@@ -46,8 +124,8 @@ namespace BL.Database.Documents
                     //RegistrationJournalId = x.RegistrationJournalId,
                     //DocumentSubjectName = x.DocumentSubject.Name,
                     //LastChangeUserId = x.LastChangeUserId,
-
                 }).ToList();
+                return res;
             }
         }
 

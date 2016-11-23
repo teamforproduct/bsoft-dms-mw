@@ -30,7 +30,9 @@ namespace DMS_WebAPI.Controllers
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpDocs = tmpDocProc.GetTemplateDocuments(ctx, filter, paging);
-            return new JsonResult(tmpDocs, this);
+            var res = new JsonResult(tmpDocs, this);
+            res.Paging = paging;
+            return res;
         }
 
         /// <summary>

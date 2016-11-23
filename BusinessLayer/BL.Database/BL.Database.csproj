@@ -144,6 +144,7 @@
   <ItemGroup>
     <Compile Include="Admins\LanguagesDbProcess.cs" />
     <Compile Include="Admins\Interfaces\ILanguagesDbProcess.cs" />
+    <Compile Include="Common\DateTimeKindAttribute.cs" />
     <Compile Include="Common\SystemModelConverter.cs" />
     <Compile Include="Common\CommonFilterUtilites.cs" />
     <Compile Include="Common\AdminModelConverter.cs" />
