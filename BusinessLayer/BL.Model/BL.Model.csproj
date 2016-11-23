@@ -228,6 +228,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentEventNatively.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="EncryptionCore\Filters\FilterEncryptionCertificate.cs" />

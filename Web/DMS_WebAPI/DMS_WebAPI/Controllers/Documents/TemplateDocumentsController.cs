@@ -7,6 +7,10 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Web.Http.Description;
+using System.Collections.Generic;
+using BL.Model.SystemCore;
+using BL.Model.DocumentCore.Filters;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -20,11 +24,12 @@ namespace DMS_WebAPI.Controllers
         /// Получение списка шаблонов документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get()
+        [ResponseType(typeof(List<FrontTemplateDocument>))]
+        public IHttpActionResult Get([FromUri] FilterTemplateDocument filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocuments(ctx);
+            var tmpDocs = tmpDocProc.GetTemplateDocuments(ctx, filter, paging);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -33,6 +38,7 @@ namespace DMS_WebAPI.Controllers
         /// </summary>
         /// <param name="id">ИД шаблона документа</param>
         /// <returns>Шаблон документа</returns>
+        [ResponseType(typeof(FrontTemplateDocument))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
