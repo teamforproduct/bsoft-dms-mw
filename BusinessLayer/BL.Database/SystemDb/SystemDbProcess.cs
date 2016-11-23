@@ -586,7 +586,7 @@ namespace BL.Database.SystemDb
                     ObjectId = (int)EnumObjects.SystemActions,
                     IsActive = true,
                     IsList = true,
-                    IsChecked = x.RoleActions.Where(y => y.RoleId == roleId & !y.RecordId.HasValue).Any(),
+                    IsChecked = x.RoleActions.Any(y => y.RoleId == roleId & !y.RecordId.HasValue),
                     RoleId = roleId,
                     ActionId = x.Id,
                 }).ToList();
@@ -2063,8 +2063,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(
                         x =>
-                            x.Id <= selectBis && x.OperationType != (int)EnumOperationType.Delete && x.OperationType != (int)EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int)EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType != (int)EnumOperationType.Delete  && x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId)
                         .ThenBy(x => x.Id)
                         .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
@@ -2572,9 +2571,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //that is totaly wrong but delete 10000 elements with normal EF method is madness
-                dbContext.Database.ExecuteSqlCommand("DELETE FROM [DMS].[FullTextIndexCashes] WHERE [Id] <=" + deleteBis);
-                //dbContext.FullTextIndexCashSet.Where(10000 elements).Delete()
+                dbContext.FullTextIndexCashSet.Where(x => x.Id <= deleteBis).Delete();
             }
         }
 

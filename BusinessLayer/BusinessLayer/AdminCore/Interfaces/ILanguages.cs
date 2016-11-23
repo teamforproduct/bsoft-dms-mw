@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.FilterModel;
 using System.Web;
 using BL.Model.AdminCore.InternalModel;
