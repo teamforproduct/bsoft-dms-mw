@@ -8,6 +8,8 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
+using System.Web.Http.Description;
+using BL.Model.AdminCore.InternalModel;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -20,6 +22,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
+        [ResponseType(typeof(List<FrontAdminLanguageValue>))]
         public IHttpActionResult Get([FromUri] FilterAdminLanguageValue filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -35,6 +38,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminPositions</returns>
         [HttpGet]
         [Route("GetDefaults")]
+        [ResponseType(typeof(List<InternalAdminLanguageValue>))]
         public IHttpActionResult GetDefaults([FromUri] FilterAdminLanguageValue filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

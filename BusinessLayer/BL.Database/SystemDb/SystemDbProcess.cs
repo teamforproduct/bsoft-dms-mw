@@ -1579,15 +1579,15 @@ namespace BL.Database.SystemDb
                 }).ToList());
 
                 // не должны добавляться в полнотекст т.к. значения не локализованы
-                //res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
-                //{
-                //    DocumentId = 0,
-                //    ItemType = EnumObjects.DictionaryContactType,
-                //    OperationType = EnumOperationType.AddNew,
-                //    ClientId = ctx.CurrentClientId,
-                //    ObjectId = x.Id,
-                //    ObjectText = x.Code + " " + x.Name
-                //}).ToList());
+                res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryContactType,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Code + " " + x.Name
+                }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
@@ -1600,15 +1600,15 @@ namespace BL.Database.SystemDb
                 }).ToList());
 
                 // не должны добавляться в полнотекст т.к. значения не локализованы
-                //res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
-                //{
-                //    DocumentId = 0,
-                //    ItemType = EnumObjects.DictionaryAddressType,
-                //    OperationType = EnumOperationType.AddNew,
-                //    ClientId = ctx.CurrentClientId,
-                //    ObjectId = x.Id,
-                //    ObjectText = x.Name
-                //}).ToList());
+                res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryAddressType,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {

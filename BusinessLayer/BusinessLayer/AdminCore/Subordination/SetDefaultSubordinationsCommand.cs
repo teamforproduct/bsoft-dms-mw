@@ -22,7 +22,7 @@ namespace BL.Logic.AdminCore
         public override object Execute()
         {
 
-            base.SetAllSubordinations(Model.PositionId, true, true, true);
+            base.SetDefaultSubordinations(Model.PositionId, true, true);
 
             return null;
 
