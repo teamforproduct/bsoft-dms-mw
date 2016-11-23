@@ -15,13 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BL.Model.FullTextSearch;
 using LinqKit;
-using BL.Database.DBModel.Document;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure.Interception;
-using System.Data.Entity.SqlServer;
 using BL.Model.Common;
 using System.Transactions;
-using BL.Model.AdminCore.Clients;
 using BL.Model.Tree;
 using EntityFramework.Extensions;
 using BL.Database.DBModel.Admin;
@@ -792,7 +788,7 @@ namespace BL.Database.Dictionaries
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Update);
 
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 transaction.Complete();

@@ -122,8 +122,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpStore= DmsResolver.Current.Get<ITempStorageService>();
-            tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.AgentId, 0, file);
-            return new JsonResult(null, this);
+            var imgageId = tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.AgentId, 0, file);
+            return new JsonResult(imgageId, this);
         }
 
         [HttpDelete]
