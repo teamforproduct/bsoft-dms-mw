@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Transactions;
+using BL.CrossCutting.DependencyInjection;
 using BL.Logic.Common;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace BL.Logic.DictionaryCore
+namespace BL.Logic.DictionaryCore.AgentEmployee
 {
     public class ModifyDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
@@ -28,11 +29,27 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var item = new InternalDictionaryAgentEmployee(Model);
+                using (var transaction = new TransactionScope(TransactionScopeOption.Required,new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted}))
+                {
 
-                CommonDocumentUtilities.SetLastChange(_context, item);
+                    if (Model.PostedFileData != null)
+                    {
+                        var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+                        var fileModel = new ModifyDictionaryAgentImage
+                        {
+                            AgentId = Model.Id,
+                            PostedFileData = Model.PostedFileData
+                        };
+                        tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, _context, fileModel);
+                    }
 
-                _dictDb.UpdateAgentEmployee(_context, item);
+                    var item = new InternalDictionaryAgentEmployee(Model);
+
+                    CommonDocumentUtilities.SetLastChange(_context, item);
+
+                    _dictDb.UpdateAgentEmployee(_context, item);
+                    transaction.Complete();
+                }
             }
             catch (DictionaryRecordWasNotFound)
             {

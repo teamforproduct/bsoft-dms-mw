@@ -792,7 +792,7 @@ namespace BL.Database.Dictionaries
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Update);
 
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
