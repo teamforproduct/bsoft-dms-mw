@@ -10,11 +10,11 @@ namespace BL.Database.DBModel.Template
     {
         public TemplateDocuments()
         {
-            //this.IncomingDetail = new HashSet<TemplateDocumentIncomingDetails>();
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
             this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
             this.DocumentFiles = new HashSet<TemplateDocumentFiles>();
             this.Tasks = new HashSet<TemplateDocumentTasks>();
+            this.Papers = new HashSet<TemplateDocumentPapers>();
         }
 
         public int Id { get; set; }
@@ -48,6 +48,9 @@ namespace BL.Database.DBModel.Template
         public virtual ICollection<TemplateDocumentFiles> DocumentFiles { get; set; }
         [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentTasks> Tasks { get; set; }
+        [ForeignKey("DocumentId")]
+        public virtual ICollection<TemplateDocumentPapers> Papers { get; set; }
+
         [ForeignKey("DocumentDirectionId")]
         public virtual DictionaryDocumentDirections DocumentDirection { get; set; }
         [ForeignKey("DocumentTypeId")]

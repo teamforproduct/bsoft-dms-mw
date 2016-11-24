@@ -16,7 +16,7 @@ namespace BL.Database.DBModel.Encryption
         public int Id { get; set; }
         [MaxLength(400)]
         public string Name { get; set; }
-
+        [MaxLength(2000)]
         public string Thumbprint { get; set; }
 
         public byte[] Certificate { get; set; }

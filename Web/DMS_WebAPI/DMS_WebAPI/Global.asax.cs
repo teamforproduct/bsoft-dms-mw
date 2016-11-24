@@ -62,18 +62,18 @@ namespace DMS_WebAPI
             Exception exc = Server.GetLastError();
 
             // Handle HTTP errors
-            if (exc.GetType() == typeof(HttpException))
-            {
-                // The Complete Error Handling Example generates
-                // some errors using URLs with "NoCatch" in them;
-                // ignore these here to simulate what would happen
-                // if a global.asax handler were not implemented.
-                if (exc.Message.Contains("NoCatch") || exc.Message.Contains("maxUrlLength"))
-                    return;
+            //if (exc.GetType() == typeof(HttpException))
+            //{
+            //    // The Complete Error Handling Example generates
+            //    // some errors using URLs with "NoCatch" in them;
+            //    // ignore these here to simulate what would happen
+            //    // if a global.asax handler were not implemented.
+            //    if (exc.Message.Contains("NoCatch") || exc.Message.Contains("maxUrlLength"))
+            //        return;
 
-                //Redirect HTTP errors to HttpError page
-                Server.Transfer("HttpErrorPage.aspx");
-            }
+            //    //Redirect HTTP errors to HttpError page
+            //    Server.Transfer("HttpErrorPage.aspx");
+            //}
 
             // For other kinds of errors give the user some information
             // but stay on the default page
@@ -90,8 +90,6 @@ namespace DMS_WebAPI
             httpContext.Response.ContentType = "application/json";
 
             var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
-
-
 
             var languageService = DmsResolver.Current.Get<Languages>();
             var message = languageService.GetTranslation(exc.Message);

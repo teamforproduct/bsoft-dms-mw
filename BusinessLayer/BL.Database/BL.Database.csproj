@@ -235,6 +235,7 @@
     <Compile Include="DBModel\System\SystemPatterns.cs" />
     <Compile Include="DBModel\System\SystemDate.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
+    <Compile Include="DBModel\Template\TemplateDocumentPapers.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentFiles.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DBModel\Template\TemplateDocuments.cs" />
@@ -427,6 +428,10 @@
     <Compile Include="Migrations\201611221132149_SystemSettings3.cs" />
     <Compile Include="Migrations\201611221132149_SystemSettings3.Designer.cs">
       <DependentUpon>201611221132149_SystemSettings3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611241918225_TemplateDocumentPapers.cs" />
+    <Compile Include="Migrations\201611241918225_TemplateDocumentPapers.Designer.cs">
+      <DependentUpon>201611241918225_TemplateDocumentPapers.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -621,6 +626,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611221132149_SystemSettings3.resx">
       <DependentUpon>201611221132149_SystemSettings3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611241918225_TemplateDocumentPapers.resx">
+      <DependentUpon>201611241918225_TemplateDocumentPapers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
