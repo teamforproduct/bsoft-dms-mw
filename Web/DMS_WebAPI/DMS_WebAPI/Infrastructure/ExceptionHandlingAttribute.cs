@@ -48,8 +48,6 @@ namespace DMS_WebAPI.Infrastructure
 
             string msgExp = string.Empty;
 
-            
-            
             //#if DEBUG
             //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
             while (exc != null)

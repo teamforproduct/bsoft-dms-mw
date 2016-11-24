@@ -49,7 +49,7 @@ namespace DMS_WebAPI.Controllers
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             var tmpItem = tmpService.ExecuteAction(EnumSystemActions.SetSetting, cxt, model);
-            return new JsonResult(null, this);
+            return new JsonResult(tmpItem, this);
             //return Get(new FilterSystemSetting() { Key = (string)tmpItem });
         }
 

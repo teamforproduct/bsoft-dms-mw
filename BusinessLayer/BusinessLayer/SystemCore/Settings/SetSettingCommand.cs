@@ -1,4 +1,6 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.Common;
 using BL.Model.Exception;
 using BL.Model.SystemCore.InternalModel;
 using System;
@@ -12,13 +14,13 @@ namespace BL.Logic.SystemCore
         {
             try
             {
-                var res = new List<int>();
                 foreach (var model in Model)
                 {
                     var modelInt = new InternalSystemSetting(model);
-                    res.Add(_systemDb.MergeSetting(_context, modelInt));
+                    var sett = DmsResolver.Current.Get<ISettings>();
+                    sett.SaveSetting(_context, modelInt);
                 }
-                return res;
+                return null;
             }
             catch (Exception ex)
             {
