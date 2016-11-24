@@ -85,9 +85,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             {
                 var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
                 var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
-                if (avaFile is HttpPostedFile)
+                if (avaFile is string)
                 {
-                    model.PostedFileData = avaFile as HttpPostedFile;
+                    model.PostedFileData = avaFile as string;
                 }
             }
 

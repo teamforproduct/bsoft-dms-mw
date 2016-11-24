@@ -37,13 +37,10 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                byte[] buffer = new byte[Model.PostedFileData.ContentLength];
-                Model.PostedFileData.InputStream.Read(buffer, 0, Model.PostedFileData.ContentLength);
-
                 var newPers = new InternalDictionaryAgentImage
                 {
                     Id = Model.AgentId,
-                    Image = buffer,
+                    Image = Convert.FromBase64String(Model.PostedFileData),
                 };
                 CommonDocumentUtilities.SetLastChange(_context, newPers);
                 _dictDb.SetAgentImage(_context, newPers);

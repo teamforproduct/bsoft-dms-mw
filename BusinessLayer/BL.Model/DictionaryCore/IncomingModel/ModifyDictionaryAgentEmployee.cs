@@ -97,7 +97,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Данные файла
         /// </summary>
         [IgnoreDataMember]
-        public HttpPostedFile PostedFileData { get; set; }
+        public string PostedFileData { get; set; }
         #endregion
 
         #region [+] Employee ...
