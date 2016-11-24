@@ -221,6 +221,11 @@ namespace BL.Database.SystemDb
                         Key = model.Key,
                         Value = model.Value,
                         ValueTypeId = (int)model.ValueType,
+                        AccessType = model.AccessType,
+                        Name = model.Name,
+                        Description = model.Description,
+                        Order = model.Order,
+                        SettingTypeId = model.SettingTypeId,
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();

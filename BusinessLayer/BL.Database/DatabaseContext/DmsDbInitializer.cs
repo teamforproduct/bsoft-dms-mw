@@ -20,6 +20,8 @@ namespace BL.Database.DatabaseContext
             context.SystemActionsSet.AddRange(DmsDbImportData.GetSystemActions());
             context.SystemUIElementsSet.AddRange(DmsDbImportData.GetSystemUIElements());
             context.SystemValueTypesSet.AddRange(DmsDbImportData.GetSystemValueTypes());
+            context.SystemFormulasSet.AddRange(DmsDbImportData.GetSystemFormulas());
+            context.SystemPatternsSet.AddRange(DmsDbImportData.GetSystemPatterns());
             context.DictionaryDocumentDirectionsSet.AddRange(DmsDbImportData.GetDictionaryDocumentDirections());
             context.DictionaryEventTypesSet.AddRange(DmsDbImportData.GetDictionaryEventTypes());
             context.DictionaryImportanceEventTypesSet.AddRange(DmsDbImportData.GetDictionaryImportanceEventTypes());
@@ -32,7 +34,6 @@ namespace BL.Database.DatabaseContext
             context.DictionaryLinkTypesSet.AddRange(DmsDbImportData.GetDictionaryLinkTypes());
             context.DictionaryFileTypesSet.AddRange(DmsDbImportData.GetDictionaryFileTypes());
             context.DictionarySigningTypesSet.AddRange(DmsDbImportData.GetDictionarySigningTypes());
-
             base.Seed(context);
         }
     }

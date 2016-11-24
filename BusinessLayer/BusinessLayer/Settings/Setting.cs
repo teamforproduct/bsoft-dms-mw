@@ -24,10 +24,12 @@ namespace BL.Logic.Settings
         /// <typeparam name="T">Expected setting value type.</typeparam>
         /// <param key="settingName">Setting key.</param>
         /// <param name="ctx">Current context (contains user, database)</param>
-        /// <param name="settingName"></param>
+        /// <param name="setting"></param>
         /// <returns>Typed setting value.</returns>
-        public T GetSetting<T>(IContext ctx, string settingName) where T : IConvertible
+        private T GetSetting<T>(IContext ctx, EnumSystemSettings setting) where T : IConvertible
         {
+            string settingName = setting.ToString();
+
             if (!_casheSettings.ContainsKey(MakeKey(settingName, ctx)))
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
@@ -58,7 +60,7 @@ namespace BL.Logic.Settings
         /// <param name="settingName">Setting name.</param>
         /// <param name="defaulValue">Expected default value.</param>
         /// <returns>Typed setting value or default value.</returns>
-        public T GetSetting<T>(IContext ctx, string settingName, T defaulValue) where T : IConvertible
+        private T GetSetting<T>(IContext ctx, string settingName, T defaulValue) where T : IConvertible
         {
             if (!_casheSettings.ContainsKey(MakeKey(settingName, ctx)))
             {
@@ -87,11 +89,14 @@ namespace BL.Logic.Settings
         /// </summary>
         /// <typeparam name="T">Expected setting value type.</typeparam>
         /// <param name="ctx">Current context (contains user, database)</param>
-        /// <param name="settingName">Setting name.</param>
+        /// <param name="setting">Setting name.</param>
         /// <param name="defaulValue">Expected default value.</param>
         /// <returns>Typed setting value or default value.</returns>
-        public T GetSetting<T> (IContext ctx, string settingKey, InternalSystemSetting defaulValue) where T : IConvertible
+        private T GetSettingWithWriteDefaultIfEmpty<T>(IContext ctx, EnumSystemSettings setting) where T : IConvertible
         {
+            var settingKey = setting.ToString();
+            var defaulValue = SettingsFactory.GetDefaultSetting(setting);
+
             string casheKey = MakeKey(settingKey, ctx);
 
             // Если нет в _casheSettings...
@@ -112,12 +117,31 @@ namespace BL.Logic.Settings
                     // ... записываю val в _casheSettings
                     MergeCasheSettings(ctx, val.FirstOrDefault());
                 }
-                
+
             }
 
             var settingValue = _casheSettings[casheKey];
             return (T)((IConvertible)settingValue).ToType(typeof(T), null);
         }
+
+        private T GetSettingOrDefaultIfEmpty<T>(IContext ctx, EnumSystemSettings setting) where T : IConvertible
+        {
+            var settingKey = setting.ToString();
+            var defaulValue = SettingsFactory.GetDefaultSetting(setting);
+
+            string casheKey = MakeKey(settingKey, ctx);
+
+            // Если нет в _casheSettings...
+            if (!_casheSettings.ContainsKey(casheKey))
+            {
+                // ... записываю val в _casheSettings
+                MergeCasheSettings(ctx, defaulValue);
+            }
+
+            var settingValue = _casheSettings[casheKey];
+            return (T)((IConvertible)settingValue).ToType(typeof(T), null);
+        }
+
 
         //public void SaveSetting(IContext ctx, string key, object val)
         //{
@@ -128,7 +152,7 @@ namespace BL.Logic.Settings
         {
             var db = DmsResolver.Current.Get<ISystemDbProcess>();
 
-            db.MergeSetting(ctx, setting );
+            db.MergeSetting(ctx, setting);
             MergeCasheSettings(ctx, setting);
         }
 
@@ -195,10 +219,75 @@ namespace BL.Logic.Settings
 
         #region [+] Частные настройки ...
         public bool GetSubordinationsSendAllForExecution(IContext ctx) =>
-             GetSetting<bool>(ctx, SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION, SettingConstants.DefaultSubordinationsSendAllForExecution());
+             GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION);
 
         public bool GetSubordinationsSendAllForInforming(IContext ctx) =>
-             GetSetting<bool>(ctx, SettingConstants.SUBORDINATIONS_SEND_ALL_FOR_INFORMING, SettingConstants.DefaultSubordinationsSendAllForInforming());
+             GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_INFORMING);
+
+
+        public int GetMailTimeoutMin(IContext ctx) =>
+             GetSetting<int>(ctx, EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE);
+
+        public MailServerType GetMailInfoServerType(IContext ctx) =>
+             (MailServerType)GetSetting<int>(ctx, EnumSystemSettings.MAILSERVER_TYPE);
+
+        public string GetMailInfoSystemMail(IContext ctx) =>
+             GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_SYSTEMMAIL);
+
+        public string GetMailInfoName(IContext ctx) =>
+             GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_NAME);
+
+        public string GetMailInfoLogin(IContext ctx) =>
+             GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_LOGIN);
+
+        public string GetMailInfoPassword(IContext ctx) =>
+             GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_PASSWORD);
+
+        public int GetMailInfoPort(IContext ctx) =>
+             GetSetting<int>(ctx, EnumSystemSettings.MAILSERVER_PORT);
+
+        public bool GetDigitalSignatureIsUseCertificateSign(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
+
+        public bool GetDigitalSignatureIsUseInternalSign(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
+
+        public string GetFulltextDatastorePath(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH);
+
+        public int GetFulltextRefreshTimeout(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT);
+
+        public bool GetFulltextWasInitialized(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
+
+        public string GetFileStorePath(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.IRF_DMS_FILESTORE_PATH);
+
+        public string GetReportDocumentForDigitalSignature(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature);
+
+        public string GetReportRegisterTransmissionDocuments(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments);
+
+        public string GetReportRegistrationCardIncomingDocument(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardIncomingDocument);
+
+        public string GetReportRegistrationCardInternalDocument(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument);
+
+        public string GetReportRegistrationCardOutcomingDocument(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument);
+
+
+        public int GetAutoplanTimeoutMinute(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE);
+
+        public int GetClearTrashDocumentsTimeoutMinute(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE);
+
+        public int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR);
 
         #endregion
 

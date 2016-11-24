@@ -279,6 +279,9 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
+    <Compile Include="Enums\EnumSystemFormats.cs" />
+    <Compile Include="Enums\EnumSystemSettings.cs" />
+    <Compile Include="Enums\EnumSystemPatterns.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
@@ -394,7 +397,7 @@
     <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />
     <Compile Include="Enums\EnumEncryptionActions.cs" />
-    <Compile Include="Enums\EnumFormulas.cs" />
+    <Compile Include="Enums\EnumSystemFormulas.cs" />
     <Compile Include="Enums\EnumResultTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSort.cs" />

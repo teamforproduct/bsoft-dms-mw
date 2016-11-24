@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Model.Enums
 {
-    public enum EnumFormulas
+    public enum EnumSystemFormulas
     {
         /// <summary>
         /// ИД журнала
