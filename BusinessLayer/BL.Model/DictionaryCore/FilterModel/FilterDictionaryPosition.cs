@@ -44,5 +44,19 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public List<int> RoleIDs { get; set; }
 
+        /// <summary>
+        ///  Ниже по списку
+        /// </summary>
+        public int? OrderMore { get; set; }
+
+        /// <summary>
+        /// Выше по списку
+        /// </summary>
+        public int? OrderLess { get; set; }
+
+        /// <summary>
+        /// Номер в списке
+        /// </summary>
+        public List<int> Orders { get; set; }
     }
 }

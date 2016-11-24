@@ -1291,8 +1291,10 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
                 qry = GetWhereSubordination(ref qry, filter);
-                dbContext.AdminSubordinationsSet.RemoveRange(qry);
-                dbContext.SaveChanges();
+                qry.Delete();
+                //var e = qry.ToList();
+                //dbContext.AdminSubordinationsSet.RemoveRange(qry);
+                //dbContext.SaveChanges();
             }
         }
 

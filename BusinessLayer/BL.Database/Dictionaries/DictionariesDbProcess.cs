@@ -3271,7 +3271,7 @@ namespace BL.Database.Dictionaries
                 {
                     var positions = GetPositionIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list });
 
-                    if (positions.Count > 0) DeletePositions(context, positions);
+                    if (positions.Count() > 0) DeletePositions(context, positions.ToList());
 
                     dbContext.DictionaryDepartmentsSet.RemoveRange(dbContext.DictionaryDepartmentsSet.
                         Where(x => x.Company.ClientId == context.CurrentClientId).
@@ -4516,7 +4516,35 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public List<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = GetTransaction())
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                var res = qry.Select(
+                    x => new InternalDictionaryPosition
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        FullName = x.FullName,
+                        ParentId = x.ParentId,
+                        DepartmentId = x.DepartmentId,
+                        ExecutorAgentId = x.ExecutorAgentId,
+                        MainExecutorAgentId = x.MainExecutorAgentId,
+                        Order = x.Order,
+                        IsActive = x.IsActive,
+                        LastChangeDate = x.LastChangeDate,
+                        LastChangeUserId = x.LastChangeUserId
+                    }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
@@ -4754,6 +4782,26 @@ namespace BL.Database.Dictionaries
             if (filter.RoleIDs?.Count > 0)
             {
                 qry = qry.Where(x => x.PositionRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
+            }
+
+            if (filter.OrderMore.HasValue)
+            {
+                qry = qry.Where(x => x.Order > filter.OrderMore);
+            }
+
+            if (filter.OrderLess.HasValue)
+            {
+                qry = qry.Where(x => x.Order < filter.OrderLess);
+            }
+
+            // по отделам
+            if (filter.Orders?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                filterContains = filter.Orders.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Order == value).Expand());
+
+                qry = qry.Where(filterContains);
             }
 
             return qry;

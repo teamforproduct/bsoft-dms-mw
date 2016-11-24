@@ -29,6 +29,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
+        [ResponseType(typeof(List<FrontAdminRoleAction>))]
         public IHttpActionResult Get([FromUri] FilterAdminRoleAction filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -45,6 +46,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="id">Record Id</param>
         /// <returns>FrontAdminRoleAction</returns>
+        [ResponseType(typeof(FrontAdminRoleAction))]
         public IHttpActionResult Get(int id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -58,7 +60,7 @@ namespace DMS_WebAPI.Controllers.Admins
 
         [HttpGet]
         [Route("GetRoleActionsDIP")]
-        [ResponseType(typeof(List<FrontAdminRoleAction>))]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int roleId, [FromUri] FilterTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

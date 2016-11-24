@@ -199,6 +199,8 @@ namespace BL.Database.Dictionaries.Interfaces
         FrontDictionaryPosition GetPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter);

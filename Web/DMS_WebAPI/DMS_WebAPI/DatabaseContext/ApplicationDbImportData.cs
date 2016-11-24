@@ -131,6 +131,8 @@ namespace DMS_WebAPI.Models
             list.AddRange(GetListByEnum<EnumDocumentActions>());
             list.AddRange(GetListByEnum<EnumEncryptionActions>());
             list.AddRange(GetListByEnum<EnumPropertyActions>());
+            list.AddRange(GetListByEnum<EnumFormulas>());
+
             return list;
 
         }

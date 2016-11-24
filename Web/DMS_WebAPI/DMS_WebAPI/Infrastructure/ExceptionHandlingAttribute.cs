@@ -94,12 +94,32 @@ namespace DMS_WebAPI.Infrastructure
             try
             {
                 var ex = context.Exception;
+                var errInfo = string.Empty;
 
+                while (ex != null)
+                {
+                    var m = ex.Message;
+
+                    if (!m.Contains("See the inner exception for details"))
+                    {
+                        errInfo += (errInfo == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
+                        errInfo += $"   Message:{ex.Message}\r\n";
+                        errInfo += $"   Source:{ex.Source}\r\n";
+                        errInfo += $"   Method:{ex.TargetSite}\r\n";
+                        
+                    }
+                    ex = ex.InnerException;
+                };
+
+                ex = context.Exception;
                 if (ex.InnerException != null) ex = ex.InnerException;
+
+                errInfo += $"StackTrace:\r\n{ex.StackTrace}\r\n";
+
 
                 // stores the error message
                 string errorMessage = string.Empty;
-                errorMessage += "ERROR!!!\r\n";
+                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("o") + "\r\n";
                 try
                 {
                     HttpContext cnt = httpContext;
@@ -108,11 +128,12 @@ namespace DMS_WebAPI.Infrastructure
                 catch
                 { }
 
-                errorMessage += $"Message:{ex.Message}\r\n";
-                errorMessage += $"Source:{ex.Source}\r\n";
-                errorMessage += $"Method:{ex.TargetSite}\r\n";
-                errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
-                errorMessage += $"Request:{context.Request}\r\n";
+                //errorMessage += $"Message:{ex.Message}\r\n";
+                //errorMessage += $"Source:{ex.Source}\r\n";
+                //errorMessage += $"Method:{ex.TargetSite}\r\n";
+                //errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
+                errorMessage += errInfo;
+                errorMessage += $"Request:\r\n{context.Request}\r\n";
 
                 try
                 {
@@ -141,7 +162,7 @@ namespace DMS_WebAPI.Infrastructure
                     sw = System.IO.File.AppendText(path);
                     try
                     {
-                        string line = DateTime.UtcNow.ToString("o") + "\r\n" + errorMessage;
+                        string line = errorMessage;
                         sw.WriteLine(line);
                     }
                     catch

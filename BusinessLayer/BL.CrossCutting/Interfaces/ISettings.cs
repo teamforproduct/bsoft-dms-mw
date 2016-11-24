@@ -18,9 +18,5 @@ namespace BL.CrossCutting.Interfaces
 
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
-
-        bool GetRJournalPositionSetAllForViewing(IContext ctx);
-        bool GetRJournalPositionSetAllForRegistration(IContext ctx);
-
     }
 }
