@@ -4235,7 +4235,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryPositionsSet.Add(dd);
                 CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
-                UpdatePositionExecutor(context, dd.Id);
+                UpdatePositionExecutor(context, new List<int> { dd.Id});
                 position.Id = dd.Id;
                 transaction.Complete();
                 return dd.Id;
@@ -4261,8 +4261,8 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.Update);
-                UpdatePositionExecutor(context, position.Id);
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, new List<int> { position.Id });
                 transaction.Complete();
             }
         }
@@ -4281,15 +4281,14 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void UpdatePositionExecutor(IContext context, int? positionId = null)
+        public void UpdatePositionExecutor(IContext context, List<int> positionId = null)
         {
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
                 var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
-                if (positionId.HasValue)
-                    qry = qry.Where(x=>x.Id == positionId.Value);
-
+                if (positionId?.Any()??false)
+                    qry = qry.Where(x=> positionId.Contains(x.Id));
                 var posUpd = qry.Select(x => new
                 {
                     x.Id,   oldExecutorAgentId = x.ExecutorAgentId ?? 0,
@@ -4860,7 +4859,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 executor.Id = dc.Id;
-                UpdatePositionExecutor(context, dc.PositionId);
+                UpdatePositionExecutor(context, new List<int> { dc.PositionId });
                 transaction.Complete();
                 return dc.Id;
             }
@@ -4876,7 +4875,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Update);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
-                UpdatePositionExecutor(context, executor.PositionId);
+                UpdatePositionExecutor(context, new List<int> { executor.PositionId });
                 transaction.Complete();
             }
         }
@@ -4891,6 +4890,7 @@ namespace BL.Database.Dictionaries
                     Where(x => list.Contains(x.Id)));
                 CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, list);
                 transaction.Complete();
             }
         }

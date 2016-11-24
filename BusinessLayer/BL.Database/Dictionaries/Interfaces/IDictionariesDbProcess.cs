@@ -194,7 +194,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeletePositions(IContext context, List<int> list);
 
         void UpdatePositionOrder(IContext context, int positionId, int order);
-        void UpdatePositionExecutor(IContext context, int? positionId = null);
+        void UpdatePositionExecutor(IContext context, List<int> positionId = null);
         int? GetExecutorAgentIdByPositionId(IContext context, int id);
         FrontDictionaryPosition GetPosition(IContext context, int id);
 
