@@ -1,8 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Exception;
 using DMS_WebAPI.Utilities;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -86,21 +88,119 @@ namespace DMS_WebAPI
             var httpContext = HttpContext.Current;
             httpContext.Response.Clear();
             httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
-
             httpContext.Response.ContentType = "application/json";
 
-            var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+            //TODO Remove
+            if (httpContext.IsDebuggingEnabled)
+            {
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
 
-            var languageService = DmsResolver.Current.Get<Languages>();
-            var message = languageService.GetTranslation(exc.Message);
             if (exc is DmsExceptions)
             {
-                var parameters = (exc as DmsExceptions).Parameters;
-                if (parameters?.Count > 0)
-                    message = string.Format(message, parameters.ToArray());
+                if (exc is UserUnauthorized)
+                {
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                }
             }
-            var json = JsonConvert.SerializeObject(new { success = false, msg = message }, settings);
+
+
+            string msgExp = string.Empty;
+
+            //#if DEBUG
+            //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
+            while (exc != null)
+            {
+                var m = exc.Message;
+
+                m = GetTranslation(m);
+
+                if (exc is DmsExceptions)
+                {
+                    var p = (exc as DmsExceptions).Parameters;
+
+                    if (p?.Count > 0) m = InsertValues(m, p);
+                }
+
+                if (!m.Contains("See the inner exception for details"))
+                {
+                    msgExp = msgExp + (msgExp == string.Empty ? string.Empty : ";    ") + m;
+                }
+                exc = exc.InnerException;
+            };
+
+            // Если в результате подстановки параметров подставили лейблы, нужно их перевести
+            msgExp = GetTranslation(msgExp);
+
+            //#else
+            //msgExp = exc.Message;
+            //#endif
+
+
+            var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
+            var json = JsonConvert.SerializeObject(new { success = false, msg = msgExp }, settings);
+
+
             httpContext.Response.Write(json);
+            httpContext.Response.End();
+
+            #region log to file
+            try
+            {
+                var ex = exc;
+                var errInfo = string.Empty;
+
+                while (ex != null)
+                {
+                    var m = ex.Message;
+
+                    if (!m.Contains("See the inner exception for details"))
+                    {
+                        errInfo += (errInfo == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
+                        errInfo += $"   Message: {ex.Message}\r\n";
+                        errInfo += $"   Source: {ex.Source}\r\n";
+                        errInfo += $"   Method: {ex.TargetSite}\r\n";
+
+                    }
+                    ex = ex.InnerException;
+                };
+
+                if (exc.InnerException != null) exc = exc.InnerException;
+
+                errInfo += $"StackTrace:\r\n{exc.StackTrace}\r\n";
+
+
+                // stores the error message
+                string errorMessage = string.Empty;
+                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("o") + "\r\n";
+
+                try
+                {
+                    HttpContext cnt = httpContext;
+                    errorMessage += $"URL: {cnt.Request.Url.ToString()}\r\n";
+                }
+                catch
+                { }
+
+                //errorMessage += $"Message:{ex.Message}\r\n";
+                //errorMessage += $"Source:{ex.Source}\r\n";
+                //errorMessage += $"Method:{ex.TargetSite}\r\n";
+                //errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
+                errorMessage += errInfo;
+                errorMessage += $"Request:\r\n{httpContext.Request}\r\n";
+
+                try
+                {
+                    httpContext.Request.InputStream.Position = 0;
+                    errorMessage += $"Request Body: {new System.IO.StreamReader(httpContext.Request.InputStream).ReadToEnd()}\r\n";
+                }
+                catch { }
+
+
+                AppendToFile(httpContext.Server.MapPath("~/SiteErrors.txt"), errorMessage);
+            }
+            catch { }
+            #endregion log to file
 
             //// Log the exception and notify system operators
             //ExceptionUtility.LogException(exc, "DefaultPage");
@@ -108,6 +208,60 @@ namespace DMS_WebAPI
 
             // Clear the error from the server
             Server.ClearError();
+        }
+
+        private string InsertValues(string Message, List<string> Paramenters)
+        {
+            try
+            {
+                return string.Format(Message, Paramenters.ToArray());
+            }
+            catch
+            { }
+            return Message;
+        }
+
+        private string GetTranslation(string text)
+        {
+            var languageService = DmsResolver.Current.Get<ILanguages>();
+            return languageService.GetTranslation(text);
+        }
+
+        private void AppendToFile(string path, string text)
+        {
+            try
+            {
+                System.IO.StreamWriter sw;
+                
+                try
+                {
+                    System.IO.FileInfo ff = new System.IO.FileInfo(path);
+                    if (ff.Exists)
+                    {
+                    }
+                }
+                catch
+                {
+
+                }
+
+                sw = System.IO.File.AppendText(path);
+                try
+                {
+                    string line = text;
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
         }
     }
 }

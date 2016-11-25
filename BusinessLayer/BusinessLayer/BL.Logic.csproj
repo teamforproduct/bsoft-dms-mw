@@ -262,6 +262,7 @@
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
     <Compile Include="Logging\UserContexts.cs" />
+    <Compile Include="Settings\SettingsFactory.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
     <Compile Include="SystemCore\SystemCommandFactory.cs" />

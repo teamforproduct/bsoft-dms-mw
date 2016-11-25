@@ -361,7 +361,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
     <Compile Include="Infrastructure\NoBufferPolicySelector.cs" />
     <Compile Include="Migrations\201606162106554_InitialMigration.cs" />

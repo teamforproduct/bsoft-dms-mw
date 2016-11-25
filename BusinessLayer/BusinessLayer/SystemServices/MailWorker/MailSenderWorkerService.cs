@@ -51,16 +51,18 @@ namespace BL.Logic.SystemServices.MailWorker
             {
                 try
                 {
+                    var ctx = keyValuePair.Value;
+
                     var msSetting = new InternalSendMailServerParameters
                     {
                         DatabaseKey = keyValuePair.Key,
-                        CheckInterval = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.MAIL_TIMEOUT_MIN),
-                        ServerType = (MailServerType)_settings.GetSetting<int>(keyValuePair.Value, SettingConstants.MAIL_SERVER_TYPE),
-                        FromAddress = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.MAIL_SERVER_SYSTEMMAIL),
-                        Login = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.MAIL_SERVER_LOGIN),
-                        Pass = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.MAIL_SERVER_PASS),
-                        Server = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.MAIL_SERVER_NAME),
-                        Port = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.MAIL_SERVER_PORT)
+                        CheckInterval = _settings.GetMailTimeoutMin(ctx),
+                        ServerType = _settings.GetMailInfoServerType(ctx),
+                        FromAddress = _settings.GetMailInfoSystemMail(ctx),
+                        Login = _settings.GetMailInfoLogin(ctx),
+                        Pass = _settings.GetMailInfoPassword(ctx),
+                        Server = _settings.GetMailInfoName(ctx),
+                        Port = _settings.GetMailInfoPort(ctx)
                     };
 
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
@@ -139,13 +141,13 @@ namespace BL.Logic.SystemServices.MailWorker
             var msSetting = new InternalSendMailParameters(
                     new InternalSendMailServerParameters
                     {
-                        CheckInterval = _settings.GetSetting<int>(ctx, SettingConstants.MAIL_TIMEOUT_MIN),
-                        ServerType = (MailServerType)_settings.GetSetting<int>(ctx, SettingConstants.MAIL_SERVER_TYPE),
-                        FromAddress = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_SYSTEMMAIL),
-                        Login = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_LOGIN),
-                        Pass = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_PASS),
-                        Server = _settings.GetSetting<string>(ctx, SettingConstants.MAIL_SERVER_NAME),
-                        Port = _settings.GetSetting<int>(ctx, SettingConstants.MAIL_SERVER_PORT)
+                        CheckInterval = _settings.GetMailTimeoutMin(ctx),
+                        ServerType = _settings.GetMailInfoServerType(ctx),
+                        FromAddress = _settings.GetMailInfoSystemMail(ctx),
+                        Login = _settings.GetMailInfoLogin(ctx),
+                        Pass = _settings.GetMailInfoPassword(ctx),
+                        Server = _settings.GetMailInfoName(ctx),
+                        Port = _settings.GetMailInfoPort(ctx)
                     })
             {
                 Body = body,

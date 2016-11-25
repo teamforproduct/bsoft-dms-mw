@@ -46,7 +46,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                 {
                     var ftsSetting = new AutoPlanSettings
                     {
-                        TimeToUpdate = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.AUTOPLAN_TIOMEOUT_MIN),
+                        TimeToUpdate = _settings.GetAutoplanTimeoutMinute(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
                     };
                     _workers.Add(keyValuePair.Key, new QueueWorker.QueueWorker());

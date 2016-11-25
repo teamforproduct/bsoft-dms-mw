@@ -48,8 +48,6 @@ namespace DMS_WebAPI.Infrastructure
 
             string msgExp = string.Empty;
 
-            
-            
             //#if DEBUG
             //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
             while (exc != null)
@@ -103,9 +101,9 @@ namespace DMS_WebAPI.Infrastructure
                     if (!m.Contains("See the inner exception for details"))
                     {
                         errInfo += (errInfo == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
-                        errInfo += $"   Message:{ex.Message}\r\n";
-                        errInfo += $"   Source:{ex.Source}\r\n";
-                        errInfo += $"   Method:{ex.TargetSite}\r\n";
+                        errInfo += $"   Message: {ex.Message}\r\n";
+                        errInfo += $"   Source: {ex.Source}\r\n";
+                        errInfo += $"   Method: {ex.TargetSite}\r\n";
                         
                     }
                     ex = ex.InnerException;
@@ -123,7 +121,7 @@ namespace DMS_WebAPI.Infrastructure
                 try
                 {
                     HttpContext cnt = httpContext;
-                    errorMessage += $"URL:{cnt.Request.Url.ToString()}\r\n";
+                    errorMessage += $"URL: {cnt.Request.Url.ToString()}\r\n";
                 }
                 catch
                 { }
@@ -138,7 +136,7 @@ namespace DMS_WebAPI.Infrastructure
                 try
                 {
                     httpContext.Request.InputStream.Position = 0;
-                    errorMessage += $"Request Body:{new System.IO.StreamReader(httpContext.Request.InputStream).ReadToEnd()}\r\n";
+                    errorMessage += $"Request Body: {new System.IO.StreamReader(httpContext.Request.InputStream).ReadToEnd()}\r\n";
                 }
                 catch { }
 

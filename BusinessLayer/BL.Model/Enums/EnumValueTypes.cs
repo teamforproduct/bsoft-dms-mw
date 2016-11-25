@@ -7,5 +7,6 @@
         Date = 3,
         Api = 4,
         Bool = 5,
+        Password = 6,
     }
 }

@@ -19,7 +19,7 @@ namespace DMS_WebAPI
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
-            config.Filters.Add(new ExceptionHandlingAttribute());
+            //config.Filters.Add(new ExceptionHandlingAttribute());
             config.Filters.Add(new ModelValidationErrorHandlerFilterAttribute());
 
             config.Services.Replace(typeof(IHostBufferPolicySelector), new NoBufferPolicySelector());
