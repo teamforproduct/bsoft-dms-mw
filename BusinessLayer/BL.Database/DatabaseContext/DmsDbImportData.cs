@@ -560,6 +560,7 @@ namespace BL.Database.DatabaseContext
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = "date", Description = "date" });
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = "api", Description = "api" });
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = "bool", Description = "boolean" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = "pass", Description = "password" });
 
             return items;
         }

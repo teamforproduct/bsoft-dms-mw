@@ -196,6 +196,7 @@ namespace BL.Logic.Settings
             {
                 case EnumValueTypes.Text:
                 case EnumValueTypes.Api:
+                case EnumValueTypes.Password:
                     res = Value;
                     break;
                 case EnumValueTypes.Number:

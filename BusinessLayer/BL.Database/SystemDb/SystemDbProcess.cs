@@ -275,6 +275,12 @@ namespace BL.Database.SystemDb
             }
         }
 
+        /// <summary>
+        /// Возвращает список настройек. ВНИМАНИЕ!!! Значения полей типа password заменяются на NULL
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
@@ -286,7 +292,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Key = x.Key,
-                    Value = x.Value,
+                    Value = (x.ValueTypeId == (int)EnumValueTypes.Password) ? null : x.Value,
                     Name = x.Name,
                     Description = x.Description,
                     ValueTypeCode = x.ValueTypes.Code,

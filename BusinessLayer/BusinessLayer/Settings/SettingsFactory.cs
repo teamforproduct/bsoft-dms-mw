@@ -32,7 +32,7 @@ namespace BL.Logic.Settings
                     break;
                 case EnumSystemSettings.MAILSERVER_PASSWORD:
                     res.Value = "";
-                    res.ValueType = EnumValueTypes.Text;
+                    res.ValueType = EnumValueTypes.Password;
                     res.SettingTypeId = 4;
                     break;
                 case EnumSystemSettings.MAILSERVER_PORT:
