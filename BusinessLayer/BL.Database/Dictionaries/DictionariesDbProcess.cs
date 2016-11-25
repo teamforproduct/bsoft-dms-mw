@@ -4383,7 +4383,8 @@ namespace BL.Database.Dictionaries
         public int? GetExecutorAgentIdByPositionId(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
-            using (var transaction = GetTransaction())
+            //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            //GetTransaction())
             {
                 var qry = dbContext.DictionaryPositionsSet.AsQueryable();
                 if (!context.IsAdmin)
@@ -4392,7 +4393,7 @@ namespace BL.Database.Dictionaries
                 }
                 var res = qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
 
-                transaction.Complete();
+                //transaction.Complete();
                 return res;
             }
         }

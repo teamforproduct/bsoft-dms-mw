@@ -1095,7 +1095,7 @@ namespace BL.Database.Documents
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == model.RegistrationJournalId)
                     .Where(x => dbContext.AdminRegistrationJournalPositionsSet
-                                            .Where(y=>y.PositionId == context.CurrentPositionId && y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
+                                            .Where(y => y.PositionId == context.CurrentPositionId && y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
                                             .Select(y => y.RegJournalId).Contains(x.Id))
                     .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
 
@@ -1207,6 +1207,7 @@ namespace BL.Database.Documents
         public void RegisterDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = new DBModel.Document.Documents
                 {
@@ -1249,6 +1250,7 @@ namespace BL.Database.Documents
 
                 CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -1271,13 +1273,15 @@ namespace BL.Database.Documents
         public bool VerifyDocumentRegistrationNumber(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                return !dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = !dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
                                 .Any(x => x.RegistrationJournalId == document.RegistrationJournalId
                                          && x.NumerationPrefixFormula == document.NumerationPrefixFormula
                                          && x.RegistrationNumber == document.RegistrationNumber
-                                         && x.Id != document.Id
-                    );
+                                         && x.Id != document.Id);
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -1532,6 +1536,7 @@ namespace BL.Database.Documents
         public void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 var doc = new DBModel.Document.Documents
                 {
@@ -1550,6 +1555,8 @@ namespace BL.Database.Documents
                     doc.Events = ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList();
                 }
                 dbContext.SaveChanges();
+                transaction.Complete();
+
             }
         }
 
