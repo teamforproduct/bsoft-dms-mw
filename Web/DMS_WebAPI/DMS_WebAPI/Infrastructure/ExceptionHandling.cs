@@ -126,20 +126,9 @@ namespace DMS_WebAPI.Infrastructure
             #region log to file
             try
             {
-                // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
-                if (exception.InnerException != null)
-                    exc = exception.InnerException;
-                else
-                    exc = exception;
-
-                logExpression += $"StackTrace:\r\n{exc.StackTrace}\r\n";
-
-
                 // stores the error message
                 string errorMessage = string.Empty;
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("o") + "\r\n";
-
-                
 
                 //errorMessage += $"Message:{ex.Message}\r\n";
                 //errorMessage += $"Source:{ex.Source}\r\n";
@@ -148,6 +137,14 @@ namespace DMS_WebAPI.Infrastructure
                 errorMessage += logExpression;
 
                 errorMessage += $"URL: {url}\r\n";
+
+                // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
+                if (exception.InnerException != null)
+                    exc = exception.InnerException;
+                else
+                    exc = exception;
+
+                errorMessage += $"StackTrace:\r\n{exc.StackTrace}\r\n";
 
                 errorMessage += $"Request:\r\n{request}\r\n";
 

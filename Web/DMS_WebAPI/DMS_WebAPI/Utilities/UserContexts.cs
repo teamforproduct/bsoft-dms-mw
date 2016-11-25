@@ -216,9 +216,17 @@ namespace DMS_WebAPI.Utilities
             if (agentUser != null)
             {
                 // проверка активности сотрудника
-                if (!agentUser.IsActive) throw new UserIsDeactivated(agentUser.Name);
+                if (!agentUser.IsActive)
+                {
+                    KillCurrentSession();
+                    throw new UserIsDeactivated(agentUser.Name);
+                }
 
-                if (agentUser.PositionExecutorsCount == 0) throw new UserNotExecuteAnyPosition(agentUser.Name);
+                if (agentUser.PositionExecutorsCount == 0)
+                {
+                    KillCurrentSession();
+                    throw new UserNotExecuteAnyPosition(agentUser.Name);
+                }
 
                 context.CurrentEmployee.AgentId = agentUser.AgentId;
                 context.CurrentEmployee.Name = agentUser.Name;
@@ -399,6 +407,12 @@ namespace DMS_WebAPI.Utilities
             {
                 _casheContexts.Remove(key);
             }
+        }
+
+        public void KillCurrentSession()
+        {
+            string token = Token.ToLower();
+            _casheContexts.Remove(token);
         }
 
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
