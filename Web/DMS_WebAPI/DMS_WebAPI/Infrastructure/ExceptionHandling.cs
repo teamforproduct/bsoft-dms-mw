@@ -130,13 +130,14 @@ namespace DMS_WebAPI.Infrastructure
                 string errorMessage = string.Empty;
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("o") + "\r\n";
 
+                errorMessage += $"URL: {url}\r\n";
                 //errorMessage += $"Message:{ex.Message}\r\n";
                 //errorMessage += $"Source:{ex.Source}\r\n";
                 //errorMessage += $"Method:{ex.TargetSite}\r\n";
                 //errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
                 errorMessage += logExpression;
 
-                errorMessage += $"URL: {url}\r\n";
+                
 
                 // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
                 if (exception.InnerException != null)
