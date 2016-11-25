@@ -3,7 +3,7 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontTemplateDocumentSendLists
+    public class FrontTemplateDocumentSendList
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -19,14 +19,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? DueDay { get; set; }
         public int? AccessLevelId { get; set; }
         public string AccessLevelName { get; set; }
-        public int? LastChangeUserId { get; set; }
-        public DateTime? LastChangeDate { get; set; }
         public bool? IsWorkGroup { get; set; }
         public bool? IsAddControl { get; set; }
         public DateTime? SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }
         public DateTime? SelfAttentionDate { get; set; }
-
         public bool? IsAvailableWithinTask { get; set; }
 
     }

@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontTemplateDocumentTasks
+    public class FrontTemplateDocumentTask
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
-        public Nullable<int> PositionId { get; set; }
-        public string PositionName { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
     }

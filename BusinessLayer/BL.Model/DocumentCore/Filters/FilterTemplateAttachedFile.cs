@@ -12,7 +12,12 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// ИД
         /// </summary>
-        public int? FileId { get; set; }
+        public List<int> IDs { get; set; }
+        /// <summary>
+        /// Ссылка на шаблон
+        /// </summary>
+        public int? TemplateId { get; set; }
+
         /// <summary>
         /// Фрагмент имени файла
         /// </summary>

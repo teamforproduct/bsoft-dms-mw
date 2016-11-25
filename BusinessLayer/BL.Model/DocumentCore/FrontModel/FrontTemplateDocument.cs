@@ -31,13 +31,8 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string Addressee { get; set; }
 
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
-
-        public string GeneralInfo { get; set; }
-
-        public virtual IEnumerable<FrontTemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
-        public virtual IEnumerable<FrontTemplateDocumentSendLists> SendLists { get; set; }
+        public virtual IEnumerable<FrontTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public virtual IEnumerable<FrontTemplateDocumentSendList> SendLists { get; set; }
 
         public IEnumerable<FrontPropertyValue> Properties { get; set; }
 
