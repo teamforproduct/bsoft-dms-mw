@@ -1529,6 +1529,7 @@ namespace BL.Database.Documents
                                         Id = x.Id,
                                     }
                                     ).ToList();
+                transaction.Complete();
                 return doc;
             }
         }

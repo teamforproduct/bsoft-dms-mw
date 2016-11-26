@@ -418,7 +418,7 @@ namespace BL.Database.Documents
         public void CloseDocumentWait(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
         {
             using (var dbContext = new DmsContext(ctx))
-//            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
                 {
                     var offEvent = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
@@ -518,7 +518,7 @@ namespace BL.Database.Documents
                         entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
                     }
                     dbContext.SaveChanges();
-//                    transaction.Complete();
+                    transaction.Complete();
                 }
             }
         }
