@@ -20,7 +20,12 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Контрольный срок
         /// </summary>
-        public DateTime? DueDate { get; set; }
+        public DateTime? DueDate
+        {
+            get { return _dueDate; }
+            set { _dueDate = value.HasValue ? value.Value.ToUniversalTime() : value; }
+        }
+        private DateTime? _dueDate { get; set; }
         /// <summary>
         /// Дата включения режима постоянное внимание
         /// </summary>
@@ -28,6 +33,11 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Дата события
         /// </summary>
-        public DateTime? EventDate { get; set; }
+        public DateTime? EventDate
+        {
+            get { return _eventDate; }
+            set { _eventDate = value.HasValue ? value.Value.ToUniversalTime() : value; }
+        }
+        private DateTime? _eventDate { get; set; }
     }
 }
