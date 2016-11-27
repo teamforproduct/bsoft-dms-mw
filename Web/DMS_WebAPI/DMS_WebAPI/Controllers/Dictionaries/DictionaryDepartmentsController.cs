@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryDepartmentsController : ApiController
     {
         /// <summary>
-        /// Возвращает записи из словаря "Структура предприятия"
+        /// Возвращает список отделов. Отделы могут подчиняться вышестоящим отделам и всегда подчинены компании 
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Структура предприятия"</param>
         /// <returns>FrontDictionaryDictionaryDepartment</returns>
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Возвращает запись из словаря "Структура предприятия" по ID 
+        /// Возвращает отдел
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryDictionary</returns>
