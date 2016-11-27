@@ -117,7 +117,7 @@ namespace DMS_WebAPI.Infrastructure
                 // при повторнов входе из Application_Error если раскоментировать httpContext.Response.End(); 
                 httpContext.Response.StatusCode = GetResponseStatusCode(httpContext, exception);
                 httpContext.Response.Write(json);
-                //httpContext.Response.End();
+                httpContext.Response.End();
             }
             catch { }
             #endregion
