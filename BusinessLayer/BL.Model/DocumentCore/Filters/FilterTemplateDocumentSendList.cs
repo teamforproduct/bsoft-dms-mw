@@ -9,7 +9,14 @@ namespace BL.Model.DocumentCore.Filters
     /// </summary>
     public class FilterTemplateDocumentSendList
     {
-        public List<int> Id { get; set; }
+        /// <summary>
+        /// ИД
+        /// </summary>
+        public List<int> IDs { get; set; }
+        /// <summary>
+        /// Ссылка на шаблон
+        /// </summary>
+        public int? TemplateId { get; set; }
         public EnumSendTypes? SendType { get; set; }
         public int? TargetPositionId { get; set; }
         public int? Stage { get; set; }

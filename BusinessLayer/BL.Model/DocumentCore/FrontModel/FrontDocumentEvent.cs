@@ -12,8 +12,12 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public int? EventType { get; set; }
         public string EventTypeName { get; set; }
-        public DateTime? Date { get; set; }
-        public DateTime? CreateDate { get; set; }
+        private DateTime? _date { get; set; }
+        public DateTime? Date { get { return _date; }
+                                set { _date = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; } }
+        private DateTime? _createDate { get; set; }
+        public DateTime? CreateDate { get { return _createDate; }
+                                      set { _date = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; }  }
         public string Task { get; set; }
         public bool? IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
@@ -56,9 +60,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PaperPlanAgentName { get; set; }
         public string PaperSendAgentName { get; set; }
         public string PaperRecieveAgentName { get; set; }
-
-
-
 
     }
 }

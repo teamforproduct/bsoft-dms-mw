@@ -21,11 +21,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение всех списков рассылок шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentSendList filter)
+        public IHttpActionResult Get([FromUri]FilterTemplateDocumentSendList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocumentSendLists(ctx,templateId,filter);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentSendLists(ctx,filter);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentSendList,ctx, id);
 
-            var tmp = new FrontTemplateDocumentSendLists {Id = id};
+            var tmp = new FrontTemplateDocumentSendList {Id = id};
 
             return new JsonResult(tmp, this);
 

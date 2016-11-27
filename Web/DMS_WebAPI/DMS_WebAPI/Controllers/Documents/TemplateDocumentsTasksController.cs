@@ -21,11 +21,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение всех задач шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentTask filter)
+        public IHttpActionResult Get([FromUri]FilterTemplateDocumentTask filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocumentTasks(ctx,templateId,filter);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentTasks(ctx,filter);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentTasks model)
+        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentTask model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentTasks model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentTask model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentTask, ctx, id); 
 
-            var tmp = new FrontTemplateDocumentTasks() {Id = id};
+            var tmp = new FrontTemplateDocumentTask {Id = id};
 
             return new JsonResult(tmp, this);
 

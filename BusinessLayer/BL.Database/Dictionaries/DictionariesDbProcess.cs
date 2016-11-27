@@ -4235,7 +4235,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryPositionsSet.Add(dd);
                 CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
-                UpdatePositionExecutor(context, new List<int> { dd.Id});
+                UpdatePositionExecutor(context, new List<int> { dd.Id });
                 position.Id = dd.Id;
                 transaction.Complete();
                 return dd.Id;
@@ -4287,17 +4287,18 @@ namespace BL.Database.Dictionaries
             using (var transaction = GetTransaction())
             {
                 var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
-                if (positionId?.Any()??false)
-                    qry = qry.Where(x=> positionId.Contains(x.Id));
+                if (positionId?.Any() ?? false)
+                    qry = qry.Where(x => positionId.Contains(x.Id));
                 var posUpd = qry.Select(x => new
                 {
-                    x.Id,   oldExecutorAgentId = x.ExecutorAgentId ?? 0,
+                    x.Id,
+                    oldExecutorAgentId = x.ExecutorAgentId ?? 0,
                     newExecutorAgentId = dbContext.DictionaryPositionExecutorsSet
-                        .Where(y=>  y.PositionId == x.Id && DateTime.UtcNow >= y.StartDate && DateTime.UtcNow <= y.EndDate 
+                        .Where(y => y.PositionId == x.Id && DateTime.UtcNow >= y.StartDate && DateTime.UtcNow <= y.EndDate
                                     && (y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.IO || y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal))
-                        .OrderBy(y=>y.PositionExecutorTypeId).Select(y=>y.AgentId).FirstOrDefault()
-                }).Where(x=> x.newExecutorAgentId != x.oldExecutorAgentId)
-                .ToDictionary(x=>x.Id, y => y.newExecutorAgentId != 0 ? y.newExecutorAgentId : (int?)null);
+                        .OrderBy(y => y.PositionExecutorTypeId).Select(y => y.AgentId).FirstOrDefault()
+                }).Where(x => x.newExecutorAgentId != x.oldExecutorAgentId)
+                .ToDictionary(x => x.Id, y => y.newExecutorAgentId != 0 ? y.newExecutorAgentId : (int?)null);
                 if (posUpd.Any())
                     foreach (var pos in posUpd)
                     {
@@ -4385,13 +4386,13 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
+                int? res = null;
                 var qry = dbContext.DictionaryPositionsSet.AsQueryable();
                 if (!context.IsAdmin)
                 {
                     qry = qry.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
                 }
-                var res = qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
-
+                res = qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }

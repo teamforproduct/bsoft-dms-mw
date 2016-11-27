@@ -227,6 +227,8 @@ namespace BL.Logic.Common
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
+            var sourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
+            var targetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             return new InternalDocumentEvent
             {
                 DocumentId = documentId ?? 0,
@@ -237,9 +239,9 @@ namespace BL.Logic.Common
                 AddDescription = addDescription,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                SourcePositionExecutorAgentId = sourcePositionExecutorAgentId,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                TargetPositionExecutorAgentId = targetPositionExecutorAgentId,
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,

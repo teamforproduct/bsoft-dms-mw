@@ -25,11 +25,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="templateId"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateAttachedFile model)
+        public IHttpActionResult Get([FromUri]FilterTemplateAttachedFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var res = docFileProc.GetTemplateAttachedFiles(ctx, model,templateId);
+            var res = docFileProc.GetTemplateAttachedFiles(ctx, model);
 
             return new JsonResult(res, this);
         }

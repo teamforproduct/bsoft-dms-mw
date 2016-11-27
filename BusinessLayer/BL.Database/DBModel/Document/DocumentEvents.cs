@@ -29,8 +29,8 @@ namespace BL.Database.DBModel.Document
         [DateTimeKind(DateTimeKind.Utc)]
         public DateTime CreateDate { get; set; }
         [Index("IX_Date", 1)]
-        [DateTimeKind(DateTimeKind.Utc)]
-        public DateTime Date { get; set; }
+        //[DateTimeKind(DateTimeKind.Utc)]
+        public DateTime Date { get; set ; }
         [Index("IX_IsAvailableWithinTask", 2)]
         [Index("IX_TaskId",1)]
         public Nullable<int> TaskId { get; set; }

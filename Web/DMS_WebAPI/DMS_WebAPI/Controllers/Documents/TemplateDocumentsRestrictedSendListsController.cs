@@ -21,11 +21,11 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение всех ограничительных списков рассылок шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get([Required]int templateId,[FromUri]FilterTemplateDocumentRestrictedSendList filter)
+        public IHttpActionResult Get([FromUri]FilterTemplateDocumentRestrictedSendList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocumentRestrictedSendLists(ctx,templateId,filter);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentRestrictedSendLists(ctx,filter);
             return new JsonResult(tmpDocs, this);
         }
 
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList,ctx, id);
 
-            var tmp = new FrontTemplateDocumentRestrictedSendLists {Id = id};
+            var tmp = new FrontTemplateDocumentRestrictedSendList {Id = id};
 
             return new JsonResult(tmp, this);
 

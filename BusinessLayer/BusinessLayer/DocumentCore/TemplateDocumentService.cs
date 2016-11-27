@@ -66,12 +66,12 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateDocumentsSendList
 
-        public IEnumerable<FrontTemplateDocumentSendLists> GetTemplateDocumentSendLists(IContext context,int templateId,FilterTemplateDocumentSendList filter)
+        public IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context,FilterTemplateDocumentSendList filter)
         {
-            return _templateDb.GetTemplateDocumentSendLists(context,templateId,filter);
+            return _templateDb.GetTemplateDocumentSendLists(context,filter);
         }
       
-        public FrontTemplateDocumentSendLists GetTemplateDocumentSendList(IContext context, int id)
+        public FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentSendList(context, id);
         }
@@ -79,15 +79,13 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateDocumentsRestrictedSendList
 
-        public IEnumerable<FrontTemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendLists(
-            IContext context,
-            int templateId, FilterTemplateDocumentRestrictedSendList filter)
+        public IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext context, FilterTemplateDocumentRestrictedSendList filter)
         {
-            return _templateDb.GetTemplateDocumentRestrictedSendLists(context, templateId, filter);
+            return _templateDb.GetTemplateDocumentRestrictedSendLists(context, filter);
         }
 
 
-        public FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext context, int id)
+        public FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentRestrictedSendList(context, id);
         }
@@ -96,14 +94,13 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateDocumentTasks
 
-        public IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext context,
-            int templateId, FilterTemplateDocumentTask filter)
+        public IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext context, FilterTemplateDocumentTask filter)
         {
-            return _templateDb.GetTemplateDocumentTasks(context, templateId, filter);
+            return _templateDb.GetTemplateDocumentTasks(context, filter);
         }
 
    
-        public FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext context, int id)
+        public FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentTask(context, id);
         }
@@ -112,10 +109,9 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateAttachedFiles
 
-        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx,
-            FilterTemplateAttachedFile filter, int templateId)
+        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
         {
-            return _templateDb.GetTemplateAttachedFiles(ctx, filter,templateId);
+            return _templateDb.GetTemplateAttachedFiles(ctx, filter);
         }
 
         public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
