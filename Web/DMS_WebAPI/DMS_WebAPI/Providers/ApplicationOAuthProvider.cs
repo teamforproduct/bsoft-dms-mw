@@ -22,10 +22,18 @@ using System.Net;
 
 namespace DMS_WebAPI.Providers
 {
+    /// <summary>
+    /// Этот класс устанавливается в качестве провайдера для овина
+    /// Отвечает за авторизацию пользователей посредством логина и пароля
+    /// </summary>
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
         private readonly string _publicClientId;
 
+        /// <summary>
+        /// Установка значения _publicClientId в "self" при конфигурации опций овина
+        /// </summary>
+        /// <param name="publicClientId"></param>
         public ApplicationOAuthProvider(string publicClientId)
         {
             if (publicClientId == null)

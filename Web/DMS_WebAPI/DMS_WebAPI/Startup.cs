@@ -30,6 +30,7 @@ namespace DMS_WebAPI
         {
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
+            // configuring authentication
             ConfigureAuth(app);
 
             // Проверка на целостность Actions в процедуре импорта 
