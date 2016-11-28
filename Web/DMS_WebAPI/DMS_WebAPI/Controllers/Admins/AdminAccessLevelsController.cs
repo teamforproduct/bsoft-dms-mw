@@ -5,6 +5,9 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using System.Diagnostics;
+using System.Web.Http.Description;
+using System.Collections.Generic;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -18,6 +21,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>Список уровней доступа</returns>
+        [ResponseType(typeof(List<FrontAdminAccessLevel>))]
         public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -34,6 +38,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="id">ИД уровня доступа</param>
         /// <returns>Уровень доуступа</returns>
+        [ResponseType(typeof(FrontAdminAccessLevel))]
         public IHttpActionResult Get(int id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

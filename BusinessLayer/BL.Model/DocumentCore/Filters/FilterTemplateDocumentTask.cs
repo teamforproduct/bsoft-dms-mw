@@ -12,15 +12,11 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// ИД
         /// </summary>
-        public List<int> Id { get; set; }
+        public List<int> IDs { get; set; }
         /// <summary>
-        /// ссылка на шаблон
+        /// Ссылка на шаблон
         /// </summary>
-        public int DocumentId { get; set; }
-        /// <summary>
-        /// Должность
-        /// </summary>
-        public int? PositionId { get; set; }
+        public int? TemplateId { get; set; }
         /// <summary>
         /// Фрагмент текста задачи
         /// </summary>

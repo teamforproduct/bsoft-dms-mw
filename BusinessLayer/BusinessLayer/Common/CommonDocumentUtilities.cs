@@ -227,6 +227,8 @@ namespace BL.Logic.Common
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
+            var sourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
+            var targetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             return new InternalDocumentEvent
             {
                 DocumentId = documentId ?? 0,
@@ -237,9 +239,9 @@ namespace BL.Logic.Common
                 AddDescription = addDescription,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId),
+                SourcePositionExecutorAgentId = sourcePositionExecutorAgentId,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId),
+                TargetPositionExecutorAgentId = targetPositionExecutorAgentId,
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
@@ -878,53 +880,53 @@ namespace BL.Logic.Common
                     var mFormulaValues = Regex.Matches(mFormula.Value, patternFormula);
                     foreach (Match mFormulaValue in mFormulaValues)
                     {
-                        var formulaValue = (EnumFormulas)Enum.Parse(typeof(EnumFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value, patternFormulaSymbol));
+                        var formulaValue = (EnumSystemFormulas)Enum.Parse(typeof(EnumSystemFormulas), GetPatternFilterSymbolReplace(mFormulaValue.Value, patternFormulaSymbol));
 
                         switch (formulaValue)
                         {
-                            case EnumFormulas.RegistrationJournalId:
+                            case EnumSystemFormulas.RegistrationJournalId:
                                 newValue = model.RegistrationJournalId.GetValueOrDefault().ToString("D" + length);
                                 break;
-                            case EnumFormulas.RegistrationJournalIndex:
+                            case EnumSystemFormulas.RegistrationJournalIndex:
                                 newValue = model.RegistrationJournalIndex;
                                 break;
-                            case EnumFormulas.InitiativeRegistrationFullNumber:
+                            case EnumSystemFormulas.InitiativeRegistrationFullNumber:
                                 newValue = model.InitiativeRegistrationFullNumber;
                                 break;
-                            case EnumFormulas.InitiativeRegistrationNumberPrefix:
+                            case EnumSystemFormulas.InitiativeRegistrationNumberPrefix:
                                 newValue = model.InitiativeRegistrationNumberPrefix;
                                 break;
-                            case EnumFormulas.InitiativeRegistrationNumberSuffix:
+                            case EnumSystemFormulas.InitiativeRegistrationNumberSuffix:
                                 newValue = model.InitiativeRegistrationNumberSuffix;
                                 break;
-                            case EnumFormulas.InitiativeRegistrationNumber:
+                            case EnumSystemFormulas.InitiativeRegistrationNumber:
                                 if (model.InitiativeRegistrationNumber.HasValue)
                                     newValue = model.InitiativeRegistrationNumber.Value.ToString("D" + length);
                                 break;
-                            case EnumFormulas.Date:
+                            case EnumSystemFormulas.Date:
                                 if (string.IsNullOrEmpty(format))
                                     format = "YYYY";
                                 newValue = model.RegistrationDate.ToString(format);
                                 break;
-                            case EnumFormulas.ExecutorPositionDepartmentCode:
+                            case EnumSystemFormulas.ExecutorPositionDepartmentCode:
                                 newValue = model.ExecutorPositionDepartmentCode;
                                 break;
-                            case EnumFormulas.SubscriptionsPositionDepartmentCode:
+                            case EnumSystemFormulas.SubscriptionsPositionDepartmentCode:
                                 newValue = model.SubscriptionsPositionDepartmentCode;
                                 break;
-                            case EnumFormulas.RegistrationJournalDepartmentCode:
+                            case EnumSystemFormulas.RegistrationJournalDepartmentCode:
                                 newValue = model.RegistrationJournalDepartmentCode;
                                 break;
-                            case EnumFormulas.CurrentPositionDepartmentCode:
+                            case EnumSystemFormulas.CurrentPositionDepartmentCode:
                                 newValue = model.CurrentPositionDepartmentCode;
                                 break;
-                            case EnumFormulas.InitiativeRegistrationSenderNumber:
+                            case EnumSystemFormulas.InitiativeRegistrationSenderNumber:
                                 newValue = model.InitiativeRegistrationSenderNumber;
                                 break;
-                            case EnumFormulas.DocumentSendListLastAgentExternalFirstSymbolName:
+                            case EnumSystemFormulas.DocumentSendListLastAgentExternalFirstSymbolName:
                                 newValue = model.DocumentSendListLastAgentExternalFirstSymbolName;
                                 break;
-                            case EnumFormulas.OrdinalNumberDocumentLinkForCorrespondent:
+                            case EnumSystemFormulas.OrdinalNumberDocumentLinkForCorrespondent:
                                 newValue = model.OrdinalNumberDocumentLinkForCorrespondent.ToString("D" + length);
                                 break;
                         }

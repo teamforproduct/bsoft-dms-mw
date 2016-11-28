@@ -1,7 +1,6 @@
 ﻿using System;
 using BL.Logic.DictionaryCore.Interfaces;
 using System.Collections.Generic;
-using BL.Model.DictionaryCore;
 using BL.Model.SystemCore;
 using BL.Database.Dictionaries.Interfaces;
 using System.Linq;
@@ -52,15 +51,14 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgent();
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             {
 
                 // Этот блок повторяется. Может его лучше упроцедурить
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
                 var ftClear = ResolveSearchResultAgents(context, ftRes);
-                var resWithRanges =
-                    ftClear.GroupBy(x => x.ObjectId)
+                var resWithRanges = ftClear.GroupBy(x => x.ObjectId)
                         .Select(x => new { DocId = x.Key, Rate = x.Count() })
                         .OrderByDescending(x => x.Rate);
                 if (resWithRanges.Any())

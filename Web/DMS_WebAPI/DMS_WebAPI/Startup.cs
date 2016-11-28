@@ -32,9 +32,11 @@ namespace DMS_WebAPI
 
             ConfigureAuth(app);
 
+            // Проверка на целостность Actions в процедуре импорта 
             var systemService = DmsResolver.Current.Get<ISystemService>();
             systemService.CheckSystemActions();
 
+            // Проверка на целостность переводов
             ApplicationDbImportData.CheckLanguages();
 
 
@@ -55,6 +57,7 @@ namespace DMS_WebAPI
 
             //TODO
 #if !DEBUG
+            // Полнотекстовый поиск
             var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             indexService.Initialize(dbs);
 #endif
@@ -69,12 +72,14 @@ namespace DMS_WebAPI
             //var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
             //clearTrashDocumentsService.Initialize(dbs);
 
-            // Очистка устаревших пользовательских контекстов
 #if !DEBUG
+            // Очистка устаревших пользовательских контекстов
             var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
             userContextService.Initialize();
 #endif
+
 #if !DEBUG
+            // Проверка лицензии
             var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();
             licencesService.Initialize();
 #endif

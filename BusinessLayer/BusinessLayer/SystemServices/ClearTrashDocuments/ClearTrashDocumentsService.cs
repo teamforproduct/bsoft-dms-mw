@@ -32,8 +32,8 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
                 {
                     var ftsSetting = new ClearTrashDocumentsSettings
                     {
-                        TimeToUpdate = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.CLEARTRASHDOCUMENTS_TIOMEOUT_MIN),
-                        TimeForClearTrashDocuments = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.CLEARTRASHDOCUMENTS_TIOMEOUT_MIN_FOR_CLEAR),
+                        TimeToUpdate = _settings.GetClearTrashDocumentsTimeoutMinute(keyValuePair.Value),
+                        TimeForClearTrashDocuments = _settings.GetClearTrashDocumentsTimeoutMinuteForClear(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
                     };
                     var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);

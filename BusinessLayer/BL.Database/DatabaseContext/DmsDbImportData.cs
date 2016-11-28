@@ -560,6 +560,7 @@ namespace BL.Database.DatabaseContext
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = "date", Description = "date" });
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = "api", Description = "api" });
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = "bool", Description = "boolean" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = "pass", Description = "password" });
 
             return items;
         }
@@ -948,6 +949,92 @@ namespace BL.Database.DatabaseContext
                 IsActive = true,
                 LastChangeUserId = (int)EnumSystemUsers.AdminUser,
                 LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
+
+        public static List<SystemFormulas> GetSystemFormulas()
+        {
+            var items = new List<SystemFormulas>();
+
+            items.Add(GetSystemFormula(EnumSystemFormulas.RegistrationJournalId, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.RegistrationJournalIndex, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.RegistrationJournalDepartmentCode, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.InitiativeRegistrationFullNumber, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.InitiativeRegistrationNumberPrefix, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.InitiativeRegistrationNumberSuffix, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.InitiativeRegistrationNumber, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.InitiativeRegistrationSenderNumber, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.ExecutorPositionDepartmentCode, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.SubscriptionsPositionDepartmentCode, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.CurrentPositionDepartmentCode, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.Date, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.DocumentSendListLastAgentExternalFirstSymbolName, ""));
+            items.Add(GetSystemFormula(EnumSystemFormulas.OrdinalNumberDocumentLinkForCorrespondent, ""));
+
+            return items;
+        }
+
+        private static SystemFormulas GetSystemFormula(EnumSystemFormulas id, string example = "")
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            return new SystemFormulas()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                Description = description,
+                Example = example,
+            };
+        }
+
+        public static List<SystemPatterns> GetSystemPatterns()
+        {
+            var items = new List<SystemPatterns>();
+
+            items.Add(GetSystemPattern(EnumSystemPatterns.Condition, "c"));
+            items.Add(GetSystemPattern(EnumSystemPatterns.Formula, "v"));
+            items.Add(GetSystemPattern(EnumSystemPatterns.Format, "f"));
+            items.Add(GetSystemPattern(EnumSystemPatterns.Length, "l"));
+
+            return items;
+        }
+
+        private static SystemPatterns GetSystemPattern(EnumSystemPatterns id, string code)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            return new SystemPatterns()
+            {
+                Id = (int)id,
+                Code = code,
+                Name = name,
+                Description = description,
+            };
+        }
+
+        public static List<SystemFormats> GetSystemFormats()
+        {
+            var items = new List<SystemFormats>();
+
+            items.Add(GetSystemFormats(EnumSystemFormats.Year, "YYYY"));
+            items.Add(GetSystemFormats(EnumSystemFormats.Day, "dd"));
+            items.Add(GetSystemFormats(EnumSystemFormats.Month, "MM"));
+
+            return items;
+        }
+
+        private static SystemFormats GetSystemFormats(EnumSystemFormats id, string code)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            return new SystemFormats()
+            {
+                Id = (int)id,
+                Code = code,
+                Name = name,
+                Description = description,
             };
         }
 

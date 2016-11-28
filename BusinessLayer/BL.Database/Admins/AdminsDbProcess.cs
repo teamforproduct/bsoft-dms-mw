@@ -9,7 +9,6 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Database.Dictionaries.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Users;
 using LinqKit;
@@ -18,13 +17,8 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Database.Common;
 using System;
 using BL.Database.DBModel.Dictionary;
-using BL.Model.AdminCore.Actions;
-using BL.Model.Common;
 using System.Transactions;
-using BL.Model.Tree;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Database.DBModel.System;
-using BL.Model.DictionaryCore.IncomingModel;
 using EntityFramework.Extensions;
 using BL.Model.SystemCore.InternalModel;
 
@@ -267,7 +261,7 @@ namespace BL.Database.Admins
                         AgentId = x.Id,
                         Name = x.Agent.Name,
                         LanguageId = x.Agent.AgentUser.LanguageId ?? -1,
-                        IsActive = x.IsActive & x.Agent.AgentEmployee.IsActive,
+                        IsActive = x.Agent.AgentEmployee.IsActive,
                         PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(),
                     }).FirstOrDefault();
                 transaction.Complete();
@@ -1297,8 +1291,10 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
                 qry = GetWhereSubordination(ref qry, filter);
-                dbContext.AdminSubordinationsSet.RemoveRange(qry);
-                dbContext.SaveChanges();
+                qry.Delete();
+                //var e = qry.ToList();
+                //dbContext.AdminSubordinationsSet.RemoveRange(qry);
+                //dbContext.SaveChanges();
             }
         }
 

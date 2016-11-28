@@ -128,6 +128,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns></returns>
         [HttpGet]
         [Route("GetDIP")]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetDIP([FromUri] int positionId, [FromUri] FilterTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -147,6 +148,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns></returns>
         [HttpGet]
         [Route("GetPositions")]
+        [ResponseType(typeof(List<FrontDIPRegistrationJournalPositions>))]
         public IHttpActionResult GetPositions([FromUri] int journalId, [FromUri] FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -171,42 +173,6 @@ namespace DMS_WebAPI.Controllers.Admins
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItem = tmpService.ExecuteAction(EnumAdminActions.DuplicateRegistrationJournalPositions, cxt, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
-        /// Возвращает значение настройки: устанавливать доступ на просмотр к журналам регистрации своего отдела при создании новой должности
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("IsSetAllForViewing")] //IsSetDefaultsForExecution
-        public IHttpActionResult IsSetAllForViewing()
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetRJournalPositionSetAllForViewing(cxt);//, new FilterSystemSetting() { Key = SettingConstants.RegistrationJournalPositionS_SEND_ALL_FOR_EXECUTION });
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
-        /// Возвращает значение настройки: устанавливать доступ на регистрацию к журналам регистрации своего отдела при создании новой должности
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("IsSetAllForRegistration")]
-        public IHttpActionResult IsSetAllForRegistration()
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetRJournalPositionSetAllForRegistration(cxt);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

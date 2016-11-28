@@ -25,6 +25,9 @@ using BL.Logic.SystemServices.MailWorker;
 using System.Configuration;
 using System.Web.Script.Serialization;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.WebAPI.Filters;
+using System.Linq;
+using BL.CrossCutting.Context;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -493,6 +496,126 @@ namespace DMS_WebAPI.Controllers
             return res;
         }
 
-        
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("RestorePasswordAgentUser")]
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> RestorePasswordAgentUser(RestorePasswordAgentUser model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            if (user.IsLockout)
+                throw new UserIsDeactivated(user.UserName);
+
+            var passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(user.Id);
+
+            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").AbsoluteUri;
+
+            callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(passwordResetToken));
+
+            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+
+            var settings = DmsResolver.Current.Get<ISettings>();
+
+            var dbProc = new WebAPIDbProcess();
+            var client = dbProc.GetClient(model.ClientCode);
+
+            var db = dbProc.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
+
+            var ctx = new AdminContext(db);
+
+            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+            mailService.SendMessage(ctx, model.Email, "Restore Password", htmlContent);
+
+            return new JsonResult(null, this);
+        }
+
+        [Route("ConfirmRestorePasswordAgentUser")]
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser(ConfirmRestorePasswordAgentUser model)
+        {
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var result = await userManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                ApplicationUser user = await userManager.FindByIdAsync(model.UserId);
+
+                if (user == null)
+                    throw new UserNameIsNotDefined();
+
+                user.EmailConfirmed = true;
+                user.IsEmailConfirmRequired = false;
+
+                result = await userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+
+                var mngContext = DmsResolver.Current.Get<UserContexts>();
+                mngContext.KillSessions(model.UserId);
+            }
+
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Изменение пароля
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SetMustChangePassword")]
+        [HttpPost]
+        public async Task<IHttpActionResult> SetMustChangePasswordAgentUser(ChangePasswordAgentUser model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult(ModelState, false, this);
+                //return BadRequest(ModelState);
+            }
+
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.MustChangePassword, ctx, model.AgentId);
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
+            }
+            return new JsonResult(null, this);
+        }
     }
 }

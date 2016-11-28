@@ -19,7 +19,19 @@ namespace BL.Model.SystemCore.InternalModel
         }
         public string Key { get; set; }
         public string Value { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
         public EnumValueTypes ValueType { get; set; }
         public int? AgentId { get; set; }
+
+        public int SettingTypeId { get; set; }
+
+        public int Order { get; set; }
+
+        public int AccessType { get; set; }
+
     }
 }

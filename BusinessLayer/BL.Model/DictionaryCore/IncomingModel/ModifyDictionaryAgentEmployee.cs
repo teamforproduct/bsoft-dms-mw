@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace BL.Model.DictionaryCore.IncomingModel
@@ -90,6 +86,18 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
+
+
+        /// <summary>
+        /// ИД аватарки, если она была загружена
+        /// </summary>
+        public int? ImageId { get; set; }
+
+        /// <summary>
+        /// Данные файла
+        /// </summary>
+        [IgnoreDataMember]
+        public string PostedFileData { get; set; }
         #endregion
 
         #region [+] Employee ...

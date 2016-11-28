@@ -10,6 +10,7 @@ using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
 using System.Web.Http.Description;
 using BL.Model.Common;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -23,6 +24,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [RoutePrefix("api/v2/DictionaryPositions")]
     public class DictionaryPositionsController : ApiController
     {
+
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Возвращает записи из словаря "Должности"
         /// </summary>
@@ -31,10 +35,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -47,10 +54,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetPositionList(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
 
@@ -62,10 +72,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryPosition(ctx, id);
-            return new JsonResult(tmpItem, this);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -78,11 +91,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [Route("SetPositionOrder")]
         public IHttpActionResult SetPositionOrder([FromUri] int positionId, [FromUri] int order)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             tmpItem.SetPositionOrder(cxt, positionId, order);
-
-            return new JsonResult(order, this);
+            var res = new JsonResult(order, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -92,6 +107,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryPositions</returns>
         public IHttpActionResult Post([FromBody]ModifyDictionaryPosition model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             int Id = (int)tmpItem.ExecuteAction(EnumDictionaryActions.AddPosition, cxt, model);
@@ -107,7 +123,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryPosition model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPosition
-
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             model.Id = id;
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
@@ -121,6 +137,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>DictionaryPositions</returns> 
         public IHttpActionResult Delete([FromUri] int id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
 
@@ -128,8 +145,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             FrontDictionaryPosition tmp = new FrontDictionaryPosition();
             tmp.Id = id;
 
-            return new JsonResult(tmp, this);
-
+            var res = new JsonResult(tmp, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
     }
 }

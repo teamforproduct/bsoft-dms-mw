@@ -72,6 +72,7 @@ namespace BL.Logic.DocumentCore
             //TODO remove when all command will be implemented
 
             //for each position check his actions
+            if (model.PositionWithActions?.Any()??false)
             foreach (var pos in model.PositionWithActions)
             {
                 var actionList = model.ActionsList[pos.Id];
@@ -105,7 +106,7 @@ namespace BL.Logic.DocumentCore
 
             MenuFormation(ctx, model, id.HasValue);
 
-            return model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
+            return model.PositionWithActions?.Where(x => x.Actions != null && x.Actions.Any()).ToList();
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentSendListActions(IContext ctx, int documentId)

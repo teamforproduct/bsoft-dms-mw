@@ -14,6 +14,7 @@ using BL.Logic.SystemCore.Interfaces;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Constants;
 using BL.CrossCutting.Interfaces;
+using BL.Model.Tree;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -46,22 +47,6 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Разрешает должности выполнять рассылку на другую должность с учетом типа рассылки
-        /// </summary>
-        /// <param name="model">ModifyAdminSubordination</param>
-        /// <returns>FrontAdminSubordination</returns>
-        public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
         /// GetAdminSubordinations by ID 
         /// </summary>
         /// <param name="id">Record Id</param>
@@ -86,6 +71,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns></returns>
         [HttpGet]
         [Route("GetSubordinationsDIP")]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetSubordinationsDIP([FromUri] int positionId, [FromUri] FilterAdminSubordinationTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -93,6 +79,22 @@ namespace DMS_WebAPI.Controllers.Admins
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, positionId, filter);
             var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Разрешает должности выполнять рассылку на другую должность с учетом типа рассылки
+        /// </summary>
+        /// <param name="model">ModifyAdminSubordination</param>
+        /// <returns>FrontAdminSubordination</returns>
+        public IHttpActionResult Post([FromBody] ModifyAdminSubordination model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetSubordination, cxt, model);
+            var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -192,7 +194,9 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Возвращает значение настройки: устанавливать рассылку по умолчанию для исполнения при создании новой должности
+        /// Возвращает значение настройки: 
+        /// Если флаг TRUE, то при создании новой должности устанавливается рассылку на все должности для исполнения, 
+        /// в противном случае (FALSE) рассылка устанавливается в дефолт
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -210,7 +214,9 @@ namespace DMS_WebAPI.Controllers.Admins
         }
 
         /// <summary>
-        /// Возвращает значение настройки: устанавливать рассылку по умолчанию для сведения при создании новой должности
+        /// Возвращает значение настройки: 
+        /// Если флаг TRUE, то при создании новой должности устанавливается рассылку на все должности для сведения, 
+        /// в противном случае (FALSE) рассылка устанавливается в дефолт
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

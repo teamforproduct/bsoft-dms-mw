@@ -9,6 +9,7 @@ using BL.Logic.Common;
 using BL.Model.Constants;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
+using BL.Logic.Settings;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -22,14 +23,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
         List<IFullTextIndexWorker> _workers;
         ISystemDbProcess _systemDb;
 
-        public FullTextSearchService(ISettings setting, ILogger logger, ISystemDbProcess systemDb) :base(setting, logger)
+        public FullTextSearchService(ISettings setting, ILogger logger, ISystemDbProcess systemDb) : base(setting, logger)
         {
             _timers = new Dictionary<FullTextSettings, Timer>();
             _workers = new List<IFullTextIndexWorker>();
             _systemDb = systemDb;
         }
 
-        private void ReindexPart(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType, int fromNumber,int toNumber)
+        private void ReindexPart(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType, int fromNumber, int toNumber)
         {
             var offset = fromNumber;
             do
@@ -50,7 +51,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     offset = 0;
                 }
 
-            } while (offset != 0 && offset< toNumber);
+            } while (offset != 0 && offset < toNumber);
         }
 
         public void ReindexDatabase(IContext ctx)
@@ -70,7 +71,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.StartUpdate();
             try
             {
-                
+
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = new EnumObjects[]
                 {
@@ -89,7 +90,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         do
                         {
 
-                            var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS,offset);
+                            var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS, offset);
                             foreach (var itm in data)
                             {
                                 worker.AddNewItem(itm);
@@ -118,10 +119,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                 }));
 
-                
+
                 var docSLCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentSendLists);
                 int startFrom = 0;
-                while (startFrom< docSLCount)
+                while (startFrom < docSLCount)
                 {
                     tskList.Add(Task.Factory.StartNew(() =>
                     {
@@ -147,7 +148,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
 
                 //set indicator that full text for the client available
-                _settings.SaveSetting(ctx, SettingConstants.DefaultFulltextWasInitialized());
+                _settings.SaveSetting(ctx, SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
                 md.IsFullTextInitialized = true;
             }
             catch (Exception ex)
@@ -179,7 +180,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, int documentId)
         {
-            return GetWorker(ctx)?.SearchInDocument(text,  documentId);
+            return GetWorker(ctx)?.SearchInDocument(text, documentId);
         }
 
         protected override void InitializeServers()
@@ -199,10 +200,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     var ftsSetting = new FullTextSettings
                     {
-                        TimeToUpdate = _settings.GetSetting<int>(keyValuePair.Value, SettingConstants.FULLTEXT_TIMEOUT_MIN),
+                        TimeToUpdate = _settings.GetFulltextRefreshTimeout(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
-                        StorePath = _settings.GetSetting<string>(keyValuePair.Value, SettingConstants.FULLTEXT_INDEX_PATH),
-                        IsFullTextInitialized = _settings.GetSetting<bool>(keyValuePair.Value, SettingConstants.FULLTEXT_WAS_INITIALIZED, false)
+                        StorePath = _settings.GetFulltextDatastorePath(keyValuePair.Value),
+                        IsFullTextInitialized = _settings.GetFulltextWasInitialized(keyValuePair.Value)
                     };
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
                     _workers.Add(worker);
@@ -257,7 +258,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     processedIds.Clear();
                 }
 
-                var toUpdateNonDocuments =_systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
+                var toUpdateNonDocuments = _systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
                 if (toUpdateNonDocuments.Any())
                 {
                     foreach (var itm in toUpdateNonDocuments)
@@ -357,7 +358,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private void OnSinchronize(object state)
         {
             var md = state as FullTextSettings;
-           
+
             if (md == null) return;
 
             if (!md.IsFullTextInitialized) return; //Full text was not initialized for that client and that server
@@ -377,7 +378,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 _logger.Error(ctx, "Could not sinchronize fulltextsearch indexes", ex);
             }
-            tmr.Change(md.TimeToUpdate*60000, Timeout.Infinite); //start new iteration of the timer
+            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
 
         public override void Dispose()

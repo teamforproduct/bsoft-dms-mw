@@ -164,6 +164,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUserPicture.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionarySettingType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsBase.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
@@ -227,8 +228,13 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentEventNatively.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocument.cs" />
+    <Compile Include="DocumentCore\Filters\FilterTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentPaper.cs" />
     <Compile Include="EncryptionCore\Filters\FilterEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\FrontModel\FrontEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\IncomingModel\AddEncryptionCertificate.cs" />
@@ -277,6 +283,9 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
+    <Compile Include="Enums\EnumSystemFormats.cs" />
+    <Compile Include="Enums\EnumSystemSettings.cs" />
+    <Compile Include="Enums\EnumSystemPatterns.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Database\DatabaseType.cs" />
@@ -326,7 +335,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTask.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSubscription.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentTasks.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentTask.cs" />
     <Compile Include="DocumentCore\Actions\ChangeFavourites.cs" />
     <Compile Include="DocumentCore\Actions\ControlChange.cs" />
     <Compile Include="DocumentCore\Actions\CopyDocument.cs" />
@@ -392,7 +401,7 @@
     <Compile Include="Enums\EnumSigningTypes.cs" />
     <Compile Include="Enums\EnumFileTypes.cs" />
     <Compile Include="Enums\EnumEncryptionActions.cs" />
-    <Compile Include="Enums\EnumFormulas.cs" />
+    <Compile Include="Enums\EnumSystemFormulas.cs" />
     <Compile Include="Enums\EnumResultTypes.cs" />
     <Compile Include="Enums\EnumReportTypes.cs" />
     <Compile Include="Enums\EnumSort.cs" />
@@ -420,8 +429,8 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSendList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocument.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentRestrictedSendLists.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentRestrictedSendList.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentSendList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentAccess.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentRestrictedSendListByStandartSendList.cs" />
@@ -505,6 +514,9 @@
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
     <Compile Include="Users\ChangeLockoutAgentUser.cs" />
+    <Compile Include="Users\MustChangePasswordAgentUser.cs" />
+    <Compile Include="Users\ConfirmRestorePasswordAgentUser.cs" />
+    <Compile Include="Users\RestorePasswordAgentUser.cs" />
     <Compile Include="Users\ChangeLoginAgentUser.cs" />
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />

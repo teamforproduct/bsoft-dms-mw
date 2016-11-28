@@ -17,7 +17,7 @@ namespace BL.Database.FileWorker
         private string GetStorePath(IContext ctx)
         {
             var sett = DmsResolver.Current.Get<ISettings>();
-            return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH, SettingConstants.DefaultFileStorePath());
+            return sett.GetFileStorePath(ctx);
             //try
             //{
             //    return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
@@ -422,9 +422,28 @@ namespace BL.Database.FileWorker
         public string GetFullTemplateReportFilePath(IContext ctx, EnumReportTypes reportType)
         {
             var path = GetStorePath(ctx);
-
+            var templateReportFile = string.Empty;
             var sett = DmsResolver.Current.Get<ISettings>();
-            var templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType, SettingConstants.DefaultFileStoreTemplateReportFile(reportType.ToString()));
+            switch (reportType)
+            {
+                case EnumReportTypes.RegistrationCardIncomingDocument:
+                    templateReportFile = sett.GetReportRegistrationCardIncomingDocument(ctx);
+                    break;
+                case EnumReportTypes.RegistrationCardInternalDocument:
+                    templateReportFile = sett.GetReportRegistrationCardInternalDocument(ctx);
+                    break;
+                case EnumReportTypes.RegistrationCardOutcomingDocument:
+                    templateReportFile = sett.GetReportRegistrationCardOutcomingDocument(ctx);
+                    break;
+                case EnumReportTypes.RegisterTransmissionDocuments:
+                    templateReportFile = sett.GetReportRegisterTransmissionDocuments(ctx);
+                    break;
+                case EnumReportTypes.DocumentForDigitalSignature:
+                    templateReportFile = sett.GetReportDocumentForDigitalSignature(ctx);
+                    break;
+                default:
+                    break;
+            }
 
             //try
             //{

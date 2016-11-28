@@ -23,6 +23,8 @@ using BL.Logic.AdminCore.Interfaces;
 using System.Transactions;
 using BL.Model.SystemCore.InternalModel;
 using BL.Database.DatabaseContext;
+using BL.Logic.Settings;
+using BL.Database.SystemDb;
 
 namespace BL.Logic.ClientCore
 {
@@ -30,14 +32,16 @@ namespace BL.Logic.ClientCore
     {
         private readonly IAdminsDbProcess _AdminDb;
         private readonly IDictionariesDbProcess _DictDb;
+        private readonly ISystemDbProcess _SystemDb;
         //private readonly ICommandService _commandService;
         private readonly IAdminService _AdminService;
 
-        public ClientService(IAdminsDbProcess AdminDb, IDictionariesDbProcess DictionaryDb, IAdminService AdminService)
+        public ClientService(IAdminsDbProcess AdminDb, IDictionariesDbProcess DictionaryDb, IAdminService AdminService, ISystemDbProcess SystemDb)
         {
             _AdminDb = AdminDb;
             _AdminService = AdminService;
             _DictDb = DictionaryDb;
+            _SystemDb = SystemDb;
             //_commandService = commandService;
         }
 
@@ -67,43 +71,42 @@ namespace BL.Logic.ClientCore
         }
 
 
-        public static List<SystemSettings> GetSystemSettings()
+        public static List<InternalSystemSetting> GetSystemSettings()
         {
-            var items = new List<SystemSettings>();
+            var items = new List<InternalSystemSetting>();
 
-            items.Add(
-                new SystemSettings
-                {
-                    Key = SettingConstants.DefaultSubordinationsSendAllForExecution().Key,
-                    Value = SettingConstants.DefaultSubordinationsSendAllForExecution().Value,
-                    ValueTypeId = (int)SettingConstants.DefaultSubordinationsSendAllForExecution().ValueType,
-                }
-                );
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_INFORMING));
 
-            items.Add(
-                new SystemSettings
-                {
-                    Key = SettingConstants.DefaultSubordinationsSendAllForInforming().Key,
-                    Value = SettingConstants.DefaultSubordinationsSendAllForInforming().Value,
-                    ValueTypeId = (int)SettingConstants.DefaultSubordinationsSendAllForInforming().ValueType,
-                }
-                );
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN));
 
-            //items.Add(GetDbSystemSettings(SettingConstants.DefaultSubordinationsSendAllForExecution()));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TYPE));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_SYSTEMMAIL));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_NAME));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_LOGIN));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_PASSWORD));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_PORT));
 
-            //items.Add(GetDbSystemSettings(SettingConstants.DefaultSubordinationsSendAllForInforming()));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR));
+
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.IRF_DMS_FILESTORE_PATH));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardIncomingDocument));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument));
+
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
+
+
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE));
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE));
 
             return items;
-        }
-
-        private SystemSettings GetDbSystemSettings(InternalSystemSetting item)
-        {
-            return item == null ? null : new SystemSettings
-            {
-                Key = item.Key,
-                Value = item.Value,
-                ValueTypeId = (int)item.ValueType,
-            };
         }
 
         public void AddNewClient(IContext context, AddClientContent client)
@@ -204,6 +207,11 @@ namespace BL.Logic.ClientCore
             foreach (var item in DmsDbImportData.GetDocumentTypes())
             {
                 _DictDb.AddDocumentType(context, item);
+            };
+
+            foreach (var item in GetSystemSettings())
+            {
+                _SystemDb.MergeSetting(context, item);
             };
             // добавить шаблоны под каждый тип
 

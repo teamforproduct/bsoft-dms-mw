@@ -37,6 +37,6 @@ namespace BL.Database.DBModel.System
         [ForeignKey("ValueTypeId")]
         public virtual SystemValueTypes ValueTypes { get; set; }
         [ForeignKey("SettingTypeId")]
-        public virtual SystemValueTypes SettingType { get; set; }
+        public virtual DictionarySettingTypes SettingType { get; set; }
     }
 }

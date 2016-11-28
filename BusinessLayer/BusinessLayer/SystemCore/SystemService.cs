@@ -7,6 +7,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.TreeBuilder;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
@@ -32,9 +33,10 @@ namespace BL.Logic.SystemCore
             return res;
         }
 
-        public SystemService(ISystemDbProcess systemDb)
+        public SystemService(ISystemDbProcess systemDb, ICommandService commandService)
         {
             _systemDb = systemDb;
+            _commandService = commandService;
         }
 
         public void InitializerDatabase(IContext ctx)
@@ -42,16 +44,20 @@ namespace BL.Logic.SystemCore
             _systemDb.InitializerDatabase(ctx);
         }
 
-        public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext context, FilterSystemSetting filter)
+        public IEnumerable<FrontDictionarySettingType> GetSystemSettings(IContext context, FilterSystemSetting filter)
         {
             var tmpSettings= DmsResolver.Current.Get<ISettings>();
 
-            return _systemDb.GetSystemSettings(context, filter).Select(x => new FrontSystemSetting()
-            {
-                Key = x.Key,
-                Value = tmpSettings.GetTypedValue(x.Value.ToString(), x.ValueType),
-                AgentId = x.AgentId,
-            } );
+            var res = _systemDb.GetSystemSettings(context, filter)
+                .GroupBy(x => new { x.SettingTypeName, x.OrderSettingType })
+                .OrderBy(x => x.Key.OrderSettingType)
+                .Select(x => new FrontDictionarySettingType()
+                {
+                    Name = x.Key.SettingTypeName,
+                    Setting = x.OrderBy(y => y.Order).ToList()
+                }).ToList();
+            return res;
+
         }
 
         
@@ -115,13 +121,13 @@ namespace BL.Logic.SystemCore
             flatList.AddRange(objects);
             flatList.AddRange(actions);
 
-            // перевожу на пользовательский язык лейблы
+            // перевожу на пользовательский язык лейблы в SearchText
 
             var languageService = DmsResolver.Current.Get<ILanguages>();
 
             foreach (var item in flatList)
             {
-                item.Name  = languageService.ReplaceLanguageLabel(context,  item.Name);
+                item.SearchText  = languageService.GetTranslation(item.SearchText);
             }
 
             var res = Tree.GetList( Tree.Get(flatList, filter));

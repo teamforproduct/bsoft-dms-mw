@@ -78,7 +78,8 @@ namespace BL.Database.Common
                                             .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                                             .Select(y => y.RegJournalId).Contains(x.RegistrationJournalId.Value));
                         var qryCont = qry.Concat(qryRJA);
-                        qry = qry.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
+                        var qry1 = dbContext.DocumentsSet.AsQueryable();
+                        qry = qry1.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
                     }
                 }                
             }

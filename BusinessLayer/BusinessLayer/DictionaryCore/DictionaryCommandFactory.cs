@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.DictionaryCore.AgentEmployee;
 using BL.Model.Enums;
 using BL.Model.Exception;
 
@@ -9,10 +10,9 @@ namespace BL.Logic.DictionaryCore
     {
         public static IDictionaryCommand GetDictionaryCommand(EnumDictionaryActions act, IContext ctx, object param)
         {
-            if (ctx.ClientLicence?.LicenceError != null)
-            {
-                throw ctx.ClientLicence.LicenceError as DmsExceptions;
-            }
+            var dmsExceptions = ctx.ClientLicence?.LicenceError as DmsExceptions;
+            if (dmsExceptions != null)
+                throw dmsExceptions;
 
             IDictionaryCommand cmd;
             switch (act)

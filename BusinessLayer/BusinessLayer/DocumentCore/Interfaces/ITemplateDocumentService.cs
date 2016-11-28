@@ -14,22 +14,20 @@ namespace BL.Logic.DocumentCore
 
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
 
-        IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context);
+        IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc);
 
-        IEnumerable<FrontTemplateDocumentSendLists> GetTemplateDocumentSendLists(IContext context,int templateId,FilterTemplateDocumentSendList filter);
-        FrontTemplateDocumentSendLists GetTemplateDocumentSendList(IContext context, int id);
+        IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context,FilterTemplateDocumentSendList filter);
+        FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendLists(IContext context,
-            int templateId, FilterTemplateDocumentRestrictedSendList filter);
-        FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext context, int id);
+        IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext context,FilterTemplateDocumentRestrictedSendList filter);
+        FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext context,
-            int templateId, FilterTemplateDocumentTask filter);
-        FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext context, int id);
+        IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext context,FilterTemplateDocumentTask filter);
+        FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id);
 
-        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter, int templateId);
+        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
         FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
 
 

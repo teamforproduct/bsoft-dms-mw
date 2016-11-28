@@ -5,6 +5,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.SystemCore;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -12,7 +13,7 @@ namespace BL.Database.Documents.Interfaces
     {
 
         #region TemplateDocument
-        IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx);
+        IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
         int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template, IEnumerable<InternalPropertyValue> properties);
@@ -23,31 +24,37 @@ namespace BL.Database.Documents.Interfaces
         #endregion TemplateDocument
 
         #region TemplateDocumentSendList
-        IEnumerable<FrontTemplateDocumentSendLists> GetTemplateDocumentSendLists(IContext ctx,int templateId,FilterTemplateDocumentSendList filter);
-        FrontTemplateDocumentSendLists GetTemplateDocumentSendList(IContext ctx, int templateDocumentId);
+        IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext ctx,FilterTemplateDocumentSendList filter);
+        FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext ctx, int templateDocumentId);
         int AddOrUpdateTemplateSendList(IContext ctx, InternalTemplateDocumentSendList template);
         void DeleteTemplateSendList(IContext ctx, int id);
         #endregion TemplateDocumentSendList
 
         #region TemplateDocumentRestrictedSendList
-        IEnumerable<FrontTemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendLists(IContext ctx, int templateId, FilterTemplateDocumentRestrictedSendList filter);
-        FrontTemplateDocumentRestrictedSendLists GetTemplateDocumentRestrictedSendList(IContext ctx, int id);
+        IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter);
+        FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext ctx, int id);
         int AddOrUpdateTemplateRestrictedSendList(IContext ctx, InternalTemplateDocumentRestrictedSendList template);
         void DeleteTemplateRestrictedSendList(IContext ctx, int id);
         #endregion TemplateDocumentRestrictedSendList
 
+        #region TemplateDocumentPapers
+        IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
+        FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext ctx, int id);
+        int AddOrUpdateTemplatePaper(IContext ctx, InternalTemplateDocumentPaper template);
+        bool CanAddTemplatePaper(IContext ctx, ModifyTemplateDocumentPaper Paper);
+        void DeleteTemplatePaper(IContext ctx, int id);
+        #endregion TemplateDocumentPapers
+
         #region TemplateDocumentTasks
-        IEnumerable<FrontTemplateDocumentTasks> GetTemplateDocumentTasks(IContext ctx, int templateId, FilterTemplateDocumentTask filter);
-        FrontTemplateDocumentTasks GetTemplateDocumentTask(IContext ctx, int id);
+        IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext ctx, FilterTemplateDocumentTask filter);
+        FrontTemplateDocumentTask GetTemplateDocumentTask(IContext ctx, int id);
         int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateDocumentTask template);
-        bool CanAddTemplateTask(IContext ctx, ModifyTemplateDocumentTasks task);
+        bool CanAddTemplateTask(IContext ctx, ModifyTemplateDocumentTask task);
         void DeleteTemplateTask(IContext ctx, int id);
         #endregion TemplateDocumentTasks
+
         #region TemplateAttachedFiles
-
-        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter,
-            int templateId);
-
+        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
         FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
         int GetNextFileOrderNumber(IContext ctx, int templateId);
         int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile);

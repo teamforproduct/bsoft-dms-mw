@@ -1,4 +1,5 @@
-﻿using BL.Database.DBModel.Dictionary;
+﻿using BL.Database.Common;
+using BL.Database.DBModel.Dictionary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,9 +26,11 @@ namespace BL.Database.DBModel.Document
         [Index("IX_DocumentId",1)]
         public int DocumentId { get; set; }
         public int EventTypeId { get; set; }
+        [DateTimeKind(DateTimeKind.Utc)]
         public DateTime CreateDate { get; set; }
         [Index("IX_Date", 1)]
-        public DateTime Date { get; set; }
+        //[DateTimeKind(DateTimeKind.Utc)]
+        public DateTime Date { get; set ; }
         [Index("IX_IsAvailableWithinTask", 2)]
         [Index("IX_TaskId",1)]
         public Nullable<int> TaskId { get; set; }
@@ -69,6 +72,7 @@ namespace BL.Database.DBModel.Document
 
         public int LastChangeUserId { get; set; }
         [Index("IX_LastChangeDate",1)]
+        [DateTimeKind(DateTimeKind.Utc)]
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("DocumentId")]

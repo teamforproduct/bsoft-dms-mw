@@ -92,7 +92,9 @@ namespace DMS_WebAPI.Results
             // Если форматом отрезать милисекунды, то Z перестает отображаться
             var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = spentTimeStr }, settings);
 
-            var languageService = DmsResolver.Current.Get<Languages>();
+            // ВНИМАНИЕ!!! Здесь достаточно опасно модифицировать готовый json. 
+            // Возникает задача экранирования символов {}":[]
+            var languageService = DmsResolver.Current.Get<ILanguages>();
             json = languageService.GetTranslation(json);
 
             HttpResponseMessage response = _request.CreateResponse(HttpStatusCode.OK);

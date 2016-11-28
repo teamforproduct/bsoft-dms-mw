@@ -418,104 +418,108 @@ namespace BL.Database.Documents
         public void CloseDocumentWait(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var offEvent = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
-                foreach (var docWait in document.Waits)
                 {
-                    var wait = new DocumentWaits
+                    var offEvent = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
+                    foreach (var docWait in document.Waits)
                     {
-                        Id = docWait.Id,
-                        ResultTypeId = docWait.ResultTypeId,
-                        LastChangeDate = docWait.LastChangeDate,
-                        LastChangeUserId = docWait.LastChangeUserId
-                    };
-                    dbContext.DocumentWaitsSet.Attach(wait);
-                    wait.OffEvent = offEvent;
-                    var entry = dbContext.Entry(wait);
+                        var wait = new DocumentWaits
+                        {
+                            Id = docWait.Id,
+                            ResultTypeId = docWait.ResultTypeId,
+                            LastChangeDate = docWait.LastChangeDate,
+                            LastChangeUserId = docWait.LastChangeUserId
+                        };
+                        dbContext.DocumentWaitsSet.Attach(wait);
+                        wait.OffEvent = offEvent;
+                        var entry = dbContext.Entry(wait);
 
-                    entry.Property(x => x.Id).IsModified = true;
-                    entry.Property(x => x.ResultTypeId).IsModified = true;
-                    entry.Property(x => x.LastChangeDate).IsModified = true;
-                    entry.Property(x => x.LastChangeUserId).IsModified = true;
-                }
-                var sendList = document.SendLists?.FirstOrDefault();
-                if (sendList != null)
-                {
-
-                    var sendListDb = new DocumentSendLists
-                    {
-                        Id = sendList.Id,
-                        LastChangeDate = sendList.LastChangeDate,
-                        LastChangeUserId = sendList.LastChangeUserId
-                    };
-                    dbContext.DocumentSendListsSet.Attach(sendListDb);
-                    var entry = dbContext.Entry(sendListDb);
-                    entry.Property(x => x.LastChangeDate).IsModified = true;
-                    entry.Property(x => x.LastChangeUserId).IsModified = true;
-                    if (sendList.StartEventId != null)
-                    {
-                        sendListDb.CloseEvent = offEvent;
+                        entry.Property(x => x.Id).IsModified = true;
+                        entry.Property(x => x.ResultTypeId).IsModified = true;
+                        entry.Property(x => x.LastChangeDate).IsModified = true;
+                        entry.Property(x => x.LastChangeUserId).IsModified = true;
                     }
-                    else
+                    var sendList = document.SendLists?.FirstOrDefault();
+                    if (sendList != null)
                     {
-                        sendListDb.StartEventId = null;
-                        entry.Property(x => x.StartEventId).IsModified = true;
+
+                        var sendListDb = new DocumentSendLists
+                        {
+                            Id = sendList.Id,
+                            LastChangeDate = sendList.LastChangeDate,
+                            LastChangeUserId = sendList.LastChangeUserId
+                        };
+                        dbContext.DocumentSendListsSet.Attach(sendListDb);
+                        var entry = dbContext.Entry(sendListDb);
+                        entry.Property(x => x.LastChangeDate).IsModified = true;
+                        entry.Property(x => x.LastChangeUserId).IsModified = true;
+                        if (sendList.StartEventId != null)
+                        {
+                            sendListDb.CloseEvent = offEvent;
+                        }
+                        else
+                        {
+                            sendListDb.StartEventId = null;
+                            entry.Property(x => x.StartEventId).IsModified = true;
+                        }
                     }
-                }
-                var subscription = document.Subscriptions?.FirstOrDefault();
-                if (subscription != null)
-                {
-                    var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
-                                                                isUseInternalSign, isUseCertificateSign, subscription,
-                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
-                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
-                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
-                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval,
-                                                                 true);
-                    var subscriptionDb = new DocumentSubscriptions
+                    var subscription = document.Subscriptions?.FirstOrDefault();
+                    if (subscription != null)
                     {
-                        Id = subscription.Id,
-                        Description = subscription.Description,
-                        SubscriptionStateId = (int)subscription.SubscriptionStates,
-                        Hash = docHash?.Hash,
-                        FullHash = docHash?.FullHash,
+                        var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
+                                                                    isUseInternalSign, isUseCertificateSign, subscription,
+                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
+                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
+                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
+                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval,
+                                                                     true);
+                        var subscriptionDb = new DocumentSubscriptions
+                        {
+                            Id = subscription.Id,
+                            Description = subscription.Description,
+                            SubscriptionStateId = (int)subscription.SubscriptionStates,
+                            Hash = docHash?.Hash,
+                            FullHash = docHash?.FullHash,
 
-                        SigningTypeId = (int)subscription.SigningType,
+                            SigningTypeId = (int)subscription.SigningType,
 
-                        InternalSign = docHash?.InternalSign,
-                        CertificateSign = docHash?.CertificateSign,
-                        CertificateId = subscription.CertificateId,
-                        CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
-                        CertificatePositionId = subscription.CertificatePositionId,
-                        CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
+                            InternalSign = docHash?.InternalSign,
+                            CertificateSign = docHash?.CertificateSign,
+                            CertificateId = subscription.CertificateId,
+                            CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
+                            CertificatePositionId = subscription.CertificatePositionId,
+                            CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
 
-                        LastChangeDate = subscription.LastChangeDate,
-                        LastChangeUserId = subscription.LastChangeUserId
-                    };
-                    dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
-                    if (subscription.DoneEvent != null)
-                    {
-                        subscriptionDb.DoneEvent = offEvent;
+                            LastChangeDate = subscription.LastChangeDate,
+                            LastChangeUserId = subscription.LastChangeUserId
+                        };
+                        dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
+                        if (subscription.DoneEvent != null)
+                        {
+                            subscriptionDb.DoneEvent = offEvent;
+                        }
+                        var entry = dbContext.Entry(subscriptionDb);
+                        entry.Property(x => x.Id).IsModified = true;
+                        entry.Property(x => x.Description).IsModified = true;
+                        entry.Property(x => x.SubscriptionStateId).IsModified = true;
+                        entry.Property(x => x.Hash).IsModified = true;
+                        entry.Property(x => x.FullHash).IsModified = true;
+                        entry.Property(x => x.LastChangeDate).IsModified = true;
+                        entry.Property(x => x.LastChangeUserId).IsModified = true;
+
+                        entry.Property(x => x.SigningTypeId).IsModified = true;
+
+                        entry.Property(x => x.InternalSign).IsModified = true;
+                        entry.Property(x => x.CertificateSign).IsModified = true;
+                        entry.Property(x => x.CertificateId).IsModified = true;
+                        entry.Property(x => x.CertificateSignCreateDate).IsModified = true;
+                        entry.Property(x => x.CertificatePositionId).IsModified = true;
+                        entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
                     }
-                    var entry = dbContext.Entry(subscriptionDb);
-                    entry.Property(x => x.Id).IsModified = true;
-                    entry.Property(x => x.Description).IsModified = true;
-                    entry.Property(x => x.SubscriptionStateId).IsModified = true;
-                    entry.Property(x => x.Hash).IsModified = true;
-                    entry.Property(x => x.FullHash).IsModified = true;
-                    entry.Property(x => x.LastChangeDate).IsModified = true;
-                    entry.Property(x => x.LastChangeUserId).IsModified = true;
-
-                    entry.Property(x => x.SigningTypeId).IsModified = true;
-
-                    entry.Property(x => x.InternalSign).IsModified = true;
-                    entry.Property(x => x.CertificateSign).IsModified = true;
-                    entry.Property(x => x.CertificateId).IsModified = true;
-                    entry.Property(x => x.CertificateSignCreateDate).IsModified = true;
-                    entry.Property(x => x.CertificatePositionId).IsModified = true;
-                    entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
+                    dbContext.SaveChanges();
+                    transaction.Complete();
                 }
-                dbContext.SaveChanges();
             }
         }
 

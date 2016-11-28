@@ -15,13 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BL.Model.FullTextSearch;
 using LinqKit;
-using BL.Database.DBModel.Document;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure.Interception;
-using System.Data.Entity.SqlServer;
 using BL.Model.Common;
 using System.Transactions;
-using BL.Model.AdminCore.Clients;
 using BL.Model.Tree;
 using EntityFramework.Extensions;
 using BL.Database.DBModel.Admin;
@@ -792,7 +788,7 @@ namespace BL.Database.Dictionaries
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Update);
 
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -1234,7 +1230,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     LanguageId = x.LanguageId,
                     LanguageName = x.Language.Code,
-                    IsActive = x.IsActive,
+                    IsActive = x.Agent.AgentEmployee.IsActive,
                     IsSendEMail = false, //TODO
                     Name = x.Agent.Name,
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
@@ -3275,7 +3271,7 @@ namespace BL.Database.Dictionaries
                 {
                     var positions = GetPositionIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list });
 
-                    if (positions.Count > 0) DeletePositions(context, positions);
+                    if (positions.Count() > 0) DeletePositions(context, positions.ToList());
 
                     dbContext.DictionaryDepartmentsSet.RemoveRange(dbContext.DictionaryDepartmentsSet.
                         Where(x => x.Company.ClientId == context.CurrentClientId).
@@ -4239,6 +4235,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryPositionsSet.Add(dd);
                 CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, new List<int> { dd.Id });
                 position.Id = dd.Id;
                 transaction.Complete();
                 return dd.Id;
@@ -4265,6 +4262,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.Update);
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, new List<int> { position.Id });
                 transaction.Complete();
             }
         }
@@ -4282,6 +4280,36 @@ namespace BL.Database.Dictionaries
                 transaction.Complete();
             }
         }
+
+        public void UpdatePositionExecutor(IContext context, List<int> positionId = null)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = GetTransaction())
+            {
+                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
+                if (positionId?.Any() ?? false)
+                    qry = qry.Where(x => positionId.Contains(x.Id));
+                var posUpd = qry.Select(x => new
+                {
+                    x.Id,
+                    oldExecutorAgentId = x.ExecutorAgentId ?? 0,
+                    newExecutorAgentId = dbContext.DictionaryPositionExecutorsSet
+                        .Where(y => y.PositionId == x.Id && DateTime.UtcNow >= y.StartDate && DateTime.UtcNow <= y.EndDate
+                                    && (y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.IO || y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal))
+                        .OrderBy(y => y.PositionExecutorTypeId).Select(y => y.AgentId).FirstOrDefault()
+                }).Where(x => x.newExecutorAgentId != x.oldExecutorAgentId)
+                .ToDictionary(x => x.Id, y => y.newExecutorAgentId != 0 ? y.newExecutorAgentId : (int?)null);
+                if (posUpd.Any())
+                    foreach (var pos in posUpd)
+                    {
+                        var id = pos.Key;
+                        var agentId = pos.Value;
+                        dbContext.DictionaryPositionsSet.Where(x => x.Id == id).Update(x => new DictionaryPositions { ExecutorAgentId = agentId });
+                    }
+                transaction.Complete();
+            }
+        }
+
 
         public void DeletePositions(IContext context, List<int> list)
         {
@@ -4358,13 +4386,13 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
+                int? res = null;
                 var qry = dbContext.DictionaryPositionsSet.AsQueryable();
                 if (!context.IsAdmin)
                 {
                     qry = qry.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
                 }
-                var res = qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
-
+                res = qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
@@ -4489,7 +4517,35 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public List<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = GetTransaction())
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                var res = qry.Select(
+                    x => new InternalDictionaryPosition
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        FullName = x.FullName,
+                        ParentId = x.ParentId,
+                        DepartmentId = x.DepartmentId,
+                        ExecutorAgentId = x.ExecutorAgentId,
+                        MainExecutorAgentId = x.MainExecutorAgentId,
+                        Order = x.Order,
+                        IsActive = x.IsActive,
+                        LastChangeDate = x.LastChangeDate,
+                        LastChangeUserId = x.LastChangeUserId
+                    }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
@@ -4729,6 +4785,26 @@ namespace BL.Database.Dictionaries
                 qry = qry.Where(x => x.PositionRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
             }
 
+            if (filter.OrderMore.HasValue)
+            {
+                qry = qry.Where(x => x.Order > filter.OrderMore);
+            }
+
+            if (filter.OrderLess.HasValue)
+            {
+                qry = qry.Where(x => x.Order < filter.OrderLess);
+            }
+
+            // по отделам
+            if (filter.Orders?.Count > 0)
+            {
+                var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                filterContains = filter.Orders.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Order == value).Expand());
+
+                qry = qry.Where(filterContains);
+            }
+
             return qry;
         }
 
@@ -4832,6 +4908,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 executor.Id = dc.Id;
+                UpdatePositionExecutor(context, new List<int> { dc.PositionId });
                 transaction.Complete();
                 return dc.Id;
             }
@@ -4847,6 +4924,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Update);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, new List<int> { executor.PositionId });
                 transaction.Complete();
             }
         }
@@ -4861,6 +4939,7 @@ namespace BL.Database.Dictionaries
                     Where(x => list.Contains(x.Id)));
                 CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+                UpdatePositionExecutor(context, list);
                 transaction.Complete();
             }
         }

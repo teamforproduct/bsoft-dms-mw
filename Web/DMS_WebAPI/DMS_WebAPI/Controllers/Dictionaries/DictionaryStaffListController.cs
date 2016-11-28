@@ -37,6 +37,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(tmpItems, this);
         }
 
+        /// <summary>
+        /// Создает фейковое штатное расписание на 5000 элементов
+        /// </summary>
+        /// <returns></returns>
         public IHttpActionResult Post()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

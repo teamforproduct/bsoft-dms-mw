@@ -221,6 +221,11 @@ namespace BL.Database.SystemDb
                         Key = model.Key,
                         Value = model.Value,
                         ValueTypeId = (int)model.ValueType,
+                        AccessType = model.AccessType,
+                        Name = model.Name,
+                        Description = model.Description,
+                        Order = model.Order,
+                        SettingTypeId = model.SettingTypeId,
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();
@@ -270,7 +275,39 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<InternalSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        /// <summary>
+        /// Возвращает список настройек. ВНИМАНИЕ!!! Значения полей типа password заменяются на NULL
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var qry = GetSettingsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new FrontSystemSetting()
+                {
+                    Id = x.Id,
+                    Key = x.Key,
+                    Value = (x.ValueTypeId == (int)EnumValueTypes.Password) ? null : x.Value,
+                    Name = x.Name,
+                    Description = x.Description,
+                    ValueTypeCode = x.ValueTypes.Code,
+                    SettingTypeName = x.SettingType.Name,
+                    Order = x.Order,
+                    OrderSettingType = x.SettingType.Order,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -293,21 +330,30 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemSettings> GetWhereSettings(ref IQueryable<SystemSettings> qry, FilterSystemSetting filter)
         {
-            if (!string.IsNullOrEmpty(filter.Key))
+            if (filter != null)
             {
-                qry = qry.Where(x => x.Key == filter.Key);
-            }
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemSettings>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.Key))
+                {
+                    qry = qry.Where(x => x.Key == filter.Key);
+                }
 
-            if (!string.IsNullOrEmpty(filter.Value))
-            {
-                qry = qry.Where(x => x.Value == filter.Value);
-            }
+                if (!string.IsNullOrEmpty(filter.Value))
+                {
+                    qry = qry.Where(x => x.Value == filter.Value);
+                }
 
-            if (filter.AgentId.HasValue)
-            {
-                qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
+                if (filter.AgentId.HasValue)
+                {
+                    qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
+                }
             }
-
             return qry;
         }
 
@@ -560,7 +606,7 @@ namespace BL.Database.SystemDb
                     ObjectId = (int)EnumObjects.SystemActions,
                     IsActive = true,
                     IsList = true,
-                    IsChecked = x.RoleActions.Where(y => y.RoleId == roleId & !y.RecordId.HasValue).Any(),
+                    IsChecked = x.RoleActions.Any(y => y.RoleId == roleId & !y.RecordId.HasValue),
                     RoleId = roleId,
                     ActionId = x.Id,
                 }).ToList();
@@ -701,7 +747,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        
+
 
         public IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter)
         {
@@ -1480,8 +1526,9 @@ namespace BL.Database.SystemDb
             }
         }
 
-        private string Concat(params object[] values) => string.Join(" ", values);
+        //private string Concat(params object[] values) => string.Join(" ", values);
 
+        // перепостраивает все индексы, относящиеся к общей части
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
@@ -1509,7 +1556,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = Concat(x.PersonnelNumber, x.Description, x.Agent.Name, x.Agent.AgentPerson.FullName, x.Agent.AgentPerson.BirthDate, x.Agent.AgentPerson.PassportDate, x.Agent.AgentPerson.PassportNumber, x.Agent.AgentPerson.PassportSerial, x.Agent.AgentPerson.PassportText, x.Agent.AgentPerson.TaxCode)
+                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPerson.FullName + " " + x.Agent.AgentPerson.BirthDate + " " + x.Agent.AgentPerson.PassportDate + " " + x.Agent.AgentPerson.PassportNumber + " " + x.Agent.AgentPerson.PassportSerial + " " + x.Agent.AgentPerson.PassportText + " " + x.Agent.AgentPerson.TaxCode
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1519,7 +1566,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.FullName + " " + x.OKPOCode + " " + x.Description + " " + x.TaxCode + " " + x.VATCode
+                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.OKPOCode + " " + x.Description + " " + x.TaxCode + " " + x.VATCode
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1529,7 +1576,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.FullName + " " + x.Description + " " + x.TaxCode + " " + x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " + x.PassportText
+                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.Description + " " + x.TaxCode + " " + x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " + x.PassportText
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1539,7 +1586,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.MFOCode + " " + x.Swift
+                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.Description + " " + x.MFOCode + " " + x.Swift
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1552,16 +1599,15 @@ namespace BL.Database.SystemDb
                     ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact + " " + x.ContactType.Code + " " + x.ContactType.Name
                 }).ToList());
 
-                // не должны добавляться в полнотекст т.к. значения не локализованы
-                //res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
-                //{
-                //    DocumentId = 0,
-                //    ItemType = EnumObjects.DictionaryContactType,
-                //    OperationType = EnumOperationType.AddNew,
-                //    ClientId = ctx.CurrentClientId,
-                //    ObjectId = x.Id,
-                //    ObjectText = x.Code + " " + x.Name
-                //}).ToList());
+                res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryContactType,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Code + " " + x.Name
+                }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
@@ -1570,19 +1616,18 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address + " " + x.PostCode //+ " " + x.AddressType.Name // не должны добавляться в полнотекст т.к. значения не локализованы
+                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address + " " + x.PostCode + " " + x.AddressType.Name
                 }).ToList());
 
-                // не должны добавляться в полнотекст т.к. значения не локализованы
-                //res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
-                //{
-                //    DocumentId = 0,
-                //    ItemType = EnumObjects.DictionaryAddressType,
-                //    OperationType = EnumOperationType.AddNew,
-                //    ClientId = ctx.CurrentClientId,
-                //    ObjectId = x.Id,
-                //    ObjectText = x.Name
-                //}).ToList());
+                res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryAddressType,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Code + " " + x.Name
+                }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
@@ -1591,7 +1636,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.AccountNumber + " " + x.Name + " " + x.Agent.Name + " " + x.AgentBank.MFOCode + " " + x.AgentBank.Agent.Name
+                    ObjectText = x.Agent.Name + " " + x.AgentBank.FullName + " " + x.AccountNumber + " " + x.Name + " " + x.AgentBank.MFOCode
                 }).ToList());
 
                 // не должны добавляться в полнотекст т.к. значения не локализованы
@@ -1778,6 +1823,7 @@ namespace BL.Database.SystemDb
             return res;
         }
 
+        // перепостраивает поисковый индекс для указанного документа
         public IEnumerable<FullTextIndexItem> FullTextIndexOneDocumentReindexDbPrepare(IContext ctx, int selectBis)
         {
             var res = new List<FullTextIndexItem>();
@@ -1812,7 +1858,7 @@ namespace BL.Database.SystemDb
                                          //+ x.doc.TemplateDocument.DocumentDirection.Name + " " 
                                          + x.doc.DocumentSubject.Name + " "
                                          + x.doc.DocumentSubject.Name + " "
-                                         + x.doc.SenderAgent.Name + " " 
+                                         + x.doc.SenderAgent.Name + " "
                                          + x.doc.SenderAgentPerson.Agent.Name + " " +
                                          x.doc.SenderNumber + " "
                         }).ToList());
@@ -1857,9 +1903,9 @@ namespace BL.Database.SystemDb
                                 x.sl.Description + " "
                                 //+ x.sl.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
                                 + x.sl.SourcePosition.Name + " " +
-                                x.sl.TargetPosition.Name + " " 
-                                + x.sl.SourcePositionExecutorAgent.Name + " " 
-                                + x.sl.TargetPositionExecutorAgent.Name 
+                                x.sl.TargetPosition.Name + " "
+                                + x.sl.SourcePositionExecutorAgent.Name + " "
+                                + x.sl.TargetPositionExecutorAgent.Name
                         }).ToList());
 
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x =>
@@ -1900,7 +1946,7 @@ namespace BL.Database.SystemDb
                             ObjectText =
                                 x.ss.Description + " "
                             //+ x.ss.SubscriptionState.Name + " " // не должны добавляться в полнотекст т.к. значения не локализованы
-                            + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " " 
+                            + x.ss.DoneEvent.SourcePositionExecutorAgent.Name + " "
                         }).ToList());
 
                 transaction.Complete();
@@ -1909,6 +1955,7 @@ namespace BL.Database.SystemDb
             return res;
         }
 
+        // перепостраивает все индексы, относящиеся к документооборотной части
         public IEnumerable<FullTextIndexItem> FullTextIndexDocumentsReindexDbPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int rowOffset)
         {
             var res = new List<FullTextIndexItem>();
@@ -1956,12 +2003,12 @@ namespace BL.Database.SystemDb
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
-                        ObjectText = x.Description + " " 
-                        + x.AddDescription + " " 
-                        + x.Task.Task + " " 
-                        + x.SourcePositionExecutorAgent.Name + " "  
-                        + x.TargetPositionExecutorAgent.Name + " " 
-                        + x.SourceAgent.Name + " " 
+                        ObjectText = x.Description + " "
+                        + x.AddDescription + " "
+                        + x.Task.Task + " "
+                        + x.SourcePositionExecutorAgent.Name + " "
+                        + x.TargetPositionExecutorAgent.Name + " "
+                        + x.SourceAgent.Name + " "
                         + x.TargetAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
 
@@ -1995,9 +2042,9 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Description + " "
                         //+ x.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
-                        + x.SourcePosition.Name + " " 
-                        + x.TargetPosition.Name + " " 
-                        + x.SourcePositionExecutorAgent.Name + " " 
+                        + x.SourcePosition.Name + " "
+                        + x.TargetPosition.Name + " "
+                        + x.SourcePositionExecutorAgent.Name + " "
                         + x.TargetPositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
                     transaction.Complete();
@@ -2025,6 +2072,7 @@ namespace BL.Database.SystemDb
             return res;
         }
 
+        // создание поисковых индексов в рабочем режиме по таблице FullTextIndexCashSet, относящихся к документу
         public IEnumerable<FullTextIndexItem> FullTextIndexDocumentsPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int selectBis)
         {
             var res = new List<FullTextIndexItem>();
@@ -2037,8 +2085,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(
                         x =>
-                            x.Id <= selectBis && x.OperationType != (int)EnumOperationType.Delete && x.OperationType != (int)EnumOperationType.UpdateDocument &&
-                            x.ObjectType == (int)EnumObjects.Documents)
+                            x.Id <= selectBis && x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.Documents)
                         .OrderBy(x => x.ObjectId)
                         .ThenBy(x => x.Id)
                         .Join(dbContext.DocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d })
@@ -2112,9 +2159,9 @@ namespace BL.Database.SystemDb
                             ObjectId = x.sl.Id,
                             ObjectText = x.sl.Description + " "
                             // + x.sl.SendType.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
-                            + x.sl.SourcePosition.Name + " " 
-                            + x.sl.TargetPosition.Name + " " 
-                            + x.sl.SourcePositionExecutorAgent.Name + " " 
+                            + x.sl.SourcePosition.Name + " "
+                            + x.sl.TargetPosition.Name + " "
+                            + x.sl.SourcePositionExecutorAgent.Name + " "
                             + x.sl.TargetPositionExecutorAgent.Name + " "
                         }).Take(() => rowToSelect).ToList());
                 }
@@ -2147,6 +2194,7 @@ namespace BL.Database.SystemDb
             return res;
         }
 
+        // создание поисковых индексов в рабочем режиме по таблице FullTextIndexCashSet, НЕ относящихся к документу
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
@@ -2161,7 +2209,8 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgents))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgents).Join(dbContext.DictionaryAgentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgents)
+                        .Join(dbContext.DictionaryAgentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2175,7 +2224,8 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees).Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, employee = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees)
+                        .Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, employee = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2183,13 +2233,14 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = Concat(x.employee.PersonnelNumber, x.employee.Description, x.employee.Agent.Name, x.employee.Agent.AgentPerson.FullName, x.employee.Agent.AgentPerson.BirthDate, x.employee.Agent.AgentPerson.PassportDate, x.employee.Agent.AgentPerson.PassportNumber, x.employee.Agent.AgentPerson.PassportSerial, x.employee.Agent.AgentPerson.PassportText, x.employee.Agent.AgentPerson.TaxCode)
+                        ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPerson.FullName + " " + x.employee.Agent.AgentPerson.BirthDate + " " + x.employee.Agent.AgentPerson.PassportDate + " " + x.employee.Agent.AgentPerson.PassportNumber + " " + x.employee.Agent.AgentPerson.PassportSerial + " " + x.employee.Agent.AgentPerson.PassportText + " " + x.employee.Agent.AgentPerson.TaxCode
                     }).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentCompanies))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentCompanies).Join(dbContext.DictionaryAgentCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentCompanies)
+                        .Join(dbContext.DictionaryAgentCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2546,9 +2597,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx))
             {
-                //that is totaly wrong but delete 10000 elements with normal EF method is madness
-                dbContext.Database.ExecuteSqlCommand("DELETE FROM [DMS].[FullTextIndexCashes] WHERE [Id] <=" + deleteBis);
-                //dbContext.FullTextIndexCashSet.Where(10000 elements).Delete()
+                dbContext.FullTextIndexCashSet.Where(x => x.Id <= deleteBis).Delete();
             }
         }
 

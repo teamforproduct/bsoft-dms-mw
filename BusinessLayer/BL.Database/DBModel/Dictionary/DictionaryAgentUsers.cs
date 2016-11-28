@@ -23,6 +23,7 @@ namespace BL.Database.DBModel.Dictionary
         /// <summary>
         /// Определяет может ли пользователь войти в систему
         /// </summary>
+        [Obsolete("Этот флаг лишний. В WEB-базе есть дубль", true)]
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

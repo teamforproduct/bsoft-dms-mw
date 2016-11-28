@@ -383,7 +383,6 @@ namespace DMS_WebAPI.Utilities
                 return list;
             }
 
-            
             string input;
 
             // построчно считываю файл с переводами.
@@ -402,7 +401,8 @@ namespace DMS_WebAPI.Utilities
 
                 try
                 {
-                    value = input.Split('=')[1].Trim();
+                    value =input.Split('=')[1].Trim();
+                    //value = JsonConvert.SerializeObject(value, settings);
                 }
                 catch { }
 

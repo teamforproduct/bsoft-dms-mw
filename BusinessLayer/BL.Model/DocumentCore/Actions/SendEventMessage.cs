@@ -21,7 +21,12 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Дата события
         /// </summary>
-        public DateTime? EventDate { get; set; }
+        public DateTime? EventDate
+        {
+            get { return _eventDate; }
+            set { _eventDate = value.HasValue ? value.Value.ToUniversalTime() : value; }
+        }
+        private DateTime? _eventDate { get; set; }
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
