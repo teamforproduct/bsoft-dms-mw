@@ -81,8 +81,6 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-
-
             _paper.Name = Model.Name;
             _paper.Description = Model.Description;
             _paper.IsMain = Model.IsMain;
