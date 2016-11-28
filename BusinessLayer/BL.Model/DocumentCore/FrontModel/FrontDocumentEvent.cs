@@ -17,7 +17,7 @@ namespace BL.Model.DocumentCore.FrontModel
                                 set { _date = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; } }
         private DateTime? _createDate { get; set; }
         public DateTime? CreateDate { get { return _createDate; }
-                                      set { _date = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; }  }
+                                      set { _createDate = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; }  }
         public string Task { get; set; }
         public bool? IsAvailableWithinTask { get; set; }
         public string Description { get; set; }

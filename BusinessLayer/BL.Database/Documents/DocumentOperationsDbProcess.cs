@@ -2273,7 +2273,7 @@ namespace BL.Database.Documents
                             }
                         }).ToList();
                 }
-
+                transaction.Complete();
                 return doc;
             }
         }
@@ -2282,30 +2282,28 @@ namespace BL.Database.Documents
         {
             List<int> res = new List<int>();
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                if (papers != null && papers.Any())
                 {
-                    if (papers != null && papers.Any())
+                    foreach (var paper in papers)
                     {
-                        foreach (var paper in papers)
+                        var paperDb = ModelConverter.GetDbDocumentPaper(paper);
+                        if (paper.Events != null && paper.Events.Any())
                         {
-                            var paperDb = ModelConverter.GetDbDocumentPaper(paper);
-                            if (paper.Events != null && paper.Events.Any())
-                            {
-                                paperDb.Events = ModelConverter.GetDbDocumentEvents(paper.Events).ToList();
-                            }
-                            dbContext.DocumentPapersSet.Add(paperDb);
-                            dbContext.SaveChanges();
-                            res.Add(paperDb.Id);
-                            paperDb.LastPaperEventId = paperDb.Events.First().Id;
-                            dbContext.DocumentPapersSet.Attach(paperDb);
-                            var entry = dbContext.Entry(paperDb);
-                            entry.Property(x => x.LastPaperEventId).IsModified = true;
-                            dbContext.SaveChanges();
+                            paperDb.Events = ModelConverter.GetDbDocumentEvents(paper.Events).ToList();
                         }
+                        dbContext.DocumentPapersSet.Add(paperDb);
+                        dbContext.SaveChanges();
+                        res.Add(paperDb.Id);
+                        paperDb.LastPaperEventId = paperDb.Events.First().Id;
+                        dbContext.DocumentPapersSet.Attach(paperDb);
+                        var entry = dbContext.Entry(paperDb);
+                        entry.Property(x => x.LastPaperEventId).IsModified = true;
+                        dbContext.SaveChanges();
                     }
-                    transaction.Complete();
                 }
+                transaction.Complete();
             }
             return res;
         }
@@ -2333,20 +2331,17 @@ namespace BL.Database.Documents
         public void DeleteDocumentPaper(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-                {
-                    var paper = new DocumentPapers { Id = id };
-                    dbContext.DocumentPapersSet.Attach(paper);
-                    var entry = dbContext.Entry(paper);
-                    entry.Property(e => e.LastPaperEventId).IsModified = true;
-                    dbContext.SaveChanges();
-                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.PaperId == id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
-                    dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == id));
-                    dbContext.SaveChanges();
-
-                    transaction.Complete();
-                }
+                var paper = new DocumentPapers { Id = id };
+                dbContext.DocumentPapersSet.Attach(paper);
+                var entry = dbContext.Entry(paper);
+                entry.Property(e => e.LastPaperEventId).IsModified = true;
+                dbContext.SaveChanges();
+                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.PaperId == id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
+                dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.Id == id));
+                dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 

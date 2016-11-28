@@ -253,6 +253,9 @@
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplatePaperCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplatePaperCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateTaskCommand.cs" />
     <Compile Include="EncryptionCore\Commands\VerifyPdfCommand.cs" />
     <Compile Include="EncryptionCore\EncryptionCommandFactory.cs" />
     <Compile Include="EncryptionCore\EncryptionService.cs" />
@@ -363,7 +366,7 @@
     <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateFileCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateRestrictedSendListCommand.cs" />
-    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateTaskCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplatePaperCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateSendListCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateFileCommand.cs" />

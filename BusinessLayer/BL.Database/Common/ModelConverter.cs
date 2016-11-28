@@ -323,6 +323,30 @@ namespace BL.Database.Common
             return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
         }
 
+        public static TemplateDocumentPapers GetDbTemplateDocumentPaper(InternalTemplateDocumentPaper item)
+        {
+            return item == null ? null :
+                new TemplateDocumentPapers
+                {
+                    Id = item.Id,
+                    DocumentId = item.DocumentId,
+                    Name = item.Name,
+                    Description = item.Description,
+                    IsMain = item.IsMain,
+                    IsOriginal = item.IsOriginal,
+                    IsCopy = item.IsCopy,
+                    PageQuantity = item.PageQuantity,
+                    OrderNumber = item.OrderNumber,
+                    LastChangeDate = item.LastChangeDate,
+                    LastChangeUserId = item.LastChangeUserId
+                };
+        }
+
+        public static IEnumerable<TemplateDocumentPapers> GetDbTemplateDocumentPapers(IEnumerable<InternalTemplateDocumentPaper> papers)
+        {
+            return papers?.Any() ?? false ? papers.Select(GetDbTemplateDocumentPaper) : null;
+        }
+
         public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)
         {
             return item == null ? null :

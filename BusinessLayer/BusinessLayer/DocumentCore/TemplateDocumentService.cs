@@ -107,6 +107,21 @@ namespace BL.Logic.DocumentCore
 
         #endregion TemplateDocumentTasks
 
+        #region TemplateDocumentPapers
+
+        public IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext context, FilterTemplateDocumentPaper filter)
+        {
+            return _templateDb.GetTemplateDocumentPapers(context, filter);
+        }
+
+
+        public FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext context, int id)
+        {
+            return _templateDb.GetTemplateDocumentPaper(context, id);
+        }
+
+        #endregion TemplateDocumentPapers
+
         #region TemplateAttachedFiles
 
         public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)

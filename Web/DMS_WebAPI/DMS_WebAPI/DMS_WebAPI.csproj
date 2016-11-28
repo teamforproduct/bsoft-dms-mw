@@ -293,6 +293,7 @@
     <Compile Include="Controllers\Documents\DocumentTagsController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentAttachedFileController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsRestrictedSendListsController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsPapersController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
     <Compile Include="Controllers\Encryption\EncryptionActionsController.cs" />

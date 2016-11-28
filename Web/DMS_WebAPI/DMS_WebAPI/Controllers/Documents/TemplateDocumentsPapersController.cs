@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -15,22 +16,22 @@ namespace DMS_WebAPI.Controllers.Documents
     /// Задачи шаблонов документов
     /// </summary>
     [Authorize]
-    public class TemplateDocumentsTasksController : ApiController
+    public class TemplateDocumentsPapersController : ApiController
     {
         /// <summary>
-        /// Получение всех задач шаблона документов
+        /// Получение всех БН шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
-        public IHttpActionResult Get([FromUri]FilterTemplateDocumentTask filter)
+        public IHttpActionResult Get([FromUri]FilterTemplateDocumentPaper filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDocs = tmpDocProc.GetTemplateDocumentTasks(ctx,filter);
+            var tmpDocs = tmpDocProc.GetTemplateDocumentPapers(ctx,filter);
             return new JsonResult(tmpDocs, this);
         }
 
         /// <summary>
-        /// Получение задачи шаблона документа по ИД
+        /// Получение БН шаблона документа по ИД
         /// </summary>
         /// <param name="id">ИД списка рассылки</param>
         /// <returns>Шаблон документа</returns>
@@ -38,40 +39,40 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpDoc = tmpDocProc.GetTemplateDocumentTask(ctx, id);
+            var tmpDoc = tmpDocProc.GetTemplateDocumentPaper(ctx, id);
             return new JsonResult(tmpDoc, this);
         }
 
         /// <summary>
-        /// Добавление задачи к шаблону документа
+        /// Добавление БН к шаблону документа
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentTask model)
+        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentPaper model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentTask,ctx,model);
-            return Get((int)tmpTemplate);
+            var newIds = (List<int>)tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentPaper,ctx,model);
+            return Get(new FilterTemplateDocumentPaper { IDs = newIds });
         }
 
         /// <summary>
-        /// Изменение задачи шаблона документа
+        /// Изменение БН шаблона документа
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentTask model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentPaper model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentTask, ctx, model);
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentPaper, ctx, model);
             return Get((int)tmpTemplate);
         }
 
         /// <summary>
-        /// Удаление задачи из шаблона документа
+        /// Удаление БН из шаблона документа
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -79,13 +80,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-
-            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentTask, ctx, id); 
-
-            var tmp = new FrontTemplateDocumentTask {Id = id};
-
-            return new JsonResult(tmp, this);
-
+            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentPaper, ctx, id);
+            return new JsonResult(null, this);
         }
     }
 }

@@ -38,8 +38,7 @@ namespace BL.Database.DatabaseContext
                 this.Database.Initialize(true);
             }
 
-            ((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized +=
-                (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
+            //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

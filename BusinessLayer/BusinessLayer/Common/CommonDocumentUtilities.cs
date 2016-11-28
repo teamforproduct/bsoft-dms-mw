@@ -462,6 +462,33 @@ namespace BL.Logic.Common
             return res;
         }
 
+        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, ModifyTemplateDocumentPaper model, int orderNumber)
+        {
+            return new InternalTemplateDocumentPaper
+            {
+                DocumentId = model.DocumentId,
+                Name = model.Name,
+                Description = model.Description,
+                IsMain = model.IsMain,
+                IsOriginal = model.IsOriginal,
+                IsCopy = model.IsCopy,
+                PageQuantity = model.PageQuantity,
+                OrderNumber = orderNumber,
+                LastChangeUserId = context.CurrentAgentId,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
+        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, ModifyTemplateDocumentPaper model, int maxOrderNumber)
+        {
+            var res = new List<InternalTemplateDocumentPaper>();
+            for (int i = 1, l = model.PaperQuantity; i <= l; i++)
+            {
+                res.Add(GetNewTemplateDocumentPaper(context, model, maxOrderNumber + i));
+            }
+            return res;
+        }
+
         public static InternalDocumentEvent GetNewDocumentPaperEvent(IContext context, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
             return new InternalDocumentEvent

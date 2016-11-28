@@ -704,8 +704,13 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-
-                    Description = x.Description
+                    Name = x.Name,
+                    Description = x.Description,
+                    IsMain = x.IsMain,
+                    IsOriginal = x.IsOriginal,
+                    IsCopy = x.IsCopy,
+                    PageQuantity = x.PageQuantity,
+                    OrderNumber = x.OrderNumber,
                 }).ToList();
 
             }
@@ -721,64 +726,102 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
+                        Name = x.Name,
                         Description = x.Description,
+                        IsMain = x.IsMain,
+                        IsOriginal = x.IsOriginal,
+                        IsCopy = x.IsCopy,
+                        PageQuantity = x.PageQuantity,
+                        OrderNumber = x.OrderNumber,
                     }).FirstOrDefault();
             }
         }
 
-        public int AddOrUpdateTemplatePaper(IContext ctx, InternalTemplateDocumentPaper template)
+        public IEnumerable<int> AddTemplateDocumentPapers(IContext context, IEnumerable<InternalTemplateDocumentPaper> papers)
         {
-            using (var dbContext = new DmsContext(ctx))
+            List<int> res = new List<int>();
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var newTemplate = new TemplateDocumentPapers()
+                if (papers != null && papers.Any())
                 {
-
-                    DocumentId = template.DocumentId,
-
-                    Description = template.Description,
-                    LastChangeDate = template.LastChangeDate,
-                    LastChangeUserId = template.LastChangeUserId
-                };
-
-                if (template.Id.HasValue)
-                {
-                    newTemplate.Id = (int)template.Id;
+                    foreach (var paper in papers)
+                    {
+                        var paperDb = ModelConverter.GetDbTemplateDocumentPaper(paper);
+                        dbContext.TemplateDocumentPapersSet.Add(paperDb);
+                        dbContext.SaveChanges();
+                        res.Add(paperDb.Id);
+                    }
                 }
+                transaction.Complete();
+            }
+            return res;
+        }
 
-                dbContext.TemplateDocumentPapersSet.Attach(newTemplate);
-//                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentPaper,
-//                    template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
-                var entity = dbContext.Entry(newTemplate);
-                entity.State = System.Data.Entity.EntityState.Modified;
-
+        public void ModifyTemplatePaper(IContext context, InternalTemplateDocumentPaper item)
+        {
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                var itemDb = ModelConverter.GetDbTemplateDocumentPaper(item);
+                dbContext.TemplateDocumentPapersSet.Attach(itemDb);
+                var entry = dbContext.Entry(itemDb);
+                entry.Property(e => e.Name).IsModified = true;
+                entry.Property(e => e.Description).IsModified = true;
+                entry.Property(e => e.IsMain).IsModified = true;
+                entry.Property(e => e.IsOriginal).IsModified = true;
+                entry.Property(e => e.IsCopy).IsModified = true;
+                entry.Property(e => e.PageQuantity).IsModified = true;
+                //entry.Property(e => e.OrderNumber).IsModified = true;
+                entry.Property(e => e.LastChangeUserId).IsModified = true;
+                entry.Property(e => e.LastChangeDate).IsModified = true;
                 dbContext.SaveChanges();
-
-                return newTemplate.Id;
+                transaction.Complete();
             }
         }
 
-        public bool CanAddTemplatePaper(IContext ctx, ModifyTemplateDocumentPaper model)
+        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, ModifyTemplateDocumentPaper model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(context))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                //TODO
-                //var count = dbContext.TemplateDocumentPapersSet.Count(x =>
-                //    (x.Document.ClientId == ctx.CurrentClientId && x.DocumentId == model.DocumentId && x.Task == model.Task)
-                //    );
-                var count = 0;
-                return count == 0;
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                    .Where(x => x.Id == model.DocumentId)
+                    .Select(x => new InternalTemplateDocument
+                    {
+                        Id = x.Id,
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+                if (model.Id == 0)
+                {
+                    doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
+                        .Where(
+                            x =>
+                                x.DocumentId == model.DocumentId && x.Name == model.Name && x.IsMain == model.IsMain &&
+                                x.IsCopy == model.IsCopy && x.IsOriginal == model.IsOriginal)
+                        .OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault();
+                }
+                else
+                {
+                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => (x.Id == model.Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
+                        .Select(x => new InternalTemplateDocumentPaper
+                        {
+                            Id = x.Id,
+                        }).ToList();
+                }
+                transaction.Complete();
+                return doc;
             }
         }
 
         public void DeleteTemplatePaper(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx))
+            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
             {
-                var ddt = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                if (ddt == null) return;
-                dbContext.TemplateDocumentPapersSet.Remove(ddt);
-                //CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentPaper, EnumOperationType.Delete);
+                dbContext.TemplateDocumentPapersSet.RemoveRange(dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(x => x.Id == id));
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
