@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Providers
         private readonly string _publicClientId;
 
         /// <summary>
-        /// Установка значения _publicClientId в "self" при конфигурации опций овина
+        /// Установка значения _publicClientId в "self" при конфигурации опций овина, который используется в ValidateClientRedirectUri
         /// </summary>
         /// <param name="publicClientId"></param>
         public ApplicationOAuthProvider(string publicClientId)
@@ -44,35 +44,48 @@ namespace DMS_WebAPI.Providers
             _publicClientId = publicClientId;
         }
 
+        /// <summary>
+        /// Этап № 1. Валидация контекста при получении токена
+        /// См. ApplicationUserManager
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        {
+            // Resource owner password credentials does not provide a client ID.
+            if (context.ClientId == null)
+            {
+                context.Validated();
+            }
+
+            return Task.FromResult<object>(null);
+        }
+
+        /// <summary>
+        /// Этап №2. Проверка логина и пароля
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var email = context.UserName;
-            try
+            var userName = context.UserName;
+
+            string clientCode = GetClientCodeFromBody(context.Request.Body);
+
+            // если фронт передал код (доменное имя) клиента добавляю его к адресу
+            if (!string.IsNullOrEmpty(clientCode))
             {
-                context.Request.Body.Position = 0;
-                var body = new StreamReader(context.Request.Body);
-                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
-                var bodyStr = body.ReadToEnd();
-
-                var dic = HttpUtility.ParseQueryString(bodyStr);
-                var clientCode = dic["ClientCode"] ?? string.Empty;
-
-                // если фронт передал код (доменное имя) клиента
-                if (!string.IsNullOrEmpty(clientCode))
+                var dbProc = new WebAPIDbProcess();
+                var client = dbProc.GetClient(clientCode);
+                if (client != null && client.Id > 0)
                 {
-                    var dbProc = new WebAPIDbProcess();
-                    var client = dbProc.GetClient(clientCode);
-                    if (client != null && client.Id > 0)
-                    {
-                        email = $"Client_{client.Id}_{email}";
-                    }
+                    userName = $"Client_{client.Id}_{userName}";
                 }
             }
-            catch { }
 
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindAsync(email, context.Password);
+            ApplicationUser user = await userManager.FindAsync(userName, context.Password);
 
             if (user == null)
             {
@@ -93,11 +106,24 @@ namespace DMS_WebAPI.Providers
             AuthenticationProperties properties = CreateProperties(user.UserName);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
+
+            //     Add information to the response environment that will cause the appropriate authentication
+            //     middleware to grant a claims-based identity to the recipient of the response.
+            //     The exact mechanism of this may vary. Examples include setting a cookie, to adding
+            //     a fragment on the redirect url, or producing an OAuth2 access code or token response.
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
 
+
+
+        /// <summary>
+        /// Этап №3. Добавление параметров в Response
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)
         {
+            // добавляю дополнительные свойства - userName в параметры ответа
             foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
             {
                 context.AdditionalResponseParameters.Add(property.Key, property.Value);
@@ -106,16 +132,48 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
-        public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
+        /// <summary>
+        /// Этап №4. 
+        /// На этом этапе уже известен токен пользователя
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
         {
-            // Resource owner password credentials does not provide a client ID.
-            if (context.ClientId == null)
+            if (context.Identity.IsAuthenticated)
             {
-                context.Validated();
+                // Получаю ID WEb-пользователя
+                var userId = context.Identity.GetUserId();
+
+                var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+
+                ApplicationUser user = userManager.FindById(userId);
+
+                if (user.IsLockout)
+                {
+                    // Это исключение отлавливает Application_Error в Global.asax
+                    throw new UserIsDeactivated(user.UserName);
+                }
+
+                //if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
+                //    throw new EmailConfirmRequiredAgentUser();
+
+                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
+
+                var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+
+                var clientCode = GetClientCodeFromBody(context.Request.Body);
+                // Добавляю пользовательский контекст в коллекцию
+                var ctx = mngContext.Set(token, userId, clientCode, user.IsChangePasswordRequired);
+
+                context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
             }
 
             return Task.FromResult<object>(null);
         }
+
+
 
         public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
         {
@@ -132,6 +190,12 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
+        /// <summary>
+        /// Создает дополнительное свойства при формировании токена.
+        /// См. GrantResourceOwnerCredentials => CreateProperties
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public static AuthenticationProperties CreateProperties(string userName)
         {
             IDictionary<string, string> data = new Dictionary<string, string>
@@ -141,62 +205,29 @@ namespace DMS_WebAPI.Providers
             return new AuthenticationProperties(data);
         }
 
-        public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
+        private static string GetClientCodeFromBody(Stream Body)
         {
-            if (context.Identity.IsAuthenticated)
+            var clientCode = string.Empty;
+
+            try
             {
-                var clientCode = string.Empty;
-                try
-                {
-                    context.Request.Body.Position = 0;
-                    var body = new StreamReader(context.Request.Body);
-                    //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
-                    var bodyStr = body.ReadToEnd();
+                // Из боди POST-запроса извлекаю ClientCode - доменное имя 3 уровня клиента
+                Body.Position = 0;
+                var body = new StreamReader(Body);
+                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
+                var bodyStr = body.ReadToEnd();
 
-                    var dic = HttpUtility.ParseQueryString(bodyStr);
-                    clientCode = dic["ClientCode"] ?? string.Empty;
-                }
-                catch (Exception ex) { }
+                var dic = HttpUtility.ParseQueryString(bodyStr);
 
-                // Получаю ID WEb-пользователя
-                var userId = context.Identity.GetUserId();
+                // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
+                clientCode = dic["ClientCode"] ?? string.Empty;
 
-                var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
-
-                ApplicationUser user = userManager.FindById(userId);
-                
-                if (user.IsLockout)
-                throw new UserIsDeactivated(user.UserName);
-                //{
-                //    var httpContext = HttpContext.Current;
-                //    httpContext.Response.Clear();
-                //    httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
-
-                //    httpContext.Response.ContentType = "application/json";
-
-                //    var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
-
-                //    var json = JsonConvert.SerializeObject(new { success = false, msg = "User Is Deactivated" }, settings);
-
-                //    httpContext.Response.Write(json);
-                //    httpContext.Response.End();
-                //    httpContext.Response.Flush();
-                //}
-
-                //if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
-                //    throw new EmailConfirmRequiredAgentUser();
-
-                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
-
-                var mngContext = DmsResolver.Current.Get<UserContexts>();
-
-                // Добавляю пользовательский контекст в коллекцию
-                var ctx = mngContext.Set(token, userId, clientCode, user.IsChangePasswordRequired);
-
-                context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
             }
+            catch (Exception ex) { }
 
-            return Task.FromResult<object>(null);
+            return clientCode;
         }
+
+
     }
 }
