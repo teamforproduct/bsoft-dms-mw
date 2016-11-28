@@ -367,6 +367,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.ChangeLockout, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.KillSessions, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.ChangeLogin, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.MustChangePassword, EnumObjects.DictionaryAgentUsers));
 
             items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));

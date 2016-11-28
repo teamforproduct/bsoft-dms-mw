@@ -117,6 +117,7 @@ namespace DMS_WebAPI.Infrastructure
                 // при повторнов входе из Application_Error если раскоментировать httpContext.Response.End(); 
                 httpContext.Response.StatusCode = GetResponseStatusCode(httpContext, exception);
                 httpContext.Response.Write(json);
+                // Этот End очень важен для фронта. без него фронт получает статус InternalServerError на ошибке UserUnauthorized. НЕ понятно 
                 httpContext.Response.End();
             }
             catch { }
