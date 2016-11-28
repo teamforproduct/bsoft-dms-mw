@@ -421,7 +421,11 @@
         DeleteTemplateDocumentTask = 254009,
         AddTemplateAttachedFile = 255001,
         ModifyTemplateAttachedFile = 255005,
-        DeleteTemplateAttachedFile = 255009
+        DeleteTemplateAttachedFile = 255009,
+
+        AddTemplateDocumentPaper = 256001,
+        ModifyTemplateDocumentPaper = 256005,
+        DeleteTemplateDocumentPaper = 256009,
 
         // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
 

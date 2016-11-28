@@ -4286,7 +4286,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
-                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
+                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Where(x=>x.Id>=0);
                 if (positionId?.Any() ?? false)
                     qry = qry.Where(x => positionId.Contains(x.Id));
                 var posUpd = qry.Select(x => new
