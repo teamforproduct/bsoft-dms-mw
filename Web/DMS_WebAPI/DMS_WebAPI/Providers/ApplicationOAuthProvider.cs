@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using BL.Logic.AdminCore.Interfaces;
 using System.Web.Http;
 using System.Net;
+using BL.CrossCutting.Interfaces;
+using BL.Model.Enums;
 
 namespace DMS_WebAPI.Providers
 {
@@ -87,16 +89,23 @@ namespace DMS_WebAPI.Providers
 
             ApplicationUser user = await userManager.FindAsync(userName, context.Password);
 
-            if (user == null)
-            {
 
-                var languageService = DmsResolver.Current.Get<ILanguages>();
-                var errText = languageService.GetTranslation("##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##");
+            // Эти исключения отлавливает Application_Error в Global.asax
+            if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
-                // pss локализация
-                context.SetError("invalid_grant", errText);
-                return;
-            }
+            //{
+                //var languageService = DmsResolver.Current.Get<ILanguages>();
+                //var errText = languageService.GetTranslation("##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##");
+
+                //// pss локализация
+                //context.SetError("invalid_grant", errText);
+                //return;
+            //}
+
+            if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
+
+            //if (user.IsEmailConfirmRequired && !user.EmailConfirmed) throw new EmailConfirmRequiredAgentUser();
+
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);
@@ -145,27 +154,40 @@ namespace DMS_WebAPI.Providers
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
+                var webProc = new WebAPIDbProcess();
+
+                // Предполагаю, что один пользователь всегда привязан только к одному клиенту 
+                var client = webProc.GetClientByUser(userId);
+                if (client == null) throw new ClientIsNotFound();
+
+                // Предполагаю, что один пользователь всегда привязан только к одному серверу 
+                var server = webProc.GetServerByUser(userId, new BL.Model.WebAPI.IncomingModel.SetUserServer { ClientId = client.Id, ServerId = -1 });
+                if (server == null) throw new DatabaseIsNotFound();
+
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
                 ApplicationUser user = userManager.FindById(userId);
 
-                if (user.IsLockout)
-                {
-                    // Это исключение отлавливает Application_Error в Global.asax
-                    throw new UserIsDeactivated(user.UserName);
-                }
-
-                //if (user.IsEmailConfirmRequired && !user.EmailConfirmed)
-                //    throw new EmailConfirmRequiredAgentUser();
-
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                var mngContext = DmsResolver.Current.Get<UserContexts>();
+                //var clientCode = GetClientCodeFromBody(context.Request.Body);
 
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
 
-                var clientCode = GetClientCodeFromBody(context.Request.Body);
-                // Добавляю пользовательский контекст в коллекцию
-                var ctx = mngContext.Set(token, userId, clientCode, user.IsChangePasswordRequired);
+                // Создаю пользовательский контекст
+                var ctx = userContexts.Set(token, userId, client.Code, user.IsChangePasswordRequired);
+
+                // Добавляю в пользовательский контекст сервер
+                userContexts.Set(token, server, client.Id);
+
+                // Получаю информацию о браузере
+                string message = GetBrowswerInfo();
+                
+                var logger = DmsResolver.Current.Get<ILogger>();
+                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
+
+                // Добавляю в пользовательский сведения о браузере
+                userContexts.Set(token, loginLogId, message);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
             }
@@ -173,7 +195,22 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
+        private static string GetBrowswerInfo()
+        {
+            HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
+            var userAgent = HttpContext.Current.Request.UserAgent;
+            var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
+            var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
+            if (string.IsNullOrEmpty(ip))
+                ip = HttpContext.Current.Request.UserHostAddress;
+            var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
+            //{HttpContext.Current.Request.UserHostAddress}
+            //var js = new JavaScriptSerializer();
+            //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
+            //message += $"; {HttpContext.Current.Request.Headers["X-Real-IP"]}";
 
+            return message;
+        }
 
         public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
         {

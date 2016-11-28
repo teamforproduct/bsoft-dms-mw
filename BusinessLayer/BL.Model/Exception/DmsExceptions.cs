@@ -217,6 +217,13 @@ namespace BL.Model.Exception
         public UserAccessIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class UserNameOrPasswordIsIncorrect : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##";
+        public UserNameOrPasswordIsIncorrect() : base(_MESSAGE) { }
+        public UserNameOrPasswordIsIncorrect(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class UserIsDeactivated : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserIsDeactivated@l##";

@@ -167,10 +167,15 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { setUserServer.ClientId } })
-                                    .Select(x => x.ClientId);
+                var filterClients = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
+                if (setUserServer.ClientId > 0) filterClients.ClientIds = new List<int> { setUserServer.ClientId };
 
-                var userServers = GetUserServersQuery(dbContext, new FilterAspNetUserServers { UserIds = new List<string> { userId }, ServerIds = new List<int> { setUserServer.ServerId } });
+                var filterServers = new FilterAspNetUserServers { UserIds = new List<string> { userId } };
+                if (setUserServer.ServerId > 0) filterServers.ServerIds = new List<int> { setUserServer.ServerId };
+
+                var userClients = GetUserClientsQuery(dbContext, filterClients).Select(x => x.ClientId);
+
+                var userServers = GetUserServersQuery(dbContext, filterServers);
 
                 userServers = userServers.Where(x => userClients.Contains(x.ClientId));
 
@@ -608,12 +613,19 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public FrontAspNetClient GetClientByUser(string userId, int clientId)
+        public FrontAspNetClient GetClientByUser(string userId, int clientId = -1)
         {
             using (var dbContext = new ApplicationDbContext())
             {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { clientId } })
-                                    .AsQueryable();
+                var filter = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
+
+                if (clientId > 0)
+                {
+                    filter.ClientIds = new List<int> { clientId };
+                }
+
+                var userClients = GetUserClientsQuery(dbContext, filter).AsQueryable();
+
 
                 var itemsRes = from userClient in userClients
                                join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
@@ -809,7 +821,8 @@ namespace DMS_WebAPI.Utilities
             }
 
             // обновляю сотрудника 
-            tmpService.SetAgentUserUserId(ctx, new InternalDictionaryAgentUser {
+            tmpService.SetAgentUserUserId(ctx, new InternalDictionaryAgentUser
+            {
                 Id = tmpItem,
                 UserId = userId
             });

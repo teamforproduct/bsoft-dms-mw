@@ -247,7 +247,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public Employee GetUserForContext(IContext ctx, string userId)
+        public Employee GetEmployeeForContext(IContext ctx, string userId)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))

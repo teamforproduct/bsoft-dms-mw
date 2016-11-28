@@ -129,64 +129,64 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(null, this);
         }
 
-        /// <summary>
-        /// Получение списка доступных серверов
-        /// </summary>
-        /// <returns>список серверов</returns>
-        [Route("Servers")]
-        [HttpGet]
-        public IHttpActionResult GetServers()
-        {
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
+        ///// <summary>
+        ///// Получение списка доступных серверов
+        ///// </summary>
+        ///// <returns>список серверов</returns>
+        //[Route("Servers")]
+        //[HttpGet]
+        //public IHttpActionResult GetServers()
+        //{
+        //    var context = DmsResolver.Current.Get<UserContexts>().Get();
 
-            var dbProc = new WebAPIDbProcess();
+        //    var dbProc = new WebAPIDbProcess();
 
-            var servers = dbProc.GetServersByUser(context);
+        //    var servers = dbProc.GetServersByUser(context);
 
-            return new JsonResult(servers, this);
-        }
+        //    return new JsonResult(servers, this);
+        //}
 
-        /// <summary>
-        /// Установить сервер для использования
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("Servers")]
-        [HttpPost]
-        public async Task<IHttpActionResult> SetServers([FromBody]SetUserServer model)
-        {
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+        ///// <summary>
+        ///// Установить сервер для использования
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[Route("Servers")]
+        //[HttpPost]
+        //public async Task<IHttpActionResult> SetServers([FromBody]SetUserServer model)
+        //{
+        //    var mngContext = DmsResolver.Current.Get<UserContexts>();
 
 
 
-            var dbProc = new WebAPIDbProcess();
+        //    var dbProc = new WebAPIDbProcess();
 
-            // Получаю первый попавшийся сервер, в который сконфигурен пользователь
-            var db = dbProc.GetServerByUser(User.Identity.GetUserId(), model);
-            if (db == null)
-            {
-                throw new DatabaseIsNotFound();
-            }
+        //    // Получаю первый попавшийся сервер, в который сконфигурен пользователь
+        //    var db = dbProc.GetServerByUser(User.Identity.GetUserId(), model);
+        //    if (db == null)
+        //    {
+        //        throw new DatabaseIsNotFound();
+        //    }
 
-            mngContext.Set(db, model.ClientId);
-            var ctx = mngContext.Get();
+        //    mngContext.Set(db, model.ClientId);
+        //    var ctx = mngContext.Get();
 
-            var logger = DmsResolver.Current.Get<ILogger>();
-            HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
-            var userAgent = HttpContext.Current.Request.UserAgent;
-            var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
-            var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
-            if (string.IsNullOrEmpty(ip))
-                ip = HttpContext.Current.Request.UserHostAddress;
-            var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
-            //{HttpContext.Current.Request.UserHostAddress}
-            //var js = new JavaScriptSerializer();
-            //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
-            //message += $"; {HttpContext.Current.Request.Headers["X-Real-IP"]}";
-            var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
-            mngContext.Set(loginLogId, message);
-            return new JsonResult(null, this);
-        }
+        //    var logger = DmsResolver.Current.Get<ILogger>();
+        //    HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
+        //    var userAgent = HttpContext.Current.Request.UserAgent;
+        //    var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
+        //    var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
+        //    if (string.IsNullOrEmpty(ip))
+        //        ip = HttpContext.Current.Request.UserHostAddress;
+        //    var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
+        //    //{HttpContext.Current.Request.UserHostAddress}
+        //    //var js = new JavaScriptSerializer();
+        //    //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
+        //    //message += $"; {HttpContext.Current.Request.Headers["X-Real-IP"]}";
+        //    var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
+        //    mngContext.Set(loginLogId, message);
+        //    return new JsonResult(null, this);
+        //}
 
         /// <summary>
         /// Получение списка доступных клиентов для пользователя
