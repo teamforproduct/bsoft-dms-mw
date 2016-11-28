@@ -176,6 +176,7 @@
         ChangeLockout = 221002,
         KillSessions = 221003,
         ChangeLogin = 221004,
+        MustChangePassword = 221005,
 
         #endregion
 

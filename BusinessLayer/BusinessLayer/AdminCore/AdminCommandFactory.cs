@@ -148,6 +148,7 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.ChangeLockout:
                 case EnumAdminActions.KillSessions:
                 case EnumAdminActions.ChangeLogin:
+                case EnumAdminActions.MustChangePassword:
                     cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
                     break;
                 #endregion

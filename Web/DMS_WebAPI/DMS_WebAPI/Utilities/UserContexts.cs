@@ -409,6 +409,16 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void KillSessions(string userId)
+        {
+            var now = DateTime.UtcNow;
+            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            foreach (var key in keys)
+            {
+                _casheContexts.Remove(key);
+            }
+        }
+
         public void KillCurrentSession()
         {
             string token = Token.ToLower();

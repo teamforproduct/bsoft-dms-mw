@@ -514,6 +514,9 @@
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
     <Compile Include="Users\ChangeLockoutAgentUser.cs" />
+    <Compile Include="Users\MustChangePasswordAgentUser.cs" />
+    <Compile Include="Users\ConfirmRestorePasswordAgentUser.cs" />
+    <Compile Include="Users\RestorePasswordAgentUser.cs" />
     <Compile Include="Users\ChangeLoginAgentUser.cs" />
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />
