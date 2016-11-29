@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Infrastructure
             {
                 // stores the error message
                 string errorMessage = string.Empty;
-                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("o") + "\r\n";
+                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
                 errorMessage += $"URL: {url}\r\n";
                 //errorMessage += $"Message:{ex.Message}\r\n";
