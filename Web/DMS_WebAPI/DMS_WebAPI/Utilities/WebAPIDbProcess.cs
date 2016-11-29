@@ -799,8 +799,10 @@ namespace DMS_WebAPI.Utilities
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             string userId = string.Empty;
+            string userName = $"Client_{ctx.CurrentClientId}_{model.Login}";
+
             // Проверяю не используется ли логин
-            if (ExistsUser(model.Login)) throw new UserNameAlreadyExists(model.Login);
+            if (ExistsUser(userName)) throw new UserNameAlreadyExists(model.Login);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -831,11 +833,11 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public bool ExistsUser(string email)
+        public bool ExistsUser(string userName)
         {
             var owinContext = HttpContext.Current.Request.GetOwinContext();
             var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-            return userManager.FindByName(email) != null;
+            return userManager.FindByName(userName) != null;
         }
 
         public string AddUser(AddWebUser model)

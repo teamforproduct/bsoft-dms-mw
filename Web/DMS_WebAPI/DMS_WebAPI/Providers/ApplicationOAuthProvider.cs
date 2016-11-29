@@ -257,7 +257,7 @@ namespace DMS_WebAPI.Providers
                 var dic = HttpUtility.ParseQueryString(bodyStr);
 
                 // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
-                clientCode = dic["ClientCode"] ?? string.Empty;
+                clientCode = dic["client_id"] ?? string.Empty; //ClientCode
 
             }
             catch (Exception ex) { }
