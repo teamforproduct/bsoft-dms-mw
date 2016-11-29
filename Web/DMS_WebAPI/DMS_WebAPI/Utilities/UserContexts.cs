@@ -71,6 +71,8 @@ namespace DMS_WebAPI.Utilities
             return res;
         }
 
+       
+
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
@@ -140,7 +142,33 @@ namespace DMS_WebAPI.Utilities
                 throw new Exception();
             }
         }
+
+        private IContext GetInternal(string token)
+        {
+
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var storeInfo = _casheContexts[token];
+
+            return (IContext)storeInfo.StoreObject;
+        }
+
+        private void KeepAlive(string token)
+        {
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var storeInfo = _casheContexts[token];
+            // KeepAlive: Продление жизни пользовательского контекста
+            storeInfo.LastUsage = DateTime.UtcNow;
+        }
         
+
         /// <summary>
         /// Формирование пользовательского контекста. 
         /// Этап №1
@@ -176,26 +204,23 @@ namespace DMS_WebAPI.Utilities
             throw new ArgumentException();
         }
 
+
+
         /// <summary>
         /// Формирование пользовательского контекста. 
         /// Этап №2
         /// Добавляет к существующему пользовательскому контексту доступные лицензии, указанную базу, профиль пользователя
         /// </summary>
+        /// <param name="token">new server parameters</param>
         /// <param name="db">new server parameters</param>
         /// <param name="clientId">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public void Set(DatabaseModel db, int clientId)
+        public void Set(string token, DatabaseModel db, int clientId)
         {
-            string token = Token.ToLower();
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
+            token = token.ToLower();
 
-            var storeInfo = _casheContexts[token];
-
-            var context = (IContext)storeInfo.StoreObject;
+            var context = GetInternal(token);
 
             var dbProc = new WebAPIDbProcess();
             context.ClientLicence = dbProc.GetClientLicenceActive(clientId);
@@ -204,27 +229,24 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, clientId, new List<DatabaseModel> { db });
 
-            // KeepAlive: Продление жизни пользовательского контекста
-            storeInfo.LastUsage = DateTime.UtcNow;
-
             context.CurrentClientId = clientId;
 
             context.CurrentDB = db;
 
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetUserForContext(context, context.CurrentEmployee.UserId);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.CurrentEmployee.UserId);
 
             if (agentUser != null)
             {
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    KillCurrentSession();
+                    KillCurrentSession(token);
                     throw new UserIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    KillCurrentSession();
+                    KillCurrentSession(token);
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
@@ -237,29 +259,29 @@ namespace DMS_WebAPI.Utilities
                 throw new UserAccessIsDenied();
             }
 
+            KeepAlive(token);
+
         }
 
         /// <summary>
         /// Формирование пользовательского контекста. 
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
+        /// <param name="token">new server parameters</param>
         /// <param name="db">new server parameters</param>
         /// <param name="clientId">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public void Set(int? loginLogId, string loginLogInfo)
+        public void Set(string token, int? loginLogId, string loginLogInfo)
         {
-            string token = Token.ToLower();
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
+            token = token.ToLower();
 
-            var storeInfo = _casheContexts[token];
+            var context = GetInternal(token);
 
-            var context = (IContext)storeInfo.StoreObject;
             context.LoginLogId = loginLogId;
             context.LoginLogInfo = loginLogInfo;
+
+            KeepAlive(token);
         }
 
         /// <summary>
@@ -271,18 +293,10 @@ namespace DMS_WebAPI.Utilities
         /// <param name="positionsIdList"></param>
         public void SetUserPositions(string token, List<int> positionsIdList)
         {
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
-
-            var storeInfo = _casheContexts[token];
-
-            // KeepAlive: Продление жизни пользовательского контекста
-            storeInfo.LastUsage = DateTime.UtcNow;
-            var context = (IContext)storeInfo.StoreObject;
+            var context = GetInternal(token);
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+            KeepAlive(token);
         }
 
         /// <summary>
@@ -419,9 +433,13 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void KillCurrentSession()
+        public void KillCurrentSession(string token = "")
         {
-            string token = Token.ToLower();
+            if (string.IsNullOrEmpty(token))
+            { token = Token.ToLower(); }
+            else
+            { token = token.ToLower(); }
+
             _casheContexts.Remove(token);
         }
 

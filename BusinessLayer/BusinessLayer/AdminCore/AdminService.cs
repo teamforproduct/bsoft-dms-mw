@@ -85,9 +85,9 @@ namespace BL.Logic.AdminCore
             accList.Add(key, nso);
             return nlst;
         }
-        public Employee GetUserForContext(IContext context, string userId)
+        public Employee GetEmployeeForContext(IContext context, string userId)
         {
-            return _adminDb.GetUserForContext(context, userId);
+            return _adminDb.GetEmployeeForContext(context, userId);
         }
 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
