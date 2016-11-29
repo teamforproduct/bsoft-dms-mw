@@ -2093,7 +2093,7 @@ namespace BL.Database.Common
                     {
                         Id = x.DoneEvent.Id,
                         DocumentId = x.DoneEvent.DocumentId,
-                        EventType = x.SendEvent.EventTypeId,
+                        EventType = x.DoneEvent.EventTypeId,
                         EventTypeName = x.DoneEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name,
                         DueDate = null,
@@ -2609,6 +2609,7 @@ namespace BL.Database.Common
                                         : new FrontDocumentEvent
                                         {
                                             Id = y.StartEvent.Id,
+                                            EventType = y.StartEvent.EventTypeId,
                                             EventTypeName = y.StartEvent.EventType.Name,
                                             Date = y.StartEvent.Date,
                                             SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name,
@@ -2622,6 +2623,7 @@ namespace BL.Database.Common
                                         : new FrontDocumentEvent
                                         {
                                             Id = y.CloseEvent.Id,
+                                            EventType = y.CloseEvent.EventTypeId,
                                             EventTypeName = y.CloseEvent.EventType.Name,
                                             Date = y.CloseEvent.Date,
                                             SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name,
