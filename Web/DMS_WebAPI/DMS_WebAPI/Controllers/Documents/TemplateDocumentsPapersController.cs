@@ -67,8 +67,8 @@ namespace DMS_WebAPI.Controllers.Documents
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentPaper, ctx, model);
-            return Get((int)tmpTemplate);
+            tmpDocProc.ExecuteAction(EnumDocumentActions.ModifyTemplateDocumentPaper, ctx, model);
+            return Get(id);
         }
 
         /// <summary>
