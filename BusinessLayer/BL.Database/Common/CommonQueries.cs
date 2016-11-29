@@ -2065,6 +2065,7 @@ namespace BL.Database.Common
                     {
                         Id = x.SendEvent.Id,
                         DocumentId = x.SendEvent.DocumentId,
+                        EventType = x.SendEvent.EventTypeId,
                         EventTypeName = x.SendEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
                         DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
@@ -2092,6 +2093,7 @@ namespace BL.Database.Common
                     {
                         Id = x.DoneEvent.Id,
                         DocumentId = x.DoneEvent.DocumentId,
+                        EventType = x.SendEvent.EventTypeId,
                         EventTypeName = x.DoneEvent.EventType.Name,
                         TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name,
                         DueDate = null,
