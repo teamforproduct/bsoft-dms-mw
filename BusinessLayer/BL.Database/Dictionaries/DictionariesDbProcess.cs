@@ -5749,7 +5749,7 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
-
+                qry = qry.OrderBy(x => x.Code);
                 var res = qry.Select(x => new FrontDictionarySendType
                 {
                     Id = x.Id,
@@ -5758,7 +5758,7 @@ namespace BL.Database.Dictionaries
                     IsImportant = x.IsImportant,
                     SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name,
-                    IsExternal = x.Id == 45,
+                    IsExternal = x.Id == (int)EnumSendTypes.SendForInformationExternal,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
                 }).ToList();
