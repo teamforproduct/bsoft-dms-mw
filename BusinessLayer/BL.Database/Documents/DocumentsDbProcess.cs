@@ -428,6 +428,10 @@ namespace BL.Database.Documents
                 {
                     res.LinkedDocuments = CommonQueries.GetLinkedDocuments(ctx, dbContext, res.LinkId.Value);
                     var linkedDocumentsCount = res.LinkedDocuments.Count();
+                    if (linkedDocumentsCount > 1)
+                    {
+                        res.LinkedDocuments = res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x=>x.DocumentDate);
+                    }
                     res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
                     if (filter?.DocumentsIdForAIP?.Count() > 0)
                     {
