@@ -31,6 +31,7 @@ namespace BL.Database.DBModel.Dictionary
         public int Order { get; set; }
         public int DepartmentId { get; set; }
         public Nullable<int> ExecutorAgentId { get; set; }
+        public int? PositionExecutorTypeId { get; set; }
         public Nullable<int> MainExecutorAgentId { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
@@ -44,6 +45,8 @@ namespace BL.Database.DBModel.Dictionary
         public virtual DictionaryAgents ExecutorAgent { get; set; }
         [ForeignKey("MainExecutorAgentId")]
         public virtual DictionaryAgents MainExecutorAgent { get; set; }
+        [ForeignKey("PositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
         [ForeignKey("SourcePositionId")]
         public virtual ICollection<AdminSubordinations> SourcePositionSubordinations { get; set; }
         [ForeignKey("TargetPositionId")]

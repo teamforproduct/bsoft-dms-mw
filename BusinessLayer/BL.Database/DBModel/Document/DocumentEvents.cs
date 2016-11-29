@@ -43,11 +43,13 @@ namespace BL.Database.DBModel.Document
         [Index("IX_SourcePositionId",1)]
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
+        public int? SourcePositionExecutorTypeId { get; set; }
         public int? SourceAgentId { get; set; }
         [Index("IX_ReadDate", 2)]
         [Index("IX_TargetPositionId",1)]
         public Nullable<int> TargetPositionId { get; set; }
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionExecutorTypeId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
 
         [Index("IX_IsAvailableWithinTask", 1)]
@@ -85,12 +87,16 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions SourcePosition { get; set; }
         [ForeignKey("SourcePositionExecutorAgentId")]
         public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
+        [ForeignKey("SourcePositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
         [ForeignKey("SourceAgentId")]
         public virtual DictionaryAgents SourceAgent { get; set; }
         [ForeignKey("TargetPositionId")]
         public virtual DictionaryPositions TargetPosition { get; set; }
         [ForeignKey("TargetPositionExecutorAgentId")]
         public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
+        [ForeignKey("TargetPositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
         [ForeignKey("TargetAgentId")]
         public virtual DictionaryAgents TargetAgent { get; set; }
         [ForeignKey("ReadAgentId")]
