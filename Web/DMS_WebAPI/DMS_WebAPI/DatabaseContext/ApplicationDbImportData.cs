@@ -56,9 +56,13 @@ namespace DMS_WebAPI.Models
             var f = GetLabelsFromEnums();
             f.AddRange(GetLabelsFromExceptions());
 
-            var lang = new Languages();
+            var languages = new Languages();
 
-            var d = lang.GetLanguageValues(570).Select(x => x.Label).ToList();
+            var lang = languages.GetLanguages(new BL.Model.AdminCore.FilterModel.FilterAdminLanguage { IsDefault = true }).FirstOrDefault();
+
+            if (lang == null) throw new Exception("Не установлен язык по умолчанию");
+
+            var d = languages.GetLanguageValues(lang.FileName).Select(x => x.Label).ToList();
 
             var toAdd = new List<string>();
             var toRem = new List<string>();

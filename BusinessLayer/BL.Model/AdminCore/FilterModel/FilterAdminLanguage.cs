@@ -6,5 +6,6 @@ namespace BL.Model.AdminCore.FilterModel
     {
         public List<int> IDs { get; set; }
         public string Code { get; set; }
+        public bool? IsDefault { get; set; }
     }
 }

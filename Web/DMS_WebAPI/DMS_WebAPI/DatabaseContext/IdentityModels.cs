@@ -77,7 +77,7 @@ namespace DMS_WebAPI.Models
         }
 
         public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
-        public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
+        //public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
         public virtual DbSet<AdminServers> AdminServersSet { get; set; }
         public virtual DbSet<AspNetClients> AspNetClientsSet { get; set; }
         public virtual DbSet<AspNetClientLicences> AspNetClientLicencesSet { get; set; }

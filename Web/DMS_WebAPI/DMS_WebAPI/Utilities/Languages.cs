@@ -105,6 +105,11 @@ namespace DMS_WebAPI.Utilities
                     languageValues = languageValues.Where(x => x.Code == filter.Code);
                 }
 
+                if (filter.IsDefault.HasValue)
+                {
+                    languageValues = languageValues.Where(x => x.IsDefault == filter.IsDefault);
+                }
+
             }
 
             return languageValues.ToList();
@@ -302,6 +307,7 @@ namespace DMS_WebAPI.Utilities
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
+                    FileName = x.FileName,
                     IsDefault = x.IsDefault
                 }).ToList();
 
@@ -319,7 +325,9 @@ namespace DMS_WebAPI.Utilities
             foreach (var item in res.Languages)
             {
                 
-                var list = GetLanguageValues( item.Id);
+                var list = GetLanguageValues( item.FileName).ToList();
+
+                list.ForEach(x => x.LanguageId = item.Id);
 
                 res.LanguageValues.AddRange(list);
             }
@@ -327,43 +335,10 @@ namespace DMS_WebAPI.Utilities
             return res;
         }
 
-        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(int languageId)
+        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(string fileName)
         {
 
-            // ХАЛЯВА
-            var filePath = @"";
-            switch (languageId)
-            {
-                case 45: //English
-                    filePath += @"messages_en_US.properties";
-                    break;
-                case 740: //Polszczyzna
-                    filePath += @"messages_pl_PL.properties";
-                    break;
-                case 90: //Беларуский
-                    filePath += @"messages_be_BY.properties";
-                    break;
-                case 481: // Deutsch
-                    filePath += @"messages_de_DE.properties";
-                    break;
-                case 745: //Francais
-                    filePath += @"messages_fr_FR.properties";
-                    break;
-                case 570: //Русский
-                    filePath += @"messages_ru_RU.properties";
-                    break;
-                case 720: //Українська
-                    filePath += @"messages_uk_UA.properties";
-                    break;
-                case 790: //Cestina
-                    filePath += @"messages_cs_CZ.properties";
-                    break;
-                default:
-                    filePath += @"messages_ru_RU.properties";
-                    break;
-            }
-
-            filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "LanguageValues", filePath);
+            var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "LanguageValues", fileName);
 
             //------------------------------------------------------
 
@@ -410,7 +385,7 @@ namespace DMS_WebAPI.Utilities
                 list.Add(new InternalAdminLanguageValue()
                 {
                     Id = -1,
-                    LanguageId = languageId,
+                    //LanguageId = languageId,
                     Label = label,
                     Value = value
                 });

@@ -9,7 +9,7 @@ namespace DMS_WebAPI.DBModel
     {
         public AdminLanguages()
         {
-            this.LanguageValues = new HashSet<AdminLanguageValues>();
+            //this.LanguageValues = new HashSet<AdminLanguageValues>();
         }
         /// <summary>
         /// Цифровой код языка
@@ -19,23 +19,21 @@ namespace DMS_WebAPI.DBModel
         /// <summary>
         /// Язык ISO 639-1
         /// </summary>
-        [MaxLength(2000)]
+        [MaxLength(200)]
         public string Code { get; set; }
         
         /// <summary>
         /// Язык
         /// </summary>
-        [MaxLength(2000)]
+        [MaxLength(200)]
         public string Name { get; set; }
+
+        [MaxLength(200)]
+        [Index("IX_FileName", 1, IsUnique = true)]
+        public string FileName { get; set; }
+
         public bool IsDefault { get; set; }
 
-        /// <summary>
-        /// Язык
-        /// </summary>
-        //[MaxLength(2000)]
-        //public string FileName { get; set; }
-
-
-        public virtual ICollection<AdminLanguageValues> LanguageValues { get; set; }
+        //public virtual ICollection<AdminLanguageValues> LanguageValues { get; set; }
     }
 }
