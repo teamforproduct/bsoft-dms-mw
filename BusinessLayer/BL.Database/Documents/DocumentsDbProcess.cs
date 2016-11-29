@@ -993,10 +993,10 @@ namespace BL.Database.Documents
                                 PropertyValues = document.Properties
                             });
                     }
-
-                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
-                    CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
                     dbContext.SaveChanges();
+
+                    CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
+                    CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                     transaction.Complete();
                 }
             }
@@ -1056,8 +1056,9 @@ namespace BL.Database.Documents
 
                     dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Id == id));
 
-                    CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
                     dbContext.SaveChanges();
+
+                    CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
                     transaction.Complete();
                 }
             }
@@ -1248,8 +1249,9 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == document.Id && x.EventTypeId == (int)EnumEventTypes.Registered));
                 }
 
-                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                 transaction.Complete();
             }
         }

@@ -86,9 +86,9 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgent(context, model);
 
                 dbContext.DictionaryAgentsSet.Add(dbModel);
+                dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgents, EnumOperationType.AddNew);
-                dbContext.SaveChanges();
                 model.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -104,10 +104,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentsSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                CommonQueries.AddFullTextCashInfo(dbContext, agent.Id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, agent.Id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -127,9 +127,10 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
 
-                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 //entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 transaction.Complete();
             }
 
@@ -154,8 +155,8 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).Where(x => x.AgentId == agentId)
                 );
                 dbContext.DictionaryAgentsSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, agentId, EnumObjects.DictionaryAgents, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, agentId, EnumObjects.DictionaryAgents, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -432,11 +433,9 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
 
                 dbContext.DictionaryAgentPersonsSet.Add(dbModel);
-
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.AddNew);
-
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return person.Id;
@@ -455,11 +454,10 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentPersonsSet.Attach(dbModel);
                 dbContext.SaveChanges();
                 var entity = dbContext.Entry(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
-
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
                 transaction.Complete();
 
             }
@@ -473,8 +471,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == person.Id);
                 dbContext.DictionaryAgentPersonsSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
 
                 DeleteAgentIfNoAny(context, new List<int>() { person.Id });
 
@@ -765,9 +764,9 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentEmployee(context, employee);
                 dbContext.DictionaryAgentEmployeesSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return employee.Id;
@@ -785,12 +784,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentEmployeesSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Update);
-
                 entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -1146,8 +1143,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentUser(context, User);
                 dbContext.DictionaryAgentUsersSet.Add(dbModel);
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+
+                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.AddNew);
                 transaction.Complete();
                 return User.Id;
             }
@@ -1162,13 +1160,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentUsersSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Update);
-
                 entity.State = System.Data.Entity.EntityState.Modified;
-
                 dbContext.SaveChanges();
 
+                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -1180,8 +1175,8 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = dbContext.DictionaryAgentUsersSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == User.Id);
                 dbContext.DictionaryAgentUsersSet.Remove(dbModel);
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -1340,12 +1335,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentAddressesSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.Update);
-
-                entity.State = System.Data.Entity.EntityState.Modified;
-
-                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -1357,8 +1350,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == addr.Id);
                 dbContext.DictionaryAgentAddressesSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -1508,8 +1502,9 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAddressType(context, addrType);
 
                 dbContext.DictionaryAddressTypesSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.AddNew);
                 addrType.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -1531,8 +1526,9 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.IsActive).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Update);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -1693,11 +1689,11 @@ namespace BL.Database.Dictionaries
 
                 DictionaryCompanies dc = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
                 dbContext.DictionaryAgentClientCompaniesSet.Add(dc);
-                CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
 
                 company.Id = dc.Id;
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return company.Id;
@@ -1714,10 +1710,10 @@ namespace BL.Database.Dictionaries
 
                 DictionaryCompanies drj = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
                 dbContext.DictionaryAgentClientCompaniesSet.Attach(drj);
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Update);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -1731,12 +1727,12 @@ namespace BL.Database.Dictionaries
 
                 if (departments.Count > 0) DeleteDepartments(context, departments);
 
-                dbContext.DictionaryAgentClientCompaniesSet.RemoveRange(
-                    dbContext.DictionaryAgentClientCompaniesSet.
-                    Where(x => x.ClientId == context.CurrentClientId).
-                    Where(x => list.Contains(x.Id)));
+                dbContext.DictionaryAgentClientCompaniesSet.
+                Where(x => x.ClientId == context.CurrentClientId).
+                Where(x => list.Contains(x.Id)).
+                Delete();
+
                 CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Delete);
-                dbContext.SaveChanges();
 
                 DeleteAgentIfNoAny(context, list);
 
@@ -1968,9 +1964,9 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentCompany(context, company);
 
                 dbContext.DictionaryAgentCompaniesSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return company.Id;
@@ -1988,11 +1984,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentCompaniesSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.Update);
                 transaction.Complete();
 
             }
@@ -2007,8 +2002,9 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentCompaniesSet.RemoveRange(dbContext.DictionaryAgentCompaniesSet.
                 Where(x => x.Agent.ClientId == context.CurrentClientId).
                 Where(x => list.Contains(x.Id)));
-                CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryAgentCompanies, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryAgentCompanies, EnumOperationType.Delete);
 
                 DeleteAgentIfNoAny(context, list);
 
@@ -2294,11 +2290,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentBanksSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -2310,8 +2305,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == bank.Id);
                 dbContext.DictionaryAgentBanksSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.Delete);
 
                 DeleteAgentIfNoAny(context, new List<int>() { bank.Id });
 
@@ -2563,10 +2559,10 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentAccountsSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Update);
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -2578,8 +2574,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == account.Id);
                 dbContext.DictionaryAgentAccountsSet.Remove(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -2592,9 +2589,9 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentAccount(context, account);
 
                 dbContext.DictionaryAgentAccountsSet.Add(dbModel);
+                dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.AddNew);
-                dbContext.SaveChanges();
                 transaction.Complete();
                 return account.Id;
             }
@@ -2833,8 +2830,9 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.IsActive).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.Update);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -2845,8 +2843,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == contactType.Id);
                 dbContext.DictionaryContactTypesSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -2869,9 +2868,10 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbContactType(context, model);
 
                 dbContext.DictionaryContactTypesSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -2980,9 +2980,10 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbContact(context, contact);
 
                 dbContext.DictionaryAgentContactsSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 contact.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -2998,8 +2999,9 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentContactsSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.State = System.Data.Entity.EntityState.Modified;
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.Update);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -3010,8 +3012,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == contact.Id);
                 dbContext.DictionaryAgentContactsSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContacts, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContacts, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -3218,9 +3221,10 @@ namespace BL.Database.Dictionaries
             {
                 var dd = DictionaryModelConverter.GetDbDepartments(context, department);
                 dbContext.DictionaryDepartmentsSet.Add(dd);
-                CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+
                 department.Id = dd.Id;
+                CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dd.Id;
             }
@@ -3233,11 +3237,10 @@ namespace BL.Database.Dictionaries
             {
                 var dd = DictionaryModelConverter.GetDbDepartments(context, department);
                 dbContext.DictionaryDepartmentsSet.Attach(dd);
+                dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.Update);
-                dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
-
-                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -3273,11 +3276,12 @@ namespace BL.Database.Dictionaries
 
                     if (positions.Count() > 0) DeletePositions(context, positions.ToList());
 
-                    dbContext.DictionaryDepartmentsSet.RemoveRange(dbContext.DictionaryDepartmentsSet.
-                        Where(x => x.Company.ClientId == context.CurrentClientId).
-                        Where(x => list.Contains(x.Id)));
+                    dbContext.DictionaryDepartmentsSet
+                        .Where(x => x.Company.ClientId == context.CurrentClientId)
+                        .Where(x => list.Contains(x.Id))
+                        .Delete();
+
                     CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryDepartments, EnumOperationType.Delete);
-                    dbContext.SaveChanges();
 
                     transaction.Complete();
                 }
@@ -3690,9 +3694,10 @@ namespace BL.Database.Dictionaries
             {
                 var dds = DictionaryModelConverter.GetDbDocumentSubject(context, docSubject);
                 dbContext.DictionaryDocumentSubjectsSet.Add(dds);
-                CommonQueries.AddFullTextCashInfo(dbContext, dds.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 docSubject.Id = dds.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dds.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dds.Id;
             }
@@ -3735,9 +3740,9 @@ namespace BL.Database.Dictionaries
                 //entity.Property(x => x.LastChangeUserId).IsModified = true;
                 //entity.Property(x => x.IsActive).IsModified = true;
                 //entity.Property(x => x.Name).IsModified = true;
+                dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dds.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.Update);
-                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -3749,8 +3754,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docSubject.Id);
                 dbContext.DictionaryDocumentSubjectsSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentSubjects, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -3898,9 +3904,10 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbDocumentType(context, docType);
                 dbContext.DictionaryDocumentTypesSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+
                 docType.Id = dbModel.Id;
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -3913,10 +3920,10 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbDocumentType(context, docType);
                 dbContext.DictionaryDocumentTypesSet.Attach(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Update);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
-
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -3928,8 +3935,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docType.Id);
                 dbContext.DictionaryDocumentTypesSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -4233,10 +4241,11 @@ namespace BL.Database.Dictionaries
             {
                 var dd = DictionaryModelConverter.GetDbPosition(context, position);
                 dbContext.DictionaryPositionsSet.Add(dd);
-                CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 UpdatePositionExecutor(context, new List<int> { dd.Id });
                 position.Id = dd.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dd.Id;
             }
@@ -4260,9 +4269,12 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.Order).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.Update);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.Update);
+
                 UpdatePositionExecutor(context, new List<int> { position.Id });
+
                 transaction.Complete();
             }
         }
@@ -4286,7 +4298,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
-                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Where(x=>x.Id>=0);
+                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Where(x => x.Id >= 0);
                 if (positionId?.Any() ?? false)
                     qry = qry.Where(x => positionId.Contains(x.Id));
                 var posUpd = qry.Select(x => new
@@ -4316,6 +4328,8 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
+                //TODO переписать на вызов родных делитов с AddFullTextCashInfo!!!
+
                 // Удаляю настройку ролей для должности
                 #region [+] AdminPositionRoles ...
                 var filterPositionRoles = PredicateBuilder.False<AdminPositionRoles>();
@@ -4371,12 +4385,12 @@ namespace BL.Database.Dictionaries
                 #endregion
 
                 // удаляю саму должность
-                dbContext.DictionaryPositionsSet.RemoveRange(dbContext.DictionaryPositionsSet.
-                    Where(x => x.Department.Company.ClientId == context.CurrentClientId).
-                    Where(x => list.Contains(x.Id)));
-                CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryPositions, EnumOperationType.Delete);
-                dbContext.SaveChanges();
+                dbContext.DictionaryPositionsSet
+                    .Where(x => x.Department.Company.ClientId == context.CurrentClientId)
+                    .Where(x => list.Contains(x.Id))
+                    .Delete();
 
+                CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryPositions, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -4905,8 +4919,8 @@ namespace BL.Database.Dictionaries
             {
                 DictionaryPositionExecutors dc = DictionaryModelConverter.GetDbExecutor(context, executor);
                 dbContext.DictionaryPositionExecutorsSet.Add(dc);
-                CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 executor.Id = dc.Id;
                 UpdatePositionExecutor(context, new List<int> { dc.PositionId });
                 transaction.Complete();
@@ -4921,9 +4935,9 @@ namespace BL.Database.Dictionaries
             {
                 DictionaryPositionExecutors drj = DictionaryModelConverter.GetDbExecutor(context, executor);
                 dbContext.DictionaryPositionExecutorsSet.Attach(drj);
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Update);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Update);
                 UpdatePositionExecutor(context, new List<int> { executor.PositionId });
                 transaction.Complete();
             }
@@ -4934,12 +4948,12 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
-                dbContext.DictionaryPositionExecutorsSet.RemoveRange(dbContext.DictionaryPositionExecutorsSet.
-                    Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId).
-                    Where(x => list.Contains(x.Id)));
-                CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
-                dbContext.SaveChanges();
+                dbContext.DictionaryPositionExecutorsSet
+                    .Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId)
+                    .Where(x => list.Contains(x.Id))
+                    .Delete();
                 UpdatePositionExecutor(context, list);
+                CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -5341,9 +5355,9 @@ namespace BL.Database.Dictionaries
             {
                 DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
                 dbContext.DictionaryRegistrationJournalsSet.Add(drj);
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 regJournal.Id = drj.Id;
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
                 transaction.Complete();
                 return drj.Id;
             }
@@ -5356,9 +5370,10 @@ namespace BL.Database.Dictionaries
             {
                 DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
                 dbContext.DictionaryRegistrationJournalsSet.Attach(drj);
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -5370,8 +5385,9 @@ namespace BL.Database.Dictionaries
             {
                 var drj = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docSubject.Id);
                 dbContext.DictionaryRegistrationJournalsSet.Remove(drj);
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -5866,9 +5882,10 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbStandartSendListContent(context, content);
                 dbContext.DictionaryStandartSendListContentsSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 content.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -5881,11 +5898,11 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbStandartSendListContent(context, content);
                 dbContext.DictionaryStandartSendListContentsSet.Attach(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Update);
                 var entity = dbContext.Entry(dbModel);
                 entity.State = System.Data.Entity.EntityState.Modified;
-
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -5897,8 +5914,9 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == content.Id);
                 dbContext.DictionaryStandartSendListContentsSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -5998,9 +6016,10 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbStandartSendList(context, model);
 
                 dbContext.DictionaryStandartSendListsSet.Add(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -6014,11 +6033,11 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbStandartSendList(context, model);
 
                 dbContext.DictionaryStandartSendListsSet.Attach(dbModel);
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Update);
                 var entity = dbContext.Entry(dbModel);
                 entity.State = System.Data.Entity.EntityState.Modified;
-
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -6033,8 +6052,9 @@ namespace BL.Database.Dictionaries
 
                 var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == list.Id);
                 dbContext.DictionaryStandartSendListsSet.Remove(ddt);
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
