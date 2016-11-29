@@ -2721,7 +2721,11 @@ namespace BL.Database.Common
                 OperationType = (int)operationType
             };
 
+
             dbContext.FullTextIndexCashSet.Add(cashInfo);
+
+            dbContext.SaveChanges();
+
         }
 
         public static void AddFullTextCashInfo(DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
@@ -2736,6 +2740,8 @@ namespace BL.Database.Common
                 }).ToList();
 
             dbContext.FullTextIndexCashSet.AddRange(cashInfos);
+
+            dbContext.SaveChanges();
         }
         #endregion
 
