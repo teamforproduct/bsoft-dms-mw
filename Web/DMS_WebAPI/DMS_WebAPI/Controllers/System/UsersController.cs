@@ -584,7 +584,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [Route("SetMustChangePassword")]
         [HttpPost]
-        public async Task<IHttpActionResult> SetMustChangePasswordAgentUser(ChangePasswordAgentUser model)
+        public async Task<IHttpActionResult> SetMustChangePasswordAgentUser(MustChangePasswordAgentUser model)
         {
             if (!ModelState.IsValid)
             {
@@ -606,7 +606,7 @@ namespace DMS_WebAPI.Controllers
             if (user == null)
                 throw new UserNameIsNotDefined();
 
-            user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
+            user.IsChangePasswordRequired = model.MustChangePassword;//true;
 
             var result = await userManager.UpdateAsync(user);
 
