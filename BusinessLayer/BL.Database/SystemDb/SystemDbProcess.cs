@@ -412,6 +412,7 @@ namespace BL.Database.SystemDb
                     {
                         qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
                     }
+                    qry = qry.OrderBy(x => x.Order);
                     var res = qry.Select(x => new BaseSystemUIElement
                     {
                         Id = x.Id,

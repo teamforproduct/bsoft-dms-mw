@@ -39,6 +39,7 @@ namespace BL.Database.DBModel.System
         public string ValueDescriptionFieldCode { get; set; }
         [MaxLength(2000)]
         public string Format { get; set; }
+        public int Order { get; set; }
         [ForeignKey("ActionId")]
         public virtual SystemActions Action { get; set; }
         [ForeignKey("ValueTypeId")]
