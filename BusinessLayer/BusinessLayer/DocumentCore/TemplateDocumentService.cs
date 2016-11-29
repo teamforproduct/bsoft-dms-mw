@@ -54,7 +54,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc)
         {
-            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "TemplateDocuments", ActionCode = "Modify" }).ToList();
+            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplateDocument } }).ToList();
             uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
 
             uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));

@@ -384,7 +384,20 @@ namespace BL.Database.SystemDb
                         var filterContains = PredicateBuilder.False<SystemUIElements>();
                         filterContains = filter.UIElementId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
-
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.ActionId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemUIElements>();
+                        filterContains = filter.ActionId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.ActionId == value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
+                    if (filter.ObjectId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<SystemUIElements>();
+                        filterContains = filter.ObjectId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
                         qry = qry.Where(filterContains);
                     }
                     if (!string.IsNullOrEmpty(filter.Code))
