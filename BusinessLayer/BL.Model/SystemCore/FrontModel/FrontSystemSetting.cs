@@ -47,6 +47,9 @@ namespace BL.Model.SystemCore.FrontModel
         /// </summary>
         public int OrderSettingType { get; set; }
 
+        [IgnoreDataMember]
+        public EnumValueTypes ValueType { get; set; }
+
         //public int? AgentId { get; set; }
     }
 }

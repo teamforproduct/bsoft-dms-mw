@@ -292,7 +292,8 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Key = x.Key,
-                    Value = (x.ValueTypeId == (int)EnumValueTypes.Password) ? null : x.Value,
+                    Value = x.Value,
+                    ValueType = (EnumValueTypes)x.ValueTypeId,
                     Name = x.Name,
                     Description = x.Description,
                     ValueTypeCode = x.ValueTypes.Code,
