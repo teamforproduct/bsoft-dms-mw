@@ -148,7 +148,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
 
                 //set indicator that full text for the client available
-                _settings.SaveSetting(ctx, SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
+                var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
+                systemSetting.Value = true.ToString();
+                _settings.SaveSetting(ctx, systemSetting);
                 md.IsFullTextInitialized = true;
             }
             catch (Exception ex)
