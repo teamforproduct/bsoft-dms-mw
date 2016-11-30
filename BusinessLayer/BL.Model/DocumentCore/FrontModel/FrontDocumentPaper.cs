@@ -24,15 +24,15 @@ namespace BL.Model.DocumentCore.FrontModel
         public string OwnerPositionName { get; set; }
         public string OwnerPositionExecutorNowAgentName { get; set; }
         public string OwnerPositionExecutorAgentPhoneNumber { get; set; }
-		
-        private DateTime?  _PaperPlanDate; 
-        public DateTime? PaperPlanDate { get { return _PaperPlanDate; } set { _PaperPlanDate=value.ToUTC(); } }
-		
-        private DateTime?  _PaperSendDate; 
-        public DateTime? PaperSendDate { get { return _PaperSendDate; } set { _PaperSendDate=value.ToUTC(); } }
-		
-        private DateTime?  _PaperRecieveDate; 
-        public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate=value.ToUTC(); } }
+
+        public DateTime? PaperPlanDate { get { return _PaperPlanDate; } set { _PaperPlanDate = value.ToUTC(); } }
+        private DateTime? _PaperPlanDate;
+
+        public DateTime? PaperSendDate { get { return _PaperSendDate; } set { _PaperSendDate = value.ToUTC(); } }
+        private DateTime? _PaperSendDate;
+
+        public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate = value.ToUTC(); } }
+        private DateTime? _PaperRecieveDate;
 
     }
 }

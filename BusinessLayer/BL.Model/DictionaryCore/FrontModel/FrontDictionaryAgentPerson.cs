@@ -48,8 +48,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        private DateTime?  _PassportDate; 
         public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
+        private DateTime?  _PassportDate; 
 
         /// <summary>
         /// Кем выдан паспорт
@@ -58,8 +58,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        private DateTime?  _BirthDate; 
         public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
+        private DateTime?  _BirthDate; 
 
 
         /// <summary>

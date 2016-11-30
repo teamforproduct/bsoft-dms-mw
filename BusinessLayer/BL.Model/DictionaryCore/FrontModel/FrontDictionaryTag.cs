@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// ОСНОВНОЙ. Справочник типов документов. 
     /// </summary>
-    public class FrontDictionaryTag : ModifyDictionaryTag 
+    public class FrontDictionaryTag : ModifyDictionaryTag
     {
         /// <summary>
         /// ID
@@ -18,11 +18,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string Color { get; set; }
         public string PositionName { get; set; }
         public int LastChangeUserId { get; set; }
-		
-        private DateTime  _LastChangeDate; 
-        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
-        
-		public string LastChangeUserName { get; set; }
+
+        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate = value.ToUTC(); } }
+        private DateTime _LastChangeDate;
+
+        public string LastChangeUserName { get; set; }
         public int? DocCount { get; set; }
 
     }

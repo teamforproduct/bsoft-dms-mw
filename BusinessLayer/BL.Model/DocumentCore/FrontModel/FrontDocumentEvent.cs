@@ -14,11 +14,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? EventType { get; set; }
         public string EventTypeName { get; set; }
 
-        private DateTime? _date { get; set; }
         public DateTime? Date { get { return _date; } set { _date = value.ToUTC(); } }
+        private DateTime? _date;
 
-        private DateTime? _createDate { get; set; }
         public DateTime? CreateDate { get { return _createDate; } set { _createDate = value.ToUTC(); } }
+        private DateTime? _createDate;
 
 
         public string Task { get; set; }
@@ -26,20 +26,20 @@ namespace BL.Model.DocumentCore.FrontModel
         public string Description { get; set; }
         public string AddDescription { get; set; }
         
-        private DateTime?  _DueDate; 
         public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
+        private DateTime?  _DueDate; 
         
-        private DateTime?  _CloseDate; 
         public DateTime? CloseDate { get { return _CloseDate; } set { _CloseDate=value.ToUTC(); } }
+        private DateTime?  _CloseDate; 
 		
         public bool? IsOnEvent { get; set; }
 
         
-        private DateTime?  _LastChangeDate; 
         public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        private DateTime?  _LastChangeDate; 
         
-        private DateTime?  _ReadDate; 
         public DateTime? ReadDate { get { return _ReadDate; } set { _ReadDate=value.ToUTC(); } }
+        private DateTime?  _ReadDate; 
 
         public string ReadAgentName { get; set; }
         public bool? IsRead { get; set; }
@@ -65,14 +65,14 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool? PaperIsCopy { get; set; }
         public int? PaperOrderNumber { get; set; }
         
-        private DateTime?  _PaperPlanDate; 
         public DateTime? PaperPlanDate { get { return _PaperPlanDate; } set { _PaperPlanDate=value.ToUTC(); } }
+        private DateTime?  _PaperPlanDate; 
         
-        private DateTime?  _PaperSendDate; 
         public DateTime? PaperSendDate { get { return _PaperSendDate; } set { _PaperSendDate=value.ToUTC(); } }
+        private DateTime?  _PaperSendDate; 
         
-        private DateTime?  _PaperRecieveDate; 
         public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate=value.ToUTC(); } }
+        private DateTime?  _PaperRecieveDate; 
 
         public string PaperPlanAgentName { get; set; }
         public string PaperSendAgentName { get; set; }

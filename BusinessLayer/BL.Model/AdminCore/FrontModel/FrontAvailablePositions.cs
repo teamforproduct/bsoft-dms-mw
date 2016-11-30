@@ -15,15 +15,15 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Дата начала исполнения ролей должности
         /// </summary>
-        private DateTime? _StartDate; 
         public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
+        private DateTime? _StartDate; 
 
 
         /// <summary>
         /// Дата окончания исполнения ролей должности
         /// </summary>
-        private DateTime? _EndDate; 
         public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
+        private DateTime? _EndDate; 
 
 
         /// <summary>

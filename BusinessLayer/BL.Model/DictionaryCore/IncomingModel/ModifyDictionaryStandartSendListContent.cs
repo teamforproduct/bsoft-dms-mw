@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -46,10 +47,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Комментарии
         /// </summary>
         public string Description { get; set; }
+
         /// <summary>
         /// Исполнить до (дата)
         /// </summary>
-        public DateTime? DueDate { get; set; }
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
+        private DateTime? _DueDate;
+		
         /// <summary>
         /// Срок исполнения (кол-во дней)
         /// </summary>

@@ -18,7 +18,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
 		
-        private DateTime?  _DocumentDate; 
         public DateTime? DocumentDate { get { return _DocumentDate; } set { _DocumentDate=value.ToUTC(); } }
+        private DateTime?  _DocumentDate; 
     }
 }

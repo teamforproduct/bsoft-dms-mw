@@ -92,8 +92,8 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Дата создания файла
         /// </summary>
-        private DateTime  _Date; 
         public DateTime Date { get { return _Date; } set { _Date=value.ToUTC(); } }
+        private DateTime  _Date; 
 		
         /// <summary>
         /// Признак, изменялся ли файл в хранищие извне
@@ -112,8 +112,8 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Дата последнего изменения записи
         /// </summary>
-        private DateTime  _LastChangeDate; 
         public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        private DateTime  _LastChangeDate; 
 		
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }

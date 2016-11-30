@@ -34,19 +34,19 @@ namespace BL.Model.EncryptionCore.FrontModel
         /// <summary>
         /// Дата внесения сертификата в систему
         /// </summary>
-        private DateTime  _CreateDate; 
-        public DateTime CreateDate { get { return _CreateDate; } set { _CreateDate=value.ToUTC(); } }
+        public DateTime CreateDate { get { return _CreateDate; } set { _CreateDate = value.ToUTC(); } }
+        private DateTime _CreateDate;
 
         /// <summary>
         /// Действует с даты
         /// </summary>
-        private DateTime?  _NotBefore; 
-        public DateTime? NotBefore { get { return _NotBefore; } set { _NotBefore=value.ToUTC(); } }
+        public DateTime? NotBefore { get { return _NotBefore; } set { _NotBefore = value.ToUTC(); } }
+        private DateTime? _NotBefore;
         /// <summary>
         /// Действует по дату
         /// </summary>
-        private DateTime?  _NotAfter; 
-        public DateTime? NotAfter { get { return _NotAfter; } set { _NotAfter=value.ToUTC(); } }
+        public DateTime? NotAfter { get { return _NotAfter; } set { _NotAfter = value.ToUTC(); } }
+        private DateTime? _NotAfter;
 
         /// <summary>
         /// ИД Agent
@@ -69,7 +69,7 @@ namespace BL.Model.EncryptionCore.FrontModel
         /// <summary>
         /// Дата последнего изменения
         /// </summary>
-        private DateTime?  _LastChangeDate; 
-        public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate = value.ToUTC(); } }
+        private DateTime? _LastChangeDate;
     }
 }

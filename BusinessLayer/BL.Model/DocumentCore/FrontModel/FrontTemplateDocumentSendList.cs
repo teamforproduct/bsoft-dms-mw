@@ -22,15 +22,15 @@ namespace BL.Model.DocumentCore.FrontModel
         public string AccessLevelName { get; set; }
         public bool? IsWorkGroup { get; set; }
         public bool? IsAddControl { get; set; }
-		
-        private DateTime?  _SelfDueDate; 
-        public DateTime? SelfDueDate { get { return _SelfDueDate; } set { _SelfDueDate=value.ToUTC(); } }
-		
+
+        public DateTime? SelfDueDate { get { return _SelfDueDate; } set { _SelfDueDate = value.ToUTC(); } }
+        private DateTime? _SelfDueDate;
+
         public int? SelfDueDay { get; set; }
-		
-        private DateTime?  _SelfAttentionDate; 
-        public DateTime? SelfAttentionDate { get { return _SelfAttentionDate; } set { _SelfAttentionDate=value.ToUTC(); } }
-		
+
+        public DateTime? SelfAttentionDate { get { return _SelfAttentionDate; } set { _SelfAttentionDate = value.ToUTC(); } }
+        private DateTime? _SelfAttentionDate;
+
         public bool? IsAvailableWithinTask { get; set; }
 
     }

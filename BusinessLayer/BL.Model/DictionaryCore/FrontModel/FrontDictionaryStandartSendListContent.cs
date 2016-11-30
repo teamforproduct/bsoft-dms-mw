@@ -47,8 +47,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Исполнить до (дата)
         /// </summary>
-        private DateTime?  _DueDate; 
         public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
+        private DateTime?  _DueDate; 
         /// <summary>
         /// Срок исполнения (кол-во дней)
         /// </summary>

@@ -54,16 +54,16 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата начала исполнения должности
         /// </summary>
-        private DateTime?  _StartDate; 
         public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
+        private DateTime?  _StartDate; 
 
 
         /// <summary>
         /// Дата окончания исполнения должности
         /// </summary>
         //[Required]
-        private DateTime?  _EndDate; 
         public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
+        private DateTime?  _EndDate; 
 
 
         /// <summary>

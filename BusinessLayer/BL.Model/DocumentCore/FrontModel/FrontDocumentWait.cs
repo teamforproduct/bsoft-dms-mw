@@ -13,16 +13,16 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? ResultTypeId { get; set; }
         public string ResultTypeName { get; set; }
 
-        private DateTime?  _DueDate; 
         public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
+        private DateTime?  _DueDate; 
 		
-        private DateTime?  _AttentionDate; 
         public DateTime? AttentionDate { get { return _AttentionDate; } set { _AttentionDate=value.ToUTC(); } }
+        private DateTime?  _AttentionDate; 
 		
         public string TargetDescription { get; set; }
         
-		//private DateTime?  _TargetAttentionDate; 
         //public DateTime? TargetAttentionDate { get { return _TargetAttentionDate; } set { _TargetAttentionDate=value.ToUTC(); } }
+		//private DateTime?  _TargetAttentionDate; 
 		
         public FrontDocumentEvent OnEvent { get; set; }
         public FrontDocumentEvent OffEvent { get; set; }

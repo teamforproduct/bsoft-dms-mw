@@ -11,11 +11,11 @@ namespace BL.Model.DictionaryCore.FrontModel
 {
     public class FrontDIPUserRolesExecutor: TreeItem
     {
-        private DateTime?  _StartDate; 
         public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
+        private DateTime?  _StartDate; 
 
-        private DateTime?  _EndDate; 
         public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
+        private DateTime?  _EndDate; 
 
         //public string PositionName { get; set; }
 

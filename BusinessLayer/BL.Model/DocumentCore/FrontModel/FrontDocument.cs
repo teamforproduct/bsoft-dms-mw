@@ -109,8 +109,8 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Дата входящего документа
         /// </summary>
-        private DateTime?  _SenderDate; 
         public DateTime? SenderDate { get { return _SenderDate; } set { _SenderDate=value.ToUTC(); } }
+        private DateTime?  _SenderDate; 
         /// <summary>
         /// Кому адресован документ
         /// </summary>
@@ -143,8 +143,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? TemplateDocumentId { get; set; }
         public int? ExecutorPositionId { get; set; }
 		
-        private DateTime?  _CreateDate; 
         public DateTime? CreateDate { get { return _CreateDate; } set { _CreateDate=value.ToUTC(); } }
+        private DateTime?  _CreateDate; 
 		
         public bool? IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
@@ -153,13 +153,13 @@ namespace BL.Model.DocumentCore.FrontModel
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
         
-		private DateTime?  _RegistrationDate; 
         public DateTime? RegistrationDate { get { return _RegistrationDate; } set { _RegistrationDate=value.ToUTC(); } }
+		private DateTime?  _RegistrationDate; 
         
 		public int? LastChangeUserId { get; set; }
 		
-        private DateTime?  _LastChangeDate; 
         public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        private DateTime?  _LastChangeDate; 
         
 		public int? LinkId { get; set; }
         public bool? IsLaunchPlan { get; set; }
@@ -170,11 +170,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool? IsFavourite { get; set; }
         public bool? IsInWork { get; set; }
 
-        private DateTime  _DocumentDate; 
         public DateTime DocumentDate { get { return _DocumentDate; } set { _DocumentDate=value.ToUTC(); } }
+        private DateTime  _DocumentDate; 
        
-	   //private DateTime  _DateOfControl; 
         //public DateTime DateOfControl { get { return _DateOfControl; } set { _DateOfControl=value.ToUTC(); } }
+	    //private DateTime  _DateOfControl; 
 
         public string RegistrationFullNumber { get; set; }
 

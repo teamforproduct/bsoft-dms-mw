@@ -12,10 +12,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? SubscriptionStatesId { get; set; }
         public string SubscriptionStatesName { get; set; }
         public bool? IsSuccess { get; set; }
-		
-        private DateTime?  _DueDate; 
-        public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
-		
+
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate = value.ToUTC(); } }
+        private DateTime? _DueDate;
+
         public string Description { get; set; }
         public string Hash { get; set; }
         public string ChangedHash { get; set; }
@@ -32,8 +32,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public string CertificatePositionName { get; set; }
         public string CertificatePositionExecutorAgentName { get; set; }
 
-        private DateTime?  _CertificateSignCreateDate; 
-        public DateTime? CertificateSignCreateDate { get { return _CertificateSignCreateDate; } set { _CertificateSignCreateDate=value.ToUTC(); } }
+        public DateTime? CertificateSignCreateDate { get { return _CertificateSignCreateDate; } set { _CertificateSignCreateDate = value.ToUTC(); } }
+        private DateTime? _CertificateSignCreateDate;
 
     }
 }

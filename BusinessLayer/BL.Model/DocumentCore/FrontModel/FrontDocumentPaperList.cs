@@ -11,8 +11,8 @@ namespace BL.Model.DocumentCore.FrontModel
     {
         public int Id { get; set; }
 		
-        private DateTime  _Date; 
         public DateTime Date { get { return _Date; } set { _Date=value.ToUTC(); } }
+        private DateTime  _Date; 
 		
         public string Description { get; set; }
     }

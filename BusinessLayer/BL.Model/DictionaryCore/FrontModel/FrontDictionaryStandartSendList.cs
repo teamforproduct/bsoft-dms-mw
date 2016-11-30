@@ -13,8 +13,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string Name { get; set; }
         public int? PositionId { get; set; }
         public int LastChangeUserId { get; set; }
-        private DateTime  _LastChangeDate; 
         public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        private DateTime  _LastChangeDate; 
 
         public string PositionName { get; set; }
         public string PositionExecutorName { get; set; }

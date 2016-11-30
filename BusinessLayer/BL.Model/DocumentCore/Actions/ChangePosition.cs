@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BL.Model.Enums;
 using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -33,12 +34,8 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Дата события
         /// </summary>
-        public DateTime? EventDate
-        {
-            get { return _eventDate; }
-            set { _eventDate = value.HasValue ? value.Value.ToUniversalTime() : value; }
-        }
-        private DateTime? _eventDate { get; set; }
+        public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
+        private DateTime? _eventDate;
 
     }
 }

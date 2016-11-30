@@ -13,15 +13,15 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public int? EventType { get; set; }
         public string EventTypeName { get; set; }
-		
-        private DateTime?  _PlanDate; 
-        public DateTime? PlanDate { get { return _PlanDate; } set { _PlanDate=value.ToUTC(); } }
-		
-        private DateTime?  _SendDate; 
-        public DateTime? SendDate { get { return _SendDate; } set { _SendDate=value.ToUTC(); } }
-		
-        private DateTime?  _RecieveDate; 
-        public DateTime? RecieveDate { get { return _RecieveDate; } set { _RecieveDate=value.ToUTC(); } }
+
+        public DateTime? PlanDate { get { return _PlanDate; } set { _PlanDate = value.ToUTC(); } }
+        private DateTime? _PlanDate;
+
+        public DateTime? SendDate { get { return _SendDate; } set { _SendDate = value.ToUTC(); } }
+        private DateTime? _SendDate;
+
+        public DateTime? RecieveDate { get { return _RecieveDate; } set { _RecieveDate = value.ToUTC(); } }
+        private DateTime? _RecieveDate;
 
 
         public string Description { get; set; }

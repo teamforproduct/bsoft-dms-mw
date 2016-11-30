@@ -19,10 +19,10 @@ namespace BL.Model.SystemCore.FrontModel
         public object LogObject { get; set; }
         public int? ExecutorAgentId { get; set; }
         public string ExecutorAgent { get; set; }
-		
-        private DateTime  _LogDate; 
-        public DateTime LogDate { get { return _LogDate; } set { _LogDate=value.ToUTC(); } }
-		
+
+        public DateTime LogDate { get { return _LogDate; } set { _LogDate = value.ToUTC(); } }
+        private DateTime _LogDate;
+
         public int? ObjectId { get; set; }
         public string ObjectName { get; set; }
         public int? ActionId { get; set; }

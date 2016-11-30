@@ -37,8 +37,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата изменения
         /// </summary>
-        private DateTime  _LastChangeDate; 
         public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        private DateTime  _LastChangeDate; 
+
         /// <summary>
         /// Название типа субординации
         /// </summary>
