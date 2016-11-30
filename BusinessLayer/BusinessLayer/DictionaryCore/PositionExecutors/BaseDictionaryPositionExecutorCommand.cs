@@ -54,7 +54,7 @@ namespace BL.Logic.DictionaryCore
             executor = PositionExecutors.FirstOrDefault();
 
             if (executor != null)
-            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName,  executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
 
             switch (Model.PositionExecutorTypeId)
@@ -67,11 +67,11 @@ namespace BL.Logic.DictionaryCore
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
-                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate??DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
                     break;
                 case EnumPositionExecutionTypes.IO:
                     // IO может быть только один на должности за период
@@ -81,11 +81,11 @@ namespace BL.Logic.DictionaryCore
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
-                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
                     break;
                 case EnumPositionExecutionTypes.Referent:
                     // Референтов может быть несколько может быть н на должности за период
@@ -95,12 +95,12 @@ namespace BL.Logic.DictionaryCore
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
-                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
                     break;
                 default:
@@ -110,12 +110,12 @@ namespace BL.Logic.DictionaryCore
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
-                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { (EnumPositionExecutionTypes)Model.PositionExecutorTypeId },
+                        PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
                     }).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate ?? DateTime.MinValue, executor.EndDate ?? DateTime.MaxValue); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
                     break;
             }

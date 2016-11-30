@@ -5010,7 +5010,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate == maxDateTime ? (DateTime?)null : x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
@@ -5069,6 +5069,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
                 string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
                 string parObjId = string.Empty;
 
@@ -5077,7 +5078,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     IsActive = x.IsActive,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     PositionName = x.Position.Name,
                     PositionExecutorTypeName = x.PositionExecutorType.Name,
                     PositionRoles = x.Position.PositionRoles
