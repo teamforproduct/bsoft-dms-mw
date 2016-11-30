@@ -547,7 +547,7 @@ namespace DMS_WebAPI.Controllers
         [Route("ConfirmRestorePasswordAgentUser")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser(ConfirmRestorePasswordAgentUser model)
+        public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser([FromUri]ConfirmRestorePasswordAgentUser model)
         {
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
