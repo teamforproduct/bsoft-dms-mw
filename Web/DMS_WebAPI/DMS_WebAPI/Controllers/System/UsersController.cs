@@ -547,34 +547,36 @@ namespace DMS_WebAPI.Controllers
         [Route("ConfirmRestorePasswordAgentUser")]
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser(ConfirmRestorePasswordAgentUser model)
+        public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser([FromUri]ConfirmRestorePasswordAgentUser model)
         {
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var result = await userManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                ApplicationUser user = await userManager.FindByIdAsync(model.UserId);
-
-                if (user == null)
-                    throw new UserNameIsNotDefined();
-
-                user.EmailConfirmed = true;
-                user.IsEmailConfirmRequired = false;
-
-                result = await userManager.UpdateAsync(user);
-
-                if (!result.Succeeded)
-                {
-                    return GetErrorResult(result);
-                }
-
-                var mngContext = DmsResolver.Current.Get<UserContexts>();
-                mngContext.KillSessions(model.UserId);
+                return GetErrorResult(result);
             }
 
-            return new JsonResult(null, this);
+            ApplicationUser user = await userManager.FindByIdAsync(model.UserId);
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            user.EmailConfirmed = true;
+            user.IsEmailConfirmRequired = false;
+
+            result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+            mngContext.KillSessions(model.UserId);
+
+            return new JsonResult(new { UserName = user.UserName }, this);
         }
 
         /// <summary>
