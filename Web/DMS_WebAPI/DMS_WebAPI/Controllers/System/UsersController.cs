@@ -506,11 +506,6 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> RestorePasswordAgentUser(RestorePasswordAgentUser model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             ApplicationUser user = await userManager.FindByEmailAsync(model.Email);
@@ -554,9 +549,7 @@ namespace DMS_WebAPI.Controllers
             var result = await userManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
 
             if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+                throw new ResetPasswordCodeInvalid();
 
             ApplicationUser user = await userManager.FindByIdAsync(model.UserId);
 
@@ -569,9 +562,7 @@ namespace DMS_WebAPI.Controllers
             result = await userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+                throw new ResetPasswordFailed();
 
             var mngContext = DmsResolver.Current.Get<UserContexts>();
             mngContext.KillSessions(model.UserId);
