@@ -18,5 +18,10 @@
         /// Язык по умолчанию
         /// </summary>
         public bool IsDefault { get; set; }
+
+        /// <summary>
+        /// Наименование файла
+        /// </summary>
+        public string FileName { get; set; }
     }
 }

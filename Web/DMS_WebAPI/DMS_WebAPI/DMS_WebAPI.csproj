@@ -378,6 +378,14 @@
     <Compile Include="Migrations\201611082050340_LockoutAgentUser.Designer.cs">
       <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611292159454_AddFileNameToLanguages1.cs" />
+    <Compile Include="Migrations\201611292159454_AddFileNameToLanguages1.Designer.cs">
+      <DependentUpon>201611292159454_AddFileNameToLanguages1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.cs" />
+    <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.Designer.cs">
+      <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -536,6 +544,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611082050340_LockoutAgentUser.resx">
       <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611292159454_AddFileNameToLanguages1.resx">
+      <DependentUpon>201611292159454_AddFileNameToLanguages1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611292202410_AddFileNameToLanguages2.resx">
+      <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
