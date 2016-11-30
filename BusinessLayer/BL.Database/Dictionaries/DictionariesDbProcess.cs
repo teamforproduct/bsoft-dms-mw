@@ -4304,19 +4304,34 @@ namespace BL.Database.Dictionaries
                 var posUpd = qry.Select(x => new
                 {
                     x.Id,
-                    oldExecutorAgentId = x.ExecutorAgentId ?? 0,
-                    newExecutorAgentId = dbContext.DictionaryPositionExecutorsSet
+                    oldExecutors = new { ExecutorAgentId = x.ExecutorAgentId, x.PositionExecutorTypeId, MainExecutorAgentId = x.MainExecutorAgentId },
+                    newExecutors = dbContext.DictionaryPositionExecutorsSet
                         .Where(y => y.PositionId == x.Id && DateTime.UtcNow >= y.StartDate && DateTime.UtcNow <= y.EndDate
                                     && (y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.IO || y.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal))
-                        .OrderBy(y => y.PositionExecutorTypeId).Select(y => y.AgentId).FirstOrDefault()
-                }).Where(x => x.newExecutorAgentId != x.oldExecutorAgentId)
-                .ToDictionary(x => x.Id, y => y.newExecutorAgentId != 0 ? y.newExecutorAgentId : (int?)null);
-                if (posUpd.Any())
-                    foreach (var pos in posUpd)
+                        .GroupBy(y => y.PositionId)
+                        .Select(y => new
+                        {
+                            Executor = y.OrderByDescending(z => z.PositionExecutorTypeId).Select(z => new { z.AgentId, z.PositionExecutorTypeId }).FirstOrDefault(),
+                            MainExecutor = y.OrderBy(z => z.PositionExecutorTypeId).Select(z => new { z.AgentId, z.PositionExecutorTypeId }).FirstOrDefault(z => z.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal),
+                        })
+                        .Select(y => new
+                        {
+                            ExecutorAgentId = (int?)y.Executor.AgentId,
+                            PositionExecutorTypeId = y.Executor.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.IO ? (int?)EnumPositionExecutionTypes.IO : (int?)null,
+                            MainExecutorAgentId = (int?)y.MainExecutor.AgentId
+                        }).FirstOrDefault() ?? new { ExecutorAgentId = (int?)null, PositionExecutorTypeId = (int?)null, MainExecutorAgentId = (int?)null }
+                }).Where(x => x.newExecutors.ExecutorAgentId != x.oldExecutors.ExecutorAgentId ||
+                                    x.newExecutors.PositionExecutorTypeId != x.oldExecutors.PositionExecutorTypeId ||
+                                    x.newExecutors.MainExecutorAgentId != x.oldExecutors.MainExecutorAgentId)
+             .ToDictionary(x => x.Id, y => y.newExecutors);
+             if (posUpd.Any()) foreach (var pos in posUpd)
                     {
                         var id = pos.Key;
-                        var agentId = pos.Value;
-                        dbContext.DictionaryPositionsSet.Where(x => x.Id == id).Update(x => new DictionaryPositions { ExecutorAgentId = agentId });
+                        var executorAgentId = pos.Value.ExecutorAgentId;
+                        var positionExecutorTypeId = pos.Value.PositionExecutorTypeId;
+                        var mainExecutorAgentId = pos.Value.MainExecutorAgentId;
+                        dbContext.DictionaryPositionsSet.Where(x => x.Id == id).
+                            Update(x => new DictionaryPositions { ExecutorAgentId = executorAgentId, PositionExecutorTypeId = positionExecutorTypeId, MainExecutorAgentId = mainExecutorAgentId });
                     }
                 transaction.Complete();
             }
@@ -4414,6 +4429,7 @@ namespace BL.Database.Dictionaries
 
         public FrontDictionaryPosition GetPosition(IContext context, int id)
         {
+            //UpdatePositionExecutor(context);//, new List<int> { id });
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {

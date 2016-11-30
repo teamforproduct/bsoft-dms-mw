@@ -394,6 +394,21 @@ namespace BL.Model.Exception
         public UserNameIsNotDefined() : base(_MESSAGE) { }
         public UserNameIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+
+    public class ResetPasswordCodeInvalid : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ResetPasswordCodeInvalid@l##";
+        public ResetPasswordCodeInvalid() : base(_MESSAGE) { }
+        public ResetPasswordCodeInvalid(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class ResetPasswordFailed : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ResetPasswordFailed@l##";
+        public ResetPasswordFailed() : base(_MESSAGE) { }
+        public ResetPasswordFailed(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class UserUnauthorized : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserUnauthorized@l##";
