@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -45,7 +46,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        public DateTime? PassportDate { get; set; }
+        private DateTime?  _PassportDate; 
+        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
@@ -53,7 +55,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        private DateTime?  _BirthDate; 
+        public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
 
         /// <summary>
         /// Дополнительная информация

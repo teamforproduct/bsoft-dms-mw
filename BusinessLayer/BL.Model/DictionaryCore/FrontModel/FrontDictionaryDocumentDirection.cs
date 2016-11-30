@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -27,6 +28,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Время последнего изменения
         /// </summary>
-        public DateTime LastChangeDate { get; set; }
+        private DateTime  _LastChangeDate; 
+        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
     }
 }

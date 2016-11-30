@@ -1,6 +1,7 @@
 ﻿using System;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -91,7 +92,9 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Дата создания файла
         /// </summary>
-        public DateTime Date { get; set; }
+        private DateTime  _Date; 
+        public DateTime Date { get { return _Date; } set { _Date=value.ToUTC(); } }
+		
         /// <summary>
         /// Признак, изменялся ли файл в хранищие извне
         /// </summary>
@@ -109,7 +112,9 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Дата последнего изменения записи
         /// </summary>
-        public DateTime LastChangeDate { get; set; }
+        private DateTime  _LastChangeDate; 
+        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+		
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
     }

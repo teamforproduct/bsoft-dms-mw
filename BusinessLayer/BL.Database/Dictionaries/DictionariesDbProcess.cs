@@ -702,7 +702,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Поиск по дате рождения
-            if (filter.BirthPeriod?.IsActive ?? false)
+            if (filter.BirthPeriod?.HasValue ?? false)
             {
                 qry = qry.Where(x => x.BirthDate >= filter.BirthPeriod.DateBeg);
                 qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
@@ -1052,7 +1052,7 @@ namespace BL.Database.Dictionaries
             // Поиск по дате рождения
             if (filter.BirthPeriod != null)
             {
-                if (filter.BirthPeriod.IsActive)
+                if (filter.BirthPeriod.HasValue)
                 {
                     qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
                     qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
@@ -5270,7 +5270,7 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryPositionExecutorTypesSet.AsQueryable();
 
-            if (filter.Period?.IsActive == true && filter.PositionId != null)
+            if (filter.Period?.HasValue == true && filter.PositionId != null)
             {
 
                 // достаю всех исполнителей переданной должности в указанный срок

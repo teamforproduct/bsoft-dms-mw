@@ -2,6 +2,7 @@
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.FrontModel;
 using System;
@@ -108,7 +109,8 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Дата входящего документа
         /// </summary>
-        public DateTime? SenderDate { get; set; }
+        private DateTime?  _SenderDate; 
+        public DateTime? SenderDate { get { return _SenderDate; } set { _SenderDate=value.ToUTC(); } }
         /// <summary>
         /// Кому адресован документ
         /// </summary>
@@ -140,17 +142,26 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public int? TemplateDocumentId { get; set; }
         public int? ExecutorPositionId { get; set; }
-        public DateTime? CreateDate { get; set; }
+		
+        private DateTime?  _CreateDate; 
+        public DateTime? CreateDate { get { return _CreateDate; } set { _CreateDate=value.ToUTC(); } }
+		
         public bool? IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
         public string NumerationPrefixFormula { get; set; }
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
-        public DateTime? RegistrationDate { get; set; }
-        public int? LastChangeUserId { get; set; }
-        public DateTime? LastChangeDate { get; set; }
-        public int? LinkId { get; set; }
+        
+		private DateTime?  _RegistrationDate; 
+        public DateTime? RegistrationDate { get { return _RegistrationDate; } set { _RegistrationDate=value.ToUTC(); } }
+        
+		public int? LastChangeUserId { get; set; }
+		
+        private DateTime?  _LastChangeDate; 
+        public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        
+		public int? LinkId { get; set; }
         public bool? IsLaunchPlan { get; set; }
         public bool? IsHard { get; set; }
         public EnumDocumentDirections? DocumentDirection { get; set; }
@@ -159,8 +170,12 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool? IsFavourite { get; set; }
         public bool? IsInWork { get; set; }
 
-        public DateTime DocumentDate { get; set; }
-       // public DateTime DateOfControl { get; set; }
+        private DateTime  _DocumentDate; 
+        public DateTime DocumentDate { get { return _DocumentDate; } set { _DocumentDate=value.ToUTC(); } }
+       
+	   //private DateTime  _DateOfControl; 
+        //public DateTime DateOfControl { get { return _DateOfControl; } set { _DateOfControl=value.ToUTC(); } }
+
         public string RegistrationFullNumber { get; set; }
 
         public int? EventsCount { get; set; }

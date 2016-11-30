@@ -102,7 +102,7 @@ namespace BL.Logic.Logging
                         Message = filter?.LoginLogInfo,
                     }, paging).Select(x => new FrontSystemSession
                     {
-                        CreateDate = DateTime.SpecifyKind(x.LogDate,DateTimeKind.Utc),
+                        CreateDate = x.LogDate,
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
                         AgentId = x.ExecutorAgentId,

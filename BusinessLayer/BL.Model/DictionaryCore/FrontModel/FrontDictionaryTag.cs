@@ -1,5 +1,6 @@
 ﻿using System;
 using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Extensions;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -17,8 +18,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string Color { get; set; }
         public string PositionName { get; set; }
         public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
-        public string LastChangeUserName { get; set; }
+		
+        private DateTime  _LastChangeDate; 
+        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        
+		public string LastChangeUserName { get; set; }
         public int? DocCount { get; set; }
 
     }

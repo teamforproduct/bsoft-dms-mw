@@ -1,5 +1,6 @@
 ﻿using BL.Model.AdminCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -14,12 +15,16 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Дата начала исполнения ролей должности
         /// </summary>
-        public DateTime? StartDate { get; set; }
+        private DateTime? _StartDate; 
+        public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
+
 
         /// <summary>
         /// Дата окончания исполнения ролей должности
         /// </summary>
-        public DateTime? EndDate { get; set; }
+        private DateTime? _EndDate; 
+        public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
+
 
         /// <summary>
         /// Роль

@@ -489,14 +489,14 @@ namespace BL.Database.Common
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
-            if (filter.Date?.IsActive == true)
+            if (filter.Date?.HasValue == true)
             {
                 qry = qry.Where(x => x.Date >= filter.Date.DateBeg & x.Date <= filter.Date.DateEnd);
             }
 
-            if (filter.ReadDate?.IsActive == true)
+            if (filter.ReadDate?.HasValue == true)
             {
-                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.Date.DateBeg.Value && x.ReadDate <= filter.Date.DateEnd.Value); 
+                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.ReadDate.DateBeg && x.ReadDate <= filter.ReadDate.DateEnd);
             }
 
             if (filter.SourcePositionIDs?.Count() > 0)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,7 +47,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Исполнить до (дата)
         /// </summary>
-        public DateTime? DueDate { get; set; }
+        private DateTime?  _DueDate; 
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
         /// <summary>
         /// Срок исполнения (кол-во дней)
         /// </summary>

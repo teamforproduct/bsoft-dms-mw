@@ -1,5 +1,6 @@
 ﻿using System;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -12,23 +13,34 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public int? EventType { get; set; }
         public string EventTypeName { get; set; }
+
         private DateTime? _date { get; set; }
-        public DateTime? Date { get { return _date; }
-                                set { _date = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; } }
+        public DateTime? Date { get { return _date; } set { _date = value.ToUTC(); } }
+
         private DateTime? _createDate { get; set; }
-        public DateTime? CreateDate { get { return _createDate; }
-                                      set { _createDate = value.HasValue ? DateTime.SpecifyKind(value.Value, DateTimeKind.Utc) : value; }  }
+        public DateTime? CreateDate { get { return _createDate; } set { _createDate = value.ToUTC(); } }
+
+
         public string Task { get; set; }
         public bool? IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public string AddDescription { get; set; }
-        public DateTime? DueDate { get; set; }
-        public DateTime? CloseDate { get; set; }
+        
+        private DateTime?  _DueDate; 
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
+        
+        private DateTime?  _CloseDate; 
+        public DateTime? CloseDate { get { return _CloseDate; } set { _CloseDate=value.ToUTC(); } }
+		
         public bool? IsOnEvent { get; set; }
 
-        public DateTime? LastChangeDate { get; set; }
+        
+        private DateTime?  _LastChangeDate; 
+        public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        
+        private DateTime?  _ReadDate; 
+        public DateTime? ReadDate { get { return _ReadDate; } set { _ReadDate=value.ToUTC(); } }
 
-        public DateTime? ReadDate { get; set; }
         public string ReadAgentName { get; set; }
         public bool? IsRead { get; set; }
 
@@ -52,10 +64,15 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool? PaperIsOriginal { get; set; }
         public bool? PaperIsCopy { get; set; }
         public int? PaperOrderNumber { get; set; }
-
-        public DateTime? PaperPlanDate { get; set; }
-        public DateTime? PaperSendDate { get; set; }
-        public DateTime? PaperRecieveDate { get; set; }
+        
+        private DateTime?  _PaperPlanDate; 
+        public DateTime? PaperPlanDate { get { return _PaperPlanDate; } set { _PaperPlanDate=value.ToUTC(); } }
+        
+        private DateTime?  _PaperSendDate; 
+        public DateTime? PaperSendDate { get { return _PaperSendDate; } set { _PaperSendDate=value.ToUTC(); } }
+        
+        private DateTime?  _PaperRecieveDate; 
+        public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate=value.ToUTC(); } }
 
         public string PaperPlanAgentName { get; set; }
         public string PaperSendAgentName { get; set; }

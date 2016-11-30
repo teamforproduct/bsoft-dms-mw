@@ -5,6 +5,7 @@ using System;
 using BL.Model.Enums;
 using System.Runtime.Serialization;
 using BL.Model.AdminCore.FrontModel;
+using BL.Model.Extensions;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -53,13 +54,17 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата начала исполнения должности
         /// </summary>
-        public DateTime? StartDate { get; set; }
+        private DateTime?  _StartDate; 
+        public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
+
 
         /// <summary>
         /// Дата окончания исполнения должности
         /// </summary>
         //[Required]
-        public DateTime? EndDate { get; set; }
+        private DateTime?  _EndDate; 
+        public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
+
 
         /// <summary>
         /// Агент
