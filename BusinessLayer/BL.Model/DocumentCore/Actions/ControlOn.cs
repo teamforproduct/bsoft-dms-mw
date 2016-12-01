@@ -34,10 +34,12 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Контрольный срок
         /// </summary>
-        public DateTime? DueDate { get; set; }
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate = value.ToUTC(); } }
+        private DateTime? _DueDate;
         /// <summary>
         /// Срок включения режима постоянное внимание
         /// </summary>
-        public DateTime? AttentionDate { get; set; }
+        public DateTime? AttentionDate { get { return _AttentionDate; } set { _AttentionDate = value.ToUTC(); } }
+        private DateTime? _AttentionDate;
     }
 }
