@@ -100,7 +100,7 @@ namespace BL.Database.Documents
                 //TODO Sort
                 //TODO After ToList
                 {
-                    qry = qry.OrderByDescending(x => x.CreateDate);
+                    qry = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x=>x.Id);
                 }
 
                 #region Paging
@@ -232,6 +232,10 @@ namespace BL.Database.Documents
 
                         qry = qry.Skip(() => skip).Take(() => take);
                     }
+                }
+                if ((paging?.IsAll ?? true) && (filter == null || filter.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0 )))
+                {
+                    throw new WrongAPIParameters();
                 }
                 #endregion Paging
 
@@ -1629,7 +1633,7 @@ namespace BL.Database.Documents
 
         #region DocumentAccesses
 
-        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging)
+        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx))
             using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
@@ -1637,29 +1641,29 @@ namespace BL.Database.Documents
 
                 var qry = CommonQueries.GetDocumentAccesses(ctx, dbContext);
 
-                if (filters != null)
+                if (filter != null)
                 {
-                    if (filters.DocumentId?.Count() > 0)
+                    if (filter.DocumentId?.Count() > 0)
                     {
                         var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
-                        filterContains = filters.DocumentId.Aggregate(filterContains,
+                        filterContains = filter.DocumentId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                         qry = qry.Where(filterContains);
                     }
 
-                    if (filters.AccessLevelId?.Count() > 0)
+                    if (filter.AccessLevelId?.Count() > 0)
                     {
                         var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
-                        filterContains = filters.AccessLevelId.Aggregate(filterContains,
+                        filterContains = filter.AccessLevelId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.AccessLevelId == value).Expand());
 
                         qry = qry.Where(filterContains);
                     }
 
-                    if (filters.IsInWork.HasValue)
+                    if (filter.IsInWork.HasValue)
                     {
-                        qry = qry.Where(x => x.IsInWork == filters.IsInWork);
+                        qry = qry.Where(x => x.IsInWork == filter.IsInWork);
                     }
                 }
                 qry = qry.OrderByDescending(x => x.DocumentId);
@@ -1683,7 +1687,10 @@ namespace BL.Database.Documents
                         qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
-
+                if ((paging?.IsAll ?? true) && (filter == null ||  ((filter.DocumentId?.Count ?? 0) == 0 )))
+                {
+                    throw new WrongAPIParameters();
+                }
                 return qry.ToList();
             }
         }
