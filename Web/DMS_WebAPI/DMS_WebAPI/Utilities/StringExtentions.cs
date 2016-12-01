@@ -439,7 +439,7 @@ namespace DMS_WebAPI.Utilities
                 var dbProc = new WebAPIDbProcess();
                 var client = dbProc.GetClient(clientCode);
                 if (client != null)
-                    userName.UserNameFormatByClientId(client.Id);
+                    userName = userName.UserNameFormatByClientId(client.Id);
             }
 
             return userName;
