@@ -75,15 +75,7 @@ namespace DMS_WebAPI.Providers
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
             // если фронт передал код (доменное имя) клиента добавляю его к адресу
-            if (!string.IsNullOrEmpty(clientCode))
-            {
-                var dbProc = new WebAPIDbProcess();
-                var client = dbProc.GetClient(clientCode);
-                if (client != null && client.Id > 0)
-                {
-                    userName = $"Client_{client.Id}_{userName}";
-                }
-            }
+            userName = userName.UserNameFormatByClientCode(clientCode);
 
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
@@ -92,15 +84,6 @@ namespace DMS_WebAPI.Providers
 
             // Эти исключения отлавливает Application_Error в Global.asax
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
-
-            //{
-                //var languageService = DmsResolver.Current.Get<ILanguages>();
-                //var errText = languageService.GetTranslation("##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##");
-
-                //// pss локализация
-                //context.SetError("invalid_grant", errText);
-                //return;
-            //}
 
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 

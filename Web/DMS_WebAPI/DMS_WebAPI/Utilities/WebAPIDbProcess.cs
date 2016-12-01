@@ -3,6 +3,7 @@ using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.SystemServices.MailWorker;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Database;
@@ -11,6 +12,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Model.Users;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -22,8 +24,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 using System.Web;
 
@@ -1787,5 +1791,87 @@ namespace DMS_WebAPI.Utilities
         }
 
         #endregion UserServers
+
+        #region UserAgent
+        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
+        {
+            if (query == null)
+                query = new NameValueCollection();
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByNameAsync(model.Email.UserNameFormatByClientCode(model.ClientCode));
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            if (user.IsLockout)
+                throw new UserIsDeactivated(user.UserName);
+
+            var passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(user.Id);
+
+
+
+            var builder = new UriBuilder(baseUrl);
+            var newQuery = HttpUtility.ParseQueryString(builder.Query);
+            newQuery.Add("UserId", user.Id);
+            newQuery.Add("Code", passwordResetToken);
+            newQuery.Add(query);
+
+            builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
+            string callbackurl = builder.ToString();
+
+            var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
+
+            var settings = DmsResolver.Current.Get<ISettings>();
+
+            var client = GetClient(model.ClientCode);
+
+            var db = GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
+
+            var ctx = new AdminContext(db);
+
+            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+            mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
+        }
+
+        public void RestorePasswordAgentUser(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
+        {
+            if (query == null)
+                query = new NameValueCollection();
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = userManager.FindByEmail(model.Email.UserNameFormatByClientCode(model.ClientCode));
+
+            if (user == null)
+                throw new UserNameIsNotDefined();
+
+            if (user.IsLockout)
+                throw new UserIsDeactivated(user.UserName);
+
+            var passwordResetToken = userManager.GeneratePasswordResetToken(user.Id);
+
+            query.Add("UserId", user.Id);
+            query.Add("Code", passwordResetToken);
+
+            var builder = new UriBuilder(baseUrl);
+            builder.Query = query.ToString();
+            string callbackurl = builder.ToString();
+
+            var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
+
+            var settings = DmsResolver.Current.Get<ISettings>();
+
+            var client = GetClient(model.ClientCode);
+
+            var db = GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
+
+            var ctx = new AdminContext(db);
+
+            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+            mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
+        }
+        #endregion
     }
 }

@@ -28,6 +28,7 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.WebAPI.Filters;
 using System.Linq;
 using BL.CrossCutting.Context;
+using System.IO;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -77,7 +78,7 @@ namespace DMS_WebAPI.Controllers
                 throw new UserNameIsNotDefined();
 
 
-            return new JsonResult(new { UserName = user.UserName, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
+            return new JsonResult(new { UserName = user.Email, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
         }
 
         /// <summary>
@@ -323,9 +324,7 @@ namespace DMS_WebAPI.Controllers
             var result = await userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+                throw new DatabaseError();
 
             if (model.IsKillSessions)
                 mngContext.KillSessions(model.AgentId);
@@ -382,7 +381,7 @@ namespace DMS_WebAPI.Controllers
             if (user == null)
                 throw new UserNameIsNotDefined();
 
-            user.UserName = model.NewEmail;
+            user.UserName = model.NewEmail.UserNameFormatByClientId(ctx.CurrentClientId);
             user.Email = model.NewEmail;
 
             user.IsEmailConfirmRequired = model.IsVerificationRequired;
@@ -393,9 +392,7 @@ namespace DMS_WebAPI.Controllers
             var result = await userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+                throw new DatabaseError();
 
             mngContext.KillSessions(model.AgentId);
 
@@ -439,41 +436,10 @@ namespace DMS_WebAPI.Controllers
                 result = await userManager.UpdateAsync(user);
 
                 if (!result.Succeeded)
-                {
-                    return GetErrorResult(result);
-                }
+                    throw new DatabaseError();
             }
 
             return new JsonResult(null, this);
-        }
-
-        private IHttpActionResult GetErrorResult(IdentityResult result)
-        {
-            if (result == null)
-            {
-                return InternalServerError();
-            }
-
-            if (!result.Succeeded)
-            {
-                if (result.Errors != null)
-                {
-                    foreach (string error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-
-                if (ModelState.IsValid)
-                {
-                    // No ModelState errors are available to send, so just return an empty BadRequest.
-                    return BadRequest();
-                }
-
-                return BadRequest(ModelState);
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -506,35 +472,32 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> RestorePasswordAgentUser(RestorePasswordAgentUser model)
         {
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            #region log to file
+            try
+            {
+                string message = "RestorePasswordAgentUser";
+                message += DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
-            ApplicationUser user = await userManager.FindByEmailAsync(model.Email);
+                try
+                {
+                    message += $"URL: {HttpContext.Current.Request.Url.ToString()}\r\n";
+                }
+                catch { }
 
-            if (user == null)
-                throw new UserNameIsNotDefined();
+                try
+                {
+                    message += $"Request Body: Email: {model.Email}, ClientCode: {model.ClientCode}\r\n";
+                }
+                catch { }
 
-            if (user.IsLockout)
-                throw new UserIsDeactivated(user.UserName);
-
-            var passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(user.Id);
-
-            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").AbsoluteUri;
-
-            callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(passwordResetToken));
-
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
-
-            var settings = DmsResolver.Current.Get<ISettings>();
+                AppendToFile(HttpContext.Current.Server.MapPath("~/RestorePasswordAgentUser.txt"), message);
+            }
+            catch { }
+            #endregion log to file
 
             var dbProc = new WebAPIDbProcess();
-            var client = dbProc.GetClient(model.ClientCode);
-
-            var db = dbProc.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
-
-            var ctx = new AdminContext(db);
-
-            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, model.Email, "Restore Password", htmlContent);
+            //new NameValueCollection { { "test", "test" } }
+            await dbProc.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return new JsonResult(null, this);
         }
@@ -544,6 +507,29 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser([FromUri]ConfirmRestorePasswordAgentUser model)
         {
+            #region log to file
+            try
+            {
+                string message = "ConfirmRestorePasswordAgentUser";
+                message += DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
+
+                try
+                {
+                    message += $"URL: {HttpContext.Current.Request.Url.ToString()}\r\n";
+                }
+                catch { }
+
+                try
+                {
+                    message += $"Request Body: UserId: {model.UserId}, Code: {model.Code}, IsKillSessions: {model.IsKillSessions}, NewPassword: {model.NewPassword}, ConfirmPassword: {model.ConfirmPassword}\r\n";
+                }
+                catch { }
+
+                AppendToFile(HttpContext.Current.Server.MapPath("~/ConfirmRestorePasswordAgentUser.txt"), message);
+            }
+            catch { }
+            #endregion log to file
+
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var result = await userManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
@@ -567,7 +553,44 @@ namespace DMS_WebAPI.Controllers
             var mngContext = DmsResolver.Current.Get<UserContexts>();
             mngContext.KillSessions(model.UserId);
 
-            return new JsonResult(new { UserName = user.UserName }, this);
+            return new JsonResult(new { UserName = user.Email }, this);
+        }
+
+        private static void AppendToFile(string path, string text)
+        {
+            try
+            {
+                StreamWriter sw;
+
+                try
+                {
+                    FileInfo ff = new FileInfo(path);
+                    if (ff.Exists)
+                    {
+                    }
+                }
+                catch
+                {
+
+                }
+
+                sw = File.AppendText(path);
+                try
+                {
+                    string line = text;
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
