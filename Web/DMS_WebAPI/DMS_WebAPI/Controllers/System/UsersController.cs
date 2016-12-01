@@ -129,22 +129,22 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(null, this);
         }
 
-        ///// <summary>
-        ///// Получение списка доступных серверов
-        ///// </summary>
-        ///// <returns>список серверов</returns>
-        //[Route("Servers")]
-        //[HttpGet]
-        //public IHttpActionResult GetServers()
-        //{
-        //    var context = DmsResolver.Current.Get<UserContexts>().Get();
+        /// <summary>
+        /// Получение списка доступных серверов
+        /// </summary>
+        /// <returns>список серверов</returns>
+        [Route("Servers")]
+        [HttpGet]
+        public IHttpActionResult GetServers()
+        {
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
 
-        //    var dbProc = new WebAPIDbProcess();
+            var dbProc = new WebAPIDbProcess();
 
-        //    var servers = dbProc.GetServersByUser(context);
+            var servers = dbProc.GetServersByUser(context);
 
-        //    return new JsonResult(servers, this);
-        //}
+            return new JsonResult(servers, this);
+        }
 
         ///// <summary>
         ///// Установить сервер для использования

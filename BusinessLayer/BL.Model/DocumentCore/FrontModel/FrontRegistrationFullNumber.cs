@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? RegistrationNumber { get; set; }
         public string RegistrationNumberSuffix { get; set; }
         public string RegistrationNumberPrefix { get; set; }
-        public DateTime? DocumentDate { get; set; }
+		
+        public DateTime? DocumentDate { get { return _DocumentDate; } set { _DocumentDate=value.ToUTC(); } }
+        private DateTime?  _DocumentDate; 
     }
 }

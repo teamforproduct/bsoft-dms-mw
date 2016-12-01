@@ -101,7 +101,7 @@ namespace DMS_WebAPI.Utilities
                     DefaultSchema = x.DefaultSchema,
                 }).ToList();
 
-                items.ForEach(x => { x.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerTypeName); });
+                items.ForEach(x => { x.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), x.ServerTypeName); });
 
                 return items;
             }
@@ -126,7 +126,7 @@ namespace DMS_WebAPI.Utilities
                     Id = x.Server.Id,
                     Address = x.Server.Address,
                     Name = x.Server.Name,
-                    ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.Server.ServerType),
+                    ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), x.Server.ServerType),
                     DefaultDatabase = x.Server.DefaultDatabase,
                     IntegrateSecurity = x.Server.IntegrateSecurity,
                     UserName = x.Server.UserName,
@@ -194,7 +194,7 @@ namespace DMS_WebAPI.Utilities
                     DefaultSchema = x.Server.DefaultSchema,
                 }).FirstOrDefault();
 
-                item.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), item.ServerTypeName);
+                item.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), item.ServerTypeName);
 
                 return item;
             }

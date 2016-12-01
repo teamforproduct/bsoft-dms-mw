@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Users;
+using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -81,7 +82,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Срок исполнения (дата)
         /// </summary>
-        public DateTime? DueDate { get; set; }
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate = value.ToUTC(); } }
+        private DateTime? _DueDate;
         /// <summary>
         /// Срок исполнения (дни)
         /// </summary>

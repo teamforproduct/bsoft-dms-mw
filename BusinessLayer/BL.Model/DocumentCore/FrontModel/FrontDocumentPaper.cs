@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,9 +24,15 @@ namespace BL.Model.DocumentCore.FrontModel
         public string OwnerPositionName { get; set; }
         public string OwnerPositionExecutorNowAgentName { get; set; }
         public string OwnerPositionExecutorAgentPhoneNumber { get; set; }
-        public DateTime? PaperPlanDate { get; set; }
-        public DateTime? PaperSendDate { get; set; }
-        public DateTime? PaperRecieveDate { get; set; }
+
+        public DateTime? PaperPlanDate { get { return _PaperPlanDate; } set { _PaperPlanDate = value.ToUTC(); } }
+        private DateTime? _PaperPlanDate;
+
+        public DateTime? PaperSendDate { get { return _PaperSendDate; } set { _PaperSendDate = value.ToUTC(); } }
+        private DateTime? _PaperSendDate;
+
+        public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate = value.ToUTC(); } }
+        private DateTime? _PaperRecieveDate;
 
     }
 }

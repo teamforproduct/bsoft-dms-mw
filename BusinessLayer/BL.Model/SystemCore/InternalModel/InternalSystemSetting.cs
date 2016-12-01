@@ -14,7 +14,7 @@ namespace BL.Model.SystemCore.InternalModel
         {
             Key = model.Key;
             Value = model.Value;
-            ValueType = model.ValueType;
+            //ValueType = model.ValueType;
             AgentId = model.AgentId;
         }
         public string Key { get; set; }

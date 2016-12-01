@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -11,7 +12,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public object Filter { get; set; }
         public bool IsCommon { get; set; }
         public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get; set; }
+
+        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate = value.ToUTC(); } }
+        private DateTime _LastChangeDate;
+
         public string UserName { get; set; }
     }
 }

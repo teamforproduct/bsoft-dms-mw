@@ -81,7 +81,7 @@ namespace BL.Database.Common
                         var qry1 = dbContext.DocumentsSet.AsQueryable();
                         qry = qry1.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
                     }
-                }
+                }                
             }
             return qry;
 
@@ -489,14 +489,14 @@ namespace BL.Database.Common
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
-            if (filter.Date?.IsActive == true)
+            if (filter.Date?.HasValue == true)
             {
                 qry = qry.Where(x => x.Date >= filter.Date.DateBeg & x.Date <= filter.Date.DateEnd);
             }
 
-            if (filter.ReadDate?.IsActive == true)
+            if (filter.ReadDate?.HasValue == true)
             {
-                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.Date.DateBeg.Value && x.ReadDate <= filter.Date.DateEnd.Value);
+                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.ReadDate.DateBeg && x.ReadDate <= filter.ReadDate.DateEnd);
             }
 
             if (filter.SourcePositionIDs?.Count() > 0)
@@ -872,11 +872,6 @@ namespace BL.Database.Common
                 }
             }
 
-            if ((paging?.IsAll ?? true) && (filter == null || filter.Event == null || ((filter.Event.DocumentId?.Count ?? 0) == 0 && (filter.Event.EventId?.Count ?? 0) == 0)))
-            {
-                throw new WrongAPIParameters();
-            }
-
             IQueryable<DocumentEvents> qryRes = qrys.First(); ;
 
             if (qrys.Count > 1)
@@ -1155,11 +1150,6 @@ namespace BL.Database.Common
 
                     qry = qry.Skip(() => skip).Take(() => take);
                 }
-            }
-
-            if ((paging?.IsAll ?? true) && (filter == null || filter.File == null || ((filter.File.DocumentId?.Count ?? 0) == 0 && (filter.File.FileId?.Count ?? 0) == 0)))
-            {
-                throw new WrongAPIParameters();
             }
 
             var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
@@ -1911,11 +1901,6 @@ namespace BL.Database.Common
                 }
             }
 
-            if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0 && (filter.Id?.Count ?? 0) == 0)))
-            {
-                throw new WrongAPIParameters();
-            }
-
             var tasks = tasksDb.Select(x => new FrontDocumentTask
             {
                 Id = x.Id,
@@ -2050,11 +2035,6 @@ namespace BL.Database.Common
                     subscriptionsRes = subscriptionsRes
                         .Skip(() => skip).Take(() => take);
                 }
-            }
-
-            if ((paging?.IsAll ?? true) && (filter == null || (filter.DocumentId?.Count ?? 0) == 0))
-            {
-                throw new WrongAPIParameters();
             }
 
             var maxDateTime = DateTime.UtcNow.AddYears(50);
@@ -2826,10 +2806,6 @@ namespace BL.Database.Common
                 }
             }
 
-            if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0 && (filter.Id?.Count ?? 0) == 0)))
-            {
-                throw new WrongAPIParameters();
-            }
             //var itemsRes = itemsDb.Select(x => x);
 
             var items = itemsDb.Select(x => new FrontDocumentPaper
