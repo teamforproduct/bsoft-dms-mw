@@ -100,7 +100,7 @@ namespace BL.Database.Documents
                 //TODO Sort
                 //TODO After ToList
                 {
-                    qry = qry.OrderByDescending(x => x.CreateDate);
+                    qry = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x=>x.Id);
                 }
 
                 #region Paging
