@@ -907,10 +907,12 @@ namespace BL.Database.Common
                     Description = x.Description,
                     AddDescription = x.AddDescription,
 
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name +
-                                                      (x.SourcePosition.PositionExecutorTypeId.HasValue ? $"({x.SourcePosition.PositionExecutorType.Name})" : ""),
-                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name +
-                                                      (x.TargetPosition.PositionExecutorTypeId.HasValue ? $"({x.TargetPosition.PositionExecutorType.Name})" : ""))
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name //+
+                                                      //(x.SourcePosition.PositionExecutorTypeId.HasValue ? $"({x.SourcePosition.PositionExecutorType.Name})" : "")
+                                                      ,
+                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name //+
+                                                      //(x.TargetPosition.PositionExecutorTypeId.HasValue ? $"({x.TargetPosition.PositionExecutorType.Name})" : "")
+                                                      )
                                                       ?? x.TargetAgent.Name,
                     DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
@@ -2592,10 +2594,12 @@ namespace BL.Database.Common
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
-                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name +
-                                                (y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : ""),
-                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name +
-                                                (y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : ""))
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name //+
+                                                //(y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : "")
+                                                ,
+                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name //+
+                                                //(y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : "")
+                                                )
                                                 ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
