@@ -13,6 +13,8 @@ namespace BL.Model.Extensions
 
         public static DateTime ToUTC(this DateTime date) => DateTime.SpecifyKind(date, DateTimeKind.Utc);
 
+        public static DateTime Add1000Years(this DateTime dayr) => DateTime.UtcNow.AddYears(1000);
+
     }
 
 }

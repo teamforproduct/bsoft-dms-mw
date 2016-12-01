@@ -93,15 +93,6 @@ namespace DMS_WebAPI.Providers
             // Эти исключения отлавливает Application_Error в Global.asax
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
-            //{
-                //var languageService = DmsResolver.Current.Get<ILanguages>();
-                //var errText = languageService.GetTranslation("##l@DmsExceptions:UserNameOrPasswordIsIncorrect@l##");
-
-                //// pss локализация
-                //context.SetError("invalid_grant", errText);
-                //return;
-            //}
-
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 
             //if (user.IsEmailConfirmRequired && !user.EmailConfirmed) throw new EmailConfirmRequiredAgentUser();

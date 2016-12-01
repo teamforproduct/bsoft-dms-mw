@@ -164,8 +164,8 @@ namespace BL.Logic.AdminCore
 
             var position = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { positionId } }).FirstOrDefault();
 
-            
-            var depernment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { ParentIDs = new List<int> { position.DepartmentId } }).FirstOrDefault();
+
+            var depernment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { position.DepartmentId } }).FirstOrDefault();
 
             // должности в своем отделе
             var positionsInDepartment = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
@@ -175,7 +175,7 @@ namespace BL.Logic.AdminCore
 
             // должности в вышестоящем отделе
             var parentDepernment = new InternalDictionaryDepartment();
-            var positionsInParentDepartment = new List <InternalDictionaryPosition>();
+            var positionsInParentDepartment = new List<InternalDictionaryPosition>();
 
             if (depernment.ParentId.HasValue)
             {
@@ -189,11 +189,14 @@ namespace BL.Logic.AdminCore
 
             var childDepartments = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { ParentIDs = new List<int> { depernment.Id } });
 
+            IEnumerable<InternalDictionaryPosition> positionsInChildDepartments = new List<InternalDictionaryPosition>();
+
             // должности в нижестоящих отделах
-            var positionsInChildDepartments = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
-            {
-                DepartmentIDs = childDepartments.Select(x=>x.Id).ToList(),
-            });
+            if (childDepartments.Count() > 0)
+                positionsInChildDepartments = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
+                {
+                    DepartmentIDs = childDepartments.Select(x => x.Id).ToList(),
+                });
 
 
             var subordinations = new List<InternalAdminSubordination>();
@@ -203,7 +206,7 @@ namespace BL.Logic.AdminCore
                 // разрешаю выполнять рыссылку ОТ указанной должности для исполнения
 
                 // ниже по списку
-                var positions = positionsInDepartment.Where(x=>x.Order> position.Order).Select(x => x.Id).ToList();
+                var positions = positionsInDepartment.Where(x => x.Order > position.Order).Select(x => x.Id).ToList();
 
                 // в нижестоящих отделах, руководителям
                 positions.AddRange(positionsInChildDepartments.Where(x => x.Order == 1).Select(x => x.Id).ToList());
