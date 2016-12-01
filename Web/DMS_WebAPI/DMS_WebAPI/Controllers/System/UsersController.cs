@@ -28,6 +28,7 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.WebAPI.Filters;
 using System.Linq;
 using BL.CrossCutting.Context;
+using System.IO;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -506,35 +507,9 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> RestorePasswordAgentUser(RestorePasswordAgentUser model)
         {
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            ApplicationUser user = await userManager.FindByEmailAsync(model.Email);
-
-            if (user == null)
-                throw new UserNameIsNotDefined();
-
-            if (user.IsLockout)
-                throw new UserIsDeactivated(user.UserName);
-
-            var passwordResetToken = await userManager.GeneratePasswordResetTokenAsync(user.Id);
-
-            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").AbsoluteUri;
-
-            callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(passwordResetToken));
-
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
-
-            var settings = DmsResolver.Current.Get<ISettings>();
-
             var dbProc = new WebAPIDbProcess();
-            var client = dbProc.GetClient(model.ClientCode);
-
-            var db = dbProc.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
-
-            var ctx = new AdminContext(db);
-
-            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, model.Email, "Restore Password", htmlContent);
+            //new NameValueCollection { { "test", "test" } }
+            await dbProc.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return new JsonResult(null, this);
         }
