@@ -872,6 +872,11 @@ namespace BL.Database.Common
                 }
             }
 
+            if ((paging?.IsAll ?? true) && (filter == null || filter.Event == null || ((filter.Event.DocumentId?.Count ?? 0) == 0 && (filter.Event.EventId?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
+            }
+
             IQueryable<DocumentEvents> qryRes = qrys.First(); ;
 
             if (qrys.Count > 1)
@@ -1150,6 +1155,11 @@ namespace BL.Database.Common
 
                     qry = qry.Skip(() => skip).Take(() => take);
                 }
+            }
+
+            if ((paging?.IsAll ?? true) && (filter == null || filter.File == null || ((filter.File.DocumentId?.Count ?? 0) == 0 && (filter.File.FileId?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
             }
 
             var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
@@ -1901,6 +1911,11 @@ namespace BL.Database.Common
                 }
             }
 
+            if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0 && (filter.Id?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
+            }
+
             var tasks = tasksDb.Select(x => new FrontDocumentTask
             {
                 Id = x.Id,
@@ -2035,6 +2050,10 @@ namespace BL.Database.Common
                     subscriptionsRes = subscriptionsRes
                         .Skip(() => skip).Take(() => take);
                 }
+            }
+            if ((paging?.IsAll ?? true) && (filter == null || (filter.DocumentId?.Count ?? 0) == 0))
+            {
+                throw new WrongAPIParameters();
             }
 
             var maxDateTime = DateTime.UtcNow.AddYears(50);
@@ -2805,7 +2824,10 @@ namespace BL.Database.Common
                         .Skip(() => skip).Take(() => take);
                 }
             }
-
+            if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0 && (filter.Id?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
+            }
             //var itemsRes = itemsDb.Select(x => x);
 
             var items = itemsDb.Select(x => new FrontDocumentPaper
