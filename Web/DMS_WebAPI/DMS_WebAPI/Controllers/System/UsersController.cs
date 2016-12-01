@@ -78,7 +78,7 @@ namespace DMS_WebAPI.Controllers
                 throw new UserNameIsNotDefined();
 
 
-            return new JsonResult(new { UserName = user.UserName, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
+            return new JsonResult(new { UserName = user.Email, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace DMS_WebAPI.Controllers
             var mngContext = DmsResolver.Current.Get<UserContexts>();
             mngContext.KillSessions(model.UserId);
 
-            return new JsonResult(new { UserName = user.UserName }, this);
+            return new JsonResult(new { UserName = user.Email }, this);
         }
 
         private static void AppendToFile(string path, string text)
