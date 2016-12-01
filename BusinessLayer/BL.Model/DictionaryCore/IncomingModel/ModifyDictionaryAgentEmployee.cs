@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Web;
@@ -65,7 +66,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        public DateTime? PassportDate { get; set; }
+        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
+        private DateTime? _PassportDate;
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
@@ -74,7 +76,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
+        private DateTime? _BirthDate;
 
         /// <summary>
         /// Дополнительная информация

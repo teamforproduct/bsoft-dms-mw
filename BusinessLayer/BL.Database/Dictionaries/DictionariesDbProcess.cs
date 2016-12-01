@@ -702,7 +702,7 @@ namespace BL.Database.Dictionaries
             }
 
             // Поиск по дате рождения
-            if (filter.BirthPeriod?.IsActive ?? false)
+            if (filter.BirthPeriod?.HasValue ?? false)
             {
                 qry = qry.Where(x => x.BirthDate >= filter.BirthPeriod.DateBeg);
                 qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
@@ -1052,7 +1052,7 @@ namespace BL.Database.Dictionaries
             // Поиск по дате рождения
             if (filter.BirthPeriod != null)
             {
-                if (filter.BirthPeriod.IsActive)
+                if (filter.BirthPeriod.HasValue)
                 {
                     qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
                     qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
@@ -5026,7 +5026,7 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     Description = x.Description,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate == maxDateTime ? (DateTime?)null : x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
@@ -5085,6 +5085,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
                 string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
                 string parObjId = string.Empty;
 
@@ -5093,7 +5094,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     IsActive = x.IsActive,
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
+                    EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     PositionName = x.Position.Name,
                     PositionExecutorTypeName = x.PositionExecutorType.Name,
                     PositionRoles = x.Position.PositionRoles
@@ -5286,7 +5287,7 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryPositionExecutorTypesSet.AsQueryable();
 
-            if (filter.Period?.IsActive == true && filter.PositionId != null)
+            if (filter.Period?.HasValue == true && filter.PositionId != null)
             {
 
                 // достаю всех исполнителей переданной должности в указанный срок

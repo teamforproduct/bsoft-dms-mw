@@ -26,10 +26,8 @@ namespace BL.Database.DBModel.Document
         [Index("IX_DocumentId",1)]
         public int DocumentId { get; set; }
         public int EventTypeId { get; set; }
-        [DateTimeKind(DateTimeKind.Utc)]
         public DateTime CreateDate { get; set; }
         [Index("IX_Date", 1)]
-        //[DateTimeKind(DateTimeKind.Utc)]
         public DateTime Date { get; set ; }
         [Index("IX_IsAvailableWithinTask", 2)]
         [Index("IX_TaskId",1)]
@@ -74,7 +72,6 @@ namespace BL.Database.DBModel.Document
 
         public int LastChangeUserId { get; set; }
         [Index("IX_LastChangeDate",1)]
-        [DateTimeKind(DateTimeKind.Utc)]
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("DocumentId")]

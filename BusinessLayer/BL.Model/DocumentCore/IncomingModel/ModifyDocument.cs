@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using BL.Model.SystemCore.IncomingModel;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -43,7 +44,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Дата входящего документа
         /// </summary>
-        public DateTime? SenderDate { get; set; }
+        public DateTime? SenderDate { get { return _SenderDate; } set { _SenderDate = value.ToUTC(); } }
+        private DateTime? _SenderDate;
         /// <summary>
         /// Кому адресован документ
         /// </summary>

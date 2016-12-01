@@ -30,17 +30,7 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public int? PositionExecutorId { get; set; }
 
-        ///// <summary>
-        ///// Дата назначения роли
-        ///// </summary>
-        //public DateTime? StartDate { get; set; }
-
-        ///// <summary>
-        ///// Дата снятия роли
-        ///// </summary>
-        //public DateTime? EndDate { get; set; }
-
-
+      
         ///// <summary>
         ///// Пользователь
         ///// </summary>

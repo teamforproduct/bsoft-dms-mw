@@ -1,7 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Enums;
 using Newtonsoft.Json;
-using BL.Model.Database;
+using System.ComponentModel.DataAnnotations;
 
 namespace DMS_WebAPI.Models
 {
@@ -43,7 +42,7 @@ namespace DMS_WebAPI.Models
 
         [Required]
         [Display(Name = "Тип сервера базы данных")]
-        public DatabaseType ServerServerType { get; set; }
+        public EnumDatabaseType ServerServerType { get; set; }
 
         [Required]
         [Display(Name = "Название базы данных")]

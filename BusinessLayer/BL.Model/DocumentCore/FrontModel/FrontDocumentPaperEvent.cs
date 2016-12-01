@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,15 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public int? EventType { get; set; }
         public string EventTypeName { get; set; }
-        public DateTime? PlanDate { get; set; }
-        public DateTime? SendDate { get; set; }
-        public DateTime? RecieveDate { get; set; }
+
+        public DateTime? PlanDate { get { return _PlanDate; } set { _PlanDate = value.ToUTC(); } }
+        private DateTime? _PlanDate;
+
+        public DateTime? SendDate { get { return _SendDate; } set { _SendDate = value.ToUTC(); } }
+        private DateTime? _SendDate;
+
+        public DateTime? RecieveDate { get { return _RecieveDate; } set { _RecieveDate = value.ToUTC(); } }
+        private DateTime? _RecieveDate;
 
 
         public string Description { get; set; }

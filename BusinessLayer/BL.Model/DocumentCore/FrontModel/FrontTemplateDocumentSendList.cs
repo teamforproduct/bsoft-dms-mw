@@ -1,5 +1,6 @@
 ﻿using System;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -21,9 +22,15 @@ namespace BL.Model.DocumentCore.FrontModel
         public string AccessLevelName { get; set; }
         public bool? IsWorkGroup { get; set; }
         public bool? IsAddControl { get; set; }
-        public DateTime? SelfDueDate { get; set; }
+
+        public DateTime? SelfDueDate { get { return _SelfDueDate; } set { _SelfDueDate = value.ToUTC(); } }
+        private DateTime? _SelfDueDate;
+
         public int? SelfDueDay { get; set; }
-        public DateTime? SelfAttentionDate { get; set; }
+
+        public DateTime? SelfAttentionDate { get { return _SelfAttentionDate; } set { _SelfAttentionDate = value.ToUTC(); } }
+        private DateTime? _SelfAttentionDate;
+
         public bool? IsAvailableWithinTask { get; set; }
 
     }

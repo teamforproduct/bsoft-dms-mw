@@ -489,14 +489,14 @@ namespace BL.Database.Common
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
-            if (filter.Date?.IsActive == true)
+            if (filter.Date?.HasValue == true)
             {
                 qry = qry.Where(x => x.Date >= filter.Date.DateBeg & x.Date <= filter.Date.DateEnd);
             }
 
-            if (filter.ReadDate?.IsActive == true)
+            if (filter.ReadDate?.HasValue == true)
             {
-                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.Date.DateBeg.Value && x.ReadDate <= filter.Date.DateEnd.Value); 
+                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.ReadDate.DateBeg && x.ReadDate <= filter.ReadDate.DateEnd);
             }
 
             if (filter.SourcePositionIDs?.Count() > 0)
@@ -872,6 +872,11 @@ namespace BL.Database.Common
                 }
             }
 
+            if ((paging?.IsAll ?? true) && (filter == null || filter.Event == null || ((filter.Event.DocumentId?.Count ?? 0) == 0 && (filter.Event.EventId?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
+            }
+
             IQueryable<DocumentEvents> qryRes = qrys.First(); ;
 
             if (qrys.Count > 1)
@@ -902,8 +907,11 @@ namespace BL.Database.Common
                     Description = x.Description,
                     AddDescription = x.AddDescription,
 
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name +
+                                                      (x.SourcePosition.PositionExecutorTypeId.HasValue ? $"({x.SourcePosition.PositionExecutorType.Name})" : ""),
+                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name +
+                                                      (x.TargetPosition.PositionExecutorTypeId.HasValue ? $"({x.TargetPosition.PositionExecutorType.Name})" : ""))
+                                                      ?? x.TargetAgent.Name,
                     DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
                     RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
@@ -1150,6 +1158,11 @@ namespace BL.Database.Common
 
                     qry = qry.Skip(() => skip).Take(() => take);
                 }
+            }
+
+            if ((paging?.IsAll ?? true) && (filter == null || filter.File == null || ((filter.File.DocumentId?.Count ?? 0) == 0 && (filter.File.FileId?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
             }
 
             var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
@@ -1901,6 +1914,11 @@ namespace BL.Database.Common
                 }
             }
 
+            if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0 && (filter.Id?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
+            }
+
             var tasks = tasksDb.Select(x => new FrontDocumentTask
             {
                 Id = x.Id,
@@ -2035,6 +2053,10 @@ namespace BL.Database.Common
                     subscriptionsRes = subscriptionsRes
                         .Skip(() => skip).Take(() => take);
                 }
+            }
+            if ((paging?.IsAll ?? true) && (filter == null || (filter.DocumentId?.Count ?? 0) == 0))
+            {
+                throw new WrongAPIParameters();
             }
 
             var maxDateTime = DateTime.UtcNow.AddYears(50);
@@ -2296,7 +2318,7 @@ namespace BL.Database.Common
                 }
                 else if (itemRes.ValueDate.HasValue)
                 {
-                    item.Value = itemRes.ValueDate;
+                    item.Value = DateTime.SpecifyKind(itemRes.ValueDate.Value, DateTimeKind.Utc);
                 }
                 else
                 {
@@ -2560,7 +2582,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, IContext context, FilterDocumentSendList filter)
         {
             var sendListDb = GetDocumentSendListQuery(dbContext, context, filter);
-
+            
             var res = sendListDb.Select(y => new FrontDocumentSendList
             {
                 Id = y.Id,
@@ -2570,9 +2592,11 @@ namespace BL.Database.Common
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
-                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name,
-                TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
-
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name +
+                                                (y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : ""),
+                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name +
+                                                (y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : ""))
+                                                ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
                 IsWorkGroup = y.IsWorkGroup,
@@ -2805,7 +2829,10 @@ namespace BL.Database.Common
                         .Skip(() => skip).Take(() => take);
                 }
             }
-
+            if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0 && (filter.Id?.Count ?? 0) == 0)))
+            {
+                throw new WrongAPIParameters();
+            }
             //var itemsRes = itemsDb.Select(x => x);
 
             var items = itemsDb.Select(x => new FrontDocumentPaper

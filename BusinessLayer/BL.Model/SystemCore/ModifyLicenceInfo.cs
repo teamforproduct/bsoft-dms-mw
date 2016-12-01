@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.SystemCore
@@ -8,7 +9,8 @@ namespace BL.Model.SystemCore
         [Required]
         public int ClientId { get; set; }
         public string Name { get; set; }
-        public DateTime FirstStart { get; set; }
+        public DateTime FirstStart { get { return _FirstStart; } set { _FirstStart=value.ToUTC(); } }
+        private DateTime _FirstStart;
         /// <summary>
         /// Только для информации
         /// </summary>

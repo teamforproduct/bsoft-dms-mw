@@ -57,12 +57,10 @@ namespace BL.Database.SystemDb
                         return new List<FrontSystemLog>();
                     }
 
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-                        qry = qry.Skip(() => skip).Take(() => take);
-                    }
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+                    qry = qry.Skip(() => skip).Take(() => take);
+
                 }
 
                 var res = qry.Select(x => new FrontSystemLog
@@ -2226,46 +2224,46 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgents)
                         .Join(dbContext.DictionaryAgentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ClientId = ctx.CurrentClientId,
-                        ObjectId = x.id,
-                        ObjectText = x.agent.Name.Trim() + " " + x.agent.Description.Trim()
-                    }).ToList());
+                        {
+                            Id = x.ind.Id,
+                            DocumentId = 0,
+                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            OperationType = (EnumOperationType)x.ind.OperationType,
+                            ClientId = ctx.CurrentClientId,
+                            ObjectId = x.id,
+                            ObjectText = x.agent.Name.Trim() + " " + x.agent.Description.Trim()
+                        }).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees)
                         .Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, employee = d, id = d.Id }).Select(x => new FullTextIndexItem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ClientId = ctx.CurrentClientId,
-                        ObjectId = x.id,
-                        ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPerson.FullName + " " + x.employee.Agent.AgentPerson.BirthDate + " " + x.employee.Agent.AgentPerson.PassportDate + " " + x.employee.Agent.AgentPerson.PassportNumber + " " + x.employee.Agent.AgentPerson.PassportSerial + " " + x.employee.Agent.AgentPerson.PassportText + " " + x.employee.Agent.AgentPerson.TaxCode
-                    }).ToList());
+                        {
+                            Id = x.ind.Id,
+                            DocumentId = 0,
+                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            OperationType = (EnumOperationType)x.ind.OperationType,
+                            ClientId = ctx.CurrentClientId,
+                            ObjectId = x.id,
+                            ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPerson.FullName + " " + x.employee.Agent.AgentPerson.BirthDate + " " + x.employee.Agent.AgentPerson.PassportDate + " " + x.employee.Agent.AgentPerson.PassportNumber + " " + x.employee.Agent.AgentPerson.PassportSerial + " " + x.employee.Agent.AgentPerson.PassportText + " " + x.employee.Agent.AgentPerson.TaxCode
+                        }).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentCompanies))
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentCompanies)
                         .Join(dbContext.DictionaryAgentCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
-                    {
-                        Id = x.ind.Id,
-                        DocumentId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
-                        OperationType = (EnumOperationType)x.ind.OperationType,
-                        ClientId = ctx.CurrentClientId,
-                        ObjectId = x.id,
-                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.OKPOCode.Trim() + " " + x.agent.Description.Trim() + " "
+                        {
+                            Id = x.ind.Id,
+                            DocumentId = 0,
+                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            OperationType = (EnumOperationType)x.ind.OperationType,
+                            ClientId = ctx.CurrentClientId,
+                            ObjectId = x.id,
+                            ObjectText = x.agent.FullName.Trim() + " " + x.agent.OKPOCode.Trim() + " " + x.agent.Description.Trim() + " "
                                      + x.agent.TaxCode.Trim() + " " + x.agent.VATCode.Trim()
-                    }).ToList());
+                        }).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentPersons))

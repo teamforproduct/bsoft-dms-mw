@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
@@ -6,7 +7,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель изменения параметров контроля для исполнителя
     /// </summary>
-    public class ControlTargetChange 
+    public class ControlTargetChange
     {
         /// <summary>
         /// ИД события, породившего контроль
@@ -24,11 +25,7 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// Дата события
         /// </summary>
-        public DateTime? EventDate
-        {
-            get { return _eventDate; }
-            set { _eventDate = value.HasValue ? value.Value.ToUniversalTime() : value; }
-        }
-        private DateTime? _eventDate { get; set; }
+        public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
+        private DateTime? _eventDate;
     }
 }

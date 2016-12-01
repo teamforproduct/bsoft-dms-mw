@@ -1795,6 +1795,7 @@ namespace BL.Database.Documents
                     var entry = dbContext.Entry(sendListDb);
                     entry.Property(e => e.Stage).IsModified = true;
                     entry.Property(e => e.SendTypeId).IsModified = true;
+                    entry.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
                     entry.Property(e => e.TargetPositionId).IsModified = true;
                     entry.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
                     entry.Property(e => e.TargetAgentId).IsModified = true;
