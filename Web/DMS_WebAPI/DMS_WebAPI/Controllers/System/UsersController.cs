@@ -383,7 +383,7 @@ namespace DMS_WebAPI.Controllers
             if (user == null)
                 throw new UserNameIsNotDefined();
 
-            user.UserName = model.NewEmail;
+            user.UserName = model.NewEmail.UserNameFormatByClientId(ctx.CurrentClientId);
             user.Email = model.NewEmail;
 
             user.IsEmailConfirmRequired = model.IsVerificationRequired;

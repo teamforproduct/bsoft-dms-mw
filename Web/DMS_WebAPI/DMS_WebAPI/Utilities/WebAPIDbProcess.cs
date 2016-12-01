@@ -1800,7 +1800,7 @@ namespace DMS_WebAPI.Utilities
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindByEmailAsync(model.Email);
+            ApplicationUser user = await userManager.FindByNameAsync(model.Email.UserNameFormatByClientCode(model.ClientCode));
 
             if (user == null)
                 throw new UserNameIsNotDefined();
@@ -1842,7 +1842,7 @@ namespace DMS_WebAPI.Utilities
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = userManager.FindByEmail(model.Email);
+            ApplicationUser user = userManager.FindByEmail(model.Email.UserNameFormatByClientCode(model.ClientCode));
 
             if (user == null)
                 throw new UserNameIsNotDefined();
