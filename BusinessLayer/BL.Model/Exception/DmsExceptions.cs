@@ -175,6 +175,16 @@ namespace BL.Model.Exception
     }
 
     /// <summary>
+    /// Параметры АПИ некорректны
+    /// </summary>
+    public class WrongAPIParameters : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:WrongAPIParameters@l##";
+        public WrongAPIParameters() : base(_MESSAGE) { }
+        public WrongAPIParameters(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    /// <summary>
     /// Параметр комманды неверного типа
     /// </summary>
     public class WrongParameterValueError : DmsExceptions
