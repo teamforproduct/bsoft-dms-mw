@@ -907,8 +907,11 @@ namespace BL.Database.Common
                     Description = x.Description,
                     AddDescription = x.AddDescription,
 
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name ?? x.TargetAgent.Name,
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name +
+                                                      (x.SourcePosition.PositionExecutorTypeId.HasValue ? $"({x.SourcePosition.PositionExecutorType.Name})" : ""),
+                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name +
+                                                      (x.TargetPosition.PositionExecutorTypeId.HasValue ? $"({x.TargetPosition.PositionExecutorType.Name})" : ""))
+                                                      ?? x.TargetAgent.Name,
                     DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
                     RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
@@ -2315,7 +2318,7 @@ namespace BL.Database.Common
                 }
                 else if (itemRes.ValueDate.HasValue)
                 {
-                    item.Value = itemRes.ValueDate;
+                    item.Value = DateTime.SpecifyKind(itemRes.ValueDate.Value, DateTimeKind.Utc);
                 }
                 else
                 {
@@ -2579,7 +2582,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, IContext context, FilterDocumentSendList filter)
         {
             var sendListDb = GetDocumentSendListQuery(dbContext, context, filter);
-
+            
             var res = sendListDb.Select(y => new FrontDocumentSendList
             {
                 Id = y.Id,
@@ -2589,9 +2592,11 @@ namespace BL.Database.Common
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
-                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name,
-                TargetPositionExecutorAgentName = y.TargetPosition.ExecutorAgent.Name ?? y.TargetAgent.Name,
-
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name +
+                                                (y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : ""),
+                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name +
+                                                (y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : ""))
+                                                ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
                 IsWorkGroup = y.IsWorkGroup,
