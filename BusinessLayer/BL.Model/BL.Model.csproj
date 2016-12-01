@@ -289,7 +289,7 @@
     <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
-    <Compile Include="Database\DatabaseType.cs" />
+    <Compile Include="Enums\EnumDatabaseType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryResultType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />

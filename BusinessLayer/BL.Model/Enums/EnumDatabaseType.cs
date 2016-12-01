@@ -1,6 +1,6 @@
-﻿namespace BL.Model.Database
+﻿namespace BL.Model.Enums
 {
-    public enum DatabaseType
+    public enum EnumDatabaseType
     {
         SQLServer = 1,
         SQLPortable = 2,

@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Database;
 using Oracle.ManagedDataAccess.Client;
+using BL.Model.Enums;
 
 namespace BL.Database.Helper
 {
@@ -19,9 +20,9 @@ namespace BL.Database.Helper
             {
                 switch (currentDB.ServerType)
                 {
-                    case DatabaseType.SQLServer:
+                    case EnumDatabaseType.SQLServer:
                         return new SqlConnection(currentDB.ConnectionString);
-                    case DatabaseType.Oracle:
+                    case EnumDatabaseType.Oracle:
                         return new OracleConnection(currentDB.ConnectionString);
                     default:
                         return null;
@@ -32,9 +33,9 @@ namespace BL.Database.Helper
             var secur = currentDB.IntegrateSecurity ? "Persist Security Info=false" : $"Persist Security Info=True;User ID={currentDB.UserName};Password={currentDB.UserPassword}";
             switch (currentDB.ServerType)
             {
-                case DatabaseType.SQLServer:
+                case EnumDatabaseType.SQLServer:
                     return new SqlConnection(string.Format(@"Data Source={0};Initial Catalog={1};{2}", currentDB.Address, currentDB.DefaultDatabase, secur));
-                case DatabaseType.Oracle:
+                case EnumDatabaseType.Oracle:
                     return new OracleConnection($"Data Source={currentDB.Address};{secur}");
                 default:
                     return null;
