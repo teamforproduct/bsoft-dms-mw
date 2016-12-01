@@ -75,15 +75,7 @@ namespace DMS_WebAPI.Providers
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
             // если фронт передал код (доменное имя) клиента добавляю его к адресу
-            if (!string.IsNullOrEmpty(clientCode))
-            {
-                var dbProc = new WebAPIDbProcess();
-                var client = dbProc.GetClient(clientCode);
-                if (client != null && client.Id > 0)
-                {
-                    userName = $"Client_{client.Id}_{userName}";
-                }
-            }
+            userName = userName.UserNameFormatByClientCode(clientCode);
 
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 

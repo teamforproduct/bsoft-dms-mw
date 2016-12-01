@@ -507,6 +507,29 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> RestorePasswordAgentUser(RestorePasswordAgentUser model)
         {
+            #region log to file
+            try
+            {
+                string message = "RestorePasswordAgentUser";
+                message += DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
+
+                try
+                {
+                    message += $"URL: {HttpContext.Current.Request.Url.ToString()}\r\n";
+                }
+                catch { }
+
+                try
+                {
+                    message += $"Request Body: Email: {model.Email}, ClientCode: {model.ClientCode}\r\n";
+                }
+                catch { }
+
+                AppendToFile(HttpContext.Current.Server.MapPath("~/RestorePasswordAgentUser.txt"), message);
+            }
+            catch { }
+            #endregion log to file
+
             var dbProc = new WebAPIDbProcess();
             //new NameValueCollection { { "test", "test" } }
             await dbProc.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
@@ -519,6 +542,29 @@ namespace DMS_WebAPI.Controllers
         [AllowAnonymous]
         public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser([FromUri]ConfirmRestorePasswordAgentUser model)
         {
+            #region log to file
+            try
+            {
+                string message = "ConfirmRestorePasswordAgentUser";
+                message += DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
+
+                try
+                {
+                    message += $"URL: {HttpContext.Current.Request.Url.ToString()}\r\n";
+                }
+                catch { }
+
+                try
+                {
+                    message += $"Request Body: UserId: {model.UserId}, Code: {model.Code}, IsKillSessions: {model.IsKillSessions}, NewPassword: {model.NewPassword}, ConfirmPassword: {model.ConfirmPassword}\r\n";
+                }
+                catch { }
+
+                AppendToFile(HttpContext.Current.Server.MapPath("~/ConfirmRestorePasswordAgentUser.txt"), message);
+            }
+            catch { }
+            #endregion log to file
+
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
             var result = await userManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
@@ -543,6 +589,43 @@ namespace DMS_WebAPI.Controllers
             mngContext.KillSessions(model.UserId);
 
             return new JsonResult(new { UserName = user.UserName }, this);
+        }
+
+        private static void AppendToFile(string path, string text)
+        {
+            try
+            {
+                StreamWriter sw;
+
+                try
+                {
+                    FileInfo ff = new FileInfo(path);
+                    if (ff.Exists)
+                    {
+                    }
+                }
+                catch
+                {
+
+                }
+
+                sw = File.AppendText(path);
+                try
+                {
+                    string line = text;
+                    sw.WriteLine(line);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    sw.Close();
+                }
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
