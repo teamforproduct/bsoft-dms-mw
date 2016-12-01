@@ -391,7 +391,7 @@ namespace BL.Database.Documents
                     RegistrationDate = doc.RegistrationDate,
 
                     ExecutorPositionId = doc.ExecutorPositionId,
-                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPosition.ExecutorAgent.Name,
+                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPosition.ExecutorAgent.Name + doc.ExecutorPosition.PositionExecutorType.Suffix,
                     ExecutorPositionAgentPhoneNumber = "(888)888-88-88", //TODO
 
                     SenderAgentId = doc.SenderAgentId,
