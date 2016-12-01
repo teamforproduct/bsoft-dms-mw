@@ -398,6 +398,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\DimanicAuthorizeAttribute.cs" />
     <Compile Include="Utilities\RenderPartialView.cs" />
     <Compile Include="Utilities\Licences.cs" />
     <Compile Include="Utilities\LicencesWorkerService.cs" />
