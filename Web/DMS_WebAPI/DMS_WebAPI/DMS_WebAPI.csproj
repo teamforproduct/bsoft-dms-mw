@@ -386,6 +386,10 @@
     <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.Designer.cs">
       <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612012027415_DictionaryPositionExecutorTypesSuffix.cs" />
+    <Compile Include="Migrations\201612012027415_DictionaryPositionExecutorTypesSuffix.Designer.cs">
+      <DependentUpon>201612012027415_DictionaryPositionExecutorTypesSuffix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -551,6 +555,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611292202410_AddFileNameToLanguages2.resx">
       <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612012027415_DictionaryPositionExecutorTypesSuffix.resx">
+      <DependentUpon>201612012027415_DictionaryPositionExecutorTypesSuffix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

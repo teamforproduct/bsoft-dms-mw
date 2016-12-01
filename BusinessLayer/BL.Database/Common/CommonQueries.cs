@@ -2594,12 +2594,8 @@ namespace BL.Database.Common
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
-                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name //+
-                                                //(y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : "")
-                                                ,
-                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name //+
-                                                //(y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : "")
-                                                )
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name + " " + (y.SourcePosition.PositionExecutorType.Name??""),
+                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name + " " + (y.TargetPosition.PositionExecutorType.Name??""))                                                
                                                 ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
@@ -2626,8 +2622,8 @@ namespace BL.Database.Common
 
                 SourcePositionName = y.SourcePosition.Name,
                 TargetPositionName = y.TargetPosition.Name,
-                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
-                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
+                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name + " " + (y.SourcePosition.PositionExecutorType.Name ?? ""),
+                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name + " " + (y.TargetPosition.PositionExecutorType.Name ?? ""),
                 SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,

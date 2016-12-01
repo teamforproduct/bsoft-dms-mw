@@ -441,6 +441,10 @@
     <Compile Include="Migrations\201611292119354_PositionExecutorType.Designer.cs">
       <DependentUpon>201611292119354_PositionExecutorType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612012028038_DictionaryPositionExecutorTypesSuffix.cs" />
+    <Compile Include="Migrations\201612012028038_DictionaryPositionExecutorTypesSuffix.Designer.cs">
+      <DependentUpon>201612012028038_DictionaryPositionExecutorTypesSuffix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -643,6 +647,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611292119354_PositionExecutorType.resx">
       <DependentUpon>201611292119354_PositionExecutorType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612012028038_DictionaryPositionExecutorTypesSuffix.resx">
+      <DependentUpon>201612012028038_DictionaryPositionExecutorTypesSuffix.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
