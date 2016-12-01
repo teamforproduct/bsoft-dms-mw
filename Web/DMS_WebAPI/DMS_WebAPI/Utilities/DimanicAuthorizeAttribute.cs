@@ -22,6 +22,8 @@ namespace DMS_WebAPI.Utilities
             var principal = actionContext.RequestContext.Principal;
             if (principal == null)
             {
+                var controller = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
+                var method = actionContext.ActionDescriptor.ActionName;
                 return Task.FromResult<HttpResponseMessage>(actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized));
             }
             else

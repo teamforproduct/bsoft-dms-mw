@@ -15,6 +15,7 @@ using System.Diagnostics;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix("api/v2/Documents")]
     public class DocumentsController : ApiController
     {
