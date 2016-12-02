@@ -272,7 +272,7 @@ namespace BL.Database.Documents
                     IsRegistered = doc.IsRegistered,
                     IsLaunchPlan = doc.IsLaunchPlan,
                     Description = doc.Description,
-                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name,
+                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + doc.PositionExecutorType.Suffix,
                     ExecutorPositionName = doc.ExecutorPosition.Name,
 
                     WaitCount = doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue && !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
@@ -375,7 +375,7 @@ namespace BL.Database.Documents
                     DocumentDate = doc.RegistrationDate ?? doc.CreateDate,
                     IsRegistered = doc.IsRegistered,
                     Description = doc.Description,
-                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name,
+                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + doc.PositionExecutorType.Suffix,
                     ExecutorPositionName = doc.ExecutorPosition.Name,
                     LinkedDocumentsCount = 0, //TODO
 
@@ -391,7 +391,7 @@ namespace BL.Database.Documents
                     RegistrationDate = doc.RegistrationDate,
 
                     ExecutorPositionId = doc.ExecutorPositionId,
-                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPosition.ExecutorAgent.Name,
+                    ExecutorPositionExecutorNowAgentName = doc.ExecutorPosition.ExecutorAgent.Name + doc.ExecutorPosition.PositionExecutorType.Suffix,
                     ExecutorPositionAgentPhoneNumber = "(888)888-88-88", //TODO
 
                     SenderAgentId = doc.SenderAgentId,
@@ -582,9 +582,9 @@ namespace BL.Database.Documents
                         DocumentId = x.DocumentId,
                         CreateDate = x.OnEvent.Date,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name + x.OnEvent.TargetPositionExecutorType.Suffix,
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name + x.OnEvent.SourcePositionExecutorType.Suffix,
                         DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                         IsClosed = x.OffEventId != null,
                         ResultTypeName = x.ResultType.Name,
@@ -660,9 +660,9 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     SourcePositionName = x.SourcePosition.Name,
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name,
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + x.SourcePositionExecutorType.Suffix,
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name,
+                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name + x.TargetPositionExecutorType.Suffix,
                     PaperId = x.PaperId,
                     Paper = !x.PaperId.HasValue
                         ? null

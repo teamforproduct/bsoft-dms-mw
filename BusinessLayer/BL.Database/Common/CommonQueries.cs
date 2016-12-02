@@ -907,12 +907,8 @@ namespace BL.Database.Common
                     Description = x.Description,
                     AddDescription = x.AddDescription,
 
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name //+
-                                                      //(x.SourcePosition.PositionExecutorTypeId.HasValue ? $"({x.SourcePosition.PositionExecutorType.Name})" : "")
-                                                      ,
-                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name //+
-                                                      //(x.TargetPosition.PositionExecutorTypeId.HasValue ? $"({x.TargetPosition.PositionExecutorType.Name})" : "")
-                                                      )
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + x.SourcePositionExecutorType.Suffix,
+                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name + x.TargetPositionExecutorType.Suffix)
                                                       ?? x.TargetAgent.Name,
                     DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
@@ -1587,8 +1583,8 @@ namespace BL.Database.Common
                         IsClosed = y.OffEventId.HasValue,
                         IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
-                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
-                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
+                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name + y.OnEvent.SourcePositionExecutorType.Suffix : null,
+                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name + y.OnEvent.TargetPositionExecutorType.Suffix : null,
                     })
                     .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
                                         ).ToList();
@@ -1700,8 +1696,8 @@ namespace BL.Database.Common
                         EventType = x.OnEvent.EventTypeId,
                         EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
                         Date = x.OnEvent.Date,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name + x.OnEvent.SourcePositionExecutorType.Suffix,
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name + x.OnEvent.TargetPositionExecutorType.Suffix,
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
                         ReadDate = x.OnEvent.ReadDate,
@@ -1709,8 +1705,8 @@ namespace BL.Database.Common
 
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name + x.OnEvent.SourcePosition.PositionExecutorType.Suffix,
+                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name + x.OnEvent.TargetPosition.PositionExecutorType.Suffix,
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
@@ -1727,8 +1723,8 @@ namespace BL.Database.Common
                         EventType = x.OffEvent.EventTypeId,
                         EventTypeName = x.OffEvent.EventType.Name,
                         Date = x.OffEvent.Date,
-                        SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name,
+                        SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name + x.OffEvent.SourcePositionExecutorType.Suffix,
+                        TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name + x.OffEvent.TargetPositionExecutorType.Suffix,
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
                         ReadDate = x.OnEvent.ReadDate,
@@ -1742,8 +1738,8 @@ namespace BL.Database.Common
                         //TargetPositionExecutorAgentPhoneNumber = null,
                         SourcePositionName = x.OffEvent.SourcePosition.Name,
                         TargetPositionName = x.OffEvent.TargetPosition.Name,
-                        SourcePositionExecutorNowAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name + x.OffEvent.SourcePosition.PositionExecutorType.Suffix,
+                        TargetPositionExecutorNowAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name + x.OffEvent.TargetPosition.PositionExecutorType.Suffix,
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
@@ -1945,7 +1941,7 @@ namespace BL.Database.Common
                 PositionExecutorAgentName = x.PositionExecutorAgent.Name,
                 AgentName = x.Agent.Name,
                 PositionName = x.Position.Name,
-                PositionExecutorNowAgentName = x.Position.ExecutorAgent.Name,
+                PositionExecutorNowAgentName = x.Position.ExecutorAgent.Name + x.Position.PositionExecutorType.Suffix,
                 PositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
                 //FactResponsibleExecutorPositionName = x.SendListDb.TargetPosition.Name,
@@ -2091,11 +2087,11 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         EventType = x.SendEvent.EventTypeId,
                         EventTypeName = x.SendEvent.EventType.Name,
-                        TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name + x.SendEvent.TargetPositionExecutorType.Suffix,
                         DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
 
                         Date = x.SendEvent.Date,
-                        SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
+                        SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name + x.SendEvent.SourcePositionExecutorType.Suffix,
                         Description = x.SendEvent.Description,
                         AddDescription = x.SendEvent.AddDescription,
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
@@ -2105,8 +2101,8 @@ namespace BL.Database.Common
                         SourcePositionId = x.DoneEvent.SourcePositionId,
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
                         TargetPositionId = x.DoneEvent.TargetPositionId,
-                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name + x.SendEvent.SourcePosition.PositionExecutorType.Suffix,
+                        TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name + x.SendEvent.TargetPosition.PositionExecutorType.Suffix,
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
@@ -2119,7 +2115,7 @@ namespace BL.Database.Common
                         DocumentId = x.DoneEvent.DocumentId,
                         EventType = x.DoneEvent.EventTypeId,
                         EventTypeName = x.DoneEvent.EventType.Name,
-                        TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name,
+                        TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name + x.DoneEvent.TargetPositionExecutorType.Suffix,
                         DueDate = null,
                         Date = x.DoneEvent.Date,
                         SourcePositionExecutorAgentName = null,
@@ -2135,7 +2131,7 @@ namespace BL.Database.Common
                         TargetPositionName = null,
                         TargetPositionId = x.DoneEvent.TargetPositionId,
 
-                        SourcePositionExecutorNowAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name + x.DoneEvent.SourcePosition.PositionExecutorType.Suffix,
                         TargetPositionExecutorNowAgentName = null,
                         SourcePositionExecutorAgentPhoneNumber = null,
                         TargetPositionExecutorAgentPhoneNumber = null,
@@ -2488,7 +2484,7 @@ namespace BL.Database.Common
                 DepartmentId = x.Position.DepartmentId,
                 ExecutorAgentId = x.Position.ExecutorAgentId,
                 DepartmentName = x.Position.Department.Name,
-                ExecutorAgentName = x.Position.ExecutorAgent.Name,
+                ExecutorAgentName = x.Position.ExecutorAgent.Name + x.Position.PositionExecutorType.Suffix,
                 PositionPhone = "Здесь нужно отображать основной номер или все контакты"// x.Position.ExecutorAgent.AgentContacts.Where(y => y.IsActive).Where(y => y.ContactType.SpecCode == EnumContactTypes.MainPhone.ToString()).ToString()
             }).Distinct().ToList();
 
@@ -2516,7 +2512,7 @@ namespace BL.Database.Common
                             DocumentDate = y.RegistrationDate ?? y.CreateDate,
                             IsRegistered = y.IsRegistered,
                             Description = y.Description,
-                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name,
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + y.PositionExecutorType.Suffix,
                             ExecutorPositionName = y.ExecutorPosition.Name,
                             Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate).
                                 Select(z => new FrontDocumentLink
@@ -2594,12 +2590,8 @@ namespace BL.Database.Common
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
-                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name //+
-                                                //(y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : "")
-                                                ,
-                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name //+
-                                                //(y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : "")
-                                                )
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name + y.SourcePosition.PositionExecutorType.Suffix,
+                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name + y.TargetPosition.PositionExecutorType.Suffix)                                                
                                                 ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
@@ -2626,8 +2618,8 @@ namespace BL.Database.Common
 
                 SourcePositionName = y.SourcePosition.Name,
                 TargetPositionName = y.TargetPosition.Name,
-                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
-                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
+                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name + y.SourcePosition.PositionExecutorType.Suffix,
+                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name + y.TargetPosition.PositionExecutorType.Suffix,
                 SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
@@ -2640,8 +2632,8 @@ namespace BL.Database.Common
                                             EventType = y.StartEvent.EventTypeId,
                                             EventTypeName = y.StartEvent.EventType.Name,
                                             Date = y.StartEvent.Date,
-                                            SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name,
-                                            TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
+                                            SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name + y.StartEvent.SourcePositionExecutorType.Suffix,
+                                            TargetPositionExecutorAgentName = (y.StartEvent.TargetPositionExecutorAgent.Name + y.StartEvent.TargetPositionExecutorType.Suffix ) ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
                                             AddDescription = y.StartEvent.AddDescription,
                                             DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
@@ -2654,8 +2646,8 @@ namespace BL.Database.Common
                                             EventType = y.CloseEvent.EventTypeId,
                                             EventTypeName = y.CloseEvent.EventType.Name,
                                             Date = y.CloseEvent.Date,
-                                            SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name,
-                                            TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
+                                            SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name + y.CloseEvent.SourcePositionExecutorType.Suffix,
+                                            TargetPositionExecutorAgentName = (y.CloseEvent.TargetPositionExecutorAgent.Name + y.CloseEvent.TargetPositionExecutorType.Suffix) ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.CloseEvent.Description,
                                             AddDescription = y.CloseEvent.AddDescription,
                                             DueDate = null,
@@ -2732,7 +2724,7 @@ namespace BL.Database.Common
                 DocumentId = y.DocumentId,
                 PositionId = y.PositionId,
                 PositionName = y.Position.Name,
-                PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
+                PositionExecutorAgentName = y.Position.ExecutorAgent.Name + y.Position.PositionExecutorType.Suffix,
                 PositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
@@ -2863,9 +2855,9 @@ namespace BL.Database.Common
                 //DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
                 OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
-                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
+                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name + x.LastPaperEvent.TargetPositionExecutorType.Suffix,
                 OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
-                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
+                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name + x.LastPaperEvent.TargetPosition.PositionExecutorType.Suffix,
                 OwnerPositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
                 PaperSendDate = x.LastPaperEvent.PaperSendDate,
@@ -3451,7 +3443,7 @@ namespace BL.Database.Common
                     DepartmentId = x.DepartmentId,
                     ExecutorAgentId = x.ExecutorAgentId,
                     DepartmentName = x.Department.Name,
-                    ExecutorAgentName = x.ExecutorAgent.Name,
+                    ExecutorAgentName = x.ExecutorAgent.Name + x.PositionExecutorType.Suffix,
                 }).ToList();
         }
 
