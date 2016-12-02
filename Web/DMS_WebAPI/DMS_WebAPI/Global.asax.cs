@@ -53,8 +53,6 @@ namespace DMS_WebAPI
         }
         protected void Application_End(object sender, EventArgs e)
         {
-            BL.CrossCutting.Helpers.FileLogger.AppendTextToSiteErrors("Application_End");
-
             if (LoadLibraryHandle != IntPtr.Zero)
                 FreeLibrary(LoadLibraryHandle);
         }

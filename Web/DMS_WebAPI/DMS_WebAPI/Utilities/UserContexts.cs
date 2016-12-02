@@ -18,11 +18,11 @@ namespace DMS_WebAPI.Utilities
     /// <summary>
     /// Коллекция пользовательских контекстов
     /// </summary>
-    public class UserContexts : IDisposable
+    public class UserContexts //: IDisposable
     {
         private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
-        private const int _TIME_OUT = 14;
+        private const int _TIME_OUT_MIN = 1;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
 
         /// <summary>
@@ -80,10 +80,12 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <param name="currentPositionId"></param>
         /// <param name="isThrowExeception"></param>
+        /// <param name="keepAlive"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true)
+        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true)
         {
             string token = Token.ToLower();
+
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
@@ -103,19 +105,20 @@ namespace DMS_WebAPI.Utilities
 
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
-                // KeepAlive: Продление жизни пользовательского контекста
-                storeInfo.LastUsage = DateTime.UtcNow;
-
                 var request_ctx = new UserContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
 
                 if (isThrowExeception && request_ctx.IsChangePasswordRequired)
-                    throw new ChangePasswordRequiredAgentUser();
+                    throw new UserMustChangePassword();
+
+                // KeepAlive: Продление жизни пользовательского контекста
+                if (keepAlive) KeepAlive(token);
 
                 return request_ctx;
             }
             catch (InvalidCastException invalidCastException)
             {
+                // TODO Это правильно, что при InvalidCastException выбрасывается new Exception()
                 throw new Exception();
             }
         }
@@ -248,13 +251,13 @@ namespace DMS_WebAPI.Utilities
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    KillCurrentSession(token);
+                    //KillCurrentSession(token);
                     throw new UserIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    KillCurrentSession(token);
+                    //KillCurrentSession(token);
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
@@ -332,10 +335,10 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
 
-            // KeepAlive: Продление жизни пользовательского контекста
-            storeInfo.LastUsage = DateTime.UtcNow;
-
             context.CurrentClientId = client.Id;
+            
+            // KeepAlive: Продление жизни пользовательского контекста
+            KeepAlive(token);
         }
 
         /// <summary>
@@ -414,7 +417,7 @@ namespace DMS_WebAPI.Utilities
         public void RemoveByTimeout()
         {
             var now = DateTime.UtcNow;
-            var keys = _casheContexts.Where(x => x.Value.LastUsage.AddDays(_TIME_OUT) <= now).Select(x => x.Key).ToArray();
+            var keys = _casheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 _casheContexts.Remove(key);
@@ -531,42 +534,45 @@ namespace DMS_WebAPI.Utilities
             get { return _casheContexts.Count; }
         }
 
-        public void Dispose()
-        {
-            try
-            {
-                var folderPath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "UserContexts");
+        //public void Dispose()
+        //{
+        //    try
+        //    {
+        //        var folderPath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "UserContexts");
 
 
-                try {
-                    var files = System.IO.Directory.GetFiles(folderPath);
-                    foreach (var item in files)
-                    {
-                        System.IO.File.Delete(item);
-                    } 
-                    System.IO.Directory.Delete(folderPath); } catch { }
+        //        try
+        //        {
+        //            var files = System.IO.Directory.GetFiles(folderPath);
+        //            foreach (var item in files)
+        //            {
+        //                System.IO.File.Delete(item);
+        //            }
+        //            System.IO.Directory.Delete(folderPath);
+        //        }
+        //        catch { }
 
-                try { System.IO.Directory.CreateDirectory(folderPath); } catch { }
+        //        try { System.IO.Directory.CreateDirectory(folderPath); } catch { }
 
-                foreach (var item in _casheContexts)
-                {
-                    if (!(item.Value.StoreObject is UserContext)) continue;
+        //        foreach (var item in _casheContexts)
+        //        {
+        //            if (!(item.Value.StoreObject is UserContext)) continue;
 
-                    var context = (UserContext)item.Value.StoreObject;
+        //            var context = (UserContext)item.Value.StoreObject;
 
-                    context.SetSilentMode();
+        //            context.SetSilentMode();
 
-                    try
-                    {
-                        var json = JsonConvert.SerializeObject(context);
+        //            try
+        //            {
+        //                var json = JsonConvert.SerializeObject(context);
 
-                        FileLogger.AppendTextToFile(json, System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString("ddHHmmss")));
-                    }
-                    catch { }
-                }
-            }
-            catch { }
-        }
+        //                FileLogger.AppendTextToFile(json, System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString("ddHHmmss")));
+        //            }
+        //            catch { }
+        //        }
+        //    }
+        //    catch { }
+        //}
 
     }
 }

@@ -15,24 +15,28 @@ namespace DMS_WebAPI.Infrastructure
 {
     public static class ExceptionHandling
     {
-        private static int GetResponseStatusCode(HttpContext context, Exception exception)
+        private static HttpStatusCode GetResponseStatusCode(HttpContext context, Exception exception)
         {
-            var res = (int)HttpStatusCode.OK;
+            var res = HttpStatusCode.OK;
 
             //TODO Remove
             if (context.IsDebuggingEnabled)
             {
-                res = (int)HttpStatusCode.InternalServerError;
+                res = HttpStatusCode.InternalServerError;
             }
 
             if (exception is DmsExceptions)
             {
+                // Договорились при возникновении этих ошибок отправлять статус Unauthorized. Фронт редиректит пользователя на LoginPage
                 if (exception is UserUnauthorized
+                    || exception is UserAccessIsDenied
                     || exception is UserPositionIsNotDefined
                     || exception is UserIsDeactivated
-                    || exception is EmailConfirmRequiredAgentUser
-                    //|| exception is UserPositionIsNotDefinedsdf
-                    ) res = (int)HttpStatusCode.Unauthorized;
+                    || exception is UserMustConfirmEmail
+                    || exception is UserMustConfirmEmail
+                    || exception is UserNotExecuteAnyPosition
+                    || exception is UserNotExecuteCheckPosition
+                    ) res = HttpStatusCode.Unauthorized;
             }
 
             return res;
@@ -46,6 +50,7 @@ namespace DMS_WebAPI.Infrastructure
             var request = string.Empty;
             var responceExpression = string.Empty;
             var logExpression = string.Empty;
+            HttpStatusCode statusCode = HttpStatusCode.OK;
             var exc = exception;
 
             #region [+] Формирование текста исключения, лога ...
@@ -113,12 +118,14 @@ namespace DMS_WebAPI.Infrastructure
             // Очищаю существующий Response
             try
             {
+                statusCode = GetResponseStatusCode(httpContext, exception);
+
                 httpContext.Response.Clear();
 
                 httpContext.Response.ContentType = "application/json";
                 // Здесь может возникнуть исключение Server cannot set status after HTTP headers have been sent.
                 // при повторнов входе из Application_Error если раскоментировать httpContext.Response.End(); 
-                httpContext.Response.StatusCode = GetResponseStatusCode(httpContext, exception);
+                httpContext.Response.StatusCode = (int)statusCode;
                 httpContext.Response.Write(json);
                 // Этот End очень важен для фронта. без него фронт получает статус InternalServerError на ошибке UserUnauthorized. НЕ понятно 
                 httpContext.Response.End();
@@ -126,8 +133,7 @@ namespace DMS_WebAPI.Infrastructure
             catch { }
             #endregion
 
-
-            #region log to file
+            #region [+] Запись расширенных параметров ошибки в файл ...
             try
             {
                 // stores the error message
@@ -159,6 +165,13 @@ namespace DMS_WebAPI.Infrastructure
             }
             catch { }
             #endregion log to file
+
+
+            // Если возникли ошибки не совместивмые с дальнейшей работой пользователя - удаляю пользовательский контекст
+            if (statusCode == HttpStatusCode.Unauthorized)
+            {
+                DmsResolver.Current.Get<Utilities.UserContexts>().KillCurrentSession();
+            }
 
         }
 

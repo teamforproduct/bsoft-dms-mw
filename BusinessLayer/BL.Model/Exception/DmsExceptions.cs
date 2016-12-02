@@ -248,6 +248,63 @@ namespace BL.Model.Exception
         public UserNotExecuteAnyPosition(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class UserNotExecuteCheckPosition : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNotExecuteCheckPosition@l##";
+        public UserNotExecuteCheckPosition() : base(_MESSAGE) { }
+        public UserNotExecuteCheckPosition(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserHasNoAccessToDocument : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserHasNoAccessToDocument@l##";
+        public UserHasNoAccessToDocument() : base(_MESSAGE) { }
+        public UserHasNoAccessToDocument(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserFileNotExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserFileNotExists@l##";
+        public UserFileNotExists() : base(_MESSAGE) { }
+        public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserPositionIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserPositionIsNotDefined@l##";
+        public UserPositionIsNotDefined() : base(_MESSAGE) { }
+        public UserPositionIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    
+
+    public class UserNameIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNameIsNotDefined@l##";
+        public UserNameIsNotDefined() : base(_MESSAGE) { }
+        public UserNameIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserUnauthorized : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserUnauthorized@l##";
+        public UserUnauthorized() : base(_MESSAGE) { }
+        public UserUnauthorized(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserMustChangePassword : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##";
+        public UserMustChangePassword() : base(_MESSAGE) { }
+        public UserMustChangePassword(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserMustConfirmEmail : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##";
+        public UserMustConfirmEmail() : base(_MESSAGE) { }
+        public UserMustConfirmEmail(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 
     public class DocumentHasAlreadyHasLink : DmsExceptions
     {
@@ -272,24 +329,14 @@ namespace BL.Model.Exception
         public DocumentCannotBeModifiedOrDeleted() : base(_MESSAGE) { }
         public DocumentCannotBeModifiedOrDeleted(System.Exception ex) : base(_MESSAGE, ex) { }
     }
-    public class UserHasNoAccessToDocument : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserHasNoAccessToDocument@l##";
-        public UserHasNoAccessToDocument() : base(_MESSAGE) { }
-        public UserHasNoAccessToDocument(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+    
     public class CannotSaveFile : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CannotSaveFile@l##";
         public CannotSaveFile() : base(_MESSAGE) { }
         public CannotSaveFile(System.Exception ex) : base(_MESSAGE, ex) { }
     }
-    public class UserFileNotExists : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserFileNotExists@l##";
-        public UserFileNotExists() : base(_MESSAGE) { }
-        public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+    
     public class UnknownDocumentFile : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UnknownDocumentFile@l##";
@@ -386,23 +433,13 @@ namespace BL.Model.Exception
         public PlanPointHasAlredyBeenLaunched() : base(_MESSAGE) { }
         public PlanPointHasAlredyBeenLaunched(System.Exception ex) : base(_MESSAGE, ex) { }
     }
-    public class UserPositionIsNotDefined : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserPositionIsNotDefined@l##";
-        public UserPositionIsNotDefined() : base(_MESSAGE) { }
-        public UserPositionIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+    
+
     public class NeedInformationAboutCorrespondent : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##";
         public NeedInformationAboutCorrespondent() : base(_MESSAGE) { }
         public NeedInformationAboutCorrespondent(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
-    public class UserNameIsNotDefined : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserNameIsNotDefined@l##";
-        public UserNameIsNotDefined() : base(_MESSAGE) { }
-        public UserNameIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class ResetPasswordCodeInvalid : DmsExceptions
@@ -419,12 +456,7 @@ namespace BL.Model.Exception
         public ResetPasswordFailed(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class UserUnauthorized : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserUnauthorized@l##";
-        public UserUnauthorized() : base(_MESSAGE) { }
-        public UserUnauthorized(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+    
     public class DocumentRestrictedSendListDuplication : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##";
@@ -962,19 +994,7 @@ namespace BL.Model.Exception
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class ChangePasswordRequiredAgentUser : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##";
-        public ChangePasswordRequiredAgentUser() : base(_MESSAGE) { }
-        public ChangePasswordRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
-
-    public class EmailConfirmRequiredAgentUser : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##";
-        public EmailConfirmRequiredAgentUser() : base(_MESSAGE) { }
-        public EmailConfirmRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+    
 
     //public class LockoutAgentUser : DmsExceptions
     //{

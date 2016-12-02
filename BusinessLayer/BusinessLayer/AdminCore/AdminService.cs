@@ -100,12 +100,24 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetCurrentPositionsAccessLevel(context);
         }
 
+        /// <summary>
+        /// GetAvailablePositions вызывается каждые 36 секунд из фронта
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context)
         {
             var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
-            
-            //context.CurrentPositionsIdList
-            
+
+            // Решено тут синхронизировать context.CurrentPositionsIdList и генерировать исключения если AvailablePositions конфликтуют с CurrentPositionsIdList
+            if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.CurrentEmployee.Name);
+
+            // Проверяю содержатся ли выбранные должности в списке доступных
+            foreach (var positionId in context.CurrentPositionsIdList)
+            {
+                if (!res.Any(x => x.RolePositionId == positionId)) throw new UserNotExecuteCheckPosition();
+            }
+
             return res;
         }
 
