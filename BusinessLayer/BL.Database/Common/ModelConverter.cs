@@ -31,6 +31,7 @@ namespace BL.Database.Common
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
                     ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                    PositionExecutorTypeId = document.PositionExecutorTypeId,
                     LastChangeUserId = document.LastChangeUserId,
                     LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
