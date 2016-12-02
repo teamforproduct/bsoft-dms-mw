@@ -280,7 +280,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                defContext = DmsResolver.Current.Get<UserContexts>().Get();
+                defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive:false);
 
                 if (defContext.CurrentEmployee.LanguageId <= 0) defContext = null;
             }

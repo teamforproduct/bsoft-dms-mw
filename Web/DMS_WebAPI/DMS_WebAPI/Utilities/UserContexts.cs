@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Utilities
     {
         private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
-        private const int _TIME_OUT_MIN = 1;
+        private const int _TIME_OUT_MIN = 15;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
 
         /// <summary>
@@ -420,7 +420,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _casheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                _casheContexts.Remove(key);
+                Remove(key);
             }
         }
 
@@ -430,7 +430,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                _casheContexts.Remove(key);
+                Remove(key);
             }
         }
 
@@ -440,7 +440,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                _casheContexts.Remove(key);
+                Remove(key);
             }
         }
 
@@ -451,7 +451,7 @@ namespace DMS_WebAPI.Utilities
             else
             { token = token.ToLower(); }
 
-            _casheContexts.Remove(token);
+            Remove(token);
         }
 
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
