@@ -87,7 +87,8 @@ namespace DMS_WebAPI.Providers
 
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 
-            //if (user.IsEmailConfirmRequired && !user.EmailConfirmed) throw new EmailConfirmRequiredAgentUser();
+            // 
+            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) throw new EmailConfirmRequiredAgentUser();
 
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,

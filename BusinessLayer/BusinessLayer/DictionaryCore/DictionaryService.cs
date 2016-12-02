@@ -510,7 +510,6 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentBanks
         public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
         {
-
             return _dictDb.GetAgentUser(context, id);
         }
         #endregion DictionaryAgentBanks

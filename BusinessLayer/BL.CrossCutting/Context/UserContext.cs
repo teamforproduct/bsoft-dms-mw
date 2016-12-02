@@ -6,6 +6,8 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using System;
+using BL.Model.AdminCore.FrontModel;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.CrossCutting.Context
 {
@@ -21,6 +23,16 @@ namespace BL.CrossCutting.Context
         public UserContext()
         {
         }
+
+        //public IEnumerable<FrontAvailablePositions> GetAvailablePositions()
+        //{
+        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
+        //    var tmpItems = tmpService.GetAvailablePositions(this);
+
+        //    // логика по изменению CurrentPositionsIdList если в GetAvailablePositions уже нет назначений
+
+        //    return tmpItems;
+        //}
 
         public UserContext(IContext ctx)
         {
@@ -82,7 +94,7 @@ namespace BL.CrossCutting.Context
 
                 try
                 {
-                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x=>x.Key,x=>x.Value);
+                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value);
                 }
                 catch (UserPositionIsNotDefined)
                 {
@@ -134,7 +146,7 @@ namespace BL.CrossCutting.Context
                 return _currentPositionId.Value;
             }
         }
-        
+
         public int CurrentAgentId
         {
             get
@@ -195,6 +207,9 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
+
+
+
 
     }
 }

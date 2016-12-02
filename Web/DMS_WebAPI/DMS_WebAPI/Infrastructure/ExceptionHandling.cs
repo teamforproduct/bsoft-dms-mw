@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Exception;
 using Newtonsoft.Json;
@@ -26,10 +27,12 @@ namespace DMS_WebAPI.Infrastructure
 
             if (exception is DmsExceptions)
             {
-                if (exception is UserUnauthorized)
-                {
-                    res = (int)HttpStatusCode.Unauthorized;
-                }
+                if (exception is UserUnauthorized
+                    || exception is UserPositionIsNotDefined
+                    || exception is UserIsDeactivated
+                    || exception is EmailConfirmRequiredAgentUser
+                    //|| exception is UserPositionIsNotDefinedsdf
+                    ) res = (int)HttpStatusCode.Unauthorized;
             }
 
             return res;
@@ -94,7 +97,7 @@ namespace DMS_WebAPI.Infrastructure
             var httpContext = HttpContext.Current;
 
             if (context != null)
-            request = $"{context.Request}";
+                request = $"{context.Request}";
 
             try { url = httpContext.Request.Url.ToString(); } catch { }
 
@@ -138,7 +141,7 @@ namespace DMS_WebAPI.Infrastructure
                 //errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
                 errorMessage += logExpression;
 
-                
+
 
                 // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
                 if (exception.InnerException != null)
@@ -152,8 +155,7 @@ namespace DMS_WebAPI.Infrastructure
 
                 errorMessage += $"Request Body: {body}\r\n";
 
-
-                AppendToFile(httpContext.Server.MapPath("~/SiteErrors.txt"), errorMessage);
+                FileLogger.AppendTextToSiteErrors(errorMessage);
             }
             catch { }
             #endregion log to file
@@ -179,42 +181,7 @@ namespace DMS_WebAPI.Infrastructure
             return languageService.GetTranslation(text);
         }
 
-        private static void AppendToFile(string path, string text)
-        {
-            try
-            {
-                System.IO.StreamWriter sw;
 
-                try
-                {
-                    System.IO.FileInfo ff = new System.IO.FileInfo(path);
-                    if (ff.Exists)
-                    {
-                    }
-                }
-                catch
-                {
-
-                }
-
-                sw = System.IO.File.AppendText(path);
-                try
-                {
-                    string line = text;
-                    sw.WriteLine(line);
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    sw.Close();
-                }
-            }
-            catch
-            {
-            }
-        }
 
     }
 }

@@ -39,9 +39,9 @@ namespace DMS_WebAPI.Controllers
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Получение информации о пользователе
+        /// Возвращает информацию о пользователе: имя, язык, контакты, адреса
         /// </summary>
-        /// <returns>список должностей</returns>
+        /// <returns></returns>
         [Route("UserInfo")]
         [HttpGet]
         [ResponseType(typeof(FrontDictionaryAgentUser))]
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.Controllers
         }
 
         /// <summary>
-        /// Получение списка должностей, доступных текущего для пользователя
+        /// Возвращает список назначений для текущего пользователя (должность - интервал назначения, количество новых событий)
         /// </summary>
         /// <returns>список должностей</returns>
         [Route("AvailablePositions")]
@@ -92,6 +92,7 @@ namespace DMS_WebAPI.Controllers
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var context = DmsResolver.Current.Get<UserContexts>().Get();
+            //var tmpItems = context.GetAvailablePositions();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositions(context);
             var res = new JsonResult(tmpItems, this);
@@ -100,7 +101,8 @@ namespace DMS_WebAPI.Controllers
         }
 
         /// <summary>
-        /// Получение массива ИД должностей, выбранных текущим пользователем
+        /// Возвращает список Id должностей, от которых пользователь сейчас работатет.
+        /// 
         /// </summary>
         /// <returns>массива ИД должностей</returns>
         [Route("ChoosenPositions")]
@@ -120,11 +122,11 @@ namespace DMS_WebAPI.Controllers
         [Route("ChoosenPositions")]
         public IHttpActionResult Post([FromBody]List<int> positionsIdList)
         {
-            var user_context = DmsResolver.Current.Get<UserContexts>();
-            var context = user_context.Get();
-            var admProc = DmsResolver.Current.Get<IAdminService>();
-            admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
-            user_context.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            var context = userContexts.Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
+            userContexts.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
             //context.CurrentPositionsIdList = positionsIdList;
             //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
@@ -206,32 +208,32 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(clients, this);
         }
 
-        /// <summary>
-        /// Установить клиента для пользователя
-        /// </summary>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-        [Route("Clients")]
-        [HttpPost]
-        public IHttpActionResult SetClients([FromBody]int clientId)
-        {
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+        ///// <summary>
+        ///// Установить клиента для пользователя
+        ///// </summary>
+        ///// <param name="clientId"></param>
+        ///// <returns></returns>
+        //[Route("Clients")]
+        //[HttpPost]
+        //public IHttpActionResult SetClients([FromBody]int clientId)
+        //{
+        //    var mngContext = DmsResolver.Current.Get<UserContexts>();
 
-            var ctx = mngContext.Get();
+        //    var ctx = mngContext.Get();
 
-            var dbProc = new WebAPIDbProcess();
+        //    var dbProc = new WebAPIDbProcess();
 
-            var client = dbProc.GetClientByUser(User.Identity.GetUserId(), clientId);
-            if (client == null)
-            {
-                throw new ClientIsNotFound();
-            }
+        //    var client = dbProc.GetClientByUser(User.Identity.GetUserId(), clientId);
+        //    if (client == null)
+        //    {
+        //        throw new ClientIsNotFound();
+        //    }
 
-            mngContext.Set(client);
+        //    mngContext.Set(client);
 
 
-            return new JsonResult(null, this);
-        }
+        //    return new JsonResult(null, this);
+        //}
 
         /// <summary>
         /// Изменение пароля

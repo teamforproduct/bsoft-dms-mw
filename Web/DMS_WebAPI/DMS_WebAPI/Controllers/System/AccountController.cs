@@ -73,9 +73,11 @@ namespace DMS_WebAPI.Controllers
         [Route("Logout")]
         public IHttpActionResult Logout()
         {
+            // TODO Продумать логаут со всех устройств
             DmsResolver.Current.Get<UserContexts>().Remove();
 
-            Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+            // pss перенес в Remove
+            //Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
             return new JsonResult(null, this);
         }

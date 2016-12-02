@@ -10,13 +10,15 @@ using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
+using Newtonsoft.Json;
+using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
     /// <summary>
     /// Коллекция пользовательских контекстов
     /// </summary>
-    public class UserContexts
+    public class UserContexts : IDisposable
     {
         private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.Utilities
                 .Select(x => new FrontSystemSession
                 {
                     Token = x.Key,
-                    LastUsage  = x.Value.LastUsage,
+                    LastUsage = x.Value.LastUsage,
                     CreateDate = (x.Value.StoreObject as IContext).CreateDate,
                     LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
                     LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
@@ -66,12 +68,12 @@ namespace DMS_WebAPI.Utilities
                     Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
                     ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
                     IsActive = true,
-                    
+
                 });
             return res;
         }
 
-       
+
 
         /// <summary>
         /// Gets setting value by its name.
@@ -125,6 +127,7 @@ namespace DMS_WebAPI.Utilities
         public IContext Remove(string token = null)
         {
             if (string.IsNullOrEmpty(token)) token = Token.ToLower();
+
             if (!_casheContexts.ContainsKey(token))
             {
                 return null;
@@ -134,7 +137,12 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 var ctx = (IContext)contextValue.StoreObject;
+                // удаляю пользовательский контекст из коллекции
                 _casheContexts.Remove(token);
+
+                // удаляю овиновский контекст из коллекции
+                //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+
                 return ctx;
             }
             catch (InvalidCastException invalidCastException)
@@ -167,7 +175,7 @@ namespace DMS_WebAPI.Utilities
             // KeepAlive: Продление жизни пользовательского контекста
             storeInfo.LastUsage = DateTime.UtcNow;
         }
-        
+
 
         /// <summary>
         /// Формирование пользовательского контекста. 
@@ -513,12 +521,33 @@ namespace DMS_WebAPI.Utilities
             _casheContexts.Clear();
         }
 
+
+
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
         public int Count
         {
             get { return _casheContexts.Count; }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                var folderPath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "UserContexts");
+
+                System.IO.Directory.Delete(folderPath);
+
+                foreach (var item in _casheContexts)
+                {
+                    var context = (IContext)item.Value.StoreObject;
+                    var json = JsonConvert.SerializeObject(context);
+
+                    FileLogger.AppendTextToFile(context.ToXml(), System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString()));
+                }
+            }
+            catch { }
         }
 
     }
