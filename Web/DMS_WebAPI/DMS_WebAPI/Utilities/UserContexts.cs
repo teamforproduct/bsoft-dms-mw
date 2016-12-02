@@ -307,6 +307,8 @@ namespace DMS_WebAPI.Utilities
             var context = GetInternal(token);
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+            // Контекст полностью сформирован и готов к работе
+            context.IsFormed = true;
             KeepAlive(token);
         }
 

@@ -173,10 +173,6 @@ namespace DMS_WebAPI.Providers
                 // Добавляю в пользовательский сведения о браузере
                 userContexts.Set(token, loginLogId, message);
 
-
-                // Контекст полностью сформирован и готов к работе
-                ctx.IsFormed = true;
-
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
             }
 

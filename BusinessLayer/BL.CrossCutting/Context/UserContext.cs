@@ -65,6 +65,7 @@ namespace BL.CrossCutting.Context
 
                 ClientLicence = ctx.ClientLicence;
                 IsChangePasswordRequired = ctx.IsChangePasswordRequired;
+                IsFormed = ctx.IsFormed;
 
                 try
                 {
