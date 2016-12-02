@@ -102,7 +102,11 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context)
         {
-            return _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
+            var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
+            
+            //context.CurrentPositionsIdList
+            
+            return res;
         }
 
         public IEnumerable<FrontSystemAction> GetUserActions(IContext ctx)

@@ -537,14 +537,32 @@ namespace DMS_WebAPI.Utilities
             {
                 var folderPath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "UserContexts");
 
-                System.IO.Directory.Delete(folderPath);
+
+                try {
+                    var files = System.IO.Directory.GetFiles(folderPath);
+                    foreach (var item in files)
+                    {
+                        System.IO.File.Delete(item);
+                    } 
+                    System.IO.Directory.Delete(folderPath); } catch { }
+
+                try { System.IO.Directory.CreateDirectory(folderPath); } catch { }
 
                 foreach (var item in _casheContexts)
                 {
-                    var context = (IContext)item.Value.StoreObject;
-                    var json = JsonConvert.SerializeObject(context);
+                    if (!(item.Value.StoreObject is UserContext)) continue;
 
-                    FileLogger.AppendTextToFile(context.ToXml(), System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString()));
+                    var context = (UserContext)item.Value.StoreObject;
+
+                    context.SetSilentMode();
+
+                    try
+                    {
+                        var json = JsonConvert.SerializeObject(context);
+
+                        FileLogger.AppendTextToFile(json, System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString("ddHHmmss")));
+                    }
+                    catch { }
                 }
             }
             catch { }
