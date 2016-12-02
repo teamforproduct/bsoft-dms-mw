@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumSendTypes SendType { get; set; }
 
         public int SourcePositionId { get; set; }
-        public int SourcePositionExecutorAgentId { get; set; }
+        public int? SourcePositionExecutorAgentId { get; set; }
         public int SourceAgentId { get; set; }
 
         public int? TargetPositionId { get; set; }

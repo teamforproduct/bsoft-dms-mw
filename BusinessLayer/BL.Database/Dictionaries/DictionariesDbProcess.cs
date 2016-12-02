@@ -4444,7 +4444,7 @@ namespace BL.Database.Dictionaries
                         Name = x.Name,
                         FullName = x.FullName,
                         ExecutorAgentId = x.ExecutorAgentId,
-                        ExecutorAgentName = x.ExecutorAgent.Name + x.PositionExecutorType.Suffix,
+                        ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                         MainExecutorAgentId = x.MainExecutorAgentId,
                         MainExecutorAgentName = x.MainExecutorAgent.Name,
                         //ParentPositionName = x.ParentPosition.Name,
@@ -4529,7 +4529,7 @@ namespace BL.Database.Dictionaries
                     DepartmentName = x.Department.Name,
                     CompanyName = x.Department.Company.Agent.Name,
                     ExecutorAgentId = x.ExecutorAgentId,
-                    ExecutorAgentName = x.ExecutorAgent.Name + x.PositionExecutorType.Suffix,
+                    ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                     MaxSubordinationTypeId = x.TargetPositionSubordinations.AsQueryable()
                                                         .Where(filterMaxSubordinationTypeContains)
                                                         .Max(y => y.SubordinationTypeId)
@@ -5882,7 +5882,8 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetAgentName = (x.TargetPosition.ExecutorAgent.Name + x.TargetPosition.PositionExecutorType.Suffix) ?? x.TargetAgent.Name,
+                    TargetAgentName = (x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null)) 
+                                        ?? x.TargetAgent.Name,
                     AccessLevelName = x.AccessLevel.Name,
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
@@ -5998,7 +5999,7 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
                     PositionName = x.Position.Name,
-                    PositionExecutorName = x.Position.ExecutorAgent.Name + x.Position.PositionExecutorType.Suffix,
+                    PositionExecutorName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     StandartSendListContents =
                                 x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
                                 {
@@ -6014,7 +6015,8 @@ namespace BL.Database.Dictionaries
                                     AccessLevelId = y.AccessLevelId,
                                     SendTypeName = y.SendType.Name,
                                     TargetPositionName = y.TargetPosition.Name,
-                                    TargetAgentName = (y.TargetPosition.ExecutorAgent.Name + x.Position.PositionExecutorType.Suffix) ?? y.TargetAgent.Name,
+                                    TargetAgentName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : null)) 
+                                                        ?? y.TargetAgent.Name,
                                     AccessLevelName = y.AccessLevel.Name,
                                     SendTypeIsExternal = y.SendTypeId == 45
                                 })
