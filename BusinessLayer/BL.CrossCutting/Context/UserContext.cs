@@ -95,6 +95,12 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        /// <summary>
+        ///  Флаг TRUE если контекст сформирован и готов к работе
+        /// </summary>
+        public bool IsFormed { get; set; }
+
+
         public List<int> CurrentPositionsIdList
         {
             get

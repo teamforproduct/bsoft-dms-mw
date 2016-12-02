@@ -109,13 +109,17 @@ namespace BL.Logic.AdminCore
         {
             var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
 
-            // Решено тут синхронизировать context.CurrentPositionsIdList и генерировать исключения если AvailablePositions конфликтуют с CurrentPositionsIdList
-            if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.CurrentEmployee.Name);
-
-            // Проверяю содержатся ли выбранные должности в списке доступных
-            foreach (var positionId in context.CurrentPositionsIdList)
+            // Если контекст полностью сформирован, тогда проверяю на вшивость
+            if (context.IsFormed)
             {
-                if (!res.Any(x => x.RolePositionId == positionId)) throw new UserNotExecuteCheckPosition();
+                // Решено тут синхронизировать context.CurrentPositionsIdList и генерировать исключения если AvailablePositions конфликтуют с CurrentPositionsIdList
+                if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.CurrentEmployee.Name);
+
+                // Проверяю содержатся ли выбранные должности в списке доступных
+                foreach (var positionId in context.CurrentPositionsIdList)
+                {
+                    if (!res.Any(x => x.RolePositionId == positionId)) throw new UserNotExecuteCheckPosition();
+                }
             }
 
             return res;

@@ -8,6 +8,7 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface IContext
     {
+        bool IsFormed { get; set; }
         Employee CurrentEmployee { get; set; }
         List<int> CurrentPositionsIdList { get; set; }
         Dictionary<int,int> CurrentPositionsAccessLevel { get; set; }
