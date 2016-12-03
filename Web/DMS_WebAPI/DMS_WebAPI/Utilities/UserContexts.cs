@@ -25,13 +25,15 @@ namespace DMS_WebAPI.Utilities
         private const int _TIME_OUT_MIN = 15;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
 
+        private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
+
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
         /// <returns>Typed setting value.</returns>
         public IContext GetByLanguage()
         {
-            string token = Token.ToLower();
+            string token = TokenLower;
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
@@ -84,7 +86,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true)
         {
-            string token = Token.ToLower();
+            string token = TokenLower;
 
             if (!_casheContexts.ContainsKey(token))
             {
@@ -129,7 +131,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Remove(string token = null)
         {
-            if (string.IsNullOrEmpty(token)) token = Token.ToLower();
+            if (string.IsNullOrEmpty(token)) token = TokenLower;
 
             if (!_casheContexts.ContainsKey(token))
             {
@@ -251,13 +253,13 @@ namespace DMS_WebAPI.Utilities
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    //KillCurrentSession(token);
+                    KillCurrentSession(token);
                     throw new UserIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    //KillCurrentSession(token);
+                    KillCurrentSession(token);
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
@@ -267,6 +269,7 @@ namespace DMS_WebAPI.Utilities
             }
             else
             {
+                KillCurrentSession(token);
                 throw new UserAccessIsDenied();
             }
 
@@ -320,7 +323,7 @@ namespace DMS_WebAPI.Utilities
         /// <exception cref="ArgumentException"></exception>
         public void Set(FrontAspNetClient client)
         {
-            string token = Token.ToLower();
+            string token = TokenLower;
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
@@ -338,7 +341,7 @@ namespace DMS_WebAPI.Utilities
             VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
 
             context.CurrentClientId = client.Id;
-            
+
             // KeepAlive: Продление жизни пользовательского контекста
             KeepAlive(token);
         }
@@ -365,7 +368,7 @@ namespace DMS_WebAPI.Utilities
 
         private void Save(IContext val)
         {
-            _casheContexts.Add(Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
+            _casheContexts.Add(TokenLower, new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
         private void Save(string token, IContext val)
         {
@@ -449,7 +452,7 @@ namespace DMS_WebAPI.Utilities
         public void KillCurrentSession(string token = "")
         {
             if (string.IsNullOrEmpty(token))
-            { token = Token.ToLower(); }
+            { token = TokenLower; }
             else
             { token = token.ToLower(); }
 
