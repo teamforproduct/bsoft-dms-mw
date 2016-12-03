@@ -172,9 +172,9 @@ namespace DMS_WebAPI.Infrastructure
             // Если возникли ошибки не совместивмые с дальнейшей работой пользователя - удаляю пользовательский контекст
             if (exception is DmsExceptions)
             {
-                if (exception is UserUnauthorized
+                if (//exception is UserUnauthorized
                     //|| exception is UserAccessIsDenied
-                    || exception is UserPositionIsNotDefined
+                    exception is UserPositionIsNotDefined
                     || exception is UserNameIsNotDefined
                     || exception is DatabaseIsNotSet
                     //|| exception is UserIsDeactivated
