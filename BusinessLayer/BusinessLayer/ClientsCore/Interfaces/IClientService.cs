@@ -18,7 +18,7 @@ namespace BL.Logic.ClientCore.Interfaces
         #endregion
 
         #region [+] AddNewClient ...
-        void AddNewClient(IContext context, AddClientContent model);
+        void AddNewClient(IContext context, AddClientSaaS model);
 
         void AddClientRoles(IContext context);
         #endregion

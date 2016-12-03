@@ -70,17 +70,13 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userName = context.UserName;
+            var userEmail = context.UserName;
 
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
-            // если фронт передал код (доменное имя) клиента добавляю его к адресу
-            userName = userName.UserNameFormatByClientCode(clientCode);
-
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
-
-            ApplicationUser user = await userManager.FindAsync(userName, context.Password);
-
+            var webService = new WebAPIService();
+            
+            ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
             // Эти исключения отлавливает Application_Error в Global.asax
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
@@ -90,6 +86,7 @@ namespace DMS_WebAPI.Providers
             // 
             if (!user.EmailConfirmed && user.IsEmailConfirmRequired) throw new UserMustConfirmEmail();
 
+            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);

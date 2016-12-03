@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
-        public IHttpActionResult Post([FromBody]AddClientContent model)
+        public IHttpActionResult Post([FromBody]AddClientSaaS model)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IClientService>();

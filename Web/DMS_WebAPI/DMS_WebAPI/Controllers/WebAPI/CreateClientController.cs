@@ -53,8 +53,8 @@ namespace DMS_WebAPI.Controllers.WebAPI
                         ConnectionString = model.ServerConnectionString,
                     }
                 };
-                var dbProc = new WebAPIDbProcess();
-                var itemId = dbProc.AddClient(model2);
+                var dbService = new WebAPIService();
+                var itemId = dbService.AddClient(model2);
 
                 return RedirectToAction("Index", "Home");
             }

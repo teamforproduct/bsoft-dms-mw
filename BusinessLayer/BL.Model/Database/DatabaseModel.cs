@@ -7,6 +7,7 @@ namespace BL.Model.Database
     /// </summary>
     public class DatabaseModel
     {
+
         /// <summary>
         /// ID 
         /// </summary>

@@ -350,19 +350,22 @@ namespace DMS_WebAPI.Controllers
         [Route("Register")]
         public async Task<IHttpActionResult> Register(RegisterBindingModel model)
         {
+            // Регистрация пользователей на данный момент запрещена!
+            return BadRequest(ModelState);
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = new ApplicationUser() { UserName = model.Email.UserNameFormatByClientCode(model.ClientCode), Email = model.Email };
+            //var user = new ApplicationUser() { UserName = model.Email.UserNameFormatByClientCode(model.ClientCode), Email = model.Email };
 
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            //IdentityResult result = await UserManager.CreateAsync(user, model.Password);
 
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+            //if (!result.Succeeded)
+            //{
+            //    return GetErrorResult(result);
+            //}
 
             return Ok();
         }
@@ -373,31 +376,33 @@ namespace DMS_WebAPI.Controllers
         [Route("RegisterExternal")]
         public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            return BadRequest(ModelState);
 
-            var info = await Authentication.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                return InternalServerError();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
-            var user = new ApplicationUser() { UserName = model.Email.UserNameFormatByClientCode(model.ClientCode), Email = model.Email };
+            //var info = await Authentication.GetExternalLoginInfoAsync();
+            //if (info == null)
+            //{
+            //    return InternalServerError();
+            //}
 
-            IdentityResult result = await UserManager.CreateAsync(user);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+            //var user = new ApplicationUser() { UserName = model.Email.UserNameFormatByClientCode(model.ClientCode), Email = model.Email };
 
-            result = await UserManager.AddLoginAsync(user.Id, info.Login);
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result); 
-            }
-            return Ok();
+            //IdentityResult result = await UserManager.CreateAsync(user);
+            //if (!result.Succeeded)
+            //{
+            //    return GetErrorResult(result);
+            //}
+
+            //result = await UserManager.AddLoginAsync(user.Id, info.Login);
+            //if (!result.Succeeded)
+            //{
+            //    return GetErrorResult(result); 
+            //}
+            //return Ok();
         }
 
         protected override void Dispose(bool disposing)

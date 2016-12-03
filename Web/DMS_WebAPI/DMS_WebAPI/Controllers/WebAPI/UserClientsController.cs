@@ -36,9 +36,9 @@ namespace DMS_WebAPI.Controllers.WebAPI
         [AllowAnonymous]
         public IHttpActionResult PostAddFirstAdmin(AddFirstAdminClient model)
         {
-            var dbProc = new WebAPIDbProcess();
-            var itemId = dbProc.AddFirstAdminClient(model);
-            return Get(itemId);
+            var dbProc = new WebAPIService();
+            dbProc.AddFirstAdminClient(model);
+            return new JsonResult(null, this);
         }
         public IHttpActionResult Delete(int id)
         {
