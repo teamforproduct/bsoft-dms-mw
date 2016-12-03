@@ -209,20 +209,27 @@ namespace DMS_WebAPI.Utilities
         public string AddUser(AddWebUser model)
         {
             var dbWeb = new WebAPIDbProcess();
+            var userId = string.Empty;
 
             using (var transaction = GetTransaction())
             {
-                var userId = AddUser(FormUserName(model.Email, model.ClientId), model.Password, model.Email, "");
+                userId = AddUser(FormUserName(model.Email, model.ClientId), model.Password, model.Email, "");
 
                 dbWeb.AddUserClient(new ModifyAspNetUserClient { UserId = userId, ClientId = model.ClientId });
                 dbWeb.AddUserServer(new ModifyAspNetUserServer { UserId = userId, ClientId = model.ClientId, ServerId = model.ServerId });
 
                 transaction.Complete();
-
-                return userId;
             }
 
             // Выслать письмо с ссылкой на пароль
+
+            RestorePasswordAgentUserAsync(new RestorePasswordAgentUser
+            {
+                ClientCode = dbWeb.GetClientCode(model.ClientId),
+                Email = model.Email
+            }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+
+            return userId;
         }
 
         private string AddRole(string roleName)
