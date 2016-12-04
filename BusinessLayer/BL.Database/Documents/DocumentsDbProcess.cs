@@ -272,7 +272,7 @@ namespace BL.Database.Documents
                     IsRegistered = doc.IsRegistered,
                     IsLaunchPlan = doc.IsLaunchPlan,
                     Description = doc.Description,
-                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.PositionExecutorType.Suffix != null ? " (" + doc.PositionExecutorType.Suffix + ")" : null),
+                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
                     ExecutorPositionName = doc.ExecutorPosition.Name,
 
                     WaitCount = doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue && !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains)
@@ -375,7 +375,7 @@ namespace BL.Database.Documents
                     DocumentDate = doc.RegistrationDate ?? doc.CreateDate,
                     IsRegistered = doc.IsRegistered,
                     Description = doc.Description,
-                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.PositionExecutorType.Suffix != null ? " (" + doc.PositionExecutorType.Suffix + ")" : null),
+                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
                     ExecutorPositionName = doc.ExecutorPosition.Name,
                     LinkedDocumentsCount = 0, //TODO
 
@@ -600,7 +600,9 @@ namespace BL.Database.Documents
                         DocumentId = x.DocumentId,
                         SubscriptionStatesName = x.SubscriptionState.Name,
                         DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
-                        DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePositionExecutorAgent.Name : string.Empty
+                        DoneEventSourcePositionExecutorAgentName =  x.DoneEventId.HasValue 
+                                                                    ? x.DoneEvent.SourcePositionExecutorAgent.Name + (x.DoneEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.DoneEvent.SourcePositionExecutorType.Suffix + ")" : null)
+                                                                    : string.Empty
                     }).ToList();
 
                 return res;
@@ -1373,6 +1375,7 @@ namespace BL.Database.Documents
                         Id = document.Id,
                         ExecutorPositionId = document.ExecutorPositionId,
                         ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                        ExecutorPositionExecutorTypeId = document.ExecutorPositionExecutorTypeId,
                         LastChangeDate = document.LastChangeDate,
                         LastChangeUserId = document.LastChangeUserId
                     };
@@ -1382,6 +1385,8 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     entry.Property(x => x.ExecutorPositionId).IsModified = true;
                     entry.Property(x => x.ExecutorPositionExecutorAgentId).IsModified = true;
+                    entry.Property(x => x.ExecutorPositionExecutorTypeId).IsModified = true;
+
 
                     if (document.Events != null && document.Events.Any(x => x.Id == 0))
                     {
@@ -1425,6 +1430,7 @@ namespace BL.Database.Documents
                             var entryFile = dbContext.Entry(fileDb);
                             entryFile.Property(e => e.ExecutorPositionId).IsModified = true;
                             entryFile.Property(e => e.ExecutorPositionExecutorAgentId).IsModified = true;
+                            entryFile.Property(e => e.ExecutorPositionExecutorTypeId).IsModified = true;
                             dbContext.SaveChanges();
                         }
                     }
@@ -1436,6 +1442,7 @@ namespace BL.Database.Documents
                             var entryTask = dbContext.Entry(taskDb);
                             entryTask.Property(e => e.PositionId).IsModified = true;
                             entryTask.Property(e => e.PositionExecutorAgentId).IsModified = true;
+                            entryTask.Property(e => e.PositionExecutorTypeId).IsModified = true;
                             entryTask.Property(e => e.LastChangeUserId).IsModified = true;
                             entryTask.Property(e => e.LastChangeDate).IsModified = true;
                             dbContext.SaveChanges();
@@ -1458,6 +1465,7 @@ namespace BL.Database.Documents
                         .ForEach(x =>
                         {
                             x.ExecutorPositionId = model.NewPositionId;
+                            //TODO исполнители по должности!!!
                         });
                     dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
                         .ForEach(x =>

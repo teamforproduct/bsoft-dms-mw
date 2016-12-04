@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -15,7 +16,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IFileStore _fStore;
-        private int? _executorPositionExecutorAgentId;
+        InternalDictionaryPositionExecutorForDocument _executorPosition;
 
         public CopyDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
         {
@@ -49,10 +50,11 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-            if (_executorPositionExecutorAgentId.HasValue)
+            _executorPosition = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+            if (_executorPosition?.ExecutorAgentId.HasValue ?? false)
             {
-                _document.ExecutorPositionExecutorAgentId = _executorPositionExecutorAgentId.Value;
+                _document.ExecutorPositionExecutorAgentId = _executorPosition.ExecutorAgentId.Value;
+                _document.ExecutorPositionExecutorTypeId = _executorPosition.ExecutorTypeId;
             }
             else
             {
@@ -65,8 +67,8 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             CommonDocumentUtilities.SetAtrributesForNewDocument(_context, _document);
-            CommonDocumentUtilities.SetTaskAtrributesForNewDocument(_context, _document.Tasks, _executorPositionExecutorAgentId.Value);
-            CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, _executorPositionExecutorAgentId.Value, true);
+            CommonDocumentUtilities.SetTaskAtrributesForNewDocument(_context, _document.Tasks, _executorPosition);
+            CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, true);
             CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context,null, EnumEventTypes.AddNewDocument, null, "Copy");
@@ -78,7 +80,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 x.ExecutorPositionId = _document.ExecutorPositionId;
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
-
+                x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
                 var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x);
                 toCopy.Add(newDoc, x);
             });

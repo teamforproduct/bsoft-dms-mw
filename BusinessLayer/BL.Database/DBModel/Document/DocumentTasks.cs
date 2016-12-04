@@ -21,6 +21,7 @@ namespace BL.Database.DBModel.Document
         public int DocumentId { get; set; }
         public int PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }
+        public int? PositionExecutorTypeId { get; set; }
         public int AgentId { get; set; }
         [MaxLength(400)]
         [Index("IX_DocumentTask", 2, IsUnique = true)]
@@ -37,6 +38,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryAgents Agent { get; set; }
         [ForeignKey("PositionExecutorAgentId")]
         public virtual DictionaryAgents PositionExecutorAgent { get; set; }
+        [ForeignKey("PositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
 
         public virtual ICollection<DocumentEvents> Events { get; set; }
 

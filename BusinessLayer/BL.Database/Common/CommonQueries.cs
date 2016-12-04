@@ -907,8 +907,8 @@ namespace BL.Database.Common
                     Description = x.Description,
                     AddDescription = x.AddDescription,
 
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : (string)null),
-                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : (string)null))
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : null),
+                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null))
                                                       ?? x.TargetAgent.Name,
                     DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
@@ -1191,7 +1191,7 @@ namespace BL.Database.Common
                                 Version = file.Version,
                                 WasChangedExternal = false,
                                 ExecutorPositionName = file.ExecutorPosition.Name,
-                                ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name,
+                                ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
 
                                 DocumentDate = (file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
                                 RegistrationNumber = file.Document.RegistrationNumber,
@@ -1938,7 +1938,7 @@ namespace BL.Database.Common
                 PositionExecutorAgentId = x.PositionExecutorAgentId,
                 AgentId = x.AgentId,
 
-                PositionExecutorAgentName = x.PositionExecutorAgent.Name,
+                PositionExecutorAgentName = x.PositionExecutorAgent.Name + (x.PositionExecutorType.Suffix != null ? " (" + x.PositionExecutorType.Suffix + ")" : null),
                 AgentName = x.Agent.Name,
                 PositionName = x.Position.Name,
                 PositionExecutorNowAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
@@ -1962,7 +1962,7 @@ namespace BL.Database.Common
                                     {
                                         TaskId = x.TaskId,
                                         ResponsibleExecutorPositionName = x.TargetPosition.Name,
-                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name,
+                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null),
                                         IsFactExecutor = x.StartEventId.HasValue,
                                     }).ToList();
 
@@ -2141,7 +2141,7 @@ namespace BL.Database.Common
                 CertificatePositionId = x.CertificatePositionId,
                 CertificatePositionExecutorAgentId = x.CertificatePositionExecutorAgentId,
                 CertificatePositionName = x.CertificatePosition.Name,
-                CertificatePositionExecutorAgentName = x.CertificatePositionExecutorAgent.Name,
+                CertificatePositionExecutorAgentName = x.CertificatePositionExecutorAgent.Name + (x.CertificatePositionExecutorType.Suffix != null ? " (" + x.CertificatePositionExecutorType.Suffix + ")" : null),
                 CertificateSignCreateDate = x.CertificateSignCreateDate,
 
 
@@ -2510,7 +2510,7 @@ namespace BL.Database.Common
                             DocumentDate = y.RegistrationDate ?? y.CreateDate,
                             IsRegistered = y.IsRegistered,
                             Description = y.Description,
-                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : (string)null),
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.ExecutorPositionExecutorType.Suffix != null ? " (" + y.ExecutorPositionExecutorType.Suffix + ")" : null),
                             ExecutorPositionName = y.ExecutorPosition.Name,
                             Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate).
                                 Select(z => new FrontDocumentLink
@@ -3224,6 +3224,7 @@ namespace BL.Database.Common
                     CertificateId = x.CertificateId,
                     CertificatePositionId = x.CertificatePositionId,
                     CertificatePositionExecutorAgentId = x.CertificatePositionExecutorAgentId,
+                    CertificatePositionExecutorTypeId = x.CertificatePositionExecutorTypeId,
                     CertificateSign = x.CertificateSign,
                     InternalSign = x.InternalSign,
                     Description = x.Description

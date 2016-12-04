@@ -102,7 +102,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
-        public int? PositionExecutorTypeId { get; set; }
+        public int? ExecutorPositionExecutorTypeId { get; set; }
         public DateTime CreateDate { get; set; }
         public bool? IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }

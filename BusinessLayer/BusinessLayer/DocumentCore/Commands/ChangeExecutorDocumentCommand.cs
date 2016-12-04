@@ -75,10 +75,11 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new CouldNotPerformOperationWithPaper();
                 }
             }
-            var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, Model.PositionId);
-            if (executorPositionExecutorAgentId.HasValue)
+            var positionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, Model.PositionId);
+            if (positionExecutor?.ExecutorAgentId.HasValue ?? false)
             {
-                _document.ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value;
+                _document.ExecutorPositionExecutorAgentId = positionExecutor.ExecutorAgentId.Value;
+                _document.ExecutorPositionExecutorTypeId = positionExecutor.ExecutorTypeId;
             }
             else
             {
@@ -122,6 +123,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     x.ExecutorPositionId = _document.ExecutorPositionId;
                     x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
+                    x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
                 });
             }
             if (_document.Tasks?.Any() ?? false)
@@ -131,6 +133,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     x.PositionId = _document.ExecutorPositionId;
                     x.PositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
+                    x.PositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
                 });
             }
             _documentDb.ChangeExecutorDocument(_context, _document);

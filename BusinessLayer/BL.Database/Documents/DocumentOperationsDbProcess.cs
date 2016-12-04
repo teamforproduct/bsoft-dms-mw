@@ -490,7 +490,7 @@ namespace BL.Database.Documents
                             CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
                             CertificatePositionId = subscription.CertificatePositionId,
                             CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
-
+                            CertificatePositionExecutorTypeId = subscription.CertificatePositionExecutorTypeId,
                             LastChangeDate = subscription.LastChangeDate,
                             LastChangeUserId = subscription.LastChangeUserId
                         };
@@ -516,6 +516,7 @@ namespace BL.Database.Documents
                         entry.Property(x => x.CertificateSignCreateDate).IsModified = true;
                         entry.Property(x => x.CertificatePositionId).IsModified = true;
                         entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
+                        entry.Property(x => x.CertificatePositionExecutorTypeId).IsModified = true;
                     }
                     dbContext.SaveChanges();
                     transaction.Complete();
@@ -559,6 +560,7 @@ namespace BL.Database.Documents
                     subscriptionDb.CertificateSignCreateDate = DateTime.UtcNow;
                     subscriptionDb.CertificatePositionId = subscription.CertificatePositionId;
                     subscriptionDb.CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId;
+                    subscriptionDb.CertificatePositionExecutorTypeId = subscription.CertificatePositionExecutorTypeId;
 
                     dbContext.DocumentEventsSet.Add(eventDb);
                     dbContext.SaveChanges();
@@ -603,8 +605,10 @@ namespace BL.Database.Documents
                                                 DocumentId = x.OnEvent.DocumentId,
                                                 SourcePositionId = x.OnEvent.SourcePositionId,
                                                 SourcePositionExecutorAgentId = x.OnEvent.SourcePositionExecutorAgentId,
+                                                SourcePositionExecutorTypeId = x.OnEvent.SourcePositionExecutorTypeId,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
+                                                TargetPositionExecutorTypeId = x.OnEvent.TargetPositionExecutorTypeId,
                                                 SourceAgentId = x.OnEvent.SourceAgentId,
                                                 TargetAgentId = x.OnEvent.TargetAgentId,
                                                 TaskId = x.OnEvent.TaskId,
@@ -714,7 +718,7 @@ namespace BL.Database.Documents
                                 Id = x.Id,
                                 ExecutorPositionId = x.ExecutorPositionId
                             }).FirstOrDefault();
-
+                transaction.Complete();
                 return doc;
 
             }
@@ -1146,7 +1150,9 @@ namespace BL.Database.Documents
                             dbContext.DocumentEventsSet.Attach(paperEventDb);
                             var entryEventDb = dbContext.Entry(paperEventDb);
                             entryEventDb.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.SourcePositionExecutorTypeId).IsModified = true;
                             entryEventDb.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
+                            entryEventDb.Property(e => e.TargetPositionExecutorTypeId).IsModified = true;
                             entryEventDb.Property(e => e.SourceAgentId).IsModified = true;
                             entryEventDb.Property(e => e.TargetAgentId).IsModified = true;
                             entryEventDb.Property(e => e.ParentEventId).IsModified = true;
@@ -1303,6 +1309,7 @@ namespace BL.Database.Documents
                                 SourcePositionId = x.OnEvent.SourcePositionId,
                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
+                                TargetPositionExecutorTypeId = x.OnEvent.TargetPositionExecutorTypeId,
                             }
                         }).ToList();
                 }
@@ -1318,6 +1325,7 @@ namespace BL.Database.Documents
                             SourcePositionId = x.SourcePositionId,
                             TargetPositionId = x.TargetPositionId,
                             TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
+                            TargetPositionExecutorTypeId = x.TargetPositionExecutorTypeId,
                         }).ToList();
                 }
                 if (sendList.IsInitial)
@@ -1796,8 +1804,10 @@ namespace BL.Database.Documents
                     entry.Property(e => e.Stage).IsModified = true;
                     entry.Property(e => e.SendTypeId).IsModified = true;
                     entry.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
+                    entry.Property(e => e.SourcePositionExecutorTypeId).IsModified = true;
                     entry.Property(e => e.TargetPositionId).IsModified = true;
                     entry.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
+                    entry.Property(e => e.TargetPositionExecutorTypeId).IsModified = true;
                     entry.Property(e => e.TargetAgentId).IsModified = true;
                     entry.Property(e => e.TaskId).IsModified = true;
                     entry.Property(e => e.IsAvailableWithinTask).IsModified = true;

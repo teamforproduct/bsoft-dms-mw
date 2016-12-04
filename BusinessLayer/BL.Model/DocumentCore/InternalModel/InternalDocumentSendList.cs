@@ -15,10 +15,12 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int SourcePositionId { get; set; }
         public int? SourcePositionExecutorAgentId { get; set; }
+        public int? SourcePositionExecutorTypeId { get; set; }
         public int SourceAgentId { get; set; }
 
         public int? TargetPositionId { get; set; }
         public int? TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionExecutorTypeId { get; set; }
         public int? TargetAgentId { get; set; }
 
         public int? TaskId { get; set; }
