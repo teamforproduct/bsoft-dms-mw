@@ -100,7 +100,7 @@ namespace BL.Database.Documents
                 //TODO Sort
                 //TODO After ToList
                 {
-                    qry = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x=>x.Id);
+                    qry = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id);
                 }
 
                 #region Paging
@@ -233,7 +233,7 @@ namespace BL.Database.Documents
                         qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
-                if ((paging?.IsAll ?? true) && (filter == null || filter.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0 )))
+                if ((paging?.IsAll ?? true) && (filter == null || filter.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0)))
                 {
                     throw new WrongAPIParameters();
                 }
@@ -434,7 +434,7 @@ namespace BL.Database.Documents
                     var linkedDocumentsCount = res.LinkedDocuments.Count();
                     if (linkedDocumentsCount > 1)
                     {
-                        res.LinkedDocuments = res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x=>x.DocumentDate);
+                        res.LinkedDocuments = res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x => x.DocumentDate);
                     }
                     res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
                     if (filter?.DocumentsIdForAIP?.Count() > 0)
@@ -600,7 +600,7 @@ namespace BL.Database.Documents
                         DocumentId = x.DocumentId,
                         SubscriptionStatesName = x.SubscriptionState.Name,
                         DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
-                        DoneEventSourcePositionExecutorAgentName =  x.DoneEventId.HasValue 
+                        DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue
                                                                     ? x.DoneEvent.SourcePositionExecutorAgent.Name + (x.DoneEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.DoneEvent.SourcePositionExecutorType.Suffix + ")" : null)
                                                                     : string.Empty
                     }).ToList();
@@ -874,12 +874,16 @@ namespace BL.Database.Documents
                     if (document.SendLists != null && document.SendLists.Any())
                     {
                         var sendLists = document.SendLists.ToList();
+
                         sendLists.ForEach(x =>
-                        {
-                            x.DocumentId = doc.Id;
-                            var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
-                            x.TaskId = (taskId == 0 ? null : (int?)taskId);
-                        });
+                            {
+                                x.DocumentId = doc.Id;
+                                if (document.Tasks?.Any(y => y.Id == 0) ?? false)
+                                {
+                                    var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
+                                    x.TaskId = (taskId == 0 ? null : (int?)taskId);
+                                }
+                            });
                         sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
                         dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                         dbContext.SaveChanges();
@@ -1695,7 +1699,7 @@ namespace BL.Database.Documents
                         qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
-                if ((paging?.IsAll ?? true) && (filter == null ||  ((filter.DocumentId?.Count ?? 0) == 0 )))
+                if ((paging?.IsAll ?? true) && (filter == null || ((filter.DocumentId?.Count ?? 0) == 0)))
                 {
                     throw new WrongAPIParameters();
                 }
