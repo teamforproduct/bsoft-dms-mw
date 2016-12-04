@@ -432,28 +432,28 @@ namespace DMS_WebAPI.Utilities
             return "[not(contains(concat(' ', normalize-space(@class), ' '), ' " + className + " '))]";
         }
 
-        public static string UserNameFormatByClientCode(this string userName, string clientCode)
-        {
-            if (!string.IsNullOrEmpty(clientCode))
-            {
-                var dbProc = new WebAPIDbProcess();
-                var client = dbProc.GetClient(clientCode);
-                if (client != null)
-                    userName = userName.UserNameFormatByClientId(client.Id);
-            }
+        //public static string UserNameFormatByClientCode(this string userName, string clientCode)
+        //{
+        //    if (!string.IsNullOrEmpty(clientCode))
+        //    {
+        //        var dbProc = new WebAPIDbProcess();
+        //        var client = dbProc.GetClient(clientCode);
+        //        if (client != null)
+        //            userName = userName.UserNameFormatByClientId(client.Id);
+        //    }
 
-            return userName;
-        }
+        //    return userName;
+        //}
 
-        public static string UserNameFormatByClientId(this string userName, int clientId)
-        {
+        //public static string UserNameFormatByClientId(this string userName, int clientId)
+        //{
 
-            if (clientId > 0)
-            {
-                userName = $"Client_{clientId}_{userName}";
-            }
+        //    if (clientId > 0)
+        //    {
+        //        userName = $"Client_{clientId}_{userName}";
+        //    }
 
-            return userName;
-        }
+        //    return userName;
+        //}
     }
 }

@@ -411,6 +411,7 @@
     <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextsWorkerService.cs" />
     <Compile Include="Utilities\UserContexts.cs" />
+    <Compile Include="Utilities\WebAPIService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\CryptoExts\x64\CryptoExts.dll" />

@@ -78,9 +78,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployee model)
         {
-            var dbWebProc = new WebAPIDbProcess();
+            var webSeevice = new WebAPIService();
 
-            var tmpItem = dbWebProc.AddUserEmployee(model);
+            var tmpItem = webSeevice.AddUserEmployee(model);
 
             return Get(tmpItem);
         }

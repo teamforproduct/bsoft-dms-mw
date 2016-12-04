@@ -6,42 +6,41 @@ using System.Threading.Tasks;
 
 namespace BL.CrossCutting.Helpers
 {
-    public class Logger
+    public class FileLogger
     {
-        public static void SaveToFile2(string text)
+        
+        public static void AppendTextToSiteErrors(string method, TimeSpan elapsed)
+        {
+            AppendTextToSiteErrors($"{method};{System.DateTime.UtcNow.ToString("o")};{String.Format("{0:0.00000000}", elapsed.TotalSeconds)}");
+        }
+
+        public static void AppendTextToSiteErrors(string text)
+        {
+            AppendTextToFile(text, System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+        }
+
+        public static void AppendTextToFile(string text, string FilePath)
         {
             try
             {
-                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+                System.IO.StreamWriter sw;
+
                 try
                 {
-                    string line = $"{System.DateTime.UtcNow.ToString("o")};{text};";
-                    sw.WriteLine(line);
+                    System.IO.FileInfo ff = new System.IO.FileInfo(FilePath);
+                    if (ff.Exists)
+                    {
+                    }
                 }
                 catch
                 {
+
                 }
-                finally
-                {
-                    sw.Close();
-                }
-            }
-            catch
-            {
-            }
-        }
-        public static void SaveToFile(string method, TimeSpan elapsed)
-        {
-            SaveToFile(method, String.Format("{0:0.00000000}", elapsed.TotalSeconds));
-        }
-        private static void SaveToFile(string method, string time)
-        {
-            try
-            {
-                System.IO.StreamWriter sw = System.IO.File.AppendText(System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+
+                sw = System.IO.File.AppendText(FilePath);
                 try
                 {
-                    string line = $"{method};{System.DateTime.UtcNow.ToString("o")};{time}";
+                    string line = text;
                     sw.WriteLine(line);
                 }
                 catch

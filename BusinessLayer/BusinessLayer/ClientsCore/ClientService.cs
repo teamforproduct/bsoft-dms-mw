@@ -109,7 +109,7 @@ namespace BL.Logic.ClientCore
             return items;
         }
 
-        public void AddNewClient(IContext context, AddClientContent client)
+        public void AddNewClient(IContext context, AddClientSaaS client)
         {
             
             //GetSystemSettings

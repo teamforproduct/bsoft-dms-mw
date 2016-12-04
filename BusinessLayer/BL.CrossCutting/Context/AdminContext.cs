@@ -64,8 +64,15 @@ namespace BL.CrossCutting.Context
                 };
 
                 IsChangePasswordRequired = ctx.IsChangePasswordRequired;
+
+                IsFormed = true;
             }
         }
+
+        /// <summary>
+        ///  Флаг TRUE если контекст сформирован и готов к работе
+        /// </summary>
+        public bool IsFormed { get; set; }
 
         public Employee CurrentEmployee { get; set; }
         public List<int> CurrentPositionsIdList

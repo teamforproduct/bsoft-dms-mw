@@ -9,8 +9,12 @@ using System;
 
 namespace BL.CrossCutting.Context
 {
+    /// <summary>
+    /// Контекст пользователя - информационный класс, который НЕ должен содержать логику. Просто набор параметров, которые доступны на всех уровнях
+    /// </summary>
     public class UserContext : IContext
     {
+        private bool _silentMode = false;
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
@@ -61,6 +65,7 @@ namespace BL.CrossCutting.Context
 
                 ClientLicence = ctx.ClientLicence;
                 IsChangePasswordRequired = ctx.IsChangePasswordRequired;
+                IsFormed = ctx.IsFormed;
 
                 try
                 {
@@ -82,7 +87,7 @@ namespace BL.CrossCutting.Context
 
                 try
                 {
-                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x=>x.Key,x=>x.Value);
+                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value);
                 }
                 catch (UserPositionIsNotDefined)
                 {
@@ -91,13 +96,20 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        /// <summary>
+        ///  Флаг TRUE если контекст сформирован и готов к работе
+        /// </summary>
+        public bool IsFormed { get; set; }
+
+
         public List<int> CurrentPositionsIdList
         {
             get
             {
                 if ((_currentPositionsIdList == null) || !_currentPositionsIdList.Any())
                 {
-                    throw new UserPositionIsNotDefined();
+                    if (!_silentMode) throw new UserPositionIsNotDefined();
+                    else return null;
                 }
                 return _currentPositionsIdList;
             }
@@ -113,7 +125,8 @@ namespace BL.CrossCutting.Context
             {
                 if ((_currentPositionsAccessLevel == null) || !_currentPositionsAccessLevel.Any())
                 {
-                    throw new UserPositionIsNotDefined();
+                    if (!_silentMode) throw new UserPositionIsNotDefined();
+                    else return null;
                 }
                 return _currentPositionsAccessLevel;
             }
@@ -129,19 +142,21 @@ namespace BL.CrossCutting.Context
             {
                 if (!_currentPositionId.HasValue)
                 {
-                    throw new UserPositionIsNotDefined();
+                    if (!_silentMode) throw new UserPositionIsNotDefined();
+                    else return -1;
                 }
                 return _currentPositionId.Value;
             }
         }
-        
+
         public int CurrentAgentId
         {
             get
             {
                 if (CurrentEmployee?.AgentId == null)
                 {
-                    throw new UserNameIsNotDefined();
+                    if (!_silentMode) throw new UserNameIsNotDefined();
+                    else return -1;
                 }
                 return CurrentEmployee.AgentId.GetValueOrDefault();
             }
@@ -150,6 +165,11 @@ namespace BL.CrossCutting.Context
         public void SetCurrentPosition(int? position)
         {
             _currentPositionId = position;
+        }
+
+        public void SetSilentMode()
+        {
+            _silentMode = true;
         }
 
         public bool IsAdmin => false;
@@ -162,7 +182,8 @@ namespace BL.CrossCutting.Context
             {
                 if (_currentDb == null)
                 {
-                    throw new DatabaseIsNotSet();
+                    if (!_silentMode)throw new DatabaseIsNotSet();
+                    else return null;
                 }
                 return _currentDb;
             }
@@ -195,6 +216,9 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
+
+
+
 
     }
 }

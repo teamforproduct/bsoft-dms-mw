@@ -39,9 +39,9 @@ namespace DMS_WebAPI.Controllers
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Получение информации о пользователе
+        /// Возвращает информацию о пользователе: имя, язык, контакты, адреса
         /// </summary>
-        /// <returns>список должностей</returns>
+        /// <returns></returns>
         [Route("UserInfo")]
         [HttpGet]
         [ResponseType(typeof(FrontDictionaryAgentUser))]
@@ -63,26 +63,19 @@ namespace DMS_WebAPI.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetAgentUserInfo(int agentId)
         {
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
-            var ctx = mngContext.Get();
+            var webService = new WebAPIService();
 
-            var dicService = DmsResolver.Current.Get<IDictionaryService>();
-            var userId = dicService.GetDictionaryAgentUserId(ctx, agentId);
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                throw new UserNameIsNotDefined();
-
+            ApplicationUser user = await webService.GetUserAsync(ctx, agentId);
+             
+            if (user == null) throw new UserNameIsNotDefined();
 
             return new JsonResult(new { UserName = user.Email, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
         }
 
         /// <summary>
-        /// Получение списка должностей, доступных текущего для пользователя
+        /// Возвращает список назначений для текущего пользователя (должность - интервал назначения, количество новых событий)
         /// </summary>
         /// <returns>список должностей</returns>
         [Route("AvailablePositions")]
@@ -91,7 +84,7 @@ namespace DMS_WebAPI.Controllers
         public IHttpActionResult AvailablePositions()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive:false);
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositions(context);
             var res = new JsonResult(tmpItems, this);
@@ -100,7 +93,8 @@ namespace DMS_WebAPI.Controllers
         }
 
         /// <summary>
-        /// Получение массива ИД должностей, выбранных текущим пользователем
+        /// Возвращает список Id должностей, от которых пользователь сейчас работатет.
+        /// 
         /// </summary>
         /// <returns>массива ИД должностей</returns>
         [Route("ChoosenPositions")]
@@ -120,11 +114,11 @@ namespace DMS_WebAPI.Controllers
         [Route("ChoosenPositions")]
         public IHttpActionResult Post([FromBody]List<int> positionsIdList)
         {
-            var user_context = DmsResolver.Current.Get<UserContexts>();
-            var context = user_context.Get();
-            var admProc = DmsResolver.Current.Get<IAdminService>();
-            admProc.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
-            user_context.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            var context = userContexts.Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
+            userContexts.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
             //context.CurrentPositionsIdList = positionsIdList;
             //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
             return new JsonResult(null, this);
@@ -206,32 +200,32 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(clients, this);
         }
 
-        /// <summary>
-        /// Установить клиента для пользователя
-        /// </summary>
-        /// <param name="clientId"></param>
-        /// <returns></returns>
-        [Route("Clients")]
-        [HttpPost]
-        public IHttpActionResult SetClients([FromBody]int clientId)
-        {
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+        ///// <summary>
+        ///// Установить клиента для пользователя
+        ///// </summary>
+        ///// <param name="clientId"></param>
+        ///// <returns></returns>
+        //[Route("Clients")]
+        //[HttpPost]
+        //public IHttpActionResult SetClients([FromBody]int clientId)
+        //{
+        //    var mngContext = DmsResolver.Current.Get<UserContexts>();
 
-            var ctx = mngContext.Get();
+        //    var ctx = mngContext.Get();
 
-            var dbProc = new WebAPIDbProcess();
+        //    var dbProc = new WebAPIDbProcess();
 
-            var client = dbProc.GetClientByUser(User.Identity.GetUserId(), clientId);
-            if (client == null)
-            {
-                throw new ClientIsNotFound();
-            }
+        //    var client = dbProc.GetClientByUser(User.Identity.GetUserId(), clientId);
+        //    if (client == null)
+        //    {
+        //        throw new ClientIsNotFound();
+        //    }
 
-            mngContext.Set(client);
+        //    mngContext.Set(client);
 
 
-            return new JsonResult(null, this);
-        }
+        //    return new JsonResult(null, this);
+        //}
 
         /// <summary>
         /// Изменение пароля
@@ -245,48 +239,11 @@ namespace DMS_WebAPI.Controllers
             if (!ModelState.IsValid)
             {
                 return new JsonResult(ModelState, false, this);
-                //return BadRequest(ModelState);
             }
 
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+            var webService = new WebAPIService();
+            await webService.ChangePasswordAgentUserAsync(model);
 
-            var ctx = mngContext.Get();
-
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangePassword, ctx, model.AgentId);
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            var token = await userManager.GeneratePasswordResetTokenAsync(userId);
-
-            var result = await userManager.ResetPasswordAsync(userId, token, model.NewPassword);
-
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-                //return GetErrorResult(result);
-            }
-
-            //if (model.IsChangePasswordRequired)
-            //{
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                throw new UserNameIsNotDefined();
-
-            user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
-
-            result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-                //return GetErrorResult(result);
-            }
-            //}
-
-            if (model.IsKillSessions)
-                mngContext.KillSessions(model.AgentId);
 
             return new JsonResult(null, this);
         }
@@ -302,32 +259,11 @@ namespace DMS_WebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState, false, this);
             }
+            var webService = new WebAPIService();
 
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
-
-            var ctx = mngContext.Get();
-
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLockout, ctx, model.AgentId);
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                throw new UserNameIsNotDefined();
-
-            user.IsLockout = model.IsLockout;
-
-            var result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-                throw new DatabaseError();
-
-            if (model.IsKillSessions)
-                mngContext.KillSessions(model.AgentId);
+            await webService.ChangeLockoutAgentUserAsync(model);
 
             return new JsonResult(null, this);
         }
@@ -346,7 +282,7 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, agentId);
+            admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, agentId);
 
             mngContext.KillSessions(agentId);
 
@@ -364,53 +300,11 @@ namespace DMS_WebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new JsonResult(ModelState, false, this);
             }
 
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
-
-            var ctx = mngContext.Get();
-
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.ChangeLogin, ctx, model.AgentId);
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                throw new UserNameIsNotDefined();
-
-            user.UserName = model.NewEmail.UserNameFormatByClientId(ctx.CurrentClientId);
-            user.Email = model.NewEmail;
-
-            user.IsEmailConfirmRequired = model.IsVerificationRequired;
-
-            if (user.IsEmailConfirmRequired)
-                user.EmailConfirmed = false;
-
-            var result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-                throw new DatabaseError();
-
-            mngContext.KillSessions(model.AgentId);
-
-            if (model.IsVerificationRequired)
-            {
-                var emailConfirmationCode = await userManager.GenerateEmailConfirmationTokenAsync(user.Id);
-
-                var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "email-confirmation").AbsoluteUri;
-
-                callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
-
-                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.PartialViewNameChangeLoginAgentUserVerificationEmail);
-
-                var settings = DmsResolver.Current.Get<ISettings>();
-
-                var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                mailService.SendMessage(ctx, model.NewEmail, "Email confirmation", htmlContent);
-            }
+            var webService = new WebAPIService();
+            webService.ChangeLoginAgentUser(model);
 
             return new JsonResult(null, this);
         }
@@ -422,22 +316,9 @@ namespace DMS_WebAPI.Controllers
         {
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            var result = await userManager.ConfirmEmailAsync(userId, code);
+            var webService = new WebAPIService();
 
-            if (result.Succeeded)
-            {
-                ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-                if (user == null)
-                    throw new UserNameIsNotDefined();
-
-                user.IsEmailConfirmRequired = false;
-
-                result = await userManager.UpdateAsync(user);
-
-                if (!result.Succeeded)
-                    throw new DatabaseError();
-            }
+            await webService.ConfirmEmailAgentUser(userId, code);
 
             return new JsonResult(null, this);
         }
@@ -495,9 +376,9 @@ namespace DMS_WebAPI.Controllers
             catch { }
             #endregion log to file
 
-            var dbProc = new WebAPIDbProcess();
+            var webService = new WebAPIService();
             //new NameValueCollection { { "test", "test" } }
-            await dbProc.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+            await webService.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return new JsonResult(null, this);
         }
@@ -530,30 +411,11 @@ namespace DMS_WebAPI.Controllers
             catch { }
             #endregion log to file
 
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var webService = new WebAPIService();
 
-            var result = await userManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
+            var res = await webService.ConfirmRestorePasswordAgentUser(model);
 
-            if (!result.Succeeded)
-                throw new ResetPasswordCodeInvalid();
-
-            ApplicationUser user = await userManager.FindByIdAsync(model.UserId);
-
-            if (user == null)
-                throw new UserNameIsNotDefined();
-
-            user.EmailConfirmed = true;
-            user.IsEmailConfirmRequired = false;
-
-            result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-                throw new ResetPasswordFailed();
-
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
-            mngContext.KillSessions(model.UserId);
-
-            return new JsonResult(new { UserName = user.Email }, this);
+            return new JsonResult(new { UserName = res }, this);
         }
 
         private static void AppendToFile(string path, string text)
@@ -605,7 +467,6 @@ namespace DMS_WebAPI.Controllers
             if (!ModelState.IsValid)
             {
                 return new JsonResult(ModelState, false, this);
-                //return BadRequest(ModelState);
             }
 
             var mngContext = DmsResolver.Current.Get<UserContexts>();

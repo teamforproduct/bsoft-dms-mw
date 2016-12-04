@@ -10,18 +10,22 @@ using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
+using Newtonsoft.Json;
+using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
     /// <summary>
     /// Коллекция пользовательских контекстов
     /// </summary>
-    public class UserContexts
+    public class UserContexts //: IDisposable
     {
         private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
-        private const int _TIME_OUT = 14;
+        private const int _TIME_OUT_MIN = 15;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
+
+        private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
 
         /// <summary>
         /// Gets setting value by its name.
@@ -29,7 +33,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext GetByLanguage()
         {
-            string token = Token.ToLower();
+            string token = TokenLower;
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
@@ -57,7 +61,7 @@ namespace DMS_WebAPI.Utilities
                 .Select(x => new FrontSystemSession
                 {
                     Token = x.Key,
-                    LastUsage  = x.Value.LastUsage,
+                    LastUsage = x.Value.LastUsage,
                     CreateDate = (x.Value.StoreObject as IContext).CreateDate,
                     LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
                     LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
@@ -66,22 +70,24 @@ namespace DMS_WebAPI.Utilities
                     Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
                     ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
                     IsActive = true,
-                    
+
                 });
             return res;
         }
 
-       
+
 
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
         /// <param name="currentPositionId"></param>
         /// <param name="isThrowExeception"></param>
+        /// <param name="keepAlive"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true)
+        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true)
         {
-            string token = Token.ToLower();
+            string token = TokenLower;
+
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
@@ -101,19 +107,20 @@ namespace DMS_WebAPI.Utilities
 
                 //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
-                // KeepAlive: Продление жизни пользовательского контекста
-                storeInfo.LastUsage = DateTime.UtcNow;
-
                 var request_ctx = new UserContext(ctx);
                 request_ctx.SetCurrentPosition(currentPositionId);
 
                 if (isThrowExeception && request_ctx.IsChangePasswordRequired)
-                    throw new ChangePasswordRequiredAgentUser();
+                    throw new UserMustChangePassword();
+
+                // KeepAlive: Продление жизни пользовательского контекста
+                if (keepAlive) KeepAlive(token);
 
                 return request_ctx;
             }
             catch (InvalidCastException invalidCastException)
             {
+                // TODO Это правильно, что при InvalidCastException выбрасывается new Exception()
                 throw new Exception();
             }
         }
@@ -124,7 +131,8 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Remove(string token = null)
         {
-            if (string.IsNullOrEmpty(token)) token = Token.ToLower();
+            if (string.IsNullOrEmpty(token)) token = TokenLower;
+
             if (!_casheContexts.ContainsKey(token))
             {
                 return null;
@@ -134,7 +142,12 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 var ctx = (IContext)contextValue.StoreObject;
+                // удаляю пользовательский контекст из коллекции
                 _casheContexts.Remove(token);
+
+                // удаляю овиновский контекст из коллекции
+                //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+
                 return ctx;
             }
             catch (InvalidCastException invalidCastException)
@@ -167,7 +180,7 @@ namespace DMS_WebAPI.Utilities
             // KeepAlive: Продление жизни пользовательского контекста
             storeInfo.LastUsage = DateTime.UtcNow;
         }
-        
+
 
         /// <summary>
         /// Формирование пользовательского контекста. 
@@ -256,6 +269,7 @@ namespace DMS_WebAPI.Utilities
             }
             else
             {
+                KillCurrentSession(token);
                 throw new UserAccessIsDenied();
             }
 
@@ -296,6 +310,8 @@ namespace DMS_WebAPI.Utilities
             var context = GetInternal(token);
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+            // Контекст полностью сформирован и готов к работе
+            context.IsFormed = true;
             KeepAlive(token);
         }
 
@@ -307,7 +323,7 @@ namespace DMS_WebAPI.Utilities
         /// <exception cref="ArgumentException"></exception>
         public void Set(FrontAspNetClient client)
         {
-            string token = Token.ToLower();
+            string token = TokenLower;
             if (!_casheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
@@ -324,10 +340,10 @@ namespace DMS_WebAPI.Utilities
 
             VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
 
-            // KeepAlive: Продление жизни пользовательского контекста
-            storeInfo.LastUsage = DateTime.UtcNow;
-
             context.CurrentClientId = client.Id;
+
+            // KeepAlive: Продление жизни пользовательского контекста
+            KeepAlive(token);
         }
 
         /// <summary>
@@ -352,7 +368,7 @@ namespace DMS_WebAPI.Utilities
 
         private void Save(IContext val)
         {
-            _casheContexts.Add(Token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
+            _casheContexts.Add(TokenLower, new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
         private void Save(string token, IContext val)
         {
@@ -406,10 +422,10 @@ namespace DMS_WebAPI.Utilities
         public void RemoveByTimeout()
         {
             var now = DateTime.UtcNow;
-            var keys = _casheContexts.Where(x => x.Value.LastUsage.AddDays(_TIME_OUT) <= now).Select(x => x.Key).ToArray();
+            var keys = _casheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                _casheContexts.Remove(key);
+                Remove(key);
             }
         }
 
@@ -419,7 +435,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                _casheContexts.Remove(key);
+                Remove(key);
             }
         }
 
@@ -429,18 +445,18 @@ namespace DMS_WebAPI.Utilities
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                _casheContexts.Remove(key);
+                Remove(key);
             }
         }
 
         public void KillCurrentSession(string token = "")
         {
             if (string.IsNullOrEmpty(token))
-            { token = Token.ToLower(); }
+            { token = TokenLower; }
             else
             { token = token.ToLower(); }
 
-            _casheContexts.Remove(token);
+            Remove(token);
         }
 
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
@@ -513,6 +529,8 @@ namespace DMS_WebAPI.Utilities
             _casheContexts.Clear();
         }
 
+
+
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
@@ -520,6 +538,46 @@ namespace DMS_WebAPI.Utilities
         {
             get { return _casheContexts.Count; }
         }
+
+        //public void Dispose()
+        //{
+        //    try
+        //    {
+        //        var folderPath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "UserContexts");
+
+
+        //        try
+        //        {
+        //            var files = System.IO.Directory.GetFiles(folderPath);
+        //            foreach (var item in files)
+        //            {
+        //                System.IO.File.Delete(item);
+        //            }
+        //            System.IO.Directory.Delete(folderPath);
+        //        }
+        //        catch { }
+
+        //        try { System.IO.Directory.CreateDirectory(folderPath); } catch { }
+
+        //        foreach (var item in _casheContexts)
+        //        {
+        //            if (!(item.Value.StoreObject is UserContext)) continue;
+
+        //            var context = (UserContext)item.Value.StoreObject;
+
+        //            context.SetSilentMode();
+
+        //            try
+        //            {
+        //                var json = JsonConvert.SerializeObject(context);
+
+        //                FileLogger.AppendTextToFile(json, System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString("ddHHmmss")));
+        //            }
+        //            catch { }
+        //        }
+        //    }
+        //    catch { }
+        //}
 
     }
 }
