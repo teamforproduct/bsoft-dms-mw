@@ -14,6 +14,7 @@ using System.Transactions;
 using System.Web;
 using BL.Model.SystemCore;
 using BL.Model.Exception;
+using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -281,7 +282,7 @@ namespace DMS_WebAPI.Utilities
             var res = new AdminLanguageInfo();
 
             using (var dbContext = new ApplicationDbContext())
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 res.Languages = dbContext.AdminLanguagesSet.Select(x => new InternalAdminLanguage
                 {
@@ -439,7 +440,7 @@ namespace DMS_WebAPI.Utilities
         //private void DeleteAllAdminLanguageValues()
         //{
         //    using (var dbContext = new ApplicationDbContext())
-        //    using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    using (var transaction = Transactions.GetTransaction())
         //    {
         //        dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
         //        dbContext.SaveChanges();

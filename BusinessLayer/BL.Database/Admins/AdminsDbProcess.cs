@@ -21,6 +21,7 @@ using System.Transactions;
 using BL.Model.DictionaryCore.FrontModel;
 using EntityFramework.Extensions;
 using BL.Model.SystemCore.InternalModel;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Admins
 {
@@ -36,8 +37,7 @@ namespace BL.Database.Admins
         #region [+] General ...
         public AdminAccessInfo GetAdminAccesses(IContext context)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var res = new AdminAccessInfo();
 
@@ -88,8 +88,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext ctx, int agentId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -105,6 +104,7 @@ namespace BL.Database.Admins
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
                     RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name ?? "##l@Message:PositionIsVacant@l##",
+                    RolePositionExecutorTypeId = x.PositionExecutorType.Id,
                     RolePositionExecutorTypeName = x.PositionExecutorType.Name,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
@@ -138,7 +138,7 @@ namespace BL.Database.Admins
         //public IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
         //{
         //    using (var dbContext = new DmsContext(ctx))
-        //    using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    using (var transaction = Transactions.GetTransaction())
         //    {
         //        var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -205,8 +205,7 @@ namespace BL.Database.Admins
 
         public Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dateNow = DateTime.UtcNow;
                 var qry = dbContext.DictionaryPositionExecutorsSet
@@ -231,8 +230,7 @@ namespace BL.Database.Admins
         /// <returns></returns>
         public bool VerifySubordination(IContext context, VerifySubordination model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
                 var pos = dictDb.GetPositions(context, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions })
@@ -249,8 +247,7 @@ namespace BL.Database.Admins
 
         public Employee GetEmployeeForContext(IContext ctx, string userId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var now = DateTime.UtcNow;
 
@@ -276,8 +273,7 @@ namespace BL.Database.Admins
 
         public int AddRoleType(IContext context, InternalAdminRoleType model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoleTypes dbModel = AdminModelConverter.GetDbRoleType(context, model);
                 dbContext.AdminRolesTypesSet.Add(dbModel);
@@ -290,8 +286,7 @@ namespace BL.Database.Admins
 
         public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 // Классификатор роли
                 var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
@@ -317,8 +312,7 @@ namespace BL.Database.Admins
 
         public int AddRole(IContext context, InternalAdminRole model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
                 dbContext.AdminRolesSet.Add(dbModel);
@@ -330,8 +324,7 @@ namespace BL.Database.Admins
         }
         public void UpdateRole(IContext context, InternalAdminRole model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
                 dbContext.AdminRolesSet.Attach(dbModel);
@@ -342,8 +335,7 @@ namespace BL.Database.Admins
         }
         public void DeleteRole(IContext context, InternalAdminRole model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Delete(); ;
 
@@ -356,8 +348,7 @@ namespace BL.Database.Admins
 
         public InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -380,8 +371,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
                 qry = GetWhereRole(ref qry, filter);
@@ -404,8 +394,7 @@ namespace BL.Database.Admins
 
         public bool ExistsRole(IContext context, FilterAdminRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRolesSet.AsQueryable();
 
@@ -489,8 +478,7 @@ namespace BL.Database.Admins
         #region [+] RoleAction ...
         public int AddRoleAction(IContext context, InternalAdminRoleAction model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
                 dbContext.AdminRoleActionsSet.Add(dbModel);
@@ -503,18 +491,18 @@ namespace BL.Database.Admins
 
         public void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModels = AdminModelConverter.GetDbRoleActions(context, models);
                 dbContext.AdminRoleActionsSet.AddRange(dbModels);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void UpdateRoleAction(IContext context, InternalAdminRoleAction model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
                 dbContext.AdminRoleActionsSet.Attach(dbModel);
@@ -525,8 +513,7 @@ namespace BL.Database.Admins
         }
         public void DeleteRoleAction(IContext context, InternalAdminRoleAction model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
                 dbContext.AdminRoleActionsSet.Remove(dbModel);
@@ -537,8 +524,7 @@ namespace BL.Database.Admins
 
         public void DeleteRoleActions(IContext context, FilterAdminRoleAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRoleActionsSet.AsQueryable();
                 qry = GetWhereRoleAction(ref qry, filter);
@@ -551,8 +537,7 @@ namespace BL.Database.Admins
 
         public InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRoleActionsSet.AsQueryable();
                 qry = GetWhereRoleAction(ref qry, filter);
@@ -573,8 +558,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRoleActionsSet.AsQueryable();
 
@@ -598,8 +582,7 @@ namespace BL.Database.Admins
 
         public bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRoleActionsSet.AsQueryable();
 
@@ -669,8 +652,7 @@ namespace BL.Database.Admins
 
         public List<int> GetActionsByRoles(IContext context, FilterAdminRoleAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRoleActionsSet.AsQueryable();
 
@@ -687,52 +669,55 @@ namespace BL.Database.Admins
         #region [+] PositionRole ...
         public int AddPositionRole(IContext context, InternalAdminPositionRole model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(context, model);
                 dbContext.AdminPositionRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
             }
         }
         public void UpdatePositionRole(IContext context, InternalAdminPositionRole model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(context, model);
                 dbContext.AdminPositionRolesSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeletePositionRole(IContext context, InternalAdminPositionRole model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 // по полям RoleId и PositionId соблюдается уникальность, поэтому запись идентифицируется правильно (всегда одна)
                 var dbModel = dbContext.AdminPositionRolesSet.Where(x => x.RoleId == model.RoleId).Where(x => x.PositionId == model.PositionId).FirstOrDefault();
                 dbContext.AdminPositionRolesSet.Remove(dbModel);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeletePositionRoles(IContext context, FilterAdminPositionRole filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
                 qry = GetWherePositionRole(ref qry, filter);
                 dbContext.AdminPositionRolesSet.RemoveRange(qry);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
@@ -753,8 +738,7 @@ namespace BL.Database.Admins
 
         public List<int> GetRolesByPositions(IContext context, List<int> positionIDs)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
@@ -773,8 +757,7 @@ namespace BL.Database.Admins
 
         public FrontAdminPositionRole GetPositionRole(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRolesSet.Where(x => x.Id == id).Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -790,8 +773,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<InternalAdminPositionRole> GetInternalPositionRoles(IContext context, FilterAdminPositionRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
@@ -814,8 +796,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
@@ -838,8 +819,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRolesSet.AsQueryable();
 
@@ -882,8 +862,7 @@ namespace BL.Database.Admins
 
         public bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
@@ -957,49 +936,53 @@ namespace BL.Database.Admins
         #region [+] UserRole ...
         public int AddUserRole(IContext context, InternalAdminUserRole model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminUserRoles dbModel = AdminModelConverter.GetDbUserRole(context, model);
                 dbContext.AdminUserRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
             }
         }
 
         public void AddUserRoles(IContext context, IEnumerable<InternalAdminUserRole> models)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModels = AdminModelConverter.GetDbUserRoles(context, models);
                 dbContext.AdminUserRolesSet.AddRange(dbModels);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void UpdateUserRole(IContext context, InternalAdminUserRole model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminUserRoles dbModel = AdminModelConverter.GetDbUserRole(context, model);
                 dbContext.AdminUserRolesSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteUserRole(IContext context, int id)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = dbContext.AdminUserRolesSet.FirstOrDefault(x => x.Id == id);
                 dbContext.AdminUserRolesSet.Remove(dbModel);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         public void DeleteUserRoles(IContext context, FilterAdminUserRole filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
                 qry = GetWhereUserRole(ref qry, filter);
@@ -1007,13 +990,13 @@ namespace BL.Database.Admins
                 //if (qry.Count() == 0) return;
                 //dbContext.AdminUserRolesSet.RemoveRange(qry);
                 //dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public IEnumerable<InternalAdminUserRole> GetInternalUserRoles(IContext context, FilterAdminUserRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
@@ -1045,8 +1028,7 @@ namespace BL.Database.Admins
 
         public List<int> GetRolesByUsers(IContext context, FilterAdminUserRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
@@ -1062,8 +1044,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
@@ -1086,8 +1067,7 @@ namespace BL.Database.Admins
 
         public bool ExistsUserRole(IContext context, FilterAdminUserRole filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminUserRolesSet.AsQueryable();
 
@@ -1216,39 +1196,42 @@ namespace BL.Database.Admins
         #region [+] Subordination ...
         public int AddSubordination(IContext context, InternalAdminSubordination model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminSubordinations dbModel = AdminModelConverter.GetDbSubordination(context, model);
                 dbContext.AdminSubordinationsSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
             }
         }
 
         public void AddSubordinations(IContext context, List<InternalAdminSubordination> list)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var items = AdminModelConverter.GetDbSubordinations(context, list);
                 dbContext.AdminSubordinationsSet.AddRange(items);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void UpdateSubordination(IContext context, InternalAdminSubordination model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminSubordinations dbModel = AdminModelConverter.GetDbSubordination(context, model);
                 dbContext.AdminSubordinationsSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         public void DeleteSubordination(IContext context, InternalAdminSubordination model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminSubordinations dbModel = null;
                 if (model.Id == 0)
@@ -1262,32 +1245,35 @@ namespace BL.Database.Admins
                 }
                 dbContext.AdminSubordinationsSet.Remove(dbModel);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteSubordinationsBySourcePositionId(IContext context, InternalAdminSubordination model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var list = dbContext.AdminSubordinationsSet.Where(x => x.SourcePositionId == model.SourcePositionId);
                 dbContext.AdminSubordinationsSet.RemoveRange(list);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteSubordinationsByTargetPositionId(IContext context, InternalAdminSubordination model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var list = dbContext.AdminSubordinationsSet.Where(x => x.TargetPositionId == model.TargetPositionId);
                 dbContext.AdminSubordinationsSet.RemoveRange(list);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteSubordinations(IContext context, FilterAdminSubordination filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
                 qry = GetWhereSubordination(ref qry, filter);
@@ -1295,18 +1281,19 @@ namespace BL.Database.Admins
                 //var e = qry.ToList();
                 //dbContext.AdminSubordinationsSet.RemoveRange(qry);
                 //dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public InternalAdminSubordination GetInternalSubordination(IContext context, FilterAdminSubordination filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
                 qry = GetWhereSubordination(ref qry, filter);
 
-                return qry.Select(x => new InternalAdminSubordination
+                var res = qry.Select(x => new InternalAdminSubordination
                 {
                     Id = x.Id,
                     SourcePositionId = x.SourcePositionId,
@@ -1315,14 +1302,15 @@ namespace BL.Database.Admins
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
 
         public IEnumerable<FrontAdminSubordination> GetSubordinations(IContext context, FilterAdminSubordination filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1349,8 +1337,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<InternalAdminSubordination> GetInternalSubordinations(IContext context, FilterAdminSubordination filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1376,8 +1363,7 @@ namespace BL.Database.Admins
 
         public List<int> GetSubordinationTargetIDs(IContext context, FilterAdminSubordination filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1395,8 +1381,7 @@ namespace BL.Database.Admins
 
         public bool ExistsSubordination(IContext context, FilterAdminSubordination filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminSubordinationsSet.AsQueryable();
 
@@ -1482,40 +1467,43 @@ namespace BL.Database.Admins
         #region [+] RegistrationJournalPositions ...
         public int AddRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
                 dbContext.AdminRegistrationJournalPositionsSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                transaction.Complete();
                 return dbModel.Id;
             }
         }
 
         public void AddRegistrationJournalPositions(IContext context, List<InternalRegistrationJournalPosition> list)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var items = AdminModelConverter.GetDbRegistrationJournalPositions(context, list);
                 dbContext.AdminRegistrationJournalPositionsSet.AddRange(items);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void UpdateRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
                 dbContext.AdminRegistrationJournalPositionsSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 AdminRegistrationJournalPositions dbModel = null;
                 if (model.Id == 0)
@@ -1529,42 +1517,45 @@ namespace BL.Database.Admins
                 }
                 dbContext.AdminRegistrationJournalPositionsSet.Remove(dbModel);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
                 qry = GetWhereRegistrationJournalPosition(ref qry, filter);
                 dbContext.AdminRegistrationJournalPositionsSet.RemoveRange(qry);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public InternalRegistrationJournalPosition GetInternalRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
                 qry = GetWhereRegistrationJournalPosition(ref qry, filter);
 
-                return qry.Select(x => new InternalRegistrationJournalPosition
+                var res = qry.Select(x => new InternalRegistrationJournalPosition
                 {
                     Id = x.Id,
                     PositionId = x.PositionId,
                     RegistrationJournalId = x.RegJournalId,
                     RegJournalAccessTypeId = x.RegJournalAccessTypeId,
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
         public IEnumerable<InternalRegistrationJournalPosition> GetInternalRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
@@ -1589,7 +1580,7 @@ namespace BL.Database.Admins
         //public IEnumerable<FrontAdminRegistrationJournalPosition> GetRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
         //{
         //    using (var dbContext = new DmsContext(context))
-        //    //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    //using (var transaction = Transactions.GetTransaction())
         //    {
         //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
@@ -1615,7 +1606,7 @@ namespace BL.Database.Admins
         //public List<int> GetRegistrationJournalPositionTargetIDs(IContext context, FilterAdminRegistrationJournalPosition filter)
         //{
         //    using (var dbContext = new DmsContext(context))
-        //    //using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    //using (var transaction = Transactions.GetTransaction())
         //    {
         //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
@@ -1629,8 +1620,7 @@ namespace BL.Database.Admins
 
         public bool ExistsRegistrationJournalPosition(IContext context, FilterAdminRegistrationJournalPosition filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
@@ -1707,8 +1697,7 @@ namespace BL.Database.Admins
 
         public List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.SystemActionsSet.Select(x => new InternalAdminRoleAction { ActionId = x.Id }).ToList();
 

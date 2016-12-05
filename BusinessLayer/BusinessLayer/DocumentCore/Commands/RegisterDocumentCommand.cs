@@ -4,6 +4,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
 using BL.Model.Enums;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -62,7 +63,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 CommonDocumentUtilities.SetLastChange(_context, _document);
                 _document.IsRegistered = Model.IsRegistered;

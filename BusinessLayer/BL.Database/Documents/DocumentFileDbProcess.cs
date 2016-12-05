@@ -10,6 +10,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
 {
@@ -21,20 +22,19 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
+                var res = CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
+                transaction.Complete();
+                return res;
             }
         }
 
         public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return
-                    dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(
                             x =>
                                 x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
@@ -60,15 +60,16 @@ namespace BL.Database.Documents
                             Version = x.fl.Version,
                             WasChangedExternal = false,
                             ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name+(x.fl.ExecutorPositionExecutorType.Suffix != null ? " (" + x.fl.ExecutorPositionExecutorType.Suffix + ")" : null),
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name + (x.fl.ExecutorPositionExecutorType.Suffix != null ? " (" + x.fl.ExecutorPositionExecutorType.Suffix + ")" : null),
                         }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                                     .Where(x => x.Id == documentId)
@@ -106,13 +107,14 @@ namespace BL.Database.Documents
                             IsDeleted = x.fl.IsDeleted,
                             FileContent = x.fl.Content
                         }).ToList();
+
+                transaction.Complete();
                 return doc;
             }
         }
         public InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                                     .Where(x => x.Id == documentId)
@@ -143,14 +145,14 @@ namespace BL.Database.Documents
                             IsMainVersion = x.fl.IsMainVersion,
                             Type = (EnumFileTypes)x.fl.TypeId,
                         }).ToList();
+                transaction.Complete();
                 return doc;
             }
         }
 
         public InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Id == documentId)
@@ -172,14 +174,14 @@ namespace BL.Database.Documents
                             OrderInDocument = y.OrderNumber
                         })
                     }).FirstOrDefault();
-
+                transaction.Complete();
                 return doc;
             }
         }
 
         public int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
 
                 if (docFile.IsMainVersion)
@@ -208,13 +210,14 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
+                transaction.Complete();
                 return fl.Id;
             }
         }
 
         public void UpdateFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 if (docFile.IsMainVersion)
                 {
@@ -253,11 +256,12 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
                 }
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         public void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 foreach (var docFile in docFiles)
                 {
@@ -274,13 +278,13 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFileEvents.Where(x => x.Id == 0)).ToList());
                 }
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public InternalDocument DeleteDocumentFilePrepare(IContext ctx, FilterDocumentFileIdentity flIdent)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Id == flIdent.DocumentId)
@@ -306,11 +310,12 @@ namespace BL.Database.Documents
                             ExecutorPositionId = x.ExecutorPositionId,
                             Name = x.Name,
                             Extension = x.Extension,
-                            Type=(EnumFileTypes)x.TypeId,
+                            Type = (EnumFileTypes)x.TypeId,
                             IsMainVersion = x.IsMainVersion,
                             Version = x.Version,
                             IsDeleted = x.IsDeleted,
                         }).ToList();
+                transaction.Complete();
                 return doc;
             }
         }
@@ -322,7 +327,7 @@ namespace BL.Database.Documents
         /// <param name="docFile"> should be filled DocumentId and OrderInDocument fields</param>
         public void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
                 {
@@ -361,42 +366,45 @@ namespace BL.Database.Documents
                 }
 
                 dbContext.SaveChanges();
-
+                transaction.Complete();
             }
         }
 
         public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
+                var res = -1;
                 if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
                 {
-                    return
-                        dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
+                    res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
                             .Where(x => !x.IsDeleted)
                             .Select(x => x.OrderNumber)
                             .First();
                 }
-
-                return -1;
+                transaction.Complete();
+                return res;
             }
         }
 
         public int GetNextFileOrderNumber(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId).OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault() + 1;
+                transaction.Complete();
+                return res;
             }
         }
 
         public int GetFileNextVersion(IContext ctx, int documentId, int fileOrder)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).OrderByDescending(x => x.Version).Select(x => x.Version).FirstOrDefault() + 1;
+                var res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).OrderByDescending(x => x.Version).Select(x => x.Version).FirstOrDefault() + 1;
+                transaction.Complete();
+                return res;
             }
         }
 

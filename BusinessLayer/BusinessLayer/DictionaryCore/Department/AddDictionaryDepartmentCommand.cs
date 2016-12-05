@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Helpers;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -19,7 +20,7 @@ namespace BL.Logic.DictionaryCore
             {
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
 

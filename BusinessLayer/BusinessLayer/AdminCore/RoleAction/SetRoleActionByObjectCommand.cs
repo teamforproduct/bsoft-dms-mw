@@ -11,6 +11,7 @@ using System.Transactions;
 using BL.Model.SystemCore.Filters;
 using System.Linq;
 using BL.Database.DBModel.Admin;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.AdminCore
 {
@@ -37,7 +38,7 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     var actions = _systemDb.GetSystemActions(_context, new FilterSystemAction()
                     {

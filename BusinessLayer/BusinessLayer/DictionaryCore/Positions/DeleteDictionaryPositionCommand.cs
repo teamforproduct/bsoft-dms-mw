@@ -10,6 +10,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 using System.Linq;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -48,7 +49,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { Model } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);

@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.FrontModel;
 using LinqKit;
 using BL.Database.DBModel.Document;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
 {
@@ -19,8 +20,7 @@ namespace BL.Database.Documents
         #region DocumentTags
         public IEnumerable<FrontDocumentTag> GetTags(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == documentId).AsQueryable();
@@ -45,7 +45,7 @@ namespace BL.Database.Documents
                         Name = x.Tag.Name,
                         IsSystem = !x.Tag.PositionId.HasValue
                     }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }

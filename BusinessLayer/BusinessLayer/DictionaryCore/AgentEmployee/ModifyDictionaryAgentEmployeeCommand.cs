@@ -7,6 +7,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore.AgentEmployee
 {
@@ -29,7 +30,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required,new TransactionOptions {IsolationLevel = IsolationLevel.ReadUncommitted}))
+                using (var transaction = Transactions.GetTransaction())
                 {
 
                     if (Model.PostedFileData != null)

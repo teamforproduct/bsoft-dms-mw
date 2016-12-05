@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Helpers;
+using BL.Logic.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
@@ -25,7 +26,7 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
                     {

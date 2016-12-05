@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -17,7 +18,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     var newCompany = new InternalDictionaryAgentCompany(Model); ;
                     CommonDocumentUtilities.SetLastChange(_context, newCompany);

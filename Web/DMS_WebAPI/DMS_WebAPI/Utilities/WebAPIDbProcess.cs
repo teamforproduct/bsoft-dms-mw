@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
@@ -40,7 +41,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+//        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
         #region Servers
 
@@ -1093,7 +1094,7 @@ namespace DMS_WebAPI.Utilities
         private int AddUserClient(string userId, int clientId)
         {
             using (var dbContext = new ApplicationDbContext())
-            using (var transaction = GetTransaction())
+            using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = new AspNetUserClients
                 {

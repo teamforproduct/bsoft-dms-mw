@@ -29,6 +29,7 @@ using BL.Model.SystemCore;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.AdminCore
 {
@@ -289,7 +290,7 @@ namespace BL.Logic.AdminCore
         {
             int roleId = 0;
 
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 var roleType = new InternalAdminRoleType() { Code = code, Name = name };
                 CommonDocumentUtilities.SetLastChange(context, roleType);

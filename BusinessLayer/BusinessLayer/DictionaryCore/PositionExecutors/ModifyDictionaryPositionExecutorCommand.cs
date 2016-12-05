@@ -1,4 +1,5 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using BL.CrossCutting.Helpers;
+using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -99,7 +100,7 @@ namespace BL.Logic.DictionaryCore
             {
                 var dp = CommonDictionaryUtilities.PositionExecutorModifyToInternal(_context, Model);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
 
                     _dictDb.UpdateExecutor(_context, dp);

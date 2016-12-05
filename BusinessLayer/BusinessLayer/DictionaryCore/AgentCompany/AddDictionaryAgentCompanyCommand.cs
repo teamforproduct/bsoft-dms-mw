@@ -10,6 +10,7 @@ using BL.Model.SystemCore;
 using System.Linq;
 using BL.Model.Enums;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -19,7 +20,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
 
                     var newCompany = new InternalDictionaryAgentCompany(Model); ;

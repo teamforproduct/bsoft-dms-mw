@@ -45,7 +45,10 @@ namespace BL.Model.AdminCore.FrontModel
         /// Имя сотрудника
         /// </summary>
         public string RolePositionExecutorAgentName { get; set; }
-
+        /// <summary>
+        /// ИД Тип исполнения
+        /// </summary>
+        public int RolePositionExecutorTypeId { get; set; }
         /// <summary>
         /// Тип исполнения
         /// </summary>

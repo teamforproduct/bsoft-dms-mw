@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.ClientCore.Interfaces;
@@ -34,7 +35,7 @@ namespace DMS_WebAPI.Utilities
 {
     internal class WebAPIService
     {
-        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+//        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
         private string FormRoleNameAdmin(string clientCode) => FormRoleName("Admin", clientCode);
 
@@ -211,7 +212,7 @@ namespace DMS_WebAPI.Utilities
             var dbWeb = new WebAPIDbProcess();
             var userId = string.Empty;
 
-            using (var transaction = GetTransaction())
+            using (var transaction = Transactions.GetTransaction())
             {
                 userId = AddUser(FormUserName(model.Email, model.ClientId), model.Password, model.Email, "");
 
@@ -266,7 +267,7 @@ namespace DMS_WebAPI.Utilities
                 using (var dbContext = new ApplicationDbContext())
                 {
 
-                    using (var transaction = GetTransaction())
+                    using (var transaction = Transactions.GetTransaction())
                     {
                         var clientId = dbWeb.GetClientId(model.ClientCode);
                         var serverId = dbWeb.GetServerIdByClientId(clientId);
@@ -332,7 +333,7 @@ namespace DMS_WebAPI.Utilities
 
             if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
 
-            using (var transaction = GetTransaction())
+            using (var transaction = Transactions.GetTransaction())
             {
                 // Создаю клиента
                 model.ClientId = dbWeb.AddClient(new ModifyAspNetClient
@@ -414,7 +415,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
 
-                using (var transaction = GetTransaction())
+                using (var transaction = Transactions.GetTransaction())
                 {
                     #region Create client 1 
 
