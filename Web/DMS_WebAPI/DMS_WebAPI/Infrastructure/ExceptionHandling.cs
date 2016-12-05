@@ -29,13 +29,13 @@ namespace DMS_WebAPI.Infrastructure
             {
                 // Договорились при возникновении этих ошибок отправлять статус Unauthorized. Фронт редиректит пользователя на LoginPage
                 if (exception is UserUnauthorized
+                    || exception is UserNameOrPasswordIsIncorrect
+                    || exception is UserIsDeactivated
                     || exception is UserAccessIsDenied
+                    || exception is UserMustConfirmEmail
                     || exception is UserPositionIsNotDefined
                     || exception is UserNameIsNotDefined
                     || exception is DatabaseIsNotSet
-                    || exception is UserIsDeactivated
-                    || exception is UserMustConfirmEmail
-                    || exception is UserMustConfirmEmail
                     || exception is UserNotExecuteAnyPosition
                     || exception is UserNotExecuteCheckPosition
                     ) res = HttpStatusCode.Unauthorized;
