@@ -276,12 +276,12 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentAdress
         public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
         {
-            return _dictDb.GetAgentAddress(context, id);
+            return GetDictionaryAgentAddresses(context, new FilterDictionaryAgentAddress { IDs = new List<int> { id  } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context,  FilterDictionaryAgentAddress filter)
         {
-            return _dictDb.GetAgentAddresses(context, agentId, filter);
+            return _dictDb.GetAgentAddresses(context, filter);
         }
         #endregion
 

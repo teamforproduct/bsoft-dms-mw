@@ -127,7 +127,7 @@ namespace DMS_WebAPI.Infrastructure
                 httpContext.Response.Clear();
 
                 httpContext.Response.ContentType = "application/json";
-
+                
                 // Здесь может возникнуть исключение Server cannot set status after HTTP headers have been sent.
                 // при повторнов входе из Application_Error если раскоментировать httpContext.Response.End(); 
 

@@ -15,12 +15,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
         /// </summary>
-        public int AgentId { get; set; }
+        public List<int> AgentIDs { get; set; }
 
         /// <summary>
         /// По типу адреса
         /// </summary>
-        public List<int> AddressTypeId { get; set; }
+        public List<int> AddressTypeIDs { get; set; }
         
         /// <summary>
         /// по индексу (вхождение)
