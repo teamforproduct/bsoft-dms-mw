@@ -29,13 +29,12 @@ namespace DMS_WebAPI.Infrastructure
             {
                 // Договорились при возникновении этих ошибок отправлять статус Unauthorized. Фронт редиректит пользователя на LoginPage
                 if (exception is UserUnauthorized
-                    || exception is UserAccessIsDenied
-                    || exception is UserPositionIsNotDefined
-                    || exception is UserNameIsNotDefined
-                    || exception is DatabaseIsNotSet
+                    || exception is UserNameOrPasswordIsIncorrect
                     || exception is UserIsDeactivated
+                    || exception is UserAccessIsDenied
                     || exception is UserMustConfirmEmail
-                    || exception is UserMustConfirmEmail
+                    || exception is UserContextIsNotDefined
+                    || exception is DatabaseIsNotSet
                     || exception is UserNotExecuteAnyPosition
                     || exception is UserNotExecuteCheckPosition
                     ) res = HttpStatusCode.Unauthorized;
@@ -170,20 +169,8 @@ namespace DMS_WebAPI.Infrastructure
 
 
             // Если возникли ошибки не совместивмые с дальнейшей работой пользователя - удаляю пользовательский контекст
-            if (exception is DmsExceptions)
-            {
-                if (//exception is UserUnauthorized
-                    //|| exception is UserAccessIsDenied
-                    exception is UserPositionIsNotDefined
-                    || exception is UserNameIsNotDefined
-                    || exception is DatabaseIsNotSet
-                    //|| exception is UserIsDeactivated
-                    || exception is UserMustConfirmEmail
-                    || exception is UserMustConfirmEmail
-                    //|| exception is UserNotExecuteAnyPosition
-                    || exception is UserNotExecuteCheckPosition
-                    ) DmsResolver.Current.Get<Utilities.UserContexts>().KillCurrentSession();
-            }
+            if (statusCode == HttpStatusCode.Unauthorized)
+                DmsResolver.Current.Get<Utilities.UserContexts>().Remove();
 
         }
 

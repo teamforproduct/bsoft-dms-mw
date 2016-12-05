@@ -1,4 +1,5 @@
-﻿using BL.Model.SystemCore.Filters;
+﻿using BL.Model.Extensions;
+using BL.Model.SystemCore.Filters;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -38,19 +39,23 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате срока исполнения контроля документа
         /// </summary>
-        public DateTime? DueDateFromDate { get; set; }
+        public DateTime? DueDateFromDate { get { return _DueDateFromDate; } set { _DueDateFromDate = value.ToUTC(); } }
+        private DateTime? _DueDateFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате срока исполнения контроля документа
         /// </summary>
-        public DateTime? DueDateToDate { get; set; }
+        public DateTime? DueDateToDate { get { return _DueDateToDate; } set { _DueDateToDate = value.ToUTC(); } }
+        private DateTime? _DueDateToDate;
         /// <summary>
         /// Дата "с" для отбора по дате возникновения  контроля документа
         /// </summary>
-        public DateTime? CreateFromDate { get; set; }
+        public DateTime? CreateFromDate { get { return _CreateFromDate; } set { _CreateFromDate = value.ToUTC(); } }
+        private DateTime? _CreateFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате возникновения  контроля документа
         /// </summary>
-        public DateTime? CreateToDate { get; set; }
+        public DateTime? CreateToDate { get { return _CreateToDate; } set { _CreateToDate = value.ToUTC(); } }
+        private DateTime? _CreateToDate;
         /// <summary>
         /// Массив ИД отправителей контроля по документу
         /// </summary>

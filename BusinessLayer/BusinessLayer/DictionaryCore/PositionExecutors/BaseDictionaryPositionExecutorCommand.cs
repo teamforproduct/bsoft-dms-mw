@@ -31,8 +31,8 @@ namespace BL.Logic.DictionaryCore
 
         public void PrepareData()
         {
-            Model.StartDate = Model.StartDate.StartOfDay();
-            Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
+            // Model.StartDate = Model.StartDate.StartOfDay();
+            //Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
 
 
             if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();

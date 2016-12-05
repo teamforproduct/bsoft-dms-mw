@@ -145,8 +145,15 @@ namespace BL.Model.Exception
     public class UserCouldNotBeAdded : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserCouldNotBeAdded@l##";
-        public UserCouldNotBeAdded(string roleName) : base(_MESSAGE) { Parameters = new List<string> { roleName }; }
+        public UserCouldNotBeAdded(string userName) : base(_MESSAGE) { Parameters = new List<string> { userName }; }
         public UserCouldNotBeAdded(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserCouldNotBeDeleted : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserCouldNotBeDeleted@l##";
+        public UserCouldNotBeDeleted() : base(_MESSAGE) { }
+        public UserCouldNotBeDeleted(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class RoleNameAlreadyExists : DmsExceptions
@@ -262,6 +269,9 @@ namespace BL.Model.Exception
         public ActionIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    /// <summary>
+    /// UserContextUseOnly
+    /// </summary>
     public class UserAccessIsDenied : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserAccessIsDenied@l##";
@@ -311,20 +321,18 @@ namespace BL.Model.Exception
         public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class UserPositionIsNotDefined : DmsExceptions
+    public class UserIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:UserPositionIsNotDefined@l##";
-        public UserPositionIsNotDefined() : base(_MESSAGE) { }
-        public UserPositionIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:UserIsNotDefined@l##";
+        public UserIsNotDefined() : base(_MESSAGE) { }
+        public UserIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-
-
-    public class UserNameIsNotDefined : DmsExceptions
+    public class UserContextIsNotDefined : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:UserNameIsNotDefined@l##";
-        public UserNameIsNotDefined() : base(_MESSAGE) { }
-        public UserNameIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:UserContextIsNotDefined@l##";
+        public UserContextIsNotDefined() : base(_MESSAGE) { }
+        public UserContextIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class UserUnauthorized : DmsExceptions

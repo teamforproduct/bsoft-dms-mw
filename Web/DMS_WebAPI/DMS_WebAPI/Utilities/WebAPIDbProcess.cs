@@ -1163,6 +1163,16 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void DeleteUserClients(FilterAspNetUserClients filter)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var qry = GetUserClientsQuery(dbContext, filter);
+                dbContext.AspNetUserClientsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
+
         #endregion UserClients
 
         #region UserServers
@@ -1287,8 +1297,18 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void DeleteUserServers(FilterAspNetUserServers filter)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            {
+                var qry = GetUserServersQuery(dbContext, filter);
+                dbContext.AspNetUserServersSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+            }
+        }
+
         #endregion UserServers
 
-        
+
     }
 }

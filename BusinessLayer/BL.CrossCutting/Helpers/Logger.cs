@@ -16,7 +16,7 @@ namespace BL.CrossCutting.Helpers
 
         public static void AppendTextToSiteErrors(string text)
         {
-            AppendTextToFile(text, System.Web.HttpContext.Current.Server.MapPath("~/SiteLog.txt"));
+            AppendTextToFile(text, System.Web.HttpContext.Current.Server.MapPath("~/SiteErrors.txt"));
         }
 
         public static void AppendTextToFile(string text, string FilePath)

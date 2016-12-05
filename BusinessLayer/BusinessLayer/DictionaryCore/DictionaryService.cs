@@ -1150,8 +1150,8 @@ namespace BL.Logic.DictionaryCore
             {
                 executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
                 {
-                    StartDate = DateTime.UtcNow.StartOfDay(),
-                    EndDate = DateTime.UtcNow.EndOfDay(),
+                    StartDate = DateTime.UtcNow,
+                    EndDate = DateTime.UtcNow,
                     IsActive = filter.IsActive
                 });
             }

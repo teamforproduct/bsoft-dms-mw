@@ -69,7 +69,7 @@ namespace DMS_WebAPI.Controllers
 
             ApplicationUser user = await webService.GetUserAsync(ctx, agentId);
              
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             return new JsonResult(new { UserName = user.Email, IsLockout = user.IsLockout, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired, Email = user.Email, EmailConfirmed = user.EmailConfirmed, AccessFailedCount = user.AccessFailedCount, UserId = user.Id }, this);
         }
@@ -261,9 +261,9 @@ namespace DMS_WebAPI.Controllers
             {
                 return new JsonResult(ModelState, false, this);
             }
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = new WebAPIService();
-
-            await webService.ChangeLockoutAgentUserAsync(model);
+            await webService.ChangeLockoutAgentUserAsync(ctx, model);
 
             return new JsonResult(null, this);
         }
@@ -277,14 +277,14 @@ namespace DMS_WebAPI.Controllers
         [HttpPut]
         public IHttpActionResult KillSessionsAgentUser(int agentId)
         {
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
 
-            var ctx = mngContext.Get();
+            var ctx = userContexts.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
             admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, agentId);
 
-            mngContext.KillSessions(agentId);
+            userContexts.RemoveByAgentId(agentId);
 
             return new JsonResult(null, this);
         }
@@ -481,7 +481,7 @@ namespace DMS_WebAPI.Controllers
             ApplicationUser user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
-                throw new UserNameIsNotDefined();
+                throw new UserIsNotDefined();
 
             user.IsChangePasswordRequired = model.MustChangePassword;//true;
 
