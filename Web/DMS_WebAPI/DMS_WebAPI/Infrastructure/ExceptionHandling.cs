@@ -170,20 +170,8 @@ namespace DMS_WebAPI.Infrastructure
 
 
             // Если возникли ошибки не совместивмые с дальнейшей работой пользователя - удаляю пользовательский контекст
-            if (exception is DmsExceptions)
-            {
-                if (//exception is UserUnauthorized
-                    //|| exception is UserAccessIsDenied
-                    exception is UserPositionIsNotDefined
-                    || exception is UserNameIsNotDefined
-                    || exception is DatabaseIsNotSet
-                    //|| exception is UserIsDeactivated
-                    || exception is UserMustConfirmEmail
-                    || exception is UserMustConfirmEmail
-                    //|| exception is UserNotExecuteAnyPosition
-                    || exception is UserNotExecuteCheckPosition
-                    ) DmsResolver.Current.Get<Utilities.UserContexts>().KillCurrentSession();
-            }
+            if (statusCode == HttpStatusCode.Unauthorized)
+                DmsResolver.Current.Get<Utilities.UserContexts>().KillCurrentSession();
 
         }
 
