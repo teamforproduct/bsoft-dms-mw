@@ -647,19 +647,20 @@ namespace DMS_WebAPI.Utilities
         {
             var result = await UserManager.ConfirmEmailAsync(userId, code);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                ApplicationUser user = await UserManager.FindByIdAsync(userId);
-
-                if (user == null) throw new UserNameIsNotDefined();
-
-                user.IsEmailConfirmRequired = false;
-
-                result = await UserManager.UpdateAsync(user);
-
-                if (!result.Succeeded) throw new DatabaseError();
-
+                throw new Exception(string.Join(" ", result.Errors));
             }
+
+            ApplicationUser user = await UserManager.FindByIdAsync(userId);
+
+            if (user == null) throw new UserNameIsNotDefined();
+
+            user.IsEmailConfirmRequired = false;
+
+            result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded) throw new DatabaseError();
 
         }
 
