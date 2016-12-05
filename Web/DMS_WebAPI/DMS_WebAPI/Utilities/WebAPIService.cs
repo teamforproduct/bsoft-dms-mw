@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Utilities
 {
     internal class WebAPIService
     {
-//        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+        //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
         private string FormRoleNameAdmin(string clientCode) => FormRoleName("Admin", clientCode);
 
@@ -210,7 +210,7 @@ namespace DMS_WebAPI.Utilities
             {
                 ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, AgentId = model.Id, IsKillSessions = true });
             }
-            
+
 
             return res;
         }
@@ -253,8 +253,7 @@ namespace DMS_WebAPI.Utilities
 
         private string DeleteUser(string userId)
         {
-            using (var dbContext = new ApplicationDbContext())
-            using (var transaction = GetTransaction())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 DeleteUserClients(new FilterAspNetUserClients { UserIds = new List<string> { userId } });
                 DeleteUserServers(new FilterAspNetUserServers { UserIds = new List<string> { userId } });

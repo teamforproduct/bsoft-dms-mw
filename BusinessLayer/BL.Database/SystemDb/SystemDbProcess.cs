@@ -676,7 +676,7 @@ namespace BL.Database.SystemDb
 
         public void DeleteSystemActions(IContext context, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(context, dbContext, filter);
 
@@ -689,7 +689,7 @@ namespace BL.Database.SystemDb
 
                 qry.Delete();
 
-                transaction.Commit();
+                transaction.Complete();
 
             }
 
@@ -697,7 +697,7 @@ namespace BL.Database.SystemDb
 
         public void AddSystemAction(IContext context, SystemActions item)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
 
@@ -715,7 +715,7 @@ namespace BL.Database.SystemDb
 
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
 
-                transaction.Commit();
+                transaction.Complete();
             }
         }
 
