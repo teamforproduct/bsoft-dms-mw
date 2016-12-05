@@ -78,6 +78,8 @@ namespace DMS_WebAPI.Providers
             
             ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
+            //context.SetError("invalid_grant", errText);
+
             // Эти исключения отлавливает Application_Error в Global.asax
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 

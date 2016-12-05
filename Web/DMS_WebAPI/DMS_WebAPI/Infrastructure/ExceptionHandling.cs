@@ -40,11 +40,14 @@ namespace DMS_WebAPI.Infrastructure
                     ) res = HttpStatusCode.Unauthorized;
             }
 
+
             return res;
         }
 
         public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
         {
+
+            bool fromGlobalAsax = context == null;
 
             var url = string.Empty;
             var body = string.Empty;
@@ -124,9 +127,16 @@ namespace DMS_WebAPI.Infrastructure
                 httpContext.Response.Clear();
 
                 httpContext.Response.ContentType = "application/json";
+
                 // Здесь может возникнуть исключение Server cannot set status after HTTP headers have been sent.
                 // при повторнов входе из Application_Error если раскоментировать httpContext.Response.End(); 
-                httpContext.Response.StatusCode = (int)statusCode;
+
+                // есть проблема: ошибки брошенные в момент получения токена они же отловленные в GlobalAsax не могут формировать Responce с HttpStatusCode.Unauthorized
+                // в Responce приходит стандартный html вместо нашего текста ошибки
+                // Чтоыбы отображать наш текст ошибки, отловленной в GlobalAsax, возвращаю со статусом OK
+                httpContext.Response.StatusCode = fromGlobalAsax ? (int)HttpStatusCode.OK : (int)statusCode;
+
+
                 httpContext.Response.Write(json);
                 // Этот End очень важен для фронта. без него фронт получает статус InternalServerError на ошибке UserUnauthorized. НЕ понятно 
                 httpContext.Response.End();
