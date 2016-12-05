@@ -60,7 +60,7 @@ namespace BL.Database.Documents
                             Version = x.fl.Version,
                             WasChangedExternal = false,
                             ExecutorPositionName = x.fl.ExecutorPosition.Name,
-                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name
+                            ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name+(x.fl.ExecutorPositionExecutorType.Suffix != null ? " (" + x.fl.ExecutorPositionExecutorType.Suffix + ")" : null),
                         }).FirstOrDefault();
             }
         }

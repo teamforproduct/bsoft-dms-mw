@@ -31,7 +31,7 @@ namespace BL.Database.Common
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
                     ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
-                    PositionExecutorTypeId = document.PositionExecutorTypeId,
+                    ExecutorPositionExecutorTypeId = document.ExecutorPositionExecutorTypeId,
                     LastChangeUserId = document.LastChangeUserId,
                     LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
@@ -80,9 +80,11 @@ namespace BL.Database.Common
                     TargetAgentId = evt.TargetAgentId,
                     TargetPositionId = evt.TargetPositionId,
                     TargetPositionExecutorAgentId = evt.TargetPositionExecutorAgentId,
+                    TargetPositionExecutorTypeId = evt.TargetPositionExecutorTypeId,
                     SourceAgentId = evt.SourceAgentId,
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
+                    SourcePositionExecutorTypeId = evt.SourcePositionExecutorTypeId,
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
 
@@ -118,6 +120,7 @@ namespace BL.Database.Common
                     AgentId = task.AgentId,
                     PositionId = task.PositionId,
                     PositionExecutorAgentId = task.PositionExecutorAgentId,
+                    PositionExecutorTypeId = task.PositionExecutorTypeId,
                 };
         }
 
@@ -230,9 +233,11 @@ namespace BL.Database.Common
                     SourceAgentId = sendList.SourceAgentId,
                     SourcePositionId = sendList.SourcePositionId,
                     SourcePositionExecutorAgentId = sendList.SourcePositionExecutorAgentId,
+                    SourcePositionExecutorTypeId = sendList.SourcePositionExecutorTypeId,
                     TargetAgentId = sendList.TargetAgentId,
                     TargetPositionId = sendList.TargetPositionId,
                     TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
+                    TargetPositionExecutorTypeId = sendList.TargetPositionExecutorTypeId,
                     LastChangeUserId = sendList.LastChangeUserId,
                     LastChangeDate = sendList.LastChangeDate
                 };
@@ -288,6 +293,7 @@ namespace BL.Database.Common
                  Date = docFile.Date,
                  ExecutorPositionId = docFile.ExecutorPositionId,
                  ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
+                 ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
              };
 
             return res;

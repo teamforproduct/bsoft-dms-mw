@@ -93,7 +93,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList.Stage = Model.Stage;
             _sendList.SendType = Model.SendType;
             _sendList.TargetPositionId = Model.TargetPositionId;
-            _sendList.TargetPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, Model.TargetPositionId);
+            _sendList.TargetPositionExecutorAgentId = null;
+            _sendList.TargetPositionExecutorTypeId = null;
             _sendList.TargetAgentId = Model.TargetAgentId;
             _sendList.Description = Model.Description;
             _sendList.DueDate = Model.DueDate;

@@ -21,8 +21,8 @@ namespace BL.Database.DBModel.Document
         public int? SourcePositionExecutorAgentId { get; set; }
         public int? SourcePositionExecutorTypeId { get; set; }
         public int SourceAgentId { get; set; }
-        public Nullable<int> TargetPositionId { get; set; }
-        public Nullable<int> TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionId { get; set; }
+        public int? TargetPositionExecutorAgentId { get; set; }
         public int? TargetPositionExecutorTypeId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> TaskId { get; set; }

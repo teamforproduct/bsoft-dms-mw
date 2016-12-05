@@ -108,8 +108,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-            if (!executorPositionExecutorAgentId.HasValue)
+            var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+            if (!executorPositionExecutor?.ExecutorAgentId.HasValue ?? true)
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
@@ -129,7 +129,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
                 WasChangedExternal = false,
                 ExecutorPositionId = _context.CurrentPositionId,
-                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
+                ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
+                ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
             };
             var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
             if (ordInDoc == -1)

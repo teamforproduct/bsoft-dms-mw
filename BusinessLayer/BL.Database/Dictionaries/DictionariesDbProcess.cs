@@ -4410,19 +4410,31 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public int? GetExecutorAgentIdByPositionId(IContext context, int id)
+        public InternalDictionaryPositionExecutorForDocument GetExecutorAgentIdByPositionId(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context))
             using (var transaction = GetTransaction())
             {
-                int? res = null;
+                InternalDictionaryPositionExecutorForDocument res = null;
                 var qry = dbContext.DictionaryPositionsSet.AsQueryable();
                 if (!context.IsAdmin)
                 {
                     qry = qry.Where(x => x.Department.Company.ClientId == context.CurrentClientId);
                 }
-                res = qry.Where(x => x.Id == id).Select(x => x.ExecutorAgentId).FirstOrDefault();
+                res = qry.Where(x => x.Id == id)
+                    .Select(x => new InternalDictionaryPositionExecutorForDocument
+                    {
+                        Id = id,
+                        ExecutorAgentId = x.ExecutorAgentId,
+                        ExecutorTypeId = x.PositionExecutorTypeId,
+                        MainExecutorAgentId = x.MainExecutorAgentId
+                    }).FirstOrDefault();
                 transaction.Complete();
+                if (res.MainExecutorAgentId == context.CurrentAgentId)
+                {
+                    res.ExecutorAgentId = res.MainExecutorAgentId;
+                    res.ExecutorTypeId = null;
+                }
                 return res;
             }
         }

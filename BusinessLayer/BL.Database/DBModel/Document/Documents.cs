@@ -52,7 +52,8 @@ namespace BL.Database.DBModel.Document
         public int ExecutorPositionId { get; set; }
         [Column("ExecutorPositionExeAgentId")]
         public int ExecutorPositionExecutorAgentId { get; set; }
-        public int? PositionExecutorTypeId { get; set; }
+        [Column("ExecutorPositionExeTypeId")]
+        public int? ExecutorPositionExecutorTypeId { get; set; }
         //public int ExecutorAgentId { get; set; }
         public Nullable<int> SenderAgentId { get; set; }
         public Nullable<int> SenderAgentPersonId { get; set; }
@@ -76,8 +77,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions ExecutorPosition { get; set; }
         [ForeignKey("ExecutorPositionExecutorAgentId")]
         public virtual DictionaryAgents ExecutorPositionExecutorAgent { get; set; }
-        [ForeignKey("PositionExecutorTypeId")]
-        public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
+        [ForeignKey("ExecutorPositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes ExecutorPositionExecutorType { get; set; }
         //[ForeignKey("ExecutorAgentId")]
         //public virtual DictionaryAgents ExecutorAgent { get; set; }
         [ForeignKey("SenderAgentId")]

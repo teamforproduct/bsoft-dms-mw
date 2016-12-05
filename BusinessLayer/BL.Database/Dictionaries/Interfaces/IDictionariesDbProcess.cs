@@ -195,7 +195,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         void UpdatePositionOrder(IContext context, int positionId, int order);
         void UpdatePositionExecutor(IContext context, List<int> positionId = null);
-        int? GetExecutorAgentIdByPositionId(IContext context, int id);
+        InternalDictionaryPositionExecutorForDocument GetExecutorAgentIdByPositionId(IContext context, int id);
         FrontDictionaryPosition GetPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
