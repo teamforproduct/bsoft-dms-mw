@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,8 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        //public DateTime? BirthDate { get; set; }
+        //public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate = value.ToUTC(); } }
+        //private DateTime? _BirthDate;
 
         public Period BirthPeriod { get; set; }
 
@@ -65,7 +67,8 @@ namespace BL.Model.DictionaryCore.FilterModel
         public string LastNameExact { get; set; }
         public string PassportSerialExact { get; set; }
         public int? PassportNumberExact { get; set; }
-        public DateTime? BirthDateExact { get; set; }
+        public DateTime? BirthDateExact { get { return _BirthDateExact; } set { _BirthDateExact = value.ToUTC(); } }
+        private DateTime? _BirthDateExact;
 
         /// <summary>
         /// Сотрудники, которым назначены указанные роли

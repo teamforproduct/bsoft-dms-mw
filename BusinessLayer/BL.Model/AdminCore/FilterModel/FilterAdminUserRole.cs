@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,12 +52,14 @@ namespace BL.Model.AdminCore.FilterModel
         /// <summary>
         /// Дата начала
         /// </summary>
-        public DateTime? StartDate { get; set; }
+        public DateTime? StartDate { get { return _StartDate; } set { _StartDate = value.ToUTC(); } }
+        private DateTime? _StartDate;
 
         /// <summary>
         /// Дата окончания
         /// </summary>
-        public DateTime? EndDate { get; set; }
+        public DateTime? EndDate { get { return _EndDate; } set { _EndDate = value.ToUTC(); } }
+        private DateTime? _EndDate;
 
         /// <summary>
         /// Отмечнено

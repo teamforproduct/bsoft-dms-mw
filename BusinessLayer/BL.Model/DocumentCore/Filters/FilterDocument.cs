@@ -1,4 +1,5 @@
-﻿using BL.Model.SystemCore.Filters;
+﻿using BL.Model.Extensions;
+using BL.Model.SystemCore.Filters;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -45,11 +46,13 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате создания
         /// </summary>
-        public DateTime? CreateFromDate { get; set; }
+        public DateTime? CreateFromDate { get { return _CreateFromDate; } set { _CreateFromDate = value.ToUTC(); } }
+        private DateTime? _CreateFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате создания
         /// </summary>
-        public DateTime? CreateToDate { get; set; }
+        public DateTime? CreateToDate { get { return _CreateToDate; } set { _CreateToDate = value.ToUTC(); } }
+        private DateTime? _CreateToDate;
         /// <summary>
         /// Массив ИД тематик документов
         /// </summary>
@@ -73,11 +76,13 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате регистрации документа
         /// </summary>
-        public DateTime? RegistrationFromDate { get; set; }
+        public DateTime? RegistrationFromDate { get { return _RegistrationFromDate; } set { _RegistrationFromDate = value.ToUTC(); } }
+        private DateTime? _RegistrationFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате регистрации документа
         /// </summary>
-        public DateTime? RegistrationToDate { get; set; }
+        public DateTime? RegistrationToDate { get { return _RegistrationToDate; } set { _RegistrationToDate = value.ToUTC(); } }
+        private DateTime? _RegistrationToDate;
         /// <summary>
         /// Массив ИД ответственного по документу
         /// </summary>
@@ -151,11 +156,13 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате входящего документа
         /// </summary>
-        public DateTime? SenderFromDate { get; set; }
+        public DateTime? SenderFromDate { get { return _SenderFromDate; } set { _SenderFromDate = value.ToUTC(); } }
+        private DateTime? _SenderFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате входящего документа
         /// </summary>
-        public DateTime? SenderToDate { get; set; }
+        public DateTime? SenderToDate { get { return _SenderToDate; } set { _SenderToDate = value.ToUTC(); } }
+        private DateTime? _SenderToDate;
         /// <summary>
         /// Отрывок кому адресован документ
         /// </summary>
@@ -178,11 +185,13 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате документа
         /// </summary>
-        public DateTime? DocumentFromDate { get; set; }
+        public DateTime? DocumentFromDate { get { return _DocumentFromDate; } set { _DocumentFromDate = value.ToUTC(); } }
+        private DateTime? _DocumentFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате документа
         /// </summary>
-        public DateTime? DocumentToDate { get; set; }
+        public DateTime? DocumentToDate { get { return _DocumentToDate; } set { _DocumentToDate = value.ToUTC(); } }
+        private DateTime? _DocumentToDate;
 
         /// <summary>
         /// Отображать все документы
