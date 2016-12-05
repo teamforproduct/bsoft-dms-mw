@@ -230,7 +230,7 @@ namespace DMS_WebAPI.Utilities
 
         private string AddUser(string userName, string userPassword, string userEmail, string userPhone = "")
         {
-            using (var dbContext = new ApplicationDbContext())
+            //using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 if (ExistsUser(userName)) throw new UserNameAlreadyExists(userEmail);
 
@@ -253,7 +253,7 @@ namespace DMS_WebAPI.Utilities
 
         private string DeleteUser(string userId)
         {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            //using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 DeleteUserClients(new FilterAspNetUserClients { UserIds = new List<string> { userId } });
                 DeleteUserServers(new FilterAspNetUserServers { UserIds = new List<string> { userId } });
@@ -264,7 +264,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (!result.Succeeded) throw new UserCouldNotBeDeleted();
 
-                transaction.Complete();
+                //transaction.Complete();
 
                 return user.Id;
             }
@@ -319,7 +319,7 @@ namespace DMS_WebAPI.Utilities
 
         private string AddRole(string roleName)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
 
@@ -330,7 +330,7 @@ namespace DMS_WebAPI.Utilities
                 IdentityResult result = roleManager.Create(new IdentityRole { Name = roleName });
 
                 if (!result.Succeeded) throw new RoleCouldNotBeAdded(roleName);
-
+                transaction.Complete();
                 return role.Id;
             }
         }
@@ -348,37 +348,34 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                //using (var dbContext = new ApplicationDbContext())
+                using (var transaction = Transactions.GetTransaction())
                 {
+                    var clientId = dbWeb.GetClientId(model.ClientCode);
+                    var serverId = dbWeb.GetServerIdByClientId(clientId);
 
-                    using (var transaction = Transactions.GetTransaction())
+                    #region Create user   
+                    var userId = AddUser(new AddWebUser
                     {
-                        var clientId = dbWeb.GetClientId(model.ClientCode);
-                        var serverId = dbWeb.GetServerIdByClientId(clientId);
+                        Email = model.Admin.Email,
+                        Password = model.Admin.Password,
+                        ClientId = clientId,
+                        ServerId = serverId,
+                    });
+                    #endregion
 
-                        #region Create user   
-                        var userId = AddUser(new AddWebUser
-                        {
-                            Email = model.Admin.Email,
-                            Password = model.Admin.Password,
-                            ClientId = clientId,
-                            ServerId = serverId,
-                        });
-                        #endregion
+                    #region add user to role admin
+                    var roleName = FormRoleNameAdmin(model.ClientCode);
 
-                        #region add user to role admin
-                        var roleName = FormRoleNameAdmin(model.ClientCode);
+                    AddRole(roleName);
 
-                        AddRole(roleName);
+                    UserManager.AddToRole(userId, roleName);
 
-                        UserManager.AddToRole(userId, roleName);
+                    #endregion
 
-                        #endregion
+                    transaction.Complete();
 
-                        transaction.Complete();
-
-                        return userId;
-                    }
+                    return userId;
                 }
             }
             catch (UserNameAlreadyExists)
@@ -495,57 +492,57 @@ namespace DMS_WebAPI.Utilities
             // Проверка уникальности доменного имени
             if (dbWeb.ExistsClients(new FilterAspNetClients { Code = model.Client.Code })) throw new ClientCodeAlreadyExists(model.Client.Code);
 
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
 
-                using (var transaction = Transactions.GetTransaction())
+
+
+                #region Create client 1 
+
+                // Создаю клиента
+                var clientId = dbWeb.AddClient(new ModifyAspNetClient
                 {
-                    #region Create client 1 
+                    Name = model.Client.Name,
+                    Code = model.Client.Code,
+                });
 
-                    // Создаю клиента
-                    var clientId = dbWeb.AddClient(new ModifyAspNetClient
-                    {
-                        Name = model.Client.Name,
-                        Code = model.Client.Code,
-                    });
-
-                    AspNetClientLicences clientLicence;
-                    if (model.LicenceId > 0)
-                    {
-                        dbWeb.AddClientLicence(clientId, model.LicenceId.GetValueOrDefault());
-                    }
-
-                    #endregion Create client 1
-
-                    #region Create DB
-
-                    if (model.Server.Id <= 0)
-                    {
-                        model.Server.Id = dbWeb.AddServer(model.Server);
-                    }
-
-                    dbWeb.AddClientServer(new ModifyAspNetClientServer { ClientId = clientId, ServerId = model.Server.Id });
-
-                    #endregion Create DB
-
-                    #region Create user                        
-
-                    #endregion Create user
-                    var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
-                    {
-                        ClientCode = model.Client.Code,
-                        Admin = new ModifyAspNetUser
-                        {
-                            Email = model.Admin.Email,
-                            Password = model.Admin.Password,
-                        }
-                    });
-
-                    transaction.Complete();
-
-                    return clientId;
+                AspNetClientLicences clientLicence;
+                if (model.LicenceId > 0)
+                {
+                    dbWeb.AddClientLicence(clientId, model.LicenceId.GetValueOrDefault());
                 }
+
+                #endregion Create client 1
+
+                #region Create DB
+
+                if (model.Server.Id <= 0)
+                {
+                    model.Server.Id = dbWeb.AddServer(model.Server);
+                }
+
+                dbWeb.AddClientServer(new ModifyAspNetClientServer { ClientId = clientId, ServerId = model.Server.Id });
+
+                #endregion Create DB
+
+                #region Create user                        
+
+                #endregion Create user
+                var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
+                {
+                    ClientCode = model.Client.Code,
+                    Admin = new ModifyAspNetUser
+                    {
+                        Email = model.Admin.Email,
+                        Password = model.Admin.Password,
+                    }
+                });
+
+                transaction.Complete();
+
+                return clientId;
+
             }
         }
 

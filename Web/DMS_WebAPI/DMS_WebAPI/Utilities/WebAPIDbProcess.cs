@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-//        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+        //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
         #region Servers
 
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAdminServer> GetServers(FilterAdminServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetServersQuery(dbContext, filter);
 
@@ -109,14 +109,14 @@ namespace DMS_WebAPI.Utilities
                 }).ToList();
 
                 items.ForEach(x => { x.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), x.ServerTypeName); });
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public IEnumerable<DatabaseModel> GetServersByAdmin(FilterAdminServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetServersQuery(dbContext, filter);
 
@@ -142,14 +142,14 @@ namespace DMS_WebAPI.Utilities
                     DefaultSchema = x.Server.DefaultSchema,
                     ClientId = x.ClientId
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public IEnumerable<FrontAdminServerByUser> GetServersByUser(IContext ctx)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
                                     .Select(x => x.ClientId);
@@ -165,14 +165,14 @@ namespace DMS_WebAPI.Utilities
                     ClientId = x.Client.Id,
                     ClientName = x.Client.Name
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var filterClients = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
                 if (setUserServer.ClientId > 0) filterClients.ClientIds = new List<int> { setUserServer.ClientId };
@@ -202,7 +202,7 @@ namespace DMS_WebAPI.Utilities
                 }).FirstOrDefault();
 
                 item.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), item.ServerTypeName);
-
+                transaction.Complete();
                 return item;
             }
         }
@@ -211,7 +211,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AdminServers
                     {
@@ -229,7 +229,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -263,7 +263,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AdminServers
                     {
@@ -290,7 +290,7 @@ namespace DMS_WebAPI.Utilities
                     entry.Property(p => p.UserPassword).IsModified = true;
                     entry.Property(p => p.ConnectionString).IsModified = true;
                     entry.Property(p => p.DefaultSchema).IsModified = true;
-
+                    transaction.Complete();
                     dbContext.SaveChanges();
                 }
             }
@@ -304,7 +304,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AdminServers
                     {
@@ -315,6 +315,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -398,7 +399,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetClientLicence> GetClientLicences(FilterAspNetClientLicences filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetClientLicencesQuery(dbContext, filter);
 
@@ -430,7 +431,7 @@ namespace DMS_WebAPI.Utilities
 
                     IsActive = x.IsActive,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -442,7 +443,7 @@ namespace DMS_WebAPI.Utilities
 
         public int AddClientLicence(int clientId, int licenceId)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AspNetClientLicences
                 {
@@ -453,7 +454,7 @@ namespace DMS_WebAPI.Utilities
                 };
                 dbContext.AspNetClientLicencesSet.Add(item);
                 dbContext.SaveChanges();
-
+                transaction.Complete();
                 return item.Id;
             }
         }
@@ -462,7 +463,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientLicences
                     {
@@ -478,7 +479,7 @@ namespace DMS_WebAPI.Utilities
                     entry.Property(p => p.IsActive).IsModified = true;
 
                     dbContext.SaveChanges();
-
+                    transaction.Complete();
                     return item.Id;
                 }
             }
@@ -492,7 +493,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientLicences
                     {
@@ -503,7 +504,7 @@ namespace DMS_WebAPI.Utilities
 
                     var entry = dbContext.Entry(item);
                     entry.Property(p => p.IsActive).IsModified = true;
-
+                    transaction.Complete();
                     dbContext.SaveChanges();
                 }
             }
@@ -517,7 +518,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientLicences
                     {
@@ -528,6 +529,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -599,7 +601,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetClient> GetClients(FilterAspNetClients filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetClientsQuery(dbContext, filter);
 
@@ -609,22 +611,24 @@ namespace DMS_WebAPI.Utilities
                     Name = x.Name,
                     Code = x.Code,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public bool ExistsClients(FilterAspNetClients filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                return GetClientsQuery(dbContext, filter).Any();
+                var res = GetClientsQuery(dbContext, filter).Any();
+                transaction.Complete();
+                return res;
             }
         }
 
         public IEnumerable<FrontAspNetClient> GetClientsByUser(IContext ctx)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
                                     .AsQueryable();
@@ -643,14 +647,14 @@ namespace DMS_WebAPI.Utilities
                     Name = x.Client.Name,
                     Code = x.Client.Code,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public FrontAspNetClient GetClientByUser(string userId, int clientId = -1)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var filter = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
 
@@ -676,14 +680,14 @@ namespace DMS_WebAPI.Utilities
                     Name = x.Client.Name,
                     Code = x.Client.Code,
                 }).FirstOrDefault();
-
+                transaction.Complete();
                 return item;
             }
         }
 
         public int AddClient(ModifyAspNetClient model)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var client = GetDbClient(model);
 
@@ -691,7 +695,7 @@ namespace DMS_WebAPI.Utilities
                 dbContext.SaveChanges();
 
                 model.Id = client.Id;
-
+                transaction.Complete();
                 return model.Id;
             }
         }
@@ -708,7 +712,7 @@ namespace DMS_WebAPI.Utilities
 
         public void UpdateClient(ModifyAspNetClient model)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var item = GetDbClient(model);
 
@@ -719,6 +723,7 @@ namespace DMS_WebAPI.Utilities
                 entry.Property(p => p.Code).IsModified = true;
 
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -726,7 +731,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClients
                     {
@@ -737,6 +742,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -805,7 +811,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetClientServer> GetClientServers(FilterAspNetClientServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetClientServersQuery(dbContext, filter);
 
@@ -819,7 +825,7 @@ namespace DMS_WebAPI.Utilities
                     ClientName = x.Client.Name,
                     ServerName = x.Server.Name
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -828,7 +834,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientServers
                     {
@@ -839,7 +845,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -853,7 +859,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientServers
                     {
@@ -864,6 +870,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -902,7 +909,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetLicence> GetLicences(FilterAspNetLicences filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetLicencesQuery(dbContext, filter);
 
@@ -927,7 +934,7 @@ namespace DMS_WebAPI.Utilities
                     IsFunctionals = x.Functionals != null,
                     Functionals = x.Functionals,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -936,7 +943,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetLicences
                     {
@@ -951,7 +958,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -965,7 +972,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetLicences
                     {
@@ -988,6 +995,7 @@ namespace DMS_WebAPI.Utilities
                     entry.Property(p => p.Functionals).IsModified = true;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1000,7 +1008,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetLicences
                     {
@@ -1011,6 +1019,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1072,7 +1081,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetUserClient> GetUserClients(FilterAspNetUserClients filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetUserClientsQuery(dbContext, filter);
 
@@ -1086,15 +1095,14 @@ namespace DMS_WebAPI.Utilities
                     ClientName = x.Client.Name,
                     UserName = x.User.UserName
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         private int AddUserClient(string userId, int clientId)
         {
-            using (var dbContext = new ApplicationDbContext())
-            using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = new AspNetUserClients
                 {
@@ -1144,7 +1152,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetUserClients
                     {
@@ -1155,6 +1163,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1165,11 +1174,12 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteUserClients(FilterAspNetUserClients filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetUserClientsQuery(dbContext, filter);
                 dbContext.AspNetUserClientsSet.RemoveRange(qry);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -1227,7 +1237,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetUserServer> GetUserServers(FilterAspNetUserServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetUserServersQuery(dbContext, filter);
 
@@ -1243,7 +1253,7 @@ namespace DMS_WebAPI.Utilities
                     UserName = x.User.UserName,
                     ServerName = x.Server.Name
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -1252,7 +1262,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetUserServers
                     {
@@ -1264,7 +1274,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -1278,7 +1288,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetUserServers
                     {
@@ -1289,6 +1299,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1299,11 +1310,12 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteUserServers(FilterAspNetUserServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetUserServersQuery(dbContext, filter);
                 dbContext.AspNetUserServersSet.RemoveRange(qry);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 

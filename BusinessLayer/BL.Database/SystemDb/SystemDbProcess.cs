@@ -249,30 +249,26 @@ namespace BL.Database.SystemDb
 
         public string GetSettingValue(IContext ctx, FilterSystemSetting filter)
         {
+            var res = string.Empty;
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 if (filter.AgentId.HasValue)
                 {
-                    var res = dbContext.SettingsSet.Where(
+                    res = dbContext.SettingsSet.Where(
                             x =>
                                 ctx.CurrentClientId == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
-                    transaction.Complete();
-
-                    return res;
                 }
                 else
                 {
-                    var res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
+                    res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
                             .OrderBy(x => x.ExecutorAgentId)
                             .Select(x => x.Value)
                             .FirstOrDefault();
-                    transaction.Complete();
-
-                    return res;
                 }
-
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -1975,13 +1971,8 @@ namespace BL.Database.SystemDb
                                          + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " +
                                          x.SenderNumber + " "
                         }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-
-                    transaction.Complete();
-
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentEvents)
+                else if (objType == EnumObjects.DocumentEvents)
                 {
                     res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -1998,12 +1989,8 @@ namespace BL.Database.SystemDb
                         + x.SourceAgent.Name + " "
                         + x.TargetAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-
-                    transaction.Complete();
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentFiles)
+                else if (objType == EnumObjects.DocumentFiles)
                 {
                     res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2014,11 +2001,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Name + "." + x.Extension + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                    transaction.Complete();
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentSendLists)
+                else if (objType == EnumObjects.DocumentSendLists)
                 {
                     res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2034,11 +2018,8 @@ namespace BL.Database.SystemDb
                         + x.SourcePositionExecutorAgent.Name + " "
                         + x.TargetPositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                    transaction.Complete();
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentSubscriptions)
+                else if (objType == EnumObjects.DocumentSubscriptions)
                 {
                     res.AddRange(dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2051,8 +2032,6 @@ namespace BL.Database.SystemDb
                         //+ x.SubscriptionState.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
                         + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                    transaction.Complete();
-                    return res;
                 }
                 transaction.Complete();
             }
