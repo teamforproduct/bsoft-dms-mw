@@ -5,6 +5,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.ClientCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
+using BL.Logic.SystemServices.TempStorage;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Database;
@@ -144,18 +145,18 @@ namespace DMS_WebAPI.Utilities
 
         public bool ExistsUser(string userName) => GetUser(userName) != null;
 
-        public int AddUserEmployee(AddDictionaryAgentEmployee model)
+        public int AddUserEmployee(IContext context, AddDictionaryAgentEmployee model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+
             string userId = string.Empty;
-            string userName = FormUserName(model.Login, ctx.CurrentClientId);
+            string userName = FormUserName(model.Login, context.CurrentClientId);
 
             // Проверяю не используется ли логин
             if (ExistsUser(userName)) throw new UserNameAlreadyExists(model.Login);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model);
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, context, model);
 
             if (tmpItem > 0)
             {
@@ -166,20 +167,63 @@ namespace DMS_WebAPI.Utilities
                     Password = "k~WPop8V%W~11hG~~VGR",
 
                     // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
-                    ClientId = ctx.CurrentClientId,
-                    ServerId = ctx.CurrentDB.Id,
+                    ClientId = context.CurrentClientId,
+                    ServerId = context.CurrentDB.Id,
 
                 });
             }
 
             // обновляю сотрудника 
-            tmpService.SetAgentUserUserId(ctx, new InternalDictionaryAgentUser
+            tmpService.SetAgentUserUserId(context, new InternalDictionaryAgentUser
             {
                 Id = tmpItem,
                 UserId = userId
             });
 
             return tmpItem;
+
+        }
+
+        public int UpdateUserEmployee(IContext context, ModifyDictionaryAgentEmployee model)
+        {
+            var user = GetUser(context, model.Id);
+
+            if (user == null) throw new UserIsNotDefined();
+
+            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+
+            if (model.ImageId.HasValue)
+            {
+                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
+                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
+                if (avaFile is string)
+                {
+                    model.PostedFileData = avaFile as string;
+                }
+            }
+
+            var res = (int)tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, context, model);
+
+            // При деактивации сотрудника деактивирую пользователя
+            if (!model.IsActive)
+            {
+                ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, AgentId = model.Id, IsKillSessions = true });
+            }
+            
+
+            return res;
+        }
+
+        public void DeleteUserEmployee(IContext context, int agentId)
+        {
+            var user = GetUser(context, agentId);
+
+            if (user == null) throw new UserIsNotDefined(); ;
+
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
+
+            DeleteUser(user.Id);
 
         }
 
@@ -204,6 +248,47 @@ namespace DMS_WebAPI.Utilities
 
                 return user.Id;
             }
+        }
+
+        private string DeleteUser(string userId)
+        {
+            using (var dbContext = new ApplicationDbContext())
+            using (var transaction = GetTransaction())
+            {
+                DeleteUserClients(new FilterAspNetUserClients { UserIds = new List<string> { userId } });
+                DeleteUserServers(new FilterAspNetUserServers { UserIds = new List<string> { userId } });
+
+                var user = new ApplicationUser() { Id = userId };
+
+                IdentityResult result = UserManager.Delete(user);
+
+                if (!result.Succeeded) throw new UserCouldNotBeDeleted();
+
+                transaction.Complete();
+
+                return user.Id;
+            }
+        }
+
+        public void DeleteUserClients(FilterAspNetUserClients filter)
+        {
+            var webDb = new WebAPIDbProcess();
+
+            try
+            {
+                webDb.DeleteUserClients(filter);
+            }
+            catch (Exception) { throw; }
+        }
+
+        public void DeleteUserServers(FilterAspNetUserServers filter)
+        {
+            var webDb = new WebAPIDbProcess();
+            try
+            {
+                webDb.DeleteUserServers(filter);
+            }
+            catch (Exception) { throw; }
         }
 
         public string AddUser(AddWebUser model)
@@ -250,7 +335,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public string AddFirstAdminClient(AddFirstAdminClient model)
+        public string AddFirstAdmin(AddFirstAdminClient model)
         {
             var dbWeb = new WebAPIDbProcess();
 
@@ -347,7 +432,7 @@ namespace DMS_WebAPI.Utilities
                 // Линкую клиента на лицензию
 
                 // Создаю первого пользователя
-                var userId = AddFirstAdminClient(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
+                var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
                 {
                     ClientCode = model.ClientCode,
                     Admin = new ModifyAspNetUser
@@ -447,7 +532,7 @@ namespace DMS_WebAPI.Utilities
                     #region Create user                        
 
                     #endregion Create user
-                    var userId = AddFirstAdminClient(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
+                    var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
                     {
                         ClientCode = model.Client.Code,
                         Admin = new ModifyAspNetUser
@@ -491,7 +576,7 @@ namespace DMS_WebAPI.Utilities
             if (!result.Succeeded) throw new DatabaseError();
 
             // выкидываю пользователя из системы
-            userContexts.KillSessions(model.AgentId);
+            userContexts.RemoveByAgentId(model.AgentId);
 
             if (model.IsVerificationRequired)
             {
@@ -518,7 +603,7 @@ namespace DMS_WebAPI.Utilities
 
             var user = await GetUserAsync(model.Email, model.ClientCode);
 
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 
@@ -553,7 +638,7 @@ namespace DMS_WebAPI.Utilities
 
             var user = GetUser(model.Email, model.ClientCode);
 
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 
@@ -593,7 +678,7 @@ namespace DMS_WebAPI.Utilities
 
             var user = await GetUserAsync(ctx, model.AgentId);
 
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
 
@@ -614,22 +699,18 @@ namespace DMS_WebAPI.Utilities
             }
 
             if (model.IsKillSessions)
-                userContexts.KillSessions(model.AgentId);
+                userContexts.RemoveByAgentId(model.AgentId);
 
         }
 
-        public async Task ChangeLockoutAgentUserAsync(ChangeLockoutAgentUser model)
+        public async Task ChangeLockoutAgentUserAsync(IContext context, ChangeLockoutAgentUser model)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-            var ctx = userContexts.Get();
-
             var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangeLockout, ctx, model.AgentId);
+            admService.ExecuteAction(EnumAdminActions.ChangeLockout, context, model.AgentId);
 
-            var user = await GetUserAsync(ctx, model.AgentId);
+            var user = await GetUserAsync(context, model.AgentId);
 
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             user.IsLockout = model.IsLockout;
 
@@ -637,10 +718,9 @@ namespace DMS_WebAPI.Utilities
 
             if (!result.Succeeded) throw new DatabaseError();
 
-
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
             if (model.IsKillSessions)
-                userContexts.KillSessions(model.AgentId);
-
+                userContexts.RemoveByAgentId(model.AgentId);
         }
 
         public async Task ConfirmEmailAgentUser(string userId, string code)
@@ -651,7 +731,7 @@ namespace DMS_WebAPI.Utilities
             {
                 ApplicationUser user = await UserManager.FindByIdAsync(userId);
 
-                if (user == null) throw new UserNameIsNotDefined();
+                if (user == null) throw new UserIsNotDefined();
 
                 user.IsEmailConfirmRequired = false;
 
@@ -673,7 +753,7 @@ namespace DMS_WebAPI.Utilities
 
             ApplicationUser user = await UserManager.FindByIdAsync(model.UserId);
 
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
 
             user.EmailConfirmed = true;
@@ -685,7 +765,7 @@ namespace DMS_WebAPI.Utilities
 
 
             var userContexts = DmsResolver.Current.Get<UserContexts>();
-            userContexts.KillSessions(model.UserId);
+            userContexts.RemoveByUserId(model.UserId);
 
             return user.Email;
         }

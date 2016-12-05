@@ -71,7 +71,7 @@ namespace BL.CrossCutting.Context
                 {
                     _currentPositionId = ctx.CurrentPositionId;
                 }
-                catch (UserPositionIsNotDefined)
+                catch (UserContextIsNotDefined)
                 {
                     _currentPositionId = null;
                 }
@@ -80,7 +80,7 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentPositionsIdList = ctx.CurrentPositionsIdList?.ToList();
                 }
-                catch (UserPositionIsNotDefined)
+                catch (UserContextIsNotDefined)
                 {
                     CurrentPositionsIdList = null;
                 }
@@ -89,7 +89,7 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value);
                 }
-                catch (UserPositionIsNotDefined)
+                catch (UserContextIsNotDefined)
                 {
                     CurrentPositionsAccessLevel = null;
                 }
@@ -108,7 +108,7 @@ namespace BL.CrossCutting.Context
             {
                 if ((_currentPositionsIdList == null) || !_currentPositionsIdList.Any())
                 {
-                    if (!_silentMode) throw new UserPositionIsNotDefined();
+                    if (!_silentMode) throw new UserContextIsNotDefined();
                     else return null;
                 }
                 return _currentPositionsIdList;
@@ -125,7 +125,7 @@ namespace BL.CrossCutting.Context
             {
                 if ((_currentPositionsAccessLevel == null) || !_currentPositionsAccessLevel.Any())
                 {
-                    if (!_silentMode) throw new UserPositionIsNotDefined();
+                    if (!_silentMode) throw new UserContextIsNotDefined();
                     else return null;
                 }
                 return _currentPositionsAccessLevel;
@@ -142,7 +142,7 @@ namespace BL.CrossCutting.Context
             {
                 if (!_currentPositionId.HasValue)
                 {
-                    if (!_silentMode) throw new UserPositionIsNotDefined();
+                    if (!_silentMode) throw new UserContextIsNotDefined();
                     else return -1;
                 }
                 return _currentPositionId.Value;
@@ -155,7 +155,7 @@ namespace BL.CrossCutting.Context
             {
                 if (CurrentEmployee?.AgentId == null)
                 {
-                    if (!_silentMode) throw new UserNameIsNotDefined();
+                    if (!_silentMode) throw new UserContextIsNotDefined();
                     else return -1;
                 }
                 return CurrentEmployee.AgentId.GetValueOrDefault();

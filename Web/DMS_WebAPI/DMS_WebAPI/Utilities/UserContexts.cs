@@ -27,32 +27,32 @@ namespace DMS_WebAPI.Utilities
 
         private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
 
-        /// <summary>
-        /// Gets setting value by its name.
-        /// </summary>
-        /// <returns>Typed setting value.</returns>
-        public IContext GetByLanguage()
-        {
-            string token = TokenLower;
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
+        ///// <summary>
+        ///// Gets setting value by its name.
+        ///// </summary>
+        ///// <returns>Typed setting value.</returns>
+        //public IContext GetByLanguage()
+        //{
+        //    string token = TokenLower;
 
-            var contextValue = _casheContexts[token];
-            try
-            {
-                var ctx = (IContext)contextValue.StoreObject;
+        //    if (!Contains(token)) throw new UserUnauthorized();
 
-                var request_ctx = new UserContext(ctx);
-                request_ctx.SetCurrentPosition(null);
-                return request_ctx;
-            }
-            catch (InvalidCastException invalidCastException)
-            {
-                throw new Exception();
-            }
-        }
+        //    var contextValue = _casheContexts[token];
+        //    try
+        //    {
+        //        var ctx = (IContext)contextValue.StoreObject;
+
+        //        var request_ctx = new UserContext(ctx);
+        //        request_ctx.SetCurrentPosition(null);
+        //        return request_ctx;
+        //    }
+        //    catch (InvalidCastException invalidCastException)
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
+
+
 
         public IQueryable<FrontSystemSession> GetContextListQuery()
         {
@@ -88,98 +88,32 @@ namespace DMS_WebAPI.Utilities
         {
             string token = TokenLower;
 
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
+            if (!Contains(token)) throw new UserUnauthorized();
 
-            var storeInfo = _casheContexts[token];
+            var ctx = GetInternal(token);
 
-            try
-            {
-                var ctx = (IContext)storeInfo.StoreObject;
 
-                //TODO Licence
-                //if (ctx.ClientLicence?.LicenceError != null)
-                //{
-                //    throw ctx.ClientLicence.LicenceError as DmsExceptions;
-                //}
+            //TODO Licence
+            //if (ctx.ClientLicence?.LicenceError != null)
+            //{
+            //    throw ctx.ClientLicence.LicenceError as DmsExceptions;
+            //}
 
-                //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
+            //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
 
-                var request_ctx = new UserContext(ctx);
-                request_ctx.SetCurrentPosition(currentPositionId);
+            var request_ctx = new UserContext(ctx);
+            request_ctx.SetCurrentPosition(currentPositionId);
 
-                if (isThrowExeception && request_ctx.IsChangePasswordRequired)
-                    throw new UserMustChangePassword();
+            if (isThrowExeception && request_ctx.IsChangePasswordRequired)
+                throw new UserMustChangePassword();
 
-                // KeepAlive: Продление жизни пользовательского контекста
-                if (keepAlive) KeepAlive(token);
-
-                return request_ctx;
-            }
-            catch (InvalidCastException invalidCastException)
-            {
-                // TODO Это правильно, что при InvalidCastException выбрасывается new Exception()
-                throw new Exception();
-            }
-        }
-
-        /// <summary>
-        /// Удаляет пользовательский контекст из коллекции
-        /// </summary>
-        /// <returns>Typed setting value.</returns>
-        public IContext Remove(string token = null)
-        {
-            if (string.IsNullOrEmpty(token)) token = TokenLower;
-
-            if (!_casheContexts.ContainsKey(token))
-            {
-                return null;
-            }
-
-            var contextValue = _casheContexts[token];
-            try
-            {
-                var ctx = (IContext)contextValue.StoreObject;
-                // удаляю пользовательский контекст из коллекции
-                _casheContexts.Remove(token);
-
-                // удаляю овиновский контекст из коллекции
-                //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-
-                return ctx;
-            }
-            catch (InvalidCastException invalidCastException)
-            {
-                throw new Exception();
-            }
-        }
-
-        private IContext GetInternal(string token)
-        {
-
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
-
-            var storeInfo = _casheContexts[token];
-
-            return (IContext)storeInfo.StoreObject;
-        }
-
-        private void KeepAlive(string token)
-        {
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
-
-            var storeInfo = _casheContexts[token];
             // KeepAlive: Продление жизни пользовательского контекста
-            storeInfo.LastUsage = DateTime.UtcNow;
+            if (keepAlive) KeepAlive(token);
+
+            return request_ctx;
         }
+
+       
 
 
         /// <summary>
@@ -195,26 +129,24 @@ namespace DMS_WebAPI.Utilities
         public IContext Set(string token, string userId, string clientCode, bool IsChangePasswordRequired)
         {
             token = token.ToLower();
-            if (!_casheContexts.ContainsKey(token))
+
+            if (Contains(token)) throw new ArgumentException();
+
+            var context =
+            new UserContext
             {
-                var context =
-                new UserContext
+                CurrentEmployee = new BL.Model.Users.Employee
                 {
-                    CurrentEmployee = new BL.Model.Users.Employee
-                    {
-                        Token = token,
-                        UserId = userId,
-                        ClientCode = clientCode
-                    }
-                };
+                    Token = token,
+                    UserId = userId,
+                    ClientCode = clientCode
+                }
+            };
 
-                context.IsChangePasswordRequired = IsChangePasswordRequired;
+            context.IsChangePasswordRequired = IsChangePasswordRequired;
 
-                Save(token, context);
-                return context;
-            }
-
-            throw new ArgumentException();
+            Save(token, context);
+            return context;
         }
 
 
@@ -232,6 +164,8 @@ namespace DMS_WebAPI.Utilities
         public void Set(string token, DatabaseModel db, int clientId)
         {
             token = token.ToLower();
+
+            if (!Contains(token)) throw new UserUnauthorized();
 
             var context = GetInternal(token);
 
@@ -253,13 +187,13 @@ namespace DMS_WebAPI.Utilities
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    KillCurrentSession(token);
+                    Remove(token);
                     throw new UserIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    KillCurrentSession(token);
+                    Remove(token);
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
@@ -269,7 +203,7 @@ namespace DMS_WebAPI.Utilities
             }
             else
             {
-                KillCurrentSession(token);
+                Remove(token);
                 throw new UserAccessIsDenied();
             }
 
@@ -289,6 +223,8 @@ namespace DMS_WebAPI.Utilities
         public void Set(string token, int? loginLogId, string loginLogInfo)
         {
             token = token.ToLower();
+
+            if (!Contains(token)) throw new UserUnauthorized();
 
             var context = GetInternal(token);
 
@@ -324,14 +260,10 @@ namespace DMS_WebAPI.Utilities
         public void Set(FrontAspNetClient client)
         {
             string token = TokenLower;
-            if (!_casheContexts.ContainsKey(token))
-            {
-                throw new UserUnauthorized();
-            }
 
-            var storeInfo = _casheContexts[token];
+            if (!Contains(token)) throw new UserUnauthorized();
 
-            var context = (IContext)storeInfo.StoreObject;
+            var context = GetInternal(token);
 
             var dbProc = new WebAPIDbProcess();
             context.ClientLicence = dbProc.GetClientLicenceActive(client.Id);
@@ -419,6 +351,29 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        /// <summary>
+        /// Удаляет пользовательский контекст из коллекции
+        /// </summary>
+        /// <returns>Typed setting value.</returns>
+        public IContext Remove(string token = null)
+        {
+            if (string.IsNullOrEmpty(token)) token = TokenLower;
+
+            if (!Contains(token)) return null;
+
+            var ctx = GetInternal(token);
+
+            // удаляю пользовательский контекст из коллекции
+            _casheContexts.Remove(token);
+
+            //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+
+            return ctx;
+        }
+
+        /// <summary>
+        /// Удаляет неиспользуемые пользовательские контексты
+        /// </summary>
         public void RemoveByTimeout()
         {
             var now = DateTime.UtcNow;
@@ -429,7 +384,11 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void KillSessions(int agentId)
+        /// <summary>
+        /// Удаляет пользовательские контексты по agentID
+        /// </summary>
+        /// <param name="agentId"></param>
+        public void RemoveByAgentId(int agentId)
         {
             var now = DateTime.UtcNow;
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
@@ -439,7 +398,11 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void KillSessions(string userId)
+        /// <summary>
+        /// Удаляет пользовательские контексты по userId
+        /// </summary>
+        /// <param name="userId"></param>
+        public void RemoveByUserId(string userId)
         {
             var now = DateTime.UtcNow;
             var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
@@ -449,15 +412,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void KillCurrentSession(string token = "")
-        {
-            if (string.IsNullOrEmpty(token))
-            { token = TokenLower; }
-            else
-            { token = token.ToLower(); }
-
-            Remove(token);
-        }
+        
 
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
         {
@@ -524,12 +479,12 @@ namespace DMS_WebAPI.Utilities
         /// <summary>
         /// Очистка всех пользовательских контекстов
         /// </summary>
-        public void ClearCache()
+        public void Clear()
         {
             _casheContexts.Clear();
         }
 
-
+        private bool Contains(string token) => _casheContexts.ContainsKey(token);
 
         /// <summary>
         /// Количество активных пользователей
@@ -537,6 +492,33 @@ namespace DMS_WebAPI.Utilities
         public int Count
         {
             get { return _casheContexts.Count; }
+        }
+
+        private IContext GetInternal(string token)
+        {
+            var storeInfo = _casheContexts[token];
+
+            try
+            {
+                return (IContext)storeInfo.StoreObject;
+            }
+            catch (InvalidCastException invalidCastException)
+            {
+                // TODO Это правильно, что при InvalidCastException выбрасывается new Exception()
+                throw new Exception();
+            }
+        }
+
+        private void KeepAlive(string token)
+        {
+            if (!_casheContexts.ContainsKey(token))
+            {
+                throw new UserUnauthorized();
+            }
+
+            var storeInfo = _casheContexts[token];
+            // KeepAlive: Продление жизни пользовательского контекста
+            storeInfo.LastUsage = DateTime.UtcNow;
         }
 
         //public void Dispose()

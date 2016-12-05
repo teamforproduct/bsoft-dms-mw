@@ -99,7 +99,7 @@ namespace DMS_WebAPI.Controllers
         [Route("ClearUserContexts")]
         public IHttpActionResult ClearUserContexts()
         {
-            DmsResolver.Current.Get<UserContexts>().ClearCache();
+            DmsResolver.Current.Get<UserContexts>().Clear();
             return new JsonResult(null, this);
         }
 
