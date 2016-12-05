@@ -1093,8 +1093,7 @@ namespace DMS_WebAPI.Utilities
 
         private int AddUserClient(string userId, int clientId)
         {
-            using (var dbContext = new ApplicationDbContext())
-            using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new ApplicationDbContext())            using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = new AspNetUserClients
                 {

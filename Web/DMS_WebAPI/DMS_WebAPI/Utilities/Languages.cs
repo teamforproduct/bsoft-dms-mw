@@ -136,7 +136,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                //using (var dbContext = new ApplicationDbContext())
                 {
                     var labelsInText = new List<string>();
                     // нахожу в тексте все лейблы, которые нужно переводить
@@ -281,8 +281,7 @@ namespace DMS_WebAPI.Utilities
         {
             var res = new AdminLanguageInfo();
 
-            using (var dbContext = new ApplicationDbContext())
-            using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 res.Languages = dbContext.AdminLanguagesSet.Select(x => new InternalAdminLanguage
                 {

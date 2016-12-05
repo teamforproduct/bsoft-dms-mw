@@ -41,7 +41,7 @@ namespace BL.Database.Admins
                     Label = x.Label,
                     Value = x.Value
                 }).ToList();
-
+                transaction.Complete();
                 return res;
             }
         }
@@ -74,13 +74,15 @@ namespace BL.Database.Admins
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
-                return qry.Select(x => new FrontAdminLanguage
+                var res = qry.Select(x => new FrontAdminLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     IsDefault = x.IsDefault
                 }).ToList();
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -90,7 +92,7 @@ namespace BL.Database.Admins
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
-                return qry.Select(x => new FrontAdminUserLanguage
+                var res = qry.Select(x => new FrontAdminUserLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -98,6 +100,8 @@ namespace BL.Database.Admins
                     IsDefault = x.IsDefault,
                     IsChecked = x.AgentUsers.Where(y => y.LanguageId == x.Id).Any(),
                 }).ToList();
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -106,14 +110,15 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
-
-                return qry.Select(x => new InternalAdminLanguage
+                var res =  qry.Select(x => new InternalAdminLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     IsDefault = x.IsDefault
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -130,6 +135,7 @@ namespace BL.Database.Admins
                 dbContext.AdminLanguagesSet.Add(item);
                 dbContext.SaveChanges();
                 model.Id = item.Id;
+                transaction.Complete();
                 return item.Id;
             }
         }
