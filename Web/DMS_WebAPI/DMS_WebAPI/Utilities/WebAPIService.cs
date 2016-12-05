@@ -732,9 +732,9 @@ namespace DMS_WebAPI.Utilities
                 throw new Exception(string.Join(" ", result.Errors));
             }
 
-            ApplicationUser user = await UserManager.FindByIdAsync(userId);
+            ApplicationUser user = await GetUserByIdAsync(userId);
 
-            if (user == null) throw new UserNameIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             user.IsEmailConfirmRequired = false;
 
