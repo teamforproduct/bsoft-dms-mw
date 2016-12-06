@@ -43,6 +43,11 @@
         DictionaryPositionExecutorTypes = 219, // Типы исполнителей
         DictionaryPositionExecutors = 220, // Исполнители должности
         DictionaryAgentUsers = 221, // Контрагенты - пользователи
+        DictionaryBankAddress = 222, // Контрагенты - пользователи
+        DictionaryCompanyAddress = 223, // Контрагенты - пользователи
+        DictionaryEmployeeAddress = 224, // Контрагенты - пользователи
+        DictionaryClientCompanyAddress = 225, // Контрагенты - пользователи
+        DictionaryPersonAddress = 226, // Контрагенты - пользователи
 
         TemplateDocument = 251, // Шаблоны документов
         TemplateDocumentSendList = 252, // Списки рассылки в шаблонах

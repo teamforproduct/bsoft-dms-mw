@@ -78,6 +78,12 @@ namespace DMS_WebAPI.Providers
             
             ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
+
+            //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
+            // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
+            // Эта штука доступна только в OAuthGrantResourceOwnerCredentialsContext в OAuthTokenEndpointResponseContext я ее уже не обнаружил
+            // Эта штука НЕ отлавливается нашим обработчиком ошибок и не фиксируется в файл лог
+
             // Эти исключения отлавливает Application_Error в Global.asax
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
@@ -167,7 +173,7 @@ namespace DMS_WebAPI.Providers
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
 
-                // Добавляю в пользовательский сведения о браузере
+                // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, loginLogId, message);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);

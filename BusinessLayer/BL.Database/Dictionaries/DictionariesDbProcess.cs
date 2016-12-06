@@ -1341,16 +1341,24 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
 
-                qry = qry.Where(x => x.AgentId == filter.AgentId);
-
                 qry = qry.OrderBy(x => x.AddressType.Code).ThenBy(x => x.Address);
+
+                // Список первичных ключей
+                if (filter.AgentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = filter.AgentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AgentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -1378,10 +1386,10 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.IsActive == x.IsActive);
                 }
 
-                if (filter.AddressTypeId?.Count > 0)
+                if (filter.AddressTypeIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
-                    filterContains = filter.AddressTypeId.Aggregate(filterContains,
+                    filterContains = filter.AddressTypeIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AdressTypeId == value).Expand());
 
                     qry = qry.Where(filterContains);

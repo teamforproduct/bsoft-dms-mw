@@ -64,7 +64,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         void DeleteAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         int AddAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
 
         IEnumerable<int> GetAgentsIDByAddress(IContext context, IEnumerable<int> addresses);
 

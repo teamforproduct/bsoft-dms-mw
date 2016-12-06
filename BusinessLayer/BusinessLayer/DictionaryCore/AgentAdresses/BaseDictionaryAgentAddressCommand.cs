@@ -27,24 +27,24 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
             Model.PostCode?.Trim();
 
-            var spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
+            var spr = _dictDb.GetAgentAddresses(_context, new FilterDictionaryAgentAddress
             {
-                AgentId = Model.AgentId,
+                AgentIDs = new List<int> { Model.AgentId },
                 NotContainsIDs = new List<int> { Model.Id },
-                AddressTypeId = new List<int> { Model.AddressTypeId },
+                AddressTypeIDs = new List<int> { Model.AddressTypeId },
             });
             if (spr.Count() != 0)
             {
                 throw new DictionaryAddressTypeNotUnique();
             }
 
-            spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
+            spr = _dictDb.GetAgentAddresses(_context, new FilterDictionaryAgentAddress
             {
-                AgentId = Model.AgentId,
+                AgentIDs = new List<int> { Model.AgentId },
                 NotContainsIDs = new List<int> { Model.Id },
                 PostCodeExact = Model.PostCode,
                 AddressExact = Model.Address,

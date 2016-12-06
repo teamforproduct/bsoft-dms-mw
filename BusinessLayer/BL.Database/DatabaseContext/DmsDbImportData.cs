@@ -55,6 +55,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgents));
             items.Add(GetSystemObjects(EnumObjects.DictionaryContacts));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryBankAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPersonAddress));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
@@ -255,9 +260,27 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentContact, EnumObjects.DictionaryContacts));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentContact, EnumObjects.DictionaryContacts));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentContact, EnumObjects.DictionaryContacts));
+
+
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentAddress, EnumObjects.DictionaryAgentAddresses));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentAddress, EnumObjects.DictionaryAgentAddresses));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentAddress, EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSysAct(EnumDictionaryActions.AddBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddPersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyPersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeletePersonAddress, EnumObjects.DictionaryPersonAddress));
+
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentPerson, EnumObjects.DictionaryAgentPersons));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentPerson, EnumObjects.DictionaryAgentPersons));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentPerson, EnumObjects.DictionaryAgentPersons));

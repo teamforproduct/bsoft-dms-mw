@@ -165,6 +165,8 @@ namespace DMS_WebAPI.Utilities
         {
             token = token.ToLower();
 
+            // Исключения отлавливает Application_Error в Global.asax
+
             if (!Contains(token)) throw new UserUnauthorized();
 
             var context = GetInternal(token);

@@ -107,12 +107,27 @@ namespace BL.Logic.DictionaryCore
                 // Адреса
                 #region DictionaryAgentAddress
                 case EnumDictionaryActions.AddAgentAddress:
+                case EnumDictionaryActions.AddBankAddress:
+                case EnumDictionaryActions.AddCompanyAddress:
+                case EnumDictionaryActions.AddClientCompanyAddress:
+                case EnumDictionaryActions.AddEmployeeAddress:
+                case EnumDictionaryActions.AddPersonAddress:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentAddressCommand>();
                     break;
                 case EnumDictionaryActions.ModifyAgentAddress:
+                case EnumDictionaryActions.ModifyBankAddress:
+                case EnumDictionaryActions.ModifyCompanyAddress:
+                case EnumDictionaryActions.ModifyClientCompanyAddress:
+                case EnumDictionaryActions.ModifyEmployeeAddress:
+                case EnumDictionaryActions.ModifyPersonAddress:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentAddressCommand>();
                     break;
                 case EnumDictionaryActions.DeleteAgentAddress:
+                case EnumDictionaryActions.DeleteBankAddress:
+                case EnumDictionaryActions.DeleteCompanyAddress:
+                case EnumDictionaryActions.DeleteClientCompanyAddress:
+                case EnumDictionaryActions.DeleteEmployeeAddress:
+                case EnumDictionaryActions.DeletePersonAddress:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentAddressCommand>();
                     break;
                 #endregion DictionaryAgentAddress

@@ -143,6 +143,26 @@
         /// удалить адрес
         /// </summary>
         DeleteAgentAddress = 208009,
+
+        AddBankAddress = 222001,
+        ModifyBankAddress = 222005,
+        DeleteBankAddress = 222009,
+
+        AddCompanyAddress = 223001,
+        ModifyCompanyAddress = 223005,
+        DeleteCompanyAddress = 223009,
+
+        AddEmployeeAddress = 224001,
+        ModifyEmployeeAddress = 224005,
+        DeleteEmployeeAddress = 224009,
+
+        AddClientCompanyAddress = 225001,
+        ModifyClientCompanyAddress = 225005,
+        DeleteClientCompanyAddress = 225009,
+
+        AddPersonAddress = 226001,
+        ModifyPersonAddress = 226005,
+        DeletePersonAddress = 226009,
         #endregion AgentAddress
 
         // Persons
