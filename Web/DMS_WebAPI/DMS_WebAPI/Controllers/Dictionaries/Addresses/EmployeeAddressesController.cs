@@ -22,34 +22,34 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Возвращает список адресов сотрудника
         /// </summary>
-        /// <param name="id">ИД агента</param>
+        /// <param name="EmployeeId">ИД агента</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int id, [FromUri] FilterDictionaryAgentAddress filter)
+        public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryAgentAddress filter)
         {
             if (filter == null) filter = new FilterDictionaryAgentAddress();
 
-            if (filter.AgentIDs == null) filter.IDs = new List<int> { id };
-            else filter.AgentIDs.Add(id);
+            if (filter.AgentIDs == null) filter.IDs = new List<int> { EmployeeId };
+            else filter.AgentIDs.Add(EmployeeId);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentAddresses(ctx, filter);
+            var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
         /// <summary>
         /// Возвращает адрес по ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="Id"></param>
         /// <returns></returns>
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
-        public IHttpActionResult Get(int id)
+        public IHttpActionResult Get(int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentAddress(ctx, id);
+            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
             return new JsonResult(tmpItem, this);
         }
 
@@ -68,12 +68,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Корректирует адрес сотрудника
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentAddress model)
+        public IHttpActionResult Put(int Id, [FromBody]ModifyDictionaryAgentAddress model)
         {
-            model.Id = id;
+            model.Id = Id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.ModifyEmployeeAddress, ctx, model);
@@ -83,16 +83,16 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Удаляет адрес сотрудника
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="Id"></param>
         /// <returns></returns>
-        public IHttpActionResult Delete([FromUri] int id)
+        public IHttpActionResult Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, id);
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, Id);
             FrontDictionaryAgentAddress tmp = new FrontDictionaryAgentAddress();
-            tmp.Id = id;
+            tmp.Id = Id;
 
             return new JsonResult(tmp, this);
 

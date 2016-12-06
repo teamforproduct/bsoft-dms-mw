@@ -37,7 +37,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentAddresses(ctx, filter);
+            var tmpDicts = tmpDictProc.GetAgentAddresses(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentAddress(ctx, id);
+            var tmpDict = tmpDictProc.GetAgentAddress(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
