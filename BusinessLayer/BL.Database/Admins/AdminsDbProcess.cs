@@ -103,7 +103,7 @@ namespace BL.Database.Admins
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
-                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name ?? "##l@Message:PositionIsVacant@l##",
+                    RolePositionExecutorAgentName = (x.Position.ExecutorAgent.Name ?? "##l@Message:PositionIsVacant@l##") + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     RolePositionExecutorTypeId = x.PositionExecutorType.Id,
                     RolePositionExecutorTypeName = x.PositionExecutorType.Name,
                     StartDate = x.StartDate,
