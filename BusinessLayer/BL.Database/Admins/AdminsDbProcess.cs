@@ -95,7 +95,7 @@ namespace BL.Database.Admins
                 var now = DateTime.UtcNow;
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
-                qry = qry.Where(x => x.AgentId == agentId & x.IsActive == true & now >= x.StartDate & now <= x.EndDate);
+                qry = qry.Where(x => x.AgentId == agentId && x.Position.ExecutorAgentId.HasValue && x.IsActive && now >= x.StartDate && now <= x.EndDate);
 
                 qry = qry.OrderBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Position.Order);
 
@@ -103,7 +103,7 @@ namespace BL.Database.Admins
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
-                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name ?? "##l@Message:PositionIsVacant@l##",
+                    RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     RolePositionExecutorTypeId = x.PositionExecutorType.Id,
                     RolePositionExecutorTypeName = x.PositionExecutorType.Name,
                     StartDate = x.StartDate,
