@@ -2097,9 +2097,9 @@ namespace BL.Database.Common
                         ReadDate = x.SendEvent.ReadDate,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
                         SourcePositionName = x.SendEvent.SourcePosition.Name,
-                        SourcePositionId = x.DoneEvent.SourcePositionId,
+                        SourcePositionId = x.SendEvent.SourcePositionId,
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
-                        TargetPositionId = x.DoneEvent.TargetPositionId,
+                        TargetPositionId = x.SendEvent.TargetPositionId,
                         SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name + (x.SendEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SendEvent.SourcePosition.ExecutorType.Suffix + ")" : (string)null),
                         TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name + (x.SendEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.SendEvent.TargetPosition.ExecutorType.Suffix + ")" : (string)null),
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
