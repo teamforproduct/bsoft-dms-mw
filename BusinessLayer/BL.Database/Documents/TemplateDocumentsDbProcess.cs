@@ -414,15 +414,16 @@ namespace BL.Database.Documents
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
-
+                var entityState = System.Data.Entity.EntityState.Modified;
                 if (template.Id > 0)
                 {
                     newTemplate.Id = (int)template.Id;
+                    entityState = System.Data.Entity.EntityState.Added;
                 }
 
                 dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = entityState;
 
                 dbContext.SaveChanges();
 
@@ -527,15 +528,16 @@ namespace BL.Database.Documents
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
-
+                var entityState = System.Data.Entity.EntityState.Modified;
                 if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
+                    entityState = System.Data.Entity.EntityState.Added;
                 }
 
                 dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = entityState;
 
                 dbContext.SaveChanges();
 
@@ -644,15 +646,16 @@ namespace BL.Database.Documents
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
-
+                var entityState = System.Data.Entity.EntityState.Modified;
                 if (template.Id.HasValue)
                 {
                     newTemplate.Id = (int)template.Id;
+                    entityState = System.Data.Entity.EntityState.Added;
                 }
 
                 dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = entityState;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentTask,
