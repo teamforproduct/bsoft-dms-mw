@@ -173,7 +173,7 @@ namespace DMS_WebAPI.Providers
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
 
-                // Добавляю в пользовательский сведения о браузере
+                // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, loginLogId, message);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);

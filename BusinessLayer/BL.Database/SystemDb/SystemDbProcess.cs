@@ -693,7 +693,7 @@ namespace BL.Database.SystemDb
 
         public void AddSystemAction(IContext context, SystemActions item)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
 
@@ -711,7 +711,7 @@ namespace BL.Database.SystemDb
 
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
 
-                transaction.Complete();
+                transaction.Commit();
             }
         }
 
