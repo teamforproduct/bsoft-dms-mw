@@ -909,7 +909,7 @@ namespace BL.Logic.Common
                             break;
                     }
 
-                    var mFormats = Regex.Matches(mFormula.Value, patternLength);
+                    var mFormats = Regex.Matches(mFormula.Value, patternFormat);
                     string format = string.Empty;
                     foreach (Match mFormat in mFormats)
                     {
