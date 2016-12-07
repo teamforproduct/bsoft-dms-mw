@@ -90,7 +90,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Delete([FromUri]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Delete([FromUri]int model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();

@@ -981,17 +981,32 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
+        public InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
 
-        public void DeleteTemplateAttachedFile(IContext ctx, InternalTemplateAttachedFile docFile)
+                var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId)
+                        .Where(x => x.Id == id)
+                        .Select(x => new InternalTemplateAttachedFile
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            OrderInDocument = x.OrderNumber
+                        }).FirstOrDefault();
+                transaction.Complete();
+                return file;
+            }
+        }
+        public void DeleteTemplateAttachedFile(IContext ctx, int id)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.TemplateDocumentFilesSet.RemoveRange(
                     dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(
-                        x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument));
+                        x => x.Id == id));
                 dbContext.SaveChanges();
-
-                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }

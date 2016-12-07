@@ -60,7 +60,8 @@ namespace BL.Database.Documents.Interfaces
         int GetNextFileOrderNumber(IContext ctx, int templateId);
         int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile);
         void UpdateFile(IContext ctx, InternalTemplateAttachedFile docFile);
-        void DeleteTemplateAttachedFile(IContext ctx, InternalTemplateAttachedFile docFile);
+        void DeleteTemplateAttachedFile(IContext ctx, int id);
+        InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext ctx, int id);
         bool CanAddTemplateAttachedFile(IContext ctx, ModifyTemplateAttachedFile file);
 
         #endregion TemplateAttachedFiles
