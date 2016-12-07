@@ -244,10 +244,11 @@ namespace BL.Database.Common
                 PassportText = item.PassportText,
                 PassportDate = item.PassportDate,
                 BirthDate = item.BirthDate,
+                AgentCompanyId = item.AgentCompanyId,
                 Description = item.Description,
+                IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive
             };
 
         }
@@ -291,7 +292,7 @@ namespace BL.Database.Common
                 ClientId = context.CurrentClientId,
 
                 Id = item.Id,
-                
+
                 Image = item.Image,
 
                 LastChangeDate = item.LastChangeDate,
