@@ -64,7 +64,7 @@ namespace BL.Database.Common
                     filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
                     qry = qry.Where(filterExecutorPositionContains);
                 }
-                else
+                else if (userAccesses == null)  //доступ к журналам проверяем, если нет ограничений на Accesses
                 {
                     var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
                     filterPositionsIdList = ctx.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());

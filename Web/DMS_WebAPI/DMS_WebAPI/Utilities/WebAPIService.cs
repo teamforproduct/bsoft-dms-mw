@@ -315,7 +315,8 @@ namespace DMS_WebAPI.Utilities
             RestorePasswordAgentUserAsync(new RestorePasswordAgentUser
             {
                 ClientCode = dbWeb.GetClientCode(model.ClientId),
-                Email = model.Email
+                Email = model.Email,
+                FirstEntry="true"
             }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return userId;
@@ -615,6 +616,12 @@ namespace DMS_WebAPI.Utilities
             var newQuery = HttpUtility.ParseQueryString(builder.Query);
             newQuery.Add("UserId", user.Id);
             newQuery.Add("Code", passwordResetToken);
+
+            if (!string.IsNullOrEmpty(model.FirstEntry))
+            {
+                newQuery.Add("FirstEntry", model.FirstEntry);
+            }
+
             newQuery.Add(query);
 
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
@@ -648,6 +655,7 @@ namespace DMS_WebAPI.Utilities
 
             query.Add("UserId", user.Id);
             query.Add("Code", passwordResetToken);
+            
 
             var builder = new UriBuilder(baseUrl);
             builder.Query = query.ToString();
