@@ -80,6 +80,16 @@ namespace BL.Model.DictionaryCore.FrontModel
         }
 
         /// <summary>
+        /// Назване компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public string AgentCompanyName { get; set; }
+
+        /// <summary>
+        /// Id компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public int? AgentCompanyId { get; set; }
+
+        /// <summary>
         /// Список контактов контрагента
         /// </summary>
         public IEnumerable<FrontDictionaryContact> Contacts { get; set; }

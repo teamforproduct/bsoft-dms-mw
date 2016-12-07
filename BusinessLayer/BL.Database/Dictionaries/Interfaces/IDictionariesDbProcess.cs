@@ -32,7 +32,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         int AddAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
-        FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
+        //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         #endregion DictionaryAgentPerson
 

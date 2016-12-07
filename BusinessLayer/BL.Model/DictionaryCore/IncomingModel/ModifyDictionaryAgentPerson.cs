@@ -70,6 +70,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
         private DateTime? _BirthDate;
+
+        /// <summary>
+        /// Id компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public int? AgentCompanyId { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>

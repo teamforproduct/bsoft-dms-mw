@@ -472,66 +472,66 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
+        //public FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id)
+        //{
+        //    using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+        //    {
 
-                var res =
-                    dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentPerson
-                    {
-                        Id = x.Id,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        MiddleName = x.MiddleName,
-                        Name = x.Agent.Name,
-                        FullName = x.FullName,
-                        TaxCode = x.TaxCode,
-                        IsMale = x.IsMale,
-                        PassportSerial = x.PassportSerial,
-                        PassportNumber = x.PassportNumber,
-                        PassportText = x.PassportText,
-                        PassportDate = x.PassportDate,
-                        BirthDate = x.BirthDate,
-                        Description = x.Description,
-                        IsActive = x.IsActive,
-                        Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
-                        {
-                            Id = y.Id,
-                            AgentId = y.AgentId,
-                            ContactType = new FrontDictionaryContactType
-                            {
-                                Id = y.ContactType.Id,
-                                Name = y.ContactType.Name,
-                                InputMask = y.ContactType.InputMask,
-                                IsActive = y.ContactType.IsActive
-                            },
-                            Value = y.Contact,
-                            IsActive = y.IsActive,
-                            Description = y.Description
-                        }),
-                        Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-                        {
-                            Id = z.Id,
-                            AgentId = z.AgentId,
-                            AddressType = new FrontDictionaryAddressType
-                            {
-                                Id = z.AddressType.Id,
-                                Name = z.AddressType.Name,
-                                IsActive = z.AddressType.IsActive
-                            },
-                            PostCode = z.PostCode,
-                            Address = z.Address,
-                            IsActive = z.IsActive,
-                            Description = z.Description
-                        })
+        //        var res =
+        //            dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentPerson
+        //            {
+        //                Id = x.Id,
+        //                FirstName = x.FirstName,
+        //                LastName = x.LastName,
+        //                MiddleName = x.MiddleName,
+        //                Name = x.Agent.Name,
+        //                FullName = x.FullName,
+        //                TaxCode = x.TaxCode,
+        //                IsMale = x.IsMale,
+        //                PassportSerial = x.PassportSerial,
+        //                PassportNumber = x.PassportNumber,
+        //                PassportText = x.PassportText,
+        //                PassportDate = x.PassportDate,
+        //                BirthDate = x.BirthDate,
+        //                Description = x.Description,
+        //                IsActive = x.IsActive,
+        //                Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+        //                {
+        //                    Id = y.Id,
+        //                    AgentId = y.AgentId,
+        //                    ContactType = new FrontDictionaryContactType
+        //                    {
+        //                        Id = y.ContactType.Id,
+        //                        Name = y.ContactType.Name,
+        //                        InputMask = y.ContactType.InputMask,
+        //                        IsActive = y.ContactType.IsActive
+        //                    },
+        //                    Value = y.Contact,
+        //                    IsActive = y.IsActive,
+        //                    Description = y.Description
+        //                }),
+        //                Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
+        //                {
+        //                    Id = z.Id,
+        //                    AgentId = z.AgentId,
+        //                    AddressType = new FrontDictionaryAddressType
+        //                    {
+        //                        Id = z.AddressType.Id,
+        //                        Name = z.AddressType.Name,
+        //                        IsActive = z.AddressType.IsActive
+        //                    },
+        //                    PostCode = z.PostCode,
+        //                    Address = z.Address,
+        //                    IsActive = z.IsActive,
+        //                    Description = z.Description
+        //                })
 
-                    }).FirstOrDefault();
+        //            }).FirstOrDefault();
 
-                transaction.Complete();
-                return res;
-            }
-        }
+        //        transaction.Complete();
+        //        return res;
+        //    }
+        //}
 
         public IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
@@ -557,6 +557,8 @@ namespace BL.Database.Dictionaries
                     BirthDate = x.BirthDate,
                     Description = x.Description,
                     IsActive = x.IsActive,
+                    AgentCompanyId = x.AgentCompanyId,
+                    AgentCompanyName = x.AgentCompany.Agent.Name,
                 }).ToList();
 
                 transaction.Complete();

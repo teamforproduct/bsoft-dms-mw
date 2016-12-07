@@ -28,6 +28,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             PassportDate = model.PassportDate;
             IsActive = model.IsActive;
             BirthDate = model.BirthDate;
+            AgentCompanyId = model.AgentCompanyId;
             Description = model.Description;
         }
 
@@ -48,6 +49,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             PassportDate = model.PassportDate;
             IsActive = model.IsActive;
             BirthDate = model.BirthDate;
+            //AgentCompanyId = model.AgentCompanyId;
             Description = model.Description;
         }
         /// <summary>
@@ -96,6 +98,13 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Дата рождения
         /// </summary>
         public DateTime? BirthDate { get; set; }
+
+        /// <summary>
+        /// Id компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public int? AgentCompanyId { get; set; }
+
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>
