@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using DMS_WebAPI.DBModel;
 using System.Collections.Generic;
+using System;
 
 namespace DMS_WebAPI.Models
 {
@@ -24,6 +25,11 @@ namespace DMS_WebAPI.Models
         public bool IsChangePasswordRequired { get; set; }
         public bool IsEmailConfirmRequired { get; set; }
         public bool IsLockout { get; set; }
+
+        public DateTime CreateDate { get; set; }
+
+        public DateTime LastChangeDate { get; set; }
+
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -58,7 +64,7 @@ namespace DMS_WebAPI.Models
                 }
             }
 
-            if(isIncorrect)
+            if (isIncorrect)
             {
                 using (var dbContext = new ApplicationDbContext())
                 {

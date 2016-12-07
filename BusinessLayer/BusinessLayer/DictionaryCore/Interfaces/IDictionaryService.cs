@@ -17,9 +17,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         object ExecuteAction(EnumDictionaryActions act, IContext context, object param);
 
         #region DictionaryAgents
-        FrontDictionaryAgent GetDictionaryAgent(IContext context, int id);
+        FrontDictionaryAgent GetAgent(IContext context, int id);
         FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id);
-        IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
+        IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
 
         #endregion DictionaryAgents
 
@@ -30,10 +30,15 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #endregion DictionaryAgentPersons
 
-        #region DictionaryAgentCompanies
-        FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id);
+        #region DictionaryContactPersons
+        IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontContactPersons> GetContactPerson(IContext context, int id);
+        #endregion
 
-        IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        #region DictionaryAgentCompanies
+        FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
+
+        IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentAccounts

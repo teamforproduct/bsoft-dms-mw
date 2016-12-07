@@ -273,6 +273,7 @@
     <Compile Include="Controllers\Dictionaries\Addresses\CompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BanksController.cs" />
+    <Compile Include="Controllers\Dictionaries\CompaniesContactPersons.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
@@ -391,6 +392,10 @@
     <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.cs" />
     <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.Designer.cs">
       <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612071529206_Users_LastChangeDate.cs" />
+    <Compile Include="Migrations\201612071529206_Users_LastChangeDate.Designer.cs">
+      <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -558,6 +563,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611292202410_AddFileNameToLanguages2.resx">
       <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612071529206_Users_LastChangeDate.resx">
+      <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

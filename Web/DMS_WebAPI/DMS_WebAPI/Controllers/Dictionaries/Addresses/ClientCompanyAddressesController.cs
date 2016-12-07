@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="ClientCompanyId">ИД агента</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
-        [Route("Get")]
+        [HttpGet]
         [Route("{ClientCompanyId:int}")]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int ClientCompanyId, [FromUri] FilterDictionaryAgentAddress filter)

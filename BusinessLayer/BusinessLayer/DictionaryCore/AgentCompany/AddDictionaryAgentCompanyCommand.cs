@@ -26,7 +26,7 @@ namespace BL.Logic.DictionaryCore
                     var newCompany = new InternalDictionaryAgentCompany(Model); ;
                     CommonDocumentUtilities.SetLastChange(_context, newCompany);
                     var id = _dictDb.AddAgentCompany(_context, newCompany);
-                    var frontObj = _dictDb.GetAgentCompany(_context, id);
+                    var frontObj = _dictService.GetAgentCompany(_context, id);
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

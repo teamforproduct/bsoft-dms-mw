@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Get")]
+        [Route("")]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int CompanyId, [FromUri] FilterDictionaryAgentAddress filter)
         {

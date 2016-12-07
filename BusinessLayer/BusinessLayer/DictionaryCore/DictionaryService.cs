@@ -41,14 +41,13 @@ namespace BL.Logic.DictionaryCore
         }
 
         #region DictionaryAgents
-        public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
+        public FrontDictionaryAgent GetAgent(IContext context, int id)
         {
-
-            return _dictDb.GetAgent(context, id);
+            return GetAgents(context, new FilterDictionaryAgent { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
 
-        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgent();
             if (!string.IsNullOrEmpty(filter.FullTextSearchString))
@@ -198,7 +197,7 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            return _dictDb.GetAgentEmployee(context, id);
+            return _dictDb.GetAgentEmployees(context, new FilterDictionaryAgentEmployee { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
@@ -340,14 +339,28 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryAgentAccounts
 
-        #region DictionaryAgentCompanies
-        public FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id)
-        {
+        #region [+] ContaktPersons
 
-            return _dictDb.GetAgentCompany(context, id);
+        public IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter)
+        {
+            return _dictDb.GetContactPersons(context, filter);
         }
 
-        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<FrontContactPersons> GetContactPerson(IContext context, int id)
+        {
+            return _dictDb.GetContactPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
+        }
+
+        #endregion
+
+
+        #region DictionaryAgentCompanies
+        public FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id)
+        {
+            return _dictDb.GetAgentCompanies(context, new FilterDictionaryAgentCompany { IDs = new List<int> { id } }, null).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryAgentCompany();
@@ -427,7 +440,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentBanks
         public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
         {
-            return _dictDb.GetAgentBank(context, id);// new FilterDictionaryAgentBank {  IDs = new List<int> { id } }, null ).FirstOrDefault();
+            return _dictDb.GetAgentBanks(context, new FilterDictionaryAgentBank { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)

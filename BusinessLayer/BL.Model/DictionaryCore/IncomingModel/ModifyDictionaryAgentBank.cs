@@ -13,6 +13,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Ид
         /// </summary>
+        //[Required]
         public int Id { get; set; }
 
     }

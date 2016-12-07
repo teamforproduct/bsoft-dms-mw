@@ -15,7 +15,7 @@ namespace BL.Logic.AdminCore
             try
             {
                 var da = new InternalDepartmentAdmin(Model);
-                da.EmployeeName = _dictDb.GetAgent(_context, Model.EmployeeId).Name;
+                //da.EmployeeName = _dictDb.GetAgents(_context, new BL.Model.DictionaryCore.FilterModel.FilterDictionaryAgent { IDs = new List<int> { Model.EmployeeId } }, null). .Name;
 
 
                 return _adminDb.AddDepartmentAdmin(_context, da);
