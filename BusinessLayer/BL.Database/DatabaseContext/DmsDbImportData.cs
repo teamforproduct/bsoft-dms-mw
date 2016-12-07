@@ -60,6 +60,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyAddress));
             items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeAddress));
             items.Add(GetSystemObjects(EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryContactPersons));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
