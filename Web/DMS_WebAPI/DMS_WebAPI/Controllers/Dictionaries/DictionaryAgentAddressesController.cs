@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             if (filter == null) filter = new FilterDictionaryAgentAddress();
 
-            if (filter.AgentIDs == null) filter.IDs = new List<int> { agentId };
+            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { agentId };
             else filter.AgentIDs.Add(agentId);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

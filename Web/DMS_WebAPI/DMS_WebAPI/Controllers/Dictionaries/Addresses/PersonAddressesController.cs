@@ -16,7 +16,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Адреса физических лиц
     /// </summary>
     [Authorize]
-    public class PersonAddressesController : ApiController
+    [RoutePrefix("api/v2/Persons/Addresses")]
+    public class PersonsAddressesController : ApiController
     {
 
         /// <summary>
@@ -25,12 +26,14 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="PersonId">ИД агента</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
+        [HttpGet]
+        [Route("{PersonId:int}")]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int PersonId, [FromUri] FilterDictionaryAgentAddress filter)
         {
             if (filter == null) filter = new FilterDictionaryAgentAddress();
 
-            if (filter.AgentIDs == null) filter.IDs = new List<int> { PersonId };
+            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { PersonId };
             else filter.AgentIDs.Add(PersonId);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -44,6 +47,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
+        [HttpGet]
+        [Route("{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
@@ -58,6 +63,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [HttpPost]
+        [Route("")]
         public IHttpActionResult Post([FromBody]ModifyDictionaryAgentAddress model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -71,9 +78,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put(int Id, [FromBody]ModifyDictionaryAgentAddress model)
+        [HttpPut]
+        [Route("")]
+        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentAddress model)
         {
-            model.Id = Id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.ModifyPersonAddress, ctx, model);
@@ -85,6 +93,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
+        [HttpDelete]
+        [Route("{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

@@ -51,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">параметры юрлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentBank model)
+        public IHttpActionResult Post([FromBody]AddDictionaryAgentBank model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();

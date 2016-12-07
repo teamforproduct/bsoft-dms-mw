@@ -194,6 +194,8 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAccount.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentAddress.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
