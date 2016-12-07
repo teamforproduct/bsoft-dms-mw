@@ -20,5 +20,8 @@ namespace BL.Model.Users
         /// 
         /// </summary>       
         public string ClientCode { get; set; }
+        
+        public string FirstEntry { get; set; }
+
     }
 }
