@@ -230,7 +230,7 @@ namespace DMS_WebAPI.Utilities
 
         private string AddUser(string userName, string userPassword, string userEmail, string userPhone = "")
         {
-            //using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            using (var transaction = Transactions.GetTransaction())
             {
                 if (ExistsUser(userName)) throw new UserNameAlreadyExists(userEmail);
 
@@ -241,11 +241,15 @@ namespace DMS_WebAPI.Utilities
                     PhoneNumber = userPhone.Trim(),
                     IsChangePasswordRequired = true,
                     IsEmailConfirmRequired = true,
+                    CreateDate = DateTime.UtcNow,
+                    LastChangeDate = DateTime.UtcNow,
                 };
 
                 IdentityResult result = UserManager.Create(user, userPassword);
 
                 if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail);
+
+                transaction.Complete();
 
                 return user.Id;
             }
@@ -253,18 +257,18 @@ namespace DMS_WebAPI.Utilities
 
         private string DeleteUser(string userId)
         {
-            //using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            using (var transaction = Transactions.GetTransaction())
             {
                 DeleteUserClients(new FilterAspNetUserClients { UserIds = new List<string> { userId } });
                 DeleteUserServers(new FilterAspNetUserServers { UserIds = new List<string> { userId } });
 
-                var user = new ApplicationUser() { Id = userId };
+                var user = GetUserById(userId);
 
                 IdentityResult result = UserManager.Delete(user);
 
                 if (!result.Succeeded) throw new UserCouldNotBeDeleted();
 
-                //transaction.Complete();
+                transaction.Complete();
 
                 return user.Id;
             }
@@ -564,6 +568,7 @@ namespace DMS_WebAPI.Utilities
             user.UserName = FormUserName(model.NewEmail, userContext.CurrentClientId);//  model.NewEmail.UserNameFormatByClientId(userContext.CurrentClientId);
             user.Email = model.NewEmail;
             user.IsEmailConfirmRequired = model.IsVerificationRequired;
+            user.LastChangeDate = DateTime.UtcNow;
 
             if (user.IsEmailConfirmRequired)
                 user.EmailConfirmed = false;
@@ -687,6 +692,7 @@ namespace DMS_WebAPI.Utilities
             }
 
             user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
+            user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);
 
@@ -710,6 +716,7 @@ namespace DMS_WebAPI.Utilities
             if (user == null) throw new UserIsNotDefined();
 
             user.IsLockout = model.IsLockout;
+            user.LastChangeDate = DateTime.UtcNow;
 
             var result = await UserManager.UpdateAsync(user);
 
@@ -734,6 +741,7 @@ namespace DMS_WebAPI.Utilities
             if (user == null) throw new UserIsNotDefined();
 
             user.IsEmailConfirmRequired = false;
+            user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);
 
@@ -756,6 +764,7 @@ namespace DMS_WebAPI.Utilities
 
             user.EmailConfirmed = true;
             user.IsEmailConfirmRequired = false;
+            user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);
 

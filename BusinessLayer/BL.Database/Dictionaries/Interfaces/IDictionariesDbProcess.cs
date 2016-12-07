@@ -20,7 +20,6 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgent(IContext context, InternalDictionaryAgent addr);
         void UpdateAgent(IContext context, InternalDictionaryAgent addr);
         void DeleteAgent(IContext context, int agentId);
-        FrontDictionaryAgent GetAgent(IContext context, int id);
         FrontDictionaryAgentUser GetAgentUser(IContext context, int id);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
         bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
@@ -28,11 +27,13 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region DictionaryAgentPerson
 
-        void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
-        void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
-        int AddAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
+        void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson person);
+        void UpdateAgentPersonCompanyId(IContext context, InternalDictionaryAgentPerson person);
+        void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson person);
+        int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
+        IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter);
         IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         #endregion DictionaryAgentPerson
 
@@ -42,7 +43,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
-        FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
+        //FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
         IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
@@ -86,7 +87,6 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void DeleteAgentCompanies(IContext context, List<int> list);
-        FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
         IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         bool ExistsAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryAgentCompanies
@@ -96,7 +96,6 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentBank(IContext context, InternalDictionaryAgentBank bank);
         void DeleteAgentBank(IContext context, InternalDictionaryAgentBank bank);
         bool ExistsAgentBanks(IContext context, FilterDictionaryAgentBank filter);
-        FrontDictionaryAgentBank GetAgentBank(IContext context, int id);
         IEnumerable<FrontDictionaryAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 

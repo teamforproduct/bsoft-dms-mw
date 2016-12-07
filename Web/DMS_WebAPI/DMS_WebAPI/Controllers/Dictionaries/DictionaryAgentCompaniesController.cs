@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentCompanies(ctx, filter, paging);
+            var tmpDicts = tmpDictProc.GetAgentCompanies(ctx, filter, paging);
             var res=new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentCompany(ctx, id);
+            var tmpDict = tmpDictProc.GetAgentCompany(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 

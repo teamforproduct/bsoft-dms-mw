@@ -181,6 +181,9 @@
         DeleteAgentPerson = 209009,
         #endregion AgentPersons
 
+        AddContactPerson=227001,
+        DeleteContactPerson=227009,
+
         // Структура предприятия
         #region DictionaryDepartment
         /// <summary>

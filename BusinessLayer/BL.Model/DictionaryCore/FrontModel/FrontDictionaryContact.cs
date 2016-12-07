@@ -26,7 +26,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Тип контакта
         /// </summary>
         public FrontDictionaryContactType ContactType { get; set; }
-        
+
         /// <summary>
         /// Значение
         /// </summary>
