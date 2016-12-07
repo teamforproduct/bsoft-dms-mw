@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Банки (агенты)
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/Banks")]
+    [RoutePrefix("api/v2/Banks/Info")]
     public class BanksController : ApiController
     {
         /// <summary>
@@ -26,6 +26,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
+        [HttpGet]
+        [Route("")]
         [ResponseType(typeof(List<FrontDictionaryAgentBank>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
@@ -42,6 +44,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="Id"></param>
         /// <returns></returns>
         // GET: api/DictionaryCompanies/5
+        [HttpGet]
+        [Route("{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentBank))]
         public IHttpActionResult Get(int Id)
         {
@@ -56,7 +60,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">параметры юрлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentBank model)
+        [HttpPost]
+        [Route("")]
+        public IHttpActionResult Post([FromBody]AddDictionaryAgentBank model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -82,9 +88,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="Id">ИД</param>
         /// <param name="model">параметры</param>
         /// <returns>возвращает измененную запись</returns>
-        public IHttpActionResult Put(int Id, [FromBody]ModifyDictionaryAgentBank model)
+        [HttpPut]
+        [Route("")]
+        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentBank model)
         {
-            model.Id = Id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
             tmpDict.ExecuteAction(EnumDictionaryActions.ModifyAgentBank, ctx, model);
@@ -96,6 +103,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="Id">ИД</param>
         /// <returns>ИД удаленной записи</returns>
+        [HttpPost]
+        [Route("")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

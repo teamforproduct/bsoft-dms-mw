@@ -11,46 +11,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// адреса контрагентов
     /// </summary>
-    public class ModifyDictionaryAgentAddress
+    public class ModifyDictionaryAgentAddress : AddDictionaryAgentAddress
     {
         /// <summary>
-        /// ИД
+        /// ИД 
         /// </summary>
-        [IgnoreDataMember]
         public int Id { get; set; }
 
-        /// <summary>
-        /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
-        /// </summary>
-        [Required]
-        public int AgentId { get; set; }
-
-        /// <summary>
-        /// ссылка на тип адреса
-        /// </summary>
-        [Required]
-        public int AddressTypeId { get; set; }
-
-        /// <summary>
-        /// индекс
-        /// </summary>
-        public string PostCode { get; set; }
-
-        /// <summary>
-        /// адрес
-        /// </summary>
-        [Required]
-        public string Address { get; set; }
-
-        /// <summary>
-        /// комментарии
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// признак активности
-        /// </summary>
-        [Required]
-        public bool IsActive { get; set; }
     }
 }

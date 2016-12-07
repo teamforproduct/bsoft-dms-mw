@@ -14,6 +14,16 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentBank(ModifyDictionaryAgentBank model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentBank(model);
+        }
+
+        public InternalDictionaryAgentBank(AddDictionaryAgentBank model)
+        {
+            SetInternalDictionaryAgentBank(model);
+        }
+
+        public void SetInternalDictionaryAgentBank(AddDictionaryAgentBank model)
+        {
             Name = model.Name;
             FullName = model.FullName;
             MFOCode = model.MFOCode;
