@@ -453,6 +453,10 @@
     <Compile Include="Migrations\201612041747227_PositionExecutorTypeId.Designer.cs">
       <DependentUpon>201612041747227_PositionExecutorTypeId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612070845309_ModuleFeature_Columns.cs" />
+    <Compile Include="Migrations\201612070845309_ModuleFeature_Columns.Designer.cs">
+      <DependentUpon>201612070845309_ModuleFeature_Columns.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -664,6 +668,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612041747227_PositionExecutorTypeId.resx">
       <DependentUpon>201612041747227_PositionExecutorTypeId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612070845309_ModuleFeature_Columns.resx">
+      <DependentUpon>201612070845309_ModuleFeature_Columns.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

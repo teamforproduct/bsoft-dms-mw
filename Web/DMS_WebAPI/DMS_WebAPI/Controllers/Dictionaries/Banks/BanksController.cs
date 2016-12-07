@@ -26,6 +26,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
+        [HttpGet]
+        [Route("")]
         [ResponseType(typeof(List<FrontDictionaryAgentBank>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
