@@ -13,6 +13,7 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using System.Linq;
 using BL.Logic.Common;
+using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
 {
@@ -25,11 +26,12 @@ namespace BL.Logic.DocumentCore
 
 
         public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin,
-            IFileStore fstore, ICommandService commandService, ISystemDbProcess systemDb)
+            IFileStore fStore, ICommandService commandService, ISystemDbProcess systemDb)
         {
             _templateDb = templateDb;
            _commandService = commandService;
             _systemDb = systemDb;
+            _fStore = fStore;
 
         }
 
@@ -131,7 +133,13 @@ namespace BL.Logic.DocumentCore
 
         public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
         {
-            return _templateDb.GetTemplateAttachedFile(ctx, id);
+            var fl = _templateDb.GetTemplateAttachedFile(ctx, id);
+            if (fl == null)
+            {
+                throw new UnknownDocumentFile();
+            }
+            _fStore.GetFile(ctx, fl);
+            return fl;
         }
 
 

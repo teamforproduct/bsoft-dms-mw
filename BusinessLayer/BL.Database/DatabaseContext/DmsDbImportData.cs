@@ -1045,9 +1045,10 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemFormats>();
 
-            items.Add(GetSystemFormats(EnumSystemFormats.Year, "YYYY"));
+            items.Add(GetSystemFormats(EnumSystemFormats.Year, "yyyy"));
             items.Add(GetSystemFormats(EnumSystemFormats.Day, "dd"));
             items.Add(GetSystemFormats(EnumSystemFormats.Month, "MM"));
+            items.Add(GetSystemFormats(EnumSystemFormats.Year2, "yy"));
 
             return items;
         }
