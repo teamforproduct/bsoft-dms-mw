@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore;
 using BL.Logic.Common;
@@ -24,7 +25,7 @@ namespace BL.Logic.DictionaryCore
             {
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
                 int positionId;
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     // добавляю должность
                     positionId = _dictDb.AddPosition(_context, dp);

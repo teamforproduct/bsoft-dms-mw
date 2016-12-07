@@ -29,6 +29,7 @@ using BL.Model.SystemCore;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.AdminCore
 {
@@ -85,9 +86,9 @@ namespace BL.Logic.AdminCore
             accList.Add(key, nso);
             return nlst;
         }
-        public Employee GetUserForContext(IContext context, string userId)
+        public Employee GetEmployeeForContext(IContext context, string userId)
         {
-            return _adminDb.GetUserForContext(context, userId);
+            return _adminDb.GetEmployeeForContext(context, userId);
         }
 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
@@ -100,9 +101,29 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetCurrentPositionsAccessLevel(context);
         }
 
+        /// <summary>
+        /// GetAvailablePositions вызывается каждые 36 секунд из фронта
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context)
         {
-            return _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
+            var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
+
+            // Если контекст полностью сформирован, тогда проверяю на вшивость
+            if (context.IsFormed)
+            {
+                // Решено тут синхронизировать context.CurrentPositionsIdList и генерировать исключения если AvailablePositions конфликтуют с CurrentPositionsIdList
+                if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.CurrentEmployee.Name);
+
+                // Проверяю содержатся ли выбранные должности в списке доступных
+                foreach (var positionId in context.CurrentPositionsIdList)
+                {
+                    if (!res.Any(x => x.RolePositionId == positionId)) throw new UserNotExecuteCheckPosition();
+                }
+            }
+
+            return res;
         }
 
         public IEnumerable<FrontSystemAction> GetUserActions(IContext ctx)
@@ -269,7 +290,7 @@ namespace BL.Logic.AdminCore
         {
             int roleId = 0;
 
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 var roleType = new InternalAdminRoleType() { Code = code, Name = name };
                 CommonDocumentUtilities.SetLastChange(context, roleType);

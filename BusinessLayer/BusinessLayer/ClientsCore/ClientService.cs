@@ -109,7 +109,7 @@ namespace BL.Logic.ClientCore
             return items;
         }
 
-        public void AddNewClient(IContext context, AddClientContent client)
+        public void AddNewClient(IContext context, AddClientSaaS client)
         {
             
             //GetSystemSettings
@@ -452,6 +452,10 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateAttachedFile });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateAttachedFile });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateAttachedFile });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentPaper });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentPaper });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentPaper });
+
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.AddTag });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyTag });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteTag });

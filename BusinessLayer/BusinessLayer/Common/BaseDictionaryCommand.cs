@@ -8,10 +8,11 @@ using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Exception;
 
 namespace BL.Logic.Common
 {
-    public abstract class BaseDictionaryCommand: IDictionaryCommand
+    public abstract class BaseDictionaryCommand : IDictionaryCommand
     {
         protected IContext _context;
         protected object _param;
@@ -24,14 +25,14 @@ namespace BL.Logic.Common
 
         public void InitializeCommand(EnumDictionaryActions action, IContext ctx)
         {
-            InitializeCommand(action,ctx, null);
+            InitializeCommand(action, ctx, null);
         }
 
-        public void InitializeCommand(EnumDictionaryActions action, IContext ctx, object param)
+        public void InitializeCommand(EnumDictionaryActions action, IContext ctx, object model)
         {
             _action = action;
             _context = ctx;
-            _param = param;
+            _param = model;
             _adminDb = DmsResolver.Current.Get<IAdminsDbProcess>();
             _adminService = DmsResolver.Current.Get<IAdminService>();
             _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
@@ -50,5 +51,16 @@ namespace BL.Logic.Common
         public abstract object Execute();
 
         public virtual EnumDictionaryActions CommandType => _action;
+
+        public bool TypeModelIs<T>() => _param is T;
+
+        public T GetModel<T>()
+        {
+            if (!(TypeModelIs<T>()))
+            {
+                throw new WrongParameterTypeError();
+            }
+            return (T)_param;
+        }
     }
 }

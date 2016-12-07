@@ -17,8 +17,8 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -267,6 +267,12 @@
     <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
+    <Compile Include="Controllers\Dictionaries\Addresses\PersonAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\Addresses\ClientCompanyAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\Addresses\EmployeeAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\Addresses\CompanyAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\Banks\BanksController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
@@ -293,6 +299,7 @@
     <Compile Include="Controllers\Documents\DocumentTagsController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentAttachedFileController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsRestrictedSendListsController.cs" />
+    <Compile Include="Controllers\Documents\TemplateDocumentsPapersController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
     <Compile Include="Controllers\Encryption\EncryptionActionsController.cs" />
@@ -377,6 +384,14 @@
     <Compile Include="Migrations\201611082050340_LockoutAgentUser.Designer.cs">
       <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611292159454_AddFileNameToLanguages1.cs" />
+    <Compile Include="Migrations\201611292159454_AddFileNameToLanguages1.Designer.cs">
+      <DependentUpon>201611292159454_AddFileNameToLanguages1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.cs" />
+    <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.Designer.cs">
+      <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -389,6 +404,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\StringExtentions.cs" />
     <Compile Include="Utilities\RenderPartialView.cs" />
     <Compile Include="Utilities\Licences.cs" />
     <Compile Include="Utilities\LicencesWorkerService.cs" />
@@ -397,6 +413,7 @@
     <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextsWorkerService.cs" />
     <Compile Include="Utilities\UserContexts.cs" />
+    <Compile Include="Utilities\WebAPIService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\CryptoExts\x64\CryptoExts.dll" />
@@ -535,6 +552,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611082050340_LockoutAgentUser.resx">
       <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611292159454_AddFileNameToLanguages1.resx">
+      <DependentUpon>201611292159454_AddFileNameToLanguages1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611292202410_AddFileNameToLanguages2.resx">
+      <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

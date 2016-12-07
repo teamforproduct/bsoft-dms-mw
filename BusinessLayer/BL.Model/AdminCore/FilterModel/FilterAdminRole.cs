@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -58,12 +59,14 @@ namespace BL.Model.AdminCore.FilterModel
         /// <summary>
         /// Дата разрешения роли для сотрудника
         /// </summary>
-        public DateTime? StartDate { get; set; }
+        public DateTime? StartDate { get { return _StartDate; } set { _StartDate = value.ToUTC(); } }
+        private DateTime? _StartDate;
 
         /// <summary>
         /// Дата запрета роли для сотрудника
         /// </summary>
-        public DateTime? EndDate { get; set; }
+        public DateTime? EndDate { get { return _EndDate; } set { _EndDate = value.ToUTC(); } }
+        private DateTime? _EndDate;
 
         /// <summary>
         /// Отмечнено

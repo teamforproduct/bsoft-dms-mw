@@ -55,6 +55,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgents));
             items.Add(GetSystemObjects(EnumObjects.DictionaryContacts));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryBankAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPersonAddress));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
@@ -73,6 +78,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.TemplateDocumentRestrictedSendList));
             items.Add(GetSystemObjects(EnumObjects.TemplateDocumentTask));
             items.Add(GetSystemObjects(EnumObjects.TemplateDocumentAttachedFiles));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentPaper));
             items.Add(GetSystemObjects(EnumObjects.DictionaryTag));
             items.Add(GetSystemObjects(EnumObjects.CustomDictionaryTypes));
             items.Add(GetSystemObjects(EnumObjects.CustomDictionaries));
@@ -228,7 +234,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AddTemplateAttachedFile, EnumObjects.TemplateDocumentAttachedFiles));
             items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateAttachedFile, EnumObjects.TemplateDocumentAttachedFiles));
             items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateAttachedFile, EnumObjects.TemplateDocumentAttachedFiles));
-
+            items.Add(GetSysAct(EnumDocumentActions.AddTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
             items.Add(GetSysAct(EnumDictionaryActions.AddDocumentType, EnumObjects.DictionaryDocumentType));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyDocumentType, EnumObjects.DictionaryDocumentType));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteDocumentType, EnumObjects.DictionaryDocumentType));
@@ -252,9 +260,27 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentContact, EnumObjects.DictionaryContacts));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentContact, EnumObjects.DictionaryContacts));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentContact, EnumObjects.DictionaryContacts));
+
+
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentAddress, EnumObjects.DictionaryAgentAddresses));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentAddress, EnumObjects.DictionaryAgentAddresses));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentAddress, EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSysAct(EnumDictionaryActions.AddBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.AddPersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyPersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumDictionaryActions.DeletePersonAddress, EnumObjects.DictionaryPersonAddress));
+
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentPerson, EnumObjects.DictionaryAgentPersons));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentPerson, EnumObjects.DictionaryAgentPersons));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentPerson, EnumObjects.DictionaryAgentPersons));
@@ -364,6 +390,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.ChangeLockout, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.KillSessions, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.ChangeLogin, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumAdminActions.MustChangePassword, EnumObjects.DictionaryAgentUsers));
 
             items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
@@ -538,15 +565,15 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemUIElements>();
 
-            items.Add(new SystemUIElements { Id = 1, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "GeneralInfo", TypeCode = "display_only_text", Description = "Общая информация", Label = null, Hint = null, ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "GeneralInfo", ValueDescriptionFieldCode = "GeneralInfo", Format = null });
-            items.Add(new SystemUIElements { Id = 2, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "DocumentSubject", TypeCode = "select", Description = "Тематика документа", Label = "Тематика документа", Hint = "Выберите из словаря тематику документа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryDocumentSubjects", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "DocumentSubjectId", ValueDescriptionFieldCode = "DocumentSubjectName", Format = null });
-            items.Add(new SystemUIElements { Id = 3, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Description", TypeCode = "textarea", Description = "Краткое содержание", Label = "Краткое содержание", Hint = "Введите краткое содержание", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
-            items.Add(new SystemUIElements { Id = 4, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgent", TypeCode = "select", Description = "Контрагент, от которого получен документ", Label = "Организация", Hint = "Выберите из словаря контрагента, от которого получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
-            items.Add(new SystemUIElements { Id = 5, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgentPerson", TypeCode = "select", Description = "Контактное лицо в организации", Label = "Контакт", Hint = "Выберите из словаря контактное лицо в организации, от которой получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'AgentCompanyId' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
-            items.Add(new SystemUIElements { Id = 6, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderNumber", TypeCode = "input", Description = "Входящий номер документа", Label = "Входящий номер документа", Hint = "Введите входящий номер документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderNumber", ValueDescriptionFieldCode = "SenderNumber", Format = null });
-            items.Add(new SystemUIElements { Id = 7, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderDate", TypeCode = "input", Description = "Дата входящего документа", Label = "Дата входящего документа", Hint = "Введите дату входящего документа", ValueTypeId = 3, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderDate", ValueDescriptionFieldCode = "SenderDate", Format = null });
-            items.Add(new SystemUIElements { Id = 8, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Addressee", TypeCode = "input", Description = "Кому адресован документ", Label = "Кому адресован документ", Hint = "Введите кому адресован документ", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Addressee", ValueDescriptionFieldCode = "Addressee", Format = null });
-            items.Add(new SystemUIElements { Id = 9, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "AccessLevel", TypeCode = "select", Description = "Уровень доступа", Label = "Уровень доступа", Hint = "Выберите из словаря уровень доступа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "AdminAccessLevels", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "AccessLevelId", ValueDescriptionFieldCode = "AccessLevelName", Format = null });
+            items.Add(new SystemUIElements { Id = 2, Order = 10, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "DocumentSubject", TypeCode = "select", Description = "Тематика документа", Label = "Тематика документа", Hint = "Выберите из словаря тематику документа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryDocumentSubjects", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "DocumentSubjectId", ValueDescriptionFieldCode = "DocumentSubjectName", Format = null });
+            items.Add(new SystemUIElements { Id = 3, Order = 20, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Description", TypeCode = "textarea", Description = "Краткое содержание", Label = "Краткое содержание", Hint = "Введите краткое содержание", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
+            items.Add(new SystemUIElements { Id = 4, Order = 30, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgent", TypeCode = "select", Description = "Контрагент, от которого получен документ", Label = "Организация", Hint = "Выберите из словаря контрагента, от которого получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
+            items.Add(new SystemUIElements { Id = 5, Order = 40, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgentPerson", TypeCode = "select", Description = "Контактное лицо в организации", Label = "Контакт", Hint = "Выберите из словаря контактное лицо в организации, от которой получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'AgentCompanyId' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
+            items.Add(new SystemUIElements { Id = 6, Order = 50, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderNumber", TypeCode = "input", Description = "Входящий номер документа", Label = "Входящий номер документа", Hint = "Введите входящий номер документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderNumber", ValueDescriptionFieldCode = "SenderNumber", Format = null });
+            items.Add(new SystemUIElements { Id = 7, Order = 60, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderDate", TypeCode = "input", Description = "Дата входящего документа", Label = "Дата входящего документа", Hint = "Введите дату входящего документа", ValueTypeId = 3, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderDate", ValueDescriptionFieldCode = "SenderDate", Format = null });
+            items.Add(new SystemUIElements { Id = 8, Order = 70, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Addressee", TypeCode = "input", Description = "Кому адресован документ", Label = "Кому адресован документ", Hint = "Введите кому адресован документ", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Addressee", ValueDescriptionFieldCode = "Addressee", Format = null });
+            items.Add(new SystemUIElements { Id = 9, Order = 80, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "AccessLevel", TypeCode = "select", Description = "Уровень доступа", Label = "Уровень доступа", Hint = "Выберите из словаря уровень доступа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "AdminAccessLevels", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "AccessLevelId", ValueDescriptionFieldCode = "AccessLevelName", Format = null });
+            //TODO add meta for templates!!!!
 
             return items;
         }
@@ -860,9 +887,9 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryPositionExecutorTypes>();
 
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Personal, Code = EnumPositionExecutionTypes.Personal.ToString(), Name = "##l@PositionExecutionTypes:Personal@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.IO, Code = EnumPositionExecutionTypes.IO.ToString(), Name = "##l@PositionExecutionTypes:IO@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Referent, Code = EnumPositionExecutionTypes.Referent.ToString(), Name = "##l@PositionExecutionTypes:Referent@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Personal, Code = EnumPositionExecutionTypes.Personal.ToString(), Name = "##l@PositionExecutionTypes:Personal@l##", Suffix = "##l@PositionExecutionTypes:Personal@l.Suffix##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.IO, Code = EnumPositionExecutionTypes.IO.ToString(), Name = "##l@PositionExecutionTypes:IO@l##", Suffix = "##l@PositionExecutionTypes:IO.Suffix@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Referent, Code = EnumPositionExecutionTypes.Referent.ToString(), Name = "##l@PositionExecutionTypes:Referent@l##", Suffix = "##l@PositionExecutionTypes:Referent.Suffix@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
 
             return items;
         }
@@ -1018,9 +1045,10 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemFormats>();
 
-            items.Add(GetSystemFormats(EnumSystemFormats.Year, "YYYY"));
+            items.Add(GetSystemFormats(EnumSystemFormats.Year, "yyyy"));
             items.Add(GetSystemFormats(EnumSystemFormats.Day, "dd"));
             items.Add(GetSystemFormats(EnumSystemFormats.Month, "MM"));
+            items.Add(GetSystemFormats(EnumSystemFormats.Year2, "yy"));
 
             return items;
         }

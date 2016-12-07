@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Exception;
 using Newtonsoft.Json;
@@ -14,23 +15,31 @@ namespace DMS_WebAPI.Infrastructure
 {
     public static class ExceptionHandling
     {
-        private static int GetResponseStatusCode(HttpContext context, Exception exception)
+        private static HttpStatusCode GetResponseStatusCode(HttpContext context, Exception exception)
         {
-            var res = (int)HttpStatusCode.OK;
+            var res = HttpStatusCode.OK;
 
             //TODO Remove
             if (context.IsDebuggingEnabled)
             {
-                res = (int)HttpStatusCode.InternalServerError;
+                res = HttpStatusCode.InternalServerError;
             }
 
             if (exception is DmsExceptions)
             {
-                if (exception is UserUnauthorized)
-                {
-                    res = (int)HttpStatusCode.Unauthorized;
-                }
+                // Договорились при возникновении этих ошибок отправлять статус Unauthorized. Фронт редиректит пользователя на LoginPage
+                if (exception is UserUnauthorized
+                    || exception is UserNameOrPasswordIsIncorrect
+                    || exception is UserIsDeactivated
+                    || exception is UserAccessIsDenied
+                    || exception is UserMustConfirmEmail
+                    || exception is UserContextIsNotDefined
+                    || exception is DatabaseIsNotSet
+                    || exception is UserNotExecuteAnyPosition
+                    || exception is UserNotExecuteCheckPosition
+                    ) res = HttpStatusCode.Unauthorized;
             }
+
 
             return res;
         }
@@ -38,11 +47,14 @@ namespace DMS_WebAPI.Infrastructure
         public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
         {
 
+            bool fromGlobalAsax = context == null;
+
             var url = string.Empty;
             var body = string.Empty;
             var request = string.Empty;
             var responceExpression = string.Empty;
             var logExpression = string.Empty;
+            HttpStatusCode statusCode = HttpStatusCode.OK;
             var exc = exception;
 
             #region [+] Формирование текста исключения, лога ...
@@ -94,7 +106,7 @@ namespace DMS_WebAPI.Infrastructure
             var httpContext = HttpContext.Current;
 
             if (context != null)
-            request = $"{context.Request}";
+                request = $"{context.Request}";
 
             try { url = httpContext.Request.Url.ToString(); } catch { }
 
@@ -110,12 +122,21 @@ namespace DMS_WebAPI.Infrastructure
             // Очищаю существующий Response
             try
             {
+                statusCode = GetResponseStatusCode(httpContext, exception);
+
                 httpContext.Response.Clear();
 
                 httpContext.Response.ContentType = "application/json";
+                
                 // Здесь может возникнуть исключение Server cannot set status after HTTP headers have been sent.
                 // при повторнов входе из Application_Error если раскоментировать httpContext.Response.End(); 
-                httpContext.Response.StatusCode = GetResponseStatusCode(httpContext, exception);
+
+                // есть проблема: ошибки брошенные в момент получения токена они же отловленные в GlobalAsax не могут формировать Responce с HttpStatusCode.Unauthorized
+                // в Responce приходит стандартный html вместо нашего текста ошибки
+                // Чтоыбы отображать наш текст ошибки, отловленной в GlobalAsax, возвращаю со статусом OK
+                httpContext.Response.StatusCode = fromGlobalAsax ? (int)HttpStatusCode.OK : (int)statusCode;
+
+
                 httpContext.Response.Write(json);
                 // Этот End очень важен для фронта. без него фронт получает статус InternalServerError на ошибке UserUnauthorized. НЕ понятно 
                 httpContext.Response.End();
@@ -123,13 +144,12 @@ namespace DMS_WebAPI.Infrastructure
             catch { }
             #endregion
 
-
-            #region log to file
+            #region [+] Запись расширенных параметров ошибки в файл ...
             try
             {
                 // stores the error message
                 string errorMessage = string.Empty;
-                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("o") + "\r\n";
+                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
                 errorMessage += $"URL: {url}\r\n";
                 //errorMessage += $"Message:{ex.Message}\r\n";
@@ -138,7 +158,7 @@ namespace DMS_WebAPI.Infrastructure
                 //errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
                 errorMessage += logExpression;
 
-                
+
 
                 // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
                 if (exception.InnerException != null)
@@ -152,11 +172,15 @@ namespace DMS_WebAPI.Infrastructure
 
                 errorMessage += $"Request Body: {body}\r\n";
 
-
-                AppendToFile(httpContext.Server.MapPath("~/SiteErrors.txt"), errorMessage);
+                FileLogger.AppendTextToSiteErrors(errorMessage);
             }
             catch { }
             #endregion log to file
+
+
+            // Если возникли ошибки не совместивмые с дальнейшей работой пользователя - удаляю пользовательский контекст
+            if (statusCode == HttpStatusCode.Unauthorized)
+                DmsResolver.Current.Get<Utilities.UserContexts>().Remove();
 
         }
 
@@ -179,42 +203,7 @@ namespace DMS_WebAPI.Infrastructure
             return languageService.GetTranslation(text);
         }
 
-        private static void AppendToFile(string path, string text)
-        {
-            try
-            {
-                System.IO.StreamWriter sw;
 
-                try
-                {
-                    System.IO.FileInfo ff = new System.IO.FileInfo(path);
-                    if (ff.Exists)
-                    {
-                    }
-                }
-                catch
-                {
-
-                }
-
-                sw = System.IO.File.AppendText(path);
-                try
-                {
-                    string line = text;
-                    sw.WriteLine(line);
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    sw.Close();
-                }
-            }
-            catch
-            {
-            }
-        }
 
     }
 }

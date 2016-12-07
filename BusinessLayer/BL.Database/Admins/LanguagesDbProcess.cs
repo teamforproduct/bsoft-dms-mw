@@ -10,6 +10,7 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Database.DBModel.Admin;
 using LinqKit;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Admins
 {
@@ -21,8 +22,7 @@ namespace BL.Database.Admins
 
         public AdminLanguageInfo GetAdminLanguage(IContext context)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var res = new AdminLanguageInfo();
 
@@ -41,7 +41,7 @@ namespace BL.Database.Admins
                     Label = x.Label,
                     Value = x.Value
                 }).ToList();
-
+                transaction.Complete();
                 return res;
             }
         }
@@ -70,60 +70,61 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
-                return qry.Select(x => new FrontAdminLanguage
+                var res = qry.Select(x => new FrontAdminLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     IsDefault = x.IsDefault
                 }).ToList();
+                transaction.Complete();
+                return res;
             }
         }
 
         public IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext context, int userId, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
-                return qry.Select(x => new FrontAdminUserLanguage
+                var res = qry.Select(x => new FrontAdminUserLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     IsDefault = x.IsDefault,
-                    IsChecked = x.AgentUsers.Where(y=>y.LanguageId == x.Id).Any(),
+                    IsChecked = x.AgentUsers.Where(y => y.LanguageId == x.Id).Any(),
                 }).ToList();
+                transaction.Complete();
+                return res;
             }
         }
 
         public InternalAdminLanguage GetInternalAdminLanguage(IContext context, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
-
-                return qry.Select(x => new InternalAdminLanguage
+                var res =  qry.Select(x => new InternalAdminLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     IsDefault = x.IsDefault
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
         public int AddAdminLanguage(IContext context, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguages
                 {
@@ -134,13 +135,14 @@ namespace BL.Database.Admins
                 dbContext.AdminLanguagesSet.Add(item);
                 dbContext.SaveChanges();
                 model.Id = item.Id;
+                transaction.Complete();
                 return item.Id;
             }
         }
 
         public void UpdateAdminLanguage(IContext context, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguages
                 {
@@ -156,16 +158,18 @@ namespace BL.Database.Admins
                 entity.Property(x => x.Name).IsModified = true;
                 entity.Property(x => x.IsDefault).IsModified = true;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
 
         public void DeleteAdminLanguage(IContext context, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguagesSet.RemoveRange(dbContext.AdminLanguagesSet.Where(x => x.Id == model.Id));
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         #endregion AdminLanguages
@@ -174,7 +178,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(IContext context, DmsContext dbContext, FilterAdminLanguageValue filter)
         {
-            var qry = dbContext.AdminLanguageValuesSet.Where(x=> x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminLanguageValuesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
             if (filter.LanguageValueId?.Count > 0)
             {
@@ -216,41 +220,43 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAdminLanguageValuesQuery(context,dbContext, filter);
+                var qry = GetAdminLanguageValuesQuery(context, dbContext, filter);
 
-                return qry.Select(x => new FrontAdminLanguageValue
+                var res = qry.Select(x => new FrontAdminLanguageValue
                 {
                     Id = x.Id,
                     LanguageId = x.LanguageId,
                     Label = x.Label,
                     Value = x.Value
                 }).ToList();
+                transaction.Complete();
+                return res;
             }
         }
 
         public InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext context, FilterAdminLanguageValue filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguageValuesQuery(context, dbContext, filter);
 
-                return qry.Select(x => new InternalAdminLanguageValue
+                var res = qry.Select(x => new InternalAdminLanguageValue
                 {
                     Id = x.Id,
                     LanguageId = x.LanguageId,
                     Label = x.Label,
                     Value = x.Value
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
         public int AddAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguageValues
                 {
@@ -262,22 +268,24 @@ namespace BL.Database.Admins
                 dbContext.AdminLanguageValuesSet.Add(item);
                 dbContext.SaveChanges();
                 model.Id = item.Id;
+                transaction.Complete();
                 return item.Id;
             }
         }
 
         public void AddAdminLanguageValues(IContext context, List<AdminLanguageValues> list)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguageValuesSet.AddRange(list);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguageValues
                 {
@@ -293,25 +301,28 @@ namespace BL.Database.Admins
                 entity.Property(x => x.Label).IsModified = true;
                 entity.Property(x => x.Value).IsModified = true;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
 
         public void DeleteAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet.Where(x => x.Id == model.Id));
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteAllAdminLanguageValues(IContext context)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         #endregion AdminLanguageValues

@@ -20,6 +20,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Encryption
 {
@@ -45,8 +46,7 @@ namespace BL.Database.Encryption
         #region Certificates
         public IEnumerable<FrontEncryptionCertificate> GetCertificates(IContext ctx, FilterEncryptionCertificate filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
 
@@ -93,15 +93,14 @@ namespace BL.Database.Encryption
                 });
 
                 var res = qryFE.ToList();
-
+                transaction.Complete();
                 return res;
             }
         }
 
         private InternalEncryptionCertificate GetCertificate(IContext ctx, int certificateId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { certificateId } });
 
@@ -123,7 +122,7 @@ namespace BL.Database.Encryption
 
                 if (item == null)
                     throw new EncryptionCertificateWasNotFound();
-
+                transaction.Complete();
                 return item;
             }
         }
@@ -134,21 +133,20 @@ namespace BL.Database.Encryption
 
             ZipCertificate(item);
 
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbEncryptionCertificate(item);
 
                 dbContext.EncryptionCertificatesSet.Add(itemDb);
                 dbContext.SaveChanges();
-
+                transaction.Complete();
                 item.Id = itemDb.Id;
             }
         }
 
         public InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var filter = new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } };
                 if (ctx.IsAdmin && agentId.HasValue) filter.AgentId = new List<int> { agentId.Value };
@@ -158,14 +156,14 @@ namespace BL.Database.Encryption
                 {
                     Id = x.Id,
                 }).FirstOrDefault();
-
+                transaction.Complete();
                 return item;
             }
         }
 
         public void ModifyCertificate(IContext ctx, InternalEncryptionCertificate item)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = new EncryptionCertificates
                 {
@@ -183,18 +181,19 @@ namespace BL.Database.Encryption
                 entry.Property(x => x.LastChangeDate).IsModified = true;
 
                 dbContext.SaveChanges();
-
+                transaction.Complete();
             }
         }
 
         public void DeleteCertificate(IContext ctx, int itemId)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
 
                 dbContext.EncryptionCertificatesSet.RemoveRange(qry);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         #endregion
@@ -712,7 +711,7 @@ namespace BL.Database.Encryption
             try
             {
                 InitJVM();
-                var file = Path.Combine(GetTempPath(), "DMS-SIGN-"+ Guid.NewGuid() + ".pdf");
+                var file = Path.Combine(GetTempPath(), "DMS-SIGN-" + Guid.NewGuid() + ".pdf");
                 try
                 {
                     File.WriteAllBytes(file, pdf);

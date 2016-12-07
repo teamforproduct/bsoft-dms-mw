@@ -52,6 +52,16 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ModifyTemplateDocumentTask:
                     cmd = DmsResolver.Current.Get<ModifyTemplateTaskCommand>();
                     break;
+                case EnumDocumentActions.AddTemplateDocumentPaper:
+                    cmd = DmsResolver.Current.Get<AddTemplatePaperCommand>();
+                    break;
+                case EnumDocumentActions.DeleteTemplateDocumentPaper:
+                    cmd = DmsResolver.Current.Get<DeleteTemplatePaperCommand>();
+                    break;
+                case EnumDocumentActions.ModifyTemplateDocumentPaper:
+                    cmd = DmsResolver.Current.Get<ModifyTemplatePaperCommand>();
+                    break;
+
                 case EnumDocumentActions.AddTemplateAttachedFile:
                     cmd = DmsResolver.Current.Get<AddTemplateFileCommand>();
                     break;

@@ -11,48 +11,48 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentAddressCommand : BaseDictionaryCommand
     {
-        protected ModifyDictionaryAgentAddress Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentAddress))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentAddress)_param;
-            }
-        }
+        private AddDictionaryAgentAddress Model { get { return GetModel<AddDictionaryAgentAddress>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
             Model.PostCode?.Trim();
 
-            var spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
-            {
-                AgentId = Model.AgentId,
-                NotContainsIDs = new List<int> { Model.Id },
-                AddressTypeId = new List<int> { Model.AddressTypeId },
-            });
-            if (spr.Count() != 0)
-            {
-                throw new DictionaryAddressTypeNotUnique();
-            }
+            //1
 
-            spr = _dictDb.GetAgentAddresses(_context, Model.AgentId, new FilterDictionaryAgentAddress
+            var filter = new FilterDictionaryAgentAddress
             {
-                AgentId = Model.AgentId,
-                NotContainsIDs = new List<int> { Model.Id },
+                AgentIDs = new List<int> { Model.AgentId },
+                AddressTypeIDs = new List<int> { Model.AddressTypeId },
+            };
+
+            if (TypeModelIs<ModifyDictionaryAgentAddress>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentAddress>().Id }; }
+
+            var spr = _dictDb.GetAgentAddresses(_context, filter);
+
+            if (spr.Count() != 0) throw new DictionaryAddressTypeNotUnique();
+
+            //2
+
+            filter = new FilterDictionaryAgentAddress
+            {
+                AgentIDs = new List<int> { Model.AgentId },
                 PostCodeExact = Model.PostCode,
                 AddressExact = Model.Address,
-            });
-            if (spr.Count() != 0)
-            {
-                throw new DictionaryAddressNameNotUnique(Model.PostCode, Model.Address);
-            }
+            };
+
+            if (TypeModelIs<ModifyDictionaryAgentAddress>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentAddress>().Id }; }
+
+            spr = _dictDb.GetAgentAddresses(_context, filter);
+
+            if (spr.Count() != 0) throw new DictionaryAddressNameNotUnique(Model.PostCode, Model.Address);
+
+
             return true;
         }
 

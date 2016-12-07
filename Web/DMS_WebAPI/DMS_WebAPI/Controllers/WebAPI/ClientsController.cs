@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         [AllowAnonymous]
         public IHttpActionResult Post(AddAspNetClient model)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = new WebAPIService();
             var itemId = dbProc.AddClient(model);
             return Get(itemId);
         }

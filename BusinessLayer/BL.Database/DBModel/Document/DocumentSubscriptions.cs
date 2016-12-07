@@ -47,10 +47,14 @@ namespace BL.Database.DBModel.Document
         public int? CertificatePositionId { get; set; }
         [Column("CertificatePositionExecutorAgentId")]
         public int? CertificatePositionExecutorAgentId { get; set; }
+        [Column("CertificatePositionExecutorTypeId")]
+        public int? CertificatePositionExecutorTypeId { get; set; }
 
         [ForeignKey("CertificatePositionId")]
         public virtual DictionaryPositions CertificatePosition { get; set; }
         [ForeignKey("CertificatePositionExecutorAgentId")]
         public virtual DictionaryAgents CertificatePositionExecutorAgent { get; set; }
+        [ForeignKey("CertificatePositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes CertificatePositionExecutorType { get; set; }
     }
 }

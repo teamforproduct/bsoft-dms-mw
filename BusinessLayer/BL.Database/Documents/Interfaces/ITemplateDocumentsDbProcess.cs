@@ -40,8 +40,9 @@ namespace BL.Database.Documents.Interfaces
         #region TemplateDocumentPapers
         IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
         FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext ctx, int id);
-        int AddOrUpdateTemplatePaper(IContext ctx, InternalTemplateDocumentPaper template);
-        bool CanAddTemplatePaper(IContext ctx, ModifyTemplateDocumentPaper Paper);
+        IEnumerable<int> AddTemplateDocumentPapers(IContext context, IEnumerable<InternalTemplateDocumentPaper> papers);
+        InternalTemplateDocument ModifyTemplatePaperPrepare(IContext ctx, ModifyTemplateDocumentPaper Paper);
+        void ModifyTemplatePaper(IContext context, InternalTemplateDocumentPaper item);
         void DeleteTemplatePaper(IContext ctx, int id);
         #endregion TemplateDocumentPapers
 

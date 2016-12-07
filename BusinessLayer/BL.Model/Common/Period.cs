@@ -53,6 +53,6 @@ namespace BL.Model.Common
         /// <summary>
         /// Период задан
         /// </summary>
-        public bool IsActive => _DateBeg != null && _DateEnd != null;
+        public bool HasValue => _DateBeg != null && _DateEnd != null;
     }
 }

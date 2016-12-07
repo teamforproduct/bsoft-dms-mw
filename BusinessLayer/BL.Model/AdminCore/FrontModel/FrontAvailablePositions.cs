@@ -1,5 +1,6 @@
 ﻿using BL.Model.AdminCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -14,12 +15,16 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Дата начала исполнения ролей должности
         /// </summary>
-        public DateTime? StartDate { get; set; }
+        public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
+        private DateTime? _StartDate; 
+
 
         /// <summary>
         /// Дата окончания исполнения ролей должности
         /// </summary>
-        public DateTime? EndDate { get; set; }
+        public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
+        private DateTime? _EndDate; 
+
 
         /// <summary>
         /// Роль
@@ -40,7 +45,10 @@ namespace BL.Model.AdminCore.FrontModel
         /// Имя сотрудника
         /// </summary>
         public string RolePositionExecutorAgentName { get; set; }
-
+        /// <summary>
+        /// ИД Тип исполнения
+        /// </summary>
+        public int RolePositionExecutorTypeId { get; set; }
         /// <summary>
         /// Тип исполнения
         /// </summary>

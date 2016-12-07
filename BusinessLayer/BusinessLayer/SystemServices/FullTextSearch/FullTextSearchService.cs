@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
-using BL.Model.Constants;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Logic.Settings;
@@ -67,6 +66,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var tmr = GetTimer(md);
             tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
             _stopTimersList.Add(tmr); // to avoid additional raise of timer event
+            var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
+            systemSetting.Value = false.ToString();
+            _settings.SaveSetting(ctx, systemSetting);
             //initiate the update of FT
             worker.StartUpdate();
             try
@@ -148,7 +150,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
 
                 //set indicator that full text for the client available
-                _settings.SaveSetting(ctx, SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
+                systemSetting.Value = true.ToString();
+                _settings.SaveSetting(ctx, systemSetting);
                 md.IsFullTextInitialized = true;
             }
             catch (Exception ex)

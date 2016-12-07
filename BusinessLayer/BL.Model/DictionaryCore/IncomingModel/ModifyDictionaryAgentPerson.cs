@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.Extensions;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -58,7 +59,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        public DateTime? PassportDate { get; set; }
+        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
+        private DateTime? _PassportDate;
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
@@ -66,7 +68,14 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
+        private DateTime? _BirthDate;
+
+        /// <summary>
+        /// Id компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public int? AgentCompanyId { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>

@@ -32,7 +32,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         int AddAgentPerson(IContext context, InternalDictionaryAgentPerson addr);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
-        FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
+        //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         #endregion DictionaryAgentPerson
 
@@ -64,7 +64,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         void DeleteAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         int AddAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
 
         IEnumerable<int> GetAgentsIDByAddress(IContext context, IEnumerable<int> addresses);
 
@@ -195,7 +195,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         void UpdatePositionOrder(IContext context, int positionId, int order);
         void UpdatePositionExecutor(IContext context, List<int> positionId = null);
-        int? GetExecutorAgentIdByPositionId(IContext context, int id);
+        InternalDictionaryPositionExecutorForDocument GetExecutorAgentIdByPositionId(IContext context, int id);
         FrontDictionaryPosition GetPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);

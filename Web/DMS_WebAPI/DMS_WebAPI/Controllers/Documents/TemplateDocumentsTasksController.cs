@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
 
-            tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocumentTask, ctx, id); 
+            tmpDocProc.ExecuteAction(EnumDocumentActions.DeleteTemplateDocumentTask, ctx, id); 
 
             var tmp = new FrontTemplateDocumentTask {Id = id};
 

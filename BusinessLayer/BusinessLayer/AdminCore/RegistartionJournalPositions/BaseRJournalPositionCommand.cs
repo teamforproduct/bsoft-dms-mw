@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Helpers;
+using BL.Logic.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
@@ -35,7 +36,7 @@ namespace BL.Logic.AdminCore
             // Добавляю рассылку во все направления для сведения и исполнения для указанной должности
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     if (IsChecked)
                     {
@@ -119,7 +120,7 @@ namespace BL.Logic.AdminCore
             // Добавляю рассылку во все направления для сведения и исполнения для указанной должности
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     // все журналы к которым есть доступ у positionId
                     var existsJournals = _adminDb.GetInternalRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { PositionIDs = new List<int> { positionId } });

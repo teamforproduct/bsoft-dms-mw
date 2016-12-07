@@ -62,9 +62,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
-        FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id);
+        FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter);
+        IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
         #endregion
 
         #region DictionaryAddressTypes

@@ -48,14 +48,28 @@ namespace BL.Logic.SystemCore
         {
             var tmpSettings= DmsResolver.Current.Get<ISettings>();
 
-            var res = _systemDb.GetSystemSettings(context, filter)
-                .GroupBy(x => new { x.SettingTypeName, x.OrderSettingType })
-                .OrderBy(x => x.Key.OrderSettingType)
-                .Select(x => new FrontDictionarySettingType()
-                {
-                    Name = x.Key.SettingTypeName,
-                    Setting = x.OrderBy(y => y.Order).ToList()
-                }).ToList();
+            var list = _systemDb.GetSystemSettings(context, filter).Select(x => new FrontSystemSetting()
+            {
+                Id = x.Id,
+                Key = x.Key,
+                Value = (x.ValueType == EnumValueTypes.Password) ? null : tmpSettings.GetTypedValue(x.Value.ToString(), x.ValueType),
+                Name = x.Name,
+                Description = x.Description,
+                Order = x.Order,
+                OrderSettingType = x.OrderSettingType,
+                SettingTypeName = x.SettingTypeName,
+                ValueTypeCode = x.ValueTypeCode
+            });
+
+            var res = list.GroupBy(x => new { x.SettingTypeName, x.OrderSettingType })
+                 .OrderBy(x => x.Key.OrderSettingType)
+                 .Select(x => new FrontDictionarySettingType()
+                 {
+                     Name = x.Key.SettingTypeName,
+                     Setting = x.OrderBy(y => y.Order).ToList()
+                 });
+
+
             return res;
 
         }

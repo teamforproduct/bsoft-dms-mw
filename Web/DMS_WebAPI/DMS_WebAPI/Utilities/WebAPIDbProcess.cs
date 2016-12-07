@@ -1,8 +1,10 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.SystemServices.MailWorker;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Database;
@@ -11,6 +13,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
+using BL.Model.Users;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -22,8 +25,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 using System.Web;
 
@@ -35,6 +40,8 @@ namespace DMS_WebAPI.Utilities
         {
 
         }
+
+        //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
         #region Servers
 
@@ -82,7 +89,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAdminServer> GetServers(FilterAdminServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetServersQuery(dbContext, filter);
 
@@ -101,15 +108,15 @@ namespace DMS_WebAPI.Utilities
                     DefaultSchema = x.DefaultSchema,
                 }).ToList();
 
-                items.ForEach(x => { x.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.ServerTypeName); });
-
+                items.ForEach(x => { x.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), x.ServerTypeName); });
+                transaction.Complete();
                 return items;
             }
         }
 
         public IEnumerable<DatabaseModel> GetServersByAdmin(FilterAdminServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetServersQuery(dbContext, filter);
 
@@ -126,7 +133,7 @@ namespace DMS_WebAPI.Utilities
                     Id = x.Server.Id,
                     Address = x.Server.Address,
                     Name = x.Server.Name,
-                    ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.Server.ServerType),
+                    ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), x.Server.ServerType),
                     DefaultDatabase = x.Server.DefaultDatabase,
                     IntegrateSecurity = x.Server.IntegrateSecurity,
                     UserName = x.Server.UserName,
@@ -135,14 +142,14 @@ namespace DMS_WebAPI.Utilities
                     DefaultSchema = x.Server.DefaultSchema,
                     ClientId = x.ClientId
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public IEnumerable<FrontAdminServerByUser> GetServersByUser(IContext ctx)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
                                     .Select(x => x.ClientId);
@@ -158,19 +165,24 @@ namespace DMS_WebAPI.Utilities
                     ClientId = x.Client.Id,
                     ClientName = x.Client.Name
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { setUserServer.ClientId } })
-                                    .Select(x => x.ClientId);
+                var filterClients = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
+                if (setUserServer.ClientId > 0) filterClients.ClientIds = new List<int> { setUserServer.ClientId };
 
-                var userServers = GetUserServersQuery(dbContext, new FilterAspNetUserServers { UserIds = new List<string> { userId }, ServerIds = new List<int> { setUserServer.ServerId } });
+                var filterServers = new FilterAspNetUserServers { UserIds = new List<string> { userId } };
+                if (setUserServer.ServerId > 0) filterServers.ServerIds = new List<int> { setUserServer.ServerId };
+
+                var userClients = GetUserClientsQuery(dbContext, filterClients).Select(x => x.ClientId);
+
+                var userServers = GetUserServersQuery(dbContext, filterServers);
 
                 userServers = userServers.Where(x => userClients.Contains(x.ClientId));
 
@@ -189,8 +201,8 @@ namespace DMS_WebAPI.Utilities
                     DefaultSchema = x.Server.DefaultSchema,
                 }).FirstOrDefault();
 
-                item.ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), item.ServerTypeName);
-
+                item.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), item.ServerTypeName);
+                transaction.Complete();
                 return item;
             }
         }
@@ -199,7 +211,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AdminServers
                     {
@@ -217,7 +229,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -251,7 +263,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AdminServers
                     {
@@ -278,7 +290,7 @@ namespace DMS_WebAPI.Utilities
                     entry.Property(p => p.UserPassword).IsModified = true;
                     entry.Property(p => p.ConnectionString).IsModified = true;
                     entry.Property(p => p.DefaultSchema).IsModified = true;
-
+                    transaction.Complete();
                     dbContext.SaveChanges();
                 }
             }
@@ -292,7 +304,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AdminServers
                     {
@@ -303,6 +315,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -386,7 +399,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetClientLicence> GetClientLicences(FilterAspNetClientLicences filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetClientLicencesQuery(dbContext, filter);
 
@@ -418,33 +431,31 @@ namespace DMS_WebAPI.Utilities
 
                     IsActive = x.IsActive,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
         public int AddClientLicence(IContext ctx, int licenceId)
         {
-            try
-            {
-                using (var dbContext = new ApplicationDbContext())
-                {
-                    var item = new AspNetClientLicences
-                    {
-                        ClientId = ctx.CurrentClientId,
-                        FirstStart = DateTime.UtcNow.Date,
-                        IsActive = false,
-                        LicenceId = licenceId
-                    };
-                    dbContext.AspNetClientLicencesSet.Add(item);
-                    dbContext.SaveChanges();
+            return AddClientLicence(ctx.CurrentClientId, licenceId);
+        }
 
-                    return item.Id;
-                }
-            }
-            catch
+        public int AddClientLicence(int clientId, int licenceId)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                throw new DictionaryRecordCouldNotBeAdded();
+                var item = new AspNetClientLicences
+                {
+                    ClientId = clientId,
+                    FirstStart = DateTime.UtcNow.Date,
+                    IsActive = false,
+                    LicenceId = licenceId
+                };
+                dbContext.AspNetClientLicencesSet.Add(item);
+                dbContext.SaveChanges();
+                transaction.Complete();
+                return item.Id;
             }
         }
 
@@ -452,7 +463,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientLicences
                     {
@@ -468,7 +479,7 @@ namespace DMS_WebAPI.Utilities
                     entry.Property(p => p.IsActive).IsModified = true;
 
                     dbContext.SaveChanges();
-
+                    transaction.Complete();
                     return item.Id;
                 }
             }
@@ -482,7 +493,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientLicences
                     {
@@ -493,7 +504,7 @@ namespace DMS_WebAPI.Utilities
 
                     var entry = dbContext.Entry(item);
                     entry.Property(p => p.IsActive).IsModified = true;
-
+                    transaction.Complete();
                     dbContext.SaveChanges();
                 }
             }
@@ -507,7 +518,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientLicences
                     {
@@ -518,6 +529,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -549,6 +561,12 @@ namespace DMS_WebAPI.Utilities
                 {
                     qry = qry.Where(x => filter.Code.Equals(x.Code));
                 }
+
+                if (!string.IsNullOrEmpty(filter.VerificationCode))
+                {
+                    qry = qry.Where(x => filter.VerificationCode.Equals(x.VerificationCode));
+                }
+
             }
 
             return qry;
@@ -563,28 +581,54 @@ namespace DMS_WebAPI.Utilities
             return GetClients(new FilterAspNetClients { Code = clientCode }).FirstOrDefault();
         }
 
+        public int GetClientId(string clientCode)
+        {
+            var res = GetClients(new FilterAspNetClients { Code = clientCode }).FirstOrDefault();
+
+            if (res == null) throw new ClientIsNotFound();
+
+            return res.Id;
+        }
+
+        public string GetClientCode(int clientId)
+        {
+            var res = GetClients(new FilterAspNetClients { ClientIds = new List<int> { clientId } }).FirstOrDefault();
+
+            if (res == null) throw new ClientIsNotFound();
+
+            return res.Code;
+        }
+
         public IEnumerable<FrontAspNetClient> GetClients(FilterAspNetClients filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetClientsQuery(dbContext, filter);
 
-                var itemsRes = itemsDb;
-
-                var items = itemsRes.Select(x => new FrontAspNetClient
+                var items = itemsDb.Select(x => new FrontAspNetClient
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Code = x.Code,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
+            }
+        }
+
+        public bool ExistsClients(FilterAspNetClients filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = GetClientsQuery(dbContext, filter).Any();
+                transaction.Complete();
+                return res;
             }
         }
 
         public IEnumerable<FrontAspNetClient> GetClientsByUser(IContext ctx)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
                                     .AsQueryable();
@@ -603,17 +647,24 @@ namespace DMS_WebAPI.Utilities
                     Name = x.Client.Name,
                     Code = x.Client.Code,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
 
-        public FrontAspNetClient GetClientByUser(string userId, int clientId)
+        public FrontAspNetClient GetClientByUser(string userId, int clientId = -1)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { userId }, ClientIds = new List<int> { clientId } })
-                                    .AsQueryable();
+                var filter = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
+
+                if (clientId > 0)
+                {
+                    filter.ClientIds = new List<int> { clientId };
+                }
+
+                var userClients = GetUserClientsQuery(dbContext, filter).AsQueryable();
+
 
                 var itemsRes = from userClient in userClients
                                join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
@@ -629,594 +680,50 @@ namespace DMS_WebAPI.Utilities
                     Name = x.Client.Name,
                     Code = x.Client.Code,
                 }).FirstOrDefault();
-
+                transaction.Complete();
                 return item;
             }
         }
 
-        public string AddClient(AddClientContent model)
+        public int AddClient(ModifyAspNetClient model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var owinContext = HttpContext.Current.Request.GetOwinContext();
-                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
+                var client = GetDbClient(model);
 
-                // определяю сервер для клиента
-                // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-                var server = GetServers(new FilterAdminServers()).FirstOrDefault();
-
-                int serverId = server.Id;
-                //if (model.Server.Id <= 0)
-                //{
-                //    var server = new AdminServers
-                //    {
-                //        Name = model.Server.Name,
-                //        Address = model.Server.Address,
-                //        ConnectionString = model.Server.ConnectionString,
-                //        DefaultDatabase = model.Server.DefaultDatabase,
-                //        DefaultSchema = model.Server.DefaultSchema,
-                //        IntegrateSecurity = model.Server.IntegrateSecurity,
-                //        ServerType = model.Server.ServerType.ToString(),
-                //        UserName = model.Server.UserName,
-                //        UserPassword = model.Server.UserPassword,
-                //    };
-
-                //    dbContext.AdminServersSet.Add(server);
-                //    dbContext.SaveChanges();
-
-                //    model.Server.Id = server.Id;
-                //}
-
-
-                using (var dbContext = new ApplicationDbContext())
-                {
-                    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
-
-                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        #region Create client 1 
-
-                        // Проверка уникальности доменного имени
-                        if (dbContext.AspNetClientsSet.Any(x => x.Code.Equals(model.Domain)))
-                        {
-                            transaction.Dispose();
-                            throw new ClientCodeAlreadyExists(model.Domain);
-                        }
-
-                        var client = new AspNetClients
-                        {
-                            Name = model.Domain,
-                            Code = model.Domain,
-                        };
-
-                        dbContext.AspNetClientsSet.Add(client);
-                        dbContext.SaveChanges();
-
-                        model.ClientId = client.Id;
-
-                        //pss какую лицензию здесь подставлять???
-                        // PSS выяснил, что отсутствие лицензии приравнивается к дефолтной
-                        //AspNetClientLicences clientLicence;
-                        //if (model.LicenceId > 0)
-                        //{
-                        //    clientLicence = new AspNetClientLicences
-                        //    {
-                        //        ClientId = client.Id,
-                        //        FirstStart = DateTime.UtcNow,
-                        //        IsActive = false,
-                        //        LicenceId = model.LicenceId.GetValueOrDefault(),
-                        //        LicenceKey = null,
-                        //    };
-
-                        //    dbContext.AspNetClientLicencesSet.Add(clientLicence);
-                        //    dbContext.SaveChanges();
-                        //}
-
-                        #endregion Create client 1
-
-                        #region Create DB
-
-                        var clientServer = new AspNetClientServers
-                        {
-                            ClientId = client.Id,
-                            ServerId = serverId,
-                        };
-
-                        dbContext.AspNetClientServersSet.Add(clientServer);
-
-                        #endregion Create DB
-
-                        #region Create user                        
-
-                        //if (!string.IsNullOrEmpty(model.Client.Code))
-                        //{
-                        //    email = $"Client_{client.Id}_{email}";
-                        //}
-
-                        // pss Здесь нужно дописать генерацию пароля и отправку письма с паролем и рекламой
-                        var userId = AddUser(new AddWebUser
-                        {
-                            Email = model.Email,
-                            Password = "P@ssw0rd",
-                            ClientId = client.Id,
-                            ServerId = serverId,
-                        });
-
-                        #endregion Create user
-
-                        #region add user to role admin
-
-                        // PSS 
-                        var role = $"Admin_Client_{client.Id}";
-
-                        var roleDb = roleManager.FindByName(role);
-
-                        if (roleDb == null || string.IsNullOrEmpty(roleDb.Id))
-                        {
-                            roleManager.Create(new IdentityRole { Name = role });
-                        }
-
-                        userManager.AddToRole(userId, role);
-
-                        #endregion add user to role admin
-
-                        var ctx = new AdminContext(server);
-
-                        transaction.Complete();
-
-                        return "token";
-                    }
-                }
-            }
-            //catch (UserNameAlreadyExists)
-            //{
-            //    throw new UserNameAlreadyExists( model );
-            //}
-            //catch (ClientNameAlreadyExists)
-            //{
-            //    throw new ClientNameAlreadyExists();
-            //}
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-
-        }
-
-        public int AddUserEmployee(AddDictionaryAgentEmployee model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            string userId = string.Empty;
-            // Проверяю не используется ли логин
-            if (ExistsUser(model.Login)) throw new UserNameAlreadyExists(model.Login);
-
-            // пробую создать сотрудника
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model);
-
-            if (tmpItem > 0)
-            {
-                userId = AddUser(new BL.Model.AdminCore.WebUser.AddWebUser
-                {
-                    Email = model.Login,
-                    // Здесь (или после подтверждения адреса) нужна генерация пароля и отправка на почту
-                    Password = "P@ssw0rd",
-                    // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
-                    ClientId = ctx.CurrentClientId,
-                    ServerId = ctx.CurrentDB.Id,
-
-                });
-            }
-
-            // обновляю сотрудника 
-            tmpService.SetAgentUserUserId(ctx, new InternalDictionaryAgentUser {
-                Id = tmpItem,
-                UserId = userId
-            });
-
-            return tmpItem;
-
-        }
-
-        public bool ExistsUser(string email)
-        {
-            var owinContext = HttpContext.Current.Request.GetOwinContext();
-            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-            return userManager.FindByName(email) != null;
-        }
-
-        public string AddUser(AddWebUser model)
-        {
-            var owinContext = HttpContext.Current.Request.GetOwinContext();
-            var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-
-            using (var dbContext = new ApplicationDbContext())
-            //using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-
-                if (ExistsUser(model.Email)) throw new UserNameAlreadyExists(model.Email);
-
-                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-
-                IdentityResult result = userManager.Create(user, model.Password);
-
-                if (!result.Succeeded)
-                {
-                    throw new DictionaryRecordCouldNotBeAdded();
-                }
-
-                var userClient = new AspNetUserClients
-                {
-                    UserId = user.Id,
-                    ClientId = model.ClientId
-                };
-
-                dbContext.AspNetUserClientsSet.Add(userClient);
+                dbContext.AspNetClientsSet.Add(client);
                 dbContext.SaveChanges();
 
-                var userServer = new AspNetUserServers
-                {
-                    ClientId = model.ClientId,
-                    ServerId = model.ServerId,
-                    UserId = user.Id,
-                };
-
-                dbContext.AspNetUserServersSet.Add(userServer);
-                dbContext.SaveChanges();
-
+                model.Id = client.Id;
                 transaction.Complete();
-
-                return user.Id;
+                return model.Id;
             }
         }
 
-        public int AddClient(AddAspNetClient model)
+        private static AspNetClients GetDbClient(ModifyAspNetClient model)
         {
-            try
+            return new AspNetClients
             {
-
-                //TODO в transaction не может подлючиться к базе
-                if (model.Server.Id <= 0)
-                {
-                    InitializerDatabase(model.Server);
-                }
-
-
-                using (var dbContext = new ApplicationDbContext())
-                {
-                    var owinContext = HttpContext.Current.Request.GetOwinContext();
-                    var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-                    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
-
-                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        #region Create client 1 
-
-                        if (dbContext.AspNetClientsSet.Any(x => x.Name.Equals(model.Client.Name)))
-                        {
-                            throw new ClientNameAlreadyExists();
-                        }
-
-                        var client = new AspNetClients
-                        {
-                            Name = model.Client.Name,
-                            Code = model.Client.Code,
-                        };
-
-                        dbContext.AspNetClientsSet.Add(client);
-                        dbContext.SaveChanges();
-
-                        AspNetClientLicences clientLicence;
-                        if (model.LicenceId > 0)
-                        {
-                            clientLicence = new AspNetClientLicences
-                            {
-                                ClientId = client.Id,
-                                FirstStart = DateTime.UtcNow,
-                                IsActive = false,
-                                LicenceId = model.LicenceId.GetValueOrDefault(),
-                                LicenceKey = null,
-                            };
-
-                            dbContext.AspNetClientLicencesSet.Add(clientLicence);
-                            dbContext.SaveChanges();
-                        }
-
-                        #endregion Create client 1
-
-                        #region Create DB
-
-                        if (model.Server.Id <= 0)
-                        {
-                            var server = new AdminServers
-                            {
-                                Name = model.Server.Name,
-                                Address = model.Server.Address,
-                                ConnectionString = model.Server.ConnectionString,
-                                DefaultDatabase = model.Server.DefaultDatabase,
-                                DefaultSchema = model.Server.DefaultSchema,
-                                IntegrateSecurity = model.Server.IntegrateSecurity,
-                                ServerType = model.Server.ServerType.ToString(),
-                                UserName = model.Server.UserName,
-                                UserPassword = model.Server.UserPassword,
-                            };
-
-                            dbContext.AdminServersSet.Add(server);
-                            dbContext.SaveChanges();
-
-                            model.Server.Id = server.Id;
-                        }
-
-                        var clientServer = new AspNetClientServers
-                        {
-                            ClientId = client.Id,
-                            ServerId = model.Server.Id,
-                        };
-
-                        dbContext.AspNetClientServersSet.Add(clientServer);
-
-                        #endregion Create DB
-
-                        #region Create user                        
-
-                        var email = model.Admin.Email;
-
-                        if (!string.IsNullOrEmpty(model.Client.Code))
-                        {
-                            email = $"Client_{client.Id}_{email}";
-                        }
-
-                        var userId = AddUser(new AddWebUser()
-                        {
-                            Email = email,
-                            Password = model.Admin.Password,
-                            ClientId = client.Id,
-                            ServerId = model.Server.Id,
-                        });
-
-                        #endregion Create user
-
-                        #region add user to role admin
-
-                        var role = $"Admin_Client_{client.Id}";
-
-                        var roleDb = roleManager.FindByName(role);
-
-                        if (roleDb == null || string.IsNullOrEmpty(roleDb.Id))
-                        {
-                            roleManager.Create(new IdentityRole { Name = role });
-                        }
-
-                        userManager.AddToRole(userId, role);
-
-                        #endregion add user to role admin
-
-                        transaction.Complete();
-
-                        return client.Id;
-                    }
-                }
-            }
-            //catch (UserNameAlreadyExists)
-            //{
-            //    throw new UserNameAlreadyExists();
-            //}
-            //catch (ClientNameAlreadyExists)
-            //{
-            //    throw new ClientNameAlreadyExists();
-            //}
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-        }
-
-        //public void AddUsersTemp(IEnumerable<InternalDictionaryContact> models)
-        //{
-        //    try
-        //    {
-        //        var owinContext = HttpContext.Current.Request.GetOwinContext();
-        //        var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-
-        //        using (var dbContext = new ApplicationDbContext())
-        //        {
-        //            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
-
-        //            foreach (var item in models)
-        //            {
-
-        //                if (userManager.FindByName(item.Value) != null) continue;
-
-        //                using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-        //                {
-
-        //                    #region Create user                        
-
-        //                    var user = new ApplicationUser() { UserName = item.Value, Email = item.Value };
-
-        //                    IdentityResult result = userManager.Create(user, "P@ssw0rd");
-
-        //                    if (!result.Succeeded)
-        //                    {
-        //                        transaction.Dispose();
-        //                        throw new DictionaryRecordCouldNotBeAdded();
-        //                    }
-
-        //                    var userClient = new AspNetUserClients
-        //                    {
-        //                        UserId = user.Id,
-        //                        ClientId = 1,
-        //                    };
-
-        //                    dbContext.AspNetUserClientsSet.Add(userClient);
-        //                    dbContext.SaveChanges();
-
-        //                    var userServer = new AspNetUserServers
-        //                    {
-        //                        ClientId = 1,
-        //                        ServerId = 1,
-        //                        UserId = user.Id,
-        //                    };
-
-        //                    dbContext.AspNetUserServersSet.Add(userServer);
-        //                    dbContext.SaveChanges();
-
-        //                    #endregion Create user
-
-        //                    transaction.Complete();
-        //                }
-
-        //            }
-        //        }
-        //    }
-        //    catch (UserNameAlreadyExists)
-        //    {
-        //        throw new UserNameAlreadyExists();
-        //    }
-        //    catch (ClientNameAlreadyExists)
-        //    {
-        //        throw new ClientNameAlreadyExists();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new DictionaryRecordCouldNotBeAdded();
-        //    }
-        //}
-
-        public int AddFirstAdminClient(AddFirstAdminClient model)
-        {
-            try
-            {
-                var owinContext = HttpContext.Current.Request.GetOwinContext();
-                var userManager = owinContext.GetUserManager<ApplicationUserManager>();
-
-
-                using (var dbContext = new ApplicationDbContext())
-                {
-                    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(dbContext));
-
-                    using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        #region Verification client code 
-
-                        var client = dbContext.AspNetClientsSet.FirstOrDefault(x => x.Code == model.ClientCode && x.VerificationCode == model.VerificationCode);
-                        if (client == null)
-                        {
-                            throw new ClientVerificationCodeIncorrect();
-                        }
-
-                        #endregion Verification client code 
-
-                        #region Create user                        
-
-                        var email = model.Admin.Email;
-
-                        if (!string.IsNullOrEmpty(model.ClientCode))
-                        {
-                            email = $"Client_{client.Id}_{email}";
-                        }
-
-                        if (userManager.FindByName(email) != null)
-                        {
-                            throw new UserNameAlreadyExists(model.Admin.Email);
-                        }
-
-                        var user = new ApplicationUser() { UserName = email, Email = email };
-
-                        IdentityResult result = userManager.Create(user, model.Admin.Password);
-
-                        if (!result.Succeeded)
-                        {
-                            transaction.Dispose();
-                            throw new DictionaryRecordCouldNotBeAdded();
-                        }
-
-                        var userClient = new AspNetUserClients
-                        {
-                            UserId = user.Id,
-                            ClientId = client.Id
-                        };
-
-                        dbContext.AspNetUserClientsSet.Add(userClient);
-                        dbContext.SaveChanges();
-
-                        var serverIds = dbContext.AspNetClientServersSet.Where(x => x.ClientId == client.Id).Select(x => x.ServerId).ToList();
-
-                        foreach (var serverId in serverIds)
-                        {
-                            var userServer = new AspNetUserServers
-                            {
-                                ClientId = client.Id,
-                                ServerId = serverId,
-                                UserId = user.Id,
-                            };
-                            dbContext.AspNetUserServersSet.Add(userServer);
-                        }
-                        dbContext.SaveChanges();
-
-                        #endregion Create user
-
-                        #region add user to role admin
-
-                        var role = $"Admin_Client_{client.Id}";
-
-                        var roleDb = roleManager.FindByName(role);
-
-                        if (roleDb == null || string.IsNullOrEmpty(roleDb.Id))
-                        {
-                            roleManager.Create(new IdentityRole { Name = role });
-                        }
-
-                        userManager.AddToRole(user.Id, role);
-
-                        #endregion add user to role admin
-
-                        transaction.Complete();
-
-                        return client.Id;
-                    }
-                }
-            }
-            catch (UserNameAlreadyExists)
-            {
-                throw new UserNameAlreadyExists(model.Admin.Email);
-            }
-            catch (ClientNameAlreadyExists)
-            {
-                throw new ClientNameAlreadyExists();
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
+                Id = model.Id,
+                Name = model.Name,
+                Code = model.Code,
+            };
         }
 
         public void UpdateClient(ModifyAspNetClient model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext())
-                {
-                    var item = new AspNetClients
-                    {
-                        Id = model.Id,
-                        Name = model.Name,
-                        Code = model.Code,
-                    };
+                var item = GetDbClient(model);
 
-                    dbContext.AspNetClientsSet.Attach(item);
+                dbContext.AspNetClientsSet.Attach(item);
 
-                    var entry = dbContext.Entry(item);
-                    entry.Property(p => p.Name).IsModified = true;
-                    entry.Property(p => p.Code).IsModified = true;
+                var entry = dbContext.Entry(item);
+                entry.Property(p => p.Name).IsModified = true;
+                entry.Property(p => p.Code).IsModified = true;
 
-                    dbContext.SaveChanges();
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -1224,7 +731,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClients
                     {
@@ -1235,6 +742,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1288,9 +796,22 @@ namespace DMS_WebAPI.Utilities
             return GetClientServers(new FilterAspNetClientServers { ClientServerIds = new List<int> { id } }).FirstOrDefault();
         }
 
+        public int GetServerIdByClientId(int clientId)
+        {
+            var clientServer = GetClientServers(new FilterAspNetClientServers { ClientIds = new List<int> { clientId } }).FirstOrDefault();
+
+            if (clientServer == null)
+            {
+                var clientCode = GetClientCode(clientId);
+                throw new ClientServerIsNotSet(clientCode);
+            }
+
+            return clientServer.ServerId;
+        }
+
         public IEnumerable<FrontAspNetClientServer> GetClientServers(FilterAspNetClientServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetClientServersQuery(dbContext, filter);
 
@@ -1304,7 +825,7 @@ namespace DMS_WebAPI.Utilities
                     ClientName = x.Client.Name,
                     ServerName = x.Server.Name
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -1313,7 +834,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientServers
                     {
@@ -1324,7 +845,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -1338,7 +859,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClientServers
                     {
@@ -1349,6 +870,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1387,7 +909,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetLicence> GetLicences(FilterAspNetLicences filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetLicencesQuery(dbContext, filter);
 
@@ -1412,7 +934,7 @@ namespace DMS_WebAPI.Utilities
                     IsFunctionals = x.Functionals != null,
                     Functionals = x.Functionals,
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -1421,7 +943,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetLicences
                     {
@@ -1436,7 +958,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -1450,7 +972,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetLicences
                     {
@@ -1473,6 +995,7 @@ namespace DMS_WebAPI.Utilities
                     entry.Property(p => p.Functionals).IsModified = true;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1485,7 +1008,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetLicences
                     {
@@ -1496,6 +1019,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1506,7 +1030,7 @@ namespace DMS_WebAPI.Utilities
 
         #endregion Licences
 
-        #region UserClients
+        #region [+] UserClients ...
 
         private IQueryable<AspNetUserClients> GetUserClientsQuery(ApplicationDbContext dbContext, FilterAspNetUserClients filter)
         {
@@ -1557,7 +1081,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetUserClient> GetUserClients(FilterAspNetUserClients filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetUserClientsQuery(dbContext, filter);
 
@@ -1571,8 +1095,24 @@ namespace DMS_WebAPI.Utilities
                     ClientName = x.Client.Name,
                     UserName = x.User.UserName
                 }).ToList();
-
+                transaction.Complete();
                 return items;
+            }
+        }
+
+        private int AddUserClient(string userId, int clientId)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = new AspNetUserClients
+                {
+                    UserId = userId,
+                    ClientId = clientId
+                };
+                dbContext.AspNetUserClientsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                transaction.Complete();
+                return dbModel.Id;
             }
         }
 
@@ -1598,25 +1138,9 @@ namespace DMS_WebAPI.Utilities
 
                 new Licences().Verify(regCode, lic, null, true);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-                {
-                    using (var dbContext = new ApplicationDbContext())
-                    {
-                        var item = new AspNetUserClients
-                        {
-                            ClientId = model.ClientId,
-                            UserId = model.UserId,
-                        };
-                        dbContext.AspNetUserClientsSet.Add(item);
-                        dbContext.SaveChanges();
+                model.Id = AddUserClient(model.UserId, model.ClientId);
 
-                        model.Id = item.Id;
-
-                        transaction.Complete();
-
-                        return model.Id;
-                    }
-                }
+                return model.Id;
             }
             catch
             {
@@ -1628,7 +1152,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetUserClients
                     {
@@ -1639,11 +1163,23 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
             {
                 throw new DictionaryRecordCouldNotBeAdded();
+            }
+        }
+
+        public void DeleteUserClients(FilterAspNetUserClients filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserClientsQuery(dbContext, filter);
+                dbContext.AspNetUserClientsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -1701,7 +1237,7 @@ namespace DMS_WebAPI.Utilities
 
         public IEnumerable<FrontAspNetUserServer> GetUserServers(FilterAspNetUserServers filter)
         {
-            using (var dbContext = new ApplicationDbContext())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetUserServersQuery(dbContext, filter);
 
@@ -1717,7 +1253,7 @@ namespace DMS_WebAPI.Utilities
                     UserName = x.User.UserName,
                     ServerName = x.Server.Name
                 }).ToList();
-
+                transaction.Complete();
                 return items;
             }
         }
@@ -1726,7 +1262,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetUserServers
                     {
@@ -1738,7 +1274,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
 
                     model.Id = item.Id;
-
+                    transaction.Complete();
                     return model.Id;
                 }
             }
@@ -1752,7 +1288,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetUserServers
                     {
@@ -1763,6 +1299,7 @@ namespace DMS_WebAPI.Utilities
                     dbContext.Entry(item).State = EntityState.Deleted;
 
                     dbContext.SaveChanges();
+                    transaction.Complete();
                 }
             }
             catch
@@ -1771,6 +1308,19 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void DeleteUserServers(FilterAspNetUserServers filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserServersQuery(dbContext, filter);
+                dbContext.AspNetUserServersSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
         #endregion UserServers
+
+
     }
 }

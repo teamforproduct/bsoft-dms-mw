@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using System;
 
 namespace BL.Model.DocumentCore.FrontModel
@@ -11,7 +12,10 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? SubscriptionStatesId { get; set; }
         public string SubscriptionStatesName { get; set; }
         public bool? IsSuccess { get; set; }
-        public DateTime? DueDate { get; set; }
+
+        public DateTime? DueDate { get { return _DueDate; } set { _DueDate = value.ToUTC(); } }
+        private DateTime? _DueDate;
+
         public string Description { get; set; }
         public string Hash { get; set; }
         public string ChangedHash { get; set; }
@@ -28,7 +32,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public string CertificatePositionName { get; set; }
         public string CertificatePositionExecutorAgentName { get; set; }
 
-        public DateTime? CertificateSignCreateDate { get; set; }
+        public DateTime? CertificateSignCreateDate { get { return _CertificateSignCreateDate; } set { _CertificateSignCreateDate = value.ToUTC(); } }
+        private DateTime? _CertificateSignCreateDate;
 
     }
 }

@@ -156,8 +156,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentPersons
         public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
         {
-
-            return _dictDb.GetAgentPerson(context, id);
+            return _dictDb.GetAgentPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
@@ -274,14 +273,14 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
-        public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
+        public FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id)
         {
-            return _dictDb.GetAgentAddress(context, id);
+            return GetAgentAddresses(context, new FilterDictionaryAgentAddress { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
         {
-            return _dictDb.GetAgentAddresses(context, agentId, filter);
+            return _dictDb.GetAgentAddresses(context, filter);
         }
         #endregion
 
@@ -510,7 +509,6 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentBanks
         public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
         {
-
             return _dictDb.GetAgentUser(context, id);
         }
         #endregion DictionaryAgentBanks
@@ -1151,8 +1149,8 @@ namespace BL.Logic.DictionaryCore
             {
                 executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
                 {
-                    StartDate = DateTime.UtcNow.StartOfDay(),
-                    EndDate = DateTime.UtcNow.EndOfDay(),
+                    StartDate = DateTime.UtcNow,
+                    EndDate = DateTime.UtcNow,
                     IsActive = filter.IsActive
                 });
             }

@@ -27,6 +27,9 @@ namespace BL.Logic.DocumentCore
         IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext context,FilterTemplateDocumentTask filter);
         FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id);
 
+        IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext context, FilterTemplateDocumentPaper filter);
+        FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext context, int id);
+
         IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
         FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
 

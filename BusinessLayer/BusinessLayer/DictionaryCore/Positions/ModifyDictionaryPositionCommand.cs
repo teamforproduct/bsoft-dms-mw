@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using System.Linq;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -21,7 +22,7 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
 
                     _dictDb.UpdatePosition(_context, dp);

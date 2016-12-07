@@ -81,7 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminCore\Clients\AddClientContent.cs" />
+    <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPRegistrationJournalPositions.cs" />
@@ -194,6 +194,8 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAccount.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentAddress.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUser.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorForDocument.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
@@ -286,9 +289,10 @@
     <Compile Include="Enums\EnumSystemFormats.cs" />
     <Compile Include="Enums\EnumSystemSettings.cs" />
     <Compile Include="Enums\EnumSystemPatterns.cs" />
+    <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
-    <Compile Include="Database\DatabaseType.cs" />
+    <Compile Include="Enums\EnumDatabaseType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryResultType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />

@@ -78,9 +78,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployee model)
         {
-            var dbWebProc = new WebAPIDbProcess();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webSeevice = new WebAPIService();
 
-            var tmpItem = dbWebProc.AddUserEmployee(model);
+            var tmpItem = webSeevice.AddUserEmployee(ctx, model);
 
             return Get(tmpItem);
         }
@@ -109,19 +110,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            var webSeevice = new WebAPIService();
+            webSeevice.UpdateUserEmployee(ctx, model);
 
-            if (model.ImageId.HasValue)
-            {
-                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
-                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
-                if (avaFile is string)
-                {
-                    model.PostedFileData = avaFile as string;
-                }
-            }
-
-            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, ctx, model);
             return Get(model.Id);
         }
 
@@ -133,9 +124,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Delete([FromUri] int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-
-            tmpItem.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, ctx, id);
+            var webSeevice = new WebAPIService();
+            webSeevice.DeleteUserEmployee(ctx, id);
+            
             FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
             tmp.Id = id;
 

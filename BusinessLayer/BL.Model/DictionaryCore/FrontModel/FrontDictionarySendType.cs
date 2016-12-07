@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using System;
 
 namespace BL.Model.DictionaryCore.FrontModel
@@ -36,7 +37,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата изменения
         /// </summary>
-        public DateTime LastChangeDate { get; set; }
+        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        private DateTime  _LastChangeDate; 
+
         /// <summary>
         /// Название типа субординации
         /// </summary>

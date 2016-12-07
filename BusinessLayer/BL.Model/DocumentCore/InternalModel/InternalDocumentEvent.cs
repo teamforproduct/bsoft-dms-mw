@@ -19,9 +19,11 @@ namespace BL.Model.DocumentCore.InternalModel
         public string AddDescription { get; set; }
         public int? SourcePositionId { get; set; }
         public int? SourcePositionExecutorAgentId { get; set; }
+        public int? SourcePositionExecutorTypeId { get; set; }
         public int? SourceAgentId { get; set; }
         public int? TargetPositionId { get; set; }
         public int? TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionExecutorTypeId { get; set; }
         public int? TargetAgentId { get; set; }
         public DateTime? ReadDate { get; set; }
         public int? ReadAgentId { get; set; }

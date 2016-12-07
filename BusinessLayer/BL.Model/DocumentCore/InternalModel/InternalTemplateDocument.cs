@@ -23,9 +23,11 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? SenderAgentPersonId { get; set; }
         public string Addressee { get; set; }
         public bool IsActive { get; set; }
-        public virtual IEnumerable<InternalTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
-        public virtual IEnumerable<InternalTemplateDocumentSendList> SendLists { get; set; }
-        public virtual IEnumerable<InternalTemplateDocumentTask> Tasks { get; set; }
+        public int? MaxPaperOrderNumber { get; set; }        
+        public IEnumerable<InternalTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
+        public IEnumerable<InternalTemplateDocumentSendList> SendLists { get; set; }
+        public IEnumerable<InternalTemplateDocumentTask> Tasks { get; set; }
+        public IEnumerable<InternalTemplateDocumentPaper> Papers { get; set; }
         public IEnumerable<ModifyPropertyValue> Properties { get; set; }
 
         public InternalTemplateDocument()

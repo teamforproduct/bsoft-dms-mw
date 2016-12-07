@@ -107,6 +107,7 @@ namespace BL.Logic.DocumentCore.Commands
                 var eventControlor = _document.Events.First();
                 waitTarget.OnEvent.SourcePositionId = eventControlor.TargetPositionId;
                 waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControlor.TargetPositionExecutorAgentId;
+                waitTarget.OnEvent.SourcePositionExecutorTypeId = eventControlor.TargetPositionExecutorTypeId;
                 if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
                 {
                     _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);

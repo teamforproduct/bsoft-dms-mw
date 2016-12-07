@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using BL.Model.Users;
 using System;
 using System.Runtime.Serialization;
@@ -20,11 +21,13 @@ namespace BL.Model.EncryptionCore.IncomingModel
         /// <summary>
         /// Действует с даты
         /// </summary>
-        public DateTime? NotBefore { get; set; }
+        public DateTime? NotBefore { get { return _NotBefore; } set { _NotBefore = value.ToUTC(); } }
+        private DateTime? _NotBefore;
         /// <summary>
         /// Действует по дату
         /// </summary>
-        public DateTime? NotAfter { get; set; }
+        public DateTime? NotAfter { get { return _NotAfter; } set { _NotAfter = value.ToUTC(); } }
+        private DateTime? _NotAfter;
 
         /// <summary>
         /// Password

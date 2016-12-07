@@ -1,4 +1,5 @@
-﻿using BL.Model.Users;
+﻿using BL.Model.Extensions;
+using BL.Model.Users;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -14,7 +15,7 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// ИД Документа
         /// </summary>
-        [Required]      
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// ИД Журнала регистрации
@@ -25,6 +26,7 @@ namespace BL.Model.DocumentCore.Actions
         /// Дата регистрации документа
         /// </summary>
         [Required]
-        public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get { return _RegistrationDate; } set { _RegistrationDate = value.ToUTC(); } }
+        private DateTime _RegistrationDate;
     }
 }

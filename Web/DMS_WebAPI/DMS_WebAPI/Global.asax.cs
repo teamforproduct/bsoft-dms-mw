@@ -64,6 +64,13 @@ namespace DMS_WebAPI
             // Get the exception object.
             Exception exc = Server.GetLastError();
 
+            // Игнорируем ошибки, которые пока не умеем выключить
+            // Server cannot set status after HTTP headers have been sent.
+            if (exc is System.Web.HttpException)
+            {
+                if ((exc as System.Web.HttpException).ErrorCode == -2147467259) return;
+            }
+
             ExceptionHandling.ReturnExceptionResponse(exc);
 
             // Handle HTTP errors

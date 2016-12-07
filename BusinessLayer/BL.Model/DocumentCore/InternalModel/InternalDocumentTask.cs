@@ -13,6 +13,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int DocumentId { get; set; }
         public int PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }
+        public int? PositionExecutorTypeId { get; set; }
         public int AgentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

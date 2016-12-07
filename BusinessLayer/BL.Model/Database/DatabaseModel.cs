@@ -1,10 +1,13 @@
-﻿namespace BL.Model.Database
+﻿using BL.Model.Enums;
+
+namespace BL.Model.Database
 {
     /// <summary>
     /// Model describe server parameters
     /// </summary>
     public class DatabaseModel
     {
+
         /// <summary>
         /// ID 
         /// </summary>
@@ -20,7 +23,7 @@
         /// <summary>
         /// Type of the server (SQL Server / Oracle / MySQL etc.)
         /// </summary>
-        public DatabaseType ServerType { get; set; }
+        public EnumDatabaseType ServerType { get; set; }
         /// <summary>
         /// Type of the server (SQL Server / Oracle / MySQL etc.)
         /// </summary>

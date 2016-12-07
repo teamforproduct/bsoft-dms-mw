@@ -14,8 +14,8 @@ namespace BL.Model.SystemCore.IncomingModel
         public string Key { get; set; }
         [Required]
         public string Value { get; set; }
-        [Required]
-        public EnumValueTypes ValueType { get; set; }
+        //[Required]
+        //public EnumValueTypes ValueType { get; set; }
 
         public int? AgentId { get; set; }
 

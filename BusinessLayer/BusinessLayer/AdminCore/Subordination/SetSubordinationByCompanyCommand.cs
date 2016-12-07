@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Helpers;
+using BL.Logic.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
@@ -28,7 +29,7 @@ namespace BL.Logic.AdminCore
             {
                 var departments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { CompanyIDs = new List<int> { Model.CompanyId } });
                 // PSS ReadUncommitted - так как вложенная транзакция ReadUncommitted
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     if (departments.Count() > 0)
                     {

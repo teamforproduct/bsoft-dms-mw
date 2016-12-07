@@ -78,11 +78,13 @@ namespace BL.Logic.DocumentCore.Commands
                 subscription.CertificateId = Model.CertificateId;
                 subscription.CertificatePassword = Model.CertificatePassword;
                 subscription.CertificatePositionId = _context.CurrentPositionId;
-                subscription.CertificatePositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-                if (!subscription.CertificatePositionExecutorAgentId.HasValue)
+                var positionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+                if (!positionExecutor?.ExecutorAgentId.HasValue ?? true)
                 {
                     throw new ExecutorAgentForPositionIsNotDefined();
                 }
+                subscription.CertificatePositionExecutorAgentId = positionExecutor.ExecutorAgentId;
+                subscription.CertificatePositionExecutorTypeId = positionExecutor.ExecutorTypeId;
             }
 
             CommonDocumentUtilities.SetLastChange(Context, subscription);

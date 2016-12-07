@@ -9,6 +9,7 @@ using BL.Model.Enums;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.SystemCore;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
 {
@@ -21,19 +22,21 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext ctx, FilterDocumentTask filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return CommonQueries.GetDocumentTasks(dbContext, ctx, filter, paging);
+                var res = CommonQueries.GetDocumentTasks(dbContext, ctx, filter, paging);
+                transaction.Complete();
+                return res;
             }
         }
 
         public FrontDocumentTask GetDocumentTask(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
+                var res = CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
         #endregion DocumentTasks         

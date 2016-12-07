@@ -28,6 +28,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int? CertificatePositionId { get; set; }
         public int? CertificatePositionExecutorAgentId { get; set; }
+        public int? CertificatePositionExecutorTypeId { get; set; }
 
         #region For Report
         public string SubscriptionStatesName { get; set; }

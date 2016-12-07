@@ -13,6 +13,8 @@ using System.Text.RegularExpressions;
 using System.Transactions;
 using System.Web;
 using BL.Model.SystemCore;
+using BL.Model.Exception;
+using BL.CrossCutting.Helpers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -21,7 +23,7 @@ namespace DMS_WebAPI.Utilities
     /// </summary>
     public class Languages : ILanguages
     {
-        private const int _MINUTES_TO_UPDATE_INFO = int.MaxValue; 
+        private const int _MINUTES_TO_UPDATE_INFO = int.MaxValue;
 
         private const string _PATTERN = "##l@(.*?)@l##";
 
@@ -105,6 +107,11 @@ namespace DMS_WebAPI.Utilities
                     languageValues = languageValues.Where(x => x.Code == filter.Code);
                 }
 
+                if (filter.IsDefault.HasValue)
+                {
+                    languageValues = languageValues.Where(x => x.IsDefault == filter.IsDefault);
+                }
+
             }
 
             return languageValues.ToList();
@@ -129,7 +136,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                using (var dbContext = new ApplicationDbContext())
+                //using (var dbContext = new ApplicationDbContext())
                 {
                     var labelsInText = new List<string>();
                     // нахожу в тексте все лейблы, которые нужно переводить
@@ -174,13 +181,18 @@ namespace DMS_WebAPI.Utilities
         {
             if (!ExistsLabels(text)) return text;
 
+            if (string.IsNullOrEmpty(languageName)) languageName = string.Empty;
+
+            return ReplaceLanguageLabel(GetLanguageIdByCode(languageName), text);
+        }
+
+        public int GetLanguageIdByCode(string languageCode)
+        {
             // запрашиваю из кэша переводы
             var languageInfo = GetLanguageInfo();
 
-            if (string.IsNullOrEmpty(languageName)) languageName = string.Empty;
-
             // нахожу локаль по имени 
-            var language = languageInfo.Languages.FirstOrDefault(x => languageName.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+            var language = languageInfo.Languages.FirstOrDefault(x => languageCode.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
 
             // если локаль не определена, беру локаль по умолчанию
             if (language == null)
@@ -188,70 +200,45 @@ namespace DMS_WebAPI.Utilities
                 language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
             }
 
-            return ReplaceLanguageLabel(language.Id, text);
+            if (language == null) throw new DefaultLanguageIsNotSet();
+
+            return language.Id;
+
+        }
+
+        public int GetLanguageIdByHttpContext()
+        {
+            var code = GetLanguageFromHttpContext(HttpContext.Current);
+
+            return GetLanguageIdByCode(code);
         }
 
         public string ReplaceLanguageLabel(HttpContext Context, string text)
         {
-
             if (!ExistsLabels(text)) return text;
 
-            string res = text;
+            return ReplaceLanguageLabel(GetLanguageFromHttpContext(Context), text);
+        }
+
+        private string GetLanguageFromHttpContext(HttpContext Context)
+        {
+            string languageName = string.Empty;
 
             try
             {
-
-                // pss Закоментировал. потому что ниже все равно еще раз будет перевод
-                // сначала достаю перевод из DMS-Base
-                //IContext ctx = null;
-                //try
-                //{
-                //    ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
-                //    if (Context.User.Identity.IsAuthenticated && ctx != null)
-                //    {
-                //        var service = DmsResolver.Current.Get<ILanguageService>();
-                //        //Перевод ошибки
-                //        res = service.ReplaceLanguageLabel(ctx, res);
-                //    }
-                //}
-                //catch { }
-
-                // а потом еще раз достаю перевод из WEB-Base
-                //var languageService = DmsResolver.Current.Get<Languages>();
-                //Перевод ошибки на русский
-
                 // получаю первый язык из массива языковых параметров клиента
                 // всегда пусто
-                string languageName = Context.Request.UserLanguages?[0];
+                languageName = Context.Request.UserLanguages?[0];
 
                 if (!string.IsNullOrEmpty(languageName))
                 // Первый параметр может быть "ru-RU" или просто "ru"
                 { languageName = languageName.Split('-')[0]; }
 
-                res = ReplaceLanguageLabel(languageName, res);
+                return languageName;
             }
             catch { }
 
-            return res;
-
-            // этот код из JsonResult
-            //try
-            //{
-            //    IContext ctx = null;
-            //    try
-            //    {
-            //        ctx = DmsResolver.Current.Get<UserContext>().GetByLanguage();
-            //        if (HttpContext.Current.User.Identity.IsAuthenticated && ctx != null)
-            //        {
-            //            var service = DmsResolver.Current.Get<ILanguageService>();
-            //            json = service.ReplaceLanguageLabel(ctx, json);
-            //        }
-            //    }
-            //    catch { }
-            //    var languageService = DmsResolver.Current.Get<Languages>();
-            //    json = languageService.ReplaceLanguageLabel(HttpContext.Current.Request.UserLanguages?[0], json);
-            //}
-            //catch { }
+            return languageName;
 
         }
 
@@ -275,7 +262,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                defContext = DmsResolver.Current.Get<UserContexts>().Get();
+                defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
 
                 if (defContext.CurrentEmployee.LanguageId <= 0) defContext = null;
             }
@@ -294,14 +281,14 @@ namespace DMS_WebAPI.Utilities
         {
             var res = new AdminLanguageInfo();
 
-            using (var dbContext = new ApplicationDbContext())
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 res.Languages = dbContext.AdminLanguagesSet.Select(x => new InternalAdminLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
+                    FileName = x.FileName,
                     IsDefault = x.IsDefault
                 }).ToList();
 
@@ -318,8 +305,10 @@ namespace DMS_WebAPI.Utilities
 
             foreach (var item in res.Languages)
             {
-                
-                var list = GetLanguageValues( item.Id);
+
+                var list = GetLanguageValues(item.FileName).ToList();
+
+                list.ForEach(x => x.LanguageId = item.Id);
 
                 res.LanguageValues.AddRange(list);
             }
@@ -327,43 +316,10 @@ namespace DMS_WebAPI.Utilities
             return res;
         }
 
-        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(int languageId)
+        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(string fileName)
         {
 
-            // ХАЛЯВА
-            var filePath = @"";
-            switch (languageId)
-            {
-                case 45: //English
-                    filePath += @"messages_en_US.properties";
-                    break;
-                case 740: //Polszczyzna
-                    filePath += @"messages_pl_PL.properties";
-                    break;
-                case 90: //Беларуский
-                    filePath += @"messages_be_BY.properties";
-                    break;
-                case 481: // Deutsch
-                    filePath += @"messages_de_DE.properties";
-                    break;
-                case 745: //Francais
-                    filePath += @"messages_fr_FR.properties";
-                    break;
-                case 570: //Русский
-                    filePath += @"messages_ru_RU.properties";
-                    break;
-                case 720: //Українська
-                    filePath += @"messages_uk_UA.properties";
-                    break;
-                case 790: //Cestina
-                    filePath += @"messages_cs_CZ.properties";
-                    break;
-                default:
-                    filePath += @"messages_ru_RU.properties";
-                    break;
-            }
-
-            filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "LanguageValues", filePath);
+            var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "LanguageValues", fileName);
 
             //------------------------------------------------------
 
@@ -401,7 +357,7 @@ namespace DMS_WebAPI.Utilities
 
                 try
                 {
-                    value =input.Split('=')[1].Trim();
+                    value = input.Split('=')[1].Trim();
                     //value = JsonConvert.SerializeObject(value, settings);
                 }
                 catch { }
@@ -410,7 +366,7 @@ namespace DMS_WebAPI.Utilities
                 list.Add(new InternalAdminLanguageValue()
                 {
                     Id = -1,
-                    LanguageId = languageId,
+                    //LanguageId = languageId,
                     Label = label,
                     Value = value
                 });
@@ -483,7 +439,7 @@ namespace DMS_WebAPI.Utilities
         //private void DeleteAllAdminLanguageValues()
         //{
         //    using (var dbContext = new ApplicationDbContext())
-        //    using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    using (var transaction = Transactions.GetTransaction())
         //    {
         //        dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
         //        dbContext.SaveChanges();

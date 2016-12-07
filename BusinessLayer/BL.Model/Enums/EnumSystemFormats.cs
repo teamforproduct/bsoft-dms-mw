@@ -17,5 +17,9 @@
         /// Месяц
         /// </summary>
         Month = 3,
+        /// <summary>
+        /// Год
+        /// </summary>
+        Year2 = 4,
     }
 }

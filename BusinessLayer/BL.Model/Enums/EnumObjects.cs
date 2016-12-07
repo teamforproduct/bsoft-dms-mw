@@ -43,12 +43,18 @@
         DictionaryPositionExecutorTypes = 219, // Типы исполнителей
         DictionaryPositionExecutors = 220, // Исполнители должности
         DictionaryAgentUsers = 221, // Контрагенты - пользователи
+        DictionaryBankAddress = 222, // Контрагенты - пользователи
+        DictionaryCompanyAddress = 223, // Контрагенты - пользователи
+        DictionaryEmployeeAddress = 224, // Контрагенты - пользователи
+        DictionaryClientCompanyAddress = 225, // Контрагенты - пользователи
+        DictionaryPersonAddress = 226, // Контрагенты - пользователи
 
         TemplateDocument = 251, // Шаблоны документов
         TemplateDocumentSendList = 252, // Списки рассылки в шаблонах
         TemplateDocumentRestrictedSendList = 253, // Ограничительные списки рассылки в шаблонах
         TemplateDocumentTask = 254, // Задачи в шаблонах
         TemplateDocumentAttachedFiles = 255, // Прикрепленные к шаблонам файлы
+        TemplateDocumentPaper = 256, // БН в шаблонах
         DictionaryTag = 291, // Теги
         CustomDictionaryTypes = 301, // Типы пользовательских словарей
         CustomDictionaries = 302, // Пользовательские словари

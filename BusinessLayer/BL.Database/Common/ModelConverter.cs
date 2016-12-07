@@ -31,6 +31,7 @@ namespace BL.Database.Common
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
                     ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                    ExecutorPositionExecutorTypeId = document.ExecutorPositionExecutorTypeId,
                     LastChangeUserId = document.LastChangeUserId,
                     LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
@@ -79,9 +80,11 @@ namespace BL.Database.Common
                     TargetAgentId = evt.TargetAgentId,
                     TargetPositionId = evt.TargetPositionId,
                     TargetPositionExecutorAgentId = evt.TargetPositionExecutorAgentId,
+                    TargetPositionExecutorTypeId = evt.TargetPositionExecutorTypeId,
                     SourceAgentId = evt.SourceAgentId,
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
+                    SourcePositionExecutorTypeId = evt.SourcePositionExecutorTypeId,
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
 
@@ -117,6 +120,7 @@ namespace BL.Database.Common
                     AgentId = task.AgentId,
                     PositionId = task.PositionId,
                     PositionExecutorAgentId = task.PositionExecutorAgentId,
+                    PositionExecutorTypeId = task.PositionExecutorTypeId,
                 };
         }
 
@@ -229,9 +233,11 @@ namespace BL.Database.Common
                     SourceAgentId = sendList.SourceAgentId,
                     SourcePositionId = sendList.SourcePositionId,
                     SourcePositionExecutorAgentId = sendList.SourcePositionExecutorAgentId,
+                    SourcePositionExecutorTypeId = sendList.SourcePositionExecutorTypeId,
                     TargetAgentId = sendList.TargetAgentId,
                     TargetPositionId = sendList.TargetPositionId,
                     TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
+                    TargetPositionExecutorTypeId = sendList.TargetPositionExecutorTypeId,
                     LastChangeUserId = sendList.LastChangeUserId,
                     LastChangeDate = sendList.LastChangeDate
                 };
@@ -287,6 +293,7 @@ namespace BL.Database.Common
                  Date = docFile.Date,
                  ExecutorPositionId = docFile.ExecutorPositionId,
                  ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
+                 ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
              };
 
             return res;
@@ -321,6 +328,30 @@ namespace BL.Database.Common
         public static IEnumerable<DocumentPapers> GetDbDocumentPapers(IEnumerable<InternalDocumentPaper> papers)
         {
             return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
+        }
+
+        public static TemplateDocumentPapers GetDbTemplateDocumentPaper(InternalTemplateDocumentPaper item)
+        {
+            return item == null ? null :
+                new TemplateDocumentPapers
+                {
+                    Id = item.Id,
+                    DocumentId = item.DocumentId,
+                    Name = item.Name,
+                    Description = item.Description,
+                    IsMain = item.IsMain,
+                    IsOriginal = item.IsOriginal,
+                    IsCopy = item.IsCopy,
+                    PageQuantity = item.PageQuantity,
+                    OrderNumber = item.OrderNumber,
+                    LastChangeDate = item.LastChangeDate,
+                    LastChangeUserId = item.LastChangeUserId
+                };
+        }
+
+        public static IEnumerable<TemplateDocumentPapers> GetDbTemplateDocumentPapers(IEnumerable<InternalTemplateDocumentPaper> papers)
+        {
+            return papers?.Any() ?? false ? papers.Select(GetDbTemplateDocumentPaper) : null;
         }
 
         public static DocumentPaperLists GetDbDocumentPaperList(InternalDocumentPaperList item)

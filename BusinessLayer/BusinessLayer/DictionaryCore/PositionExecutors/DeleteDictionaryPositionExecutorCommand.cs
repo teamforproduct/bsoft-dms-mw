@@ -1,4 +1,5 @@
-﻿using BL.Database.Documents.Interfaces;
+﻿using BL.CrossCutting.Helpers;
+using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -77,7 +78,7 @@ namespace BL.Logic.DictionaryCore
             {
                 TargetPositionIDs = new List<int> { positionExecutor.PositionId },
                 ReadAgentIDs = new List<int> { positionExecutor.AgentId },
-                //ReadDate = new BL.Model.Common.Period(positionExecutor.StartDate, positionExecutor.EndDate ?? DateTime.MaxValue)
+                ReadDate = new BL.Model.Common.Period(positionExecutor.StartDate, positionExecutor.EndDate ?? DateTime.MaxValue)
             })) throw new DictionaryRecordCouldNotBeDeleted();
 
 
@@ -88,7 +89,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);

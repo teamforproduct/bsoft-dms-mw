@@ -107,6 +107,7 @@ namespace BL.Logic.DocumentCore.Commands
                 waitTarget.ParentId = waitParent.Id;
                 waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
                 waitTarget.OnEvent.SourcePositionExecutorAgentId = waitParent.OnEvent.TargetPositionExecutorAgentId;
+                waitTarget.OnEvent.SourcePositionExecutorTypeId = waitParent.OnEvent.TargetPositionExecutorTypeId;
             }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)

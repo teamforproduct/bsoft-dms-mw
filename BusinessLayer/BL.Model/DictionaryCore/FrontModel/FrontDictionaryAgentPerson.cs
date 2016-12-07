@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -47,7 +48,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
-        public DateTime? PassportDate { get; set; }
+        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
+        private DateTime?  _PassportDate; 
+
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
@@ -55,7 +58,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Дата рождения
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
+        private DateTime?  _BirthDate; 
+
 
         /// <summary>
         /// Полное имя
@@ -73,6 +78,16 @@ namespace BL.Model.DictionaryCore.FrontModel
         {
             get { string pass = PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
         }
+
+        /// <summary>
+        /// Назване компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public string AgentCompanyName { get; set; }
+
+        /// <summary>
+        /// Id компании, контактным лицом которой является физическое лицо
+        /// </summary>
+        public int? AgentCompanyId { get; set; }
 
         /// <summary>
         /// Список контактов контрагента

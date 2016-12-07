@@ -19,9 +19,11 @@ namespace BL.Database.DBModel.Document
         public int SendTypeId { get; set; }
         public int SourcePositionId { get; set; }
         public int? SourcePositionExecutorAgentId { get; set; }
+        public int? SourcePositionExecutorTypeId { get; set; }
         public int SourceAgentId { get; set; }
-        public Nullable<int> TargetPositionId { get; set; }
-        public Nullable<int> TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionId { get; set; }
+        public int? TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionExecutorTypeId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
@@ -54,10 +56,14 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions SourcePosition { get; set; }
         [ForeignKey("SourcePositionExecutorAgentId")]
         public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
+        [ForeignKey("SourcePositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
         [ForeignKey("SourceAgentId")]
         public virtual DictionaryAgents SourceAgent { get; set; }
         [ForeignKey("TargetPositionId")]
         public virtual DictionaryPositions TargetPosition { get; set; }
+        [ForeignKey("TargetPositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
         [ForeignKey("TargetPositionExecutorAgentId")]
         public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
         [ForeignKey("TargetAgentId")]

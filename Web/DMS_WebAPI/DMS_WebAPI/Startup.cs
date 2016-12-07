@@ -1,24 +1,14 @@
-﻿using System.Linq;
-using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.FullTextSearch;
-using BL.Logic.SystemServices.MailWorker;
-using BL.Model.Database;
+using BL.Model.Enums;
+using BL.Model.WebAPI.Filters;
+using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
-using BL.Logic.SystemServices.ClearTrashDocuments;
-using BL.Model.WebAPI.Filters;
 using System.Collections.Generic;
-using System.Data.Entity;
-using DMS_WebAPI.Models;
-using System;
-using System.Runtime.InteropServices;
-using System.IO;
-using System.Web;
-using BL.Logic.SystemCore.Interfaces;
-using BL.Logic.SystemServices.TempStorage;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -30,6 +20,7 @@ namespace DMS_WebAPI
         {
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
+            // configuring authentication
             ConfigureAuth(app);
 
             // Проверка на целостность Actions в процедуре импорта 
@@ -45,7 +36,7 @@ namespace DMS_WebAPI
 
             var dbProc = new WebAPIDbProcess();
 
-            var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<DatabaseType> { DatabaseType.SQLServer } });
+            var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{

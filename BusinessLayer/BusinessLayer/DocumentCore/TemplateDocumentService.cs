@@ -13,6 +13,7 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using System.Linq;
 using BL.Logic.Common;
+using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore
 {
@@ -25,11 +26,12 @@ namespace BL.Logic.DocumentCore
 
 
         public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin,
-            IFileStore fstore, ICommandService commandService, ISystemDbProcess systemDb)
+            IFileStore fStore, ICommandService commandService, ISystemDbProcess systemDb)
         {
             _templateDb = templateDb;
            _commandService = commandService;
             _systemDb = systemDb;
+            _fStore = fStore;
 
         }
 
@@ -54,7 +56,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc)
         {
-            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ObjectCode = "TemplateDocuments", ActionCode = "Modify" }).ToList();
+            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplateDocument } }).ToList();
             uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
 
             uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));
@@ -107,6 +109,21 @@ namespace BL.Logic.DocumentCore
 
         #endregion TemplateDocumentTasks
 
+        #region TemplateDocumentPapers
+
+        public IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext context, FilterTemplateDocumentPaper filter)
+        {
+            return _templateDb.GetTemplateDocumentPapers(context, filter);
+        }
+
+
+        public FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext context, int id)
+        {
+            return _templateDb.GetTemplateDocumentPaper(context, id);
+        }
+
+        #endregion TemplateDocumentPapers
+
         #region TemplateAttachedFiles
 
         public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
@@ -116,7 +133,13 @@ namespace BL.Logic.DocumentCore
 
         public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
         {
-            return _templateDb.GetTemplateAttachedFile(ctx, id);
+            var fl = _templateDb.GetTemplateAttachedFile(ctx, id);
+            if (fl == null)
+            {
+                throw new UnknownDocumentFile();
+            }
+            _fStore.GetFile(ctx, fl);
+            return fl;
         }
 
 

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using BL.Model.Enums;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -20,7 +21,7 @@ namespace BL.Logic.DictionaryCore
             try
             {
                 var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
 
