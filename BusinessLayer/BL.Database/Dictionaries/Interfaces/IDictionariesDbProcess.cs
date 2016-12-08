@@ -87,6 +87,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void DeleteAgentCompanies(IContext context, List<int> list);
+        IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         bool ExistsAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryAgentCompanies

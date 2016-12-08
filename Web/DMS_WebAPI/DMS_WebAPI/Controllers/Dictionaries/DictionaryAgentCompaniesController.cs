@@ -8,14 +8,16 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.SystemCore;
 using BL.CrossCutting.DependencyInjection;
-
-
+using System.Web.Http.Description;
+using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {   /// <summary>
     /// Контрагенты - юридические лица
     /// </summary>
     [Authorize]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryAgentCompanies")]
     public class DictionaryAgentCompaniesController : ApiController
     {
         /// <summary>
@@ -47,6 +49,27 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = tmpDictProc.GetAgentCompany(ctx, id);
             return new JsonResult(tmpDict, this);
         }
+
+
+        /// <summary>
+        /// Возвращает список (Id, Name) всех юридических лиц
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetList")]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetAgentCompanyList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            return res;
+        }
+
 
         /// <summary>
         /// добавить юридическое лицо

@@ -1904,6 +1904,22 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentCompaniesQuery(context, dbContext, filter, paging);
+
+                var res = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
 
         public bool ExistsAgentCompanies(IContext context, FilterDictionaryAgentCompany filter)
         {

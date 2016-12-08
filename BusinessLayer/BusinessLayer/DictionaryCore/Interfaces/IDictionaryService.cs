@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgentCompanies
         FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
-
+        IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
 

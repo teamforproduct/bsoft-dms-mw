@@ -360,6 +360,11 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentCompanies(context, new FilterDictionaryAgentCompany { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
+        public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        {
+            return _dictDb.GetAgentCompanyList(context, filter, paging);
+        }
+
         public IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
