@@ -957,6 +957,29 @@ namespace BL.Database.Documents
                 return fl.Id;
             }
         }
+        public InternalTemplateAttachedFile UpdateFilePrepare(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId)
+                        .Where(x => x.Id == id)
+                        .Select(x => new InternalTemplateAttachedFile
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            OrderInDocument = x.OrderNumber,
+                            Type = (EnumFileTypes)x.TypeId,
+                            Description = x.Description,
+                            //Name = x.Name,
+                            //Extension = x.Extention,
+                            //FileType = x.FileType,
+                            //FileSize = x.FileSize,
+                            //Hash = x.Hash,
+                        }).FirstOrDefault();
+                transaction.Complete();
+                return file;
+            }
+        }
 
         public void UpdateFile(IContext ctx, InternalTemplateAttachedFile docFile)
         {
@@ -966,17 +989,19 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentFilesSet.Attach(fl);
 
                 var entry = dbContext.Entry(fl);
-                entry.Property(x => x.Name).IsModified = true;
-                entry.Property(x => x.Extention).IsModified = true;
-                entry.Property(x => x.FileType).IsModified = true;
-                entry.Property(x => x.FileSize).IsModified = true;
                 entry.Property(x => x.TypeId).IsModified = true;
+                entry.Property(x => x.Description).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                entry.Property(x => x.Hash).IsModified = true;
-                entry.Property(x => x.Description).IsModified = true;
+                if (docFile.PostedFileData != null)
+                {
+                    entry.Property(x => x.Name).IsModified = true;
+                    entry.Property(x => x.Extention).IsModified = true;
+                    entry.Property(x => x.FileType).IsModified = true;
+                    entry.Property(x => x.FileSize).IsModified = true;
+                    entry.Property(x => x.Hash).IsModified = true;
+                }
                 dbContext.SaveChanges();
-
                 CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
                 transaction.Complete();
             }
@@ -985,7 +1010,6 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-
                 var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId)
                         .Where(x => x.Id == id)
                         .Select(x => new InternalTemplateAttachedFile
