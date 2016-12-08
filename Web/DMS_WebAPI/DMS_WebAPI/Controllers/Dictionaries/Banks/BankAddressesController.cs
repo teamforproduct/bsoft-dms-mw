@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Адреса банка
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/Banks/Addresses")]
+    [RoutePrefix("api/v2/Banks")]
     public class BankAddressesController : ApiController
     {
 
@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{BankId:int}")]
+        [Route("Addresses")] // /{BankId:int}
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int BankId, [FromUri] FilterDictionaryAgentAddress filter)
         {
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}")]
+        [Route("Addresses/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("")]
+        [Route("Addresses")]
         public IHttpActionResult Post([FromBody]AddDictionaryAgentAddress model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("")]
+        [Route("Addresses")]
         public IHttpActionResult Put([FromBody]ModifyDictionaryAgentAddress model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("{Id:int}")]
+        [Route("Addresses/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

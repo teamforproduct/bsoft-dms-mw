@@ -21,8 +21,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Контактные лица компании (юридического лица)
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/CompaniesContactPersons")]
-    public class CompaniesContactPersonsController : ApiController
+    [RoutePrefix("api/v2/Companies")]
+    public class CompanyContactPersonsController : ApiController
     {
         /// <summary>
         /// Возвращает список контактных лиц
@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>Список контрагентов
         /// </returns>
         [HttpGet]
-        //[Route("{CompanyId:int}")]
+        [Route("ContactPersons")]
         [ResponseType(typeof(List<FrontContactPersons>))]
         public IHttpActionResult Get(int CompanyId, [FromUri] FilterDictionaryAgentPerson filter)
         {
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="Id">ИД агента</param>
         /// <returns>Агент</returns>
         [HttpGet]
-        [Route("{Id:int}")]
+        [Route("ContactPersons/{Id:int}")]
         [ResponseType(typeof(FrontContactPersons))]
         public IHttpActionResult Get(int Id)
         {
@@ -68,6 +68,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [HttpPost]
+        [Route("ContactPersons")]
         public IHttpActionResult Post([FromBody]AddContactPerson model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -80,6 +82,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [HttpDelete]
+        [Route("ContactPersons/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
