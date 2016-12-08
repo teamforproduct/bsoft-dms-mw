@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// При изменнии ролей для должности возникает задача синхронизации шаблона и экземпляров
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminPositionRoles")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminPositionRoles")]
     public class AdminPositionRolesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

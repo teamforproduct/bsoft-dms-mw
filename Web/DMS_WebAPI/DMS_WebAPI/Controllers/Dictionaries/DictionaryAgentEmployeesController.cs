@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
  /// Контрагент - сотрудник
  /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryAgentEmployees")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryAgentEmployees")]
     public class DictionaryAgentEmployeesController : ApiController
     {
         /// <summary>

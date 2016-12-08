@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Адреса юридических лиц
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/Companies")]
+    [RoutePrefix(ApiPrefix.V2 + "Companies")]
     public class CompaniesAddressesController : ApiController
     {
 

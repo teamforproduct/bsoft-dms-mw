@@ -11,7 +11,7 @@ using BL.Model.DocumentCore.IncomingModel;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentActions")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentActions")]
     public class DocumentActionsController : ApiController
     {
         /// <summary>

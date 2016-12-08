@@ -23,7 +23,7 @@ using System.Linq;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/v2/Account")]
+    [RoutePrefix(ApiPrefix.V2 + "Account")]
     public class AccountController : ApiController
     {
         private const string LocalLoginProvider = "Local";

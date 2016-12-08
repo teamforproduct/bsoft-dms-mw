@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Вся история назначений отображается в панели "Назначения"
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryPositionExecutors")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryPositionExecutors")]
     public class DictionaryPositionExecutorsController : ApiController
     {
         /// <summary>

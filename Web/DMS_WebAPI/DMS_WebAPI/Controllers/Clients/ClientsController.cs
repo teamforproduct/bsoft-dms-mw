@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Admins
     ///
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/ClientActions")]
+    [RoutePrefix(ApiPrefix.V2 + "ClientActions")]
     public class ClientActionsController : ApiController
     {
        

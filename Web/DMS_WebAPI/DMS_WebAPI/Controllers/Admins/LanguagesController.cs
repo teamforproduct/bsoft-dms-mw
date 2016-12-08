@@ -14,7 +14,7 @@ using BL.Model.AdminCore.InternalModel;
 namespace DMS_WebAPI.Controllers.Admins
 {
     [Authorize]
-    [RoutePrefix("api/v2/Languages")]
+    [RoutePrefix(ApiPrefix.V2 + "Languages")]
     public class LanguagesController : ApiController
     {
         /// <summary>

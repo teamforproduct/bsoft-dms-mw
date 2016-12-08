@@ -15,7 +15,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentFiles")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentFiles")]
     public class DocumentFilesController : ApiController
     {
         /// <summary>

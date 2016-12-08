@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryPositions")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryPositions")]
     public class DictionaryPositionsController : ApiController
     {
 

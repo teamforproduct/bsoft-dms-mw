@@ -14,7 +14,7 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryRegistrationJournals")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryRegistrationJournals")]
     public class DictionaryRegistrationJournalsController : ApiController
     {
         /// <summary>

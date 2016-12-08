@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// соответствующую выбранному типу
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryAgents")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryAgents")]
     public class DictionaryAgentsController : ApiController
     {
         /// <summary>

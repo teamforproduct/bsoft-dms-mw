@@ -13,7 +13,7 @@ using BL.Model.DocumentCore.IncomingModel;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentEvents")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentEvents")]
     public class DocumentEventsController : ApiController
     {
         /// <summary>

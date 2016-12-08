@@ -20,7 +20,7 @@ namespace DMS_WebAPI.Controllers
     /// Форматы значений для формул
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/SystemSettings")]
+    [RoutePrefix(ApiPrefix.V2 + "SystemSettings")]
     public class SystemSettingsController : ApiController
     {
         /// <summary>

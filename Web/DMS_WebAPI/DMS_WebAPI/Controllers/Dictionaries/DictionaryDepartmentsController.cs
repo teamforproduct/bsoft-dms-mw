@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Отделы всегда подчинены компаниям, могут подчиняться вышестоящим отделам.
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryDepartments")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryDepartments")]
     public class DictionaryDepartmentsController : ApiController
     {
         /// <summary>

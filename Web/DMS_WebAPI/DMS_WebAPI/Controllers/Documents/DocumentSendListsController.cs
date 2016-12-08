@@ -10,7 +10,7 @@ using BL.Logic.SystemServices.AutoPlan;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentSendLists")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentSendLists")]
     public class DocumentSendListsController : ApiController
     {
         /// <summary>

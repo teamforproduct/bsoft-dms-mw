@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Предустановленный роли имеют классификатор, для идентификации.
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminRoles")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminRoles")]
     public class AdminRolesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

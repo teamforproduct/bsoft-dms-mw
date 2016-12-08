@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Адреса банка
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/Banks")]
+    [RoutePrefix(ApiPrefix.V2 + "Banks")]
     public class BankAddressesController : ApiController
     {
 

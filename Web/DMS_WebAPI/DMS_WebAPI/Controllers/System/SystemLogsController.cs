@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Controllers
     /// Логи
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/SystemLogs")]
+    [RoutePrefix(ApiPrefix.V2 + "SystemLogs")]
     public class SystemLogsController : ApiController
     {
         /// <summary>

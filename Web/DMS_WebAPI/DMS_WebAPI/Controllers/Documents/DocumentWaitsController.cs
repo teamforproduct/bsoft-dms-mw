@@ -13,7 +13,7 @@ using BL.Model.DocumentCore.IncomingModel;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentWaits")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentWaits")]
     public class DocumentWaitsController : ApiController
     {
         /// <summary>

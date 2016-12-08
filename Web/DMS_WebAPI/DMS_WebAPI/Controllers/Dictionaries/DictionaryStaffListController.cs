@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Действия связанные с пользовательской настройкой системы
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryStaffList")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryStaffList")]
     public class DictionaryStaffListController : ApiController
     {
         /// <summary>

@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Структура описывает действия, которые разрешены для ролей.
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminRoleActions")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminRoleActions")]
     public class AdminRoleActionsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

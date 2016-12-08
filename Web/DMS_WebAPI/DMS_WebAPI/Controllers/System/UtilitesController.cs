@@ -26,7 +26,7 @@ using BL.Logic.SystemCore.Interfaces;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/v2/Utilities")]
+    [RoutePrefix(ApiPrefix.V2 + "Utilities")]
     public class UtilitiesController : ApiController
     {
         /// <summary>

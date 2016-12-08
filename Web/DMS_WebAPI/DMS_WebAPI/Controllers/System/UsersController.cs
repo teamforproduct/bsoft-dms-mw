@@ -33,7 +33,7 @@ using System.IO;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/v2/Users")]
+    [RoutePrefix(ApiPrefix.V2 + "Users")]
     public class UsersController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

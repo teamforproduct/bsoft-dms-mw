@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// При назначении сотрудника да должность роли, назначенные должности, передаются сотруднику (роли могут передаваться не в полном объеме - референт может не иметь права подписания)
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminUserRoles")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminUserRoles")]
     public class AdminUserRolesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

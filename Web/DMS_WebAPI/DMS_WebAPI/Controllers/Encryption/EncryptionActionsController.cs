@@ -15,7 +15,7 @@ using System;
 namespace DMS_WebAPI.Controllers.Encryption
 {
     [Authorize]
-    [RoutePrefix("api/v2/EncryptionActions")]
+    [RoutePrefix(ApiPrefix.V2 + "EncryptionActions")]
     public class EncryptionActionsController : ApiController
     {
         /// <summary>

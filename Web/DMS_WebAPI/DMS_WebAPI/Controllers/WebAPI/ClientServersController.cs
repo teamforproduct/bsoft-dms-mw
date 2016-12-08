@@ -12,7 +12,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.Controllers.WebAPI
 {
     [Authorize]
-    [RoutePrefix("api/v2/ClientServers")]
+    [RoutePrefix(ApiPrefix.V2 + "ClientServers")]
     public class ClientServersController : ApiController
     {
         public IHttpActionResult Get(FilterAspNetClientServers filter)

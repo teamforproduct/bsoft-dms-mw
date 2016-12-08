@@ -14,7 +14,7 @@ namespace DMS_WebAPI.Controllers
     /// Действия системы
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/SystemActions")]
+    [RoutePrefix(ApiPrefix.V2 + "SystemActions")]
     public class SystemActionsController : ApiController
     {
         /// <summary>
