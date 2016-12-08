@@ -350,9 +350,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
-
-                qry = GetWhereRole(ref qry, filter);
+                var qry = GetRolesQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalAdminRole
                 {
@@ -373,8 +371,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
-                qry = GetWhereRole(ref qry, filter);
+                var qry = GetRolesQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Name);
 
@@ -396,9 +393,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRolesSet.AsQueryable();
-
-                qry = GetWhereRole(ref qry, filter);
+                var qry = GetRolesQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAdminRole
                 {
@@ -409,66 +404,90 @@ namespace BL.Database.Admins
             }
         }
 
-        private static IQueryable<AdminRoles> GetWhereRole(ref IQueryable<AdminRoles> qry, FilterAdminRole filter)
+        private IQueryable<AdminRoles> GetRolesQuery(IContext context, DmsContext dbContext, FilterAdminRole filter)
         {
+            var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<AdminRoles>();
 
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoles>();
 
-                qry = qry.Where(filterContains);
-            }
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<AdminRoles>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
 
-                qry = qry.Where(filterContains);
-            }
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminRoles>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
 
 
-            // Список классификаторов
-            if (filter.RoleTypeIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRoles>();
+                // Список классификаторов
+                if (filter.RoleTypeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoles>();
 
-                filterContains = filter.RoleTypeIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RoleTypeId == value).Expand());
+                    filterContains = filter.RoleTypeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RoleTypeId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Поиск по наименованию
-            if (!string.IsNullOrEmpty(filter.Name))
-            {
-                var filterContains = PredicateBuilder.False<AdminRoles>();
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoles>();
 
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (!string.IsNullOrEmpty(filter.NameExact))
-            {
-                qry = qry.Where(x => x.Name == filter.NameExact);
-            }
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
 
-            if (!string.IsNullOrEmpty(filter.Description))
-            {
-                var filterContains = PredicateBuilder.False<AdminRoles>();
+                if (!string.IsNullOrEmpty(filter.Description))
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoles>();
 
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
-                qry = qry.Where(filterContains);
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    if (filter.IsChecked == true)
+                    {
+                        List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
+
+                        if (filter.IDs == null) filter.IDs = new List<int>();
+
+                        filter.IDs.AddRange(roles);
+                    }
+                }
+
+                if (filter.LinkIDs?.Count > 0)
+                {
+                    List<int> roles = GetRolesByPositions(context, filter.LinkIDs);
+
+                    filter.IDs.AddRange(roles);
+                }
             }
 
             return qry;
@@ -526,8 +545,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-                qry = GetWhereRoleAction(ref qry, filter);
+                var qry = GetRoleActionQuery(context, dbContext, filter);
                 qry.Delete();
                 //dbContext.AdminRoleActionsSet.Remove(dbModel);
                 //dbContext.SaveChanges();
@@ -539,8 +557,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-                qry = GetWhereRoleAction(ref qry, filter);
+                var qry = GetRoleActionQuery(context, dbContext, filter);
                 var res = qry.Select(x => new InternalAdminRoleAction
                 {
                     Id = x.Id,
@@ -560,9 +577,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-
-                qry = GetWhereRoleAction(ref qry, filter);
+                var qry = GetRoleActionQuery(context, dbContext, filter);
 
                 //qry = qry.OrderBy(x => x.Name);
 
@@ -584,67 +599,69 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-
-                qry = GetWhereRoleAction(ref qry, filter);
-
+                var qry = GetRoleActionQuery(context, dbContext, filter);
                 var res = qry.Any();
                 transaction.Complete();
                 return res;
             }
         }
 
-        private static IQueryable<AdminRoleActions> GetWhereRoleAction(ref IQueryable<AdminRoleActions> qry, FilterAdminRoleAction filter)
+        private IQueryable<AdminRoleActions> GetRoleActionQuery(IContext context, DmsContext dbContext,  FilterAdminRoleAction filter)
         {
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            var qry = dbContext.AdminRoleActionsSet.AsQueryable();
+
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
 
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<AdminRoleActions>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminRoleActions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.RoleIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+                if (filter.RoleIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
 
-                filterContains = filter.RoleIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+                    filterContains = filter.RoleIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RoleId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.ActionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+                if (filter.ActionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
 
-                filterContains = filter.ActionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.ActionId == value).Expand());
+                    filterContains = filter.ActionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ActionId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.RecordIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRoleActions>();
+                if (filter.RecordIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
 
-                filterContains = filter.RecordIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RecordId == value).Expand());
+                    filterContains = filter.RecordIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RecordId == value).Expand());
 
-                qry = qry.Where(filterContains);
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
@@ -654,10 +671,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-
-                qry = GetWhereRoleAction(ref qry, filter);
-
+                var qry = GetRoleActionQuery(context, dbContext, filter);
                 var res = qry.Select(x => x.ActionId).ToList();
                 transaction.Complete();
                 return res;
@@ -707,8 +721,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
-                qry = GetWherePositionRole(ref qry, filter);
+                var qry = GetAdminPositionRoleQuery(context, dbContext, filter);
                 dbContext.AdminPositionRolesSet.RemoveRange(qry);
                 dbContext.SaveChanges();
                 transaction.Complete();
@@ -719,9 +732,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
-
-                qry = GetWherePositionRole(ref qry, filter);
+                var qry = GetAdminPositionRoleQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalAdminPositionRole
                 {
@@ -775,9 +786,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
-
-                qry = GetWherePositionRole(ref qry, filter);
+                var qry = GetAdminPositionRoleQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalAdminPositionRole
                 {
@@ -798,9 +807,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
-
-                qry = GetWherePositionRole(ref qry, filter);
+                var qry = GetAdminPositionRoleQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAdminPositionRole
                 {
@@ -821,28 +828,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRolesSet.AsQueryable();
-
-                if (filter.PositionIDs?.Count > 0)
-                {
-                    if (filter.IsChecked == true)
-                    {
-                        List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
-
-                        if (filter.IDs == null) filter.IDs = new List<int>();
-
-                        filter.IDs.AddRange(roles);
-                    }
-                }
-
-                if (filter.LinkIDs?.Count > 0)
-                {
-                    List<int> roles = GetRolesByPositions(context, filter.LinkIDs);
-
-                    filter.IDs.AddRange(roles);
-                }
-
-                qry = GetWhereRole(ref qry, filter);
+                var qry = GetRolesQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Name);
 
@@ -864,9 +850,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
-
-                qry = GetWherePositionRole(ref qry, filter);
+                var qry = GetAdminPositionRoleQuery(context, dbContext, filter);
 
                 var res = qry.Any();
 
@@ -876,61 +860,57 @@ namespace BL.Database.Admins
             }
         }
 
-        private IQueryable<AdminPositionRoles> GetAdminPositionRoleQuery(DmsContext dbContext, FilterAdminPositionRole filter)
+        private IQueryable<AdminPositionRoles> GetAdminPositionRoleQuery(IContext context,  DmsContext dbContext, FilterAdminPositionRole filter)
         {
             var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
-            qry = GetWherePositionRole(ref qry, filter);
-
-            return qry;
-        }
-
-        private static IQueryable<AdminPositionRoles> GetWherePositionRole(ref IQueryable<AdminPositionRoles> qry, FilterAdminPositionRole filter)
-        {
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
-                qry = qry.Where(filterContains);
-            }
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<AdminPositionRoles>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
 
-                qry = qry.Where(filterContains);
-            }
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminPositionRoles>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
-            if (filter.PositionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+                    qry = qry.Where(filterContains);
+                }
 
-                filterContains = filter.PositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
-                qry = qry.Where(filterContains);
-            }
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-            if (filter.RoleIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+                    qry = qry.Where(filterContains);
+                }
 
-                filterContains = filter.RoleIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+                if (filter.RoleIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminPositionRoles>();
 
-                qry = qry.Where(filterContains);
+                    filterContains = filter.RoleIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
         }
-
         #endregion
 
         #region [+] UserRole ...
@@ -984,8 +964,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminUserRolesSet.AsQueryable();
-                qry = GetWhereUserRole(ref qry, filter);
+                var qry = GetUserRolesQuery(context, dbContext, filter);
                 qry.Delete();
                 //if (qry.Count() == 0) return;
                 //dbContext.AdminUserRolesSet.RemoveRange(qry);
@@ -1000,9 +979,7 @@ namespace BL.Database.Admins
             {
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
-                var qry = dbContext.AdminUserRolesSet.AsQueryable();
-
-                qry = GetWhereUserRole(ref qry, filter);
+                var qry = GetUserRolesQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalAdminUserRole
                 {
@@ -1030,9 +1007,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminUserRolesSet.AsQueryable();
-
-                qry = GetWhereUserRole(ref qry, filter);
+                var qry = GetUserRolesQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => x.RoleId).ToList();
 
@@ -1046,9 +1021,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminUserRolesSet.AsQueryable();
-
-                qry = GetWhereUserRole(ref qry, filter);
+                var qry = GetUserRolesQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAdminUserRole
                 {
@@ -1069,9 +1042,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminUserRolesSet.AsQueryable();
-
-                qry = GetWhereUserRole(ref qry, filter);
+                var qry = GetUserRolesQuery(context, dbContext, filter);
 
                 var res = qry.Any();
 
@@ -1081,83 +1052,88 @@ namespace BL.Database.Admins
             }
         }
 
-        private static IQueryable<AdminUserRoles> GetWhereUserRole(ref IQueryable<AdminUserRoles> qry, FilterAdminUserRole filter)
+        private IQueryable<AdminUserRoles> GetUserRolesQuery(IContext context, DmsContext dbContext, FilterAdminUserRole filter)
         {
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            var qry = dbContext.AdminUserRolesSet.AsQueryable();
+
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
 
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<AdminUserRoles>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminUserRoles>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.UserIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                if (filter.UserIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
 
-                filterContains = filter.UserIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionExecutor.AgentId == value).Expand());
+                    filterContains = filter.UserIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionExecutor.AgentId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.RoleIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                if (filter.RoleIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
 
-                filterContains = filter.RoleIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+                    filterContains = filter.RoleIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RoleId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.PositionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
 
-                filterContains = filter.PositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionExecutor.PositionId == value).Expand());
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionExecutor.PositionId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.PositionExecutorIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                if (filter.PositionExecutorIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
 
-                filterContains = filter.PositionExecutorIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionExecutorId == value).Expand());
+                    filterContains = filter.PositionExecutorIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionExecutorId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            //if (filter.Period?.IsActive == true)
-            //{
-            //    qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
-            //    qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
-            //}
+                //if (filter.Period?.IsActive == true)
+                //{
+                //    qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
+                //    qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
+                //}
 
-            if (filter.StartDate.HasValue)
-            {
-                qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.UtcNow));
-            }
+                if (filter.StartDate.HasValue)
+                {
+                    qry = qry.Where(x => x.PositionExecutor.StartDate <= (filter.EndDate ?? DateTime.UtcNow));
+                }
 
-            if (filter.EndDate.HasValue)
-            {
-                qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.UtcNow));
+                if (filter.EndDate.HasValue)
+                {
+                    qry = qry.Where(x => x.PositionExecutor.EndDate >= (filter.StartDate ?? DateTime.UtcNow));
+                }
             }
 
             return qry;
@@ -1275,8 +1251,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
-                qry = GetWhereSubordination(ref qry, filter);
+                var qry = GetSubordinationsQuery(context, dbContext, filter);
                 qry.Delete();
                 //var e = qry.ToList();
                 //dbContext.AdminSubordinationsSet.RemoveRange(qry);
@@ -1289,9 +1264,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
-
-                qry = GetWhereSubordination(ref qry, filter);
+                var qry = GetSubordinationsQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalAdminSubordination
                 {
@@ -1312,9 +1285,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
-
-                qry = GetWhereSubordination(ref qry, filter);
+                var qry = GetSubordinationsQuery(context, dbContext, filter);
 
                 //qry = qry.OrderBy(x => x.Name);
 
@@ -1339,9 +1310,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
-
-                qry = GetWhereSubordination(ref qry, filter);
+                var qry = GetSubordinationsQuery(context, dbContext, filter);
 
                 //qry = qry.OrderBy(x => x.Name);
 
@@ -1365,9 +1334,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
-
-                qry = GetWhereSubordination(ref qry, filter);
+                var qry = GetSubordinationsQuery(context, dbContext, filter);
 
                 //qry = qry.OrderBy(x => x.Name);
 
@@ -1383,9 +1350,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminSubordinationsSet.AsQueryable();
-
-                qry = GetWhereSubordination(ref qry, filter);
+                var qry = GetSubordinationsQuery(context, dbContext, filter);
 
                 var res = qry.Any();
 
@@ -1395,68 +1360,74 @@ namespace BL.Database.Admins
             }
         }
 
-        private static IQueryable<AdminSubordinations> GetWhereSubordination(ref IQueryable<AdminSubordinations> qry, FilterAdminSubordination filter)
+        private IQueryable<AdminSubordinations> GetSubordinationsQuery(IContext context, DmsContext dbContext, FilterAdminSubordination filter)
         {
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                qry = qry.Where(filterContains);
-            }
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<AdminSubordinations>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
 
-                qry = qry.Where(filterContains);
-            }
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminSubordinations>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
-            if (filter.SourcePositionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+                    qry = qry.Where(filterContains);
+                }
 
-                filterContains = filter.SourcePositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
+                if (filter.SourcePositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                qry = qry.Where(filterContains);
-            }
+                    filterContains = filter.SourcePositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
 
-            if (filter.TargetPositionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+                    qry = qry.Where(filterContains);
+                }
 
-                filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                if (filter.TargetPositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                qry = qry.Where(filterContains);
-            }
+                    filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-            if (filter.PositionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+                    qry = qry.Where(filterContains);
+                }
 
-                filterContains = filter.PositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                qry = qry.Where(filterContains);
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
 
-            }
+                    qry = qry.Where(filterContains);
 
-            if (filter.SubordinationTypeIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminSubordinations>();
+                }
 
-                filterContains = filter.SubordinationTypeIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.SubordinationTypeId == (int)value).Expand());
+                if (filter.SubordinationTypeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminSubordinations>();
 
-                qry = qry.Where(filterContains);
+                    filterContains = filter.SubordinationTypeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.SubordinationTypeId == (int)value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
@@ -1525,8 +1496,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
-                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+                var qry = GetRegistrationJournalPositionQuery(context, dbContext, filter);
                 dbContext.AdminRegistrationJournalPositionsSet.RemoveRange(qry);
                 dbContext.SaveChanges();
                 transaction.Complete();
@@ -1537,9 +1507,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
-
-                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+                var qry = GetRegistrationJournalPositionQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalRegistrationJournalPosition
                 {
@@ -1557,9 +1525,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
-
-                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+                var qry = GetRegistrationJournalPositionQuery(context, dbContext, filter);
 
                 //qry = qry.OrderBy(x => x.Name);
 
@@ -1584,7 +1550,7 @@ namespace BL.Database.Admins
         //    {
         //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
-        //        qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+        //        qry = GetWhereRegistrationJournalPosition(qry, filter);
 
         //        //qry = qry.OrderBy(x => x.Name);
 
@@ -1610,7 +1576,7 @@ namespace BL.Database.Admins
         //    {
         //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
 
-        //        qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+        //        qry = GetWhereRegistrationJournalPosition(qry, filter);
 
         //        //qry = qry.OrderBy(x => x.Name);
 
@@ -1622,9 +1588,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
-
-                qry = GetWhereRegistrationJournalPosition(ref qry, filter);
+                var qry = GetRegistrationJournalPositionQuery(context, dbContext, filter);
 
                 var res = qry.Any();
 
@@ -1634,58 +1598,63 @@ namespace BL.Database.Admins
             }
         }
 
-        private static IQueryable<AdminRegistrationJournalPositions> GetWhereRegistrationJournalPosition(ref IQueryable<AdminRegistrationJournalPositions> qry, FilterAdminRegistrationJournalPosition filter)
+        private IQueryable<AdminRegistrationJournalPositions> GetRegistrationJournalPositionQuery(IContext context, DmsContext dbContext, FilterAdminRegistrationJournalPosition filter)
         {
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
 
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<AdminRegistrationJournalPositions>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminRegistrationJournalPositions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.PositionIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
 
-                filterContains = filter.PositionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.RegistrationJournalIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                if (filter.RegistrationJournalIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
 
-                filterContains = filter.RegistrationJournalIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RegJournalId == value).Expand());
+                    filterContains = filter.RegistrationJournalIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RegJournalId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
 
-            if (filter.RegistrationJournalAccessTypeIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                if (filter.RegistrationJournalAccessTypeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
 
-                filterContains = filter.RegistrationJournalAccessTypeIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.RegJournalAccessTypeId == (int)value).Expand());
+                    filterContains = filter.RegistrationJournalAccessTypeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RegJournalAccessTypeId == (int)value).Expand());
 
-                qry = qry.Where(filterContains);
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
