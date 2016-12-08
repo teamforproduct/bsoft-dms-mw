@@ -129,6 +129,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string RegistrationJournalName { get; set; }
 
         public string ExecutorPositionName { get; set; }
+        public int? ExecutorPositionExecutorAgentId { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
         public string ExecutorPositionExecutorNowAgentName { get; set; }
         public string ExecutorPositionAgentPhoneNumber { get; set; }

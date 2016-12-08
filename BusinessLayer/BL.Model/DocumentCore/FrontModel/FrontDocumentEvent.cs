@@ -45,9 +45,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public bool? IsRead { get; set; }
 
         public string SourceAgentName { get; set; }
+        public int? SourcePositionExecutorAgentId { get; set; }
         public string SourcePositionExecutorAgentName { get; set; }
         public int? TargetPositionId { get; set; }
         public string TargetAgentName { get; set; }
+        public int? TargetPositionExecutorAgentId { get; set; }
         public string TargetPositionExecutorAgentName { get; set; }
         public int? SourcePositionId { get; set; }
         public string SourcePositionExecutorNowAgentName { get; set; }

@@ -273,6 +273,8 @@ namespace BL.Database.Documents
                     IsRegistered = doc.IsRegistered,
                     IsLaunchPlan = doc.IsLaunchPlan,
                     Description = doc.Description,
+                    ExecutorPositionId = doc.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = doc.ExecutorPositionExecutorAgentId,
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
                     ExecutorPositionName = doc.ExecutorPosition.Name,
 
