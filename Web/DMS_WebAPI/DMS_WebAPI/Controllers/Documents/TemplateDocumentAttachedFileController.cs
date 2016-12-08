@@ -70,16 +70,17 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Put([FromUri]ModifyTemplateAttachedFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
-            model.PostedFileData = file;
-            model.FileName = file.FileName;
-            model.FileType = file.ContentType;
-
+            if (HttpContext.Current.Request.Files.Count > 0)
+            {
+                HttpPostedFile file = HttpContext.Current.Request.Files[0];
+                model.PostedFileData = file;
+                model.FileName = file.FileName;
+                model.FileType = file.ContentType;
+            }
             var fl = (FrontTemplateAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, ctx, model);
 
             return new JsonResult(fl, this);
