@@ -820,7 +820,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemActions> GetWhereSystemActions(IQueryable<SystemActions> qry, FilterSystemAction filter)
         {
-            
+
 
             return qry;
         }

@@ -3418,7 +3418,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        private static IQueryable<DictionaryDocumentSubjects> GetDocumentSubjectsQuery(IContext context,  DmsContext dbContext, FilterDictionaryDocumentSubject filter)
+        private static IQueryable<DictionaryDocumentSubjects> GetDocumentSubjectsQuery(IContext context, DmsContext dbContext, FilterDictionaryDocumentSubject filter)
         {
             var qry = dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 

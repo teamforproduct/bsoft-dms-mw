@@ -606,7 +606,7 @@ namespace BL.Database.Admins
             }
         }
 
-        private IQueryable<AdminRoleActions> GetRoleActionQuery(IContext context, DmsContext dbContext,  FilterAdminRoleAction filter)
+        private IQueryable<AdminRoleActions> GetRoleActionQuery(IContext context, DmsContext dbContext, FilterAdminRoleAction filter)
         {
             var qry = dbContext.AdminRoleActionsSet.AsQueryable();
 
@@ -860,7 +860,7 @@ namespace BL.Database.Admins
             }
         }
 
-        private IQueryable<AdminPositionRoles> GetAdminPositionRoleQuery(IContext context,  DmsContext dbContext, FilterAdminPositionRole filter)
+        private IQueryable<AdminPositionRoles> GetAdminPositionRoleQuery(IContext context, DmsContext dbContext, FilterAdminPositionRole filter)
         {
             var qry = dbContext.AdminPositionRolesSet.AsQueryable();
 
