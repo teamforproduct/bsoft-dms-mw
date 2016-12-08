@@ -275,7 +275,6 @@
     <Compile Include="Controllers\Dictionaries\Companies\CompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankInfoController.cs" />
-    <Compile Include="Controllers\ApiPrefix.cs" />
     <Compile Include="Controllers\Dictionaries\CompaniesContactPersons.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />

@@ -74,6 +74,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
+
         /// <summary>
         ///Признак активности
         /// </summary>
