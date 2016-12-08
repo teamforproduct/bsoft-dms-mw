@@ -39,8 +39,8 @@ namespace BL.Model.DocumentCore.FrontModel
         private DateTime?  _LastChangeDate; 
         
         public DateTime? ReadDate { get { return _ReadDate; } set { _ReadDate=value.ToUTC(); } }
-        private DateTime?  _ReadDate; 
-
+        private DateTime?  _ReadDate;
+        public int? ReadAgentId { get; set; }
         public string ReadAgentName { get; set; }
         public bool? IsRead { get; set; }
 

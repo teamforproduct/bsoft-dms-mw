@@ -906,8 +906,6 @@ namespace BL.Database.Common
                     Task = x.Task.Task,
                     Description = x.Description,
                     AddDescription = x.AddDescription,
-                    SourcePositionExecutorAgentId = x.SourcePositionExecutorAgentId,
-                    TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
                     SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : null),
                     TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null))
                                                       ?? x.TargetAgent.Name,
@@ -949,10 +947,6 @@ namespace BL.Database.Common
                 Task = x.Task,
                 Description = x.Description,
                 AddDescription = x.AddDescription,
-                TargetPositionId = x.TargetPositionId,
-                SourcePositionId = x.SourcePositionId,
-                SourcePositionExecutorAgentId = x.SourcePositionExecutorAgentId,
-                TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
                 SourcePositionExecutorAgentName = x.SourcePositionExecutorAgentName,
                 TargetPositionExecutorAgentName = x.TargetPositionExecutorAgentName,
                 DocumentDate = x.DocumentDate,
@@ -2606,6 +2600,8 @@ namespace BL.Database.Common
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
+                SourcePositionExecutorAgentId = y.SourcePosition.ExecutorAgentId,
+                TargetPositionExecutorAgentId = y.TargetPosition.ExecutorAgentId,
                 SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name + (y.SourcePosition.ExecutorType.Suffix != null ? " (" + y.SourcePosition.ExecutorType.Suffix + ")" : (string)null),
                 TargetPositionExecutorAgentName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : (string)null))
                                                 ?? y.TargetAgent.Name,
@@ -2648,6 +2644,8 @@ namespace BL.Database.Common
                                             EventType = y.StartEvent.EventTypeId,
                                             EventTypeName = y.StartEvent.EventType.Name,
                                             Date = y.StartEvent.Date,
+                                            SourcePositionExecutorAgentId = null,
+                                            TargetPositionExecutorAgentId = null,
                                             SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name + (y.StartEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.StartEvent.SourcePositionExecutorType.Suffix + ")" : null),
                                             TargetPositionExecutorAgentName = (y.StartEvent.TargetPositionExecutorAgent.Name + (y.StartEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.StartEvent.TargetPositionExecutorType.Suffix + ")" : null)) 
                                                                                 ?? y.StartEvent.TargetAgent.Name,
@@ -2663,6 +2661,8 @@ namespace BL.Database.Common
                                             EventType = y.CloseEvent.EventTypeId,
                                             EventTypeName = y.CloseEvent.EventType.Name,
                                             Date = y.CloseEvent.Date,
+                                            SourcePositionExecutorAgentId = y.CloseEvent.SourcePositionExecutorAgentId,
+                                            TargetPositionExecutorAgentId = y.CloseEvent.TargetPositionExecutorAgentId,
                                             SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name + (y.CloseEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.CloseEvent.SourcePositionExecutorType.Suffix + ")" : null),
                                             TargetPositionExecutorAgentName = (y.CloseEvent.TargetPositionExecutorAgent.Name + (y.CloseEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.CloseEvent.TargetPositionExecutorType.Suffix + ")" : null)) 
                                                                                 ?? y.StartEvent.TargetAgent.Name,

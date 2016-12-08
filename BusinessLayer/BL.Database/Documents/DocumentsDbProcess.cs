@@ -287,7 +287,7 @@ namespace BL.Database.Documents
 
                     NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
 
-                    AttachedFilesCount = doc.Files.Where(fl => fl.IsMainVersion && !fl.IsDeleted).Count(),
+                    AttachedFilesCount = doc.Files.Where(fl => fl.IsMainVersion && !fl.IsDeleted && fl.TypeId != (int)EnumFileTypes.SubscribePdf).Count(),
 
                     LinkId = doc.LinkId,
                     //LinkedDocumentsCount = doc.Links
@@ -393,6 +393,7 @@ namespace BL.Database.Documents
                     RegistrationDate = doc.RegistrationDate,
 
                     ExecutorPositionId = doc.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = doc.ExecutorPositionExecutorAgentId,
                     ExecutorPositionExecutorNowAgentName = doc.ExecutorPosition.ExecutorAgent.Name + (doc.ExecutorPosition.ExecutorType.Suffix != null ? " (" + doc.ExecutorPosition.ExecutorType.Suffix + ")" : null),
                     ExecutorPositionAgentPhoneNumber = "(888)888-88-88", //TODO
 
