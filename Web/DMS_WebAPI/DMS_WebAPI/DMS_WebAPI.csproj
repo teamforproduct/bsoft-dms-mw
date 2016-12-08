@@ -266,6 +266,7 @@
     <Compile Include="Controllers\Admins\AdminRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
+    <Compile Include="Controllers\ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
     <Compile Include="Controllers\Dictionaries\Addresses\PersonAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Addresses\ClientCompanyAddressesController.cs" />
@@ -273,7 +274,6 @@
     <Compile Include="Controllers\Dictionaries\Addresses\CompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankInfoController.cs" />
-    <Compile Include="Controllers\ApiPerix.cs" />
     <Compile Include="Controllers\Dictionaries\CompaniesContactPersons.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
