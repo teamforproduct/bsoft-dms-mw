@@ -27,6 +27,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.AddDocument:
                     cmd = DmsResolver.Current.Get<AddDocumentCommand>();
                     break;
+                case EnumDocumentActions.AddLinkedDocument:
+                    cmd = DmsResolver.Current.Get<AddDocumentCommand>();
+                    break;
                 case EnumDocumentActions.ModifyDocument:
                     cmd = DmsResolver.Current.Get<ModifyDocumentCommand>();
                     break;

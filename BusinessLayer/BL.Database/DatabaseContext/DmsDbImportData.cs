@@ -123,6 +123,7 @@ namespace BL.Database.DatabaseContext
 
             items.Add(GetSysAct(EnumDocumentActions.ViewDocument, EnumObjects.Documents, category: "Документ", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, category: "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.AddLinkedDocument, EnumObjects.Documents, category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, category: "Документ"));

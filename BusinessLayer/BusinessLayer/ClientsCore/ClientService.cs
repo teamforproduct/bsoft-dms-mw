@@ -273,6 +273,7 @@ namespace BL.Logic.ClientCore
             var items = new List<InternalAdminRoleAction>();
 
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddLinkedDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CopyDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocument });
