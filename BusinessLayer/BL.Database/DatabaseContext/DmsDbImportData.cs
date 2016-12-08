@@ -185,6 +185,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.ControlOff, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.MarkExecution, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.AcceptResult, EnumObjects.DocumentWaits, category: "Контроль"));
+            items.Add(GetSysAct(EnumDocumentActions.CancelExecution, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.RejectResult, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.WithdrawVisaing, EnumObjects.DocumentSubscriptions, category: "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.WithdrawАgreement, EnumObjects.DocumentSubscriptions, category: "Подписание"));
@@ -693,6 +694,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlTargetChange, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.MarkExecution, EnumImportanceEventTypes.ImportantEvents, "Контроль"));
             items.Add(GetDictionaryEventType(EnumEventTypes.AcceptResult, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.CancelExecution, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.RejectResult, EnumImportanceEventTypes.ImportantEvents, "Контроль"));
             items.Add(GetDictionaryEventType(EnumEventTypes.SendMessage, EnumImportanceEventTypes.DocumentMoovement, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.AddNewPaper, EnumImportanceEventTypes.ImportantEvents, "Рассмотрение отчета"));

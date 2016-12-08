@@ -471,7 +471,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отклонить прием результата
+        /// Принять результат
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -486,7 +486,22 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctrl = new DocumentsController { ControllerContext = ControllerContext };
             return ctrl.Get(docId);
         }
+        /// <summary>
+        /// Отменить поручение
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("CancelExecution")]
+        [HttpPost]
+        public IHttpActionResult CancelExecution(ControlOff model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CancelExecution, ctx, model);
 
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
         /// <summary>
         /// Отклонить подписание
         /// </summary>

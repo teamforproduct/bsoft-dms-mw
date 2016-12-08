@@ -124,7 +124,10 @@
         /// Отметить исполнение
         /// </summary>
         MarkExecution = 100035,
-
+        /// <summary>
+        /// Отменить исполнение
+        /// </summary>
+        CancelExecution = 100036,
         /// <summary>
         /// Принять результат
         /// </summary>

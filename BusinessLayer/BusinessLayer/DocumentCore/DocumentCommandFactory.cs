@@ -178,7 +178,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.AcceptResult:
                     cmd = DmsResolver.Current.Get<AcceptResultDocumentCommand>();
                     break;
-
+                case EnumDocumentActions.CancelExecution:
+                    cmd = DmsResolver.Current.Get<AcceptResultDocumentCommand>();
+                    break;
                 case EnumDocumentActions.SendForSigning:
                     cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
                     break;
