@@ -88,13 +88,13 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Удалить вложенный в шаблон файл
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public IHttpActionResult Delete([FromUri]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Delete([FromUri]int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, id);
             return new JsonResult(null, this);
         }
     }
