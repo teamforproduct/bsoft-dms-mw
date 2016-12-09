@@ -38,6 +38,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.Accesses != null && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (CommandType == EnumDocumentActions.CopyDocumentSendList)
             {
                 _actionRecords =

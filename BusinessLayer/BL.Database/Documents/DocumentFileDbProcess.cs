@@ -71,7 +71,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
                                     .Where(x => x.Id == documentId)
                                     .Select(x => new InternalDocument
                                     {
@@ -116,7 +116,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
                                     .Where(x => x.Id == documentId)
                                     .Select(x => new InternalDocument
                                     {
@@ -154,7 +154,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
                     .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -286,7 +286,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
                     .Where(x => x.Id == flIdent.DocumentId)
                     .Select(x => new InternalDocument
                     {

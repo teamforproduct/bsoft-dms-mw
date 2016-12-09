@@ -3,7 +3,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.Common;
-
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -30,6 +30,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.Accesses != null && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (_document.ExecutorPositionId != positionId
                 )
             {

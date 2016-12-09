@@ -4,6 +4,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -30,6 +31,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if (_document.Accesses != null && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (_document.ExecutorPositionId != positionId
                 || _document.IsLaunchPlan
                 )
