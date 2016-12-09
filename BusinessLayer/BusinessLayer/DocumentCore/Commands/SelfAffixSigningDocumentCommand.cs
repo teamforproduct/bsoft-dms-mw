@@ -35,6 +35,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             return true;
         }
 
@@ -46,14 +48,14 @@ namespace BL.Logic.DocumentCore.Commands
             //_operationDb.ControlOffSendListPrepare(_context, _document);
             //_operationDb.ControlOffSubscriptionPrepare(_context, _document);
 
-            if (Model.CurrentPositionId.HasValue)
-            {
-                _context.SetCurrentPosition(Model.CurrentPositionId.Value);
-            }
-            else
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
-            }
+            //if (Model.CurrentPositionId.HasValue)
+            //{
+            //    _context.SetCurrentPosition(Model.CurrentPositionId.Value);
+            //}
+            //else
+            //{
+            //    _context.SetCurrentPosition(_document.ExecutorPositionId);
+            //}
 
             _admin.VerifyAccess(_context, CommandType);
             return true;

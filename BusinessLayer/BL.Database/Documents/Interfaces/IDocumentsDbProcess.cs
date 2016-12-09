@@ -49,7 +49,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);
 
         void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document);
-        InternalDocument GetBlankInternalDocumentById(IContext context, int documentId);
+        //InternalDocument GetBlankInternalDocumentById(IContext context, int documentId);
 
         #region DocumentPapers
 

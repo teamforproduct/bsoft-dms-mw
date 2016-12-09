@@ -5,6 +5,7 @@ using BL.Model.Exception;
 using BL.Model.Enums;
 using System.Transactions;
 using BL.CrossCutting.Helpers;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -32,6 +33,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (_document.IsRegistered.HasValue && _document.IsRegistered.Value
                 )
             {

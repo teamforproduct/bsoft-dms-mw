@@ -313,7 +313,7 @@ namespace BL.Database.Documents
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterContains = docs.GroupBy(x => x.LinkId).Where(x => x.Key.HasValue).Select(x => x.Key).Aggregate(filterContains, (current, value) => current.Or(e => e.LinkId == value).Expand());
 
-                    var links = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true)
+                    var links = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true)
                         .Where(filterContains)
                         .GroupBy(x => x.LinkId.Value)
                         .Select(x => new { LinkId = x.Key, Count = x.Count() })
@@ -916,7 +916,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == model.Id)
                     .Select(x => new InternalDocument
                     {
@@ -934,7 +934,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentAccess
                     {
                         Id = x.Id,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId
+                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                        IsInWork = x.IsInWork,
                     }).ToList();
                 transaction.Complete();
                 return doc;
@@ -1013,7 +1014,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -1072,7 +1073,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, false, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1123,7 +1124,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                var doc = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new
                     {
@@ -1291,7 +1292,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1328,7 +1329,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1516,7 +1517,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -1563,21 +1564,21 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument GetBlankInternalDocumentById(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-                    .Where(x => x.Id == documentId)
-                    .Select(x => new InternalDocument
-                    {
-                        Id = x.Id,
-                        ExecutorPositionId = x.ExecutorPositionId
-                    }).FirstOrDefault();
-                transaction.Complete();
-                return doc;
-            }
-        }
+        //public InternalDocument GetBlankInternalDocumentById(IContext ctx, int documentId)
+        //{
+        //    using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+        //    {
+        //        var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+        //            .Where(x => x.Id == documentId)
+        //            .Select(x => new InternalDocument
+        //            {
+        //                Id = x.Id,
+        //                ExecutorPositionId = x.ExecutorPositionId
+        //            }).FirstOrDefault();
+        //        transaction.Complete();
+        //        return doc;
+        //    }
+        //}
 
 
         #region DocumentPapers

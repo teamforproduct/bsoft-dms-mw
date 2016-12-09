@@ -144,6 +144,7 @@ namespace BL.Database.Documents
                     {
                         res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
                         res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions }, positionAccesses);
+
                     }
                 }
                 transaction.Complete();
@@ -171,7 +172,8 @@ namespace BL.Database.Documents
                 if (res.Document != null)
                 {
 
-                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.IsInWork)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -231,7 +233,8 @@ namespace BL.Database.Documents
                 if (res.Document != null)
                 {
                     documentId = res.Document.Id;
-                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.IsInWork)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -287,7 +290,8 @@ namespace BL.Database.Documents
 
                 if (res.Document != null)
                 {
-                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
+                    res.Document.Accesses = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId && x.IsInWork)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -701,7 +705,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx);
+                var qry = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true);
                 var doc = qry.Where(x => x.Id == documentId)
                             .Select(x => new InternalDocument
                             {
@@ -1259,7 +1263,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1287,7 +1291,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, false, true, true)
                     .Where(x => x.Id == sendList.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1356,7 +1360,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, false, true, true)
                     .Where(x => x.Id == sendList.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1396,7 +1400,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1425,7 +1429,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true, true, true)
                     .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -2135,7 +2139,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, false, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -2251,7 +2255,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, false, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {

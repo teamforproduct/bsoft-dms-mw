@@ -42,7 +42,7 @@ namespace BL.Database.Common
     internal static class CommonQueries
     {
         #region Documents
-        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool isVerifyExecutorPosition = false, bool isVerifyAccessLevel = true)
+        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool? isVerifyExecutorPosition = null, bool isVerifyAccessLevel = true, bool isVerifyIsInWork = false)
         {
             var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
@@ -53,18 +53,25 @@ namespace BL.Database.Common
                     filterContains = isVerifyAccessLevel
                         ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                         : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    if (isVerifyIsInWork)
+                        filterContains = filterContains.And(x => x.IsInWork == true).Expand();
+                    if (isVerifyExecutorPosition.HasValue && isVerifyExecutorPosition.Value)
+                        filterContains = filterContains.And(x => x.PositionId == x.Document.ExecutorPositionId).Expand();
+                    if (isVerifyExecutorPosition.HasValue && !isVerifyExecutorPosition.Value)
+                        filterContains = filterContains.And(x => x.PositionId == ctx.CurrentPositionId).Expand();
                     qry = qry.Where(x => x.Accesses.AsQueryable().Where(filterContains).Any());
                 }
                 else
                     qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Id));
 
-                if (isVerifyExecutorPosition)
-                {
-                    var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
-                    qry = qry.Where(filterExecutorPositionContains);
-                }
-                else if (userAccesses == null)  //доступ к журналам проверяем, если нет ограничений на Accesses
+                //if (isVerifyExecutorPosition)
+                //{
+                //    var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                //    filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
+                //    qry = qry.Where(filterExecutorPositionContains);
+                //}
+                //else 
+                if (!isVerifyExecutorPosition.HasValue && userAccesses == null)  //доступ к журналам проверяем, если нет ограничений на Accesses
                 {
                     var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
                     filterPositionsIdList = ctx.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());

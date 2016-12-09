@@ -9,7 +9,7 @@ namespace BL.Model.DocumentCore.Actions
     /// <summary>
     /// Модель подписания
     /// </summary>
-    public class SelfAffixSigning
+    public class SelfAffixSigning: CurrentPosition
     {
         /// <summary>
         /// ИД документа
@@ -35,10 +35,10 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public EnumSigningTypes SigningType { get; set; }
 
-        /// <summary>
-        /// ИД должности, от которой будет выполнятся действие
-        /// </summary>
-        public int? CurrentPositionId { get; set; }
+        ///// <summary>
+        ///// ИД должности, от которой будет выполнятся действие
+        ///// </summary>
+        //public int? CurrentPositionId { get; set; }
 
         public int? CertificateId { get; set; }
         public string CertificatePassword { get; set; }
