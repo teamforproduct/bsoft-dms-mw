@@ -203,9 +203,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentsQuery(context, dbContext, filter, paging);
+                var qry = GetAgentsQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgent>();
 
                 var res = qry.Select(x => new FrontDictionaryAgent
                 {
@@ -263,7 +265,7 @@ namespace BL.Database.Dictionaries
             return filterContains;
         }
 
-        public IQueryable<DictionaryAgents> GetAgentsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgent filter, UIPaging paging)
+        public IQueryable<DictionaryAgents> GetAgentsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgent filter)
         {
             var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -314,10 +316,6 @@ namespace BL.Database.Dictionaries
 
             }
 
-            qry = qry.OrderBy(x => x.Name);
-
-            Paging.Set(ref qry, paging);
-
             return qry;
         }
 
@@ -325,7 +323,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = GetAgentsQuery(context, dbContext, filter, null).Any();
+                var res = GetAgentsQuery(context, dbContext, filter).Any();
 
                 transaction.Complete();
                 return res;
@@ -421,9 +419,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentPersonsQuery(context, dbContext, filter, null);
+                var qry = GetAgentPersonsQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => new FrontContactPersons
                 {
@@ -463,9 +461,11 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
 
-                var qry = GetAgentPersonsQuery(context, dbContext, filter, paging);
+                var qry = GetAgentPersonsQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Agent.Id);
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentPerson>();
 
                 var res = qry.Select(x => new FrontDictionaryAgentPerson
                 {
@@ -497,14 +497,14 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = GetAgentPersonsQuery(context, dbContext, filter, null).Any();
+                var res = GetAgentPersonsQuery(context, dbContext, filter).Any();
 
                 transaction.Complete();
                 return res;
             }
         }
 
-        public IQueryable<DictionaryAgentPersons> GetAgentPersonsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentPerson filter, UIPaging paging)
+        public IQueryable<DictionaryAgentPersons> GetAgentPersonsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentPerson filter)
         {
             var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -632,10 +632,6 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.PassportNumber == filter.PassportNumberExact);
                 }
             }
-
-            qry = qry.OrderBy(x => x.Agent.Name);
-
-            Paging.Set(ref qry, paging);
 
             return qry;
         }
@@ -786,9 +782,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentEmployeesQuery(context, dbContext, filter, paging);
+                var qry = GetAgentEmployeesQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentEmployee>();
 
                 var res = qry.Select(x => new FrontDictionaryAgentEmployee
                 {
@@ -823,9 +821,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentEmployeesQuery(context, dbContext, filter, paging);
+                var qry = GetAgentEmployeesQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
 
                 var res = qry.Select(x => new ListItem
                 {
@@ -839,7 +839,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IQueryable<DictionaryAgentEmployees> GetAgentEmployeesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        public IQueryable<DictionaryAgentEmployees> GetAgentEmployeesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentEmployee filter)
         {
             var qry = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -978,10 +978,6 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-            qry = qry.OrderBy(x => x.Agent.Name);
-
-            Paging.Set(ref qry, paging);
-
             return qry;
         }
 
@@ -989,7 +985,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = GetAgentEmployeesQuery(context, dbContext, filter, null).Any();
+                var res = GetAgentEmployeesQuery(context, dbContext, filter).Any();
                 transaction.Complete();
                 return res;
             }
@@ -1828,9 +1824,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentCompaniesQuery(context, dbContext, filter, paging);
+                var qry = GetAgentCompaniesQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentCompany>();
 
                 var res = qry.Select(x => new FrontDictionaryAgentCompany
                 {
@@ -1854,9 +1852,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentCompaniesQuery(context, dbContext, filter, paging);
+                var qry = GetAgentCompaniesQuery(context, dbContext, filter);
 
-                //qry = qry.OrderBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
 
                 var res = qry.Select(x => new ListItem
                 {
@@ -1873,13 +1873,13 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = GetAgentCompaniesQuery(context, dbContext, filter, null).Any();
+                var res = GetAgentCompaniesQuery(context, dbContext, filter).Any();
                 transaction.Complete();
                 return res;
             }
         }
 
-        public IQueryable<DictionaryAgentCompanies> GetAgentCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IQueryable<DictionaryAgentCompanies> GetAgentCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentCompany filter)
         {
             var qry = dbContext.DictionaryAgentCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -1977,10 +1977,6 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-            qry = qry.OrderBy(x => x.Agent.Name);
-
-            Paging.Set(ref qry, paging);
-
             return qry;
         }
 
@@ -2054,7 +2050,11 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentBanksQuery(context, dbContext, filter, paging);
+                var qry = GetAgentBanksQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentBank>();
 
                 var res = qry.Select(x => new FrontDictionaryAgentBank
                 {
@@ -2077,13 +2077,13 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = GetAgentBanksQuery(context, dbContext, filter, null).Any();
+                var res = GetAgentBanksQuery(context, dbContext, filter).Any();
                 transaction.Complete();
                 return res;
             }
         }
 
-        public IQueryable<DictionaryAgentBanks> GetAgentBanksQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentBank filter, UIPaging paging)
+        public IQueryable<DictionaryAgentBanks> GetAgentBanksQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentBank filter)
         {
             var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -2148,10 +2148,6 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.MFOCode == filter.MFOCodeExact);
                 }
             }
-
-            qry = qry.OrderBy(x => x.Agent.Name);
-
-            Paging.Set(ref qry, paging);
 
             return qry;
         }

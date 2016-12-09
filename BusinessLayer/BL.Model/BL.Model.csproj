@@ -289,6 +289,7 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
+    <Compile Include="Enums\EnumPagingResult.cs" />
     <Compile Include="Enums\EnumSystemFormats.cs" />
     <Compile Include="Enums\EnumSystemSettings.cs" />
     <Compile Include="Enums\EnumSystemPatterns.cs" />
