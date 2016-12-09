@@ -16,18 +16,18 @@ namespace BL.Database.Helper
             // Вернет только данные если = false
             // По умолчанию null
 
-            //if (paging.IsOnlyCounter ?? true)
-            //{
-            //    paging.TotalItemsCount = qry.Count();
-            //}
+            if (paging.IsOnlyCounter ?? true)
+            { // IsOnlyCounter in (null, true)
+                paging.TotalItemsCount = qry.Count();
+            }
 
-            //if (paging.IsOnlyCounter ?? false)
-            //{
-            //    //pss Разобраться зачем это
-            //    //return new List<FrontDictionaryAgent>();
-            //}
+            if (paging.IsOnlyCounter ?? false)
+            { // IsOnlyCounter in (true)
+                //pss Разобраться зачем это
+                //return new List<FrontDictionaryAgent>();
+            }
 
-            paging.TotalItemsCount = qry.Count();
+            //paging.TotalItemsCount = qry.Count();
 
             if (!paging.IsAll)
             {
