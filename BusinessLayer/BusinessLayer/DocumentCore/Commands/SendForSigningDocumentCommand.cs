@@ -91,7 +91,7 @@ namespace BL.Logic.DocumentCore.Commands
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 }))
             {
-                ex = new SubordinationHasBeenViolated();
+                ex = new SubordinationForDueDateHasBeenViolated();
             }
 
             if (ex != null)
