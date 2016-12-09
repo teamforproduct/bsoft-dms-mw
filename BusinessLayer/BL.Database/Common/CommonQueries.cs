@@ -54,11 +54,11 @@ namespace BL.Database.Common
                         ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                         : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
                     if (isVerifyIsInWork)
-                        filterContains = filterContains.And(x => x.IsInWork);
+                        filterContains = filterContains.And(x => x.IsInWork == true).Expand();
                     if (isVerifyExecutorPosition.HasValue && isVerifyExecutorPosition.Value)
-                        filterContains = filterContains.And(x => x.PositionId == x.Document.ExecutorPositionId);
-                    if (isVerifyExecutorPosition.HasValue && isVerifyExecutorPosition.Value)
-                        filterContains = filterContains.And(x => x.PositionId == ctx.CurrentPositionId);
+                        filterContains = filterContains.And(x => x.PositionId == x.Document.ExecutorPositionId).Expand();
+                    if (isVerifyExecutorPosition.HasValue && !isVerifyExecutorPosition.Value)
+                        filterContains = filterContains.And(x => x.PositionId == ctx.CurrentPositionId).Expand();
                     qry = qry.Where(x => x.Accesses.AsQueryable().Where(filterContains).Any());
                 }
                 else
