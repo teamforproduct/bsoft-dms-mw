@@ -46,7 +46,7 @@ namespace BL.Database.SystemDb
 
                 qry = qry.OrderByDescending(x => x.LogDate);
 
-                Paging.Set(qry, paging);
+                Paging.Set(ref qry, paging);
 
                 var res = qry.Select(x => new FrontSystemLog
                 {

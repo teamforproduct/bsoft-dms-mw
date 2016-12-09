@@ -205,7 +205,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAgentsQuery(context, dbContext, filter, paging);
 
-                qry = qry.OrderBy(x => x.Name);
+                //qry = qry.OrderBy(x => x.Name);
 
                 var res = qry.Select(x => new FrontDictionaryAgent
                 {
@@ -314,7 +314,9 @@ namespace BL.Database.Dictionaries
 
             }
 
-            Paging.Set(qry, paging);
+            qry = qry.OrderBy(x => x.Name);
+
+            Paging.Set(ref qry, paging);
 
             return qry;
         }
@@ -421,7 +423,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAgentPersonsQuery(context, dbContext, filter, null);
 
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => new FrontContactPersons
                 {
@@ -463,7 +465,7 @@ namespace BL.Database.Dictionaries
 
                 var qry = GetAgentPersonsQuery(context, dbContext, filter, paging);
 
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.OrderBy(x => x.Agent.Id);
 
                 var res = qry.Select(x => new FrontDictionaryAgentPerson
                 {
@@ -631,7 +633,9 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-            Paging.Set(qry, paging);
+            qry = qry.OrderBy(x => x.Agent.Name);
+
+            Paging.Set(ref qry, paging);
 
             return qry;
         }
@@ -784,7 +788,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAgentEmployeesQuery(context, dbContext, filter, paging);
 
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => new FrontDictionaryAgentEmployee
                 {
@@ -821,7 +825,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAgentEmployeesQuery(context, dbContext, filter, paging);
 
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => new ListItem
                 {
@@ -974,7 +978,9 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-            Paging.Set(qry, paging);
+            qry = qry.OrderBy(x => x.Agent.Name);
+
+            Paging.Set(ref qry, paging);
 
             return qry;
         }
@@ -1824,7 +1830,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAgentCompaniesQuery(context, dbContext, filter, paging);
 
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => new FrontDictionaryAgentCompany
                 {
@@ -1850,7 +1856,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAgentCompaniesQuery(context, dbContext, filter, paging);
 
-                qry = qry.OrderBy(x => x.Agent.Name);
+                //qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => new ListItem
                 {
@@ -1971,7 +1977,9 @@ namespace BL.Database.Dictionaries
                 }
             }
 
-            Paging.Set(qry, paging);
+            qry = qry.OrderBy(x => x.Agent.Name);
+
+            Paging.Set(ref qry, paging);
 
             return qry;
         }
@@ -2137,13 +2145,13 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.MFOCodeExact))
                 {
-
                     qry = qry.Where(x => x.MFOCode == filter.MFOCodeExact);
-
                 }
             }
 
-            Paging.Set(qry, paging);
+            qry = qry.OrderBy(x => x.Agent.Name);
+
+            Paging.Set(ref qry, paging);
 
             return qry;
         }

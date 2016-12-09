@@ -7,7 +7,7 @@ namespace BL.Database.Helper
     public static class Paging
     {
 
-        public static void Set<TDbModel>(IQueryable<TDbModel> qry, UIPaging paging)
+        public static void Set<TDbModel>(ref IQueryable<TDbModel> qry, UIPaging paging)
         {
             if (paging == null) return;
 
