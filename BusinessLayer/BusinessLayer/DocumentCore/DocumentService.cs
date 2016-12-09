@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore
                 {
                     var resWithRanges =
                         ftRes.GroupBy(x => x.DocumentId)
-                            .Select(x => new { DocId = x.Key, Rate = x.Count() })
+                            .Select(x => new { DocId = x.Key, Rate = x.Max(s=>s.Score) })
                             .OrderByDescending(x => x.Rate);
                     filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
                 }

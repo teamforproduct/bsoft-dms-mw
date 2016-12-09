@@ -127,37 +127,25 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchDocument(string text, int clientId)
         {
-
-
             text = text.Trim();
 
-            while (text.Contains("  "))
-            {
-                text = text.Replace("  ", " ");
-            }
+            var arr = text.Split(' ').ToList();
+            arr.ForEach(x=>x.Trim());
 
-            var arr = text.Split(' ');
+            arr.RemoveAll(string.IsNullOrEmpty);
 
-            var arrayQry = new BooleanQuery();
-            foreach (var elem in arr)
-            {
-                arrayQry.Add(new WildcardQuery(new Term(FIELD_BODY, '*' + elem + '*')), Occur.SHOULD);
-            }
+            var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
 
-
-            //            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
-            //           var conditionQry = parser.Parse(text);
+            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
+            parser.AllowLeadingWildcard = true;
+            var arrayQry = parser.Parse(qryString);
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 1, null, true, true);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
 
-
-            arrayQry.Add(idQry, Occur.SHOULD);
-            arrayQry.Add(clientQry, Occur.SHOULD);
+            arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
 
             var qryRes = _searcher.Search(arrayQry, MAX_DOCUMENT_COUNT_RETURN);
 
-            //            var query = conditionQry.Combine(new [] {conditionQry, idQry, clientQry });
-            //var qryRes = _searcher.Search(query, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
 
             foreach (var doc in qryRes.ScoreDocs.Where(x=>x.Score>0.1).OrderByDescending(x=>x.Score)) //x.Score>0.1 filtrate different "noise" from search.
@@ -184,34 +172,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchDictionary(string text, int clientId)
         {
-            //var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
-            //var conditionQry = parser.Parse(text );
-            //var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
-    
-
             text = text.Trim();
 
-            while (text.Contains("  "))
-              {
-                text = text.Replace("  ", " ");
-               }
+            var arr = text.Split(' ').ToList();
+            arr.ForEach(x => x.Trim());
 
-            var arr= text.Split(' ');
+            arr.RemoveAll(string.IsNullOrEmpty);
 
-            var arrayQry = new BooleanQuery();
-            foreach (var elem in arr)
-            {
-                arrayQry.Add(new WildcardQuery(new Term(FIELD_BODY, '*' + elem + '*')),Occur.SHOULD);
-            }
+            var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
+
+            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
+            parser.AllowLeadingWildcard = true;
+            var arrayQry = parser.Parse(qryString);
 
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 0, 0, true, true);
             var clientQry = NumericRangeQuery.NewIntRange(FIELD_CLIENT_ID, clientId, clientId, true, true);
 
-            //var conditionQry = new WildcardQuery(new Term(FIELD_BODY, '*' + text + '*' + "^5"));
-            //var query = conditionQry.Combine(new Query[] { conditionQry, arrayQry, idQry, clientQry });
-
-            arrayQry.Add(idQry,Occur.SHOULD);
-            arrayQry.Add(clientQry,Occur.SHOULD);
+            arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
 
             var qryRes = _searcher.Search(arrayQry, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
