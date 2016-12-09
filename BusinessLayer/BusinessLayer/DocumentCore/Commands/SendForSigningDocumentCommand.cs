@@ -82,7 +82,17 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new SubordinationHasBeenViolated();
             }
-
+            if (Model.TargetPositionId.HasValue
+                && (Model.DueDate.HasValue || Model.DueDay.HasValue)
+                && !_admin.VerifySubordination(_context, new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Execution,
+                    TargetPosition = Model.TargetPositionId.Value,
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
+                }))
+            {
+                ex = new SubordinationHasBeenViolated();
+            }
 
             if (ex != null)
             {

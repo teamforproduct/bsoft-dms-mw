@@ -562,6 +562,12 @@ namespace BL.Model.Exception
         public SubordinationHasBeenViolated() : base(_MESSAGE) { }
         public SubordinationHasBeenViolated(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+    public class SubordinationForDueDateHasBeenViolated : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+        public SubordinationForDueDateHasBeenViolated() : base(_MESSAGE) { }
+        public SubordinationForDueDateHasBeenViolated(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
     public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentSendListNotFoundInDocumentRestrictedSendList@l##";
