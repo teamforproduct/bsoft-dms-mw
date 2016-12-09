@@ -34,7 +34,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.Accesses != null && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+            if (_document.Accesses?.Count() != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
             var markExecWaitId = _document.Waits.Where(x => x.OnEvent.EventType == EnumEventTypes.MarkExecution && !x.OffEventId.HasValue).Select(x => x.ParentId).ToList();
             _actionRecords =
