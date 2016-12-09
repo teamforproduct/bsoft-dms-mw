@@ -1,4 +1,6 @@
 ﻿using BL.Model.Enums;
+using System;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace BL.Model.SystemCore
@@ -40,5 +42,6 @@ namespace BL.Model.SystemCore
         /// Пагинация. Тип сортировки
         /// </summary>
         public EnumSort Sort { get; set; }
+
     }
 }

@@ -271,7 +271,8 @@
     <Compile Include="Controllers\Dictionaries\Addresses\PersonAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Addresses\ClientCompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Addresses\EmployeeAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Addresses\CompanyAddressesController.cs" />
+    <Compile Include="Controllers\Dictionaries\Companies\CompanyInfoController.cs" />
+    <Compile Include="Controllers\Dictionaries\Companies\CompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankInfoController.cs" />
     <Compile Include="Controllers\Dictionaries\CompaniesContactPersons.cs" />

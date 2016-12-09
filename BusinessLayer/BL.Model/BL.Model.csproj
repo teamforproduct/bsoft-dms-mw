@@ -202,6 +202,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserSettings.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />

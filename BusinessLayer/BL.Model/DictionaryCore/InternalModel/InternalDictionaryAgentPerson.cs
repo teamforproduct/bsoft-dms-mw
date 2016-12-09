@@ -13,9 +13,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentPerson()
         { }
 
+        public InternalDictionaryAgentPerson(AddDictionaryAgentPerson model)
+        {
+            SetInternalDictionaryAgentPerson(model);
+        }
+
         public InternalDictionaryAgentPerson(ModifyDictionaryAgentPerson model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentPerson(model);
+        }
+
+        public void SetInternalDictionaryAgentPerson(AddDictionaryAgentPerson model)
+        {
             Name = model.Name;
             FirstName = model.FirstName;
             LastName = model.LastName;

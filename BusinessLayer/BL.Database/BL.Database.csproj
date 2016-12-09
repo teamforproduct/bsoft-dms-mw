@@ -269,6 +269,7 @@
     <Compile Include="FileWorker\IFileStore.cs" />
     <Compile Include="Helper\ConnectionHelper.cs" />
     <Compile Include="Helper\IConnectionHelper.cs" />
+    <Compile Include="Helper\Paging.cs" />
     <Compile Include="Migrations\201607221315516_InitialMigration.cs" />
     <Compile Include="Migrations\201607221315516_InitialMigration.Designer.cs">
       <DependentUpon>201607221315516_InitialMigration.cs</DependentUpon>
