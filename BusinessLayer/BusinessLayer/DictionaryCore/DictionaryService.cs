@@ -17,7 +17,6 @@ using BL.Model.FullTextSearch;
 using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
-using BL.CrossCutting.Extensions;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 
 namespace BL.Logic.DictionaryCore
@@ -52,29 +51,8 @@ namespace BL.Logic.DictionaryCore
             var newFilter = new FilterDictionaryAgent();
             if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                // Этот блок повторяется. Может его лучше упроцедурить
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear = ResolveSearchResultAgents(context, ftRes);
-                var resWithRanges = ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    // Зачем перетирать ID???
-                    newFilter.IDs = new List<int>();
-
-                    // Здесь нужно наклыдвать параметры paging, чтобы вытягивать из базы только нужное количество строк paging.PageSize
-                    // 
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
-                }
-                else
-                {
-                    // Зачем здесь нырок в базу?????
-                    // Зачем перетирать ID???
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents,filter.FullTextSearchString, ResolveSearchResultAgents);
+                
             }
             else
             {
@@ -82,6 +60,31 @@ namespace BL.Logic.DictionaryCore
             }
 
             return _dictDb.GetAgents(context, newFilter, paging);
+        }
+
+        private List<int> GetIDsForDictionaryFullTextSearch(IContext context, EnumObjects dictionaryType, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
+        {
+            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+            var ftRes = ftService.SearchDictionary(context, filter);
+            if (filterFunct == null)
+            {
+                ftRes = ftRes.Where(x => x.ObjectType == dictionaryType);
+            }
+            else
+            {
+                ftRes = filterFunct(context, ftRes);
+            }
+
+            var resWithRanges =
+                ftRes.GroupBy(x => x.ObjectId)
+                    .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
+                    .OrderByDescending(x => x.Rate);
+            if (resWithRanges.Any())
+            {
+                
+                return resWithRanges.Select(x => x.DocId).ToList();
+            }
+            return new List<int> { -1 };
         }
 
         private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
@@ -160,29 +163,11 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
-
             var newFilter = new FilterDictionaryAgentPerson();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAgentPersons);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons,filter.FullTextSearchString);
             }
             else
             {
@@ -212,24 +197,8 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, filter.FullTextSearchString);
+                
             }
             else
             {
@@ -296,24 +265,8 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
+                
             }
             else
             {
@@ -371,25 +324,8 @@ namespace BL.Logic.DictionaryCore
             var newFilter = new FilterDictionaryAgentCompany();
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear = ResolveSearchResultAgentCompanies(context, ftRes);
-
-
-                var resWithRanges =
-                    ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, filter.FullTextSearchString, ResolveSearchResultAgentCompanies);
+                
             }
             else
             {
@@ -453,25 +389,8 @@ namespace BL.Logic.DictionaryCore
             var newFilter = new FilterDictionaryAgentBank();
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear = ResolveSearchResultAgentBanks(context, ftRes);
-
-
-                var resWithRanges =
-                    ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, filter.FullTextSearchString, ResolveSearchResultAgentBanks);
+                
             }
             else
             {
@@ -560,24 +479,8 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryContactType);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryContactType, filter.FullTextSearchString);
+                
             }
             else
             {
@@ -653,24 +556,8 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
+                
             }
             else
             {
@@ -846,26 +733,8 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryRegistrationJournals);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
-
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryRegistrationJournals, filter.FullTextSearchString);
+                
             }
             else
             {
