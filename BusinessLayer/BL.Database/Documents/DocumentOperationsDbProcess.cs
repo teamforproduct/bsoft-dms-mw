@@ -178,6 +178,7 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             PositionId = x.PositionId,
+                            IsInWork = x.IsInWork,
                         }
                         ).ToList();
 
@@ -239,6 +240,7 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             PositionId = x.PositionId,
+                            IsInWork = x.IsInWork,
                         }
                         ).ToList();
                     var qryFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId);
@@ -296,6 +298,7 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             PositionId = x.PositionId,
+                            IsInWork = x.IsInWork,
                         }
                         ).ToList();
 
@@ -1004,6 +1007,7 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             IsFavourite = x.IsFavourite,
                                             PositionId = x.PositionId,
+                                            IsInWork = x.IsInWork,
                                         }
                                     }
 
