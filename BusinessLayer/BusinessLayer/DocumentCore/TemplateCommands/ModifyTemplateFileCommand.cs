@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             //            _docFile.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             //fl.FileContent = Convert.FromBase64String(Model.FileData);
-            _docFile.Type = _docFile.Type;
+            _docFile.Type = Model.Type;
             _docFile.Description = Model.Description;
             if (Model.PostedFileData != null)
             {
