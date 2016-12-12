@@ -122,6 +122,8 @@ namespace BL.Database.Documents
                             .Select(x => new InternalDocumentSubscription
                             {
                                 Id = x.Id,
+                                SubscriptionStatesId = x.SubscriptionStateId,
+                                SubscriptionStatesIsSuccess = x.SubscriptionState.IsSuccess,
                             }
                             ).ToList();
                     res.Document.SendLists = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId)
@@ -1603,7 +1605,18 @@ namespace BL.Database.Documents
                         TargetAgentId = x.TargetAgentId
 
                     }).ToList();
-
+                docRes.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(x => x.DocumentId == docRes.Id && x.SubscriptionState.IsSuccess)
+                    .Select(x => new InternalDocumentSubscription
+                    {
+                        Id = x.Id,
+                        SubscriptionStatesId = x.SubscriptionStateId,
+                        SubscriptionStatesIsSuccess = x.SubscriptionState.IsSuccess,
+                        DoneEvent = new InternalDocumentEvent
+                        {
+                            SourcePositionId = x.DoneEvent.SourcePositionId,
+                        }
+                    }).ToList();
                 if (docRes.IsHard)
                 {
                     docRes.TemplateDocument = new InternalTemplateDocument();

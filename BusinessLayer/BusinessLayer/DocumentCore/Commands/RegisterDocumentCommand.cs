@@ -35,7 +35,8 @@ namespace BL.Logic.DocumentCore.Commands
         {
             if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
-            if (_document.IsRegistered.HasValue && _document.IsRegistered.Value
+            if (_document.IsRegistered.HasValue && _document.IsRegistered.Value 
+                && !_document.Subscriptions.Any(x=>x.SubscriptionStatesId == (int)EnumSubscriptionStates.Sign && x.SubscriptionStatesIsSuccess == true)
                 )
             {
                 return false;
@@ -56,6 +57,10 @@ namespace BL.Logic.DocumentCore.Commands
             if (!_document.RegistrationJournalId.HasValue)
             {
                 throw new DictionaryRecordWasNotFound();
+            }
+            if (Model.IsRegistered && !_document.Subscriptions.Any(x => x.SubscriptionStatesId == (int)EnumSubscriptionStates.Sign && x.SubscriptionStatesIsSuccess == true))
+            {
+                throw new DocumentCouldNotBeRegisteredNoValidSign();
             }
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {

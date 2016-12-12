@@ -1097,6 +1097,18 @@ namespace BL.Database.Documents
                 {
                     return null;
                 }
+                doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.SubscriptionState.IsSuccess)
+                    .Select(x => new InternalDocumentSubscription
+                    {
+                        Id = x.Id,
+                        SubscriptionStatesId = x.SubscriptionStateId,
+                        SubscriptionStatesIsSuccess = x.SubscriptionState.IsSuccess,
+                        DoneEvent = new InternalDocumentEvent
+                        {
+                            SourcePositionId = x.DoneEvent.SourcePositionId,
+                        }
+                    }).ToList();
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == model.RegistrationJournalId)
                     .Where(x => dbContext.AdminRegistrationJournalPositionsSet

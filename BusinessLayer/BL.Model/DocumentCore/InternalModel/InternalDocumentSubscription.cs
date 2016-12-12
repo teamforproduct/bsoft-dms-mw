@@ -31,7 +31,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? CertificatePositionExecutorTypeId { get; set; }
 
         #region For Report
+        public int? SubscriptionStatesId { get; set; }
         public string SubscriptionStatesName { get; set; }
+        public bool? SubscriptionStatesIsSuccess { get; set; }
+
 
         public string DoneEventSourcePositionName { get; set; }
 

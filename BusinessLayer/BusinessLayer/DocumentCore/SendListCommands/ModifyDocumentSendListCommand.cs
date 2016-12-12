@@ -10,6 +10,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Transactions;
+using BL.Model.AdminCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -116,6 +117,18 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
+            if (Model.TargetPositionId.HasValue
+                && (Model.DueDate.HasValue || Model.DueDay.HasValue)
+                && (_sendList.SendType == EnumSendTypes.SendForSigning || _sendList.SendType == EnumSendTypes.SendForVisaing || _sendList.SendType == EnumSendTypes.SendForАgreement || _sendList.SendType == EnumSendTypes.SendForАpproval)
+                && !_admin.VerifySubordination(_context, new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Execution,
+                    TargetPosition = Model.TargetPositionId.Value,
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, _sendList, _document, true),
+                }))
+            {
+                _sendList.AddDescription = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+            }
             CommonDocumentUtilities.SetLastChange(_context, _sendList);
             var delPaperEvents = new List<int?>();
             if (_document.PaperEvents?.Any() ?? false)

@@ -453,6 +453,12 @@ namespace BL.Model.Exception
         public DocumentCouldNotBeRegistered() : base(_MESSAGE) { }
         public DocumentCouldNotBeRegistered(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+    public class DocumentCouldNotBeRegisteredNoValidSign : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentCouldNotBeRegisteredNoValidSign@l##";
+        public DocumentCouldNotBeRegisteredNoValidSign() : base(_MESSAGE) { }
+        public DocumentCouldNotBeRegisteredNoValidSign(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
     public class CouldNotChangeAttributeLaunchPlan : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##";

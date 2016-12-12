@@ -849,7 +849,7 @@ namespace BL.Logic.Common
                 return null;
         }
 
-        public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document)
+        public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document, bool isTakeSendList = false)
         {
             var res = new List<int> { sendList.SourcePositionId };
             if (document.Events?.Any() ?? false)
@@ -863,6 +863,12 @@ namespace BL.Logic.Common
             if (document.Subscriptions?.Any() ?? false)
             {
                 res.AddRange(document.Subscriptions.Select(x => x.DoneEvent.SourcePositionId.Value));
+            }
+            if (isTakeSendList && (document.SendLists?.Any() ?? false))
+            {
+                res.AddRange(document.SendLists
+                    .Where(x => x.TargetPositionId.HasValue && x.Stage < sendList.Stage && (x.SendType == EnumSendTypes.SendForSigning || x.SendType == EnumSendTypes.SendForVisaing || x.SendType == EnumSendTypes.SendForАgreement || x.SendType == EnumSendTypes.SendForАpproval))
+                    .Select(x => x.TargetPositionId.Value));
             }
             return res;
         }

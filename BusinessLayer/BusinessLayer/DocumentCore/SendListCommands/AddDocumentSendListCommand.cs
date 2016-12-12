@@ -10,6 +10,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Transactions;
+using BL.Model.AdminCore;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -92,6 +93,18 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override object Execute()
         {
             int res;
+            if (Model.TargetPositionId.HasValue
+                && (Model.DueDate.HasValue || Model.DueDay.HasValue)
+                && (_sendList.SendType == EnumSendTypes.SendForSigning || _sendList.SendType == EnumSendTypes.SendForVisaing || _sendList.SendType == EnumSendTypes.SendForАgreement || _sendList.SendType == EnumSendTypes.SendForАpproval)
+                && !_admin.VerifySubordination(_context, new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Execution,
+                    TargetPosition = Model.TargetPositionId.Value,
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, _sendList, _document, true),
+                }))
+            {
+                _sendList.AddDescription = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+            }
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
