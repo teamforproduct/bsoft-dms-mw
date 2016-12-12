@@ -244,7 +244,21 @@ namespace BL.Database.Documents
 
             }
         }
-
+        public InternalTemplateDocument DeleteTemplatePrepare(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                    .Where(x => x.Id == id)
+                    .Select(x => new InternalTemplateDocument
+                    {
+                        Id = x.Id,
+                        FileCount = x.DocumentFiles.Count,
+                    }).FirstOrDefault();
+                transaction.Complete();
+                return doc;
+            }
+        }
         public void DeleteTemplate(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -260,6 +274,8 @@ namespace BL.Database.Documents
                     dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentPapersSet.RemoveRange(
                     dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
+                dbContext.TemplateDocumentFilesSet.RemoveRange(
+                    dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
 
                 CommonQueries.DeletePropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { id } });
 

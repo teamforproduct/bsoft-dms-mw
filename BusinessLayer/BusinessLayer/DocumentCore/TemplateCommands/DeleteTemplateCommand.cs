@@ -13,11 +13,12 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     public class DeleteTemplateCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
-
-        public DeleteTemplateCommand(ITemplateDocumentsDbProcess operationDb)
+        private readonly IFileStore _fStore;
+        private new InternalTemplateDocument _document;
+        public DeleteTemplateCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
-
+            _fStore = fStore;
         }
 
         private int Model
@@ -40,6 +41,11 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
+            _document = _operationDb.DeleteTemplatePrepare(_context, Model);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
 
             if (!_operationDb.CanModifyTemplate(_context, Model))
             {
@@ -50,6 +56,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
+            if ((_document?.FileCount ?? 0) > 0)
+            {
+                _fStore.DeleteAllFileInTemplate(_context, _document.Id);
+            }
             _operationDb.DeleteTemplate(_context, Model);
             return null;
         }
