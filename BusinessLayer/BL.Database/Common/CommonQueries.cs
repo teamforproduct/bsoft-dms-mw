@@ -1710,6 +1710,7 @@ namespace BL.Database.Common
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
                         ReadDate = x.OnEvent.ReadDate,
+                        SourceAgentId = x.OnEvent.SourceAgentId,
                         SourceAgentName = x.OnEvent.SourceAgent.Name,
 
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
@@ -1741,6 +1742,7 @@ namespace BL.Database.Common
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
                         ReadDate = x.OnEvent.ReadDate,
+                        SourceAgentId = x.OffEvent.SourceAgentId,
                         SourceAgentName = x.OffEvent.SourceAgent.Name,
 
                         //SourcePositionName = null,
@@ -1804,12 +1806,16 @@ namespace BL.Database.Common
             return docAccesses.Where(x => !accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
 
-        public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx)
+        public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx, bool isVerifyAccessLevel = false)
         {
             var qry = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId);
             if (ctx != null && !ctx.IsAdmin)
             {
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                filterContains = isVerifyAccessLevel
+                    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
+                    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -2110,6 +2116,7 @@ namespace BL.Database.Common
                         AddDescription = x.SendEvent.AddDescription,
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
                         ReadDate = x.SendEvent.ReadDate,
+                        SourceAgentId = x.SendEvent.SourceAgentId,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
                         SourcePositionName = x.SendEvent.SourcePosition.Name,
                         SourcePositionId = x.SendEvent.SourcePositionId,
@@ -2140,7 +2147,8 @@ namespace BL.Database.Common
 
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
                         ReadDate = x.SendEvent.ReadDate,
-                        SourceAgentName = x.SendEvent.SourceAgent.Name,
+                        SourceAgentId = x.DoneEvent.SourceAgentId,
+                        SourceAgentName = x.DoneEvent.SourceAgent.Name,
                         //TODO Фронт очен хочет поля SourcePositionId, TargetPositionId
                         SourcePositionName = null,
                         SourcePositionId = x.DoneEvent.SourcePositionId,

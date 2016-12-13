@@ -58,7 +58,7 @@ namespace BL.Database.Documents
                 if (res.Document != null)
                 {
                     documentId = res.Document.Id;
-                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, context)
+                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, context,true)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -836,7 +836,9 @@ namespace BL.Database.Documents
                         ReadAgentId = x.ReadAgentId,
                         ReadAgentName = x.ReadAgent.Name,
                         ReadDate = x.ReadDate,
+                        SourceAgentId = x.SourceAgentId,
                         SourceAgentName = x.SourceAgent.Name,
+                        TargetAgentId = x.TargetAgentId,
                         TargetAgentName = x.TargetAgent.Name,
                         TargetPositionId = x.TargetPositionId,
                         SourcePositionId = x.SourcePositionId,
