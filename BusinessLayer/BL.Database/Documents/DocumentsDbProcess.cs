@@ -345,9 +345,15 @@ namespace BL.Database.Documents
                     foreach (var doc in docs)
                     {
                         var docAccs = acc.FirstOrDefault(x => x.DocumentId == doc.Id);
-                        if (docAccs == null) continue;
-                        doc.IsFavourite = docAccs.IsFavourite;
-                        doc.IsInWork = docAccs.IsInWork;
+                        if (docAccs == null)
+                        {
+                            doc.IsInWork = true;
+                        }
+                        else
+                        {
+                            doc.IsFavourite = docAccs.IsFavourite;
+                            doc.IsInWork = docAccs.IsInWork;
+                        }
                     }
                 }
 
@@ -424,7 +430,7 @@ namespace BL.Database.Documents
                     res.AccessLevelName = accByExecutorPosition.AccessLevelName;
                 }
                 res.IsFavourite = accs.Any(x => x.IsFavourite);
-                res.IsInWork = accs.Any(x => x.IsInWork);
+                res.IsInWork = accs.Any() ? accs.Any(x => x.IsInWork): true;
                 res.Accesses = accs;
 
                 CommonQueries.ChangeRegistrationFullNumber(res, false);
