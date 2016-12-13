@@ -508,6 +508,9 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
+            // исключаю сотрудников и контактные лица из списка физлиц
+            qry = qry.Where(x => x.Agent.AgentEmployee == null);
+
             if (filter != null)
             {
                 // Список первичных ключей
