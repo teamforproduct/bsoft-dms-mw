@@ -87,11 +87,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// удалить физлицо, контрагент удаляется,  если он является только физлицом
+        /// Удаляет физлицо (агент удаляется, если он является только физлицом)
         /// </summary>
         /// <param name="Id">ИД</param>
         /// <returns>ИД удаленной записи</returns>
-        [HttpPost]
+        [HttpDelete]
         [Route("Info/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
