@@ -1816,8 +1816,8 @@ namespace BL.Database.Common
                     ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                     : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                //filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                //    (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }
