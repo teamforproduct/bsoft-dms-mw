@@ -156,10 +156,12 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
+    <Compile Include="DictionaryCore\FrontInfoModel\FrontDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontContactPersons.cs" />
+    <Compile Include="DictionaryCore\FrontModel\OldFrontDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
@@ -203,6 +205,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentPerson.cs" />

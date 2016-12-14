@@ -9,26 +9,17 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Linq;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
-        private AddDictionaryAgentEmployee Model
-        {
-            get
-            {
-                if (!(_param is AddDictionaryAgentEmployee))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (AddDictionaryAgentEmployee)_param;
-            }
-        }
+        private AddDictionaryAgentEmployeeUser Model { get { return GetModel<AddDictionaryAgentEmployeeUser>(); } }
 
         public override object Execute()
         {
-            try
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new InternalDictionaryAgentEmployee(Model);
 
@@ -62,10 +53,6 @@ namespace BL.Logic.DictionaryCore
                 }
 
                 return agent;
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
             }
         }
     }

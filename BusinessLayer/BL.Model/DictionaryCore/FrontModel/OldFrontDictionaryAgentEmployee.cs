@@ -1,107 +1,103 @@
 ﻿using BL.Model.Extensions;
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BL.Model.DictionaryCore.IncomingModel
+namespace BL.Model.DictionaryCore.FrontModel
 {
     /// <summary>
-    /// контрагент - сотрудник
+    /// Контрагент - сотрудник
     /// </summary>
-    public class AddDictionaryAgentEmployee
+    public class OldFrontDictionaryAgentEmployee: FrontDictionaryAgent
     {
+
         #region [+] Person ...
-
-        /// <summary>
-        /// Имя (кратко)
-        /// </summary>
-        [Required]
-        public string Name { get; set; }
-
         /// <summary>
         /// Имя
         /// </summary>
-        [Required]
         public string FirstName { get; set; }
-
         /// <summary>
         /// Фамилия
         /// </summary>
-        [Required]
         public string LastName { get; set; }
-
         /// <summary>
         /// Отчество
         /// </summary>
-        //[Required]
         public string MiddleName { get; set; }
-
         /// <summary>
         /// ИНН
         /// </summary>
         public string TaxCode { get; set; }
-
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
-
+        public bool? IsMale { get; set; }
         /// <summary>
         /// Серия паспорта
         /// </summary>
         public string PassportSerial { get; set; }
-
         /// <summary>
         /// Номер паспорта
         /// </summary>
         public int? PassportNumber { get; set; }
-
         /// <summary>
         /// Дата выдачи паспорта
         /// </summary>
         public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
-        private DateTime? _PassportDate;
+        private DateTime?  _PassportDate; 
         /// <summary>
         /// Кем выдан паспорт
         /// </summary>
         public string PassportText { get; set; }
-
         /// <summary>
         /// Дата рождения
         /// </summary>
         public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
-        private DateTime? _BirthDate;
+        private DateTime?  _BirthDate; 
 
         /// <summary>
         /// Дополнительная информация
         /// </summary>
-        public string Description { get; set; }
-
+        public new string Description { get; set; }
+        
         /// <summary>
-        ///Признак активности
+        /// Полное имя
         /// </summary>
-        [Required]
-        public bool IsActive { get; set; }
-
-
+        public string FullName { get; set; }
+        
+     
         /// <summary>
-        /// ИД аватарки, если она была загружена
+        /// Паспортные данные
         /// </summary>
-        public int? ImageId { get; set; }
+        public string Passport
+        {
+            // pss  проверить сериализуется ли поведение, либо результат
+            get { string pass =  PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
+        }
 
-        /// <summary>
-        /// Данные файла
-        /// </summary>
-        [IgnoreDataMember]
-        public string PostedFileData { get; set; }
-        #endregion
+#endregion
 
         #region [+] Employee ...
         /// <summary>
-        /// табельный номер
+        /// табельный номер сотрудника
         /// </summary>
         public int PersonnelNumber { get; set; }
+        #endregion
+
+        #region [+] User ...
+        /// <summary>
+        /// Наименование компании
+        /// </summary>
+        [IgnoreDataMember]
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// Профиль пользователя. Язык интерфейса.
+        /// </summary>
+        public int? LanguageId { get; set; }
         #endregion
 
     }

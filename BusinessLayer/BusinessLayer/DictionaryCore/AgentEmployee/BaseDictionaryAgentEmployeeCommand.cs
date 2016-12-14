@@ -11,22 +11,9 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentEmployee Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentEmployee))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentEmployee)_param;
-            }
-        }
+        private AddDictionaryAgentEmployee Model { get { return GetModel<AddDictionaryAgentEmployee>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {
@@ -57,11 +44,15 @@ namespace BL.Logic.DictionaryCore
             //    throw new DictionaryAgentNameNotUnique(Model.Name);
             //}
 
-            if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
+            var filterEmployee = new FilterDictionaryAgentEmployee()
             {
                 PersonnelNumber = Model.PersonnelNumber,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
+            };
+
+            if (TypeModelIs<ModifyDictionaryAgentEmployee>())
+            { filterEmployee.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentEmployee>().Id }; }
+
+            if (_dictDb.ExistsAgentEmployees(_context, filterEmployee))
             {
                 throw new DictionaryAgentEmployeePersonnelNumberNotUnique(Model.PersonnelNumber);
             }
@@ -69,12 +60,16 @@ namespace BL.Logic.DictionaryCore
             // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
             if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
             {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                var filterPerson = new FilterDictionaryAgentPerson
                 {
                     PassportSerialExact = Model.PassportSerial,
                     PassportNumberExact = Model.PassportNumber,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
+                };
+
+                if (TypeModelIs<ModifyDictionaryAgentEmployee>())
+                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentEmployee>().Id }; }
+
+                if (_dictDb.ExistsAgentPersons(_context, filterPerson))
                 {
                     throw new DictionaryAgentEmployeePassportNotUnique(Model.PassportSerial, Model.PassportNumber);
                 }
@@ -83,11 +78,15 @@ namespace BL.Logic.DictionaryCore
             // Если указан необязательный ИНН, проверяю нет ли такого уже
             if (!string.IsNullOrEmpty(Model.TaxCode))
             {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                var filterPerson = new FilterDictionaryAgentPerson
                 {
                     TaxCodeExact = Model.TaxCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
+                };
+
+                if (TypeModelIs<ModifyDictionaryAgentEmployee>())
+                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentEmployee>().Id }; }
+
+                if (_dictDb.ExistsAgentPersons(_context, filterPerson))
                 {
                     throw new DictionaryAgentEmployeeTaxCodeNotUnique(Model.TaxCode);
                 }
