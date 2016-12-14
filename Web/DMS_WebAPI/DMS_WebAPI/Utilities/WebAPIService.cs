@@ -146,7 +146,7 @@ namespace DMS_WebAPI.Utilities
 
         public bool ExistsUser(string userName) => GetUser(userName) != null;
 
-        public int AddUserEmployee(IContext context, AddDictionaryAgentEmployee model)
+        public int AddUserEmployee(IContext context, AddDictionaryAgentEmployeeUser model)
         {
 
             string userId = string.Empty;

@@ -13,27 +13,9 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentEmployee()
         { }
 
-        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
+        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployeeUser model)
         {
-            Id = model.Id;
-            Name = model.Name;
-            FirstName = model.FirstName;
-            LastName = model.LastName;
-            MiddleName = model.MiddleName;
-            TaxCode = model.TaxCode;
-            IsMale = model.IsMale;
-            PassportDate = model.PassportDate;
-            PassportNumber = model.PassportNumber;
-            PassportSerial = model.PassportSerial;
-            PassportText = model.PassportText;
-            Description = model.Description;
-            BirthDate = model.BirthDate;
-            IsActive = model.IsActive;
-
-
-            #region [+] Employee ...
-            PersonnelNumber = model.PersonnelNumber;
-            #endregion
+            SetInternalDictionaryAgentEmployee(model);
 
             #region [+] AgentUser ...
             LanguageId = model.LanguageId;
@@ -46,9 +28,20 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         }
 
+        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
+        {
+            SetInternalDictionaryAgentEmployee(model);
+        }
+
         public InternalDictionaryAgentEmployee(ModifyDictionaryAgentEmployee model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentEmployee(model);
+
+        }
+
+        private void SetInternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
+        {
             Name = model.Name;
             FirstName = model.FirstName;
             LastName = model.LastName;

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using System.Web;
 using BL.Logic.SystemServices.TempStorage;
+using BL.Model.DictionaryCore.FrontInfoModel;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {/// <summary>
@@ -58,11 +59,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Запись справочника сотрудников
+        /// Возвращает реквизиты сотрудника
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontInfoDictionaryAgentEmployee))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -76,7 +77,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployee model)
+        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployeeUser model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
@@ -86,19 +87,19 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return Get(tmpItem);
         }
 
-        /// <summary>
-        /// сделать физлицо сотрудником
-        /// </summary>
-        /// <param name="AgentPersonId">ИД агента</param>
-        /// <param name="model">параметры сотрудника</param>
-        /// <returns>добавленную запись</returns>
-        public IHttpActionResult PostToExistingAgent(int AgentPersonId, [FromBody]ModifyDictionaryAgentEmployee model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            model.Id = AgentPersonId;
-            return Get((int)tmpItem.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model));
-        }
+        ///// <summary>
+        ///// сделать физлицо сотрудником
+        ///// </summary>
+        ///// <param name="AgentPersonId">ИД агента</param>
+        ///// <param name="model">параметры сотрудника</param>
+        ///// <returns>добавленную запись</returns>
+        //public IHttpActionResult PostToExistingAgent(int AgentPersonId, [FromBody]ModifyDictionaryAgentEmployee model)
+        //{
+        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+        //    model.Id = AgentPersonId;
+        //    return Get((int)tmpItem.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model));
+        //}
 
         /// <summary>
         /// Изменение сотрудника

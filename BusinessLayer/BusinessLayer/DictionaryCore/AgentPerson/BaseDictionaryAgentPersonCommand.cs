@@ -48,7 +48,7 @@ namespace BL.Logic.DictionaryCore
                     PassportNumberExact = Model.PassportNumber,
                 };
 
-                if (TypeModelIs<AddDictionaryAgentPerson>())
+                if (TypeModelIs<ModifyDictionaryAgentPerson>())
                 { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentPerson>().Id }; }
 
                 if (_dictDb.ExistsAgentPersons(_context, filter))
@@ -63,7 +63,7 @@ namespace BL.Logic.DictionaryCore
                     TaxCodeExact = Model.TaxCode,
                 };
 
-                if (TypeModelIs<AddDictionaryAgentPerson>())
+                if (TypeModelIs<ModifyDictionaryAgentPerson>())
                 { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentPerson>().Id }; }
 
                 if (_dictDb.ExistsAgentPersons(_context, filter))

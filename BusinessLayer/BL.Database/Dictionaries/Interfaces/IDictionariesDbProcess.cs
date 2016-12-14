@@ -11,6 +11,7 @@ using BL.Model.Tree;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.Enums;
 using BL.Model.AdminCore.FrontModel;
+using BL.Model.DictionaryCore.FrontInfoModel;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
@@ -44,7 +45,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
-        //FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
+        FrontInfoDictionaryAgentEmployee GetAgentEmployee(IContext context, int Id);
         IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
