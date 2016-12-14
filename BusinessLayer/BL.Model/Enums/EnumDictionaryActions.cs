@@ -163,6 +163,8 @@
         AddPersonAddress = 226001,
         ModifyPersonAddress = 226005,
         DeletePersonAddress = 226009,
+
+        
         #endregion AgentAddress
 
         // Persons
@@ -182,7 +184,9 @@
         #endregion AgentPersons
 
         AddContactPerson=227001,
-        DeleteContactPerson=227009,
+        ModifyContactPerson = 227005,
+        DeleteContactPerson =227009,
+        LinkContactPerson = 227002,
 
         // Структура предприятия
         #region DictionaryDepartment

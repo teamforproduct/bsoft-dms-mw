@@ -12,13 +12,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Контакт агента
     /// </summary>
-    public class ModifyDictionaryContact : AddDictionaryContact
+    public class AddDictionaryContactPersonContact : AddDictionaryContact
     {
         /// <summary>
-        /// ИД
+        /// Агент (сотрудник, юр.лицо, банк, физ.лицо, компания)
         /// </summary>
-        [Required]
-        public int Id { get; set; }
-
+        [IgnoreDataMember]
+        public new int AgentId { get; set; }
+        
     }
 }

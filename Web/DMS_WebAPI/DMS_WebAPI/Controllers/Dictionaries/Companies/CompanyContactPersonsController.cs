@@ -70,11 +70,27 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPost]
         [Route("ContactPersons")]
-        public IHttpActionResult Post([FromBody]AddContactPerson model)
+        public IHttpActionResult Post([FromBody]AddDictionaryAgentContactPerson model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactPerson, ctx, model));
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactPerson, ctx, model);
+            return Get(tmpItem);
+        }
+
+        /// <summary>
+        /// Корректирует контактное лицо
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("ContactPersons")]
+        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentContactPerson model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.ModifyContactPerson, ctx, model);
+            return Get(tmpItem);
         }
 
         /// <summary>
@@ -97,6 +113,20 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         }
 
+        /// <summary>
+        /// Добавляет контактное лицо из существующих физ.лиц
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("ContactPersons/AddFromPersons")]
+        public IHttpActionResult AddFromExists([FromBody]LinkDictionaryAgentContactPerson model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactPerson, ctx, model);
+            return Get(tmpItem);
+        }
 
     }
 }

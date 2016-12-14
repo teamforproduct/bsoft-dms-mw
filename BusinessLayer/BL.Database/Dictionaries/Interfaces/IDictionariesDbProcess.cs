@@ -35,6 +35,7 @@ namespace BL.Database.Dictionaries.Interfaces
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter);
         IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPerson
 
         #region DictionaryAgentEmployee
@@ -111,11 +112,10 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region DictionaryContacts
 
-        FrontDictionaryContact GetContact(IContext context, int id);
            
-        void UpdateContact(IContext context, InternalDictionaryContact contact);
-        void DeleteContact(IContext context, InternalDictionaryContact contact);
         int AddContact(IContext context, InternalDictionaryContact contact);
+        void UpdateContact(IContext context, InternalDictionaryContact contact);
+        void DeleteContacts(IContext context, FilterDictionaryContact filter);
         IEnumerable<FrontDictionaryContact> GetContacts(IContext context, FilterDictionaryContact filter);
         IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter);
         IEnumerable<int> GetAgentsIDByContacts(IContext context, IEnumerable<int> contacts);

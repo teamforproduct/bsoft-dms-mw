@@ -453,7 +453,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryContacts
         public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
         {
-            return _dictDb.GetContact(context, id);
+            return _dictDb.GetContacts(context, new FilterDictionaryContact { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)

@@ -64,6 +64,12 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.AddContactPerson:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactPersonCommand>();
                     break;
+                case EnumDictionaryActions.ModifyContactPerson:
+                    cmd = DmsResolver.Current.Get<ModifyDictionaryContactPersonCommand>();
+                    break;
+                case EnumDictionaryActions.LinkContactPerson:
+                    cmd = DmsResolver.Current.Get<LinkDictionaryContactPersonCommand>();
+                    break;
                 case EnumDictionaryActions.DeleteContactPerson:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactPersonCommand>();
                     break;
@@ -241,7 +247,7 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryRegistrationJournalCommand>();
                     break;
                 #endregion DictionaryRegistrationJournals
-                   
+
                 // Структура предприятия
                 #region DictionaryDepartmentss
                 case EnumDictionaryActions.AddDepartment:

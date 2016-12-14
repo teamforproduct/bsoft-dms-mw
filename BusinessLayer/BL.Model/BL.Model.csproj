@@ -191,13 +191,16 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\AddContactPerson.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryContactPersonContact.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\LinkDictionaryAgentContactPerson.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentBank.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentEmployee.cs" />
@@ -208,6 +211,7 @@
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentClientCompany.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDepartmentAdmin.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryPosition.cs" />
