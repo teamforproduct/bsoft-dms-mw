@@ -24,6 +24,7 @@ using BL.Database.DBModel.Admin;
 using BL.Model.AdminCore.FrontModel;
 using BL.CrossCutting.Helpers;
 using BL.Database.Helper;
+using BL.Model.DictionaryCore.FrontInfoModel;
 
 namespace BL.Database.Dictionaries
 {
@@ -813,6 +814,44 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public FrontInfoDictionaryAgentEmployee GetAgentEmployee(IContext context, int Id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentEmployeesQuery(context, dbContext, new FilterDictionaryAgentEmployee { IDs = new List<int> { Id } });
+
+                var res = qry.Select(x => new FrontInfoDictionaryAgentEmployee
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    FullName = x.Agent.AgentPerson.FullName,
+                    FirstName = x.Agent.AgentPerson.FirstName,
+                    LastName = x.Agent.AgentPerson.LastName,
+                    MiddleName = x.Agent.AgentPerson.MiddleName,
+
+                    IsMale = x.Agent.AgentPerson.IsMale,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
+
+                    PersonnelNumber = x.PersonnelNumber,
+                    TaxCode = x.Agent.AgentPerson.TaxCode,
+
+                    LanguageId = x.Agent.AgentUser.LanguageId,
+                    IsActive = x.IsActive,
+                    Description = x.Description,
+
+                    PassportDate = x.Agent.AgentPerson.PassportDate,
+                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
+                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
+                    PassportText = x.Agent.AgentPerson.PassportText,
+
+
+                }).FirstOrDefault();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -823,29 +862,27 @@ namespace BL.Database.Dictionaries
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentEmployee>();
 
+                var now = DateTime.UtcNow;
+
                 var res = qry.Select(x => new FrontDictionaryAgentEmployee
                 {
                     Id = x.Id,
                     IsActive = x.IsActive,
                     Description = x.Description,
-                    PersonnelNumber = x.PersonnelNumber,
                     Name = x.Agent.Name,
                     FullName = x.Agent.AgentPerson.FullName,
-                    FirstName = x.Agent.AgentPerson.FirstName,
-                    LastName = x.Agent.AgentPerson.LastName,
-                    MiddleName = x.Agent.AgentPerson.MiddleName,
-
-                    TaxCode = x.Agent.AgentPerson.TaxCode,
-                    IsMale = x.Agent.AgentPerson.IsMale,
-                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
-                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
-                    PassportText = x.Agent.AgentPerson.PassportText,
-                    PassportDate = x.Agent.AgentPerson.PassportDate,
-                    BirthDate = x.Agent.AgentPerson.BirthDate,
-
-                    LanguageId = x.Agent.AgentUser.LanguageId,
-
+                    PositionExecutors = x.PositionExecutors
+                    .Where(y => y.StartDate <= now && y.EndDate >= now && y.IsActive)
+                    .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order)
+                    .Select(y => new FrontDictionaryPositionExecutor
+                    {
+                        Id = y.Id,
+                        PositionName = y.Position.Name,
+                        DepartmentName = y.Position.Department.Name,
+                        PositionExecutorTypeName = y.PositionExecutorType.Name
+                    }).ToList(),
                 }).ToList();
+
 
                 transaction.Complete();
                 return res;
@@ -2730,7 +2767,7 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
-            
+
 
             if (filter != null)
             {

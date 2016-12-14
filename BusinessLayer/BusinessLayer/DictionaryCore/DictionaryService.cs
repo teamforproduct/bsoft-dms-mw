@@ -18,6 +18,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
+using BL.Model.DictionaryCore.FrontInfoModel;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -180,9 +181,9 @@ namespace BL.Logic.DictionaryCore
 
         #region DicionaryAgentEmployees
 
-        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
+        public FrontInfoDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            return _dictDb.GetAgentEmployees(context, new FilterDictionaryAgentEmployee { IDs = new List<int> { id } }, null).FirstOrDefault();
+            return _dictDb.GetAgentEmployee(context, id );
         }
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
