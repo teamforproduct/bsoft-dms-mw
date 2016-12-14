@@ -291,8 +291,8 @@ namespace BL.Database.FileWorker
                 //TODO CurrentAgentId
                 var path = GetStorePath(ctx);
                 path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString() });
-
-                Directory.Delete(path, true);
+                if (Directory.Exists(path))
+                    Directory.Delete(path, true);
             }
             catch (Exception ex)
             {
@@ -315,8 +315,8 @@ namespace BL.Database.FileWorker
 
                 var path = GetStorePath(ctx);
                 path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString() });
-
-                Directory.Delete(path, true);
+                if (Directory.Exists(path))
+                    Directory.Delete(path, true);
             }
             catch (Exception ex)
             {

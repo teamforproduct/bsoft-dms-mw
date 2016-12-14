@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
+using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
@@ -60,8 +61,8 @@ namespace DMS_WebAPI
             autoPlanService.Initialize(dbs);
 #endif
             //TODO
-            //var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
-            //clearTrashDocumentsService.Initialize(dbs);
+            var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
+            clearTrashDocumentsService.Initialize(dbs);
 
 #if !DEBUG
             // Очистка устаревших пользовательских контекстов
