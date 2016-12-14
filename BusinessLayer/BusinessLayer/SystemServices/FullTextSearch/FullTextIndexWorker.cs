@@ -148,7 +148,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var searchResult = new List<FullTextSearchResult>();
 
-            foreach (var doc in qryRes.ScoreDocs.Where(x=>x.Score>0.1).OrderByDescending(x=>x.Score)) //x.Score>0.1 filtrate different "noise" from search.
+            foreach (var doc in qryRes.ScoreDocs.Where(x=>x.Score>1).OrderByDescending(x=>x.Score)) //x.Score>0.1 filtrate different "noise" from search.
             {
                 try
                 {
@@ -193,7 +193,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var qryRes = _searcher.Search(arrayQry, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
 
-            foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 0.1).OrderByDescending(x => x.Score))
+            foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
             {
                 try
                 {
