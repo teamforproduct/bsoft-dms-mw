@@ -45,10 +45,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-            if (!_operationDb.CanModifyTemplate(_context, Model))
-            {
-                throw new CouldNotModifyTemplateDocument();
-            }
+            //if (!_operationDb.CanModifyTemplate(_context, Model))
+            //{
+            //    throw new CouldNotModifyTemplateDocument();
+            //}
 
             return true;
         }
