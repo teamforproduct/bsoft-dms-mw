@@ -34,6 +34,12 @@ namespace BL.Database.DBModel.Dictionary
         public Nullable<DateTime> PassportDate { get; set; }
         public Nullable<DateTime> BirthDate { get; set; }
         public Nullable<int> AgentCompanyId { get; set; }
+
+        /// <summary>
+        /// Должность контактного лица (текстовое поле)
+        /// </summary>
+        [MaxLength(2000)]
+        public string Position { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsActive { get; set; }

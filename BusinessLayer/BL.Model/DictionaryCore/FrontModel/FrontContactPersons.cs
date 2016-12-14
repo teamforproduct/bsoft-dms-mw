@@ -22,7 +22,12 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// ФИО, Название, ...
         /// </summary>
         public string Name { get; set; }
-        
+
+        /// <summary>
+        /// Дополнительная информация
+        /// </summary>
+        public string Position { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>

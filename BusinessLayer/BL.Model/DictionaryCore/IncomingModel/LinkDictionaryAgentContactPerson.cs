@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class AddContactPerson
+    public class LinkDictionaryAgentContactPerson
     {
         /// <summary>
         /// Компания юридическое лицо

@@ -18,6 +18,17 @@ namespace BL.Model.DictionaryCore.InternalModel
             SetInternalDictionaryAgentPerson(model);
         }
 
+        public InternalDictionaryAgentPerson(AddDictionaryAgentContactPerson model)
+        {
+            SetInternalDictionaryAgentContactPerson(model);
+        }
+
+        public InternalDictionaryAgentPerson(ModifyDictionaryAgentContactPerson model)
+        {
+            Id = model.Id;
+            SetInternalDictionaryAgentContactPerson(model);
+        }
+
         public InternalDictionaryAgentPerson(ModifyDictionaryAgentPerson model)
         {
             Id = model.Id;
@@ -39,6 +50,18 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsActive = model.IsActive;
             BirthDate = model.BirthDate;
             AgentCompanyId = model.AgentCompanyId;
+            Description = model.Description;
+        }
+
+        public void SetInternalDictionaryAgentContactPerson(AddDictionaryAgentContactPerson model)
+        {
+            AgentCompanyId = model.CompanyId;
+            Name = model.Name;
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            MiddleName = model.MiddleName;
+            IsMale = model.IsMale;
+            IsActive = model.IsActive;
             Description = model.Description;
         }
 

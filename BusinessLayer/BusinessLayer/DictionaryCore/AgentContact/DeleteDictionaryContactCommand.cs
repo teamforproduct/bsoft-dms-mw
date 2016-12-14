@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanExecute()
         {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
             return true;
         }
@@ -42,8 +42,7 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                var item = new InternalDictionaryContact() { Id = Model };
-                _dictDb.DeleteContact(_context, item);
+                _dictDb.DeleteContacts(_context, new FilterDictionaryContact { IDs = new List<int> { Model } });
                 return null;
             }
             catch (Exception ex)

@@ -493,6 +493,38 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentPersonsQuery(context, dbContext, filter);
+
+                var res = qry.Select(x => new InternalDictionaryAgentPerson
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    MiddleName = x.MiddleName,
+                    TaxCode = x.TaxCode,
+                    IsMale = x.IsMale,
+                    PassportSerial = x.PassportSerial,
+                    PassportNumber = x.PassportNumber,
+                    PassportText = x.PassportText,
+                    PassportDate = x.PassportDate,
+                    BirthDate = x.BirthDate,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    AgentCompanyId = x.AgentCompanyId,
+                    LastChangeDate = x.LastChangeDate,
+                    LastChangeUserId = x.LastChangeUserId
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -507,6 +539,9 @@ namespace BL.Database.Dictionaries
         public IQueryable<DictionaryAgentPersons> GetAgentPersonsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentPerson filter)
         {
             var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            // исключаю сотрудников из списка физлиц
+            qry = qry.Where(x => x.Agent.AgentEmployee == null);
 
             if (filter != null)
             {
@@ -2621,49 +2656,28 @@ namespace BL.Database.Dictionaries
                 transaction.Complete();
             }
         }
-        public void DeleteContact(IContext context, InternalDictionaryContact contact)
+        public void DeleteContacts(IContext context, FilterDictionaryContact filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == contact.Id);
-                dbContext.DictionaryAgentContactsSet.Remove(ddt);
-                dbContext.SaveChanges();
+                var qry = GetContactsQuery(context, dbContext, filter);
 
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContacts, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryContacts, EnumOperationType.Delete);
+
+                qry.Delete();
+
                 transaction.Complete();
             }
         }
 
-
-        public FrontDictionaryContact GetContact(IContext context, int id)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
-
-                qry = qry.Where(x => x.Id == id);
-
-                var res = qry.Select(x => new FrontDictionaryContact
-                {
-                    Id = x.Id,
-                    AgentId = x.AgentId,
-                    ContactType = new FrontDictionaryContactType { Id = x.ContactTypeId, Name = x.ContactType.Name, Code = x.ContactType.Code, IsActive = x.ContactType.IsActive },
-                    Value = x.Contact,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                    IsConfirmed = x.IsConfirmed
-                }).FirstOrDefault();
-
-                transaction.Complete();
-                return res;
-            }
-        }
 
         public IEnumerable<FrontDictionaryContact> GetContacts(IContext context, FilterDictionaryContact filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetContactsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
 
                 var res = qry.Select(x => new FrontDictionaryContact
                 {
@@ -2679,7 +2693,8 @@ namespace BL.Database.Dictionaries
                     },
                     Value = x.Contact,
                     Description = x.Description,
-                    IsActive = x.IsActive
+                    IsActive = x.IsActive,
+                    IsConfirmed = x.IsConfirmed
                 }).ToList();
 
                 transaction.Complete();
@@ -2711,12 +2726,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
         public IQueryable<DictionaryAgentContacts> GetContactsQuery(IContext context, DmsContext dbContext, FilterDictionaryContact filter)
         {
             var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
-            qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
+            
 
             if (filter != null)
             {

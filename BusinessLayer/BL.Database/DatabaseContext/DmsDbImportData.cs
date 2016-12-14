@@ -338,7 +338,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.DeleteCustomDictionary, EnumObjects.CustomDictionaries));
 
             items.Add(GetSysAct(EnumDictionaryActions.AddContactPerson, EnumObjects.DictionaryContactPersons));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyContactPerson, EnumObjects.DictionaryContactPersons));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteContactPerson, EnumObjects.DictionaryContactPersons));
+            items.Add(GetSysAct(EnumDictionaryActions.LinkContactPerson, EnumObjects.DictionaryContactPersons));
 
             items.Add(GetSysAct(EnumPropertyActions.AddProperty, EnumObjects.Properties));
             items.Add(GetSysAct(EnumPropertyActions.ModifyProperty, EnumObjects.Properties));

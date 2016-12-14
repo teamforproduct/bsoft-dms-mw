@@ -12,9 +12,9 @@ using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryContactPersonCommand : BaseDictionaryCommand
+    public class ModifyDictionaryContactPersonCommand : BaseDictionaryCommand
     {
-        private AddDictionaryAgentContactPerson Model { get { return GetModel<AddDictionaryAgentContactPerson>(); } }
+        private ModifyDictionaryAgentContactPerson Model { get { return GetModel<ModifyDictionaryAgentContactPerson>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -27,17 +27,26 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            int person = -1;
-
             using (var transaction = Transactions.GetTransaction())
             {
-                var newPerson = new InternalDictionaryAgentPerson(Model);
+                var person = _dictDb.GetInternalAgentPersons(_context, new FilterDictionaryAgentPerson { IDs = new List<int> { Model.Id } }).FirstOrDefault();
 
-                CommonDocumentUtilities.SetLastChange(_context, newPerson);
+                if (person == null) throw new DictionaryRecordWasNotFound();
 
-                person = _dictDb.AddAgentPerson(_context, newPerson);
+                person.AgentCompanyId = Model.CompanyId;
+                person.Name = Model.Name;
+                person.FirstName = Model.FirstName;
+                person.LastName = Model.LastName;
+                person.MiddleName = Model.MiddleName;
+                person.IsMale = Model.IsMale;
+                person.Description = Model.Description;
+                person.IsActive = Model.IsActive;
 
-                _dictDb.DeleteContacts(_context, new FilterDictionaryContact { AgentIDs = new List<int> { person } });
+                CommonDocumentUtilities.SetLastChange(_context, person);
+
+                _dictService.ExecuteAction(BL.Model.Enums.EnumDictionaryActions.ModifyAgentPerson, _context, person);
+
+                _dictDb.DeleteContacts(_context, new FilterDictionaryContact { AgentIDs = new List<int> { person.Id } });
 
                 if (Model.Contacts?.Count() > 0)
                 {
@@ -45,7 +54,7 @@ namespace BL.Logic.DictionaryCore
                     {
                         AddContact(new AddDictionaryContact
                         {
-                            AgentId = person,
+                            AgentId = person.Id,
                             ContactTypeId = contact.ContactTypeId,
                             Description = contact.Description,
                             IsActive = contact.IsActive,
@@ -54,10 +63,8 @@ namespace BL.Logic.DictionaryCore
                         });
                     }
                 }
-
             }
-
-            return person;
+            return null;
         }
 
         private void AddContact(AddDictionaryContact model)
