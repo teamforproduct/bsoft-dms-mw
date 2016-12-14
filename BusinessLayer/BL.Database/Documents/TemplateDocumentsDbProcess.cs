@@ -430,11 +430,11 @@ namespace BL.Database.Documents
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
-                var entityState = System.Data.Entity.EntityState.Modified;
+                var entityState = System.Data.Entity.EntityState.Added;
                 if (template.Id > 0)
                 {
-                    newTemplate.Id = (int)template.Id;
-                    entityState = System.Data.Entity.EntityState.Added;
+                    newTemplate.Id = template.Id;
+                    entityState = System.Data.Entity.EntityState.Modified;
                 }
 
                 dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
@@ -544,11 +544,11 @@ namespace BL.Database.Documents
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
-                var entityState = System.Data.Entity.EntityState.Modified;
+                var entityState = System.Data.Entity.EntityState.Added;
                 if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
-                    entityState = System.Data.Entity.EntityState.Added;
+                    entityState = System.Data.Entity.EntityState.Modified;
                 }
 
                 dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
@@ -662,11 +662,11 @@ namespace BL.Database.Documents
                     LastChangeDate = template.LastChangeDate,
                     LastChangeUserId = template.LastChangeUserId
                 };
-                var entityState = System.Data.Entity.EntityState.Modified;
+                var entityState = System.Data.Entity.EntityState.Added;
                 if (template.Id.HasValue)
                 {
                     newTemplate.Id = (int)template.Id;
-                    entityState = System.Data.Entity.EntityState.Added;
+                    entityState = System.Data.Entity.EntityState.Modified;
                 }
 
                 dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
