@@ -2517,14 +2517,14 @@ namespace BL.Database.SystemDb
                         ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
                     }).ToList());
                 }
-                var iDs = res.Select(s => s.Id);
-                var removedItems = dbContext.FullTextIndexCashSet.Where(x => !iDs.Contains(x.Id)).ToList();
+                //var iDs = res.Select(s => s.Id);
+                //var removedItems = dbContext.FullTextIndexCashSet.Where(x => iDs.Contains(x.Id)).ToList();
 
-                if (removedItems.Any())
-                {
-                    dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
-                    dbContext.SaveChanges();
-                }
+                //if (removedItems.Any())
+                //{
+                //    dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
+                //    dbContext.SaveChanges();
+                //}
 
                 #endregion TemplateDocuments
                 transaction.Complete();
