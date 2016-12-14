@@ -37,13 +37,21 @@ namespace BL.Logic.DictionaryCore
 
                 person = _dictDb.AddAgentPerson(_context, newPerson);
 
-                _dictDb.DeleteContacts(_context, new FilterDictionaryContact {  AgentIDs = new List<int> { person } });
+                _dictDb.DeleteContacts(_context, new FilterDictionaryContact { AgentIDs = new List<int> { person } });
 
                 if (Model.Contacts?.Count() > 0)
                 {
                     foreach (var contact in Model.Contacts)
                     {
-                        AddContact(contact);
+                        AddContact(new AddDictionaryContact
+                        {
+                            AgentId = person,
+                            ContactTypeId = contact.ContactTypeId,
+                            Description = contact.Description,
+                            IsActive = contact.IsActive,
+                            IsConfirmed = contact.IsConfirmed,
+                            Value = contact.Value
+                        });
                     }
                 }
 

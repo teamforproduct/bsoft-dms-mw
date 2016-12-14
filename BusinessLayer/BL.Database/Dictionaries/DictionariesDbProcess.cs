@@ -2677,6 +2677,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetContactsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
+
                 var res = qry.Select(x => new FrontDictionaryContact
                 {
                     Id = x.Id,
@@ -2728,7 +2730,7 @@ namespace BL.Database.Dictionaries
         {
             var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
-            qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
+            
 
             if (filter != null)
             {

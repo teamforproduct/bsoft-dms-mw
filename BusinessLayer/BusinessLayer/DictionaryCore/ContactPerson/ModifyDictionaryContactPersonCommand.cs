@@ -52,7 +52,15 @@ namespace BL.Logic.DictionaryCore
                 {
                     foreach (var contact in Model.Contacts)
                     {
-                        AddContact(contact);
+                        AddContact(new AddDictionaryContact
+                        {
+                            AgentId = person.Id,
+                            ContactTypeId = contact.ContactTypeId,
+                            Description = contact.Description,
+                            IsActive = contact.IsActive,
+                            IsConfirmed = contact.IsConfirmed,
+                            Value = contact.Value
+                        });
                     }
                 }
             }
