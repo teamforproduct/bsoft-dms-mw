@@ -536,6 +536,7 @@ namespace BL.Database.Encryption
 
         public string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign)
         {
+            return dataToSign;
             var res = string.Empty;
 
             try
@@ -603,6 +604,7 @@ namespace BL.Database.Encryption
 
         public bool VerifyCertificateSign(IContext ctx, string dataToSign, string sign)
         {
+            return true;
             var res = false;
             try
             {
@@ -628,6 +630,7 @@ namespace BL.Database.Encryption
 
         public byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf)
         {
+            return pdf;
             byte[] res = null;
 
             try
@@ -706,6 +709,7 @@ namespace BL.Database.Encryption
 
         public bool VerifyCertificateSignPdf(byte[] pdf)
         {
+            return true;
             int res = -1;
 
             try
