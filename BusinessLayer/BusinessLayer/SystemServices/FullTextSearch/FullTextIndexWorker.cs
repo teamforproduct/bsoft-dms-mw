@@ -59,29 +59,38 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public void DeleteItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
-            var qryVal = new[] { ((int)item.ItemType).ToString(), item.ObjectId.ToString() };
-            var fld = new[] { FIELD_OBJECT_TYPE, FIELD_OBJECT_ID };
-            var flags = new[] { Occur.MUST, Occur.MUST };
-            var query = MultiFieldQueryParser.Parse(Version.LUCENE_30, qryVal, fld, flags, _analyzer);
+            //var qryVal = new[] { ((int)item.ItemType), item.ObjectId };
+            //var fld = new[] { FIELD_OBJECT_TYPE, FIELD_OBJECT_ID };
+            //var flags = new[] { Occur.MUST, Occur.MUST };
+            //var query = MultiFieldQueryParser.Parse(Version.LUCENE_30, qryVal, fld, flags, _analyzer);
+            var qry1 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)item.ItemType, (int)item.ItemType, true, true);
+            var qry2 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_ID, item.ObjectId, item.ObjectId, true, true); 
+            var bQuery = new BooleanQuery();
+            bQuery.Add(qry1, Occur.MUST);
+            bQuery.Add(qry2, Occur.MUST);
 
-            //var qry1 = new TermQuery(new Term(FIELD_OBJECT_TYPE, ((int)item.ItemType).ToString()));
-            //var qry2 = new TermQuery(new Term(FIELD_OBJECT_ID, item.ObjectId.ToString()));
-            //var bQuery = new BooleanQuery();
-            //bQuery.Add(qry1,Occur.MUST);
-            //bQuery.Add(qry2, Occur.MUST);
-
-            _writer.DeleteDocuments(query);
+            _writer.DeleteDocuments(bQuery);
         }
 
         public void AddNewItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
             var doc = new Document();
-            doc.Add(new Field(FIELD_DOC_ID, item.DocumentId.ToString(), Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field(FIELD_OBJECT_TYPE, ((int)item.ItemType).ToString(), Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field(FIELD_OBJECT_ID, item.ObjectId.ToString(), Field.Store.YES, Field.Index.ANALYZED));
+            var docIdFld = new NumericField(FIELD_DOC_ID, Field.Store.YES, true);
+            docIdFld.SetIntValue(item.DocumentId);
+            doc.Add(docIdFld);
+
+            var typeIdFld = new NumericField(FIELD_OBJECT_TYPE, Field.Store.YES, true);
+            typeIdFld.SetIntValue((int)item.ItemType);
+            doc.Add(typeIdFld);
+
+            var objIdFld = new NumericField(FIELD_OBJECT_ID, Field.Store.YES, true);
+            objIdFld.SetIntValue(item.ObjectId);
+            doc.Add(objIdFld);
+
             doc.Add(new Field(FIELD_BODY, item.ObjectText, Field.Store.NO, Field.Index.ANALYZED));
-            doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
+
             _writer.AddDocument(doc);
         }
 
@@ -138,13 +147,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
             parser.AllowLeadingWildcard = true;
-            var arrayQry = parser.Parse(qryString);
+            var textQry = parser.Parse(qryString);
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 1, null, true, true);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
 
-            arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
+            var boolQry = new BooleanQuery();
+            boolQry.Add(textQry, Occur.MUST);
+            boolQry.Add(idQry, Occur.MUST);
+            boolQry.Add(clientQry, Occur.MUST);
+            //arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
 
-            var qryRes = _searcher.Search(arrayQry, MAX_DOCUMENT_COUNT_RETURN);
+            var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
 
             var searchResult = new List<FullTextSearchResult>();
 
@@ -167,7 +180,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     // ignored
                 }
             }
-            return searchResult;
+            return searchResult;//.Where(x=>x.DocumentId>0).ToList();
         }
 
         public IEnumerable<FullTextSearchResult> SearchDictionary(string text, int clientId)
@@ -183,17 +196,21 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
             parser.AllowLeadingWildcard = true;
-            var arrayQry = parser.Parse(qryString);
+            var textQry = parser.Parse(qryString);
 
             var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 0, 0, true, true);
-            var clientQry = NumericRangeQuery.NewIntRange(FIELD_CLIENT_ID, clientId, clientId, true, true);
+            var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
 
-            arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
+            var boolQry = new BooleanQuery();
+            boolQry.Add(textQry, Occur.MUST);
+            boolQry.Add(idQry, Occur.MUST);
+            boolQry.Add(clientQry, Occur.MUST);
+            //arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
 
-            var qryRes = _searcher.Search(arrayQry, MAX_DOCUMENT_COUNT_RETURN);
+            var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
             var searchResult = new List<FullTextSearchResult>();
 
-            foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
+            foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 0.1).OrderByDescending(x => x.Score))
             {
                 try
                 {
@@ -212,7 +229,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     // ignored
                 }
             }
-            return searchResult;
+            return searchResult; //.Where(x=>x.DocumentId == 0).ToList();
         }
 
         public IEnumerable<FullTextSearchResult> SearchInDocument(string text, int documentId)

@@ -47,11 +47,11 @@ namespace DMS_WebAPI
             //mailService.Initialize(dbs);
 
             //TODO
-#if !DEBUG
+
             // Полнотекстовый поиск
-            //var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
-            //indexService.Initialize(dbs);
-#endif
+            var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
+            indexService.Initialize(dbs);
+
 
 
 #if !DEBUG
