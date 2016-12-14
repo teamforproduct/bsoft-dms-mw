@@ -663,7 +663,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = template.LastChangeUserId
                 };
                 var entityState = System.Data.Entity.EntityState.Added;
-                if (template.Id.HasValue)
+                if (template.Id!=0)
                 {
                     newTemplate.Id = (int)template.Id;
                     entityState = System.Data.Entity.EntityState.Modified;

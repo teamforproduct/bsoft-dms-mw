@@ -23,7 +23,7 @@ namespace BL.Model.DocumentCore.InternalModel
             Description = model.Description;
         }
 
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public int DocumentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }
