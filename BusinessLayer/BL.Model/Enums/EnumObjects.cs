@@ -49,6 +49,7 @@
         DictionaryClientCompanyAddress = 225, // Контрагенты - пользователи
         DictionaryPersonAddress = 226, // Контрагенты - пользователи
         DictionaryContactPersons = 227, // Контрагенты - пользователи
+        DictionaryContactPersonContacts = 228, // Контрагенты - пользователи
 
         TemplateDocument = 251, // Шаблоны документов
         TemplateDocumentSendList = 252, // Списки рассылки в шаблонах

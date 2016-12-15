@@ -159,12 +159,15 @@ namespace BL.Logic.DictionaryCore
                 // Контакты
                 #region DictionaryContacts
                 case EnumDictionaryActions.AddAgentContact:
+                case EnumDictionaryActions.AddContactPersonContacts:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactCommand>();
                     break;
                 case EnumDictionaryActions.ModifyAgentContact:
+                case EnumDictionaryActions.ModifyContactPersonContacts:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryContactCommand>();
                     break;
                 case EnumDictionaryActions.DeleteAgentContact:
+                case EnumDictionaryActions.DeleteContactPersonContacts:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactCommand>();
                     break;
                 #endregion DictionaryContacts

@@ -164,7 +164,11 @@
         ModifyPersonAddress = 226005,
         DeletePersonAddress = 226009,
 
-        
+        AddContactPersonContacts = 228001,
+        ModifyContactPersonContacts = 228005,
+        DeleteContactPersonContacts = 228009,
+
+
         #endregion AgentAddress
 
         // Persons

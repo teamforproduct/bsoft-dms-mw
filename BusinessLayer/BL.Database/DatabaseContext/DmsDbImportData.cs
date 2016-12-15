@@ -61,6 +61,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeAddress));
             items.Add(GetSystemObjects(EnumObjects.DictionaryPersonAddress));
             items.Add(GetSystemObjects(EnumObjects.DictionaryContactPersons));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryContactPersonContacts));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
@@ -283,6 +284,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.AddPersonAddress, EnumObjects.DictionaryPersonAddress));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyPersonAddress, EnumObjects.DictionaryPersonAddress));
             items.Add(GetSysAct(EnumDictionaryActions.DeletePersonAddress, EnumObjects.DictionaryPersonAddress));
+            
 
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentPerson, EnumObjects.DictionaryAgentPersons));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentPerson, EnumObjects.DictionaryAgentPersons));
@@ -341,6 +343,10 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.ModifyContactPerson, EnumObjects.DictionaryContactPersons));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteContactPerson, EnumObjects.DictionaryContactPersons));
             items.Add(GetSysAct(EnumDictionaryActions.LinkContactPerson, EnumObjects.DictionaryContactPersons));
+
+            items.Add(GetSysAct(EnumDictionaryActions.AddContactPersonContacts, EnumObjects.DictionaryContactPersonContacts));
+            items.Add(GetSysAct(EnumDictionaryActions.DeleteContactPersonContacts, EnumObjects.DictionaryContactPersonContacts));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyContactPersonContacts, EnumObjects.DictionaryContactPersonContacts));
 
             items.Add(GetSysAct(EnumPropertyActions.AddProperty, EnumObjects.Properties));
             items.Add(GetSysAct(EnumPropertyActions.ModifyProperty, EnumObjects.Properties));

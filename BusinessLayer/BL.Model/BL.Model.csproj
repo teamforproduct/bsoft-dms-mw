@@ -194,7 +194,6 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryContactPersonContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\LinkDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
