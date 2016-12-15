@@ -68,19 +68,21 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Изменить вложенный в шаблон файл
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([FromUri]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateAttachedFile model)
         {
+            model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            if (HttpContext.Current.Request.Files.Count > 0)
-            {
-                HttpPostedFile file = HttpContext.Current.Request.Files[0];
-                model.PostedFileData = file;
-                model.FileName = file.FileName;
-                model.FileType = file.ContentType;
-            }
+            //if (HttpContext.Current.Request.Files.Count > 0)
+            //{
+            //    HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            //    model.PostedFileData = file;
+            //    model.FileName = file.FileName;
+            //    model.FileType = file.ContentType;
+            //}
             var fl = (FrontTemplateAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, ctx, model);
 
             return new JsonResult(fl, this);

@@ -1009,14 +1009,14 @@ namespace BL.Database.Documents
                 entry.Property(x => x.Description).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                if (docFile.PostedFileData != null)
-                {
-                    entry.Property(x => x.Name).IsModified = true;
-                    entry.Property(x => x.Extention).IsModified = true;
-                    entry.Property(x => x.FileType).IsModified = true;
-                    entry.Property(x => x.FileSize).IsModified = true;
-                    entry.Property(x => x.Hash).IsModified = true;
-                }
+                //if (docFile.PostedFileData != null)
+                //{
+                //    entry.Property(x => x.Name).IsModified = true;
+                //    entry.Property(x => x.Extention).IsModified = true;
+                //    entry.Property(x => x.FileType).IsModified = true;
+                //    entry.Property(x => x.FileSize).IsModified = true;
+                //    entry.Property(x => x.Hash).IsModified = true;
+                //}
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
                 transaction.Complete();

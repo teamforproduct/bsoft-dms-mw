@@ -59,15 +59,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             //fl.FileContent = Convert.FromBase64String(Model.FileData);
             _docFile.Type = Model.Type;
             _docFile.Description = Model.Description;
-            if (Model.PostedFileData != null)
-            {
-                _docFile.FileSize = Model.FileSize;
-                _docFile.Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "");
-                _docFile.Name = Path.GetFileNameWithoutExtension(Model.FileName);
-                _docFile.FileType = Model.FileType;
-                _docFile.PostedFileData = Model.PostedFileData;
-                _fStore.SaveFile(_context, _docFile);
-            }
+            //if (Model.PostedFileData != null)
+            //{
+            //    _docFile.FileSize = Model.FileSize;
+            //    _docFile.Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "");
+            //    _docFile.Name = Path.GetFileNameWithoutExtension(Model.FileName);
+            //    _docFile.FileType = Model.FileType;
+            //    _docFile.PostedFileData = Model.PostedFileData;
+            //    _fStore.SaveFile(_context, _docFile);
+            //}
             CommonDocumentUtilities.SetLastChange(_context, _docFile);
 
             _operationDb.UpdateFile(_context, _docFile);
