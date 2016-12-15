@@ -867,10 +867,18 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryAgentEmployee
                 {
                     Id = x.Id,
+                    ImageByteArray = x.Agent.Image,
                     IsActive = x.IsActive,
                     Description = x.Description,
                     Name = x.Agent.Name,
                     FullName = x.Agent.AgentPerson.FullName,
+                    BirthDate = x.Agent.AgentPerson.BirthDate,
+                    PersonnelNumber = x.PersonnelNumber,
+                    TaxCode = x.Agent.AgentPerson.TaxCode,
+                    PassportDate = x.Agent.AgentPerson.PassportDate,
+                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
+                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
+                    PassportText = x.Agent.AgentPerson.PassportText,
                     PositionExecutors = x.PositionExecutors
                     .Where(y => y.StartDate <= now && y.EndDate >= now && y.IsActive)
                     .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order)

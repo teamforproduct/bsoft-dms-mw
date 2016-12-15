@@ -141,6 +141,7 @@
     <Compile Include="Common\EnumModel.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />

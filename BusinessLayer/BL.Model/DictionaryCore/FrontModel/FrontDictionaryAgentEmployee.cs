@@ -29,10 +29,71 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string Name { get; set; }
 
+
+
+        /// <summary>
+        /// Аватарка
+        /// </summary>
+        public string Image { get { return Converter.ToBase64String(imageByteArray); } }
+
+        [IgnoreDataMember]
+        public byte[] ImageByteArray { set { imageByteArray = value; } }
+        private byte[] imageByteArray;
+
+
+        /// <summary>
+        /// Дата рождения
+        /// </summary>
+        public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate = value.ToUTC(); } }
+        private DateTime? _BirthDate;
+
+
+        /// <summary>
+        /// Серия паспорта
+        /// </summary>
+        [IgnoreDataMember]
+        public string PassportSerial { get; set; }
+        /// <summary>
+        /// Номер паспорта
+        /// </summary>
+        [IgnoreDataMember]
+        public int? PassportNumber { get; set; }
+        /// <summary>
+        /// Дата выдачи паспорта
+        /// </summary>
+        [IgnoreDataMember]
+        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate = value.ToUTC(); } }
+        private DateTime? _PassportDate;
+        /// <summary>
+        /// Кем выдан паспорт
+        /// </summary>
+        [IgnoreDataMember]
+        public string PassportText { get; set; }
+
+        /// <summary>
+        /// Паспортные данные
+        /// </summary>
+        public string Passport
+        {
+            get { string pass = PassportSerial?.Trim() + " " + PassportNumber?.ToString() + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
+        }
+
+        /// <summary>
+        /// ИНН
+        /// </summary>
+        public string TaxCode { get; set; }
+
+
+        /// <summary>
+        /// табельный номер сотрудника
+        /// </summary>
+        public int PersonnelNumber { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
+
 
         /// <summary>
         /// Признак активности
