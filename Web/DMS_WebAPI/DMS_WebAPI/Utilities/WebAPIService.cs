@@ -203,7 +203,7 @@ namespace DMS_WebAPI.Utilities
                 }
             }
 
-            var res = (int)tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, context, model);
+            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, context, model);
 
             // При деактивации сотрудника деактивирую пользователя
             if (!model.IsActive)
@@ -212,7 +212,7 @@ namespace DMS_WebAPI.Utilities
             }
 
 
-            return res;
+            return model.Id;
         }
 
         public void DeleteUserEmployee(IContext context, int agentId)
