@@ -141,6 +141,7 @@
     <Compile Include="Common\EnumModel.cs" />
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
@@ -193,7 +194,6 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryContactPersonContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\LinkDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />

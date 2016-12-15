@@ -48,21 +48,6 @@ namespace BL.Logic.DictionaryCore
 
                 _dictDb.DeleteContacts(_context, new FilterDictionaryContact { AgentIDs = new List<int> { person.Id } });
 
-                if (Model.Contacts?.Count() > 0)
-                {
-                    foreach (var contact in Model.Contacts)
-                    {
-                        AddContact(new AddDictionaryContact
-                        {
-                            AgentId = person.Id,
-                            ContactTypeId = contact.ContactTypeId,
-                            Description = contact.Description,
-                            IsActive = contact.IsActive,
-                            IsConfirmed = contact.IsConfirmed,
-                            Value = contact.Value
-                        });
-                    }
-                }
             }
             return null;
         }

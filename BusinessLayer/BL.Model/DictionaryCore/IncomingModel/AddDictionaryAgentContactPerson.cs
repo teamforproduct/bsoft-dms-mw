@@ -58,10 +58,5 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         public bool IsActive { get; set; }
 
-        /// <summary>
-        /// Контакты
-        /// </summary>
-        public IEnumerable<AddDictionaryContactPersonContact> Contacts { get; set; }
-
     }
 }
