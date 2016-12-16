@@ -16,6 +16,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
 
+        private InternalTemplateDocument _templateDoc;
 
         public AddTemplateCommand(ITemplateDocumentsDbProcess operationDb)
         {
@@ -82,8 +83,8 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }
-
-            return _operationDb.AddOrUpdateTemplate(_context, new InternalTemplateDocument(Model), properties);
+            _templateDoc = new InternalTemplateDocument(Model) { Properties = properties };
+            return _operationDb.AddOrUpdateTemplate(_context, _templateDoc);
 
         }
 

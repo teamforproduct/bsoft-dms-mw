@@ -20,6 +20,7 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.Common
 {
@@ -77,6 +78,19 @@ namespace BL.Logic.Common
 
         };
 
+        internal static string GetTemplateNameForCopy(IContext context, string name)
+        {
+            var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var i = 1;
+            var res = name + " ##l@SuffixCopy@l##";
+            while (_templateDb.ExistsTemplateDocuments(context, new FilterTemplateDocument { NameExectly = res }))
+            {
+                i++;
+                res = name + $" ##l@SuffixCopy@l## {i}";
+            } 
+            return res;
+        }
+
         public static void SetAtrributesForNewDocument(IContext context, InternalDocument document)
         {
             document.CreateDate = DateTime.UtcNow.Date;
@@ -100,7 +114,7 @@ namespace BL.Logic.Common
                 else
                 {
                     var positionExecutor = GetExecutorAgentIdByPositionId(context, t.PositionId);
-                    if (positionExecutor?.ExecutorAgentId.HasValue??false)
+                    if (positionExecutor?.ExecutorAgentId.HasValue ?? false)
                     {
                         t.PositionExecutorAgentId = positionExecutor.ExecutorAgentId.Value;
                         t.PositionExecutorTypeId = positionExecutor.ExecutorTypeId;

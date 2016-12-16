@@ -6,17 +6,21 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore;
+using System.Linq;
+using BL.Database.DBModel.Template;
+using BL.Database.DatabaseContext;
 
 namespace BL.Database.Documents.Interfaces
 {
     public interface ITemplateDocumentsDbProcess
     {
-
         #region TemplateDocument
+        IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocument filter);
+        bool ExistsTemplateDocuments(IContext context, FilterTemplateDocument filter);
         IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
-        int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template, IEnumerable<InternalPropertyValue> properties);
+        int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template);
         InternalTemplateDocument DeleteTemplatePrepare(IContext ctx, int id);
         InternalTemplateDocument CopyTemplatePrepare(IContext ctx, int id);
         void DeleteTemplate(IContext ctx, int id);

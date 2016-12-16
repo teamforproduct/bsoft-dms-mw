@@ -27,63 +27,84 @@ namespace BL.Database.Documents
     {
         #region TemplateDocuments
 
+        public IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocument filter)
+        {
+            var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId);
+            if (filter != null)
+            {
+                if (filter.IDs?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.DocumentDirectionId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.DocumentTypeId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = filter.DocumentTypeId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.DocumentSubjectId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.RegistrationJournalId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = filter.RegistrationJournalId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RegistrationJournalId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!String.IsNullOrEmpty(filter.Name))
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!String.IsNullOrEmpty(filter.NameExectly))
+                {
+                    qry = qry.Where(x=>string.Equals(x.Name, filter.NameExectly));
+                }
+                if (!String.IsNullOrEmpty(filter.Description))
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+            }
+            return qry;
+        }
+
+        public bool ExistsTemplateDocuments(IContext context, FilterTemplateDocument filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = GetTemplateDocumentQuery(context, dbContext, filter).Any();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId);
-                if (filter != null)
-                {
-                    if (filter.IDs?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = filter.IDs.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.DocumentDirectionId?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.DocumentTypeId?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = filter.DocumentTypeId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.DocumentSubjectId?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.RegistrationJournalId?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = filter.RegistrationJournalId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.RegistrationJournalId == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (!String.IsNullOrEmpty(filter.Name))
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name)
-                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (!String.IsNullOrEmpty(filter.Description))
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description)
-                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                }
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
                 qry = qry.OrderByDescending(x => x.Name);
 
                 if (paging != null)
@@ -185,7 +206,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template, IEnumerable<InternalPropertyValue> properties)
+        public int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template)
         {
             // we should not implement it now
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -213,12 +234,7 @@ namespace BL.Database.Documents
                 if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
-                }
-
-                if (template.Id > 0)
-                {
                     dbContext.TemplateDocumentsSet.Attach(newTemplate);
-
                     var entity = dbContext.Entry(newTemplate);
                     entity.State = System.Data.Entity.EntityState.Modified;
                 }
@@ -233,9 +249,9 @@ namespace BL.Database.Documents
                     template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
 
 
-                if (properties != null && properties.Any())
+                if (template.Properties != null && template.Properties.Any())
                 {
-                    CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.TemplateDocument, RecordId = newTemplate.Id, PropertyValues = properties });
+                    CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.TemplateDocument, RecordId = newTemplate.Id, PropertyValues = template.Properties });
                 }
                 dbContext.SaveChanges();
                 transaction.Complete();
@@ -867,6 +883,7 @@ namespace BL.Database.Documents
                         var paperDb = ModelConverter.GetDbTemplateDocumentPaper(paper);
                         dbContext.TemplateDocumentPapersSet.Add(paperDb);
                         dbContext.SaveChanges();
+                        paper.Id = paperDb.Id;
                         res.Add(paperDb.Id);
                     }
                 }
