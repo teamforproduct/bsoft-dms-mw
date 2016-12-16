@@ -230,6 +230,8 @@ namespace BL.Database.Admins
         /// <returns></returns>
         public bool VerifySubordination(IContext context, VerifySubordination model)
         {
+            if (model.SourcePositions.Contains(model.TargetPosition))
+                return true;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
