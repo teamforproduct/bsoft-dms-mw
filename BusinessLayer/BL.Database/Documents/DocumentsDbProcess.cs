@@ -430,7 +430,7 @@ namespace BL.Database.Documents
                     res.AccessLevelName = accByExecutorPosition.AccessLevelName;
                 }
                 res.IsFavourite = accs.Any(x => x.IsFavourite);
-                res.IsInWork = accs.Any() ? accs.Any(x => x.IsInWork): true;
+                res.IsInWork = accs.Any() ? accs.Any(x => x.IsInWork) : true;
                 res.Accesses = accs;
 
                 CommonQueries.ChangeRegistrationFullNumber(res, false);
@@ -748,20 +748,31 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                     }).ToList();
 
-                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId).Select(x => new InternalDocumentAttachedFile
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    Extension = x.Extention,
-                    Name = x.Name,
-                    FileType = x.FileType,
-                    FileSize = x.FileSize,
-                    OrderInDocument = x.OrderNumber,
-                    Type = (EnumFileTypes)x.TypeId,
-                    Hash = x.Hash,
-                    Description = x.Description,
-                }).ToList();
-
+                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId)
+                    .Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        Extension = x.Extention,
+                        Name = x.Name,
+                        FileType = x.FileType,
+                        FileSize = x.FileSize,
+                        OrderInDocument = x.OrderNumber,
+                        Type = (EnumFileTypes)x.TypeId,
+                        Hash = x.Hash,
+                        Description = x.Description,
+                    }).ToList();
+                doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId)
+                    .Select(y => new InternalDocumentPaper
+                    {
+                        Name = y.Name,
+                        Description = y.Description,
+                        IsCopy = y.IsCopy,
+                        IsMain = y.IsMain,
+                        IsOriginal = y.IsOriginal,
+                        OrderNumber = y.OrderNumber,
+                        PageQuantity = y.PageQuantity,
+                    }).ToList();
                 doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { templateDocumentId } }).ToList();
                 transaction.Complete();
                 return doc;
@@ -828,6 +839,19 @@ namespace BL.Database.Documents
                         {
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                        }).ToList();
+                doc.Papers = dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == documentId)
+                        .Select(y => new InternalDocumentPaper
+                        {
+                            Name = y.Name,
+                            Description = y.Description,
+                            IsCopy = y.IsCopy,
+                            IsInWork = y.IsInWork,
+                            IsMain = y.IsMain,
+                            IsOriginal = y.IsOriginal,
+                            OrderNumber = y.OrderNumber,
+                            PageQuantity = y.PageQuantity,
                         }).ToList();
                 doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
 

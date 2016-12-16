@@ -18,6 +18,7 @@ namespace BL.Database.Documents.Interfaces
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
         int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template, IEnumerable<InternalPropertyValue> properties);
         InternalTemplateDocument DeleteTemplatePrepare(IContext ctx, int id);
+        InternalTemplateDocument CopyTemplatePrepare(IContext ctx, int id);
         void DeleteTemplate(IContext ctx, int id);
         bool CanModifyTemplate(IContext ctx, ModifyTemplateDocument template);
         bool CanAddTemplate(IContext ctx, ModifyTemplateDocument template);

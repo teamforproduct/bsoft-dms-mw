@@ -4,6 +4,7 @@ using BL.Model.Common;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.IncomingModel;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -29,7 +30,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalTemplateDocumentSendList> SendLists { get; set; }
         public IEnumerable<InternalTemplateDocumentTask> Tasks { get; set; }
         public IEnumerable<InternalTemplateDocumentPaper> Papers { get; set; }
-        public IEnumerable<ModifyPropertyValue> Properties { get; set; }
+        public IEnumerable<InternalPropertyValue> Properties { get; set; }
+        public IEnumerable<InternalTemplateAttachedFile> Files { get; set; }
 
         public InternalTemplateDocument()
         {
@@ -51,7 +53,6 @@ namespace BL.Model.DocumentCore.InternalModel
             this.SenderAgentPersonId = model.SenderAgentPersonId;
             this.Addressee = model.Addressee;
             this.IsActive = model.IsActive;
-            this.Properties = model.Properties;
             this.LastChangeDate = model.LastChangeDate;
             this.LastChangeUserId = model.LastChangeUserId;
         }

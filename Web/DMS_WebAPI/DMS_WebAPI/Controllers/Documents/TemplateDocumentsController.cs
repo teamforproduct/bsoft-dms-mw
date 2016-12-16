@@ -18,6 +18,7 @@ namespace DMS_WebAPI.Controllers
     /// Шаблоны документов
     /// </summary>
     [Authorize]
+    [RoutePrefix(ApiPrefix.V2 + "TemplateDocuments")]
     public class TemplateDocumentsController : ApiController
     {
         /// <summary>
@@ -63,6 +64,21 @@ namespace DMS_WebAPI.Controllers
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.AddTemplateDocument,ctx,model);
+            return Get((int)tmpTemplate);
+        }
+
+        /// <summary>
+        /// Добавление шаблона документа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("CopyTemplate/{id}")]
+        [HttpPost]
+        public IHttpActionResult Copy(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpTemplate = tmpDocProc.ExecuteAction(EnumDocumentActions.CopyTemplateDocument, ctx, id);
             return Get((int)tmpTemplate);
         }
 

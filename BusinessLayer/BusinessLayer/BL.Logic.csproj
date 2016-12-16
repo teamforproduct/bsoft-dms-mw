@@ -257,6 +257,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\CopyTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\AddTemplatePaperCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\DeleteTemplatePaperCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateTaskCommand.cs" />

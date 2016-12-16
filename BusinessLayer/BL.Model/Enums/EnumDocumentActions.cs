@@ -415,6 +415,7 @@
         ReportDocumentForDigitalSignature = 100087,
 
         AddTemplateDocument = 251001,
+        CopyTemplateDocument = 251002,
         ModifyTemplateDocument = 251005,
         DeleteTemplateDocument = 251009,
         AddTemplateDocumentSendList = 252001,

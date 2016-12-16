@@ -440,6 +440,7 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyExecutor });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteExecutor });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CopyTemplateDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentSendList });

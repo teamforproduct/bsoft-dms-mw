@@ -237,11 +237,95 @@ namespace BL.Database.Documents
                 {
                     CommonQueries.ModifyPropertyValues(dbContext, ctx, new InternalPropertyValues { Object = EnumObjects.TemplateDocument, RecordId = newTemplate.Id, PropertyValues = properties });
                 }
-
+                dbContext.SaveChanges();
                 transaction.Complete();
 
                 return newTemplate.Id;
 
+            }
+        }
+        public InternalTemplateDocument CopyTemplatePrepare(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                    .Where(x => x.Id == id)
+                    .Select(x => new InternalTemplateDocument
+                    {
+                        Name = x.Name,
+                        IsHard = x.IsHard,
+                        IsForProject = x.IsForProject,
+                        IsForDocument = x.IsForDocument,
+                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentTypeId = x.DocumentTypeId,
+                        DocumentSubjectId = x.DocumentSubjectId,
+                        Description = x.Description,
+                        RegistrationJournalId = x.RegistrationJournalId,
+                        SenderAgentId = x.SenderAgentId,
+                        SenderAgentPersonId = x.SenderAgentPersonId,
+                        Addressee = x.Addressee,
+                        IsActive = x.IsActive,
+                    }).FirstOrDefault();
+                if (doc == null) return null;
+                doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
+                        .Select(y => new InternalTemplateDocumentTask()
+                        {
+                            Task = y.Task,
+                            Description = y.Description,
+                        }).ToList();
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
+                    .Select(y => new InternalTemplateDocumentRestrictedSendList()
+                    {
+                        PositionId = y.PositionId,
+                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                    }).ToList();
+                doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
+                    .Select(y => new InternalTemplateDocumentSendList()
+                    {
+                        SendType = (EnumSendTypes)y.SendTypeId,
+                        SourcePositionId = y.SourcePositionId ?? 0,
+                        TargetPositionId = y.TargetPositionId,
+                        TargetAgentId = y.TargetAgentId,
+                        TaskName = y.Task.Task,
+                        IsAvailableWithinTask = y.IsAvailableWithinTask,
+                        IsWorkGroup = y.IsWorkGroup,
+                        IsAddControl = y.IsAddControl,
+                        SelfDueDate = y.SelfDueDate,
+                        SelfDueDay = y.SelfDueDay,
+                        SelfAttentionDate = y.SelfAttentionDate,
+                        Description = y.Description,
+                        Stage = y.Stage,
+                        DueDay = y.DueDay,
+                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                    }).ToList();
+                doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
+                    .Select(x => new InternalTemplateAttachedFile
+                    {
+                        DocumentId = x.DocumentId,
+                        Extension = x.Extention,
+                        Name = x.Name,
+                        FileType = x.FileType,
+                        FileSize = x.FileSize,
+                        OrderInDocument = x.OrderNumber,
+                        Type = (EnumFileTypes)x.TypeId,
+                        Hash = x.Hash,
+                        Description = x.Description,
+                    }).ToList();
+                doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
+                    .Select(x => new InternalTemplateDocumentPaper
+                    {
+                        IsCopy = x.IsCopy,
+                        IsMain = x.IsMain,
+                        IsOriginal = x.IsOriginal,
+                        OrderNumber = x.OrderNumber,
+                        PageQuantity = x.PageQuantity,
+                        Name = x.Name,
+                        Description = x.Description,
+                    }).ToList();
+                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { id } }).ToList();
+
+                transaction.Complete();
+                return doc;
             }
         }
         public InternalTemplateDocument DeleteTemplatePrepare(IContext context, int id)
@@ -663,7 +747,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = template.LastChangeUserId
                 };
                 var entityState = System.Data.Entity.EntityState.Added;
-                if (template.Id!=0)
+                if (template.Id != 0)
                 {
                     newTemplate.Id = (int)template.Id;
                     entityState = System.Data.Entity.EntityState.Modified;
