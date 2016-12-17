@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Main")]
+        [Route("")]
         [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
         public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
