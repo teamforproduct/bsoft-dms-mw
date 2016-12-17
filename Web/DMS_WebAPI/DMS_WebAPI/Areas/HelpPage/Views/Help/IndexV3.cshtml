@@ -6,7 +6,7 @@
 @model Collection<ApiDescription>
 
 @{
-    ViewBag.Title = "API.V2 Help Page";
+    ViewBag.Title = "API.V3 Help Page";
 
     // Group APIs by controller
     ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
@@ -26,12 +26,12 @@
             <h2>Introduction</h2>
             <p>
                 Общие принципы построения системы находятся https://workflowy.com/s/sefk5EUIQ7.
-                Ниже дано описание АПИ функций версии V2, отсортированные в алфавитном порядке по названию контроллера.
+                Ниже дано описание АПИ функций версии V3, отсортированные в алфавитном порядке по названию контроллера.
             </p>
         </div>
     </section>
     <section class="content-wrapper main-content clear-fix">
-        @foreach (var group in apiGroups.Where(g=>g.Key.ControllerType.FullName.Contains("Controllers.")).OrderBy(g=>g.Key.ControllerName))
+        @foreach (var group in apiGroups.Where(g => g.Key.ControllerType.FullName.Contains("ControllersV3.")).OrderBy(g=>g.Key.ControllerName))
         {
             @Html.DisplayFor(m => group, "ApiGroup")
         }
