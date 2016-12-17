@@ -12,7 +12,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Контакт агента
     /// </summary>
-    public class ModifyDictionaryContact : AddDictionaryContact
+    public class ModifyDictionaryAgentContact : AddDictionaryAgentContact
     {
         /// <summary>
         /// ИД

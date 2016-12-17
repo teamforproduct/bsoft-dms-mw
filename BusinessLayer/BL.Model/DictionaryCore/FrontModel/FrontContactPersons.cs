@@ -42,7 +42,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Список контактов контрагента
         /// </summary>
-        public IEnumerable<FrontDictionaryContact> Contacts { get; set; }
+        public IEnumerable<FrontDictionaryAgentContact> Contacts { get; set; }
 
     }
 }

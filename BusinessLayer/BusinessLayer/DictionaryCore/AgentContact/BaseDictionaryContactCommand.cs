@@ -11,7 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryContactCommand : BaseDictionaryCommand
     {
-        private AddDictionaryContact Model { get { return GetModel<AddDictionaryContact>(); } }
+        private AddDictionaryAgentContact Model { get { return GetModel<AddDictionaryAgentContact>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -41,8 +41,8 @@ namespace BL.Logic.DictionaryCore
             };
 
 
-            if (TypeModelIs<ModifyDictionaryContact>())
-            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryContact>().Id }; }
+            if (TypeModelIs<ModifyDictionaryAgentContact>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentContact>().Id }; }
 
 
             var spr = _dictDb.GetContacts(_context, filter).FirstOrDefault();

@@ -44,7 +44,7 @@ namespace BL.Logic.DictionaryCore
             return person;
         }
 
-        private void AddContact(AddDictionaryContact model)
+        private void AddContact(AddDictionaryAgentContact model)
         {
             _dictService.ExecuteAction(BL.Model.Enums.EnumDictionaryActions.AddAgentContact, _context, model);
         }
