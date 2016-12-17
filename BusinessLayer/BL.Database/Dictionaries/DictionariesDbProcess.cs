@@ -430,7 +430,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Agent.Name,
                     Description = x.Description,
                     IsActive = x.IsActive,
-                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
+                    Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryAgentContact
                     {
                         Id = y.Id,
                         AgentId = y.AgentId,
@@ -2720,7 +2720,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<FrontDictionaryContact> GetContacts(IContext context, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryAgentContact> GetContacts(IContext context, FilterDictionaryContact filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2728,7 +2728,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.ContactType.Id).ThenBy(x => x.Contact);
 
-                var res = qry.Select(x => new FrontDictionaryContact
+                var res = qry.Select(x => new FrontDictionaryAgentContact
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,

@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
+    // TODO Delete v3
     public class ModifyDictionaryAgentUserLanguageCommand : BaseDictionaryAgentUserCommand
     {
         public override object Execute()

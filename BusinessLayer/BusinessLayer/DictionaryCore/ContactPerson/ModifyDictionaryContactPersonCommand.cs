@@ -52,7 +52,7 @@ namespace BL.Logic.DictionaryCore
             return null;
         }
 
-        private void AddContact(AddDictionaryContact model)
+        private void AddContact(AddDictionaryAgentContact model)
         {
             _dictService.ExecuteAction(BL.Model.Enums.EnumDictionaryActions.AddAgentContact, _context, model);
         }

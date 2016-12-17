@@ -23,10 +23,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
 
         #region [+] AgentUser ...
 
-        /// <summary>
-        /// Профиль пользователя. Язык интерфейса.
-        /// </summary>
-        public int LanguageId { get; set; }
+        
 
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением

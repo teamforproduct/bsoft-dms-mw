@@ -127,6 +127,31 @@
         /// Удалить контакт
         /// </summary>
         DeleteAgentContact = 207009,
+
+
+        AddBankContact = 229001,
+        ModifyBankContact = 229005,
+        DeleteBankContact = 229009,
+
+        AddCompanyContact = 230001,
+        ModifyCompanyContact = 230005,
+        DeleteCompanyContact = 230009,
+
+        AddEmployeeContact = 231001,
+        ModifyEmployeeContact = 231005,
+        DeleteEmployeeContact = 231009,
+
+        AddClientCompanyContact = 232001,
+        ModifyClientCompanyContact = 232005,
+        DeleteClientCompanyContact = 232009,
+
+        AddPersonContact = 233001,
+        ModifyPersonContact = 233005,
+        DeletePersonContact = 233009,
+
+
+
+
         #endregion Contacts
 
         // Адреса

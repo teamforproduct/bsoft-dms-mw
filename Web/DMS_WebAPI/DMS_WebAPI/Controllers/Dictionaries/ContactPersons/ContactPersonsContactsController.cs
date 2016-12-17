@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpGet]
         [Route("Contacts")]
-        [ResponseType(typeof(List<FrontDictionaryContact>))]
+        [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public IHttpActionResult Get(int PersonId, [FromUri] FilterDictionaryContact filter)
         {
             if (filter == null) filter = new FilterDictionaryContact();
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryContacts(ctx, filter);
+            var tmpItems = tmpService.GetAgentContacts(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -49,12 +49,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpGet]
         [Route("Contacts/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryContact))]
+        [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryContact(ctx, Id);
+            var tmpItem = tmpService.GetAgentContact(ctx, Id);
             return new JsonResult(tmpItem, this);
         }
 
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPost]
         [Route("Contacts")]
-        public IHttpActionResult Post([FromBody]AddDictionaryContact model)
+        public IHttpActionResult Post([FromBody]AddDictionaryAgentContact model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPut]
         [Route("Contacts")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryContact model)
+        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentContact model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteContactPersonContacts, ctx, Id);
-            FrontDictionaryContact tmp = new FrontDictionaryContact();
+            FrontDictionaryAgentContact tmp = new FrontDictionaryAgentContact();
             tmp.Id = Id;
 
             return new JsonResult(tmp, this);

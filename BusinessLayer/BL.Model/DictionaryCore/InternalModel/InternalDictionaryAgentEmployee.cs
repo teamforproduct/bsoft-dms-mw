@@ -130,7 +130,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
-        public int? LanguageId { get; set; }
+        public int LanguageId { get; set; }
         
         /// <summary>
         /// Связь с WEB - USER
