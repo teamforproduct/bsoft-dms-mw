@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using System.Web;
 using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontInfoModel;
+using BL.Model.DictionaryCore.FrontMainModel;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {/// <summary>
@@ -29,8 +29,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        [ResponseType(typeof(List<FrontDictionaryAgentEmployee>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        [HttpGet]
+        [Route("Main")]
+        [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
+        public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -63,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ResponseType(typeof(FrontInfoDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
