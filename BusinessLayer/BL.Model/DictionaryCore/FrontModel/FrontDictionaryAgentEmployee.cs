@@ -21,10 +21,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string FullName { get; set; }
 
 
-        /// <summary>
-        /// Профиль пользователя. Язык интерфейса.
-        /// </summary>
-        public int? LanguageId { get; set; }
 
     }
 }

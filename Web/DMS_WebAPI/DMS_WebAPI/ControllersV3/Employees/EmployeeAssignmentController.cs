@@ -13,21 +13,21 @@ using System.Collections.Generic;
 namespace DMS_WebAPI.ControllersV3.Employees
 {
     /// <summary>
-    /// Адреса сотрудника
+    /// Назначения сотрудника на должности
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "Employee")]
-    public class EmployeeAddressesController : ApiController
+    public class EmployeeAssignmentController : ApiController
     {
 
         /// <summary>
-        /// Возвращает список адресов сотрудника
+        /// Возвращает список назначений сотрудника
         /// </summary>
         /// <param name="EmployeeId">ИД сотрудника</param>
-        /// <param name="filter">параметры фильтрации</param>
+        /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Addresses")]
+        [Route("Assignments")]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryAgentAddress filter)
         {
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Addresses/{Id:int}")]
+        [Route("Assignments/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Addresses")]
+        [Route("Assignments")]
         public IHttpActionResult Post([FromBody]AddDictionaryAgentAddress model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Addresses")]
+        [Route("Assignments")]
         public IHttpActionResult Put([FromBody]ModifyDictionaryAgentAddress model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Addresses/{Id:int}")]
+        [Route("Assignments/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

@@ -156,7 +156,7 @@ namespace BL.Logic.ClientCore
                 Login = client.Email,
                 //PasswordHash = client.PasswordHash,
                 IsActive = true,
-                LanguageId = client.LanguageId
+                //LanguageId = client.LanguageId
             });
 
             _DictDb.AddContact(context, new InternalDictionaryContact() { AgentId = agentUser, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });

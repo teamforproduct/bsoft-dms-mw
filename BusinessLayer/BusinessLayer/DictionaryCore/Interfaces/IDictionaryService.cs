@@ -80,9 +80,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion
 
         #region DictionaryContacts
-        FrontDictionaryContact GetDictionaryContact(IContext context, int id);
+        FrontDictionaryAgentContact GetAgentContact(IContext context, int id);
 
-        IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter);
+        IEnumerable<FrontDictionaryAgentContact> GetAgentContacts(IContext context, FilterDictionaryContact filter);
         IEnumerable<InternalDictionaryContact> GetInternalContacts(IContext context, FilterDictionaryContact filter);
         #endregion
 

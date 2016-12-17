@@ -104,5 +104,10 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int PersonnelNumber { get; set; }
         #endregion
 
+        /// <summary>
+        /// Профиль пользователя. Язык интерфейса.
+        /// </summary>
+        public int LanguageId { get; set; }
+
     }
 }

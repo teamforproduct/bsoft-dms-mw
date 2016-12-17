@@ -452,12 +452,12 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentBanks
 
         #region DictionaryContacts
-        public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
+        public FrontDictionaryAgentContact GetAgentContact(IContext context, int id)
         {
             return _dictDb.GetContacts(context, new FilterDictionaryContact { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        public IEnumerable<FrontDictionaryAgentContact> GetAgentContacts(IContext context, FilterDictionaryContact filter)
         {
             return _dictDb.GetContacts(context, filter);
         }

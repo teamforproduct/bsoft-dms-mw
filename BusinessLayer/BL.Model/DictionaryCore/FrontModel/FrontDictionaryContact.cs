@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Контакт агента
     /// </summary>
-    public class FrontDictionaryContact
+    public class FrontDictionaryAgentContact
     {
         /// <summary>
         /// ИД контакта
