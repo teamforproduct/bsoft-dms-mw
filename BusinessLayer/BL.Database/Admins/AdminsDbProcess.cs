@@ -22,6 +22,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using EntityFramework.Extensions;
 using BL.Model.SystemCore.InternalModel;
 using BL.CrossCutting.Helpers;
+using BL.Model.Common;
 
 namespace BL.Database.Admins
 {
@@ -1161,9 +1162,9 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId)
+        public IEnumerable<ListItem> GetDepartmentAdmins(IContext context, int departmentId)
         {
-            return DepartmentAdminsSet.Where(x => x.DepartmentId == departmentId).Select(x => new FrontDictionaryAgentEmployee()
+            return DepartmentAdminsSet.Where(x => x.DepartmentId == departmentId).Select(x => new ListItem()
             {
                 Id = x.EmployeeId,
                 Name = x.EmployeeName

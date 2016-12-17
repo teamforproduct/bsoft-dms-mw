@@ -85,6 +85,12 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Тип исполнителя
         /// </summary>
         public string PositionExecutorTypeName { get; set; }
+
+        /// <summary>
+        /// Краткое название (как приставка к названию должности) типа исполнителя
+        /// </summary>
+        public string PositionExecutorTypeSuffix { get; set; }
+
         /// <summary>
         /// Департамент
         /// </summary>

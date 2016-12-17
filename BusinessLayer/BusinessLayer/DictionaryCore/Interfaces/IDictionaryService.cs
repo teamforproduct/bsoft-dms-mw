@@ -9,7 +9,7 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Common;
 using BL.Model.Tree;
-using BL.Model.DictionaryCore.FrontInfoModel;
+using BL.Model.DictionaryCore.FrontMainModel;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
@@ -55,9 +55,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentEmployees
-        FrontInfoDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
+        FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        IEnumerable<FrontMainDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
         FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId);
         string GetDictionaryAgentUserId(IContext context, int employeeId);
