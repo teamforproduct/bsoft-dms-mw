@@ -11,6 +11,9 @@
     font-family: "Segoe UI Light", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+
+
+
 #body.help-page div>p:first-child {
     color: #ee0000;
     font-size: 21px;
@@ -138,6 +141,8 @@ section.content-wrapper.main-content.clear-fix>p {
     border-bottom-style: outset;
 }
 
+
+
 .help-page h3,
 .help-page .h3 {
     font-size: 20px;
@@ -146,11 +151,12 @@ section.content-wrapper.main-content.clear-fix>p {
 #body.help-page {
     font-size: 15px;
     line-height: 143%;
-    color: #333;
+    color: #000;
 }
 
 .help-page a {
     color: #0000EE;
     text-decoration: none;
 }
+
 
