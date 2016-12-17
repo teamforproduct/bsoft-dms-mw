@@ -1981,7 +1981,7 @@ namespace BL.Database.Common
                                     {
                                         TaskId = x.TaskId,
                                         ResponsibleExecutorPositionName = x.TargetPosition.Name,
-                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null),
+                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
                                         IsFactExecutor = x.StartEventId.HasValue,
                                     }).ToList();
 
