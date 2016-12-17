@@ -3521,7 +3521,7 @@ namespace BL.Database.Common
         public static void ModifyDocumentTaskAccesses(DmsContext dbContext, IContext ctx, int documentId)
         {
             var qry1 = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                .Where(x => x.DocumentId == documentId && x.IsAvailableWithinTask && x.TaskId.HasValue)
+                .Where(x => x.DocumentId == documentId /*&& x.IsAvailableWithinTask*/ && x.TaskId.HasValue)
                 .GroupBy(x => new { x.TaskId, x.SourcePositionId, x.TargetPositionId })
                 .Select(x => new { x.Key.TaskId, x.Key.SourcePositionId, x.Key.TargetPositionId }).ToList();
             var qry2 = qry1.GroupBy(x => new { x.TaskId, x.SourcePositionId }).Where(x => x.Key.SourcePositionId.HasValue)
