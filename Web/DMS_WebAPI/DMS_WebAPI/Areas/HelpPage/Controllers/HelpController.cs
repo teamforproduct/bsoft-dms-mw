@@ -31,6 +31,12 @@ namespace DMS_WebAPI.Areas.HelpPage.Controllers
             return View(Configuration.Services.GetApiExplorer().ApiDescriptions);
         }
 
+        public ActionResult IndexV3()
+        {
+            ViewBag.DocumentationProvider = Configuration.Services.GetDocumentationProvider();
+            return View(Configuration.Services.GetApiExplorer().ApiDescriptions);
+        }
+
         public ActionResult Api(string apiId)
         {
             if (!String.IsNullOrEmpty(apiId))

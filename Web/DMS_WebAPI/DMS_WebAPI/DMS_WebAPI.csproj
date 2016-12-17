@@ -257,6 +257,8 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="ControllersV3\System\SystemController.cs" />
+    <Compile Include="ControllersV3\Lists\ListsController.cs" />
     <Compile Include="Controllers\Admins\AdminDepartmentAdminController.cs" />
     <Compile Include="Controllers\Admins\AdminRegistrationJournalPositionsController.cs" />
     <Compile Include="Controllers\Admins\LanguagesController.cs" />
@@ -266,7 +268,7 @@
     <Compile Include="Controllers\Admins\AdminRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
-    <Compile Include="Controllers\ApiPrefix.cs" />
+    <Compile Include="ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
     <Compile Include="Controllers\Dictionaries\ContactPersons\ContactPersonsContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\Persons\PersonAddressesController.cs" />
@@ -349,6 +351,7 @@
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeAddressesController.cs" />
     <Compile Include="Controllers\WebAPI\CreateClientController.cs" />
     <Compile Include="Controllers\WebAPI\UserServersController.cs" />
     <Compile Include="Controllers\WebAPI\UserClientsController.cs" />
@@ -487,6 +490,7 @@
     <Content Include="App_Data\LanguageValues\messages_pl_PL.properties" />
     <Content Include="App_Data\LanguageValues\messages_ru_RU.properties" />
     <Content Include="App_Data\LanguageValues\messages_uk_UA.properties" />
+    <Content Include="Areas\HelpPage\Views\Help\IndexV3.cshtml" />
     <None Include="Properties\PublishProfiles\DEV_IRF_DMS.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\PROD_IRF_DMS.pubxml" />

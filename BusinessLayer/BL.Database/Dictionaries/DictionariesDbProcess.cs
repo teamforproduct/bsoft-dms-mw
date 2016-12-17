@@ -24,7 +24,7 @@ using BL.Database.DBModel.Admin;
 using BL.Model.AdminCore.FrontModel;
 using BL.CrossCutting.Helpers;
 using BL.Database.Helper;
-using BL.Model.DictionaryCore.FrontInfoModel;
+using BL.Model.DictionaryCore.FrontMainModel;
 
 namespace BL.Database.Dictionaries
 {
@@ -814,13 +814,17 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public FrontInfoDictionaryAgentEmployee GetAgentEmployee(IContext context, int Id)
+        public FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentEmployeesQuery(context, dbContext, new FilterDictionaryAgentEmployee { IDs = new List<int> { Id } });
+                var qry = GetAgentEmployeesQuery(context, dbContext, new FilterDictionaryAgentEmployee { IDs = new List<int> { id } });
 
-                var res = qry.Select(x => new FrontInfoDictionaryAgentEmployee
+                //qry = qry.OrderBy(x => x.Agent.Name);
+
+                //if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentEmployee>();
+
+                var res = qry.Select(x => new FrontDictionaryAgentEmployee
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
@@ -852,7 +856,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentEmployee> GetAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        public IEnumerable<FrontMainDictionaryAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -860,11 +864,11 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
-                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryAgentEmployee>();
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainDictionaryAgentEmployee>();
 
                 var now = DateTime.UtcNow;
 
-                var res = qry.Select(x => new FrontDictionaryAgentEmployee
+                var res = qry.Select(x => new FrontMainDictionaryAgentEmployee
                 {
                     Id = x.Id,
                     ImageByteArray = x.Agent.Image,
@@ -881,13 +885,13 @@ namespace BL.Database.Dictionaries
                     PassportText = x.Agent.AgentPerson.PassportText,
                     PositionExecutors = x.PositionExecutors
                     .Where(y => y.StartDate <= now && y.EndDate >= now && y.IsActive)
-                    .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order)
+                    .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order).ThenBy(y => y.Position.Name)
                     .Select(y => new FrontDictionaryPositionExecutor
                     {
                         Id = y.Id,
                         PositionName = y.Position.Name,
                         DepartmentName = y.Position.Department.Name,
-                        PositionExecutorTypeName = y.PositionExecutorType.Name
+                        PositionExecutorTypeSuffix = y.PositionExecutorType.Suffix
                     }).ToList(),
                 }).ToList();
 

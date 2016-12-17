@@ -18,7 +18,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
-using BL.Model.DictionaryCore.FrontInfoModel;
+using BL.Model.DictionaryCore.FrontMainModel;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -52,8 +52,8 @@ namespace BL.Logic.DictionaryCore
             var newFilter = new FilterDictionaryAgent();
             if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents,filter.FullTextSearchString, ResolveSearchResultAgents);
-                
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents, filter.FullTextSearchString, ResolveSearchResultAgents);
+
             }
             else
             {
@@ -82,7 +82,7 @@ namespace BL.Logic.DictionaryCore
                     .OrderByDescending(x => x.Rate);
             if (resWithRanges.Any())
             {
-                
+
                 return resWithRanges.Select(x => x.DocId).ToList();
             }
             return new List<int> { -1 };
@@ -168,7 +168,7 @@ namespace BL.Logic.DictionaryCore
 
             if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons,filter.FullTextSearchString);
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons, filter.FullTextSearchString);
             }
             else
             {
@@ -181,9 +181,9 @@ namespace BL.Logic.DictionaryCore
 
         #region DicionaryAgentEmployees
 
-        public FrontInfoDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
+        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            return _dictDb.GetAgentEmployee(context, id );
+            return _dictDb.GetAgentEmployee(context, id);
         }
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
@@ -191,7 +191,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentEmployeeList(context, filter, paging);
         }
 
-        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        public IEnumerable<FrontMainDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryAgentEmployee();
@@ -199,14 +199,14 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, filter.FullTextSearchString);
-                
+
             }
             else
             {
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentEmployees(context, newFilter, paging);
+            return _dictDb.GetAgentEmployeesMain(context, newFilter, paging);
 
         }
 
@@ -267,7 +267,7 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
-                
+
             }
             else
             {
@@ -326,7 +326,7 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, filter.FullTextSearchString, ResolveSearchResultAgentCompanies);
-                
+
             }
             else
             {
@@ -391,7 +391,7 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, filter.FullTextSearchString, ResolveSearchResultAgentBanks);
-                
+
             }
             else
             {
@@ -481,7 +481,7 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryContactType, filter.FullTextSearchString);
-                
+
             }
             else
             {
@@ -558,7 +558,7 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
-                
+
             }
             else
             {
@@ -735,7 +735,7 @@ namespace BL.Logic.DictionaryCore
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryRegistrationJournals, filter.FullTextSearchString);
-                
+
             }
             else
             {
