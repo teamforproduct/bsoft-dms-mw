@@ -17,7 +17,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "Employees")]
-    public class QQQQQQController : ApiController
+    public class EmployeeAddressesController : ApiController
     {
 
         /// <summary>

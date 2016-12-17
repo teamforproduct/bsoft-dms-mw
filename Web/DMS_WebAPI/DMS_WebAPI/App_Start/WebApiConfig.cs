@@ -32,6 +32,7 @@ namespace DMS_WebAPI
                 routeTemplate: "api/v2/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
             var jsonConfig = config.Formatters.JsonFormatter;
             jsonConfig.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
 
