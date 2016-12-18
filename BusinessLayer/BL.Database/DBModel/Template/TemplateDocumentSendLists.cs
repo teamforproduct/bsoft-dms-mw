@@ -26,6 +26,8 @@ namespace BL.Database.DBModel.Template
         public int AccessLevelId { get; set; }
         public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
+        [MaxLength(2000)]
+        public string SelfDescription { get; set; }
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }
         public Nullable<DateTime> SelfAttentionDate { get; set; }

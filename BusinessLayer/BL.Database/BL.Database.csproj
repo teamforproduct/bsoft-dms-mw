@@ -466,6 +466,10 @@
     <Compile Include="Migrations\201612172034078_LanguageIdNotNull.Designer.cs">
       <DependentUpon>201612172034078_LanguageIdNotNull.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612181954456_SelfDescription.cs" />
+    <Compile Include="Migrations\201612181954456_SelfDescription.Designer.cs">
+      <DependentUpon>201612181954456_SelfDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -686,6 +690,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612172034078_LanguageIdNotNull.resx">
       <DependentUpon>201612172034078_LanguageIdNotNull.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612181954456_SelfDescription.resx">
+      <DependentUpon>201612181954456_SelfDescription.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
