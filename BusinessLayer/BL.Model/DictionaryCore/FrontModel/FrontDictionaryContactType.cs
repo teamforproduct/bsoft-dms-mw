@@ -11,7 +11,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// типы контактов
     /// </summary>
-    public class FrontDictionaryContactType : ModifyDictionaryContactType
+    public class FrontDictionaryContactType : ModifyContactType
     {
         /// <summary>
         /// ID

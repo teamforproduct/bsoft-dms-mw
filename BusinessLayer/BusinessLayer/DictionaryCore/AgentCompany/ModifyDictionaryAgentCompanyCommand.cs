@@ -14,6 +14,8 @@ namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentCompanyCommand : BaseDictionaryAgentCompanyCommand
     {
+        private ModifyAgentCompany Model { get { return GetModel<ModifyAgentCompany>(); } }
+
         public override object Execute()
         {
             try

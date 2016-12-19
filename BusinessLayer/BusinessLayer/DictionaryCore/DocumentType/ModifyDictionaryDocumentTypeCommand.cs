@@ -8,33 +8,9 @@ using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryDocumentTypeCommand : BaseDictionaryCommand
+    public class ModifyDictionaryDocumentTypeCommand : BaseDictionaryDocumentTypeCommand
     {
-        private ModifyDictionaryDocumentType Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryDocumentType))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryDocumentType)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyDocumentType(_context, _dictDb, Model);
-
-            return true;
-        }
+        private ModifyDocumentType Model { get { return GetModel<ModifyDocumentType>(); } }
 
         public override object Execute()
         {

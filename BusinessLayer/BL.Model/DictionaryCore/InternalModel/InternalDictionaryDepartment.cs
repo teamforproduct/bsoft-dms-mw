@@ -12,9 +12,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryDepartment()
         { }
 
-        public InternalDictionaryDepartment(ModifyDictionaryDepartment model)
+        public InternalDictionaryDepartment(AddDepartment model)
+        {
+            SetInternalDictionaryDepartment(model);
+        }
+
+        public InternalDictionaryDepartment(ModifyDepartment model)
         {
             Id = model.Id;
+            SetInternalDictionaryDepartment(model);
+        }
+
+        private void SetInternalDictionaryDepartment(AddDepartment model)
+        {
             IsActive = model.IsActive;
             ParentId = model.ParentId;
             Name = model.Name;

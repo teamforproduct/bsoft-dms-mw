@@ -9,6 +9,8 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using BL.Model.Common;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -19,6 +21,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + "Employee")]
     public class EmployeeAddressesController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Возвращает список адресов сотрудника
@@ -31,6 +34,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryAgentAddress filter)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryAgentAddress();
 
             if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { EmployeeId };
@@ -39,7 +43,9 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -52,10 +58,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentAddress(ctx, Id);
-            return new JsonResult(tmpItem, this);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -65,11 +74,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPost]
         [Route("Addresses")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentAddress model)
+        public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model));
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model);
+            return Get(tmpItem);
         }
 
         /// <summary>
@@ -80,8 +91,9 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route("Addresses")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentAddress model)
+        public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.ModifyEmployeeAddress, ctx, model);
@@ -97,14 +109,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route("Addresses/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, Id);
-            FrontDictionaryAgentAddress tmp = new FrontDictionaryAgentAddress();
-            tmp.Id = Id;
-
-            return new JsonResult(tmp, this);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
 
         }
     }

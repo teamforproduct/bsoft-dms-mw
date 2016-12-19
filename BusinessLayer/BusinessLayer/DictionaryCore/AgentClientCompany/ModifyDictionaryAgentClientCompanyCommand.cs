@@ -16,6 +16,8 @@ namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentClientCompanyCommand : BaseDictionaryAgentClientCompanyCommand
     {
+        private ModifyAgentClientCompany Model { get { return GetModel<ModifyAgentClientCompany>(); } }
+
         public override object Execute()
         {
             try
@@ -23,11 +25,11 @@ namespace BL.Logic.DictionaryCore
                 using (var transaction = Transactions.GetTransaction())
                 {
 
-                    var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
+                    var model = new InternalDictionaryAgentClientCompany(Model);
 
-                    _dictDb.UpdateAgentClientCompany(_context, dp);
+                    _dictDb.UpdateAgentClientCompany(_context, model);
 
-                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

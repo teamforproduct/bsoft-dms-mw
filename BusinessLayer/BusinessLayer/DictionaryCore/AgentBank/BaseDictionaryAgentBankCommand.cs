@@ -11,7 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentBankCommand : BaseDictionaryCommand
     {
-        private AddDictionaryAgentBank Model { get { return GetModel<AddDictionaryAgentBank>(); } }
+        private AddAgentBank Model { get { return GetModel<AddAgentBank>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -38,8 +38,8 @@ namespace BL.Logic.DictionaryCore
                     MFOCodeExact = Model.MFOCode,
                 };
 
-                if (TypeModelIs<ModifyDictionaryAgentBank>())
-                { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentBank>().Id }; }
+                if (TypeModelIs<ModifyAgentBank>())
+                { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentBank>().Id }; }
 
                 if (_dictDb.ExistsAgentBanks(_context, filter))
                 {

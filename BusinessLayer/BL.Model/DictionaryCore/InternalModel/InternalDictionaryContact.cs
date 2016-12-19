@@ -12,18 +12,18 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryContact()
         { }
 
-        public InternalDictionaryContact(AddDictionaryAgentContact model)
+        public InternalDictionaryContact(AddAgentContact model)
         {
             SetInternalDictionaryContact(model);
         }
 
-        public InternalDictionaryContact(ModifyDictionaryAgentContact model)
+        public InternalDictionaryContact(ModifyAgentContact model)
         {
             Id = model.Id;
             SetInternalDictionaryContact(model);
         }
 
-        private void SetInternalDictionaryContact(AddDictionaryAgentContact model)
+        private void SetInternalDictionaryContact(AddAgentContact model)
         {
             AgentId = model.AgentId;
             ContactTypeId = model.ContactTypeId;

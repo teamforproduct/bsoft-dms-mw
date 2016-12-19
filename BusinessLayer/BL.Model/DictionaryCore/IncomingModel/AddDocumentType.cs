@@ -1,24 +1,22 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
     /// Модель для добавления/редактирования
     /// </summary>
-    public class ModifyDictionaryDocumentType
+    public class AddDocumentType
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
         /// <summary>
         /// Название типа документа. Отображается в документе
         /// </summary>
+        [Required]
         public string Name { get; set; }
         /// <summary>
         /// Признак активности
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
     }
 }

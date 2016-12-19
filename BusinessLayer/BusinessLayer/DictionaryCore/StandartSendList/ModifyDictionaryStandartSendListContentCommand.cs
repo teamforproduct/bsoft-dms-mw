@@ -12,43 +12,17 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryStandartSendListContentCommand :BaseDictionaryCommand
+    public class ModifyDictionaryStandartSendListContentCommand : BaseDictionaryStandartSendListContentCommand
     {
-        private ModifyDictionaryStandartSendListContent Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryStandartSendListContent))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryStandartSendListContent)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false, true);
-
-            DictionaryModelVerifying.VerifyStandartSendListContent(_context, _dictDb, Model);
-            
-            return true;
-        }
+        private ModifyStandartSendListContent Model { get { return GetModel<ModifyStandartSendListContent>(); } }
 
         public override object Execute()
         {
             try
             {
-                var newCont = new InternalDictionaryStandartSendListContent(Model);
-                CommonDocumentUtilities.SetLastChange(_context, newCont);
-                _dictDb.UpdateStandartSendListContent(_context, newCont);
-
-
+                var model = new InternalDictionaryStandartSendListContent(Model);
+                CommonDocumentUtilities.SetLastChange(_context, model);
+                _dictDb.UpdateStandartSendListContent(_context, model);
             }
             catch (DictionaryRecordWasNotFound)
             {

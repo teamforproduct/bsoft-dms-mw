@@ -4,23 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
     /// Типы контактов
     /// </summary>
-    public class ModifyDictionaryContactType
+    public class AddContactType
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
 
         /// <summary>
         /// Название типа контакта
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -31,6 +28,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Краткий идентификатор
         /// </summary>
+        [Required]
         public string Code { get; set; }
 
         /// <summary>
@@ -42,6 +40,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Признак активности
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentEmployee()
         { }
 
-        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployeeUser model)
+        public InternalDictionaryAgentEmployee(AddAgentEmployeeUser model)
         {
             SetInternalDictionaryAgentEmployee(model);
 
@@ -28,19 +28,19 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         }
 
-        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
+        public InternalDictionaryAgentEmployee(AddAgentEmployee model)
         {
             SetInternalDictionaryAgentEmployee(model);
         }
 
-        public InternalDictionaryAgentEmployee(ModifyDictionaryAgentEmployee model)
+        public InternalDictionaryAgentEmployee(ModifyAgentEmployee model)
         {
             Id = model.Id;
             SetInternalDictionaryAgentEmployee(model);
 
         }
 
-        private void SetInternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
+        private void SetInternalDictionaryAgentEmployee(AddAgentEmployee model)
         {
             Name = model.Name;
             FirstName = model.FirstName;

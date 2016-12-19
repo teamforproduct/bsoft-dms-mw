@@ -12,9 +12,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryPosition()
         { }
 
-        public InternalDictionaryPosition(ModifyDictionaryPosition model)
+        public InternalDictionaryPosition(AddPosition model)
+        {
+            SetInternalDictionaryPosition(model);
+        }
+
+        public InternalDictionaryPosition(ModifyPosition model)
         {
             Id = model.Id;
+            SetInternalDictionaryPosition(model);
+        }
+
+        private void SetInternalDictionaryPosition(AddPosition model)
+        {
             IsActive = model.IsActive;
             ParentId = model.ParentId;
             Name = model.Name;

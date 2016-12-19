@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Тег</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryTag model)
+        public IHttpActionResult Post([FromBody]AddTag model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="model"></param>
         /// <returns>Тег</returns>
         /// 
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryTag model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyTag model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

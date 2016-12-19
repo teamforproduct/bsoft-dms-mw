@@ -105,7 +105,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryPosition</param>
         /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryPosition model)
+        public IHttpActionResult Post([FromBody]AddPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -120,7 +120,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryPosition</param>
         /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryPosition model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyPosition model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPosition
             if (!stopWatch.IsRunning) stopWatch.Restart();

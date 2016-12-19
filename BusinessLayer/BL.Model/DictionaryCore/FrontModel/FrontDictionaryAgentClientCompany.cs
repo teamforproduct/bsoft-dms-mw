@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Карточка элемента из справочника "Компании". 
     /// </summary>
-    public class FrontDictionaryAgentClientCompany : ModifyDictionaryAgentClientCompany
+    public class FrontDictionaryAgentClientCompany : ModifyAgentClientCompany
     {
         /// <summary>
         /// ID

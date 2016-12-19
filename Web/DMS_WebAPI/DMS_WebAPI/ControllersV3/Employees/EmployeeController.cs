@@ -17,7 +17,7 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 
-namespace DMS_WebAPI.Controllers.Dictionaries
+namespace DMS_WebAPI.ControllersV3.Dictionaries
 {
     /// <summary>
     /// Контрагент - сотрудник
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route("Info")]
         [ResponseType(typeof(FrontDictionaryAgentEmployee))]
         public IHttpActionResult Get(int id)
         {
@@ -76,8 +76,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
 
@@ -94,8 +95,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentEmployee model)
+        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = contexts.Get();
             var webSeevice = new WebAPIService();
@@ -116,14 +118,14 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [Route("Info")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
             webSeevice.DeleteUserEmployee(ctx, Id);
-
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
-            tmp.Id = Id;
-
-            return new JsonResult(tmp, this);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
     }

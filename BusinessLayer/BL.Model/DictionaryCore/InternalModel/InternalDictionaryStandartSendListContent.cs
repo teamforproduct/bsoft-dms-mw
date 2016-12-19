@@ -10,9 +10,19 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         public InternalDictionaryStandartSendListContent() { }
 
-        public InternalDictionaryStandartSendListContent(ModifyDictionaryStandartSendListContent model)
+        public InternalDictionaryStandartSendListContent(AddStandartSendListContent model)
+        {
+            SetInternalDictionaryStandartSendListContent(model);
+        }
+
+        public InternalDictionaryStandartSendListContent(ModifyStandartSendListContent model)
         {
             Id = model.Id;
+            SetInternalDictionaryStandartSendListContent(model);
+        }
+
+        private void SetInternalDictionaryStandartSendListContent(AddStandartSendListContent model)
+        {
             StandartSendListId = model.StandartSendListId;
             Stage = model.Stage;
             SendType = model.SendTypeId;
@@ -23,7 +33,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             DueDate = model.DueDate;
             DueDay = model.DueDay;
             AccessLevel = model.AccessLevelId;
-
         }
 
         /// <summary>

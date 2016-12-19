@@ -16,20 +16,23 @@ namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryDepartmentCommand : BaseDictionaryDepartmentCommand
     {
+        private ModifyDepartment Model { get { return GetModel<ModifyDepartment>(); } }
+
         public override object Execute()
         {
             try
             {
-                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
+                var model = new InternalDictionaryDepartment(Model);
+
                 using (var transaction = Transactions.GetTransaction())
                 {
-                    if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
+                    if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
 
-                    _dictDb.UpdateDepartment(_context, dds);
+                    _dictDb.UpdateDepartment(_context, model);
 
-                    UpdateCodeForChildDepartment(dds.Id, dds.Code);
+                    UpdateCodeForChildDepartment(model.Id, model.Code);
 
-                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dds.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

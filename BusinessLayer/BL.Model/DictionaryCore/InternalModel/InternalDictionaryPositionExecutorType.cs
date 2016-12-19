@@ -12,14 +12,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryPositionExecutorType()
         { }
 
-        public InternalDictionaryPositionExecutorType(ModifyDictionaryPositionExecutorType model)
-        {
-            Id = model.Id;
-            IsActive = model.IsActive;
-            Code = model.Code;
-            Name = model.Name;
-        }
-
         /// <summary>
         /// ID
         /// </summary>

@@ -188,6 +188,10 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryAgentEmployee();
+
+            filter.IsActive = true;
+
             return _dictDb.GetAgentEmployeeList(context, filter, paging);
         }
 
@@ -316,6 +320,10 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryAgentCompany();
+
+            filter.IsActive = true;
+
             return _dictDb.GetAgentCompanyList(context, filter, paging);
         }
 

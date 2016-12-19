@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryDocumentType</param>
         /// <returns>Возвращает добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentType model)
+        public IHttpActionResult Post([FromBody]ModifyDocumentType model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model">ModifyDictionaryDocumentType</param>
         /// <returns>Возвращает измененную запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentType model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentType model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

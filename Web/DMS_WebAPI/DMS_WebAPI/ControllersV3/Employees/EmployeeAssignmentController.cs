@@ -9,6 +9,9 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using System;
+using BL.Model.Common;
+using System.Diagnostics;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -20,6 +23,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
     public class EmployeeAssignmentController : ApiController
     {
 
+        Stopwatch stopWatch = new Stopwatch();
+
         /// <summary>
         /// Возвращает список назначений сотрудника
         /// </summary>
@@ -28,18 +33,47 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Assignments")]
-        [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryAgentAddress filter)
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
+        public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (filter == null) filter = new FilterDictionaryAgentAddress();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
-            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { EmployeeId };
-            else filter.AgentIDs.Add(EmployeeId);
+            filter.AgentIDs = new List<int> { EmployeeId };
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает список назначений сотрудника
+        /// </summary>
+        /// <param name="EmployeeId">ИД сотрудника</param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Assignments/Current")]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
+        public IHttpActionResult GetCurrent(int EmployeeId, [FromUri] FilterDictionaryPositionExecutor filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            filter.AgentIDs = new List<int> { EmployeeId };
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
+
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -49,39 +83,45 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Assignments/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentAddress))]
+        [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
-            return new JsonResult(tmpItem, this);
+            var tmpItem = tmpService.GetDictionaryPositionExecutor(ctx, Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
-        /// Создает новый адрес сотрудника
+        /// Назначает сотрудника на новую должность
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("Assignments")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentAddress model)
+        public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model));
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model);
+            return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует адрес сотрудника
+        /// Корректирует параметры назначения сотрудника на должности
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("Assignments")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentAddress model)
+        public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.ModifyEmployeeAddress, ctx, model);
@@ -89,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Удаляет адрес сотрудника
+        /// Удаляет назначение сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -97,14 +137,15 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route("Assignments/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, Id);
-            FrontDictionaryAgentAddress tmp = new FrontDictionaryAgentAddress();
-            tmp.Id = Id;
-
-            return new JsonResult(tmp, this);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
 
         }
     }

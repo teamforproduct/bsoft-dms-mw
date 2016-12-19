@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -7,32 +8,31 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyDictionaryRegistrationJournal
+    public class AddRegistrationJournal
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
-        
+
         /// <summary>
         /// Признак активности.
         /// </summary>
+        [Required]
         public bool IsActive { get; set; }
 
         /// <summary>
         /// Название (Заголовок) журнала регистрацииа.
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
         /// Подразделение, к которому приписан журнал регистрации
         /// </summary>
+        [Required]
         public int DepartmentId { get; set; }
 
         /// <summary>
         /// Индекс журнала
         /// </summary>
+        [Required]
         public string Index { get; set; }
 
         /// <summary>
@@ -64,8 +64,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Выражение, описывающие формирование суффикса номера документа, в этом журнале регистрации 
         /// </summary>
         public string SuffixFormula { get; set; }
-
-        // !!! После добавления полей внеси изменения в BL.Logic.Common.CommonDictionaryUtilities.RegistrationJournalModifyToInternal
 
     }
 }

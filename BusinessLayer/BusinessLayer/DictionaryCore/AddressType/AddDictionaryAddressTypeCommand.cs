@@ -12,6 +12,8 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAddressTypeCommand : BaseDictionaryAddressTypeCommand
     {
+        private AddAddressType Model { get { return GetModel<AddAddressType>(); } }
+
         public override object Execute()
         {
             try
