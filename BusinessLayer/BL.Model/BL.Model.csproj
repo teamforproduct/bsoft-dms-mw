@@ -202,6 +202,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyPositionOrder.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAddressType.cs" />
@@ -525,6 +526,9 @@
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
     <Compile Include="Users\ChangeLockoutAgentUser.cs" />
+    <Compile Include="Users\FrontPermission.cs" />
+    <Compile Include="Users\ChangeLogin.cs" />
+    <Compile Include="Users\ChangePassword.cs" />
     <Compile Include="Users\MustChangePasswordAgentUser.cs" />
     <Compile Include="Users\ConfirmRestorePasswordAgentUser.cs" />
     <Compile Include="Users\RestorePasswordAgentUser.cs" />
