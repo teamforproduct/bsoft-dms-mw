@@ -10,9 +10,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryTag()
         { }
 
-        public InternalDictionaryTag(ModifyDictionaryTag Model)
+        public InternalDictionaryTag(AddTag Model)
+        {
+            SetInternalDictionaryTag(Model);
+        }
+
+        public InternalDictionaryTag(ModifyTag Model)
         {
             Id = Model.Id;
+            SetInternalDictionaryTag(Model);
+        }
+
+        private void SetInternalDictionaryTag(AddTag Model)
+        {
             Name = Model.Name;
             Color = Model.Color;
             IsActive = Model.IsActive;

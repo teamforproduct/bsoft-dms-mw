@@ -14,18 +14,18 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentAddress()
         { }
 
-        public InternalDictionaryAgentAddress(ModifyDictionaryAgentAddress Model)
+        public InternalDictionaryAgentAddress(ModifyAgentAddress Model)
         {
             Id = Model.Id;
             GetInternalDictionaryAgentAddress(Model);
         }
 
-        public InternalDictionaryAgentAddress(AddDictionaryAgentAddress Model)
+        public InternalDictionaryAgentAddress(AddAgentAddress Model)
         {
             GetInternalDictionaryAgentAddress(Model);
         }
 
-        public void GetInternalDictionaryAgentAddress(AddDictionaryAgentAddress Model)
+        public void GetInternalDictionaryAgentAddress(AddAgentAddress Model)
         {
             AgentId = Model.AgentId;
             AddressTypeID = Model.AddressTypeId;

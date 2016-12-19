@@ -6,7 +6,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Элемент справочника "Журналы регистрации". 
     /// </summary>
-    public class FrontDictionaryRegistrationJournal : ModifyDictionaryRegistrationJournal
+    public class FrontDictionaryRegistrationJournal : ModifyRegistrationJournal
     {
         /// <summary>
         /// ID

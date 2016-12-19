@@ -51,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря типа документа</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryContactType model)
+        public IHttpActionResult Post([FromBody]AddContactType model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря тип контакта</returns>
         [HttpPut]
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryContactType model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyContactType model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

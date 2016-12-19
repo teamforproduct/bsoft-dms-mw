@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Карточка элемента из справочника "Штатное расписание". 
     /// </summary>
-    public class FrontDictionaryPosition : ModifyDictionaryPosition
+    public class FrontDictionaryPosition : ModifyPosition
     {
 
         /// <summary>

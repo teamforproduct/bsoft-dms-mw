@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryRegistrationJournal</param>
         /// <returns>FrontDictionaryRegistrationJournals</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryRegistrationJournal model)
+        public IHttpActionResult Post([FromBody]AddRegistrationJournal model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryRegistrationJournal</param>
         /// <returns>FrontDictionaryRegistrationJournals</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryRegistrationJournal model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyRegistrationJournal model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryRegistrationJournal
 

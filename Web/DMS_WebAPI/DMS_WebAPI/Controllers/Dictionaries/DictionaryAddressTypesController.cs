@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря типа документа</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAddressType model)
+        public IHttpActionResult Post([FromBody]AddAddressType model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря типа адреса</returns>
-         public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAddressType model)
+         public IHttpActionResult Put(int id, [FromBody]ModifyAddressType model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

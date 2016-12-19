@@ -30,6 +30,7 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
 using BL.CrossCutting.Helpers;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Logic.AdminCore
 {
@@ -418,7 +419,7 @@ namespace BL.Logic.AdminCore
             return flatTree;
         }
 
-        public void AddAllPositionRoleForUser(IContext context, ModifyDictionaryPositionExecutor positionExecutor)
+        public void AddAllPositionRoleForUser(IContext context, InternalDictionaryPositionExecutor positionExecutor)
         {
             var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole() { PositionIDs = new List<int> { positionExecutor.PositionId } });
 

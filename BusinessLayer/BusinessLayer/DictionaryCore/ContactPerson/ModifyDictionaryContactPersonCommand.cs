@@ -14,7 +14,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryContactPersonCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentContactPerson Model { get { return GetModel<ModifyDictionaryAgentContactPerson>(); } }
+        private ModifyAgentContactPerson Model { get { return GetModel<ModifyAgentContactPerson>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -46,13 +46,13 @@ namespace BL.Logic.DictionaryCore
 
                 _dictService.ExecuteAction(BL.Model.Enums.EnumDictionaryActions.ModifyAgentPerson, _context, person);
 
-                _dictDb.DeleteContacts(_context, new FilterDictionaryContact { AgentIDs = new List<int> { person.Id } });
+                transaction.Complete();
 
             }
             return null;
         }
 
-        private void AddContact(AddDictionaryAgentContact model)
+        private void AddContact(AddAgentContact model)
         {
             _dictService.ExecuteAction(BL.Model.Enums.EnumDictionaryActions.AddAgentContact, _context, model);
         }

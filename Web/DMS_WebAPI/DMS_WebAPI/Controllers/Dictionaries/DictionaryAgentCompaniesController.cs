@@ -76,7 +76,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">параметры юрлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentCompany model)
+        public IHttpActionResult Post([FromBody]AddAgentCompany model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="AgentId">ИД агента</param>
         /// <param name="model">параметры юрлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult PostToExistingAgent(int AgentId, [FromBody]ModifyDictionaryAgentCompany model)
+        public IHttpActionResult PostToExistingAgent(int AgentId, [FromBody]ModifyAgentCompany model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">ИД</param>
         /// <param name="model">параметры</param>
         /// <returns>возвращает измененную запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentCompany model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentCompany model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

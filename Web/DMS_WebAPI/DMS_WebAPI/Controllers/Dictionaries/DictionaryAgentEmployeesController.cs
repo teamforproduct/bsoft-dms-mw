@@ -78,7 +78,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentEmployee model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentEmployee model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -154,21 +154,5 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(null, this);
         }
 
-        /// <summary>
-        /// Устанавливает настройки для пользователя
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("SetSettings")]
-        public IHttpActionResult SetSettings(int id, ModifyDictionaryAgentUserSettings model)
-        {
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-//            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployeeLanguage, ctx, new ModifyDictionaryAgentUser { Id = id, LanguageId = languageId });
-
-            return new JsonResult(null, this);
-        }
     }
 }

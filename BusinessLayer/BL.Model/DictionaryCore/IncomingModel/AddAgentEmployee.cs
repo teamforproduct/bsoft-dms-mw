@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// контрагент - сотрудник
     /// </summary>
-    public class AddDictionaryAgentEmployee
+    public class AddAgentEmployee
     {
         #region [+] Person ...
 

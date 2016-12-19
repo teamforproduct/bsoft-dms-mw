@@ -11,42 +11,18 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryRegistrationJournalCommand : BaseDictionaryCommand
+    public class ModifyDictionaryRegistrationJournalCommand : BaseDictionaryRegistrationJournalCommand
     {
-       
-        private ModifyDictionaryRegistrationJournal Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryRegistrationJournal))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryRegistrationJournal)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyRegistrationJournal(_context, _dictDb, Model);
-            
-            return true;
-        }
-
+        private ModifyRegistrationJournal Model { get { return GetModel<ModifyRegistrationJournal>(); } }
         public override object Execute()
         {
             try
             {
-                var drj = CommonDictionaryUtilities.RegistrationJournalModifyToInternal(_context, Model);
+                var model = new InternalDictionaryRegistrationJournal(Model);
 
-                _dictDb.UpdateRegistrationJournal(_context, drj);
+                CommonDocumentUtilities.SetLastChange(_context, model);
+
+                _dictDb.UpdateRegistrationJournal(_context, model);
             }
             catch (DictionaryRecordWasNotFound)
             {

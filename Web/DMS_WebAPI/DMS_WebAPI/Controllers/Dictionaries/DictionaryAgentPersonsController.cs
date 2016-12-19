@@ -52,7 +52,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">параметры физлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentPerson model)
+        public IHttpActionResult Post([FromBody]AddAgentPerson model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">ИД</param>
         /// <param name="model">параметры</param>
         /// <returns>возвращает измененную запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentPerson model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentPerson model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

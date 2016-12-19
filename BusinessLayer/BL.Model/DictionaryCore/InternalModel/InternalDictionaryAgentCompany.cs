@@ -13,19 +13,27 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentCompany()
         { }
 
-        public InternalDictionaryAgentCompany(ModifyDictionaryAgentCompany model)
+        public InternalDictionaryAgentCompany(AddAgentCompany model)
+        {
+            SetInternalDictionaryAgentCompany(model);
+        }
+
+        public InternalDictionaryAgentCompany(ModifyAgentCompany model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentCompany(model);
+        }
+
+        private void SetInternalDictionaryAgentCompany(AddAgentCompany model)
+        {
             FullName = model.FullName;
             Name = model.Name;
             TaxCode = model.TaxCode;
             Description = model.Description;
             OKPOCode = model.OKPOCode;
             VATCode = model.VATCode;
-            ContactsPersonsId = model.ContactsPersonsId;
             IsActive = model.IsActive;
         }
-        
         /// <summary>
         /// ИД
         /// </summary>
@@ -58,10 +66,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        /// <summary>
-        /// список контактов
-        /// </summary>
-        public IEnumerable<int> ContactsPersonsId { get; set; }
 
     }
 }

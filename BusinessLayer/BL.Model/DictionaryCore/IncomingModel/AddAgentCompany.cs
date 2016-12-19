@@ -11,14 +11,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Контрагент - юридическое лицо
     /// </summary>
-    public class ModifyDictionaryAgentCompany
+    public class AddAgentCompany
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
-        
         /// <summary>
         /// Полное наименование
         /// </summary>
@@ -57,10 +51,5 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         public string Name { get; set; }
         
-        /// <summary>
-        /// Список контактных лиц
-        /// </summary>
-        public List<int> ContactsPersonsId { get; set; }
-
     }
 }

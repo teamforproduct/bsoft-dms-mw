@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class AddDictionaryAgentBank
+    public class AddAgentBank
     {
         /// <summary>
         /// МФО

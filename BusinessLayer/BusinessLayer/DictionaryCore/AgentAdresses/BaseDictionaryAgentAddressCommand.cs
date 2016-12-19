@@ -11,7 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentAddressCommand : BaseDictionaryCommand
     {
-        private AddDictionaryAgentAddress Model { get { return GetModel<AddDictionaryAgentAddress>(); } }
+        private AddAgentAddress Model { get { return GetModel<AddAgentAddress>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -29,8 +29,8 @@ namespace BL.Logic.DictionaryCore
                 AddressTypeIDs = new List<int> { Model.AddressTypeId },
             };
 
-            if (TypeModelIs<ModifyDictionaryAgentAddress>())
-            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentAddress>().Id }; }
+            if (TypeModelIs<ModifyAgentAddress>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentAddress>().Id }; }
 
             var spr = _dictDb.GetAgentAddresses(_context, filter);
 
@@ -45,8 +45,8 @@ namespace BL.Logic.DictionaryCore
                 AddressExact = Model.Address,
             };
 
-            if (TypeModelIs<ModifyDictionaryAgentAddress>())
-            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentAddress>().Id }; }
+            if (TypeModelIs<ModifyAgentAddress>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentAddress>().Id }; }
 
             spr = _dictDb.GetAgentAddresses(_context, filter);
 

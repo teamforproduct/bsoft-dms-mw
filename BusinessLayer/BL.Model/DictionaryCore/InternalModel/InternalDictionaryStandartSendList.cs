@@ -15,7 +15,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
         }
 
-        public InternalDictionaryStandartSendList(ModifyDictionaryStandartSendList model)
+        public InternalDictionaryStandartSendList(ModifyStandartSendList model)
         {
             Id = model.Id;
             Name = model.Name;

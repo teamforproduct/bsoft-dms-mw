@@ -13,7 +13,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentPersonCommand : BaseDictionaryCommand
     {
-        private AddDictionaryAgentPerson Model { get { return GetModel<AddDictionaryAgentPerson>(); } }
+        private AddAgentPerson Model { get { return GetModel<AddAgentPerson>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -48,8 +48,8 @@ namespace BL.Logic.DictionaryCore
                     PassportNumberExact = Model.PassportNumber,
                 };
 
-                if (TypeModelIs<ModifyDictionaryAgentPerson>())
-                { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentPerson>().Id }; }
+                if (TypeModelIs<ModifyAgentPerson>())
+                { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentPerson>().Id }; }
 
                 if (_dictDb.ExistsAgentPersons(_context, filter))
                 { throw new DictionaryAgentPersonPassportNotUnique(Model.PassportSerial, Model.PassportNumber); }
@@ -63,8 +63,8 @@ namespace BL.Logic.DictionaryCore
                     TaxCodeExact = Model.TaxCode,
                 };
 
-                if (TypeModelIs<ModifyDictionaryAgentPerson>())
-                { filter.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentPerson>().Id }; }
+                if (TypeModelIs<ModifyAgentPerson>())
+                { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentPerson>().Id }; }
 
                 if (_dictDb.ExistsAgentPersons(_context, filter))
                 { throw new DictionaryAgentPersonTaxCodeNotUnique(Model.TaxCode); }

@@ -70,7 +70,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPost]
         [Route("ContactPersons")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentContactPerson model)
+        public IHttpActionResult Post([FromBody]AddAgentContactPerson model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -85,7 +85,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPut]
         [Route("ContactPersons")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentContactPerson model)
+        public IHttpActionResult Put([FromBody]ModifyAgentContactPerson model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();

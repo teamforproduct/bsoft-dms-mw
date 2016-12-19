@@ -11,18 +11,18 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentBank()
         { }
 
-        public InternalDictionaryAgentBank(ModifyDictionaryAgentBank model)
+        public InternalDictionaryAgentBank(ModifyAgentBank model)
         {
             Id = model.Id;
             SetInternalDictionaryAgentBank(model);
         }
 
-        public InternalDictionaryAgentBank(AddDictionaryAgentBank model)
+        public InternalDictionaryAgentBank(AddAgentBank model)
         {
             SetInternalDictionaryAgentBank(model);
         }
 
-        public void SetInternalDictionaryAgentBank(AddDictionaryAgentBank model)
+        public void SetInternalDictionaryAgentBank(AddAgentBank model)
         {
             Name = model.Name;
             FullName = model.FullName;
