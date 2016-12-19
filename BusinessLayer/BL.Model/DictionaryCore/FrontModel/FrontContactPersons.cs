@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Enums;
 using System.Runtime.Serialization;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -12,32 +13,8 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Контактные лица
     /// </summary>
-    public class FrontContactPersons
+    public class FrontContactPersons : ModifyAgentContactPerson
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// ФИО, Название, ...
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Дополнительная информация
-        /// </summary>
-        public string Position { get; set; }
-
-        /// <summary>
-        /// Дополнительная информация
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Признак активности
-        /// </summary>
-        public bool? IsActive { get; set; }
-
 
         /// <summary>
         /// Список контактов контрагента

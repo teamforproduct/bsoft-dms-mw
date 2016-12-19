@@ -136,6 +136,7 @@
     <Compile Include="AdminCore\WebUser\AddWebUser.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
     <Compile Include="AutoPlan\AutoPlanSettings.cs" />
+    <Compile Include="Common\FrontDeleteModel.cs" />
     <Compile Include="Common\DictionaryItem.cs" />
     <Compile Include="Common\ListItem.cs" />
     <Compile Include="Common\EnumModel.cs" />

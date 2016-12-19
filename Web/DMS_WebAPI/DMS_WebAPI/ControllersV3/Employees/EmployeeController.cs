@@ -78,6 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         [Route("Info")]
         public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
 
@@ -96,6 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         [Route("Info")]
         public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = contexts.Get();
             var webSeevice = new WebAPIService();
@@ -116,14 +118,14 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         [Route("Info")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
             webSeevice.DeleteUserEmployee(ctx, Id);
-
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
-            tmp.Id = Id;
-
-            return new JsonResult(tmp, this);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
     }

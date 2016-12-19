@@ -428,8 +428,15 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
+                    CompanyId = x.AgentCompanyId ?? -1,
+                    FirstName = x.Agent.AgentPerson.FirstName,
+                    LastName = x.Agent.AgentPerson.LastName,
+                    MiddleName = x.Agent.AgentPerson.MiddleName,
+                    IsMale = x.Agent.AgentPerson.IsMale,
                     Description = x.Description,
                     IsActive = x.IsActive,
+                    Position = x.Position,
+
                     Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryAgentContact
                     {
                         Id = y.Id,

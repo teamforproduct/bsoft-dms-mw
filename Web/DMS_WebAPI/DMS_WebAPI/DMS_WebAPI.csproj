@@ -260,6 +260,9 @@
     <Compile Include="ControllersV3\Employees\EmployeeAssignmentController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeContactsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeController.cs" />
+    <Compile Include="ControllersV3\User\UserAddressesController.cs" />
+    <Compile Include="ControllersV3\User\UserContactsController.cs" />
+    <Compile Include="ControllersV3\User\UserController.cs" />
     <Compile Include="ControllersV3\System\ToolsController.cs" />
     <Compile Include="ControllersV3\System\SystemController.cs" />
     <Compile Include="ControllersV3\Lists\ListsController.cs" />
