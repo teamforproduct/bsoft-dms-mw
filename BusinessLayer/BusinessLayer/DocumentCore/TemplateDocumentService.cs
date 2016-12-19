@@ -14,6 +14,7 @@ using BL.Model.SystemCore.Filters;
 using System.Linq;
 using BL.Logic.Common;
 using BL.Model.Exception;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Logic.DocumentCore
 {
@@ -25,11 +26,11 @@ namespace BL.Logic.DocumentCore
         private readonly ISystemDbProcess _systemDb;
 
 
-        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin,
+        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb, IAdminService admin,
             IFileStore fStore, ICommandService commandService, ISystemDbProcess systemDb)
         {
             _templateDb = templateDb;
-           _commandService = commandService;
+            _commandService = commandService;
             _systemDb = systemDb;
             _fStore = fStore;
 
@@ -48,7 +49,7 @@ namespace BL.Logic.DocumentCore
         {
             return _templateDb.GetTemplateDocument(context, filter, paging);
         }
- 
+
         public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
         {
             return _templateDb.GetTemplateDocument(context, templateDocumentId);
@@ -58,9 +59,11 @@ namespace BL.Logic.DocumentCore
         {
             var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplateDocument } }).ToList();
             uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
-
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));
-
+            var uiPropertyElements = CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray());
+            uiElements.AddRange(uiPropertyElements);
+            var addProp = uiPropertyElements.Where(x => x.PropertyLinkId.HasValue && !templateDoc.Properties.Select(y => y.PropertyLinkId).ToList().Contains(x.PropertyLinkId.Value) )
+                .Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId.Value }).ToList();
+            templateDoc.Properties = templateDoc.Properties.Concat(addProp).ToList();
             return uiElements;
         }
 
@@ -68,11 +71,11 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateDocumentsSendList
 
-        public IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context,FilterTemplateDocumentSendList filter)
+        public IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context, FilterTemplateDocumentSendList filter)
         {
-            return _templateDb.GetTemplateDocumentSendLists(context,filter);
+            return _templateDb.GetTemplateDocumentSendLists(context, filter);
         }
-      
+
         public FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentSendList(context, id);
@@ -101,7 +104,7 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocumentTasks(context, filter);
         }
 
-   
+
         public FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentTask(context, id);

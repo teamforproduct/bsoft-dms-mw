@@ -87,7 +87,7 @@ namespace BL.Logic.Common
             {
                 i++;
                 res = name + $" ##l@SuffixCopy@l## {i}";
-            } 
+            }
             return res;
         }
 
@@ -330,7 +330,9 @@ namespace BL.Logic.Common
                 OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType, null, sendListModel.Description, null, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
+                                context, sendListModel.DocumentId, eventType, null, 
+                                ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription: sendListModel.Description), 
+                                null, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,

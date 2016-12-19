@@ -60,6 +60,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public bool IsAddControl { get; set; }
         /// <summary>
+        /// Комментарий к самоконтролю
+        /// </summary>
+        public string SelfDescription { get; set; }
+        /// <summary>
         /// Срок для самоконтроля (дата)
         /// </summary>
         public Nullable<DateTime> SelfDueDate { get; set; }

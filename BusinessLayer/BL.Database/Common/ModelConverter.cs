@@ -217,6 +217,7 @@ namespace BL.Database.Common
                     IsAvailableWithinTask = sendList.IsAvailableWithinTask,
                     IsWorkGroup = sendList.IsWorkGroup,
                     IsAddControl = sendList.IsAddControl,
+                    SelfDescription = sendList.SelfDescription,
                     SelfDueDate = sendList.SelfDueDate,
                     SelfDueDay = sendList.SelfDueDay,
                     SelfAttentionDate = sendList.SelfAttentionDate,

@@ -58,7 +58,7 @@ namespace BL.Database.Documents
                 if (res.Document != null)
                 {
                     documentId = res.Document.Id;
-                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, context,true)
+                    res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, context, true)
                         .Select(x => new InternalDocumentAccess
                         {
                             Id = x.Id,
@@ -1831,6 +1831,7 @@ namespace BL.Database.Documents
                 entry.Property(e => e.IsAvailableWithinTask).IsModified = true;
                 entry.Property(e => e.IsWorkGroup).IsModified = true;
                 entry.Property(e => e.IsAddControl).IsModified = true;
+                entry.Property(e => e.SelfDescription).IsModified = true;
                 entry.Property(e => e.SelfDueDate).IsModified = true;
                 entry.Property(e => e.SelfDueDay).IsModified = true;
                 entry.Property(e => e.SelfAttentionDate).IsModified = true;
@@ -1985,6 +1986,7 @@ namespace BL.Database.Documents
                                             IsAvailableWithinTask = x.IsAvailableWithinTask,
                                             IsWorkGroup = x.IsWorkGroup,
                                             IsAddControl = x.IsAddControl,
+                                            SelfDescription = x.SelfDescription,
                                             SelfDueDate = x.SelfDueDate,
                                             SelfDueDay = x.SelfDueDay,
                                             SelfAttentionDate = x.SelfAttentionDate,

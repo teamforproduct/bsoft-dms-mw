@@ -2624,6 +2624,7 @@ namespace BL.Database.Common
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
                 IsWorkGroup = y.IsWorkGroup,
                 IsAddControl = y.IsAddControl,
+                SelfDescription = y.SelfDescription,
                 SelfDueDate = y.SelfDueDate,
                 SelfDueDay = y.SelfDueDay,
                 SelfAttentionDate = y.SelfAttentionDate,
