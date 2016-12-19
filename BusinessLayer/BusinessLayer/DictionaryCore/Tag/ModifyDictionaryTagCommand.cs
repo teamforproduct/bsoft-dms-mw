@@ -13,41 +13,9 @@ using BL.Model.SystemCore;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryTagCommand : BaseDictionaryCommand
+    public class ModifyDictionaryTagCommand : BaseDictionaryTagCommand
     {
-        private readonly IDictionariesDbProcess _dictDb;
-
-        public ModifyDictionaryTagCommand(IDictionariesDbProcess dictDb)
-        {
-            _dictDb = dictDb;
-        }
-
-        private ModifyDictionaryTag Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryTag))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryTag)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyTag(_context, _dictDb, Model);
-
-            return true;
-        }
-
+        private ModifyTag Model { get { return GetModel<ModifyTag>(); } }
         public override object Execute()
         {
             try

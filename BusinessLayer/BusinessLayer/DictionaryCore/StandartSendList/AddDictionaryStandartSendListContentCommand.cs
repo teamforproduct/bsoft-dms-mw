@@ -11,33 +11,9 @@ using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryStandartSendListContentCommand : BaseDictionaryCommand
+    public class AddDictionaryStandartSendListContentCommand : BaseDictionaryStandartSendListContentCommand
     {
-        private ModifyDictionaryStandartSendListContent Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryStandartSendListContent))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryStandartSendListContent)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyStandartSendListContent(_context, _dictDb, Model);
-
-            return true;
-        }
+        private AddStandartSendListContent Model { get { return GetModel<AddStandartSendListContent>(); } }
 
         public override object Execute()
         {

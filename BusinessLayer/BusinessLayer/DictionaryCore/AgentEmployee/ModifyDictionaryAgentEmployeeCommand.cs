@@ -13,16 +13,15 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
 {
     public class ModifyDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
-
-        private ModifyDictionaryAgentEmployee Model
+        private ModifyAgentEmployee Model
         {
             get
             {
-                if (!(_param is ModifyDictionaryAgentEmployee))
+                if (!(_param is ModifyAgentEmployee))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDictionaryAgentEmployee)_param;
+                return (ModifyAgentEmployee)_param;
             }
         }
 

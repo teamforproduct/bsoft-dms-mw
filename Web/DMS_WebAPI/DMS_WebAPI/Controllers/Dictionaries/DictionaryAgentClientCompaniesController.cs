@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryCompany</param>
         /// <returns>DictionaryCompanies</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentClientCompany model)
+        public IHttpActionResult Post([FromBody]AddAgentClientCompany model)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryCompany</param>
         /// <returns>DictionaryCompanies</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentClientCompany model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentClientCompany model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryCompany
 

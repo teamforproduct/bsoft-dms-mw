@@ -62,7 +62,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>добавленную запись</returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentBank model)
+        public IHttpActionResult Post([FromBody]AddAgentBank model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>возвращает измененную запись</returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentBank model)
+        public IHttpActionResult Put([FromBody]ModifyAgentBank model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();

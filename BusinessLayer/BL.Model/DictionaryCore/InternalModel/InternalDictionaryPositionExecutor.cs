@@ -15,9 +15,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryPositionExecutor()
         { }
 
-        public InternalDictionaryPositionExecutor(ModifyDictionaryPositionExecutor model)
+        public InternalDictionaryPositionExecutor(AddPositionExecutor model)
+        {
+            SetInternalDictionaryPositionExecutor(model);
+        }
+
+        public InternalDictionaryPositionExecutor(ModifyPositionExecutor model)
         {
             Id = model.Id;
+            SetInternalDictionaryPositionExecutor(model);
+        }
+
+        private void SetInternalDictionaryPositionExecutor(AddPositionExecutor model)
+        {
             IsActive = model.IsActive;
             AgentId = model.AgentId;
             PositionId = model.PositionId;

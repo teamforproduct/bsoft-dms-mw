@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// ОСНОВНОЙ. Справочник типов документов. 
     /// </summary>
-    public class FrontDictionaryTag : ModifyDictionaryTag
+    public class FrontDictionaryTag : ModifyTag
     {
         /// <summary>
         /// ID

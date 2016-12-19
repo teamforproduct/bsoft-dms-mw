@@ -11,7 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
-        private AddDictionaryAgentEmployee Model { get { return GetModel<AddDictionaryAgentEmployee>(); } }
+        private AddAgentEmployee Model { get { return GetModel<AddAgentEmployee>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -49,8 +49,8 @@ namespace BL.Logic.DictionaryCore
                 PersonnelNumber = Model.PersonnelNumber,
             };
 
-            if (TypeModelIs<ModifyDictionaryAgentEmployee>())
-            { filterEmployee.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentEmployee>().Id }; }
+            if (TypeModelIs<ModifyAgentEmployee>())
+            { filterEmployee.NotContainsIDs = new List<int> { GetModel<ModifyAgentEmployee>().Id }; }
 
             if (_dictDb.ExistsAgentEmployees(_context, filterEmployee))
             {
@@ -66,8 +66,8 @@ namespace BL.Logic.DictionaryCore
                     PassportNumberExact = Model.PassportNumber,
                 };
 
-                if (TypeModelIs<ModifyDictionaryAgentEmployee>())
-                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentEmployee>().Id }; }
+                if (TypeModelIs<ModifyAgentEmployee>())
+                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyAgentEmployee>().Id }; }
 
                 if (_dictDb.ExistsAgentPersons(_context, filterPerson))
                 {
@@ -83,8 +83,8 @@ namespace BL.Logic.DictionaryCore
                     TaxCodeExact = Model.TaxCode,
                 };
 
-                if (TypeModelIs<ModifyDictionaryAgentEmployee>())
-                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyDictionaryAgentEmployee>().Id }; }
+                if (TypeModelIs<ModifyAgentEmployee>())
+                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyAgentEmployee>().Id }; }
 
                 if (_dictDb.ExistsAgentPersons(_context, filterPerson))
                 {

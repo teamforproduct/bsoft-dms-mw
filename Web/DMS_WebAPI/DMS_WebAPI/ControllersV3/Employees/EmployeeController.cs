@@ -17,7 +17,7 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 
-namespace DMS_WebAPI.Controllers.Dictionaries
+namespace DMS_WebAPI.ControllersV3.Dictionaries
 {
     /// <summary>
     /// Контрагент - сотрудник
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route("Info")]
         [ResponseType(typeof(FrontDictionaryAgentEmployee))]
         public IHttpActionResult Get(int id)
         {
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = new WebAPIService();
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentEmployee model)
+        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
         {
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = contexts.Get();

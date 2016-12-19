@@ -4,18 +4,12 @@ using System.Runtime.Serialization;
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
-    /// Модель для добавления/редактирования записи справочника "Штатное расписание"
+    /// Модель для добавления/редактирования отдела в штатном расписании
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyDictionaryPosition
+    public class AddDepartment
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
-
         /// <summary>
         /// Признак активности.
         /// </summary>
@@ -23,34 +17,38 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public bool IsActive { get; set; }
         
         /// <summary>
-        /// Вышестоящая должность
+        /// Вышестоящее подразделение
         /// </summary>
-        [IgnoreDataMember]
         public int? ParentId { get; set; }
 
         /// <summary>
-        /// Наименование должности
+        /// Наименование подразделения
         /// </summary>
         [Required]
         public string Name { get; set; }
 
         /// <summary>
-        /// Полное наименование должности
+        /// Полное наименование подразделения
         /// </summary>
         [Required]
         public string FullName { get; set; }
 
         /// <summary>
-        /// Подразделение, в которое включена должность
+        /// Индекс подразделения
         /// </summary>
         [Required]
-        public int DepartmentId { get; set; }
+        public string Index { get; set; }
 
         /// <summary>
-        /// Порядковый номер (значимость) должности в подразделении
+        /// Компания
         /// </summary>
-        [Required]
-        public int Order { get; set; }
+        public int CompanyId { get; set; }
+
+        /// <summary>
+        /// Руководитель подразделения
+        /// </summary>
+        [IgnoreDataMember]
+        public int? ChiefPositionId { get; set; }
 
     }
 }

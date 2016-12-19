@@ -12,13 +12,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Содержание типового списка рассылки
     /// </summary>
-    public class ModifyDictionaryStandartSendListContent
+    public class AddStandartSendListContent
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
         /// <summary>
         /// Ссылка на типовую рассылку
         /// </summary>

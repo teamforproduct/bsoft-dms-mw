@@ -9,14 +9,24 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAddressType()
         { }
 
-        public InternalDictionaryAddressType(ModifyDictionaryAddressType model)
+        public InternalDictionaryAddressType(AddAddressType model)
+        {
+            SetInternalDictionaryAddressType(model);
+        }
+
+        public InternalDictionaryAddressType(ModifyAddressType model)
         {
             Id = model.Id;
+            SetInternalDictionaryAddressType(model);
+        }
+
+        private void SetInternalDictionaryAddressType(AddAddressType model)
+        {
             Code = model.Code;
             Name = model.Name;
             IsActive = model.IsActive;
         }
-        
+
         /// <summary>
         /// ID
         /// </summary>

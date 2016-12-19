@@ -9,6 +9,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using System;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -28,17 +29,40 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Assignments")]
-        [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryAgentAddress filter)
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
+        public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (filter == null) filter = new FilterDictionaryAgentAddress();
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
-            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { EmployeeId };
-            else filter.AgentIDs.Add(EmployeeId);
+            filter.AgentIDs = new List<int> { EmployeeId };
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            return new JsonResult(tmpItems, this);
+        }
+
+        /// <summary>
+        /// Возвращает список назначений сотрудника
+        /// </summary>
+        /// <param name="EmployeeId">ИД сотрудника</param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Assignments/Current")]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
+        public IHttpActionResult GetCurrent(int EmployeeId, [FromUri] FilterDictionaryPositionExecutor filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            filter.AgentIDs = new List<int> { EmployeeId };
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
+
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
             return new JsonResult(tmpItems, this);
         }
 
@@ -49,23 +73,23 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Assignments/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentAddress))]
+        [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryPositionExecutor(ctx, Id);
             return new JsonResult(tmpItem, this);
         }
 
         /// <summary>
-        /// Создает новый адрес сотрудника
+        /// Назначает сотрудника на новую должность
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("Assignments")]
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentAddress model)
+        public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -73,14 +97,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Корректирует адрес сотрудника
+        /// Корректирует параметры назначения сотрудника на должности
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("Assignments")]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentAddress model)
+        public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -89,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Удаляет адрес сотрудника
+        /// Удаляет назначение сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>

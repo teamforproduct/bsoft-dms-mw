@@ -11,7 +11,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// адреса контрагентов
     /// </summary>
-    public class AddDictionaryAgentAddress
+    public class AddAgentAddress
     {
         /// <summary>
         /// Агент (сотрудник, юр.лицо, банк, физ.лицо)

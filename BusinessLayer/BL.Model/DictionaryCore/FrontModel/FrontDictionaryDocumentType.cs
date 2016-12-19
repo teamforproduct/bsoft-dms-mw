@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// ОСНОВНОЙ. Справочник типов документов. 
     /// </summary>
-    public class FrontDictionaryDocumentType: ModifyDictionaryDocumentType
+    public class FrontDictionaryDocumentType: ModifyDocumentType
     {
         /// <summary>
         /// ID

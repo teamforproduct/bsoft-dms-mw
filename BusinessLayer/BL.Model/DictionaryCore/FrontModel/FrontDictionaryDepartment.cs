@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// Карточка элемента из справочника "Структура предприятия"
     /// </summary>
     // 
-    public class FrontDictionaryDepartment: ModifyDictionaryDepartment
+    public class FrontDictionaryDepartment: ModifyDepartment
     {
         /// <summary>
         /// ID

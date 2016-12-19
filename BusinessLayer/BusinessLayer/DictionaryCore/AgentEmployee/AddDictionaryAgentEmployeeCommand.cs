@@ -15,7 +15,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentEmployeeCommand : BaseDictionaryAgentEmployeeCommand
     {
-        private AddDictionaryAgentEmployeeUser Model { get { return GetModel<AddDictionaryAgentEmployeeUser>(); } }
+        private AddAgentEmployeeUser Model { get { return GetModel<AddAgentEmployeeUser>(); } }
 
         public override object Execute()
         {

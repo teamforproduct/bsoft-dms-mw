@@ -13,9 +13,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
         }
 
-        public InternalDictionaryRegistrationJournal(ModifyDictionaryRegistrationJournal model)
+        public InternalDictionaryRegistrationJournal(AddRegistrationJournal model)
+        {
+            SetInternalDictionaryRegistrationJournal(model);
+        }
+
+        public InternalDictionaryRegistrationJournal(ModifyRegistrationJournal model)
         {
             Id = model.Id;
+            SetInternalDictionaryRegistrationJournal(model);
+        }
+
+        private void SetInternalDictionaryRegistrationJournal(AddRegistrationJournal model)
+        {
             IsActive = model.IsActive;
             Name = model.Name;
             DepartmentId = model.DepartmentId;

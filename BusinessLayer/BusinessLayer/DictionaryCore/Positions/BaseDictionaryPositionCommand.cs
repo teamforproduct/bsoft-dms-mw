@@ -15,18 +15,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryPositionCommand : BaseDictionaryCommand
     {
-
-        protected ModifyDictionaryPosition Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryPosition))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryPosition)_param;
-            }
-        }
+        private AddPosition Model { get { return GetModel<AddPosition>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 

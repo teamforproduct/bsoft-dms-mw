@@ -3,22 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BL.Model.Enums;
 using System.Runtime.Serialization;
+using BL.Model.Common;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    /// <summary>
-    /// Контакт агента
-    /// </summary>
-    public class ModifyDictionaryAgentContact : AddDictionaryAgentContact
+    public class AddStandartSendList :LastChangeInfo
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
         [Required]
-        public int Id { get; set; }
-
+        public string Name { get; set; }
+        public int? PositionId { get; set; }
+        
     }
 }

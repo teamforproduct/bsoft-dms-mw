@@ -24,58 +24,6 @@ namespace BL.Logic.Common
             return internalModel;
         }
 
-        public static InternalDictionaryRegistrationJournal RegistrationJournalModifyToInternal(IContext context, ModifyDictionaryRegistrationJournal modifyModel)
-        {
-            InternalDictionaryRegistrationJournal internalModel = new InternalDictionaryRegistrationJournal(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-        }
-
-        public static InternalDictionaryDepartment DepartmentModifyToInternal(IContext context, ModifyDictionaryDepartment modifyModel)
-        {
-            InternalDictionaryDepartment internalModel = new InternalDictionaryDepartment(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-        }
-
-        public static InternalDictionaryPosition PositionModifyToInternal(IContext context, ModifyDictionaryPosition modifyModel)
-        {
-
-            InternalDictionaryPosition internalModel = new InternalDictionaryPosition(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-
-        }
-
-        public static InternalDictionaryPositionExecutor PositionExecutorModifyToInternal(IContext context, ModifyDictionaryPositionExecutor modifyModel)
-        {
-
-            InternalDictionaryPositionExecutor internalModel = new InternalDictionaryPositionExecutor(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-
-        }
-
-        public static InternalDictionaryAgentClientCompany  CompanyModifyToInternal(IContext context, ModifyDictionaryAgentClientCompany modifyModel)
-        {
-
-            InternalDictionaryAgentClientCompany internalModel = new InternalDictionaryAgentClientCompany(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-
-        }
-
-
 
 
     }
