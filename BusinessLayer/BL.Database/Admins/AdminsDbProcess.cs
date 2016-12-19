@@ -87,7 +87,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext ctx, int agentId)
+        public IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext ctx, int agentId, List<int> PositionIDs)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -96,11 +96,21 @@ namespace BL.Database.Admins
                 var now = DateTime.UtcNow;
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
+                if (PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+
+                    filterContains = PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 qry = qry.Where(x => x.AgentId == agentId && x.Position.ExecutorAgentId.HasValue && x.IsActive && now >= x.StartDate && now <= x.EndDate);
 
                 qry = qry.OrderBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Position.Order);
 
-                var res = qry.Select(x => new FrontAvailablePositions
+                var res = qry.Select(x => new FrontUserAssignments
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,

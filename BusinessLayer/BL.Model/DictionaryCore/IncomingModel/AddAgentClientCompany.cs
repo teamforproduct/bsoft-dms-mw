@@ -8,25 +8,20 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class AddAgentClientCompany
+    public class AddAgentClientCompany : AddAgent
     {
+        /// <summary>
+        /// Полное наименование компании
+        /// </summary>
+        [Required]
+        public string FullName { get; set; }
+
         /// <summary>
         /// Признак активности.
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
 
-        /// <summary>
-        /// Наименование компании
-        /// </summary>
-        [Required]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Наименование компании
-        /// </summary>
-        [Required]
-        public string FullName { get; set; }
 
         /// <summary>
         /// Примечание

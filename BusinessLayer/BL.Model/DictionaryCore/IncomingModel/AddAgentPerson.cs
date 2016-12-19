@@ -12,14 +12,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
-    public class AddAgentPerson
+    public class AddAgentPerson : AddAgent
     {
-        /// <summary>
-        /// Имя (кратко)
-        /// </summary>
-        [Required]
-        public string Name { get; set; }
-
         /// <summary>
         /// Имя
         /// </summary>

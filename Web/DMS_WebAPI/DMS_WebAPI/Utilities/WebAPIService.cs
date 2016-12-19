@@ -10,6 +10,7 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Database;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
@@ -145,6 +146,40 @@ namespace DMS_WebAPI.Utilities
 
 
         public bool ExistsUser(string userName) => GetUser(userName) != null;
+
+        public FrontDictionaryAgentEmployeeUser GetUserInfo(IContext context)
+        {
+            var dicProc = DmsResolver.Current.Get<IDictionaryService>();
+
+            var employee = dicProc.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
+
+            var user = GetUser(context, context.CurrentAgentId);
+
+            return new FrontDictionaryAgentEmployeeUser()
+            {
+               Id = employee.Id,
+               Name = employee.Name,
+               FirstName = employee.FirstName,
+               LastName = employee.LastName,
+               MiddleName = employee.MiddleName,
+               FullName = employee.FullName,
+               IsMale = employee.IsMale,
+               LanguageId = employee.LanguageId,
+               LanguageCode = employee.LanguageCode,
+               LanguageName = employee.LanguageName,
+
+               Login = user.Email,
+               TaxCode = employee.TaxCode,
+               PersonnelNumber = employee.PersonnelNumber,
+               PassportDate = employee.PassportDate,
+               PassportSerial = employee.PassportSerial,
+               PassportNumber = employee.PassportNumber,
+               PassportText = employee.PassportText,
+               BirthDate = employee.BirthDate,
+               Description = employee.Description,
+               IsActive = employee.IsActive,
+            };
+        }
 
         public int AddUserEmployee(IContext context, AddAgentEmployeeUser model)
         {
