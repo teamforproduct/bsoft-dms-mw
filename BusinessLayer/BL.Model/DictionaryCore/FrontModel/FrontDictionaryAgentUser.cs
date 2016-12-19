@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Enums;
 using System.Runtime.Serialization;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -12,12 +13,8 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// ОСНОВНОЙ. Справочник контрагентов
     /// </summary>
-    public class FrontDictionaryAgentUser
+    public class FrontDictionaryAgentUser : ModifyDictionaryAgentUser
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// ФИО, Название, ...
         /// </summary>

@@ -94,7 +94,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            tmpItem.SetPositionOrder(cxt, positionId, order);
+            tmpItem.SetPositionOrder(cxt, new ModifyPositionOrder { PositionId = positionId, Order = order });
             var res = new JsonResult(order, this);
             res.SpentTime = stopWatch;
             return res;

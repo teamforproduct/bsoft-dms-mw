@@ -76,8 +76,7 @@ namespace DMS_WebAPI.Controllers
             // TODO Продумать логаут со всех устройств
             DmsResolver.Current.Get<UserContexts>().Remove();
 
-            // pss перенес в Remove
-            //Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+            Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
             return new JsonResult(null, this);
         }

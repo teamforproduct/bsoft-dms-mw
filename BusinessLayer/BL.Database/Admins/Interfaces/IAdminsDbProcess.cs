@@ -19,7 +19,7 @@ namespace BL.Database.Admins.Interfaces
         AdminAccessInfo GetAdminAccesses(IContext context);
         Employee GetEmployeeForContext(IContext ctx, string userId);
 
-        IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext ctx, int adminId);
+        IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext ctx, int agentId, List<int> PositionIDs);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);

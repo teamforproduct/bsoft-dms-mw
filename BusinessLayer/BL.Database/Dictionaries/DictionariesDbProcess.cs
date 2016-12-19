@@ -847,6 +847,8 @@ namespace BL.Database.Dictionaries
                     TaxCode = x.Agent.AgentPerson.TaxCode,
 
                     LanguageId = x.Agent.AgentUser.LanguageId,
+                    LanguageCode = x.Agent.AgentUser.Language.Code,
+                    LanguageName = x.Agent.AgentUser.Language.Name,
                     IsActive = x.IsActive,
                     Description = x.Description,
 

@@ -34,7 +34,7 @@ namespace BL.Logic.DictionaryCore
                     model.Id = _dictDb.AddPosition(_context, model);
 
                     // устанавливаю порядок отображения
-                    _dictService.SetPositionOrder(_context, model.Id, Model.Order);
+                    _dictService.SetPositionOrder(_context, new ModifyPositionOrder { PositionId = model.Id, Order = Model.Order });
 
                     // включаю доступ к журналам в своем отделе
                     SetDefaultRJournalPositions(new ModifyAdminDefaultByPosition { PositionId = model.Id });

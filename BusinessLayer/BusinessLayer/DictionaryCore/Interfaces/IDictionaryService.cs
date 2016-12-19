@@ -10,6 +10,7 @@ using BL.Model.Enums;
 using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Model.DictionaryCore.FrontMainModel;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
@@ -151,7 +152,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
 
-        void SetPositionOrder(IContext context, int positionId, int order);
+        void SetPositionOrder(IContext context, ModifyPositionOrder model);
 
         #endregion DictionaryPositions
 

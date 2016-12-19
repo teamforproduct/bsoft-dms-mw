@@ -20,97 +20,102 @@ using System.Diagnostics;
 namespace DMS_WebAPI.ControllersV3.Dictionaries
 {
     /// <summary>
-    /// Сотрудник
+    /// Должности.
+    /// Должности всегда подчинены отделам.
+    /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Employee")]
-    public class EmployeeController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + "Position")]
+    public class PositionController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Список сотрудников
+        /// Возвращает список должностей. 
         /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
+        /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
-        [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
-        public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        [Route("Info")]
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentEmployees(ctx, filter, paging);
+            var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
 
-
         /// <summary>
-        /// Возвращает реквизиты сотрудника
+        /// Возвращает должность по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentEmployee(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryPosition(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет сотрудника
+        /// Добавляет отдел
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = new WebAPIService();
-
-            var tmpItem = webSeevice.AddUserEmployee(ctx, model);
-
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует реквизиты сотрудника
+        /// Изменяет порядок следования должности в отделе (нумерация с 1)
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/Order")]
+        public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            tmpItem.SetPositionOrder(cxt, model);
+            var res = new JsonResult(model.Order, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Корректирует реквизиты должности
+        /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
+        public IHttpActionResult Put([FromBody]ModifyDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
-            var webSeevice = new WebAPIService();
-
-            webSeevice.UpdateUserEmployee(ctx, model);
-
-            contexts.UpdateLanguageId(model.Id, model.LanguageId);
-
+            Action.Execute(EnumDictionaryActions.ModifyPosition, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет сотрудника
+        /// Удаляет должность
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -119,9 +124,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = new WebAPIService();
-            webSeevice.DeleteUserEmployee(ctx, Id);
+            Action.Execute(EnumDictionaryActions.DeletePosition, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

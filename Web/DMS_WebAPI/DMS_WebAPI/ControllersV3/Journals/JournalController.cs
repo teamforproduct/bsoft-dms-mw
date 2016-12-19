@@ -16,101 +16,109 @@ using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
+using BL.Model.Tree;
 
 namespace DMS_WebAPI.ControllersV3.Dictionaries
 {
     /// <summary>
-    /// Сотрудник
+    /// Журналы регистрации.
+    /// Документы всегда регистрируются в журнале.
+    /// Журнал регистрации диктует номер нового документа.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Employee")]
-    public class EmployeeController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + "Journal")]
+    public class JournalController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
+
         /// <summary>
-        /// Список сотрудников
+        /// Возвращает список журналов сгруппированных по отделам и компаниям (дерево Компании-Отделы-Журналы). 
         /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
+        /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/Main")]
-        [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
-        public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<TreeItem>))]
+        public IHttpActionResult Get([FromUri] FilterTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentEmployees(ctx, filter, paging);
+            var tmpItems = tmpService.GetRegistrationJournalsTree(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
 
+        /// <summary>
+        /// Возвращает список журналов. 
+        /// </summary>
+        /// <param name="filter">"</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Info")]
+        [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryRegistrationJournal filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetRegistrationJournals(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
         /// <summary>
-        /// Возвращает реквизиты сотрудника
+        /// Возвращает журнал регистрации по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontDictionaryRegistrationJournal))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentEmployee(ctx, Id);
+            var tmpItem = tmpService.GetRegistrationJournal(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет сотрудника
+        /// Добавляет журнал регистрации
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = new WebAPIService();
-
-            var tmpItem = webSeevice.AddUserEmployee(ctx, model);
-
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddRegistrationJournal, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует реквизиты сотрудника
+        /// Корректирует реквизиты журнала регистрации
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
+        public IHttpActionResult Put([FromBody]ModifyDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
-            var webSeevice = new WebAPIService();
-
-            webSeevice.UpdateUserEmployee(ctx, model);
-
-            contexts.UpdateLanguageId(model.Id, model.LanguageId);
-
+            Action.Execute(EnumDictionaryActions.ModifyRegistrationJournal, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет сотрудника
+        /// Удаляет журнал регистрации
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -119,9 +127,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = new WebAPIService();
-            webSeevice.DeleteUserEmployee(ctx, Id);
+            Action.Execute(EnumDictionaryActions.DeleteRegistrationJournal, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

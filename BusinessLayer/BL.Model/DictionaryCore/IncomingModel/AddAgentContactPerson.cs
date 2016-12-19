@@ -8,19 +8,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class AddAgentContactPerson
+    public class AddAgentContactPerson : AddAgent
     {
         /// <summary>
         /// Компания юридическое лицо
         /// </summary>
         [Required]
         public int CompanyId { get; set; }
-
-        /// <summary>
-        /// Краткое имя (отображается в интерфейсе)
-        /// </summary>
-        [Required]
-        public string Name { get; set; }
 
         /// <summary>
         /// Имя (для отчетов)

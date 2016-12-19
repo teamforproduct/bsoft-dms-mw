@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore
                     var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
 
-                    _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
+                    _dictService.SetPositionOrder(_context, new ModifyPositionOrder { PositionId = Model.Id, Order = Model.Order });
 
                     transaction.Complete();
                 }

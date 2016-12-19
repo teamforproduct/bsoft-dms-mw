@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Возвращает адрес по ID
+        /// Возвращает назначение по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>

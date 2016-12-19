@@ -11,7 +11,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// Контрагент - юридическое лицо
     /// </summary>
-    public class AddAgentCompany
+    public class AddAgentCompany: AddAgent
     {
         /// <summary>
         /// Полное наименование
@@ -44,12 +44,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
-        
-        /// <summary>
-        /// Краткое наименование (поле Name из таблицы DictionaryAgents)
-        /// </summary>
-        [Required]
-        public string Name { get; set; }
         
     }
 }
