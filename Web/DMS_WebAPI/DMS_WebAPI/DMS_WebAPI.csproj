@@ -258,6 +258,9 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="ControllersV3\Banks\BankAddressesController.cs" />
+    <Compile Include="ControllersV3\Banks\BankContactsController.cs" />
+    <Compile Include="ControllersV3\Banks\BankInfoController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactPersonsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
@@ -267,7 +270,7 @@
     <Compile Include="ControllersV3\Employees\EmployeeContactsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeInfoController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeAddressesController.cs" />
-    <Compile Include="ControllersV3\Journals\JournalController.cs" />
+    <Compile Include="ControllersV3\Journals\JournalInfoController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentInfoController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionExecutorsController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionSendRulesController.cs" />
@@ -283,7 +286,7 @@
     <Compile Include="ControllersV3\User\UserInfoController.cs" />
     <Compile Include="ControllersV3\User\UserContactsController.cs" />
     <Compile Include="ControllersV3\User\UserAssignmentsController.cs" />
-    <Compile Include="ControllersV3\System\ToolsController.cs" />
+    <Compile Include="ControllersV3\System\SystemToolsController.cs" />
     <Compile Include="ControllersV3\System\SystemController.cs" />
     <Compile Include="ControllersV3\Lists\ListsController.cs" />
     <Compile Include="Controllers\Admins\AdminDepartmentAdminController.cs" />

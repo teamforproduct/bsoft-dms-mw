@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "Journal")]
-    public class JournalController : ApiController
+    public class JournalInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 

@@ -95,6 +95,21 @@ namespace DMS_WebAPI.ControllersV3.Companies
         }
 
         /// <summary>
+        /// Связывает физ.лиц с юр.лицом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("ContactPersons/Link")]
+        public IHttpActionResult AddFromExists([FromBody]LinkDictionaryAgentContactPerson model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactPerson, ctx, model);
+            return Get(tmpItem);
+        }
+
+        /// <summary>
         /// Удаляет контактное лицо
         /// </summary>
         /// <param name="Id"></param>
@@ -112,20 +127,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
 
         }
 
-        /// <summary>
-        /// Добавляет контактное лицо из существующих физ.лиц
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("ContactPersons/AddFromPersons")]
-        public IHttpActionResult AddFromExists([FromBody]LinkDictionaryAgentContactPerson model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactPerson, ctx, model);
-            return Get(tmpItem);
-        }
+       
 
     }
 }
