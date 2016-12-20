@@ -17,12 +17,24 @@ namespace BL.Database.DBModel.Document
         [Index("IX_ParentDocumentId", 1)]
         public int ParentDocumentId { get; set; }
         public int LinkTypeId { get; set; }
+        public int ExecutorPositionId { get; set; }
+        [Column("ExecutorPositionExeAgentId")]
+        public int ExecutorPositionExecutorAgentId { get; set; }
+        [Column("ExecutorPositionExeTypeId")]
+        public int? ExecutorPositionExecutorTypeId { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
         [ForeignKey("ParentDocumentId")]
         public virtual Documents ParentDocument { get; set; }
+        [ForeignKey("ExecutorPositionId")]
+        public virtual DictionaryPositions ExecutorPosition { get; set; }
+
+        [ForeignKey("ExecutorPositionExecutorAgentId")]
+        public virtual DictionaryAgents ExecutorPositionExecutorAgent { get; set; }
+        [ForeignKey("ExecutorPositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes ExecutorPositionExecutorType { get; set; }
         [ForeignKey("LinkTypeId")]
         public virtual DictionaryLinkTypes LinkType { get; set; }
     }
