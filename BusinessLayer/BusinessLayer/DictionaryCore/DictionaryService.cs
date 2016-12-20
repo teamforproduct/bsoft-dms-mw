@@ -158,7 +158,7 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        public FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id)
         {
             return _dictDb.GetAgentPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } }, null).FirstOrDefault();
         }

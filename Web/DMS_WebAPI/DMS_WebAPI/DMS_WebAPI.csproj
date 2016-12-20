@@ -258,9 +258,15 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactPersonsController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactPersonsContactsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeAssignmentController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeContactsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeInfoController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeAddressesController.cs" />
     <Compile Include="ControllersV3\Journals\JournalController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentInfoController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionExecutorsController.cs" />
@@ -269,6 +275,9 @@
     <Compile Include="ControllersV3\Org\OrgAddressesController.cs" />
     <Compile Include="ControllersV3\Org\OrgContactsController.cs" />
     <Compile Include="ControllersV3\Org\OrgInfoController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonAddressesController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonContactsController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonInfoController.cs" />
     <Compile Include="ControllersV3\System\SettingsController.cs" />
     <Compile Include="ControllersV3\User\UserAddressesController.cs" />
     <Compile Include="ControllersV3\User\UserInfoController.cs" />
@@ -369,7 +378,6 @@
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
     <Compile Include="Controllers\System\UsersController.cs" />
-    <Compile Include="ControllersV3\Employees\EmployeeAddressesController.cs" />
     <Compile Include="Controllers\WebAPI\CreateClientController.cs" />
     <Compile Include="Controllers\WebAPI\UserServersController.cs" />
     <Compile Include="Controllers\WebAPI\UserClientsController.cs" />

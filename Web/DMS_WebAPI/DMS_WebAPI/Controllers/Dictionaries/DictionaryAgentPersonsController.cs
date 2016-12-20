@@ -43,7 +43,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentPerson(ctx, id);
+            var tmpDict = tmpDictProc.GetAgentPerson(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
