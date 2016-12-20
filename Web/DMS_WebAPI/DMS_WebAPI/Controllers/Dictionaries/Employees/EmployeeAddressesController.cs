@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V2 + "Employees")]
-    public class EmployeeAddressesController : ApiController
+    public class EmployeeAddressesOldController : ApiController
     {
 
         /// <summary>
