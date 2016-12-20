@@ -17,59 +17,59 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 
-namespace DMS_WebAPI.ControllersV3.Dictionaries
+namespace DMS_WebAPI.ControllersV3.OrgPositions
 {
     /// <summary>
-    /// Отделы (подразделения) в органицации.
-    /// Отдел всегда подчинен организации, может подчиняться вышестоящему отделу.
+    /// Должности.
+    /// Должности всегда подчинены отделам.
+    /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Department")]
-    public class DepartmentController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Position)]
+    public class PositionInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список отделов. 
-        /// Отделы могут подчиняться вышестоящим отделам и всегда подчинены организации 
+        /// Возвращает список должностей. 
         /// </summary>
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info")]
-        [ResponseType(typeof(List<FrontDictionaryDepartment>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryDepartments(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Возвращает отдел по Id
+        /// Возвращает должность по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryDepartment))]
+        [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryDepartment(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryPosition(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет отдел
+        /// Добавляет должность
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -78,12 +78,30 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Post([FromBody]AddDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddDepartment, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует реквизиты отдела
+        /// Изменяет порядок следования должности в отделе (нумерация с 1)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/Order")]
+        public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            tmpItem.SetPositionOrder(cxt, model);
+            var res = new JsonResult(model.Order, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Корректирует реквизиты должности
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -92,12 +110,12 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Put([FromBody]ModifyDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyDepartment, model);
+            Action.Execute(EnumDictionaryActions.ModifyPosition, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет отдел
+        /// Удаляет должность
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -106,7 +124,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteDepartment, Id);
+            Action.Execute(EnumDictionaryActions.DeletePosition, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

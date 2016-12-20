@@ -17,7 +17,7 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 
-namespace DMS_WebAPI.ControllersV3.Dictionaries
+namespace DMS_WebAPI.ControllersV3.Org
 {
     /// <summary>
     /// Организации - клиентские компании.
@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "Org")]
-    public class OrgController : ApiController
+    public class OrgInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
@@ -78,9 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentClientCompany, ctx, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentClientCompany, model);
             return Get(tmpItem);
         }
 
@@ -95,9 +93,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyAgentClientCompany, ctx, model);
+            Action.Execute(EnumDictionaryActions.ModifyAgentClientCompany, model);
             return Get(model.Id);
         }
 
@@ -111,9 +107,7 @@ namespace DMS_WebAPI.ControllersV3.Dictionaries
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentClientCompany, ctx, Id);
+            Action.Execute(EnumDictionaryActions.DeleteAgentClientCompany, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

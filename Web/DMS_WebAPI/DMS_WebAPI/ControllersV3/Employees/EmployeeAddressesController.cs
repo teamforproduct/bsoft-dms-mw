@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список адресов сотрудника
+        /// Возвращает список адресов
         /// </summary>
         /// <param name="EmployeeId">ИД сотрудника</param>
         /// <param name="filter">параметры фильтрации</param>
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Возвращает адрес по ID
+        /// Возвращает адрес по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -68,7 +68,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Создает новый адрес сотрудника
+        /// Создает новый адрес
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -77,16 +77,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
         public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует адрес сотрудника
+        /// Корректирует адрес
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
@@ -94,14 +91,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyEmployeeAddress, ctx, model);
+            Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет адрес сотрудника
+        /// Удаляет адрес
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -110,9 +105,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, Id);
+            Action.Execute(EnumDictionaryActions.DeleteEmployeeAddress, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

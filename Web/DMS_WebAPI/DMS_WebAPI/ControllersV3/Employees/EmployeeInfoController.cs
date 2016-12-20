@@ -1,116 +1,132 @@
 ﻿using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.SystemCore;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+
 using BL.Model.Common;
+using System.Web;
+using BL.Logic.SystemServices.TempStorage;
+using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
     /// <summary>
-    /// Контакты сотрудника
+    /// Сотрудник
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "Employee")]
-    public class EmployeeContactsController : ApiController
+    public class EmployeeInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список контактов
+        /// Список сотрудников
         /// </summary>
-        /// <param name="EmployeeId">ИД сотрудника</param>
         /// <param name="filter"></param>
+        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Contacts")]
-        [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
-        public IHttpActionResult Get(int EmployeeId, [FromUri] FilterDictionaryContact filter)
+        [Route("Info/Main")]
+        [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
+        public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterDictionaryContact();
-
-            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { EmployeeId };
-            else filter.AgentIDs.Add(EmployeeId);
-
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentContacts(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryAgentEmployees(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
 
+
         /// <summary>
-        /// Возвращает контакт по Id
+        /// Возвращает реквизиты сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Contacts/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentContact))]
+        [Route("Info/{Id:int}")]
+        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentContact(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryAgentEmployee(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Создает новый контакт
+        /// Добавляет сотрудника
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Contacts")]
-        public IHttpActionResult Post([FromBody]AddAgentContact model)
+        [Route("Info")]
+        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeContact, model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webSeevice = new WebAPIService();
+
+            var tmpItem = webSeevice.AddUserEmployee(ctx, model);
+
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует контакт
+        /// Корректирует реквизиты сотрудника
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Contacts")]
-        public IHttpActionResult Put([FromBody]ModifyAgentContact model)
+        [Route("Info")]
+        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyEmployeeContact, model);
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
+            var webSeevice = new WebAPIService();
+
+            webSeevice.UpdateUserEmployee(ctx, model);
+
+            contexts.UpdateLanguageId(model.Id, model.LanguageId);
+
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет контакт
+        /// Удаляет сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Contacts/{Id:int}")]
+        [Route("Info/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteEmployeeContact, Id);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webSeevice = new WebAPIService();
+            webSeevice.DeleteUserEmployee(ctx, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
-
         }
+
     }
 }

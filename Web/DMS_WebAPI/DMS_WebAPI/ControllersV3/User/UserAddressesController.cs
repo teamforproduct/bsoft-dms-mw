@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using BL.Model.Common;
 
-namespace DMS_WebAPI.ControllersV3.Employees
+namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
     /// Адреса пользователя-сотрудника
@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список адресов пользователя-сотрудника
+        /// Возвращает список адресов
         /// </summary>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Возвращает адрес по ID
+        /// Возвращает адрес по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Создает новый адрес пользователя-сотрудника
+        /// Создает новый адрес
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
