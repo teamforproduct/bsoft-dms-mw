@@ -20,7 +20,14 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string FullName { get; set; }
 
+        /// <summary>
+        /// Наименование языка
+        /// </summary>
+        public string LanguageName { get; set; }
 
-
+        /// <summary>
+        /// Код языка
+        /// </summary>
+        public string LanguageCode { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace BL.Model.AdminCore.FrontModel
     /// <summary>
     /// "Соответствие ролей и пользователя", описывает доступные пользователю роли, представление записи.
     /// </summary>
-    public class FrontAvailablePositions
+    public class FrontUserAssignments
     {
 
         /// <summary>

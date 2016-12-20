@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace BL.Model.Users
 {
-    public class ChangeLoginAgentUser: ChangeLogin
+    public class ChangeLogin
     {
-        [Required]
-        public int AgentId { get; set; }
-
         /// <summary>
-        /// EmailConfirmRequired
+        /// Новый логин
         /// </summary>
-        public bool IsVerificationRequired { get; set; }
+        public string NewEmail { get; set; }
 
+        
     }
 }

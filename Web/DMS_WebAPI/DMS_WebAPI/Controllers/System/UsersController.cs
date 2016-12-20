@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns>список должностей</returns>
         [Route("AvailablePositions")]
         [HttpGet]
-        [ResponseType(typeof(List<FrontAvailablePositions>))]
+        [ResponseType(typeof(List<FrontUserAssignments>))]
         public IHttpActionResult AvailablePositions()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

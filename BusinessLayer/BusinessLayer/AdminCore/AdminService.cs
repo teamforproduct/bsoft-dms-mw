@@ -107,9 +107,9 @@ namespace BL.Logic.AdminCore
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context)
+        public IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext context, List<int> PositionIDs = null)
         {
-            var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
+            var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId, PositionIDs);
 
             // Если контекст полностью сформирован, тогда проверяю на вшивость
             if (context.IsFormed)

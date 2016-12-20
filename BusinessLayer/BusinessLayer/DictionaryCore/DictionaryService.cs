@@ -19,6 +19,7 @@ using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.DictionaryCore.FrontMainModel;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -635,9 +636,9 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetPositionList(context, filter);
         }
 
-        public void SetPositionOrder(IContext context, int positionId, int order)
+        public void SetPositionOrder(IContext context, ModifyPositionOrder model)
         {
-            var position = _dictDb.GetPosition(context, positionId);
+            var position = _dictDb.GetPosition(context, model.PositionId);
 
             if (position == null) return;
 
@@ -647,22 +648,22 @@ namespace BL.Logic.DictionaryCore
                 new FilterDictionaryPosition
                 {
                     DepartmentIDs = new List<int> { position.DepartmentId },
-                    NotContainsIDs = new List<int> { positionId }
+                    NotContainsIDs = new List<int> { model.PositionId }
                 });
 
-            SortPositoin sp = new SortPositoin() { Id = positionId, NewOrder = order };
+            SortPositoin sp = new SortPositoin() { Id = model.PositionId, NewOrder = model.Order };
 
-            if (order > positions.Count)
+            if (model.Order > positions.Count)
             {
                 positions.Add(sp);
             }
-            else if (order <= 1)
+            else if (model.Order <= 1)
             {
                 positions.Insert(0, sp);
             }
             else
             {
-                positions.Insert(order - 1, sp);
+                positions.Insert(model.Order - 1, sp);
             }
 
             int i = 0;

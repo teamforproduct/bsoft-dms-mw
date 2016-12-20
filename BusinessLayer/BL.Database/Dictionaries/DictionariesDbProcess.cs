@@ -429,10 +429,10 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Agent.Name,
                     CompanyId = x.AgentCompanyId ?? -1,
-                    FirstName = x.Agent.AgentPerson.FirstName,
-                    LastName = x.Agent.AgentPerson.LastName,
-                    MiddleName = x.Agent.AgentPerson.MiddleName,
-                    IsMale = x.Agent.AgentPerson.IsMale,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    MiddleName = x.MiddleName,
+                    IsMale = x.IsMale,
                     Description = x.Description,
                     IsActive = x.IsActive,
                     Position = x.Position,
@@ -453,7 +453,7 @@ namespace BL.Database.Dictionaries
                         Value = y.Contact,
                         IsActive = y.IsActive,
                         Description = y.Description
-                    })
+                    }).ToList(),
                 }).ToList();
 
                 transaction.Complete();
@@ -847,6 +847,8 @@ namespace BL.Database.Dictionaries
                     TaxCode = x.Agent.AgentPerson.TaxCode,
 
                     LanguageId = x.Agent.AgentUser.LanguageId,
+                    LanguageCode = x.Agent.AgentUser.Language.Code,
+                    LanguageName = x.Agent.AgentUser.Language.Name,
                     IsActive = x.IsActive,
                     Description = x.Description,
 

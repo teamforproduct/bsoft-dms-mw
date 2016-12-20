@@ -158,6 +158,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
@@ -195,11 +196,13 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\LinkDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyPositionOrder.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAddressType.cs" />
@@ -523,6 +526,9 @@
     <Compile Include="Tree\ITreeItem.cs" />
     <Compile Include="Tree\TreeItem.cs" />
     <Compile Include="Users\ChangeLockoutAgentUser.cs" />
+    <Compile Include="Users\FrontPermission.cs" />
+    <Compile Include="Users\ChangeLogin.cs" />
+    <Compile Include="Users\ChangePassword.cs" />
     <Compile Include="Users\MustChangePasswordAgentUser.cs" />
     <Compile Include="Users\ConfirmRestorePasswordAgentUser.cs" />
     <Compile Include="Users\RestorePasswordAgentUser.cs" />

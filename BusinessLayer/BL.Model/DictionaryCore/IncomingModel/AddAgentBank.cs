@@ -8,8 +8,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class AddAgentBank
+    public class AddAgentBank : AddAgent
     {
+        /// <summary>
+        /// Полное наименование банка
+        /// </summary>
+        [Required]
+        public string FullName { get; set; }
+
         /// <summary>
         /// МФО
         /// </summary>
@@ -31,18 +37,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
-
-        /// <summary>
-        /// Название
-        /// </summary>
-        [Required]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Полное имя
-        /// </summary>
-        [Required]
-        public string FullName { get; set; }
 
     }
 }
