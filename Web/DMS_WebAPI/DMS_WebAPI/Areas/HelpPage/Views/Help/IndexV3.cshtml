@@ -24,19 +24,22 @@
   <section class="featured">
     <div class="content-wrapper">
       <h2>Описание АПИ функций версии V3</h2>
-     
+
       <p class="important_text">
-        Общие принципы построения системы находятся в 
+        Общие принципы построения системы находятся в
         <a href="https://workflowy.com/s/sefk5EUIQ7">Workflowy</a>
       </p>
       <p>
         Апи v3 построено на основе Module - Feature, согласовано
-        <a href=" https://docs.google.com/spreadsheets/d/1M-WISeWbl8ai40ATeliRam9d-HfkZSTSDN8Vobzvksc/edit?usp=sharing">Rest Architectual Concept</a>
+        <a href="https://docs.google.com/spreadsheets/d/1M-WISeWbl8ai40ATeliRam9d-HfkZSTSDN8Vobzvksc/edit?usp=sharing">Rest Architectual Concept</a>
       </p>
     </div>
   </section>
   <section class="content-wrapper main-content clear-fix">
-    @foreach (var group in apiGroups.Where(g => g.Key.ControllerType.FullName.Contains("ControllersV3.")).OrderBy(g => g.Key.ControllerName))
+    @foreach (var group in apiGroups
+                .Where(g => g.Key.ControllerType.FullName.Contains("ControllersV3."))
+                .OrderBy(g => g.Key.ControllerType.FullName.Replace("Info", "A_Info").Replace(".Lists", ".AA_Lists").Replace(".User", ".WW_User").Replace(".System", ".ZZ_System"))
+                .ThenBy(g => g.Key.ControllerName))
     {
         @Html.DisplayFor(m => group, "ApiGroup")
     }

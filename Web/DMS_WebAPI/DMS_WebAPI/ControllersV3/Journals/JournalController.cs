@@ -18,7 +18,7 @@ using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 using BL.Model.Tree;
 
-namespace DMS_WebAPI.ControllersV3.Dictionaries
+namespace DMS_WebAPI.ControllersV3.Journals
 {
     /// <summary>
     /// Журналы регистрации.

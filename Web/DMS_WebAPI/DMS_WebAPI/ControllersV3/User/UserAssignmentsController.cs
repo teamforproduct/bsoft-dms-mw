@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.System
+namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
     /// Назначения пользователя-сотрудника
