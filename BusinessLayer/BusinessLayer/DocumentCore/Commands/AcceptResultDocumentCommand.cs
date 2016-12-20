@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -39,14 +40,16 @@ namespace BL.Logic.DocumentCore.Commands
             _actionRecords =
                 _document.Waits.Where(
                     x =>
-                        x.OnEvent.SourcePositionId == positionId &&
-                        x.OnEvent.TargetPositionId != x.OnEvent.SourcePositionId &&
+                        (x.OnEvent.EventType == EnumEventTypes.MarkExecution && x.OnEvent.TargetPositionId == positionId ||
+                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
-                            WaitId = x.Id
+                            WaitId = x.Id,
+                            IsHideInMainMenu =  x.OnEvent.EventType == EnumEventTypes.MarkExecution && CommandType == EnumDocumentActions.CancelExecution ||
+                                                x.OnEvent.EventType != EnumEventTypes.MarkExecution && CommandType == EnumDocumentActions.AcceptResult && x.IsHasMarkExecution
                         });
             if (!_actionRecords.Any())
             {
@@ -63,10 +66,15 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            //if (_docWait.OnEvent.)
-
-            _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
-
+            if (_docWait.OnEvent.EventType == EnumEventTypes.MarkExecution && _docWait.ParentId.HasValue)
+            {
+                ((List<InternalDocumentWait>)_document.Waits).AddRange(_operationDb.ControlOffDocumentPrepare(_context, _docWait.ParentId.Value).Waits);
+                _docWait = _document?.Waits.FirstOrDefault(x => x.OnEvent.EventType != EnumEventTypes.MarkExecution);
+            }
+            else
+            {
+                _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
+            }
             if (_docWait?.OnEvent?.SourcePositionId == null
                 || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
                 )

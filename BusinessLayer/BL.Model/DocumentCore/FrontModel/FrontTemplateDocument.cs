@@ -91,9 +91,9 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public string Addressee { get; set; }
         /// <summary>
-        /// Количество документов, созданных по шаблону
+        /// Есть ли документы, созданные по шаблону
         /// </summary>
-        public int? DocumentCount { get; set; }
+        public bool? IsUsedInDocument { get; set; }
         /// <summary>
         /// Динамические аттрибуты шаблона документа
         /// </summary>

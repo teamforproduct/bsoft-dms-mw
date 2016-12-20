@@ -197,7 +197,7 @@ namespace BL.Database.Documents
                             SenderAgentPersonId = x.SenderAgentPersonId,
                             SenderAgentPersonName = x.SenderAgentPerson.Agent.Name,
                             Addressee = x.Addressee,
-                            DocumentCount = x.Documents.Count(),
+                            IsUsedInDocument = x.Documents.Any(),
                         }).FirstOrDefault();
 
                 if (templateDocument != null)

@@ -15,6 +15,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public DateTime? DueDate { get; set; }
         public DateTime? AttentionDate { get; set; }
         public string TargetDescription { get; set; }
+        public bool IsHasMarkExecution { get; set; }
         public InternalDocumentEvent OnEvent { get; set; }
         public InternalDocumentEvent OffEvent { get; set; }
         public InternalDocumentWait ParentWait { get; set; }
