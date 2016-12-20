@@ -37,10 +37,11 @@
   </section>
   <section class="content-wrapper main-content clear-fix">
     @foreach (var group in apiGroups
-                .Where(g => g.Key.ControllerType.FullName.Contains("ControllersV3."))
-                .OrderBy(g => g.Key.ControllerType.FullName.Replace("Info", "A_Info").Replace(".Lists", ".AA_Lists").Replace(".User", ".WW_User").Replace(".System", ".ZZ_System"))
-                .ThenBy(g => g.Key.ControllerName))
+                                .Where(g => g.Key.ControllerType.FullName.Contains("ControllersV3."))
+                                .OrderBy(g => g.Key.ControllerType.FullName.Replace("Info", "A_Info").Replace(".Lists", ".AA_Lists").Replace(".User", ".WW_User").Replace(".System", ".ZZ_System"))
+                                .ThenBy(g => g.Key.ControllerName))
     {
+
         @Html.DisplayFor(m => group, "ApiGroup")
     }
   </section>

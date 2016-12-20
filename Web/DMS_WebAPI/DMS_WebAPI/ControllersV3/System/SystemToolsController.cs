@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "Tools")]
-    public class ToolsController : ApiController
+    public class SystemToolsController : ApiController
     {
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V2 + "Banks")]
-    public class BankInfoController : ApiController
+    public class BankOldController : ApiController
     {
         /// <summary>
         /// Возвращает список банков
@@ -51,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentBank(ctx, Id);
+            var tmpDict = tmpDictProc.GetAgentBank(ctx, Id);
             return new JsonResult(tmpDict, this);
         }
 

@@ -17,5 +17,7 @@ namespace DMS_WebAPI
         public const string Person = "Person";
 
         public const string Company = "Company";
+
+        public const string Bank = "Bank";
     }
 }

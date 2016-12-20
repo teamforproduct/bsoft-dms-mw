@@ -389,7 +389,7 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks
-        public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
+        public FrontDictionaryAgentBank GetAgentBank(IContext context, int id)
         {
             return _dictDb.GetAgentBanks(context, new FilterDictionaryAgentBank { IDs = new List<int> { id } }, null).FirstOrDefault();
         }

@@ -12,33 +12,33 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using System.Diagnostics;
 
-namespace DMS_WebAPI.ControllersV3.Companies
+namespace DMS_WebAPI.ControllersV3.Banks
 {
     /// <summary>
-    /// Контакты контактного лица
+    /// Контакты банка
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Company)]
-    public class CompanyContactPersonsContactsController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Bank)]
+    public class BankContactsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Возвращает список контактов
         /// </summary>
-        /// <param name="ContactPersonId">ИД сотрудника</param>
+        /// <param name="BankId">ИД сотрудника</param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ContactPersons/Contacts")]
+        [Route("Contacts")]
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
-        public IHttpActionResult Get(int ContactPersonId, [FromUri] FilterDictionaryContact filter)
+        public IHttpActionResult Get(int BankId, [FromUri] FilterDictionaryContact filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryContact();
 
-            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { ContactPersonId };
-            else filter.AgentIDs.Add(ContactPersonId);
+            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { BankId };
+            else filter.AgentIDs.Add(BankId);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ContactPersons/Contacts/{Id:int}")]
+        [Route("Contacts/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
@@ -73,11 +73,11 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("ContactPersons/Contacts")]
+        [Route("Contacts")]
         public IHttpActionResult Post([FromBody]AddAgentContact model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeContact, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddBankContact, model);
             return Get(tmpItem);
         }
 
@@ -87,11 +87,11 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("ContactPersons/Contacts")]
+        [Route("Contacts")]
         public IHttpActionResult Put([FromBody]ModifyAgentContact model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyEmployeeContact, model);
+            Action.Execute(EnumDictionaryActions.ModifyBankContact, model);
             return Get(model.Id);
         }
 
@@ -101,15 +101,16 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("ContactPersons/Contacts/{Id:int}")]
+        [Route("Contacts/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteEmployeeContact, Id);
+            Action.Execute(EnumDictionaryActions.DeleteBankContact, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
+
         }
     }
 }
