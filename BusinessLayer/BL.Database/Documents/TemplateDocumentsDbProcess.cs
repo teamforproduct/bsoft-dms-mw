@@ -197,6 +197,7 @@ namespace BL.Database.Documents
                             SenderAgentPersonId = x.SenderAgentPersonId,
                             SenderAgentPersonName = x.SenderAgentPerson.Agent.Name,
                             Addressee = x.Addressee,
+                            DocumentCount = x.Documents.Count(),
                         }).FirstOrDefault();
 
                 if (templateDocument != null)
@@ -299,7 +300,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalTemplateDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
-                        SourcePositionId = y.SourcePositionId ?? 0,
+                        SourcePositionId = y.SourcePositionId,
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
                         TaskName = y.Task.Task,

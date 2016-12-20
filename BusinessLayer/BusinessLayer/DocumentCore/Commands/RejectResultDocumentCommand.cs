@@ -58,6 +58,12 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits.FirstOrDefault();
+            if (_docWait == null)
+            {
+                throw new CouldNotPerformOperation();
+            }
+
+
             if (_docWait?.OnEvent?.TargetPositionId == null
                 || !CanBeDisplayed(_docWait.OnEvent.TargetPositionId.Value)
                 )

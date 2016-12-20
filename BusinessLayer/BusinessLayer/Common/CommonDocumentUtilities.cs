@@ -732,6 +732,11 @@ namespace BL.Logic.Common
             {
                 throw new NeedInformationAboutCorrespondent();
             }
+            if ((templateDoc.DocumentCount ?? 0) > 0)
+            {
+                uiElements?.Where(x =>  x.Code.Equals("DocumentDirection", StringComparison.OrdinalIgnoreCase) ||
+                                        x.Code.Equals("DocumentType", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
+            }
             return uiElements;
         }
 

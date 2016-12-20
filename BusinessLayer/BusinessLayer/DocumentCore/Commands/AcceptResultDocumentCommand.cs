@@ -59,6 +59,14 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document = _operationDb.ControlOffDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits.FirstOrDefault();
+            if (_docWait == null)
+            {
+                throw new CouldNotPerformOperation();
+            }
+            //if (_docWait.OnEvent.)
+
+            _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
+
             if (_docWait?.OnEvent?.SourcePositionId == null
                 || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
                 )
@@ -66,7 +74,6 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new CouldNotPerformOperation();
             }
             _operationDb.ControlOffSendListPrepare(_context, _document);
-            _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;

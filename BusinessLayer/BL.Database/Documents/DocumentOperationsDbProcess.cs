@@ -685,6 +685,7 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.Id,
                                             DocumentId = x.DocumentId,
+                                            ParentId = x.ParentId,
                                             OffEventId = x.OffEventId,
                                             OnEventId = x.OnEventId,
                                             OnEvent = new InternalDocumentEvent
