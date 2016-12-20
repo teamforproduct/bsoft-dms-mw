@@ -62,7 +62,7 @@ namespace BL.Logic.DocumentCore
             var uiPropertyElements = CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray());
             uiElements.AddRange(uiPropertyElements);
             var addProp = uiPropertyElements.Where(x => x.PropertyLinkId.HasValue && !templateDoc.Properties.Select(y => y.PropertyLinkId).ToList().Contains(x.PropertyLinkId.Value) )
-                .Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId.Value }).ToList();
+                .Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId.Value, Value = string.Empty, PropertyCode = x.Code }).ToList();
             templateDoc.Properties = templateDoc.Properties.Concat(addProp).ToList();
             return uiElements;
         }
