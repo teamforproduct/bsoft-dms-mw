@@ -50,7 +50,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryAgentAccounts
 
         #region DictionaryAgentBanks
-        FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id);
+        FrontDictionaryAgentBank GetAgentBank(IContext context, int id);
 
         IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
