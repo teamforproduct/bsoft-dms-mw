@@ -9,21 +9,24 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using BL.Model.Common;
+using System.Diagnostics;
 
-namespace DMS_WebAPI.Controllers.Dictionaries
+namespace DMS_WebAPI.ControllersV3.Companies
 {
     /// <summary>
-    /// Адреса юридических лиц
+    /// Адреса юридического лица
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V2 + "Companies")]
-    public class CompaniesAddressesOldController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Company)]
+    public class CompanyAddressesController : ApiController
     {
+        Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список адресов юридической компании
+        /// Возвращает список адресов
         /// </summary>
-        /// <param name="CompanyId">ИД агента</param>
+        /// <param name="CompanyId">ИД сотрудника</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
@@ -31,6 +34,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get(int CompanyId, [FromUri] FilterDictionaryAgentAddress filter)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryAgentAddress();
 
             if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { CompanyId };
@@ -39,11 +43,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
-        /// Возвращает адрес по ID
+        /// Возвращает адрес по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -52,14 +58,17 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentAddress(ctx, Id);
-            return new JsonResult(tmpItem, this);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
-        /// Создает новый адрес юридической компании
+        /// Создает новый адрес
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -67,29 +76,27 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [Route("Addresses")]
         public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            return Get((int)tmpService.ExecuteAction(EnumDictionaryActions.AddCompanyAddress, ctx, model));
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddCompanyAddress, model);
+            return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует адрес юридической компании
+        /// Корректирует адрес
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("Addresses")]
         public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyCompanyAddress, ctx, model);
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDictionaryActions.ModifyCompanyAddress, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет адрес юридической компании
+        /// Удаляет адрес
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -97,15 +104,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [Route("Addresses/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteCompanyAddress, ctx, Id);
-            FrontDictionaryAgentAddress tmp = new FrontDictionaryAgentAddress();
-            tmp.Id = Id;
-
-            return new JsonResult(tmp, this);
-
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDictionaryActions.DeleteCompanyAddress, Id);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
     }
 }

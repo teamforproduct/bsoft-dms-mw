@@ -26,7 +26,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id);
+        FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
 
         IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
 
