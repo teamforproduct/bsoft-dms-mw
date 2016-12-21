@@ -8,9 +8,8 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalAdminPositionRole()
         { }
 
-        public InternalAdminPositionRole(ModifyAdminPositionRole model)
+        public InternalAdminPositionRole(SetAdminPositionRole model)
         {
-            Id = model.Id;
             PositionId = model.PositionId;
             RoleId = model.RoleId;
         }

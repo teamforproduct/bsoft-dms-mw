@@ -45,19 +45,6 @@
         #region [+] PositionRole ...
         SetPositionRole = 702000,
         /// <summary>
-        /// Добавить
-        /// </summary>
-        AddPositionRole = 702001,
-        /// <summary>
-        /// Изменить
-        /// </summary>
-        //ModifyPositionRole = 702005,
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        DeletePositionRole = 702009,
-
-        /// <summary>
         /// Дублировать 
         /// </summary>
         DuplicatePositionRoles = 702002,

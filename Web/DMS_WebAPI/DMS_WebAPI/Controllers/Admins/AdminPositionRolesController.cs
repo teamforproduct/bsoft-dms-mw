@@ -69,12 +69,12 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
         [ResponseType(typeof(FrontAdminPositionRole))]
-        public IHttpActionResult Post([FromBody]ModifyAdminPositionRole model)
+        public IHttpActionResult Post([FromBody]SetAdminPositionRole model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddPositionRole, cxt, model);
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetPositionRole, cxt, model);
             return Get((int)tmpItem);
         }
 
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.Controllers.Admins
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, new ModifyAdminPositionRole() { PositionId = positionId, RoleId = roleId });
+            //tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, new ModifyAdminPositionRole() { PositionId = positionId, RoleId = roleId });
             var tmpItem = new FrontAdminPositionRole() { PositionId = positionId, RoleId = roleId };
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

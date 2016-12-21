@@ -111,7 +111,7 @@
     <Compile Include="AdminCore\DepartmentAdmin\AddDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\BaseDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\DeleteDepartmentAdminCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\BasePositionRoleCommand.cs" />
+    <Compile Include="AdminCore\PositionRole\SetPositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DuplicatePositionRolesCommand.cs" />
     <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
     <Compile Include="AdminCore\RoleAction\SetRoleActionByObjectCommand.cs" />
@@ -142,9 +142,6 @@
     <Compile Include="AdminCore\Role\AddRoleCommand.cs" />
     <Compile Include="AdminCore\Role\DeleteRoleCommand.cs" />
     <Compile Include="AdminCore\Role\ModifyRoleCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\AddPositionRoleCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\DeletePositionRoleCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\ModifyPositionRoleCommand.cs" />
     <Compile Include="AdminCore\Verify\VerifyAccessCommand.cs" />
     <Compile Include="ClientsCore\ClientService.cs" />
     <Compile Include="ClientsCore\Interfaces\IClientService.cs" />

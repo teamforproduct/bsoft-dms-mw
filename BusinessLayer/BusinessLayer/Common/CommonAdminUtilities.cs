@@ -15,14 +15,6 @@ namespace BL.Logic.Common
     /// </summary>
     public static class CommonAdminUtilities
     {
-        public static InternalAdminPositionRole PositionRoleModifyToInternal(IContext context, ModifyAdminPositionRole modifyModel)
-        {
-            InternalAdminPositionRole internalModel = new InternalAdminPositionRole(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-        }
 
         public static InternalAdminRoleAction RoleActionModifyToInternal(IContext context, ModifyAdminRoleAction modifyModel)
         {
@@ -36,15 +28,6 @@ namespace BL.Logic.Common
         public static InternalAdminRole RoleModifyToInternal(IContext context, ModifyAdminRole modifyModel)
         {
             InternalAdminRole internalModel = new InternalAdminRole(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-        }
-
-        public static InternalAdminSubordination SubordinationModifyToInternal(IContext context, ModifyAdminSubordination modifyModel)
-        {
-            InternalAdminSubordination internalModel = new InternalAdminSubordination(modifyModel);
 
             CommonDocumentUtilities.SetLastChange(context, internalModel);
 
