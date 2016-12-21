@@ -11,6 +11,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
     public class DeleteDocumentLinkCommand: BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private InternalDocumentLink _link;
 
         public DeleteDocumentLinkCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -52,12 +53,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _document = _operationDb.DeleteDocumentLinkPrepare(_context, Model);
-            var link = _document.Links.FirstOrDefault();
-            if (_document?.Id == null || _document?.LinkId == null || link == null)
+            _link = _document.Links.FirstOrDefault();
+            if (_document?.Id == null || _document?.LinkId == null || _link == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(link.ExecutorPositionId);
+            _context.SetCurrentPosition(_link.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -72,6 +73,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 _document.NewLinkId = null;
             }
+            _document.oldLinkSet = _document.OldLinks.Select(x => x.DocumentId).Concat(_document.OldLinks.Select(x => x.ParentDocumentId)).GroupBy(x => x).Select(x => x.Key).ToList();
+            _document.newLinkSet = CommonDocumentUtilities.GetLinkedDocuments(_link.DocumentId, _document.OldLinks.Where(x=>x.Id!=_link.Id));
+            _document.oldLinkSet = _document.oldLinkSet.Except(_document.newLinkSet);
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.DeleteLink);
             _operationDb.DeleteDocumentLink(_context, _document);

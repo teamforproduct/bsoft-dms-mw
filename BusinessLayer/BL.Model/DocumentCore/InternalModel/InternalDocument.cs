@@ -156,6 +156,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<InternalDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentLink> OldLinks { get; set; }
+        public IEnumerable<int> oldLinkSet { get; set; }
+        public IEnumerable<int> newLinkSet { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
         public IEnumerable<InternalDocumentTask> Tasks { get; set; }

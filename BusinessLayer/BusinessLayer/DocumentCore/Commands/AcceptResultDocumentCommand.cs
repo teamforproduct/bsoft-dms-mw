@@ -66,9 +66,9 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            if (_docWait.OnEvent.EventType == EnumEventTypes.MarkExecution && _docWait.ParentId.HasValue)
+            if (_docWait.OnEvent.EventType == EnumEventTypes.MarkExecution && _docWait.ParentOnEventId.HasValue)
             {
-                ((List<InternalDocumentWait>)_document.Waits).AddRange(_operationDb.ControlOffDocumentPrepare(_context, _docWait.ParentId.Value).Waits);
+                ((List<InternalDocumentWait>)_document.Waits).AddRange(_operationDb.ControlOffDocumentPrepare(_context, _docWait.ParentOnEventId.Value).Waits);
                 _docWait = _document?.Waits.FirstOrDefault(x => x.OnEvent.EventType != EnumEventTypes.MarkExecution);
             }
             else

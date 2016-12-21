@@ -1125,6 +1125,23 @@ namespace BL.Logic.Common
             return model.Select(GetNewPropertyValue);
         }
 
+        public static List<int> GetLinkedDocuments (int id, IEnumerable<InternalDocumentLink> link)
+        {
+            List<int> res = new List<int> { id };
+            List<int> resInit = new List<int> { id };
+            var oldCount = 1;
+            var newCount = 0;
+            while (oldCount != newCount && res.Count>0)
+            {
+                oldCount = res.Count;
+                res = link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.DocumentId)
+                        .Concat(link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.ParentDocumentId))
+                        .Concat(resInit)
+                        .GroupBy(x => x).Select(x => x.Key).ToList();
+                newCount = res.Count;
+            }
+            return res;
+        }
 
     }
 }

@@ -9,6 +9,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int? ParentId { get; set; }
+        public int? ParentOnEventId { get; set; }
+        public int? ParentOffEventId { get; set; }
         public int OnEventId { get; set; }
         public int? OffEventId { get; set; }
         public int? ResultTypeId { get; set; }

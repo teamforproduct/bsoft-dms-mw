@@ -687,6 +687,7 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             DocumentId = x.DocumentId,
                                             ParentId = x.ParentId,
+                                            ParentOnEventId = x.ParentWait.OnEventId,
                                             OffEventId = x.OffEventId,
                                             OnEventId = x.OnEventId,
                                             IsHasMarkExecution = x.ChildWaits.Any(y=>y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution),
@@ -1456,12 +1457,19 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
 
                 if (doc?.LinkId == null) return null;
-
-                var calc = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
-                    .Where(x => x.LinkId == doc.LinkId && x.Id != doc.Id).GroupBy(x => true)
-                    .Select(x => new { Count = x.Count(), MinId = x.Min(y => y.Id) }).First();
-                doc.LinkedDocumentsCount = calc.Count;
-                doc.NewLinkId = calc.MinId;
+                doc.OldLinks = dbContext.DocumentLinksSet
+                    .Where(x => x.Document.LinkId == doc.LinkId.Value)
+                    .Select(x => new InternalDocumentLink
+                    {
+                        Id = x.Id,
+                        DocumentId = x.DocumentId,
+                        ParentDocumentId = x.ParentDocumentId,
+                    });
+                //var calc = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
+                //    .Where(x => x.LinkId == doc.LinkId && x.Id != doc.Id).GroupBy(x => true)
+                //    .Select(x => new { Count = x.Count(), MinId = x.Min(y => y.Id) }).First();
+                //doc.LinkedDocumentsCount = calc.Count;
+                //doc.NewLinkId = calc.MinId;
                 transaction.Complete();
                 return doc;
             }
