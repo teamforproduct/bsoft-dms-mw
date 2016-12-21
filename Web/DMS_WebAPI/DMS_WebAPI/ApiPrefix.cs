@@ -19,5 +19,11 @@ namespace DMS_WebAPI
         public const string Company = "Company";
 
         public const string Bank = "Bank";
+
+        public const string DocumentType = "DocumentType";
+
+        public const string ContactType = "ContactType";
+
+        public const string AddressType = "AddressType";
     }
 }

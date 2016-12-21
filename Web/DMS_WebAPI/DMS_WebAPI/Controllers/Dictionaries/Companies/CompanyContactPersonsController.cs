@@ -110,7 +110,6 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             tmp.Id = id;
 
             return new JsonResult(tmp, this);
-
         }
 
         /// <summary>

@@ -18,7 +18,6 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Типы документов"</param>
         /// <returns>FrontDictionaryDocumentType</returns>
-        // GET: api/DictionaryDocumentTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -46,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryDocumentType</param>
         /// <returns>Возвращает добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDocumentType model)
+        public IHttpActionResult Post([FromBody]AddDocumentType model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
