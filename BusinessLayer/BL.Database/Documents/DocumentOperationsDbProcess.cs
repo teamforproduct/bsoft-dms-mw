@@ -23,6 +23,7 @@ using LinqKit;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.Helpers;
+using EntityFramework.Extensions;
 
 namespace BL.Database.Documents
 {
@@ -1445,7 +1446,7 @@ namespace BL.Database.Documents
                     .Where(x => x.Id == id)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Document.Id,                        
+                        Id = x.Document.Id,
                         LinkId = x.Document.LinkId,
                         Links = new List<InternalDocumentLink> { new InternalDocumentLink
                         {
@@ -1464,7 +1465,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         ParentDocumentId = x.ParentDocumentId,
-                    });
+                    }).ToList();
                 //var calc = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
                 //    .Where(x => x.LinkId == doc.LinkId && x.Id != doc.Id).GroupBy(x => true)
                 //    .Select(x => new { Count = x.Count(), MinId = x.Min(y => y.Id) }).First();
@@ -1540,28 +1541,21 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.DocumentLinksSet.RemoveRange(dbContext.DocumentLinksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => x.DocumentId == model.Id || x.ParentDocumentId == model.Id));
-                if (model.LinkId == model.Id || model.LinkedDocumentsCount < 2)
+                var id = model.Links.Select(y => y.Id).First();
+                dbContext.DocumentLinksSet.RemoveRange(dbContext.DocumentLinksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(x => x.Id == id));
+
+                if ((model.OldLinkSet?.Any() ?? false) && model.LinkId!=model.OldLinkId)
                 {
-                    dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
-                        .Where(x => x.LinkId == model.LinkId).ToList()
-                        .ForEach(x =>
-                        {
-                            x.LinkId = (x.Id == model.Id ? null : model.NewLinkId);
-                            //x.LastChangeUserId = model.LastChangeUserId;
-                            //x.LastChangeDate = model.LastChangeDate;
-                        });
+                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    filterContains = model.OldLinkSet.Aggregate(filterContains, (current, value) => current.Or(e => e.Id == value).Expand());
+                    dbContext.DocumentsSet.Where(filterContains).Update(u => new DBModel.Document.Documents { LinkId = model.OldLinkId });
                 }
-                else
+                if ((model.NewLinkSet?.Any() ?? false) && model.LinkId != model.NewLinkId)
                 {
-                    dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == context.CurrentClientId)
-                        .Where(x => x.Id == model.Id).ToList()
-                        .ForEach(x =>
-                        {
-                            x.LinkId = null;
-                            //x.LastChangeUserId = model.LastChangeUserId;
-                            //x.LastChangeDate = model.LastChangeDate;
-                        });
+                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    filterContains = model.NewLinkSet.Aggregate(filterContains, (current, value) => current.Or(e => e.Id == value).Expand());
+                    dbContext.DocumentsSet.Where(filterContains).Update(u => new DBModel.Document.Documents { LinkId = model.NewLinkId });
                 }
                 if (model.Events != null && model.Events.Any(x => x.Id == 0))
                 {

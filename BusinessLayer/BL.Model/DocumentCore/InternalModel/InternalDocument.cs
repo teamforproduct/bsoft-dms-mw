@@ -139,13 +139,14 @@ namespace BL.Model.DocumentCore.InternalModel
         // public int NewEventCount { get; set; }
         // public int AttachedFilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
-        public int? NewLinkId { get; set; }
+
 
         public string Hash { get; set; }
         public string FullHash { get; set; }
         public string InternalSign { get; set; }
         public string CertificateSign { get; set; }
-        
+        public int? OldLinkId { get; set; }
+        public int? NewLinkId { get; set; }
         public InternalTemplateDocument TemplateDocument { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<InternalDocumentSendList> SendLists { get; set; }
@@ -156,8 +157,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<InternalDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentLink> OldLinks { get; set; }
-        public IEnumerable<int> oldLinkSet { get; set; }
-        public IEnumerable<int> newLinkSet { get; set; }
+        public IEnumerable<int> OldLinkSet { get; set; }
+        public IEnumerable<int> NewLinkSet { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
         public IEnumerable<InternalDocumentTask> Tasks { get; set; }

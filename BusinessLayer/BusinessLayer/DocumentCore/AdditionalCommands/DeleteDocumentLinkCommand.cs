@@ -69,14 +69,34 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            if (_document.LinkedDocumentsCount<2)
+            _document.OldLinkSet = _document.OldLinks.Select(x => x.DocumentId).Concat(_document.OldLinks.Select(x => x.ParentDocumentId)).GroupBy(x => x).Select(x => x.Key).ToList();
+            _document.NewLinkSet = CommonDocumentUtilities.GetLinkedDocuments(_link.DocumentId, _document.OldLinks.Where(x=>x.Id!=_link.Id));
+            _document.OldLinkSet = _document.OldLinkSet.Except(_document.NewLinkSet).ToList();
+            if (_document.OldLinkSet.Count()<=1)
+            {
+                _document.OldLinkId = null;
+            } 
+            else if (!_document.OldLinkSet.ToList().Contains(_document.LinkId.Value))
+            {
+                _document.OldLinkId = _document.OldLinkSet.Min();
+            }
+            else
+            {
+                _document.OldLinkId = _document.LinkId.Value;
+            }
+            if (_document.NewLinkSet.Count() <= 1)
             {
                 _document.NewLinkId = null;
             }
-            _document.oldLinkSet = _document.OldLinks.Select(x => x.DocumentId).Concat(_document.OldLinks.Select(x => x.ParentDocumentId)).GroupBy(x => x).Select(x => x.Key).ToList();
-            _document.newLinkSet = CommonDocumentUtilities.GetLinkedDocuments(_link.DocumentId, _document.OldLinks.Where(x=>x.Id!=_link.Id));
-            _document.oldLinkSet = _document.oldLinkSet.Except(_document.newLinkSet);
-            CommonDocumentUtilities.SetLastChange(_context, _document);
+            else if (!_document.NewLinkSet.ToList().Contains(_document.LinkId.Value))
+            {
+                _document.NewLinkId = _document.NewLinkSet.Min();
+            }
+            else
+            {
+                _document.NewLinkId = _document.LinkId.Value;
+            }
+            //CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.DeleteLink);
             _operationDb.DeleteDocumentLink(_context, _document);
             return null;

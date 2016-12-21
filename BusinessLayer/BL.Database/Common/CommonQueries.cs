@@ -2553,11 +2553,11 @@ namespace BL.Database.Common
                                         RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
                                         RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
                                         RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
+                                        DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
                                         ExecutorPositionId = z.ExecutorPositionId,
                                         ExecutorPositionName = z.ExecutorPosition.Name,
                                         ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
                                         ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
-                                        DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
                                     }).Concat
                                     (y.LinksParentDocuments.OrderBy(z => z.LastChangeDate)
                                     .Select(z => new FrontDocumentLink
