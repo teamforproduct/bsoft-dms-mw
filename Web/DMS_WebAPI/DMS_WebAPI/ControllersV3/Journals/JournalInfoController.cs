@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
     /// Журнал регистрации диктует номер нового документа.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Journal")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Journal)]
     public class JournalInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

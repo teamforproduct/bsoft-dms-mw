@@ -44,13 +44,8 @@ namespace BL.Logic.AdminCore
                         SubordinationTypeId = item.SubordinationTypeId
                     };
 
-                    if (!_adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
-                    {
-                        SourcePositionIDs = new List<int> { model.SourcePositionId },
-                        TargetPositionIDs = new List<int> { model.TargetPositionId },
-                        SubordinationTypeIDs = new List<EnumSubordinationTypes>() { model.SubordinationTypeId }
-                    }))
-                        _adminDb.AddSubordination(_context, CommonAdminUtilities.SubordinationModifyToInternal(_context, model));
+                    SetSubordination(model);
+
                 }
 
                 return null;
@@ -60,6 +55,11 @@ namespace BL.Logic.AdminCore
                 throw new AdminRecordCouldNotBeAdded(ex);
             }
 
+        }
+
+        private void SetSubordination(ModifyAdminSubordination model)
+        {
+            _adminService.ExecuteAction(EnumAdminActions.SetSubordination, _context, model);
         }
     }
 }

@@ -47,14 +47,8 @@ namespace BL.Logic.AdminCore
                 #endregion
 
                 #region AdminPositionRoles
-                case EnumAdminActions.AddPositionRole:
-                    cmd = DmsResolver.Current.Get<AddPositionRoleCommand>();
-                    break;
-                //case EnumAdminActions.ModifyPositionRole:
-                //    cmd = DmsResolver.Current.Get<ModifyPositionRoleCommand>();
-                //    break;
-                case EnumAdminActions.DeletePositionRole:
-                    cmd = DmsResolver.Current.Get<DeletePositionRoleCommand>();
+                case EnumAdminActions.SetPositionRole:
+                    cmd = DmsResolver.Current.Get<SetPositionRoleCommand>();
                     break;
                 case EnumAdminActions.DuplicatePositionRoles:
                     cmd = DmsResolver.Current.Get<DuplicatePositionRolesCommand>();

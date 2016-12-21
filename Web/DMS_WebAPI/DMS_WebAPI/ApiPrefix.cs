@@ -20,6 +20,10 @@ namespace DMS_WebAPI
 
         public const string Bank = "Bank";
 
+        public const string Journal = "Journal";
+
+        public const string Department = "Department";
+
         public const string DocumentType = "DocumentType";
 
         public const string ContactType = "ContactType";

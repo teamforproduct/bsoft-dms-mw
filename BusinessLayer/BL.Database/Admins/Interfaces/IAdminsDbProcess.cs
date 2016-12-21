@@ -51,7 +51,6 @@ namespace BL.Database.Admins.Interfaces
 
         #region [+] PositionRole ...
         int AddPositionRole(IContext context, InternalAdminPositionRole model);
-        void UpdatePositionRole(IContext context, InternalAdminPositionRole model);
         void DeletePositionRole(IContext context, InternalAdminPositionRole model);
         void DeletePositionRoles(IContext context, FilterAdminPositionRole filter);
         bool ExistsPositionRole(IContext context, FilterAdminPositionRole filter);

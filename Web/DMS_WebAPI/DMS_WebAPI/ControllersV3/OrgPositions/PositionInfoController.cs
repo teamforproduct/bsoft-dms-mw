@@ -35,19 +35,19 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// </summary>
         /// <param name="filter">"</param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("Info")]
-        [ResponseType(typeof(List<FrontDictionaryPosition>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
+        //[HttpGet]
+        //[Route("Info")]
+        //[ResponseType(typeof(List<FrontDictionaryPosition>))]
+        //public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
+        //{
+        //    if (!stopWatch.IsRunning) stopWatch.Restart();
+        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+        //    var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
+        //    var res = new JsonResult(tmpItems, this);
+        //    res.SpentTime = stopWatch;
+        //    return res;
+        //}
 
         /// <summary>
         /// Возвращает должность по Id
@@ -83,24 +83,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         }
 
         /// <summary>
-        /// Изменяет порядок следования должности в отделе (нумерация с 1)
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("Info/Order")]
-        public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            tmpItem.SetPositionOrder(cxt, model);
-            var res = new JsonResult(model.Order, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
         /// Корректирует реквизиты должности
         /// </summary>
         /// <param name="model"></param>
@@ -127,6 +109,24 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             Action.Execute(EnumDictionaryActions.DeletePosition, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Изменяет порядок следования должности в отделе (нумерация с 1)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/Order")]
+        public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            tmpItem.SetPositionOrder(cxt, model);
+            var res = new JsonResult(model.Order, this);
             res.SpentTime = stopWatch;
             return res;
         }

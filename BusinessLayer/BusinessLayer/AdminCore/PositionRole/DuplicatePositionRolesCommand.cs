@@ -11,14 +11,7 @@ namespace BL.Logic.AdminCore
 {
     public class DuplicatePositionRolesCommand : BaseAdminCommand
     {
-        protected CopyAdminSettingsByPosition Model
-        {
-            get
-            {
-                if (!(_param is CopyAdminSettingsByPosition)) throw new WrongParameterTypeError();
-                return (CopyAdminSettingsByPosition)_param;
-            }
-        }
+        private CopyAdminSettingsByPosition Model { get { return GetModel<CopyAdminSettingsByPosition>(); } }
 
         public override bool CanBeDisplayed(int Id) => true;
 
@@ -46,19 +39,15 @@ namespace BL.Logic.AdminCore
                 foreach (var item in items)
                 {
                     // подменил SourcePosition
-                    var model = new ModifyAdminPositionRole()
+                    var model = new SetAdminPositionRole()
                     {
-                        Id = item.Id,
+                        IsChecked = true,
                         PositionId = Model.TargetPositionId,
                         RoleId = item.RoleId,
                     };
 
-                    if (!_adminDb.ExistsPositionRole(_context, new FilterAdminPositionRole()
-                    {
-                        PositionIDs = new List<int> { model.PositionId },
-                        RoleIDs = new List<int> { model.RoleId },
-                    }))
-                        _adminDb.AddPositionRole(_context, CommonAdminUtilities.PositionRoleModifyToInternal(_context, model));
+                    SetPositionRole(model);
+
                 }
 
                 return null;
@@ -68,6 +57,11 @@ namespace BL.Logic.AdminCore
                 throw new AdminRecordCouldNotBeAdded(ex);
             }
 
+        }
+
+        private void SetPositionRole(SetAdminPositionRole model)
+        {
+            _adminService.ExecuteAction(EnumAdminActions.SetPositionRole, _context, model);
         }
     }
 }

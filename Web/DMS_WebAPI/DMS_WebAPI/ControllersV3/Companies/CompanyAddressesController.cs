@@ -26,19 +26,17 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <summary>
         /// Возвращает список адресов
         /// </summary>
-        /// <param name="CompanyId">ИД сотрудника</param>
+        /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Addresses")]
+        [Route("{Id:int}/Addresses")]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int CompanyId, [FromUri] FilterDictionaryAgentAddress filter)
+        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryAgentAddress();
-
-            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { CompanyId };
-            else filter.AgentIDs.Add(CompanyId);
+            filter.AgentIDs = new List<int> { Id };
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();

@@ -706,18 +706,6 @@ namespace BL.Database.Admins
                 return dbModel.Id;
             }
         }
-        public void UpdatePositionRole(IContext context, InternalAdminPositionRole model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminPositionRoles dbModel = AdminModelConverter.GetDbPositionRole(context, model);
-                dbContext.AdminPositionRolesSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
         public void DeletePositionRole(IContext context, InternalAdminPositionRole model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
