@@ -53,6 +53,10 @@ namespace BL.Database.DatabaseContext
             .WithRequired(s => s.Agent);
 
             modelBuilder.Entity<DictionaryAgents>()
+            .HasOptional(f => f.AgentPeople)
+            .WithRequired(s => s.Agent);
+
+            modelBuilder.Entity<DictionaryAgents>()
             .HasOptional(f => f.AgentUser)
             .WithRequired(s => s.Agent);
 
@@ -69,7 +73,7 @@ namespace BL.Database.DatabaseContext
             .WithRequired(s => s.Agent);
 
             modelBuilder.Entity<DictionaryAgents>()
-            .HasOptional(f => f.Company)
+            .HasOptional(f => f.AgentOrg)
             .WithRequired(s => s.Agent);
 
         }
@@ -89,6 +93,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
 
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
+
+        public virtual DbSet<DictionaryAgentPeople> DictionaryAgentPeopleSet { get; set; }
         public virtual DbSet<DictionaryAgentUsers> DictionaryAgentUsersSet { get; set; }
         public virtual DbSet<DictionaryAgentCompanies> DictionaryAgentCompaniesSet { get; set; }
         public virtual DbSet<DictionaryAgentBanks> DictionaryAgentBanksSet { get; set; }

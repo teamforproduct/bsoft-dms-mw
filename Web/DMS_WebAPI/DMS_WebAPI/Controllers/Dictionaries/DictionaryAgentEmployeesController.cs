@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
+        [ResponseType(typeof(List<FrontListAgentEmployee>))]
         public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var webSeevice = new WebAPIService();
             webSeevice.DeleteUserEmployee(ctx, id);
             
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
+            FrontListAgentPerson tmp = new FrontListAgentPerson();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

@@ -101,7 +101,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentPerson, ctx, id);
             
              
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
+            FrontListAgentPerson tmp = new FrontListAgentPerson();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

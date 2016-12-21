@@ -65,6 +65,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int? AgentCompanyId { get; set; }
 
         /// <summary>
+        /// Должность (текстопое поле)
+        /// </summary>
+        public string Position { get; set; }
+
+        /// <summary>
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }

@@ -57,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentPerson))]
+        [ResponseType(typeof(FrontListAgentPerson))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

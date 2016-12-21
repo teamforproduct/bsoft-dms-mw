@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Info/Main")]
-        [ResponseType(typeof(List<FrontMainDictionaryAgentEmployee>))]
+        [ResponseType(typeof(List<FrontListAgentEmployee>))]
         public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
