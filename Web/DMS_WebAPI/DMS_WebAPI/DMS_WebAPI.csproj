@@ -262,10 +262,8 @@
     <Compile Include="ControllersV3\Banks\BankContactsController.cs" />
     <Compile Include="ControllersV3\Banks\BankInfoController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
-    <Compile Include="ControllersV3\Companies\CompanyContactPersonsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
-    <Compile Include="ControllersV3\Companies\CompanyContactPersonsContactsController.cs" />
     <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
     <Compile Include="ControllersV3\System\AddressTypeInfoController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentTypeInfoController.cs" />
@@ -303,7 +301,6 @@
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
-    <Compile Include="Controllers\Dictionaries\ContactPersons\ContactPersonsContactsController.cs" />
     <Compile Include="Controllers\Dictionaries\Persons\PersonAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\ClientCompanies\ClientCompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Employees\EmployeeAddressesController.cs" />
@@ -311,7 +308,6 @@
     <Compile Include="Controllers\Dictionaries\Companies\CompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankInfoController.cs" />
-    <Compile Include="Controllers\Dictionaries\Companies\CompanyContactPersonsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />

@@ -184,7 +184,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentClientCompanies
         FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
+        IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
         #endregion DictionaryCompanies
 
 

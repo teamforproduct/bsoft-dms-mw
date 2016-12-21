@@ -167,7 +167,7 @@ namespace BL.Logic.ClientCore
 
             #region [+] Agent-Company ....
             // Pss Локализация для названия компании
-            var company = new InternalDictionaryAgentClientCompany()
+            var company = new InternalDictionaryAgentOrg()
             {
                 Name = "Наша компания",
                 FullName = "Наша компания"
@@ -175,7 +175,7 @@ namespace BL.Logic.ClientCore
 
             CommonDocumentUtilities.SetLastChange(context, company);
 
-            var companyId = _DictDb.AddAgentClientCompany(context, company);
+            var companyId = _DictDb.AddAgentOrg(context, company);
 
 
 

@@ -33,7 +33,9 @@ namespace BL.Database.DBModel.Dictionary
         //public bool IsBank { get; set; }
         //public bool IsUser { get; set; }
         [MaxLength(2000)]
+        [Obsolete("",true)]
         public string Description { get; set; }
+        [Obsolete("", true)]
         public bool IsActive { get; set; }
 
         public int LastChangeUserId { get; set; }

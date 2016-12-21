@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">Параметры для фильтрации записей в словаре "Компании"</param>
         /// <returns>FrontDictionaryCompanies</returns>
         [ResponseType(typeof(List<FrontDictionaryAgentClientCompany>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentClientCompany filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();

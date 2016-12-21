@@ -243,15 +243,15 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryRegistrationJournals
 
         #region [+] DictionaryAgentClientCompanies ...
-        int AddAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
-        void UpdateAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
-        void DeleteAgentClientCompany(IContext context, List<int> list);
-        bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
-        InternalDictionaryAgentClientCompany GetInternalAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentClientCompany filter);
+        int AddAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
+        void UpdateAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
+        void DeleteAgentOrg(IContext context, List<int> list);
+        bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentOrg filter);
         #endregion
 
         #region DictionaryResultTypes

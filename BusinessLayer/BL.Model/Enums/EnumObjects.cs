@@ -48,8 +48,8 @@
         DictionaryEmployeeAddress = 224, // Контрагенты - пользователи
         DictionaryClientCompanyAddress = 225, // Контрагенты - пользователи
         DictionaryPersonAddress = 226, // Контрагенты - пользователи
-        DictionaryContactPersons = 227, // Контрагенты - пользователи
-        DictionaryContactPersonContacts = 228, // Контрагенты - пользователи
+
+
         DictionaryBankContact = 229,
         DictionaryCompanyContact = 230,
         DictionaryEmployeeContact = 231,

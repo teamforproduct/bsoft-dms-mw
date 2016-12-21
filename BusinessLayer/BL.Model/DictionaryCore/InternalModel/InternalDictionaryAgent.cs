@@ -16,72 +16,17 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             Name = model.Name;
-            Description = string.Empty;// model.Description;
-            IsActive = true;// model.IsActive;
-            ResidentTypeId = model.ResidentTypeId ?? null;
         }
 
-        public InternalDictionaryAgent(InternalDictionaryAgentPerson model)
-        {
-            Id = model.Id;
-            Name = model.Name;
-            Description =  model.Description;
-            IsActive = model.IsActive;
-            LastChangeUserId = model.LastChangeUserId;
-            LastChangeDate = model.LastChangeDate;
-        }
-
-        public InternalDictionaryAgent(InternalDictionaryAgentClientCompany model)
-        {
-            Id = model.Id;
-            Name = model.Name;
-            Description =  model.Description;
-            IsActive = model.IsActive;
-            LastChangeUserId = model.LastChangeUserId;
-            LastChangeDate = model.LastChangeDate;
-        }
-
-        public InternalDictionaryAgent(InternalDictionaryAgentCompany model)
-        {
-            Id = model.Id;
-            Name = model.Name;
-            Description =  model.Description;
-            IsActive = model.IsActive;
-            LastChangeUserId = model.LastChangeUserId;
-            LastChangeDate = model.LastChangeDate;
-        }
-        public InternalDictionaryAgent(InternalDictionaryAgentBank model)
-        {
-            Id = model.Id;
-            Name = model.Name;
-            Description =  model.Description;
-            IsActive = model.IsActive;
-            LastChangeUserId = model.LastChangeUserId;
-            LastChangeDate = model.LastChangeDate;
-        }
 
         /// <summary>
         /// ИД
         /// </summary>
         public int Id { get; set; }
-        /// <summary>
-        /// Имя/наименование
-        /// </summary>
-        public string Name { get; set; }
         
         /// <summary>
-        /// признак активности
+        /// Имя/наименование (используется в интерфейсе)
         /// </summary>
-        public bool IsActive { get; set; }
-        /// <summary>
-        /// комментарии
-        /// </summary>
-        public string Description { get; set; }
-
-
-        /// <summary>
-        /// резидентность
-        /// </summary>
-        public int? ResidentTypeId { get; set; }
+        public string Name { get; set; }
     }
 }

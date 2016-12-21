@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// контрагент - сотрудник
     /// </summary>
-    public class InternalDictionaryAgentEmployee : LastChangeInfo
+    public class InternalDictionaryAgentEmployee : InternalDictionaryAgentPeople
     {
 
         public InternalDictionaryAgentEmployee()
@@ -63,52 +63,6 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         }
 
-        #region [+] Person ...
-        public int Id { get; set; }
-        /// <summary>
-        /// Имя
-        /// </summary>
-        public string FirstName { get; set; }
-        /// <summary>
-        /// Фамилия
-        /// </summary>
-        public string LastName { get; set; }
-        /// <summary>
-        /// Отчество
-        /// </summary>
-        public string MiddleName { get; set; }
-
-        //pss добавить проверку на Empty
-        public string Name { get; set; }// { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
-
-        /// <summary>
-        /// ИНН
-        /// </summary>
-        public string TaxCode { get; set; }
-        /// <summary>
-        /// Пол (true - мужской)
-        /// </summary>
-        public bool IsMale { get; set; }
-        /// <summary>
-        /// Серия паспорта
-        /// </summary>
-        public string PassportSerial { get; set; }
-        /// <summary>
-        /// Номер паспорта
-        /// </summary>
-        public int? PassportNumber { get; set; }
-        /// <summary>
-        /// Дата выдачи паспорта
-        /// </summary>
-        public DateTime? PassportDate { get; set; }
-        /// <summary>
-        /// Кем выдан паспорт
-        /// </summary>
-        public string PassportText { get; set; }
-        /// <summary>
-        /// Дата рождения
-        /// </summary>
-        public DateTime? BirthDate { get; set; }
         /// <summary>
         /// Дополнительная информация
         /// </summary>
@@ -117,7 +71,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        #endregion
+
 
         #region [+] Employee ...
         /// <summary>
