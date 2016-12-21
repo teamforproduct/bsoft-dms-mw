@@ -6,12 +6,12 @@ namespace BL.Model.AdminCore.FrontModel
     /// <summary>
     /// "Соответствие ролей и должности", представление записи.
     /// </summary>
-    public class FrontAdminPositionRole : ModifyAdminPositionRole
+    public class FrontAdminPositionRole 
     {
         /// <summary>
         /// ID
         /// </summary>
-        public new int Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Должность
@@ -22,11 +22,6 @@ namespace BL.Model.AdminCore.FrontModel
         /// Роль
         /// </summary>
         public new int? RoleId { get; set; }
-
-        ///// <summary>
-        ///// Должность
-        ///// </summary>
-        //public string PositionName { get; set; }
 
         /// <summary>
         /// Роль

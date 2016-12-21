@@ -377,8 +377,6 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.DeleteRole, EnumObjects.AdminRoles));
 
             items.Add(GetSysAct(EnumAdminActions.SetPositionRole, EnumObjects.AdminPositionRoles));
-            items.Add(GetSysAct(EnumAdminActions.AddPositionRole, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
-            items.Add(GetSysAct(EnumAdminActions.DeletePositionRole, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
             items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
 
             items.Add(GetSysAct(EnumAdminActions.SetRoleAction, EnumObjects.AdminRoleAction));

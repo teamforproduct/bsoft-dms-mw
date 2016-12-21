@@ -16,6 +16,7 @@ using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
+using BL.Model.Tree;
 
 namespace DMS_WebAPI.ControllersV3.Org
 {
@@ -31,19 +32,19 @@ namespace DMS_WebAPI.ControllersV3.Org
 
 
         /// <summary>
-        /// Возвращает список организаций
+        /// Возвращает штатное расписание. Компании -> Отделы -> Должности -> Исполнители
         /// </summary>
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
-        [ResponseType(typeof(List<FrontDictionaryAgentClientCompany>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
+        [Route("Info/Main")]
+        [ResponseType(typeof(List<TreeItem>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentClientCompanies(ctx, filter);
+            var tmpItems = tmpService.GetStaffList(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
