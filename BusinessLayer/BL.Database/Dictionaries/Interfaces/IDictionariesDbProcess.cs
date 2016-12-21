@@ -29,12 +29,11 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentPerson
 
         void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson person);
-        void UpdateAgentPersonCompanyId(IContext context, InternalDictionaryAgentPerson person);
         void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
-        IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
         IEnumerable<FrontListAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         FrontAgentPerson GetAgentPerson(IContext context, int id);

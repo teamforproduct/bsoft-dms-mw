@@ -158,9 +158,9 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public FrontListAgentPerson GetAgentPerson(IContext context, int id)
+        public FrontAgentPerson GetAgentPerson(IContext context, int id)
         {
-            return _dictDb.GetAgentPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } }, null).FirstOrDefault();
+            return _dictDb.GetAgentPerson(context, id);
         }
 
         public IEnumerable<FrontListAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
@@ -300,14 +300,9 @@ namespace BL.Logic.DictionaryCore
 
         #region [+] ContaktPersons
 
-        public IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter)
         {
-            return _dictDb.GetContactPersons(context, filter);
-        }
-
-        public IEnumerable<FrontContactPersons> GetContactPerson(IContext context, int id)
-        {
-            return _dictDb.GetContactPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
+            return _dictDb.GetAgentPersonsWithContacts(context, filter);
         }
 
         #endregion

@@ -400,15 +400,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { person.Id } }))
-                {
-                    //pss Здесь перетирается имя сформированное предыдущей выноской (для персон и пользователей оно формируется по разному)
-                    UpdateAgentName(context, person.Id, person);
-                }
-                else
-                {
-                    person.Id = AddAgent(context, person);
-                };
+                person.Id = AddAgentPeople(context, person);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
 
@@ -427,6 +419,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 UpdateAgentName(context, person.Id, person);
+                UpdateAgentPeople(context, person);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
 
@@ -437,25 +430,6 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
-                transaction.Complete();
-
-            }
-        }
-
-        public void UpdateAgentPersonCompanyId(IContext context, InternalDictionaryAgentPerson person)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
-
-                dbContext.DictionaryAgentPersonsSet.Attach(dbModel);
-
-                var entity = dbContext.Entry(dbModel);
-                entity.Property(x => x.AgentCompanyId).IsModified = true;
-
-                dbContext.SaveChanges();
-
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
                 transaction.Complete();
 
             }
@@ -472,13 +446,13 @@ namespace BL.Database.Dictionaries
 
                 CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
 
-                DeleteAgentIfNoAny(context, new List<int>() { person.Id });
+                DeleteAgentPeople(context, person);
 
                 transaction.Complete();
             }
         }
 
-        public IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -665,10 +639,10 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Список AgentCompanyId
-                if (filter.AgentCompanyIDs?.Count > 0)
+                if (filter.CompanyIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
-                    filterContains = filter.AgentCompanyIDs.Aggregate(filterContains,
+                    filterContains = filter.CompanyIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentCompanyId == value).Expand());
 
                     qry = qry.Where(filterContains);

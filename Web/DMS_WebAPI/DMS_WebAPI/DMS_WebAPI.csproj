@@ -304,7 +304,6 @@
     <Compile Include="Controllers\Dictionaries\Persons\PersonAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\ClientCompanies\ClientCompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Employees\EmployeeAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Companies\CompanyInfoController.cs" />
     <Compile Include="Controllers\Dictionaries\Companies\CompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Banks\BankInfoController.cs" />
