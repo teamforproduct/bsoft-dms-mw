@@ -4,6 +4,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.Common;
 using System.Linq;
+using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -32,8 +33,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
-            if (_document.ExecutorPositionId != positionId
-                )
+            _actionRecords =
+                _document.Links.Where(
+                    x =>
+                        x.ExecutorPositionId == positionId)
+                        .Select(x => new InternalActionRecord
+                        {
+                            LinkId = x.Id
+                        });
+            if (!_actionRecords.Any())
             {
                 return false;
             }
@@ -44,11 +52,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _document = _operationDb.DeleteDocumentLinkPrepare(_context, Model);
-            if (_document?.Id == null || _document?.LinkId == null)
+            var link = _document.Links.FirstOrDefault();
+            if (_document?.Id == null || _document?.LinkId == null || link == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
+            _context.SetCurrentPosition(link.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {

@@ -1416,7 +1416,7 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        ExecutorPositionId = x.ExecutorPositionId,
+                        //ExecutorPositionId = x.ExecutorPositionId,
                         LinkId = x.LinkId,
                         LinkTypeId = model.LinkTypeId,
                     }).FirstOrDefault();
@@ -1436,18 +1436,23 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument DeleteDocumentLinkPrepare(IContext context, int documentId)
+        public InternalDocument DeleteDocumentLinkPrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, true, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = dbContext.DocumentLinksSet
+                    .Where(x => x.Id == id)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Id,
-                        ExecutorPositionId = x.ExecutorPositionId,
-                        LinkId = x.LinkId,
-
+                        Id = x.Document.Id,                        
+                        LinkId = x.Document.LinkId,
+                        Links = new List<InternalDocumentLink> { new InternalDocumentLink
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            ParentDocumentId = x.ParentDocumentId,
+                            ExecutorPositionId = x.ExecutorPositionId,
+                        }}
                     }).FirstOrDefault();
 
                 if (doc?.LinkId == null) return null;
@@ -1468,11 +1473,19 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
+                if (model.Events != null && model.Events.Any(x => x.Id == 0))
+                {
+                    var eventsDb = ModelConverter.GetDbDocumentEvents(model.Events.Where(x => x.Id == 0).ToList());
+                    dbContext.DocumentEventsSet.AddRange(eventsDb);
+                }
                 var link = new DocumentLinks
                 {
                     DocumentId = model.Id,
                     ParentDocumentId = model.ParentDocumentId,
                     LinkTypeId = model.LinkTypeId,
+                    ExecutorPositionId = model.ExecutorPositionId,
+                    ExecutorPositionExecutorAgentId = model.ExecutorPositionExecutorAgentId,
+                    ExecutorPositionExecutorTypeId = model.ExecutorPositionExecutorTypeId,
                     LastChangeUserId = model.LastChangeUserId,
                     LastChangeDate = model.LastChangeDate,
                 };
@@ -1509,11 +1522,6 @@ namespace BL.Database.Documents
                             x.LastChangeUserId = model.LastChangeUserId;
                             x.LastChangeDate = model.LastChangeDate;
                         });
-                }
-                if (model.Events != null && model.Events.Any(x => x.Id == 0))
-                {
-                    var eventsDb = ModelConverter.GetDbDocumentEvents(model.Events.Where(x => x.Id == 0).ToList());
-                    dbContext.DocumentEventsSet.AddRange(eventsDb);
                 }
                 dbContext.SaveChanges();
                 transaction.Complete();

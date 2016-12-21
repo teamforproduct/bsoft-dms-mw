@@ -246,6 +246,7 @@
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentLink.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentPaper.cs" />
     <Compile Include="EncryptionCore\Filters\FilterEncryptionCertificate.cs" />
     <Compile Include="EncryptionCore\FrontModel\FrontEncryptionCertificate.cs" />

@@ -121,7 +121,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AddDocumentLink(AddDocumentLink model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentLink, ctx, model);
 

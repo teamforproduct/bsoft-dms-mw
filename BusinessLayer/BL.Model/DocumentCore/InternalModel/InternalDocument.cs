@@ -154,7 +154,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentEvent> Events { get; set; }
         public IEnumerable<InternalDocumentAccess> Accesses { get; set; }
         public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
-        public IEnumerable<InternalDocument> LinkedDocuments { get; set; }
+        public IEnumerable<InternalDocumentLink> Links { get; set; }
+        public IEnumerable<InternalDocumentLink> OldLinks { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
         public IEnumerable<InternalDocumentTask> Tasks { get; set; }

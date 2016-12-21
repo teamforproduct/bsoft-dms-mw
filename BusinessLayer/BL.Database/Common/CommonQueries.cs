@@ -2540,20 +2540,41 @@ namespace BL.Database.Common
                             IsRegistered = y.IsRegistered,
                             Description = y.Description,
                             ExecutorPositionId = y.ExecutorPositionId,
+                            ExecutorPositionName = y.ExecutorPosition.Name,
                             ExecutorPositionExecutorAgentId = y.ExecutorPositionExecutorAgentId,
                             ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.ExecutorPositionExecutorType.Suffix != null ? " (" + y.ExecutorPositionExecutorType.Suffix + ")" : null),
-                            ExecutorPositionName = y.ExecutorPosition.Name,
-                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate).
-                                Select(z => new FrontDocumentLink
-                                {
-                                    Id = z.Id,
-                                    LinkTypeName = z.LinkType.Name,
-                                    RegistrationNumber = z.ParentDocument.RegistrationNumber,
-                                    RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
-                                    RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
-                                    RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
-                                    DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
-                                })
+                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate)
+                                    .Select(z => new FrontDocumentLink
+                                    {
+                                        Id = z.Id,
+                                        LinkTypeName = z.LinkType.Name,
+                                        IsParent = true,
+                                        RegistrationNumber = z.ParentDocument.RegistrationNumber,
+                                        RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
+                                        RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
+                                        RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
+                                        ExecutorPositionId = z.ExecutorPositionId,
+                                        ExecutorPositionName = z.ExecutorPosition.Name,
+                                        ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
+                                        ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                        DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
+                                    }).Concat
+                                    (y.LinksParentDocuments.OrderBy(z => z.LastChangeDate)
+                                    .Select(z => new FrontDocumentLink
+                                    {
+                                        Id = z.Id,
+                                        LinkTypeName = z.LinkType.Name,
+                                        IsParent = false,
+                                        RegistrationNumber = z.Document.RegistrationNumber,
+                                        RegistrationNumberPrefix = z.Document.RegistrationNumberPrefix,
+                                        RegistrationNumberSuffix = z.Document.RegistrationNumberSuffix,
+                                        RegistrationFullNumber = "#" + z.Document.Id.ToString(),
+                                        DocumentDate = (z.Document.RegistrationDate ?? z.Document.CreateDate),
+                                        ExecutorPositionId = z.ExecutorPositionId,
+                                        ExecutorPositionName = z.ExecutorPosition.Name,
+                                        ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
+                                        ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    })),
                         }).ToList();
             items.ForEach(x =>
             {

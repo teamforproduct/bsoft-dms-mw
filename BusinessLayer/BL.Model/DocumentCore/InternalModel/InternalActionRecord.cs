@@ -11,6 +11,7 @@
         public int? PaperId { get; set; }
         public int? FileId { get; set; }
         public int? TaskId { get; set; }
+        public int? LinkId { get; set; }
         public bool? IsHideInMainMenu { get; set; }
         public string Description { get; set; }
 
