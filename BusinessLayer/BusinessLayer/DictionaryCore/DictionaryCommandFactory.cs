@@ -61,18 +61,6 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentPersonCommand>();
                     break;
                 #endregion DictionaryAgentPersons
-                case EnumDictionaryActions.AddContactPerson:
-                    cmd = DmsResolver.Current.Get<AddDictionaryContactPersonCommand>();
-                    break;
-                case EnumDictionaryActions.ModifyContactPerson:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryContactPersonCommand>();
-                    break;
-                case EnumDictionaryActions.LinkContactPerson:
-                    cmd = DmsResolver.Current.Get<LinkDictionaryContactPersonCommand>();
-                    break;
-                case EnumDictionaryActions.DeleteContactPerson:
-                    cmd = DmsResolver.Current.Get<DeleteDictionaryContactPersonCommand>();
-                    break;
                 case EnumDictionaryActions.ModifyAgentEmployee:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentEmployeeCommand>();
                     break;
@@ -164,7 +152,6 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.AddClientCompanyContact:
                 case EnumDictionaryActions.AddEmployeeContact:
                 case EnumDictionaryActions.AddPersonContact:
-                case EnumDictionaryActions.AddContactPersonContacts:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactCommand>();
                     break;
                 case EnumDictionaryActions.ModifyAgentContact:
@@ -173,7 +160,6 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.ModifyClientCompanyContact:
                 case EnumDictionaryActions.ModifyEmployeeContact:
                 case EnumDictionaryActions.ModifyPersonContact:
-                case EnumDictionaryActions.ModifyContactPersonContacts:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryContactCommand>();
                     break;
                 case EnumDictionaryActions.DeleteAgentContact:
@@ -182,7 +168,6 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteClientCompanyContact:
                 case EnumDictionaryActions.DeleteEmployeeContact:
                 case EnumDictionaryActions.DeletePersonContact:
-                case EnumDictionaryActions.DeleteContactPersonContacts:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactCommand>();
                     break;
                 #endregion DictionaryContacts

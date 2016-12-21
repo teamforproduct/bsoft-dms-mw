@@ -45,10 +45,10 @@ namespace BL.Logic.DictionaryCore
             {
                 using (var transaction = Transactions.GetTransaction())
                 {
-                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { Model } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { Model } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
-                    _dictDb.DeleteAgentClientCompany(_context, new System.Collections.Generic.List<int>() { Model });
+                    _dictDb.DeleteAgentOrg(_context, new System.Collections.Generic.List<int>() { Model });
                     transaction.Complete();
                     return null;
                 }

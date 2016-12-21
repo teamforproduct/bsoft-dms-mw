@@ -29,12 +29,11 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentPerson
 
         void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson person);
-        void UpdateAgentPersonCompanyId(IContext context, InternalDictionaryAgentPerson person);
         void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
-        IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter);
+        IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
         IEnumerable<FrontListAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         FrontAgentPerson GetAgentPerson(IContext context, int id);
@@ -243,15 +242,15 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryRegistrationJournals
 
         #region [+] DictionaryAgentClientCompanies ...
-        int AddAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
-        void UpdateAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany docType);
-        void DeleteAgentClientCompany(IContext context, List<int> list);
-        bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
-        InternalDictionaryAgentClientCompany GetInternalAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentClientCompany filter);
-        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentClientCompany filter);
+        int AddAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
+        void UpdateAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
+        void DeleteAgentOrg(IContext context, List<int> list);
+        bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentOrg filter);
         #endregion
 
         #region DictionaryResultTypes

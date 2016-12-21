@@ -1516,7 +1516,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Name + " " + x.Description
+                    ObjectText = x.Name
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1526,7 +1526,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPerson.FullName + " " + x.Agent.AgentPerson.BirthDate + " " + x.Agent.AgentPerson.PassportDate + " " + x.Agent.AgentPerson.PassportNumber + " " + x.Agent.AgentPerson.PassportSerial + " " + x.Agent.AgentPerson.PassportText + " " + x.Agent.AgentPerson.TaxCode
+                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText + " " + x.Agent.AgentPeople.TaxCode
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1546,7 +1546,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.Description + " " + x.TaxCode + " " + x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " + x.PassportText
+                    ObjectText = x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Description + " " + x.Agent.AgentPeople.TaxCode + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1721,7 +1721,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.FullName
+                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name
                 }).ToList());
 
                 res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -2166,7 +2166,7 @@ namespace BL.Database.SystemDb
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
-                            ObjectText = x.agent.Name.Trim() + " " + x.agent.Description.Trim()
+                            ObjectText = x.agent.Name.Trim()
                         }).ToList());
                 }
 
@@ -2181,7 +2181,7 @@ namespace BL.Database.SystemDb
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
-                            ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPerson.FullName + " " + x.employee.Agent.AgentPerson.BirthDate + " " + x.employee.Agent.AgentPerson.PassportDate + " " + x.employee.Agent.AgentPerson.PassportNumber + " " + x.employee.Agent.AgentPerson.PassportSerial + " " + x.employee.Agent.AgentPerson.PassportText + " " + x.employee.Agent.AgentPerson.TaxCode
+                            ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPeople.FullName + " " + x.employee.Agent.AgentPeople.BirthDate + " " + x.employee.Agent.AgentPeople.PassportDate + " " + x.employee.Agent.AgentPeople.PassportNumber + " " + x.employee.Agent.AgentPeople.PassportSerial + " " + x.employee.Agent.AgentPeople.PassportText + " " + x.employee.Agent.AgentPeople.TaxCode
                         }).ToList());
                 }
 
@@ -2203,7 +2203,7 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentPersons))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentPersons).Join(dbContext.DictionaryAgentPersonsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentPersons).Join(dbContext.DictionaryAgentPersonsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, person = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2211,8 +2211,8 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.TaxCode.Trim() + " "
-                                     + x.agent.BirthDate + " " + x.agent.PassportNumber + " " + x.agent.PassportSerial.Trim() + " " + x.agent.PassportText.Trim()
+                        ObjectText = x.person.Agent.AgentPeople.FullName.Trim() + " " + x.person.Description.Trim() + " " + x.person.Agent.AgentPeople.TaxCode.Trim() + " "
+                                     + x.person.Agent.AgentPeople.BirthDate + " " + x.person.Agent.AgentPeople.PassportNumber + " " + x.person.Agent.AgentPeople.PassportSerial.Trim() + " " + x.person.Agent.AgentPeople.PassportText.Trim()
                     }).ToList());
                 }
 
@@ -2458,7 +2458,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " /*+ x.doc.DocumentDirection.Name + " "*/ + x.doc.DocumentSubject.Name + " " /*+ x.doc.DocumentType.Name + " "*/ + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.FullName
+                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " /*+ x.doc.DocumentDirection.Name + " "*/ + x.doc.DocumentSubject.Name + " " /*+ x.doc.DocumentType.Name + " "*/ + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name
                     }).ToList());
                 }
 

@@ -34,11 +34,27 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return res;
         }
 
-       /// <summary>
-       /// Получить физлицо по ИД
-       /// </summary>
-       /// <param name="id">ИД</param>
-       /// <returns>запись справочника агентов-физлиц</returns>
+        /// <summary>
+        /// ПОлучить список физлиц с контактами
+        /// </summary>
+        /// <param name="filter">фильтр</param>
+        /// <returns>коллекцию контрагентов</returns>
+        [HttpGet]
+        [Route("WithContacts")]
+        public IHttpActionResult GetWithContacts([FromUri] FilterDictionaryAgentPerson filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetAgentPersonsWithContacts(ctx, filter);
+            var res = new JsonResult(tmpDicts, this);
+            return res;
+        }
+
+        /// <summary>
+        /// Получить физлицо по ИД
+        /// </summary>
+        /// <param name="id">ИД</param>
+        /// <returns>запись справочника агентов-физлиц</returns>
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

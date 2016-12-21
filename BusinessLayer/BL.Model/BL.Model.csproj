@@ -233,6 +233,7 @@
     <Compile Include="AdminCore\FilterAdminAccessLevel.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentPeople.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUserPicture.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorForDocument.cs" />

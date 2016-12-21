@@ -27,14 +27,6 @@ namespace BL.Database.DBModel.Dictionary
         public string Name { get; set; }
         public byte[] Image { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
-        //public bool IsCompany { get; set; }
-        //public bool IsIndividual { get; set; }
-        //public bool IsEmployee { get; set; }
-        //public bool IsBank { get; set; }
-        //public bool IsUser { get; set; }
-        [MaxLength(2000)]
-        public string Description { get; set; }
-        public bool IsActive { get; set; }
 
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

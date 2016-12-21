@@ -7,7 +7,7 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Контрагент - юридическое лицо
     /// </summary>
-    public class InternalDictionaryAgentCompany : LastChangeInfo
+    public class InternalDictionaryAgentCompany : InternalDictionaryAgent
     {
 
         public InternalDictionaryAgentCompany()
@@ -35,17 +35,10 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsActive = model.IsActive;
         }
         /// <summary>
-        /// ИД
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
         /// Полное наименование
         /// </summary>
         public string FullName { get; set; }
-        /// <summary>
-        /// Краткое наименование
-        /// </summary>
-        public string Name { get; set; }
+
         /// <summary>
         /// ИНН
         /// </summary>

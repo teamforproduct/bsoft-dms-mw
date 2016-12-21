@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         [HttpGet]
         [Route("Info")]
         [ResponseType(typeof(List<FrontDictionaryAgentClientCompany>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentClientCompany filter)
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

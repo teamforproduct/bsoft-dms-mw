@@ -37,13 +37,12 @@ namespace DMS_WebAPI.ControllersV3.Companies
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryAgentPerson();
 
-            if (filter.AgentCompanyIDs == null) filter.AgentCompanyIDs = new List<int> { CompanyId };
-            else filter.AgentCompanyIDs.Add(CompanyId);
+            filter.CompanyIDs = new List<int> { CompanyId };
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetContactPersons(ctx, filter);
-            var res=new JsonResult(tmpItems, this);
+            var tmpItems = tmpService.GetAgentPersonsWithContacts(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -55,13 +54,13 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns>Агент</returns>
         [HttpGet]
         [Route("ContactPersons/{Id:int}")]
-        [ResponseType(typeof(FrontContactPersons))]
+        [ResponseType(typeof(FrontAgentPerson))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetContactPerson(ctx, Id);
+            var tmpItem = tmpService.GetAgentPerson(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -73,10 +72,10 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpPost]
         [Route("ContactPersons")]
-        public IHttpActionResult Post([FromBody]AddAgentContactPerson model)
+        public IHttpActionResult Post([FromBody]AddAgentPerson model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddContactPerson, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentPerson, model);
             return Get(tmpItem);
         }
 
@@ -87,26 +86,11 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpPut]
         [Route("ContactPersons")]
-        public IHttpActionResult Put([FromBody]ModifyAgentContactPerson model)
+        public IHttpActionResult Put([FromBody]ModifyAgentPerson model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyContactPerson, model);
+            Action.Execute(EnumDictionaryActions.ModifyAgentPerson, model);
             return Get(model.Id);
-        }
-
-        /// <summary>
-        /// Связывает физ.лиц с юр.лицом
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("ContactPersons/Link")]
-        public IHttpActionResult AddFromExists([FromBody]LinkDictionaryAgentContactPerson model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactPerson, ctx, model);
-            return Get(tmpItem);
         }
 
         /// <summary>
@@ -119,15 +103,13 @@ namespace DMS_WebAPI.ControllersV3.Companies
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteContactPerson, Id);
+            Action.Execute(EnumDictionaryActions.DeleteAgentPerson, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
 
         }
-
-       
 
     }
 }

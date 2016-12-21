@@ -181,10 +181,6 @@
     <Compile Include="DictionaryCore\AgentCompany\BaseDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentCompany\ModifyDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\BaseDictionaryContactCommand.cs" />
-    <Compile Include="DictionaryCore\ContactPerson\ModifyDictionaryContactPersonCommand.cs" />
-    <Compile Include="DictionaryCore\ContactPerson\AddDictionaryContactPersonCommand.cs" />
-    <Compile Include="DictionaryCore\ContactPerson\LinkDictionaryContactPersonCommand.cs" />
-    <Compile Include="DictionaryCore\ContactPerson\DeleteDictionaryContactPersonCommand.cs" />
     <Compile Include="DictionaryCore\AgentUser\BaseDictionaryAgentUserCommand.cs" />
     <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserLanguageCommand.cs" />
     <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserCommand.cs" />

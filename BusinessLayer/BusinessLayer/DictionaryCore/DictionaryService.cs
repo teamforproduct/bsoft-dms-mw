@@ -158,9 +158,9 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgents
 
         #region DictionaryAgentPersons
-        public FrontListAgentPerson GetAgentPerson(IContext context, int id)
+        public FrontAgentPerson GetAgentPerson(IContext context, int id)
         {
-            return _dictDb.GetAgentPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } }, null).FirstOrDefault();
+            return _dictDb.GetAgentPerson(context, id);
         }
 
         public IEnumerable<FrontListAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
@@ -300,14 +300,9 @@ namespace BL.Logic.DictionaryCore
 
         #region [+] ContaktPersons
 
-        public IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter)
         {
-            return _dictDb.GetContactPersons(context, filter);
-        }
-
-        public IEnumerable<FrontContactPersons> GetContactPerson(IContext context, int id)
-        {
-            return _dictDb.GetContactPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
+            return _dictDb.GetAgentPersonsWithContacts(context, filter);
         }
 
         #endregion
@@ -781,7 +776,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter?.IsActive
                 });
@@ -807,10 +802,10 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id)
         {
 
-            return _dictDb.GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetAgentClientCompanies(context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter)
+        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter)
         {
 
             return _dictDb.GetAgentClientCompanies(context, filter);
@@ -945,7 +940,7 @@ namespace BL.Logic.DictionaryCore
         {
             for (int c = 1; c <= 10; c++)
             {
-                int compID = _dictDb.AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
+                int compID = _dictDb.AddAgentOrg(context, new InternalDictionaryAgentOrg()
                 {
                     Name = string.Concat("Компания №", string.Format("{0:00}", c)),
                     FullName = string.Concat("Компания номер ", string.Format("{0:00}", c)),
@@ -1071,7 +1066,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter.IsActive
                 });

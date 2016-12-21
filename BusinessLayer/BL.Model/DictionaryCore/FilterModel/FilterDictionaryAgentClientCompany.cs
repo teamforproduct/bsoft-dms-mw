@@ -3,7 +3,7 @@
     /// <summary>
     /// Фильтры FilterDictionaryCompany
     /// </summary>
-    public class FilterDictionaryAgentClientCompany : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentOrg : DictionaryBaseFilterParameters
     {
         public string FullName { get; set; }
     }

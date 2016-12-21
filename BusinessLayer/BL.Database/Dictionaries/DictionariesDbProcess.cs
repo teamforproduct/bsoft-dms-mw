@@ -169,11 +169,12 @@ namespace BL.Database.Dictionaries
         {
             foreach (int agentId in list)
             {
-                if (ExistsAgentClientCompanies(context, new FilterDictionaryAgentClientCompany() { IDs = new List<int>() { agentId } })) return;
+                if (ExistsAgentClientCompanies(context, new FilterDictionaryAgentOrg() { IDs = new List<int>() { agentId } })) return;
+
 
                 if (ExistsAgentEmployees(context, new FilterDictionaryAgentEmployee() { IDs = new List<int>() { agentId } })) return;
                 //if (ExistsAgentUsers(context, new FilterDictionaryAgent() { IDs = new List<int>() { agentId } })) return;
-
+                //if (ExistsAgentPeople(context, new FilterDictionaryAgentPerson() { IDs = new List<int>() { agentId } })) return;
                 if (ExistsAgentPersons(context, new FilterDictionaryAgentPerson() { IDs = new List<int>() { agentId } })) return;
 
                 if (ExistsAgentBanks(context, new FilterDictionaryAgentBank() { IDs = new List<int>() { agentId } })) return;
@@ -214,9 +215,9 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    IsActive = x.IsActive,
+                    IsActive = true,
                     ResidentTypeId = x.ResidentTypeId,
-                    Description = x.Description,
+                    Description = string.Empty,
                     //Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
                     //{
                     //    Id = y.Id,
@@ -296,7 +297,7 @@ namespace BL.Database.Dictionaries
                 // Тоько активные/неактивные
                 if (filter.IsActive != null)
                 {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                    //qry = qry.Where(x => filter.IsActive == x.IsActive);
                 }
 
                 // Поиск по наименованию
@@ -333,20 +334,73 @@ namespace BL.Database.Dictionaries
 
         #endregion DictionaryAgents
 
+        #region [+] DictionaryAgentPeople ...
+        public int AddAgentPeople(IContext context, InternalDictionaryAgentPeople people)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { people.Id } }))
+                {
+                    //pss Здесь перетирается имя сформированное предыдущей выноской (для персон и пользователей оно формируется по разному)
+                    UpdateAgentName(context, people.Id, people);
+                }
+                else
+                {
+                    people.Id = AddAgent(context, people);
+                };
+
+                var dbModel = DictionaryModelConverter.GetDbAgentPeople(context, people);
+
+                dbContext.DictionaryAgentPeopleSet.Add(dbModel);
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+
+                return people.Id;
+            }
+        }
+
+        public void UpdateAgentPeople(IContext context, InternalDictionaryAgentPeople people)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                UpdateAgentName(context, people.Id, people);
+
+                var dbModel = DictionaryModelConverter.GetDbAgentPeople(context, people);
+
+                dbContext.DictionaryAgentPeopleSet.Attach(dbModel);
+                dbContext.SaveChanges();
+                var entity = dbContext.Entry(dbModel);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+
+            }
+        }
+
+        public void DeleteAgentPeople(IContext context, InternalDictionaryAgentPeople people)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var ddt = dbContext.DictionaryAgentPeopleSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == people.Id);
+                dbContext.DictionaryAgentPeopleSet.Remove(ddt);
+                dbContext.SaveChanges();
+
+
+                DeleteAgentIfNoAny(context, new List<int>() { people.Id });
+
+                transaction.Complete();
+            }
+        }
+        #endregion
+
         #region [+] DictionaryAgentPerson ...
         public int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { person.Id } }))
-                {
-                    //pss Здесь перетирается имя сформированное предыдущей выноской (для персон и пользователей оно формируется по разному)
-                    UpdateAgentName(context, person.Id, new InternalDictionaryAgent(person));
-                }
-                else
-                {
-                    person.Id = AddAgent(context, new InternalDictionaryAgent(person));
-                };
+                person.Id = AddAgentPeople(context, person);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
 
@@ -364,7 +418,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentName(context, person.Id, new InternalDictionaryAgent(person));
+                UpdateAgentName(context, person.Id, person);
+                UpdateAgentPeople(context, person);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
 
@@ -375,25 +430,6 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
-                transaction.Complete();
-
-            }
-        }
-
-        public void UpdateAgentPersonCompanyId(IContext context, InternalDictionaryAgentPerson person)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
-
-                dbContext.DictionaryAgentPersonsSet.Attach(dbModel);
-
-                var entity = dbContext.Entry(dbModel);
-                entity.Property(x => x.AgentCompanyId).IsModified = true;
-
-                dbContext.SaveChanges();
-
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Update);
                 transaction.Complete();
 
             }
@@ -410,13 +446,13 @@ namespace BL.Database.Dictionaries
 
                 CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
 
-                DeleteAgentIfNoAny(context, new List<int>() { person.Id });
+                DeleteAgentPeople(context, person);
 
                 transaction.Complete();
             }
         }
 
-        public IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter)
+        public IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -429,10 +465,10 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Agent.Name,
                     CompanyId = x.AgentCompanyId ?? -1,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    MiddleName = x.MiddleName,
-                    IsMale = x.IsMale,
+                    FirstName = x.Agent.AgentPeople.FirstName,
+                    LastName = x.Agent.AgentPeople.LastName,
+                    MiddleName = x.Agent.AgentPeople.MiddleName,
+                    //IsMale = x.Agent.AgentPeople.IsMale,
                     Description = x.Description,
                     IsActive = x.IsActive,
                     Position = x.Position,
@@ -479,17 +515,17 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    FullName = x.FullName,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    MiddleName = x.MiddleName,
-                    TaxCode = x.TaxCode,
-                    IsMale = x.IsMale,
-                    PassportSerial = x.PassportSerial,
-                    PassportNumber = x.PassportNumber,
-                    PassportText = x.PassportText,
-                    PassportDate = x.PassportDate,
-                    BirthDate = x.BirthDate,
+                    FullName = x.Agent.AgentPeople.FullName,
+                    FirstName = x.Agent.AgentPeople.FirstName,
+                    LastName = x.Agent.AgentPeople.LastName,
+                    MiddleName = x.Agent.AgentPeople.MiddleName,
+                    TaxCode = x.Agent.AgentPeople.TaxCode,
+                    IsMale = x.Agent.AgentPeople.IsMale,
+                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    PassportText = x.Agent.AgentPeople.PassportText,
+                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    BirthDate = x.Agent.AgentPeople.BirthDate,
                     Position = x.Position,
                     Description = x.Description,
                     IsActive = x.IsActive,
@@ -512,16 +548,16 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    MiddleName = x.MiddleName,
-                    TaxCode = x.TaxCode,
-                    IsMale = x.IsMale,
-                    PassportSerial = x.PassportSerial,
-                    PassportNumber = x.PassportNumber,
-                    PassportText = x.PassportText,
-                    PassportDate = x.PassportDate,
-                    BirthDate = x.BirthDate,
+                    FirstName = x.Agent.AgentPeople.FirstName,
+                    LastName = x.Agent.AgentPeople.LastName,
+                    MiddleName = x.Agent.AgentPeople.MiddleName,
+                    TaxCode = x.Agent.AgentPeople.TaxCode,
+                    IsMale = x.Agent.AgentPeople.IsMale,
+                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    PassportText = x.Agent.AgentPeople.PassportText,
+                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    BirthDate = x.Agent.AgentPeople.BirthDate,
                     Position = x.Position,
                     Description = x.Description,
                     IsActive = x.IsActive,
@@ -545,17 +581,17 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    MiddleName = x.MiddleName,
-                    FullName = x.FullName,
-                    TaxCode = x.TaxCode,
-                    IsMale = x.IsMale,
-                    PassportSerial = x.PassportSerial,
-                    PassportNumber = x.PassportNumber,
-                    PassportText = x.PassportText,
-                    PassportDate = x.PassportDate,
-                    BirthDate = x.BirthDate,
+                    FirstName = x.Agent.AgentPeople.FirstName,
+                    LastName = x.Agent.AgentPeople.LastName,
+                    MiddleName = x.Agent.AgentPeople.MiddleName,
+                    FullName = x.Agent.AgentPeople.FullName,
+                    TaxCode = x.Agent.AgentPeople.TaxCode,
+                    IsMale = x.Agent.AgentPeople.IsMale,
+                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    PassportText = x.Agent.AgentPeople.PassportText,
+                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    BirthDate = x.Agent.AgentPeople.BirthDate,
                     Position = x.Position,
                     Description = x.Description,
                     IsActive = x.IsActive,
@@ -603,10 +639,10 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Список AgentCompanyId
-                if (filter.AgentCompanyIDs?.Count > 0)
+                if (filter.CompanyIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
-                    filterContains = filter.AgentCompanyIDs.Aggregate(filterContains,
+                    filterContains = filter.CompanyIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentCompanyId == value).Expand());
 
                     qry = qry.Where(filterContains);
@@ -633,7 +669,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
+                        (current, value) => current.Or(e => e.Agent.AgentPeople.FullName.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -655,12 +691,12 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.FirstNameExact))
                 {
-                    qry = qry.Where(x => x.FirstName == filter.FirstNameExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.FirstName == filter.FirstNameExact);
                 }
 
                 if (!string.IsNullOrEmpty(filter.LastNameExact))
                 {
-                    qry = qry.Where(x => x.LastName == filter.LastNameExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.LastName == filter.LastNameExact);
                 }
 
                 // Поиск по паспортным данным
@@ -668,7 +704,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Passport).Aggregate(filterContains,
-                        (current, value) => current.Or(e => (e.PassportSerial + "-" + e.PassportNumber + " " + e.PassportDate.ToString() + " " + e.PassportText) == value).Expand());
+                        (current, value) => current.Or(e => (e.Agent.AgentPeople.PassportSerial + "-" + e.Agent.AgentPeople.PassportNumber + " " + e.Agent.AgentPeople.PassportDate.ToString() + " " + e.Agent.AgentPeople.PassportText) == value).Expand());
 
                     qry = qry.Where(filterContains);
 
@@ -679,37 +715,37 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TaxCode.Contains(value)).Expand());
+                        (current, value) => current.Or(e => e.Agent.AgentPeople.TaxCode.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.TaxCodeExact))
                 {
-                    qry = qry.Where(x => x.TaxCode == filter.TaxCodeExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.TaxCode == filter.TaxCodeExact);
                 }
 
                 // Поиск по дате рождения
                 if (filter.BirthPeriod?.HasValue ?? false)
                 {
-                    qry = qry.Where(x => x.BirthDate >= filter.BirthPeriod.DateBeg);
-                    qry = qry.Where(x => x.BirthDate <= filter.BirthPeriod.DateEnd);
+                    qry = qry.Where(x => x.Agent.AgentPeople.BirthDate >= filter.BirthPeriod.DateBeg);
+                    qry = qry.Where(x => x.Agent.AgentPeople.BirthDate <= filter.BirthPeriod.DateEnd);
                 }
 
                 // Поиск по дате рождения
                 if (filter.BirthDateExact != null)
                 {
-                    qry = qry.Where(x => x.BirthDate == filter.BirthDateExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.BirthDate == filter.BirthDateExact);
                 }
 
                 if (!string.IsNullOrEmpty(filter.PassportSerialExact))
                 {
-                    qry = qry.Where(x => x.PassportSerial == filter.PassportSerialExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.PassportSerial == filter.PassportSerialExact);
                 }
 
                 if (filter.PassportNumberExact != null)
                 {
-                    qry = qry.Where(x => x.PassportNumber == filter.PassportNumberExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.PassportNumber == filter.PassportNumberExact);
                 }
             }
 
@@ -723,7 +759,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                employee.Id = AddAgentPerson(context, new InternalDictionaryAgentPerson(employee));
+                employee.Id = AddAgentPeople(context, employee);
                 // решили, что сотрудник и пользователь всегда создаются парой, пользователь может быть деактивирован
                 AddAgentUser(context, new InternalDictionaryAgentUser(employee));
 
@@ -742,7 +778,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentPerson(context, new InternalDictionaryAgentPerson(employee));
+                UpdateAgentPeople(context, employee);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentEmployee(context, employee);
 
@@ -767,7 +803,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
 
                 DeleteAgentUser(context, new InternalDictionaryAgentUser(employee));
-                DeleteAgentPerson(context, new InternalDictionaryAgentPerson(employee));
+                DeleteAgentPeople(context, employee);
 
                 transaction.Complete();
             }
@@ -872,16 +908,16 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    FullName = x.Agent.AgentPerson.FullName,
-                    FirstName = x.Agent.AgentPerson.FirstName,
-                    LastName = x.Agent.AgentPerson.LastName,
-                    MiddleName = x.Agent.AgentPerson.MiddleName,
+                    FullName = x.Agent.AgentPeople.FullName,
+                    FirstName = x.Agent.AgentPeople.FirstName,
+                    LastName = x.Agent.AgentPeople.LastName,
+                    MiddleName = x.Agent.AgentPeople.MiddleName,
 
-                    IsMale = x.Agent.AgentPerson.IsMale,
-                    BirthDate = x.Agent.AgentPerson.BirthDate,
+                    IsMale = x.Agent.AgentPeople.IsMale,
+                    BirthDate = x.Agent.AgentPeople.BirthDate,
 
                     PersonnelNumber = x.PersonnelNumber,
-                    TaxCode = x.Agent.AgentPerson.TaxCode,
+                    TaxCode = x.Agent.AgentPeople.TaxCode,
 
                     LanguageId = x.Agent.AgentUser.LanguageId,
                     LanguageCode = x.Agent.AgentUser.Language.Code,
@@ -889,10 +925,10 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     Description = x.Description,
 
-                    PassportDate = x.Agent.AgentPerson.PassportDate,
-                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
-                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
-                    PassportText = x.Agent.AgentPerson.PassportText,
+                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    PassportText = x.Agent.AgentPeople.PassportText,
 
 
                 }).FirstOrDefault();
@@ -921,14 +957,14 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     Description = x.Description,
                     Name = x.Agent.Name,
-                    FullName = x.Agent.AgentPerson.FullName,
-                    BirthDate = x.Agent.AgentPerson.BirthDate,
+                    FullName = x.Agent.AgentPeople.FullName,
+                    BirthDate = x.Agent.AgentPeople.BirthDate,
                     PersonnelNumber = x.PersonnelNumber,
-                    TaxCode = x.Agent.AgentPerson.TaxCode,
-                    PassportDate = x.Agent.AgentPerson.PassportDate,
-                    PassportSerial = x.Agent.AgentPerson.PassportSerial,
-                    PassportNumber = x.Agent.AgentPerson.PassportNumber,
-                    PassportText = x.Agent.AgentPerson.PassportText,
+                    TaxCode = x.Agent.AgentPeople.TaxCode,
+                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    PassportText = x.Agent.AgentPeople.PassportText,
                     PositionExecutors = x.PositionExecutors
                     .Where(y => y.StartDate <= now && y.EndDate >= now && y.IsActive)
                     .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order).ThenBy(y => y.Position.Name)
@@ -1009,7 +1045,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Agent.AgentPerson.FullName.Contains(value)).Expand());
+                        (current, value) => current.Or(e => e.Agent.AgentPeople.FullName.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -1031,12 +1067,12 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.FirstNameExact))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.FirstName == filter.FirstNameExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.FirstName == filter.FirstNameExact);
                 }
 
                 if (!string.IsNullOrEmpty(filter.LastNameExact))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.LastName == filter.LastNameExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.LastName == filter.LastNameExact);
                 }
 
                 if (filter.PersonnelNumber != null)
@@ -1048,9 +1084,9 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Passport).Aggregate(filterContains,
-                        (current, value) => current.Or(e => (e.Agent.AgentPerson.PassportSerial + "-" + e.Agent.AgentPerson.PassportNumber + " " +
-                                          e.Agent.AgentPerson.PassportDate.ToString() + " " +
-                                          e.Agent.AgentPerson.PassportText) == value).Expand());
+                        (current, value) => current.Or(e => (e.Agent.AgentPeople.PassportSerial + "-" + e.Agent.AgentPeople.PassportNumber + " " +
+                                          e.Agent.AgentPeople.PassportDate.ToString() + " " +
+                                          e.Agent.AgentPeople.PassportText) == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -1059,14 +1095,14 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Agent.AgentPerson.TaxCode.Contains(value)).Expand());
+                        (current, value) => current.Or(e => e.Agent.AgentPeople.TaxCode.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.TaxCodeExact))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.TaxCode == filter.TaxCodeExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.TaxCode == filter.TaxCodeExact);
                 }
 
                 // Поиск по дате рождения
@@ -1074,26 +1110,26 @@ namespace BL.Database.Dictionaries
                 {
                     if (filter.BirthPeriod.HasValue)
                     {
-                        qry = qry.Where(x => x.Agent.AgentPerson.BirthDate >= filter.BirthPeriod.DateBeg);
-                        qry = qry.Where(x => x.Agent.AgentPerson.BirthDate <= filter.BirthPeriod.DateEnd);
+                        qry = qry.Where(x => x.Agent.AgentPeople.BirthDate >= filter.BirthPeriod.DateBeg);
+                        qry = qry.Where(x => x.Agent.AgentPeople.BirthDate <= filter.BirthPeriod.DateEnd);
                     }
                 }
 
                 // Поиск по дате рождения
                 if (filter.BirthDateExact != null)
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.BirthDate == filter.BirthDateExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.BirthDate == filter.BirthDateExact);
                 }
 
 
                 if (!string.IsNullOrEmpty(filter.PassportSerialExact))
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.PassportSerial == filter.PassportSerialExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.PassportSerial == filter.PassportSerialExact);
                 }
 
                 if (filter.PassportNumberExact != null)
                 {
-                    qry = qry.Where(x => x.Agent.AgentPerson.PassportNumber == filter.PassportNumberExact);
+                    qry = qry.Where(x => x.Agent.AgentPeople.PassportNumber == filter.PassportNumberExact);
                 }
 
                 if (filter.RoleIDs?.Count > 0)
@@ -1618,43 +1654,43 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
-        #region [+] DictionaryAgentClientCompanies ...
-        public int AddAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany company)
+        #region [+] DictionaryAgentOrg ...
+        public int AddAgentOrg(IContext context, InternalDictionaryAgentOrg org)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
 
-                if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { company.Id } }))
+                if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { org.Id } }))
                 {
                     //pss Здесь перетирается имя сформированное предыдущей выноской 
-                    UpdateAgentName(context, company.Id, new InternalDictionaryAgent(company));
+                    UpdateAgentName(context, org.Id, org);
                 }
                 else
                 {
-                    company.Id = AddAgent(context, new InternalDictionaryAgent(company));
+                    org.Id = AddAgent(context, org);
                 };
 
-                DictionaryCompanies dc = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
+                DictionaryCompanies dc = DictionaryModelConverter.GetDbAgentOrg(context, org);
                 dbContext.DictionaryAgentClientCompaniesSet.Add(dc);
                 dbContext.SaveChanges();
 
-                company.Id = dc.Id;
+                org.Id = dc.Id;
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
                 transaction.Complete();
 
-                return company.Id;
+                return org.Id;
             }
 
         }
 
-        public void UpdateAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany company)
+        public void UpdateAgentOrg(IContext context, InternalDictionaryAgentOrg org)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentName(context, company.Id, new InternalDictionaryAgent(company));
+                UpdateAgentName(context, org.Id, org);
 
-                DictionaryCompanies drj = DictionaryModelConverter.GetDbAgentClientCompany(context, company);
+                DictionaryCompanies drj = DictionaryModelConverter.GetDbAgentOrg(context, org);
                 dbContext.DictionaryAgentClientCompaniesSet.Attach(drj);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
@@ -1664,7 +1700,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentClientCompany(IContext context, List<int> list)
+        public void DeleteAgentOrg(IContext context, List<int> list)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1685,13 +1721,13 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public InternalDictionaryAgentClientCompany GetInternalAgentClientCompany(IContext context, FilterDictionaryAgentClientCompany filter)
+        public InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
 
-                var res = qry.Select(x => new InternalDictionaryAgentClientCompany
+                var res = qry.Select(x => new InternalDictionaryAgentOrg
                 {
                     Id = x.Id,
                     IsActive = x.IsActive,
@@ -1707,7 +1743,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter)
+        public IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1730,7 +1766,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentClientCompany filter)
+        public IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1757,7 +1793,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int positionId, FilterDictionaryAgentClientCompany filter)
+        public IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int positionId, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1786,7 +1822,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentClientCompany filter)
+        public IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1816,7 +1852,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        private IQueryable<DictionaryCompanies> GetAgentClientCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentClientCompany filter)
+        private IQueryable<DictionaryCompanies> GetAgentClientCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentOrg filter)
         {
             var qry = dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -1872,7 +1908,7 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        public bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter)
+        public bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1883,7 +1919,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        #endregion DictionaryCompanies
+        #endregion
 
         #region [+] DictionaryAgentCompanies ...
         public int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company)
@@ -1894,11 +1930,11 @@ namespace BL.Database.Dictionaries
                 if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { company.Id } }))
                 {
                     //pss Здесь перетирается имя сформированное предыдущей выноской 
-                    UpdateAgentName(context, company.Id, new InternalDictionaryAgent(company));
+                    UpdateAgentName(context, company.Id, company);
                 }
                 else
                 {
-                    company.Id = AddAgent(context, new InternalDictionaryAgent(company));
+                    company.Id = AddAgent(context, company);
                 };
 
                 var dbModel = DictionaryModelConverter.GetDbAgentCompany(context, company);
@@ -1917,7 +1953,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentName(context, company.Id, new InternalDictionaryAgent(company));
+                UpdateAgentName(context, company.Id, company);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentCompany(context, company);
 
@@ -2122,11 +2158,11 @@ namespace BL.Database.Dictionaries
                 if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { bank.Id } }))
                 {
                     //pss Здесь перетирается имя сформированное предыдущей выноской
-                    UpdateAgentName(context, bank.Id, new InternalDictionaryAgent(bank));
+                    UpdateAgentName(context, bank.Id, bank);
                 }
                 else
                 {
-                    bank.Id = AddAgent(context, new InternalDictionaryAgent(bank));
+                    bank.Id = AddAgent(context, bank);
                 };
 
 
@@ -2146,7 +2182,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentName(context, bank.Id, new InternalDictionaryAgent(bank));
+                UpdateAgentName(context, bank.Id, bank);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentBank(context, bank);
 
@@ -5904,7 +5940,7 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
-                    LastChangeUserName = dbContext.DictionaryAgentPersonsSet.FirstOrDefault(y => y.Id == x.LastChangeUserId).FullName,
+                    LastChangeUserName = dbContext.DictionaryAgentsSet.FirstOrDefault(y => y.Id == x.LastChangeUserId).Name,
                     DocCount = filter.WithDocCount ? dbContext.DocumentTagsSet.Count(z => z.TagId == x.Id) : 0
                 }).ToList();
 
