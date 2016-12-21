@@ -30,18 +30,17 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <summary>
         /// Возвращает список назначений
         /// </summary>
-        /// <param name="PositionId">ИД сотрудника</param>
+        /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Executors")]
+        [Route("{Id:int}/Executors")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult Get(int PositionId, [FromUri] FilterDictionaryPositionExecutor filter)
+        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
-
-            filter.PositionIDs = new List<int> { PositionId };
+            filter.PositionIDs = new List<int> { Id };
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();

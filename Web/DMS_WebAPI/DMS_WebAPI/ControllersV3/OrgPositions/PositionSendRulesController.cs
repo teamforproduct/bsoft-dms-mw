@@ -38,18 +38,42 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <summary>
         /// Возвращает список должностей с пычками для управления рассылкой для сведения и для исполнения
         /// </summary>
-        /// <param name="PositionId"></param>
+        /// <param name="Id"></param>
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("SendRules")]
+        [Route("{Id:int}/SendRules")]
         [ResponseType(typeof(List<FrontAdminSubordination>))]
-        public IHttpActionResult GetSubordinationsDIP([FromUri] int PositionId, [FromUri] FilterAdminSubordinationTree filter)
+        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterAdminSubordinationTree();
+            filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetSubordinationsDIP(ctx, PositionId, filter);
+            var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Режим корректировки. Возвращает список должностей с пычками для управления рассылкой для сведения и для исполнения.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="filter">"</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{Id:int}/SendRules/Edit")]
+        [ResponseType(typeof(List<FrontAdminSubordination>))]
+        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterAdminSubordinationTree();
+            filter.IsChecked = false;
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

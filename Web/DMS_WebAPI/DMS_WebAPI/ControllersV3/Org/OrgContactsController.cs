@@ -26,19 +26,17 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <summary>
         /// Возвращает список контактов
         /// </summary>
-        /// <param name="OrgId">ИД сотрудника</param>
+        /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Contacts")]
+        [Route("{Id:int}/Contacts")]
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
-        public IHttpActionResult Get(int OrgId, [FromUri] FilterDictionaryContact filter)
+        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryContact filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryContact();
-
-            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { OrgId };
-            else filter.AgentIDs.Add(OrgId);
+            filter.AgentIDs = new List<int> { Id };
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
