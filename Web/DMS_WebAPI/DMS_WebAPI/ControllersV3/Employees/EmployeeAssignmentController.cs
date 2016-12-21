@@ -51,18 +51,18 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <summary>
         /// Возвращает список назначений сотрудника
         /// </summary>
-        /// <param name="EmployeeId">ИД сотрудника</param>
+        /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Assignments/Current")]
+        [Route("{Id:int}/Assignments/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult GetCurrent(int EmployeeId, [FromUri] FilterDictionaryPositionExecutor filter)
+        public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
-            filter.AgentIDs = new List<int> { EmployeeId };
+            filter.AgentIDs = new List<int> { Id };
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
 

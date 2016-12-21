@@ -53,18 +53,18 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <summary>
         /// Возвращает список текущих (актуальных) назначений
         /// </summary>
-        /// <param name="PositionId">ИД сотрудника</param>
+        /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Executors/Current")]
+        [Route("{Id:int}/Executors/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult GetCurrent(int PositionId, [FromUri] FilterDictionaryPositionExecutor filter)
+        public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
-            filter.PositionIDs = new List<int> { PositionId };
+            filter.PositionIDs = new List<int> { Id };
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
 
