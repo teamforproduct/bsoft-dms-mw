@@ -35,8 +35,9 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetContactPersons(IContext context, FilterDictionaryAgentPerson filter);
-        IEnumerable<FrontDictionaryAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<FrontListAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
+        FrontAgentPerson GetAgentPerson(IContext context, int id);
         #endregion DictionaryAgentPerson
 
         #region DictionaryAgentEmployee
@@ -46,7 +47,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
         FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
-        IEnumerable<FrontMainDictionaryAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        IEnumerable<FrontListAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee

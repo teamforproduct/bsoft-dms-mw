@@ -11,7 +11,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
-    public class FrontDictionaryAgentPerson : FrontDictionaryAgent
+    public class FrontListAgentPerson : FrontDictionaryAgent
     {
         /// <summary>
         /// ID
@@ -59,8 +59,12 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дата рождения
         /// </summary>
         public DateTime? BirthDate { get { return _BirthDate; } set { _BirthDate=value.ToUTC(); } }
-        private DateTime?  _BirthDate; 
+        private DateTime?  _BirthDate;
 
+        /// <summary>
+        /// Должность (текстопое поле)
+        /// </summary>
+        public string Position { get; set; }
 
         /// <summary>
         /// Полное имя

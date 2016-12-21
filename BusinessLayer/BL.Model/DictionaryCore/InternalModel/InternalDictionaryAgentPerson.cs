@@ -56,6 +56,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public void SetInternalDictionaryAgentContactPerson(AddAgentContactPerson model)
         {
             AgentCompanyId = model.CompanyId;
+            Position = model.Position;
             Name = model.Name;
             FirstName = model.FirstName;
             LastName = model.LastName;
@@ -137,6 +138,10 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// </summary>
         public int? AgentCompanyId { get; set; }
 
+        /// <summary>
+        /// Должность
+        /// </summary>
+        public string Position { get; set; }
 
         /// <summary>
         /// Дополнительная информация

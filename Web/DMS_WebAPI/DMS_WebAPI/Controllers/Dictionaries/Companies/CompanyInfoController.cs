@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpGet]
         [Route("Info")]
-        [ResponseType(typeof(List<FrontDictionaryAgentPerson>))]
+        [ResponseType(typeof(List<FrontListAgentPerson>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns>запись справочника агентов-физлиц</returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentPerson))]
+        [ResponseType(typeof(FrontListAgentPerson))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentPerson, ctx, Id);
 
 
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
+            FrontListAgentPerson tmp = new FrontListAgentPerson();
             tmp.Id = Id;
 
             return new JsonResult(tmp, this);

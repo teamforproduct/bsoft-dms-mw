@@ -89,8 +89,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.ModifyContactPerson, ctx, model);
-            return Get(tmpItem);
+            tmpService.ExecuteAction(EnumDictionaryActions.ModifyContactPerson, ctx, model);
+            return Get(model.Id);
         }
 
         /// <summary>
@@ -110,7 +110,6 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             tmp.Id = id;
 
             return new JsonResult(tmp, this);
-
         }
 
         /// <summary>

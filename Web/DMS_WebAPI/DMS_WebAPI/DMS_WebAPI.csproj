@@ -266,6 +266,9 @@
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactPersonsContactsController.cs" />
+    <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
+    <Compile Include="ControllersV3\System\AddressTypeInfoController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentTypeInfoController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeAssignmentController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeContactsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeInfoController.cs" />

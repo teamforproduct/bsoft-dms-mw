@@ -44,16 +44,17 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("Id")]
         public virtual DictionaryAgentCompanies AgentCompany { get; set; }
         [ForeignKey("Id")]
+        public virtual DictionaryAgentPeople AgentPeople { get; set; }
+        [ForeignKey("Id")]
         public virtual DictionaryAgentPersons AgentPerson { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgentBanks AgentBank { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgentEmployees AgentEmployee { get; set; }
-
         [ForeignKey("Id")]
         public virtual DictionaryAgentUsers AgentUser { get; set; }
         [ForeignKey("Id")]
-        public virtual DictionaryCompanies Company { get; set; }
+        public virtual DictionaryCompanies AgentOrg { get; set; }
 
         public virtual DictionaryResidentTypes ResidentType { get; set; }
 

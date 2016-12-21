@@ -29,11 +29,12 @@ namespace BL.Logic.DictionaryCore
         {
             using (var transaction = Transactions.GetTransaction())
             {
-                var person = _dictDb.GetInternalAgentPersons(_context, new FilterDictionaryAgentPerson { IDs = new List<int> { Model.Id } }).FirstOrDefault();
+                var person = _dictDb.GetAgentPerson(_context, Model.Id);
 
                 if (person == null) throw new DictionaryRecordWasNotFound();
 
                 person.AgentCompanyId = Model.CompanyId;
+                person.Position = Model.Description;
                 person.Name = Model.Name;
                 person.FirstName = Model.FirstName;
                 person.LastName = Model.LastName;
@@ -42,7 +43,9 @@ namespace BL.Logic.DictionaryCore
                 person.Description = Model.Description;
                 person.IsActive = Model.IsActive;
 
-                CommonDocumentUtilities.SetLastChange(_context, person);
+                var model = new InternalDictionaryAgentPerson(person);
+
+                CommonDocumentUtilities.SetLastChange(_context, model);
 
                 _dictService.ExecuteAction(BL.Model.Enums.EnumDictionaryActions.ModifyAgentPerson, _context, person);
 

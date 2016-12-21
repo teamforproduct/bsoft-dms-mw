@@ -1,105 +1,96 @@
 ﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
-using BL.Model.SystemCore;
+using BL.Model.Enums;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
-
 using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 
-namespace DMS_WebAPI.ControllersV3.Persons
+namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// Физические лица
+    /// Адреса юридического лица
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Person)]
-    public class PersonInfoController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.ContactType)]
+    public class ContactTypeInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Список физических лиц
+        /// Возвращает список типов контактов
         /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
+        /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
-        //[HttpGet]
-        //[Route("Info/Main")]
-        //[ResponseType(typeof(List<FrontMainDictionaryAgentPerson>))]
-        //public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-        //    var tmpItems = tmpService.GetDictionaryAgentPersons(ctx, filter, paging);
-        //    var res = new JsonResult(tmpItems, this);
-        //    res.Paging = paging;
-        //    res.SpentTime = stopWatch;
-        //    return res;
-        //}
-
+        [HttpGet]
+        [Route("Info/Main")]
+        [ResponseType(typeof(List<FrontDictionaryContactType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryContactType filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryContactTypes(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
         /// <summary>
-        /// Возвращает реквизиты физического лица
+        /// Возвращает тип контакта по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontListAgentPerson))]
+        [ResponseType(typeof(FrontDictionaryContactType))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentPerson(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryContactType(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет физическое лицо
+        /// Создает новый тип контакта
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddAgentPerson model)
+        public IHttpActionResult Post([FromBody]AddContactType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentPerson, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddContactType, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует реквизиты физического лица
+        /// Корректирует тип контакта
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyAgentPerson model)
+        public IHttpActionResult Put([FromBody]ModifyContactType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyAgentPerson, model);
+            Action.Execute(EnumDictionaryActions.ModifyContactType, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет физическое лицо
+        /// Удаляет тип контакта
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -108,12 +99,11 @@ namespace DMS_WebAPI.ControllersV3.Persons
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteAgentPerson, Id);
+            Action.Execute(EnumDictionaryActions.DeleteContactType, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
-
     }
 }

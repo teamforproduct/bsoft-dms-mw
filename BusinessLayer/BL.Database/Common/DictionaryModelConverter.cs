@@ -245,6 +245,7 @@ namespace BL.Database.Common
                 PassportDate = item.PassportDate,
                 BirthDate = item.BirthDate,
                 AgentCompanyId = item.AgentCompanyId,
+                Position= item.Position,
                 Description = item.Description,
                 IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
