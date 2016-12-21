@@ -99,7 +99,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         OffEventId = x.OffEventId,
                         ParentId = x.ParentId,
-                        IsHasMarkExecution = x.ChildWaits.Any(y => y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution),
+                        IsHasMarkExecution = x.ChildWaits.Any(y => y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution && !y.OffEventId.HasValue),
                         OnEvent = new InternalDocumentEvent
                         {
                             Id = x.OnEvent.Id,
@@ -690,7 +690,7 @@ namespace BL.Database.Documents
                                             ParentOnEventId = x.ParentWait.OnEventId,
                                             OffEventId = x.OffEventId,
                                             OnEventId = x.OnEventId,
-                                            IsHasMarkExecution = x.ChildWaits.Any(y=>y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution),
+                                            IsHasMarkExecution = x.ChildWaits.Any(y=>y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution && !y.OffEventId.HasValue),
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,

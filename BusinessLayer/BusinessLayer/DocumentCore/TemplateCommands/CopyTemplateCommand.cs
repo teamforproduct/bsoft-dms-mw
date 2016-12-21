@@ -74,7 +74,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 {
                     x.DocumentId = _templateDoc.Id;
                     if (string.IsNullOrEmpty(x.TaskName))
-                        x.TaskId = _templateDoc.Tasks.Where(y => x.TaskName == y.Task).Select(y => y.Id).FirstOrDefault();
+                        x.TaskId = _templateDoc.Tasks.Where(y => x.TaskName == y.Task).Select(y => (int?)y.Id).FirstOrDefault();
                     x.Id = _operationDb.AddOrUpdateTemplateSendList(_context, x);
                 });
                 _templateDoc.RestrictedSendLists.ToList().ForEach(x =>
