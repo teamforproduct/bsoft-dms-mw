@@ -464,11 +464,11 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    CompanyId = x.Agent.AgentPerson.AgentCompanyId ?? -1,
+                    CompanyId = x.AgentCompanyId ?? -1,
                     FirstName = x.Agent.AgentPeople.FirstName,
                     LastName = x.Agent.AgentPeople.LastName,
                     MiddleName = x.Agent.AgentPeople.MiddleName,
-                    IsMale = x.Agent.AgentPeople.IsMale,
+                    //IsMale = x.Agent.AgentPeople.IsMale,
                     Description = x.Description,
                     IsActive = x.IsActive,
                     Position = x.Position,

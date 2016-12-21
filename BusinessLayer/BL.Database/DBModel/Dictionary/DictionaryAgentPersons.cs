@@ -14,37 +14,6 @@ namespace BL.Database.DBModel.Dictionary
         //[Index("IX_FullName", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
-        [MaxLength(400)]
-        //[Index("IX_FullName", 1, IsUnique = true)]
-        [Obsolete("UseAgentPeople",true)]
-        public string FullName { get; set; }
-        [MaxLength(2000)]
-        [Obsolete("UseAgentPeople", true)]
-        public string LastName { get; set; }
-        [MaxLength(2000)]
-        [Obsolete("UseAgentPeople", true)]
-        public string FirstName { get; set; }
-        [MaxLength(2000)]
-        [Obsolete("UseAgentPeople", true)]
-        public string MiddleName { get; set; }
-        [MaxLength(2000)]
-        [Obsolete("UseAgentPeople", true)]
-        public string TaxCode { get; set; }
-        [Obsolete("UseAgentPeople", true)]
-        public bool IsMale { get; set; }
-        [MaxLength(2000)]
-        [Obsolete("UseAgentPeople", true)]
-        public string PassportSerial { get; set; }
-        [Obsolete("UseAgentPeople", true)]
-        public Nullable<int> PassportNumber { get; set; }
-        [MaxLength(2000)]
-        [Obsolete("UseAgentPeople", true)]
-        public string PassportText { get; set; }
-        [Obsolete("UseAgentPeople", true)]
-        public Nullable<DateTime> PassportDate { get; set; }
-        [Obsolete("UseAgentPeople", true)]
-        public Nullable<DateTime> BirthDate { get; set; }
-        
         public Nullable<int> AgentCompanyId { get; set; }
 
         /// <summary>
@@ -60,6 +29,9 @@ namespace BL.Database.DBModel.Dictionary
 
         [ForeignKey("Id")]
         public virtual DictionaryAgents Agent { get; set; }
+        [ForeignKey("Id")]
+        public virtual DictionaryAgentPeople People { get; set; }
+
         [ForeignKey("AgentCompanyId")]
         public virtual DictionaryAgentCompanies AgentCompany { get; set; }
 

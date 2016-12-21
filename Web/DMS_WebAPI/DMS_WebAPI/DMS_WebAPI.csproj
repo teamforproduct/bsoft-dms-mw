@@ -261,6 +261,8 @@
     <Compile Include="ControllersV3\Banks\BankAddressesController.cs" />
     <Compile Include="ControllersV3\Banks\BankContactsController.cs" />
     <Compile Include="ControllersV3\Banks\BankInfoController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactPersonsContactsController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactPersonsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
