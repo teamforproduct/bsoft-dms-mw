@@ -35,6 +35,10 @@ namespace BL.Model.DocumentCore.FrontModel
         ///  Название исполнителя по должности, на момент создания связи
         /// </summary>
         public string ExecutorPositionExecutorAgentName { get; set; }
+        /// <summary>
+        /// Может ли пользователь удалить связь
+        /// </summary>
+        public bool? CanDelete { get; set; }
 
     }
 }

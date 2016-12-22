@@ -2580,7 +2580,11 @@ namespace BL.Database.Common
             {
                 CommonQueries.ChangeRegistrationFullNumber(x);
                 var links = x.Links.ToList();
-                links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
+                links.ForEach(y => 
+                {
+                    CommonQueries.ChangeRegistrationFullNumber(y);
+                    y.CanDelete = context.CurrentPositionsIdList.Contains(y.ExecutorPositionId??(int)EnumSystemPositions.AdminPosition);
+                });
                 x.Links = links;
                 x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, context, new FilterDictionaryPosition { DocumentIDs = new List<int> { x.Id } });
                 //TODO x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
