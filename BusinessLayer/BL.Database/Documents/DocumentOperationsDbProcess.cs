@@ -1090,19 +1090,27 @@ namespace BL.Database.Documents
                     LastChangeDate = sendList.LastChangeDate,
                     LastChangeUserId = sendList.LastChangeUserId
                 };
-                dbContext.DocumentSendListsSet.Attach(sendListDb);
                 sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
-                if (sendList.CloseEvent != null)
+                if (sendList.Stage.HasValue)
                 {
-                    sendListDb.CloseEvent = sendListDb.StartEvent;
+                    if (sendList.CloseEvent != null)
+                    {
+                        sendListDb.CloseEvent = sendListDb.StartEvent;
+                    }
+                    dbContext.DocumentSendListsSet.Attach(sendListDb);
+                    var entry = dbContext.Entry(sendListDb);
+                    //entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(e => e.AddDescription).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    dbContext.SaveChanges();
                 }
-                var entry = dbContext.Entry(sendListDb);
-                //entry.Property(x => x.Id).IsModified = true;
-                entry.Property(e => e.AddDescription).IsModified = true;
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
-                dbContext.SaveChanges();
-
+                else
+                {
+                    dbContext.DocumentEventsSet.Add(sendListDb.StartEvent);
+                    dbContext.SaveChanges();
+                    sendListDb.StartEventId = sendListDb.StartEvent.Id;
+                }
                 if (document.Accesses?.Any() ?? false)
                 {
                     dbContext.DocumentAccessesSet.AddRange(
@@ -1754,9 +1762,9 @@ namespace BL.Database.Documents
                     ((List<InternalDocumentSendList>)sendList).ForEach(x => x.TaskId = taskDb.Id);
                 }
 
-                if (sendList?.Any() ?? false)
+                if (sendList?.Any(x=>x.Stage.HasValue) ?? false)
                 {
-                    var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList).ToList();
+                    var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList.Where((x => x.Stage.HasValue))).ToList();
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                     dbContext.SaveChanges();
                     res = sendListsDb.Select(x => x.Id).ToList();
@@ -1957,7 +1965,7 @@ namespace BL.Database.Documents
                     var item = new DocumentSendLists
                     {
                         Id = sl.Id,
-                        Stage = sl.Stage,
+                        Stage = sl.Stage.Value,
                         LastChangeUserId = sl.LastChangeUserId,
                         LastChangeDate = sl.LastChangeDate
                     };

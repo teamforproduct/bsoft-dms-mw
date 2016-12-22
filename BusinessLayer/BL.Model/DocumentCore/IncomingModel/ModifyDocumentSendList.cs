@@ -26,10 +26,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// Номер этапа
+        /// Номер этапа, если null, то 
         /// </summary>
-        [Required]
-        public int Stage { get; set; }
+        public int? Stage { get; set; }
         /// <summary>
         /// ИД типа рассылки
         /// </summary>

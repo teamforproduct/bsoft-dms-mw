@@ -83,8 +83,11 @@ namespace BL.Logic.DocumentCore.Commands
 
             if (ex != null)
             {
-                Model.AddDescription = ex.Message;
-                _operationDb.ModifyDocumentSendListAddDescription(_context, Model);
+                if (Model.Stage.HasValue)
+                {
+                    Model.AddDescription = ex.Message;
+                    _operationDb.ModifyDocumentSendListAddDescription(_context, Model);
+                }
                 throw ex;
             }
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);

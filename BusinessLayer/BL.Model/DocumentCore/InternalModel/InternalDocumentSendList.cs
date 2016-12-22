@@ -10,7 +10,7 @@ namespace BL.Model.DocumentCore.InternalModel
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
-        public int Stage { get; set; }
+        public int? Stage { get; set; }
         public EnumSendTypes SendType { get; set; }
 
         public int SourcePositionId { get; set; }

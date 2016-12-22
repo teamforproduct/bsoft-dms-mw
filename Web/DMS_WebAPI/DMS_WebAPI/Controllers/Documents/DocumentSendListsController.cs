@@ -48,8 +48,11 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
-            return Get(newId);
+            var newId = docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
+            if (newId == null)
+                return new JsonResult(true, this);
+            else
+                return Get((int)newId);
         }
 
         /// <summary>

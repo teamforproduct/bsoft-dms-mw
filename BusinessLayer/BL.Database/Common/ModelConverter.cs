@@ -210,7 +210,7 @@ namespace BL.Database.Common
                 {
                     Id = sendList.Id,
                     DocumentId = sendList.DocumentId,
-                    Stage = sendList.Stage,
+                    Stage = sendList.Stage.Value,
                     SendTypeId = (int)sendList.SendType,
 
                     TaskId = sendList.TaskId,
