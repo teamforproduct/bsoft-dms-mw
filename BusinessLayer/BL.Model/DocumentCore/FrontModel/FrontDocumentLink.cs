@@ -9,7 +9,14 @@ namespace BL.Model.DocumentCore.FrontModel
         /// ID 
         /// </summary>
         public int Id { get; set; }
-
+        /// <summary>
+        /// DocumentId 
+        /// </summary>
+        public int DocumentId { get; set; }
+        /// <summary>
+        /// ParentDocumentId 
+        /// </summary>
+        public int ParentDocumentId { get; set; }
         /// <summary>
         /// общая информация о связи
         /// </summary>

@@ -2547,6 +2547,8 @@ namespace BL.Database.Common
                                     .Select(z => new FrontDocumentLink
                                     {
                                         Id = z.Id,
+                                        DocumentId = z.DocumentId,
+                                        ParentDocumentId = z.ParentDocumentId,
                                         LinkTypeName = z.LinkType.Name,
                                         IsParent = true,
                                         RegistrationNumber = z.ParentDocument.RegistrationNumber,
@@ -2563,6 +2565,8 @@ namespace BL.Database.Common
                                     .Select(z => new FrontDocumentLink
                                     {
                                         Id = z.Id,
+                                        DocumentId = z.DocumentId,
+                                        ParentDocumentId = z.ParentDocumentId,
                                         LinkTypeName = z.LinkType.Name,
                                         IsParent = false,
                                         RegistrationNumber = z.Document.RegistrationNumber,
