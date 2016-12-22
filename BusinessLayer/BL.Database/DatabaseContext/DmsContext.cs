@@ -126,6 +126,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryResultTypes> DictionaryResultTypesSet { get; set; }
         public virtual DbSet<DictionarySubscriptionStates> DictionarySubscriptionStatesSet { get; set; }
         public virtual DbSet<DictionarySendTypes> DictionarySendTypesSet { get; set; }
+        public virtual DbSet<DictionaryStageTypes> DictionaryStageTypesSet { get; set; }
         public virtual DbSet<DictionaryStandartSendListContents> DictionaryStandartSendListContentsSet { get; set; }
         public virtual DbSet<DictionaryStandartSendLists> DictionaryStandartSendListsSet { get; set; }
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }

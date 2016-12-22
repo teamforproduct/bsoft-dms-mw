@@ -15,6 +15,7 @@ namespace BL.Database.DBModel.Document
         }
         public int Id { get; set; }
         public int DocumentId { get; set; }
+        public int? StageTypeId { get; set; }
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
         public int SourcePositionId { get; set; }
@@ -50,6 +51,8 @@ namespace BL.Database.DBModel.Document
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
+        [ForeignKey("StageTypeId")]
+        public virtual DictionaryStageTypes StageType { get; set; }
         [ForeignKey("SendTypeId")]
         public virtual DictionarySendTypes SendType { get; set; }
         [ForeignKey("TaskId")]

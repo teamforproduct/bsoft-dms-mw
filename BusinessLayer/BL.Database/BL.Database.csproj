@@ -175,6 +175,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentUsers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryStageTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySettingTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySigningTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryFileTypes.cs" />
@@ -487,6 +488,10 @@
     <Compile Include="Migrations\201612211618326_DellPersonFields.Designer.cs">
       <DependentUpon>201612211618326_DellPersonFields.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612222121072_StageTypes.cs" />
+    <Compile Include="Migrations\201612222121072_StageTypes.Designer.cs">
+      <DependentUpon>201612222121072_StageTypes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -722,6 +727,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612211618326_DellPersonFields.resx">
       <DependentUpon>201612211618326_DellPersonFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612222121072_StageTypes.resx">
+      <DependentUpon>201612222121072_StageTypes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

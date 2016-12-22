@@ -21,6 +21,7 @@ namespace BL.Database.DBModel.Template
         public Nullable<int> TaskId { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        public int? StageTypeId { get; set; }
         public int Stage { get; set; }
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
@@ -36,6 +37,8 @@ namespace BL.Database.DBModel.Template
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]
         public virtual TemplateDocuments Document { get; set; }
+        [ForeignKey("StageTypeId")]
+        public virtual DictionaryStageTypes StageType { get; set; }
         [ForeignKey("SendTypeId")]
         public virtual DictionarySendTypes SendType { get; set; }
         [ForeignKey("SourcePositionId")]
