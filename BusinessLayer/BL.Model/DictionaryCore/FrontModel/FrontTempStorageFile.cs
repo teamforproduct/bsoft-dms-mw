@@ -1,15 +1,16 @@
 ﻿namespace BL.Model.DictionaryCore.FrontModel
 {
     /// <summary>
-    /// Контрагент - сотрудник
+    /// Файл
     /// </summary>
-    public class FrontDictionaryAgentUserPicture
+    public class FrontTempFileStorage
     {
 
         /// <summary>
         /// ИД
         /// </summary>
         public int Id { get; set; }
+
         /// <summary>
         /// Картинка
         /// </summary>

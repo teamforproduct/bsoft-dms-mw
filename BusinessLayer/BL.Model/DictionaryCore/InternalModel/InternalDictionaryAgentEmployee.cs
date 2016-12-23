@@ -37,7 +37,15 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
             Id = model.Id;
             SetInternalDictionaryAgentEmployee(model);
+        }
 
+        public InternalDictionaryAgentEmployee(ModifyAgentPeoplePassport model)
+        {
+            Id = model.Id;
+            PassportDate = model.PassportDate;
+            PassportNumber = model.PassportNumber;
+            PassportSerial = model.PassportSerial;
+            PassportText = model.PassportText;
         }
 
         private void SetInternalDictionaryAgentEmployee(AddAgentEmployee model)
@@ -48,10 +56,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             MiddleName = model.MiddleName;
             TaxCode = model.TaxCode;
             IsMale = model.IsMale;
-            PassportDate = model.PassportDate;
-            PassportNumber = model.PassportNumber;
-            PassportSerial = model.PassportSerial;
-            PassportText = model.PassportText;
             Description = model.Description;
             BirthDate = model.BirthDate;
             IsActive = model.IsActive;
@@ -62,6 +66,8 @@ namespace BL.Model.DictionaryCore.InternalModel
             #endregion
 
         }
+
+        
 
         /// <summary>
         /// Дополнительная информация

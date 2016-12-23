@@ -20,13 +20,13 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string FullName { get; set; }
 
-        /// <summary>
-        /// Паспортные данные
-        /// </summary>
-        public string Passport
-        {
-            get { string pass = PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
-        }
+        ///// <summary>
+        ///// Паспортные данные
+        ///// </summary>
+        //public string Passport
+        //{
+        //    get { string pass = PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
+        //}
 
         /// <summary>
         /// Назване компании, контактным лицом которой является физическое лицо
