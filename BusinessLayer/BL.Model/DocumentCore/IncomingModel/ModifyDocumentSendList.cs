@@ -32,7 +32,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД типа этапа
         /// </summary>
-        public EnumStageTypes StageType { get; set; }
+        public EnumStageTypes? StageType { get; set; }
         /// <summary>
         /// ИД типа рассылки
         /// </summary>

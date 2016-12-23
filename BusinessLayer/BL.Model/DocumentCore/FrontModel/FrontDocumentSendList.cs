@@ -24,7 +24,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД типа этапа
         /// </summary>
-        public EnumStageTypes StageType { get; set; }
+        public EnumStageTypes? StageType { get; set; }
         /// <summary>
         /// ИД типа рассылки
         /// </summary>

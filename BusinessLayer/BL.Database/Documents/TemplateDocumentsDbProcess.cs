@@ -300,7 +300,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalTemplateDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
-                        StageType = (EnumStageTypes)y.StageTypeId,
+                        StageType = (EnumStageTypes?)y.StageTypeId,
                         SourcePositionId = y.SourcePositionId,
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
