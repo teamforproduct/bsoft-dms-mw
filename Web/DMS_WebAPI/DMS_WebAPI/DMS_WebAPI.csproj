@@ -307,6 +307,7 @@
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryStageTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\Persons\PersonAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\ClientCompanies\ClientCompanyAddressesController.cs" />
     <Compile Include="Controllers\Dictionaries\Employees\EmployeeAddressesController.cs" />

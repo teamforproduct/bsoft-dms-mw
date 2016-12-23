@@ -199,6 +199,12 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionarySendType> GetDictionarySendTypes(IContext context, FilterDictionarySendType filter);
         #endregion DictionarySendTypes
 
+        #region DictionaryStageTypes
+        FrontDictionaryStageType GetDictionaryStageType(IContext context, int id);
+
+        IEnumerable<FrontDictionaryStageType> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter);
+        #endregion DictionarySendTypes
+
         #region DictionaryStandartSendListContents
         FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id);
 

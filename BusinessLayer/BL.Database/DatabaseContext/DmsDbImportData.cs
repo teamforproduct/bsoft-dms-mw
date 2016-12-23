@@ -863,6 +863,29 @@ namespace BL.Database.DatabaseContext
             };
         }
 
+        public static List<DictionaryStageTypes> GetDictionaryStageTypes()
+        {
+            var items = new List<DictionaryStageTypes>();
+
+            items.Add(GetDictionaryStageType(EnumStageTypes.Signing));
+            items.Add(GetDictionaryStageType(EnumStageTypes.Sending));
+
+            return items;
+        }
+
+        private static DictionaryStageTypes GetDictionaryStageType(EnumStageTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new DictionaryStageTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
         public static List<DicRegJournalAccessTypes> GetDictionaryRegistrationJournalAccessTypes()
         {
             var items = new List<DicRegJournalAccessTypes>();

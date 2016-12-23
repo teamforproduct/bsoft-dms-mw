@@ -836,6 +836,18 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionarySendTypes
 
+        #region DictionaryStageTypes
+        public FrontDictionaryStageType GetDictionaryStageType(IContext context, int id)
+        {
+            return _dictDb.GetStageTypes(context, new FilterDictionaryStageType { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryStageType> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter)
+        {
+            return _dictDb.GetStageTypes(context, filter);
+        }
+        #endregion DictionaryStageTypes
+
         #region DictionaryStandartSendListContents
         public FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {

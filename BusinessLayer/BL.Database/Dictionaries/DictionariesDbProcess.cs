@@ -5504,6 +5504,58 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionarySendTypes
 
+        #region [+] DictionaryStageTypes ...
+        public IEnumerable<FrontDictionaryStageType> GetStageTypes(IContext context, FilterDictionaryStageType filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryStageTypesSet.AsQueryable();
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DictionaryStageTypes>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                qry = qry.OrderBy(x => x.Code);
+                var res = qry.Select(x => new FrontDictionaryStageType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    LastChangeUserId = x.LastChangeUserId,
+                    LastChangeDate = x.LastChangeDate,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+        #endregion DictionaryStageTypes
+
         #region [+] DictionaryStandartSendListContents ...
 
         public IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)

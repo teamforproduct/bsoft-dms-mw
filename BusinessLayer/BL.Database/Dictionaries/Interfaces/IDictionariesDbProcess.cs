@@ -261,6 +261,10 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionarySendType> GetSendTypes(IContext context, FilterDictionarySendType filter);
         #endregion DictionarySendTypes
 
+        #region DictionaryStageTypes
+        IEnumerable<FrontDictionaryStageType> GetStageTypes(IContext context, FilterDictionaryStageType filter);
+        #endregion DictionaryStageTypes
+
         #region DictionaryStandartSendListContents
         int AddStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
         void UpdateStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
