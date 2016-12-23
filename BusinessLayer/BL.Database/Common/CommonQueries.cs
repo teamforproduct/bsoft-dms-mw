@@ -2647,6 +2647,9 @@ namespace BL.Database.Common
                 SendType = (EnumSendTypes)y.SendTypeId,
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
+                StageType = (EnumStageTypes)y.StageTypeId,
+                StageTypeName = y.StageType.Name,
+                StageTypeCode = y.StageType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
                 SourcePositionExecutorAgentId = y.SourcePosition.ExecutorAgentId,
                 TargetPositionExecutorAgentId = y.TargetPosition.ExecutorAgentId,
@@ -2753,6 +2756,7 @@ namespace BL.Database.Common
                 TargetAgentId = y.TargetAgentId,
                 TargetPositionId = y.TargetPositionId,
                 SendType = (EnumSendTypes)y.SendTypeId,
+                StageType = (EnumStageTypes)y.StageTypeId,
                 Description = y.Description,
                 DueDate = y.DueDate,
                 DueDay = y.DueDay,
@@ -3335,6 +3339,7 @@ namespace BL.Database.Common
                     stringDocument.Append(docSendList.TargetPositionId);
                     stringDocument.Append(docSendList.TargetAgentId);
                     stringDocument.Append(docSendList.SendType);
+                    stringDocument.Append(docSendList.StageType);
                     stringDocument.Append(docSendList.Description);
                     stringDocument.Append(docSendList.DueDate);
                     stringDocument.Append(docSendList.DueDay);

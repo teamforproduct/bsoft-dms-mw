@@ -731,6 +731,7 @@ namespace BL.Database.Documents
                 doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentSendList()
                     {
+                        StageType = (EnumStageTypes)y.StageTypeId,
                         SendType = (EnumSendTypes)y.SendTypeId,
                         //SourcePositionId = y.SourcePositionId??0,
                         TargetPositionId = y.TargetPositionId,
@@ -816,6 +817,7 @@ namespace BL.Database.Documents
                         .Select(y => new InternalDocumentSendList
                         {
                             Stage = y.Stage,
+                            StageType = (EnumStageTypes)y.StageTypeId,
                             SendType = (EnumSendTypes)y.SendTypeId,
                             SourcePositionId = y.SourcePositionId,
                             TargetPositionId = y.TargetPositionId,

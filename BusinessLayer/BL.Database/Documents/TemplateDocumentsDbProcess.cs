@@ -300,6 +300,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalTemplateDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
+                        StageType = (EnumStageTypes)y.StageTypeId,
                         SourcePositionId = y.SourcePositionId,
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
@@ -459,6 +460,7 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     SendType = x.SendTypeId,
+                    StageType = x.StageTypeId,
                     TargetPositionId = x.TargetPositionId,
                     Description = x.Description,
                     Stage = x.Stage,
@@ -468,6 +470,7 @@ namespace BL.Database.Documents
                     AccessLevelId = x.AccessLevelId,
                     TargetPositionName = x.TargetPosition.Name,
                     SendTypeName = x.SendType.Name,
+                    StageTypeName = x.StageType.Name,
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
                 transaction.Complete();
@@ -485,6 +488,7 @@ namespace BL.Database.Documents
                             Id = x.Id,
                             DocumentId = x.DocumentId,
                             SendType = x.SendTypeId,
+                            StageType = x.StageTypeId,
                             TargetPositionId = x.TargetPositionId,
                             Description = x.Description,
                             Stage = x.Stage,
@@ -493,6 +497,7 @@ namespace BL.Database.Documents
                             AccessLevelId = x.AccessLevelId,
                             TargetPositionName = x.TargetPosition.Name,
                             SendTypeName = x.SendType.Name,
+                            StageTypeName = x.StageType.Name,
                             AccessLevelName = x.AccessLevel.Name,
                             IsWorkGroup = x.IsWorkGroup,
                             IsAddControl = x.IsAddControl,
@@ -524,6 +529,7 @@ namespace BL.Database.Documents
                     AccessLevelId = (int)template.AccessLevel,
                     DueDay = template.DueDay,
                     SendTypeId = (int)template.SendType,
+                    StageTypeId = (int)template.StageType,
                     SourcePositionId = template.SourcePositionId,
                     Stage = template.Stage,
                     TargetAgentId = template.TargetAgentId,

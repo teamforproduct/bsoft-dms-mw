@@ -418,6 +418,7 @@ namespace BL.Logic.Common
             {
                 DocumentId = model.DocumentId,
                 Stage = model.Stage,
+                StageType = model.StageType,
                 SendType = model.SendType,
                 SourcePositionId = context.CurrentPositionId,
                 SourcePositionExecutorAgentId = null,

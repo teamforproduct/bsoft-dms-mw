@@ -27,6 +27,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public string TaskName { get; set; }
         
         public int Stage { get; set; }
+        public EnumStageTypes StageType { get; set; }
         public int? DueDay { get; set; }
         public EnumDocumentAccesses AccessLevel { get; set; }
 
@@ -39,6 +40,7 @@ namespace BL.Model.DocumentCore.InternalModel
             this.Id =list.Id ?? -1;
             this.DocumentId=list.DocumentId;
             this.SendType = list.SendType;
+            this.StageType = list.StageType;
             this.SourcePositionId = list.SourcePositionId;
             this.TargetPositionId = list.TargetPositionId;
             this.TargetAgentId = list.TargetAgentId;

@@ -10,7 +10,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public int DocumentId { get; set; }
         public int? SendType { get; set; }
         public string SendTypeName { get; set; }
-
+        public int? StageType { get; set; }
+        public string StageTypeName { get; set; }
         public int? TargetPositionId { get; set; }
         public string TargetPositionName { get; set; }
         public string Description { get; set; }

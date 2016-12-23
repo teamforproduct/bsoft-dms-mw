@@ -92,6 +92,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             _sendList.Stage = Model.Stage.Value;
+            _sendList.StageType = Model.StageType;
             _sendList.SendType = Model.SendType;
             _sendList.TargetPositionId = Model.TargetPositionId;
             _sendList.TargetPositionExecutorAgentId = null;

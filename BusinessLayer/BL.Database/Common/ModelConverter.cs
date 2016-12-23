@@ -212,7 +212,7 @@ namespace BL.Database.Common
                     DocumentId = sendList.DocumentId,
                     Stage = sendList.Stage.Value,
                     SendTypeId = (int)sendList.SendType,
-
+                    StageTypeId = (int)sendList.StageType,
                     TaskId = sendList.TaskId,
                     IsAvailableWithinTask = sendList.IsAvailableWithinTask,
                     IsWorkGroup = sendList.IsWorkGroup,

@@ -1553,7 +1553,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentLinksSet.RemoveRange(dbContext.DocumentLinksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == id));
 
-                if ((model.OldLinkSet?.Any() ?? false) && model.LinkId!=model.OldLinkId)
+                if ((model.OldLinkSet?.Any() ?? false) && model.LinkId != model.OldLinkId)
                 {
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterContains = model.OldLinkSet.Aggregate(filterContains, (current, value) => current.Or(e => e.Id == value).Expand());
@@ -1622,6 +1622,7 @@ namespace BL.Database.Documents
                         DocumentId = x.DocumentId,
                         TargetPositionId = x.TargetPositionId,
                         SendType = (EnumSendTypes)x.SendTypeId,
+                        StageType = (EnumStageTypes)x.StageTypeId,
                         Stage = x.Stage,
                         SourcePositionId = x.SourcePositionId,
                         SourceAgentId = x.SourceAgentId,
@@ -1762,7 +1763,7 @@ namespace BL.Database.Documents
                     ((List<InternalDocumentSendList>)sendList).ForEach(x => x.TaskId = taskDb.Id);
                 }
 
-                if (sendList?.Any(x=>x.Stage.HasValue) ?? false)
+                if (sendList?.Any(x => x.Stage.HasValue) ?? false)
                 {
                     var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList.Where((x => x.Stage.HasValue))).ToList();
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
@@ -1795,6 +1796,7 @@ namespace BL.Database.Documents
                  {
                      DocumentId = model.DocumentId,
                      Stage = x.Stage,
+                     //StageType = (EnumStageTypes)x.StageTypeId,
                      SendType = (EnumSendTypes)x.SendTypeId,
                      SourcePositionId = context.CurrentPositionId,
                      SourceAgentId = context.CurrentAgentId,
@@ -1841,6 +1843,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentSendListsSet.Attach(sendListDb);
                 var entry = dbContext.Entry(sendListDb);
                 entry.Property(e => e.Stage).IsModified = true;
+                entry.Property(e => e.StageTypeId).IsModified = true;
                 entry.Property(e => e.SendTypeId).IsModified = true;
                 entry.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
                 entry.Property(e => e.SourcePositionExecutorTypeId).IsModified = true;
@@ -1998,6 +2001,7 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             DocumentId = x.DocumentId,
                                             Stage = x.Stage,
+                                            StageType = (EnumStageTypes)x.StageTypeId,
                                             SendType = (EnumSendTypes)x.SendTypeId,
                                             SourcePositionId = x.SourcePositionId,
                                             SourceAgentId = x.SourceAgentId,

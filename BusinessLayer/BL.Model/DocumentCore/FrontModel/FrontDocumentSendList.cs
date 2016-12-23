@@ -22,6 +22,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public int Stage { get; set; }
         /// <summary>
+        /// ИД типа этапа
+        /// </summary>
+        public EnumStageTypes StageType { get; set; }
+        /// <summary>
         /// ИД типа рассылки
         /// </summary>
         public EnumSendTypes SendType { get; set; }
@@ -101,7 +105,8 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public int? StartEventId { get; set; }
         public int? CloseEventId { get; set; }
-
+        public string StageTypeName { get; set; }
+        public string StageTypeCode { get; set; }
         public string SendTypeName { get; set; }
         public string SendTypeCode { get; set; }
         public bool SendTypeIsImportant { get; set; }
