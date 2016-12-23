@@ -1090,14 +1090,17 @@ namespace BL.Database.Documents
                     LastChangeDate = sendList.LastChangeDate,
                     LastChangeUserId = sendList.LastChangeUserId
                 };
-                sendListDb.StartEvent = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
+                var startEventDb = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
+                
                 if (sendList.Stage.HasValue)
                 {
+                    dbContext.DocumentSendListsSet.Attach(sendListDb);
+                    sendListDb.StartEvent = startEventDb;
                     if (sendList.CloseEvent != null)
                     {
                         sendListDb.CloseEvent = sendListDb.StartEvent;
                     }
-                    dbContext.DocumentSendListsSet.Attach(sendListDb);
+
                     var entry = dbContext.Entry(sendListDb);
                     //entry.Property(x => x.Id).IsModified = true;
                     entry.Property(e => e.AddDescription).IsModified = true;
@@ -1107,9 +1110,9 @@ namespace BL.Database.Documents
                 }
                 else
                 {
-                    dbContext.DocumentEventsSet.Add(sendListDb.StartEvent);
+                    dbContext.DocumentEventsSet.Add(startEventDb);
                     dbContext.SaveChanges();
-                    sendListDb.StartEventId = sendListDb.StartEvent.Id;
+                    sendListDb.StartEventId = startEventDb.Id;
                 }
                 if (document.Accesses?.Any() ?? false)
                 {
