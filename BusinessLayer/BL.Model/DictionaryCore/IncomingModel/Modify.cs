@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Extensions;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
@@ -114,6 +116,35 @@ namespace BL.Model.DictionaryCore.IncomingModel
         // TODO
         //[Required]
         public int Id { get; set; }
+
+    }
+
+
+    public class ModifyAgentPeoplePassport
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Серия паспорта
+        /// </summary>
+        public string PassportSerial { get; set; }
+        /// <summary>
+        /// Номер паспорта
+        /// </summary>
+        public int? PassportNumber { get; set; }
+        /// <summary>
+        /// Дата выдачи паспорта
+        /// </summary>
+        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate = value.ToUTC(); } }
+        private DateTime? _PassportDate;
+        /// <summary>
+        /// Кем выдан паспорт
+        /// </summary>
+        public string PassportText { get; set; }
 
     }
 

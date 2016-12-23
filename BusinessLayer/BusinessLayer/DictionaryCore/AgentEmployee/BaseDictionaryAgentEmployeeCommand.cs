@@ -20,7 +20,6 @@ namespace BL.Logic.DictionaryCore
             _adminService.VerifyAccess(_context, CommandType, false);
 
             Model.Name?.Trim();
-            Model.PassportSerial?.Trim();
             Model.TaxCode?.Trim();
 
             // вычисляю табельный номер. если не передан
@@ -30,8 +29,6 @@ namespace BL.Logic.DictionaryCore
             }
 
             // Обрезаю время для даты рождения и даты получения паспорта
-            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
-
             if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
 
@@ -55,24 +52,6 @@ namespace BL.Logic.DictionaryCore
             if (_dictDb.ExistsAgentEmployees(_context, filterEmployee))
             {
                 throw new DictionaryAgentEmployeePersonnelNumberNotUnique(Model.PersonnelNumber);
-            }
-
-            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
-            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
-            {
-                var filterPerson = new FilterDictionaryAgentPerson
-                {
-                    PassportSerialExact = Model.PassportSerial,
-                    PassportNumberExact = Model.PassportNumber,
-                };
-
-                if (TypeModelIs<ModifyAgentEmployee>())
-                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyAgentEmployee>().Id }; }
-
-                if (_dictDb.ExistsAgentPersons(_context, filterPerson))
-                {
-                    throw new DictionaryAgentEmployeePassportNotUnique(Model.PassportSerial, Model.PassportNumber);
-                }
             }
 
             // Если указан необязательный ИНН, проверяю нет ли такого уже

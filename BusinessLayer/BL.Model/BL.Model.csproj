@@ -159,6 +159,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
@@ -172,7 +173,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAccount.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentCompany.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUserPicture.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontTempStorageFile.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionarySettingType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsBase.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
@@ -200,7 +201,6 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgent.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\LinkDictionaryAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
@@ -217,7 +217,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPerson.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyAgentUserPicture.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentImage.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDepartmentAdmin.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContact.cs" />

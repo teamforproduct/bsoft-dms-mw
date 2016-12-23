@@ -22,9 +22,14 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgent(IContext context, InternalDictionaryAgent addr);
         void DeleteAgent(IContext context, int agentId);
         FrontDictionaryAgentUser GetAgentUser(IContext context, int id);
-        IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter,UIPaging paging);
+        IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
         bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
+
+        #region DictionaryAgentPeople
+        FrontAgentPeoplePassport GetAgentPeoplePassport(IContext context, int id);
+        void UpdateAgentPeoplePassport(IContext context, InternalDictionaryAgentPeople people);
+        #endregion
 
         #region DictionaryAgentPerson
 
@@ -71,7 +76,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<int> GetAgentsIDByAddress(IContext context, IEnumerable<int> addresses);
 
-            #endregion
+        #endregion
 
         #region DicionaryAddressTypes
 
@@ -113,7 +118,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region DictionaryContacts
 
-           
+
         int AddContact(IContext context, InternalDictionaryContact contact);
         void UpdateContact(IContext context, InternalDictionaryContact contact);
         void DeleteContacts(IContext context, FilterDictionaryContact filter);
@@ -328,6 +333,6 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
         #endregion CustomDictionaries
 
-        
+
     }
 }

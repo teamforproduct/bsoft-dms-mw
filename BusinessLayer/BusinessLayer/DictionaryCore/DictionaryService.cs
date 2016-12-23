@@ -157,6 +157,13 @@ namespace BL.Logic.DictionaryCore
 
         #endregion DictionaryAgents
 
+        #region DictionaryAgentPeople
+        public FrontAgentPeoplePassport GetAgentPeoplePassport(IContext context, int id)
+        {
+            return _dictDb.GetAgentPeoplePassport(context, id);
+        }
+        #endregion
+
         #region DictionaryAgentPersons
         public FrontAgentPerson GetAgentPerson(IContext context, int id)
         {
@@ -215,7 +222,7 @@ namespace BL.Logic.DictionaryCore
 
         }
 
-        public FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId)
+        public FrontTempFileStorage GetDictionaryAgentUserPicture(IContext context, int employeeId)
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);
 
@@ -224,7 +231,7 @@ namespace BL.Logic.DictionaryCore
             if (userPicture.Image != null)
                 fileContect = Convert.ToBase64String(userPicture.Image);
 
-            var uPic = new FrontDictionaryAgentUserPicture()
+            var uPic = new FrontTempFileStorage()
             {
                 Id = userPicture.Id,
                 FileContent = fileContect

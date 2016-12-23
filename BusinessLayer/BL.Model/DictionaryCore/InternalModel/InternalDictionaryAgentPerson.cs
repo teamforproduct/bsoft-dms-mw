@@ -32,6 +32,15 @@ namespace BL.Model.DictionaryCore.InternalModel
             SetInternalDictionaryAgentPerson(model);
         }
 
+        public InternalDictionaryAgentPerson(ModifyAgentPeoplePassport model)
+        {
+            Id = model.Id;
+            PassportSerial = model.PassportSerial;
+            PassportNumber = model.PassportNumber;
+            PassportText = model.PassportText;
+            PassportDate = model.PassportDate;
+        }
+
         private void SetInternalDictionaryAgentPerson(AddAgentPerson model)
         {
             Name = model.Name;
@@ -42,10 +51,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             
             BirthDate = model.BirthDate;
             IsMale = model.IsMale;
-            PassportSerial = model.PassportSerial;
-            PassportNumber = model.PassportNumber;
-            PassportText = model.PassportText;
-            PassportDate = model.PassportDate;
+            
             TaxCode = model.TaxCode;
 
             Position = model.Position;
