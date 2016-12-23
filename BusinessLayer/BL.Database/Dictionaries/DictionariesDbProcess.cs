@@ -369,13 +369,43 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(context, people);
 
                 dbContext.DictionaryAgentPeopleSet.Attach(dbModel);
-                dbContext.SaveChanges();
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.Property(x => x.FullName).IsModified = true;
+                entity.Property(x => x.LastName).IsModified = true;
+                entity.Property(x => x.FirstName).IsModified = true;
+                entity.Property(x => x.MiddleName).IsModified = true;
+                entity.Property(x => x.BirthDate).IsModified = true;
+                entity.Property(x => x.IsMale).IsModified = true;
+                entity.Property(x => x.TaxCode).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+
                 dbContext.SaveChanges();
 
                 transaction.Complete();
+            }
+        }
 
+        public void UpdateAgentPeoplePassport(IContext context, InternalDictionaryAgentPeople people)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                UpdateAgentName(context, people.Id, people);
+
+                var dbModel = DictionaryModelConverter.GetDbAgentPeople(context, people);
+
+                dbContext.DictionaryAgentPeopleSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.PassportDate).IsModified = true;
+                entity.Property(x => x.PassportNumber).IsModified = true;
+                entity.Property(x => x.PassportSerial).IsModified = true;
+                entity.Property(x => x.PassportText).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+
+                dbContext.SaveChanges();
+
+                transaction.Complete();
             }
         }
 
@@ -391,6 +421,29 @@ namespace BL.Database.Dictionaries
                 DeleteAgentIfNoAny(context, new List<int>() { people.Id });
 
                 transaction.Complete();
+            }
+        }
+
+        public FrontAgentPeoplePassport GetAgentPeoplePassport(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryAgentPeopleSet
+                    .Where(x => x.ClientId == context.CurrentClientId)
+                    .Where(x => x.Id == id)
+                    .AsQueryable();
+
+                var res = qry.Select(x => new FrontAgentPeoplePassport
+                {
+                    Id = x.Id,
+                    PassportSerial = x.PassportSerial,
+                    PassportNumber = x.PassportNumber,
+                    PassportText = x.PassportText,
+                    PassportDate = x.PassportDate,
+                }).FirstOrDefault();
+
+                transaction.Complete();
+                return res;
             }
         }
         #endregion
@@ -521,10 +574,10 @@ namespace BL.Database.Dictionaries
                     MiddleName = x.Agent.AgentPeople.MiddleName,
                     TaxCode = x.Agent.AgentPeople.TaxCode,
                     IsMale = x.Agent.AgentPeople.IsMale,
-                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
-                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
-                    PassportText = x.Agent.AgentPeople.PassportText,
-                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    //PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    //PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    //PassportText = x.Agent.AgentPeople.PassportText,
+                    //PassportDate = x.Agent.AgentPeople.PassportDate,
                     BirthDate = x.Agent.AgentPeople.BirthDate,
                     Position = x.Position,
                     Description = x.Description,
@@ -587,10 +640,10 @@ namespace BL.Database.Dictionaries
                     FullName = x.Agent.AgentPeople.FullName,
                     TaxCode = x.Agent.AgentPeople.TaxCode,
                     IsMale = x.Agent.AgentPeople.IsMale,
-                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
-                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
-                    PassportText = x.Agent.AgentPeople.PassportText,
-                    PassportDate = x.Agent.AgentPeople.PassportDate,
+                    //PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    //PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    //PassportText = x.Agent.AgentPeople.PassportText,
+                    //PassportDate = x.Agent.AgentPeople.PassportDate,
                     BirthDate = x.Agent.AgentPeople.BirthDate,
                     Position = x.Position,
                     Description = x.Description,
@@ -604,7 +657,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
+
 
         public bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
@@ -925,10 +978,10 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     Description = x.Description,
 
-                    PassportDate = x.Agent.AgentPeople.PassportDate,
-                    PassportSerial = x.Agent.AgentPeople.PassportSerial,
-                    PassportNumber = x.Agent.AgentPeople.PassportNumber,
-                    PassportText = x.Agent.AgentPeople.PassportText,
+                    //PassportDate = x.Agent.AgentPeople.PassportDate,
+                    //PassportSerial = x.Agent.AgentPeople.PassportSerial,
+                    //PassportNumber = x.Agent.AgentPeople.PassportNumber,
+                    //PassportText = x.Agent.AgentPeople.PassportText,
 
 
                 }).FirstOrDefault();

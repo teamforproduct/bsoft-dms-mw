@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + "System")]
-    public class SystemController : ApiController
+    public class SystemListsController : ApiController
     {
 
         /// <summary>

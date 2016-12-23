@@ -36,23 +36,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Пол (true - мужской)
         /// </summary>
         public bool IsMale { get; set; }
-        /// <summary>
-        /// Серия паспорта
-        /// </summary>
-        public string PassportSerial { get; set; }
-        /// <summary>
-        /// Номер паспорта
-        /// </summary>
-        public int? PassportNumber { get; set; }
-        /// <summary>
-        /// Дата выдачи паспорта
-        /// </summary>
-        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
-        private DateTime? _PassportDate;
-        /// <summary>
-        /// Кем выдан паспорт
-        /// </summary>
-        public string PassportText { get; set; }
+        
         /// <summary>
         /// Дата рождения
         /// </summary>

@@ -11,7 +11,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     public class AddAgentEmployee : AddAgentPerson
     {
-        #region [+] Person ...
 
         /// <summary>
         /// ИД аватарки, если она была загружена
@@ -23,14 +22,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public string PostedFileData { get; set; }
-        #endregion
 
-        #region [+] Employee ...
         /// <summary>
         /// табельный номер
         /// </summary>
         public int PersonnelNumber { get; set; }
-        #endregion
 
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.

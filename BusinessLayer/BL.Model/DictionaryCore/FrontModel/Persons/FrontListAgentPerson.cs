@@ -37,24 +37,24 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Пол (true - мужской)
         /// </summary>
         public bool? IsMale { get; set; }
-        /// <summary>
-        /// Серия паспорта
-        /// </summary>
-        public string PassportSerial { get; set; }
-        /// <summary>
-        /// Номер паспорта
-        /// </summary>
-        public int? PassportNumber { get; set; }
-        /// <summary>
-        /// Дата выдачи паспорта
-        /// </summary>
-        public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
-        private DateTime?  _PassportDate; 
+        ///// <summary>
+        ///// Серия паспорта
+        ///// </summary>
+        //public string PassportSerial { get; set; }
+        ///// <summary>
+        ///// Номер паспорта
+        ///// </summary>
+        //public int? PassportNumber { get; set; }
+        ///// <summary>
+        ///// Дата выдачи паспорта
+        ///// </summary>
+        //public DateTime? PassportDate { get { return _PassportDate; } set { _PassportDate=value.ToUTC(); } }
+        //private DateTime?  _PassportDate; 
 
-        /// <summary>
-        /// Кем выдан паспорт
-        /// </summary>
-        public string PassportText { get; set; }
+        ///// <summary>
+        ///// Кем выдан паспорт
+        ///// </summary>
+        //public string PassportText { get; set; }
         /// <summary>
         /// Дата рождения
         /// </summary>
@@ -75,13 +75,13 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Сокращенное имя
         /// </summary>
         public string Name { get; set; }
-        /// <summary>
-        /// Паспортные данные
-        /// </summary>
-        public string Passport
-        {
-            get { string pass = PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
-        }
+        ///// <summary>
+        ///// Паспортные данные
+        ///// </summary>
+        //public string Passport
+        //{
+        //    get { string pass = PassportSerial?.Trim() + " " + PassportNumber + " " + PassportText?.Trim() + " " + PassportDate?.ToString("dd.MM.yyyy"); return pass.Trim(); }
+        //}
 
         /// <summary>
         /// Назване компании, контактным лицом которой является физическое лицо

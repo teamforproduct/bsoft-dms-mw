@@ -18,47 +18,10 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Системные настройки
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "System")]
-    public class SettingsController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.System)]
+    public class SystemSettingsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
-
-        /// <summary>
-        /// Список настроек
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Settings")]
-        [ResponseType(typeof(FrontDictionarySettingType))]
-        public IHttpActionResult Get([FromUri] FilterSystemSetting filter)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemSettings(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-
-        /// <summary>
-        /// Устанавливает значение настойки
-        /// </summary>
-        /// <param name="model">ModifyAdminPositionRole</param>
-        /// <returns>FrontAdminPositionRole</returns>
-        [HttpPost]
-        [Route("Settings")]
-        public IHttpActionResult Post([FromBody]List<ModifySystemSetting> model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumSystemActions.SetSetting, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
 
         /// <summary>
         /// Возвращает значение настройки: 
@@ -67,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/IsSendAllForExecution")] 
+        [Route("Settings/IsSendAllForExecution")]
         public IHttpActionResult IsSendAllForExecution()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

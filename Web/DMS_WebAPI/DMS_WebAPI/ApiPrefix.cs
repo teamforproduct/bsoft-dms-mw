@@ -11,6 +11,7 @@ namespace DMS_WebAPI
 
         public const string V3 = "api/v3/";
 
+        public const string System = "System";
 
         public const string Position = "Position";
 
