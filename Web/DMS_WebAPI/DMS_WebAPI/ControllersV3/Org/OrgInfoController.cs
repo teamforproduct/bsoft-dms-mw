@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Org
     /// Организация - рутовый элемент в иерархии штатного расписания
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Org")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Org)]
     public class OrgInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

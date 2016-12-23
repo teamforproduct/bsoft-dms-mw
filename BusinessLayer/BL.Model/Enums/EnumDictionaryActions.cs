@@ -191,6 +191,9 @@
 
         #endregion AgentAddress
 
+
+        ModifyAgentPeoplePassport = 234005,
+
         // Persons
         #region AgentPersons
         /// <summary>

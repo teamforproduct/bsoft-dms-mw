@@ -8,7 +8,7 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalDepartmentAdmin()
         { }
 
-        public InternalDepartmentAdmin(ModifyAdminDepartmentAdmin model)
+        public InternalDepartmentAdmin(AddAdminDepartmentAdmin model)
         {
             DepartmentId = model.DepartmentId;
             EmployeeId = model.EmployeeId;

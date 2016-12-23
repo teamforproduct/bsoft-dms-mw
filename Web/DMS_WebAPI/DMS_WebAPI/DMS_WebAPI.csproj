@@ -266,9 +266,11 @@
     <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
+    <Compile Include="ControllersV3\Documents\TagsInfoController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeePassportController.cs" />
     <Compile Include="ControllersV3\Journals\JournalPositionsController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentPositionsController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
     <Compile Include="ControllersV3\System\DevController.cs" />
@@ -293,7 +295,9 @@
     <Compile Include="ControllersV3\Persons\PersonInfoController.cs" />
     <Compile Include="ControllersV3\System\SettingsInfoController.cs" />
     <Compile Include="ControllersV3\System\SystemSettingsController.cs" />
+    <Compile Include="ControllersV3\User\UserEncryptionCertificatesController.cs" />
     <Compile Include="ControllersV3\User\UserAddressesController.cs" />
+    <Compile Include="ControllersV3\User\UserImageController.cs" />
     <Compile Include="ControllersV3\User\UserPassportController.cs" />
     <Compile Include="ControllersV3\User\UserInfoController.cs" />
     <Compile Include="ControllersV3\User\UserContactsController.cs" />

@@ -29,54 +29,65 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// Паспортные данные пользователя
+    /// Аватарка пользователя
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
-    public class UserPassportController : ApiController
+    public class UserImageController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
+
         /// <summary>
-        /// Возвращает паспортные данные пользователя
+        /// Возвращает аватарку
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Passport")]
-        [ResponseType(typeof(FrontAgentPeoplePassport))]
+        [Route("Image")]
+        [ResponseType(typeof(FrontDictionaryAgentEmployeeUser))]
         public IHttpActionResult Get()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
+
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentPeoplePassport(ctx, ctx.CurrentAgentId);
+            var tmpItem = tmpService.GetDictionaryAgentUserPicture(ctx, ctx.CurrentAgentId);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Корректирует паспортные данные пользователя
+        /// Устанавливает новую аватарку
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Passport")]
-        public IHttpActionResult Put([FromBody]AddAgentPeoplePassport model)
+        [Route("Image")]
+        public IHttpActionResult Put([FromUri]ModifyDictionaryAgentImage model)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Удаляет аватарку
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("Image/{Id:int}")]
+        public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpModel = new ModifyAgentPeoplePassport()
-            {
-                Id = ctx.CurrentAgentId,
-                PassportDate = model.PassportDate,
-                PassportNumber = model.PassportNumber,
-                PassportSerial = model.PassportSerial,
-                PassportText = model.PassportText
-            };
-            Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, tmpModel);
-            return Get();
+            throw new NotImplementedException();
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
+
+
 
     }
 }

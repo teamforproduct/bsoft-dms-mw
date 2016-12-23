@@ -34,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route("TempFileStorage/{Id:int}")]
-        [ResponseType(typeof(FrontTempFileStorage))]
+        [ResponseType(typeof(FrontFile))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.System
             var tmpService = DmsResolver.Current.Get<ITempStorageService>();
             var img = tmpService.GetStoreObject(Id) as string;
 
-            var tmpItem = new FrontTempFileStorage
+            var tmpItem = new FrontFile
             {
                 Id = Id,
                 FileContent = img

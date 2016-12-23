@@ -3,7 +3,7 @@
     /// <summary>
     /// Файл
     /// </summary>
-    public class FrontTempFileStorage
+    public class FrontFile
     {
 
         /// <summary>

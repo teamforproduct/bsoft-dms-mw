@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.AgentEmployee
 {
-    public class ModifyDictionaryAgentEmployeePassportCommand : BaseDictionaryCommand
+    public class ModifyAgentPeoplePassportCommand : BaseDictionaryCommand
     {
         private ModifyAgentPeoplePassport Model { get { return GetModel<ModifyAgentPeoplePassport>(); } }
 
@@ -40,7 +40,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
 
                 if (_dictDb.ExistsAgentPersons(_context, filterPerson))
                 {
-                    throw new DictionaryAgentEmployeePassportNotUnique(Model.PassportSerial, Model.PassportNumber);
+                    throw new DictionaryAgentPeoplePassportNotUnique(Model.PassportSerial, Model.PassportNumber);
                 }
             }
 

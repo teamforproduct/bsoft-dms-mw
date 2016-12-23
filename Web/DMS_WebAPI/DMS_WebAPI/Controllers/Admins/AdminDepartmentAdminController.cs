@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminUserRole</param>
         /// <returns>FrontAdminUserRole</returns>
-        public IHttpActionResult Post([FromBody]ModifyAdminDepartmentAdmin model)
+        public IHttpActionResult Post([FromBody]AddAdminDepartmentAdmin model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// Удаляет сотрудника с роли администратора подразделения
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
-        public IHttpActionResult Delete([FromUri]ModifyAdminDepartmentAdmin model)
+        public IHttpActionResult Delete([FromUri]AddAdminDepartmentAdmin model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();

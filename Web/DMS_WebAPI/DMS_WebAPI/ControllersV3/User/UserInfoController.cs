@@ -32,14 +32,14 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Контекст пользователя (Все пользователя являются сотрудниками, но у сотрудника может быть выключена возможность авторизации)
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "User")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
     public class UserInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
 
         /// <summary>
-        /// Возвращает информацию о пользователе: имя, логин, язык, табельный номер, инн, паспортные данные, дата рождения, пол
+        /// Возвращает информацию о пользователе: имя, логин, язык, табельный номер, инн, дата рождения, пол
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -56,7 +56,6 @@ namespace DMS_WebAPI.ControllersV3.User
             res.SpentTime = stopWatch;
             return res;
         }
-
 
         /// <summary>
         /// Возвращает набор прав в терминах: module, feature, CRUD

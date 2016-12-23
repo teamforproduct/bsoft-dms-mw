@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Адреса сотрудника
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Employee")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
     public class EmployeeAddressesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

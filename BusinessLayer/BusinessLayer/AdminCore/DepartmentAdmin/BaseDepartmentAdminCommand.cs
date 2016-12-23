@@ -11,12 +11,12 @@ namespace BL.Logic.AdminCore
     public class BaseDepartmentAdminCommand : BaseAdminCommand
     {
 
-        protected ModifyAdminDepartmentAdmin Model
+        protected AddAdminDepartmentAdmin Model
         {
             get
             {
-                if (!(_param is ModifyAdminDepartmentAdmin)) throw new WrongParameterTypeError();
-                return (ModifyAdminDepartmentAdmin)_param;
+                if (!(_param is AddAdminDepartmentAdmin)) throw new WrongParameterTypeError();
+                return (AddAdminDepartmentAdmin)_param;
             }
         }
 

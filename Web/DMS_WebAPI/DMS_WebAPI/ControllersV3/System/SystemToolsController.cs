@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Инструменты. Доступ ограничен
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Tools")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Tools)]
     public class SystemToolsController : ApiController
     {
 

@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Системные настройки
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Settings")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Settings)]
     public class SettingsInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

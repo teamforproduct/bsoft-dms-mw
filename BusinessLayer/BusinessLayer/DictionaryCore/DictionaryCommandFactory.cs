@@ -49,6 +49,10 @@ namespace BL.Logic.DictionaryCore
                     break;
                 #endregion DictionaryAgents
 
+                case EnumDictionaryActions.ModifyAgentPeoplePassport:
+                    cmd = DmsResolver.Current.Get<ModifyAgentPeoplePassportCommand>();
+                    break;
+
                 // Сотрудники
                 #region DictionaryAgentPersons
                 case EnumDictionaryActions.AddAgentPerson:

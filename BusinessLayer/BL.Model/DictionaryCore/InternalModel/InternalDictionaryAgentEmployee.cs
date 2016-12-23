@@ -18,7 +18,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             SetInternalDictionaryAgentEmployee(model);
 
             #region [+] AgentUser ...
-            LanguageId = model.LanguageId;
             UserId = model.UserId;
             //Login = model.Login;
             //PasswordHash = model.PasswordHash;
@@ -59,6 +58,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Description = model.Description;
             BirthDate = model.BirthDate;
             IsActive = model.IsActive;
+            LanguageId = model.LanguageId;
 
 
             #region [+] Employee ...
@@ -66,8 +66,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             #endregion
 
         }
-
-        
 
         /// <summary>
         /// Дополнительная информация
@@ -79,25 +77,21 @@ namespace BL.Model.DictionaryCore.InternalModel
         public bool IsActive { get; set; }
 
 
-        #region [+] Employee ...
         /// <summary>
         /// табельный номер
         /// </summary>
         public int PersonnelNumber { get; set; }
-        #endregion
 
         #region [+] AgentUser ...
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
         public int LanguageId { get; set; }
-        
+
         /// <summary>
         /// Связь с WEB - USER
         /// </summary>
-       public string UserId { get; set; }
-
-        
+        public string UserId { get; set; }
 
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением

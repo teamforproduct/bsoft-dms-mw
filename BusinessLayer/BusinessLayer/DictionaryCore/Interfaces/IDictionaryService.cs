@@ -63,7 +63,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontListAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
-        FrontTempFileStorage GetDictionaryAgentUserPicture(IContext context, int employeeId);
+        FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId);
         string GetDictionaryAgentUserId(IContext context, int employeeId);
 
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);

@@ -200,6 +200,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
@@ -219,7 +220,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentImage.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
-    <Compile Include="AdminCore\IncomingModel\ModifyAdminDepartmentAdmin.cs" />
+    <Compile Include="AdminCore\IncomingModel\AddAdminDepartmentAdmin.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddPositionExecutor.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddTag.cs" />

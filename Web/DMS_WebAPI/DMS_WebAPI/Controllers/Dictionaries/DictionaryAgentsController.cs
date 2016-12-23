@@ -141,7 +141,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         [HttpGet]
         [Route("GetImage")]
-        [ResponseType(typeof(FrontTempFileStorage))]
+        [ResponseType(typeof(FrontFile))]
         public IHttpActionResult GetImage([FromUri] int AgentId)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -152,13 +152,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         [HttpGet]
         [Route("GetImageOnEdit")]
-        [ResponseType(typeof(FrontTempFileStorage))]
+        [ResponseType(typeof(FrontFile))]
         public IHttpActionResult GetImageOnEdit([FromUri] int ImageId)
         {
             var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
             var img = tmpStore.GetStoreObject(ImageId) as string;
 
-            var res = new FrontTempFileStorage
+            var res = new FrontFile
             {
                 Id = 0,
                 FileContent = img

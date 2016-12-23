@@ -29,5 +29,16 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Код языка
         /// </summary>
         public string LanguageCode { get; set; }
+
+        /// <summary>
+        /// Аватарка
+        /// </summary>
+        public string Image { get { return Converter.ToBase64String(imageByteArray); } }
+
+        [IgnoreDataMember]
+        public byte[] ImageByteArray { set { imageByteArray = value; } }
+        private byte[] imageByteArray;
     }
+
+
 }

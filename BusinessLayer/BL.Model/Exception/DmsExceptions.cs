@@ -777,11 +777,11 @@ namespace BL.Model.Exception
     /// <summary>
     /// Ошибка возникает при попытке задублировать паспортные данные сотрудника
     /// </summary>
-    public class DictionaryAgentEmployeePassportNotUnique : DmsExceptions
+    public class DictionaryAgentPeoplePassportNotUnique : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##";
-        public DictionaryAgentEmployeePassportNotUnique(string PassportSerial, int? PassportNumber) : base(_MESSAGE) { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
-        public DictionaryAgentEmployeePassportNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+        public DictionaryAgentPeoplePassportNotUnique(string PassportSerial, int? PassportNumber) : base(_MESSAGE) { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
+        public DictionaryAgentPeoplePassportNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     /// <summary>

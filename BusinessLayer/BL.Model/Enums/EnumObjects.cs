@@ -55,6 +55,7 @@
         DictionaryEmployeeContact = 231,
         DictionaryClientCompanyContact = 232,
         DictionaryPersonContact = 233,
+        DictionaryAgentPeople = 234,
 
 
         TemplateDocument = 251, // Шаблоны документов

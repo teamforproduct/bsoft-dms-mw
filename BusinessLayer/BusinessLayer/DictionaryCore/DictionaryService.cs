@@ -222,7 +222,7 @@ namespace BL.Logic.DictionaryCore
 
         }
 
-        public FrontTempFileStorage GetDictionaryAgentUserPicture(IContext context, int employeeId)
+        public FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId)
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);
 
@@ -231,7 +231,7 @@ namespace BL.Logic.DictionaryCore
             if (userPicture.Image != null)
                 fileContect = Convert.ToBase64String(userPicture.Image);
 
-            var uPic = new FrontTempFileStorage()
+            var uPic = new FrontFile()
             {
                 Id = userPicture.Id,
                 FileContent = fileContect

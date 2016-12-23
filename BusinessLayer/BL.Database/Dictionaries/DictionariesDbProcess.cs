@@ -960,6 +960,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryAgentEmployee
                 {
                     Id = x.Id,
+                    ImageByteArray = x.Agent.Image,
                     Name = x.Agent.Name,
                     FullName = x.Agent.AgentPeople.FullName,
                     FirstName = x.Agent.AgentPeople.FirstName,
@@ -982,7 +983,6 @@ namespace BL.Database.Dictionaries
                     //PassportSerial = x.Agent.AgentPeople.PassportSerial,
                     //PassportNumber = x.Agent.AgentPeople.PassportNumber,
                     //PassportText = x.Agent.AgentPeople.PassportText,
-
 
                 }).FirstOrDefault();
 

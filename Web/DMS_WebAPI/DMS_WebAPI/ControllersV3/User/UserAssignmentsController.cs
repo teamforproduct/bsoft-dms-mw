@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Пользователь-сотрудник может одновременно занимать должность и исполнять обязанноти другой должности или реферировать
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "User")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
     public class UserAssignmentsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

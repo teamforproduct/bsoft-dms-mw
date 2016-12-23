@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Org
     /// Адреса организации (клиентских компаний)
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "Org")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Org)]
     public class OrgAddressesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

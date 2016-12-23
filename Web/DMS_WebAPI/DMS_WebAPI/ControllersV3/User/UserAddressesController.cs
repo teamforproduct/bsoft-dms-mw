@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Адреса пользователя-сотрудника
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + "User")]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
     public class UserAddressesController : ApiController
     {
 
@@ -76,9 +76,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, model);
             return Get(tmpItem);
         }
 
@@ -92,9 +90,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyEmployeeAddress, ctx, model);
+            Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, model);
             return Get(model.Id);
         }
 
@@ -108,10 +104,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, Id);
+            Action.Execute(EnumDictionaryActions.DeleteEmployeeAddress, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
