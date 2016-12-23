@@ -529,7 +529,7 @@ namespace BL.Database.Documents
                     AccessLevelId = (int)template.AccessLevel,
                     DueDay = template.DueDay,
                     SendTypeId = (int)template.SendType,
-                    StageTypeId = (int)template.StageType,
+                    StageTypeId = (int?)template.StageType,
                     SourcePositionId = template.SourcePositionId,
                     Stage = template.Stage,
                     TargetAgentId = template.TargetAgentId,
