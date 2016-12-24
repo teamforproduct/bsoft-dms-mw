@@ -22,10 +22,5 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public string CodeExact { get; set; }
         
-        /// <summary>
-        /// по наименованию (равенство)
-        /// </summary>
-        public string NameExact { get; set; }
-
     }
 }

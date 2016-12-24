@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
+        [Route("Info/Main")]
         [ResponseType(typeof(List<FrontDictionaryDocumentType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
         {
@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentBank))]
+        [ResponseType(typeof(FrontMainAgentBank))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

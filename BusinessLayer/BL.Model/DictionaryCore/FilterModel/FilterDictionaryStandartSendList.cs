@@ -11,12 +11,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Должность
         /// </summary>
         public int? PositionID { get; set; }
-        /// <summary>
-        /// Наименование
-        /// </summary>
-        public string Name { get; set; }
-
-        public string NameExact { get; set; }
         
     }
 }

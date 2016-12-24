@@ -170,13 +170,13 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentPerson(context, id);
         }
 
-        public IEnumerable<FrontListAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgentPerson();
 
-            if (!string.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!string.IsNullOrEmpty(ftSearch.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons, filter.FullTextSearchString);
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons, ftSearch.FullTextSearchString);
             }
             else
             {
@@ -189,7 +189,7 @@ namespace BL.Logic.DictionaryCore
 
         #region DicionaryAgentEmployees
 
-        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
+        public FrontAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
             return _dictDb.GetAgentEmployee(context, id);
         }
@@ -203,14 +203,14 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentEmployeeList(context, filter, paging);
         }
 
-        public IEnumerable<FrontListAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryAgentEmployee();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, filter.FullTextSearchString);
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
 
             }
             else
@@ -316,9 +316,9 @@ namespace BL.Logic.DictionaryCore
 
 
         #region DictionaryAgentCompanies
-        public FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id)
+        public FrontAgentCompany GetAgentCompany(IContext context, int id)
         {
-            return _dictDb.GetAgentCompanies(context, new FilterDictionaryAgentCompany { IDs = new List<int> { id } }, null).FirstOrDefault();
+            return _dictDb.GetAgentCompany(context, id);
         }
 
         public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
@@ -330,13 +330,13 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentCompanyList(context, filter, paging);
         }
 
-        public IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryAgentCompany();
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, filter.FullTextSearchString, ResolveSearchResultAgentCompanies);
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, ftSearch.FullTextSearchString, ResolveSearchResultAgentCompanies);
 
             }
             else
@@ -391,17 +391,17 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks
-        public FrontDictionaryAgentBank GetAgentBank(IContext context, int id)
+        public FrontAgentBank GetAgentBank(IContext context, int id)
         {
-            return _dictDb.GetAgentBanks(context, new FilterDictionaryAgentBank { IDs = new List<int> { id } }, null).FirstOrDefault();
+            return _dictDb.GetAgentBank(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgentBank();
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, filter.FullTextSearchString, ResolveSearchResultAgentBanks);
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, ftSearch.FullTextSearchString, ResolveSearchResultAgentBanks);
 
             }
             else
@@ -633,9 +633,9 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetPositions(context, filter);
         }
 
-        public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging)
         {
-            return _dictDb.GetPositionList(context, filter);
+            return _dictDb.GetPositionList(context, filter, paging);
         }
 
         public void SetPositionOrder(IContext context, ModifyPositionOrder model)
@@ -895,14 +895,29 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public IEnumerable<FrontMainTag> GetMainTags(IContext context, FullTextSearch ftSearch, FilterDictionaryTag filter, UIPaging paging)
         {
-            return _dictDb.GetTags(context, filter);
+            var newFilter = new FilterDictionaryTag();
+            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryTag, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetMainTags(context, filter, paging);
         }
 
-        public FrontDictionaryTag GetDictionaryTag(IContext context, int id)
+        public IEnumerable<ListItem> GetTagList(IContext context, FilterDictionaryTag filter, UIPaging paging)
         {
-            return _dictDb.GetTags(context, new FilterDictionaryTag { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetTagList(context, filter, paging);
+        }
+
+        public FrontTag GetTag(IContext context, int id)
+        {
+            return _dictDb.GetTag(context, id);
         }
         #endregion DictionaryTags
 

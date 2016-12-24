@@ -16,6 +16,7 @@ using System.Linq;
 using LinqKit;
 using BL.Database.Common;
 using BL.Database.DBModel.System;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.Logging
 {

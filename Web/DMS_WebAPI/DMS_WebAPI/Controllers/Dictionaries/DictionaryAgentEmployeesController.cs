@@ -15,6 +15,7 @@ using BL.Model.Common;
 using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {/// <summary>
@@ -30,12 +31,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [ResponseType(typeof(List<FrontListAgentEmployee>))]
-        public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<FrontMainAgentEmployee>))]
+        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentEmployees(ctx, filter, paging);
+            var tmpItems = tmpService.GetMainAgentEmployees(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             return res;
@@ -64,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontAgentEmployee))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -129,7 +130,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var webSeevice = new WebAPIService();
             webSeevice.DeleteUserEmployee(ctx, id);
             
-            FrontListAgentPerson tmp = new FrontListAgentPerson();
+            FrontMainAgentPerson tmp = new FrontMainAgentPerson();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

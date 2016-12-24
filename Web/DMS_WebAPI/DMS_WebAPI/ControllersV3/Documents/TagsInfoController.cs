@@ -5,6 +5,8 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
@@ -26,17 +28,19 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Теги
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
+        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
-        [ResponseType(typeof(List<FrontDictionaryTag>))]
-        public IHttpActionResult Get([FromUri]FilterDictionaryTag filter)
+        [Route("Info/Main")]
+        [ResponseType(typeof(List<FrontMainTag>))]
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryTags(ctx, filter);
+            var tmpItems = tmpService.GetMainTags(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -50,13 +54,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryTag))]
+        [ResponseType(typeof(FrontTag))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryTag(ctx, Id);
+            var tmpItem = tmpService.GetTag(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

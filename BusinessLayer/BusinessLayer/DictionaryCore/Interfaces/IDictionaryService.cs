@@ -11,6 +11,7 @@ using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
@@ -32,7 +33,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgentPersons
         FrontAgentPerson GetAgentPerson(IContext context, int id);
 
-        IEnumerable<FrontListAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging);
 
         #endregion DictionaryAgentPersons
 
@@ -41,9 +42,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion
 
         #region DictionaryAgentCompanies
-        FrontDictionaryAgentCompany GetAgentCompany(IContext context, int id);
+        FrontAgentCompany GetAgentCompany(IContext context, int id);
         IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
-        IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentCompany filter, UIPaging paging);
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentAccounts
@@ -53,15 +54,15 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryAgentAccounts
 
         #region DictionaryAgentBanks
-        FrontDictionaryAgentBank GetAgentBank(IContext context, int id);
+        FrontAgentBank GetAgentBank(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
+        IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentEmployees
-        FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
+        FrontAgentEmployee GetDictionaryAgentEmployee(IContext context, int id);
 
-        IEnumerable<FrontListAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
         FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId);
         string GetDictionaryAgentUserId(IContext context, int employeeId);
@@ -153,7 +154,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
 
-        IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
 
         void SetPositionOrder(IContext context, ModifyPositionOrder model);
 
@@ -228,8 +229,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-        IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter);
-        FrontDictionaryTag GetDictionaryTag(IContext context, int id);
+        IEnumerable<FrontMainTag> GetMainTags(IContext context, FullTextSearch ftSearch, FilterDictionaryTag filter, UIPaging paging);
+        IEnumerable<ListItem> GetTagList(IContext ctx, FilterDictionaryTag filter, UIPaging paging);
+        FrontTag GetTag(IContext context, int id);
         #endregion DictionaryTags
 
         #region Dictionary Admin

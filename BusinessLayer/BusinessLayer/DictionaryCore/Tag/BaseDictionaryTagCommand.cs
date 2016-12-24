@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore
             if(TypeModelIs<ModifyTag>())
             { filter.NotContainsIDs = new List<int> { GetModel<ModifyTag>().Id }; }
 
-            var spr = _dictDb.GetTags(_context, filter);
+            var spr = _dictDb.GetInternalTags(_context, filter);
             if (spr.Any())
             {
                 throw new DictionaryTagNotUnique(Model.Name);

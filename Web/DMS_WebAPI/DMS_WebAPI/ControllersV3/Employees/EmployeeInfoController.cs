@@ -16,6 +16,7 @@ using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -31,18 +32,19 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <summary>
         /// Список сотрудников
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/Main")]
-        [ResponseType(typeof(List<FrontListAgentEmployee>))]
-        public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<FrontMainAgentEmployee>))]
+        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentEmployees(ctx, filter, paging);
+            var tmpItems = tmpService.GetMainAgentEmployees(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontAgentEmployee))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

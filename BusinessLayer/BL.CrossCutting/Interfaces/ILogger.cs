@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using BL.CrossCutting.Context;
 using System.Linq;
+using BL.Model.FullTextSearch;
 
 namespace BL.CrossCutting.Interfaces
 {

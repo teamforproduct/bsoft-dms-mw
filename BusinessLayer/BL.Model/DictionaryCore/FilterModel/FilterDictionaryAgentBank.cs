@@ -14,16 +14,10 @@ namespace BL.Model.DictionaryCore.FilterModel
     {
 
         /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
-
-        /// <summary>
         /// МФО
         /// </summary>
         public string MFOCode { get; set; }
         public string MFOCodeExact { get; set; }
-        public string NameExact { get; set; }
         /// <summary>
         /// Первая буква наименования
         /// </summary>

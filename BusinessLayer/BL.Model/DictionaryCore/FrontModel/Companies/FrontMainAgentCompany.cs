@@ -5,46 +5,52 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BL.Model.DictionaryCore.FrontModel
-{   
+{
     /// <summary>
-    /// Контрагент - Банк
+    /// Контрагент - юридическое лицо
     /// </summary>
-    public class FrontDictionaryAgentBank : FrontDictionaryAgent
+    public class FrontMainAgentCompany 
     {
         /// <summary>
-        /// Ид
+        /// ИД
         /// </summary>
         public int Id { get; set; }
         
         /// <summary>
-        /// Название
+        /// Краткое наименование
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Название
+        /// Полное наименование
         /// </summary>
         public string FullName { get; set; }
-        
         /// <summary>
-        /// МФО
+        /// ИНН
         /// </summary>
-        public string MFOCode { get; set; }
-        
+        public string TaxCode { get; set; }
         /// <summary>
-        /// Код Свифт
+        /// ОКПО
         /// </summary>
-        public string Swift { get; set; }
-        
+        public string OKPOCode { get; set; }
+        /// <summary>
+        /// Номер свидетельства НДС
+        /// </summary>
+        public string VATCode { get; set; }
         /// <summary>
         /// Комментарии
         /// </summary>
         public string Description { get; set; }
-        
         /// <summary>
         /// Признак активности
         /// </summary>
         public bool? IsActive { get; set; }
+        
+        /// <summary>
+        /// Список контактных лиц
+        /// </summary>
+        public IEnumerable<FrontAgentPerson> ContactsPersons { get; set; }
+
 
     }
 }

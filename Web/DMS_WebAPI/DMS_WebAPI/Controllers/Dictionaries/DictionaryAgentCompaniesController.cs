@@ -11,6 +11,7 @@ using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using BL.Model.Common;
 using System.Collections.Generic;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {   /// <summary>
@@ -27,11 +28,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="paging"></param>
         /// <returns></returns>
         // GET: api/DictionaryCompanies
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetAgentCompanies(ctx, filter, paging);
+            var tmpDicts = tmpDictProc.GetMainAgentCompanies(ctx, ftSearch, filter, paging);
             var res=new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;
@@ -122,7 +123,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentCompany, ctx, id);
-            FrontDictionaryAgentCompany tmp = new FrontDictionaryAgentCompany();
+            FrontAgentCompany tmp = new FrontAgentCompany();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

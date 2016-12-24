@@ -147,7 +147,7 @@ namespace DMS_WebAPI.Utilities
 
         public bool ExistsUser(string userName) => GetUser(userName) != null;
 
-        public FrontDictionaryAgentEmployeeUser GetUserInfo(IContext context)
+        public FrontAgentEmployeeUser GetUserInfo(IContext context)
         {
             var dicProc = DmsResolver.Current.Get<IDictionaryService>();
 
@@ -155,7 +155,7 @@ namespace DMS_WebAPI.Utilities
 
             var user = GetUser(context, context.CurrentAgentId);
 
-            return new FrontDictionaryAgentEmployeeUser()
+            return new FrontAgentEmployeeUser()
             {
                Id = employee.Id,
                Name = employee.Name,

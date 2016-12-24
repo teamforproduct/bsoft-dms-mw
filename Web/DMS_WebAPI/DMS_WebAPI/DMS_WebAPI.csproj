@@ -267,6 +267,7 @@
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
     <Compile Include="ControllersV3\Documents\TagsInfoController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeSessionsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeePassportController.cs" />
     <Compile Include="ControllersV3\Journals\JournalPositionsController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentPositionsController.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
     <Compile Include="ControllersV3\System\DevController.cs" />
+    <Compile Include="ControllersV3\Sessions\SessionInfoController.cs" />
     <Compile Include="ControllersV3\System\TempStorageController.cs" />
     <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
     <Compile Include="ControllersV3\System\AddressTypeInfoController.cs" />
@@ -295,6 +297,7 @@
     <Compile Include="ControllersV3\Persons\PersonInfoController.cs" />
     <Compile Include="ControllersV3\System\SettingsInfoController.cs" />
     <Compile Include="ControllersV3\System\SystemSettingsController.cs" />
+    <Compile Include="ControllersV3\User\UserSessionsController.cs" />
     <Compile Include="ControllersV3\User\UserEncryptionCertificatesController.cs" />
     <Compile Include="ControllersV3\User\UserAddressesController.cs" />
     <Compile Include="ControllersV3\User\UserImageController.cs" />
@@ -317,12 +320,6 @@
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStageTypesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Persons\PersonAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\ClientCompanies\ClientCompanyAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Employees\EmployeeAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Companies\CompanyAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Banks\BankAddressesController.cs" />
-    <Compile Include="Controllers\Dictionaries\Banks\BankInfoController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
@@ -360,7 +357,7 @@
     <Compile Include="Controllers\System\SystemObjectsController.cs" />
     <Compile Include="Controllers\System\SystemLogsController.cs" />
     <Compile Include="Controllers\System\SystemActionsController.cs" />
-    <Compile Include="Controllers\System\SystemSettingsController.cs" />
+    <Compile Include="Controllers\System\SystemSettingsOldController.cs" />
     <Compile Include="Controllers\System\UtilitesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />

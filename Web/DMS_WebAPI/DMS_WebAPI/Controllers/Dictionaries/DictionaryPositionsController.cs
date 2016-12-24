@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Web.Http.Description;
 using BL.Model.Common;
 using System.Diagnostics;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -52,12 +53,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [HttpGet]
         [Route("GetList")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter)
+        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionList(ctx, filter);
+            var tmpItems = tmpService.GetPositionList(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

@@ -19,7 +19,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public string Index { get; set; }
         public string IndexExact { get; set; }
-        public string NameExact { get; set; }
         /// <summary>
         /// Список подразделений
         /// </summary>

@@ -8,6 +8,8 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.SystemCore;
+using BL.Model.Common;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -24,11 +26,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <returns>коллекцию контрагентов</returns>
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentPersons(ctx, filter,paging);
+            var tmpDicts = tmpDictProc.GetMainAgentPersons(ctx, ftSearch, filter,paging);
             var res= new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;
@@ -117,9 +119,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentPerson, ctx, id);
             
              
-            FrontListAgentPerson tmp = new FrontListAgentPerson();
-            tmp.Id = id;
-
+            FrontDeleteModel tmp = new FrontDeleteModel(id);
             return new JsonResult(tmp, this);
 
         }

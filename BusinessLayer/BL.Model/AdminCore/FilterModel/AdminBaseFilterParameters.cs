@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 using System.Dynamic;
 
 namespace BL.Model.AdminCore.FilterModel
@@ -6,17 +7,8 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Базовые фильтры для админки
     /// </summary>
-    public class AdminBaseFilterParameters
+    public class AdminBaseFilterParameters : BaseFilter
     {
-        /// <summary>
-        /// Список ID
-        /// </summary>
-        public List<int> IDs { get; set; }
-
-        /// <summary>
-        /// Исключение записей по ID
-        /// </summary>
-        public List<int> NotContainsIDs { get; set; }
    
     }
 }

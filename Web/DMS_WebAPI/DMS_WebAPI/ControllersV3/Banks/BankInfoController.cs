@@ -16,6 +16,7 @@ using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Banks
 {
@@ -31,23 +32,24 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <summary>
         /// Список банков
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        //[HttpGet]
-        //[Route("Info/Main")]
-        //[ResponseType(typeof(List<FrontMainDictionaryAgentBank>))]
-        //public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-        //    var tmpItems = tmpService.GetAgentBanks(ctx, filter, paging);
-        //    var res = new JsonResult(tmpItems, this);
-        //    res.Paging = paging;
-        //    res.SpentTime = stopWatch;
-        //    return res;
-        //}
+        [HttpGet]
+        [Route("Info/Main")]
+        [ResponseType(typeof(List<FrontMainAgentBank>))]
+        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetMainAgentBanks(ctx, ftSearch, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
 
         /// <summary>
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentBank))]
+        [ResponseType(typeof(FrontAgentBank))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

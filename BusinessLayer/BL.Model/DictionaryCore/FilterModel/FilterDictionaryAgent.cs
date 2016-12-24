@@ -16,11 +16,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Первая буква наименования
         /// </summary>
-        public string NameExact { get; set; }
-
-        /// <summary>
-        /// Первая буква наименования
-        /// </summary>
         public char FirstChar { get; set; }
 
     }

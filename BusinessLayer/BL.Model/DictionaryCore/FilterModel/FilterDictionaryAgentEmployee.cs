@@ -13,15 +13,6 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgentEmployee : DictionaryBaseFilterParameters
     {
-        /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
-
-        /// <summary>
-        /// по имени (по равенству)
-        /// </summary>
-        public string NameExact { get; set; }
 
         /// <summary>
         /// табельный номер

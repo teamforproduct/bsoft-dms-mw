@@ -12,6 +12,5 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public string FullTextSearchString { get; set; }
 
-        public string NameExact { get; set; }
     }
 }

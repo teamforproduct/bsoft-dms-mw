@@ -8,6 +8,7 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.Model.SystemCore;
 using BL.CrossCutting.DependencyInjection;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -20,14 +21,15 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Список контрагентов - банков
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentBanks(ctx, filter, paging);
+            var tmpDicts = tmpDictProc.GetMainAgentBanks(ctx, ftSearch, filter, paging);
             var res= new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;
@@ -97,7 +99,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentBank, ctx, id);
-            FrontDictionaryAgentBank tmp = new FrontDictionaryAgentBank();
+            FrontMainAgentBank tmp = new FrontMainAgentBank();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

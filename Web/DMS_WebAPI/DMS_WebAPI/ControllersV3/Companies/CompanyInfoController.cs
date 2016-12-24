@@ -16,6 +16,7 @@ using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Companies
 {
@@ -31,23 +32,24 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <summary>
         /// Список юридических лиц
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
-        //[HttpGet]
-        //[Route("Info/Main")]
-        //[ResponseType(typeof(List<FrontMainDictionaryAgentCompany>))]
-        //public IHttpActionResult GetWithPositions([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-        //    var tmpItems = tmpService.GetDictionaryAgentCompanys(ctx, filter, paging);
-        //    var res = new JsonResult(tmpItems, this);
-        //    res.Paging = paging;
-        //    res.SpentTime = stopWatch;
-        //    return res;
-        //}
+        [HttpGet]
+        [Route("Info/Main")]
+        [ResponseType(typeof(List<FrontMainAgentCompany>))]
+        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetMainAgentCompanies(ctx, ftSearch, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
 
         /// <summary>
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentCompany))]
+        [ResponseType(typeof(FrontAgentCompany))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

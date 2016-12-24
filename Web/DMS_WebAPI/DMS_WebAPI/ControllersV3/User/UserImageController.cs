@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpGet]
         [Route("Image")]
-        [ResponseType(typeof(FrontDictionaryAgentEmployeeUser))]
+        [ResponseType(typeof(FrontAgentEmployeeUser))]
         public IHttpActionResult Get()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

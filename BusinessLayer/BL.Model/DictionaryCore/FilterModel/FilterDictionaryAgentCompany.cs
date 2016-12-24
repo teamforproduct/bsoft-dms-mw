@@ -8,16 +8,11 @@ namespace BL.Model.DictionaryCore.FilterModel
     public class FilterDictionaryAgentCompany : DictionaryBaseFilterParameters
     {
         /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
-
-        /// <summary>
         /// Полное имя
         /// </summary>
         public string FullName { get; set; }
 
-        public string NameExact{get;set;} 
+        
         /// <summary>
         /// ИНН
         /// </summary>

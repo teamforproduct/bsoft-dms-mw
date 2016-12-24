@@ -39,7 +39,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
-        IEnumerable<FrontListAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<FrontMainAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         FrontAgentPerson GetAgentPerson(IContext context, int id);
         #endregion DictionaryAgentPerson
@@ -50,8 +50,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
-        FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id);
-        IEnumerable<FrontListAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        FrontAgentEmployee GetAgentEmployee(IContext context, int id);
+        IEnumerable<FrontMainAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
@@ -94,8 +94,9 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void DeleteAgentCompanies(IContext context, List<int> list);
+        FrontAgentCompany GetAgentCompany(IContext context, int id);
         IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
-        IEnumerable<FrontDictionaryAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        IEnumerable<FrontMainAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         bool ExistsAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryAgentCompanies
 
@@ -104,7 +105,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentBank(IContext context, InternalDictionaryAgentBank bank);
         void DeleteAgentBank(IContext context, InternalDictionaryAgentBank bank);
         bool ExistsAgentBanks(IContext context, FilterDictionaryAgentBank filter);
-        IEnumerable<FrontDictionaryAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
+        FrontAgentBank GetAgentBank(IContext context, int id);
+        IEnumerable<FrontMainAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentAccounts
@@ -213,7 +215,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsForDIPRegistrationJournals(IContext context, int registrationJournalId, FilterDictionaryPosition filter);
         IEnumerable<SortPositoin> GetPositionsForSort(IContext context, FilterDictionaryPosition filter);
 
-        IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
         #endregion DictionaryPositions
 
         // Исполнители
@@ -290,9 +292,10 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-
-        IEnumerable<InternalDictionaryTag> GetInternalDictionaryTags(IContext context, FilterDictionaryTag filter);
-        IEnumerable<FrontDictionaryTag> GetTags(IContext context, FilterDictionaryTag filter);
+        IEnumerable<ListItem> GetTagList(IContext ctx, FilterDictionaryTag filter, UIPaging paging);
+        FrontTag GetTag(IContext ctx, int id);
+        IEnumerable<InternalDictionaryTag> GetInternalTags(IContext context, FilterDictionaryTag filter);
+        IEnumerable<FrontMainTag> GetMainTags(IContext context, FilterDictionaryTag filter, UIPaging paging);
         int DocsWithTagCount(IContext context, int tagId);
         int AddTag(IContext context, InternalDictionaryTag model);
         void UpdateTag(IContext context, InternalDictionaryTag model);

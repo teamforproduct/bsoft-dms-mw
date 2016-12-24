@@ -21,7 +21,7 @@ namespace DMS_WebAPI.Controllers
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V2 + "SystemSettings")]
-    public class SystemSettingsController : ApiController
+    public class SystemSettingsOldController : ApiController
     {
         /// <summary>
         /// Список настроек
@@ -29,6 +29,7 @@ namespace DMS_WebAPI.Controllers
         /// <param name="filter"></param>
         /// <returns></returns>
         // GET: api/SystemFormats
+        [Route("")]
         [ResponseType(typeof(FrontDictionarySettingType))]
         public IHttpActionResult Get([FromUri] FilterSystemSetting filter)
         {
@@ -44,6 +45,7 @@ namespace DMS_WebAPI.Controllers
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
         //[ResponseType(typeof(FrontSystemSetting))]
+        [Route("")]
         public IHttpActionResult Post([FromBody]List<ModifySystemSetting> model)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();

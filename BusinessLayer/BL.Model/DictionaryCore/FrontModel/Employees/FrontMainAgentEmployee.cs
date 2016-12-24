@@ -12,7 +12,7 @@ namespace BL.Model.DictionaryCore.FrontMainModel
     /// <summary>
     /// Контрагент - сотрудник
     /// </summary>
-    public class FrontListAgentEmployee
+    public class FrontMainAgentEmployee
     {
 
         /// <summary>
