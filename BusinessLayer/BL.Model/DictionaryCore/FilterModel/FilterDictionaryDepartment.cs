@@ -33,6 +33,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Руководитель подразделения
         /// </summary>
         public int? ChiefPositionId { get; set; }
-        
+
+        /// <summary>
+        /// Сужение по списку вышестоящих элементов
+        /// </summary>
+        public List<int> ParentIDs { get; set; }
+
     }
 }

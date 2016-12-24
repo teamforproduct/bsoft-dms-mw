@@ -17,7 +17,19 @@
         </tr>
       </thead>
       <tbody>
-        @foreach (ParameterDescription parameter in Model)
+        @foreach (ParameterDescription parameter in Model
+            .OrderBy(x => x.Name
+            .Replace("FullTextSearchString", "AAA")
+            .Replace("NotContainsIDs", "AAC")
+            .Replace("IDs", "AAB")
+            .Replace("Id", "AAB")
+            .Replace("CurrentPage", "ZZA")
+            .Replace("PageSize", "ZZB")
+            .Replace("IsAll", "ZZC")
+            .Replace("IsOnlyCounter", "ZZD")
+            .Replace("Sort", "ZZE")
+            
+            ))
         {
           ModelDescription modelDescription = parameter.TypeDescription;
             <tr>

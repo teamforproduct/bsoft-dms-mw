@@ -55,11 +55,11 @@ namespace DMS_WebAPI
 #endif
 
 
-//#if !DEBUG
+#if !DEBUG
             //TODO
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
-//#endif
+#endif
 #if !DEBUG
             //TODO
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();

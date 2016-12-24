@@ -9,7 +9,7 @@
     var mediaTypes = samples.Keys;
 }
 <div>
-    @foreach (var mediaType in mediaTypes)
+    @foreach (var mediaType in mediaTypes.Where(x=> x.Contains("json")))
     {
         <h4 class="sample-header">@mediaType</h4>
         <div class="sample-content">
