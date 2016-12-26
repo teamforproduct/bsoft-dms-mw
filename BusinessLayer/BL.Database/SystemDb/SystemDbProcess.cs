@@ -1731,7 +1731,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
                 }).ToList());
 
                 res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -2472,7 +2472,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " + x.doc.SourceAgent.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
+                        ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
                     }).ToList());
                 }
 

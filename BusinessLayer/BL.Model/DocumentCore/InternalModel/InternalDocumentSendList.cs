@@ -33,7 +33,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }
         public Nullable<DateTime> SelfAttentionDate { get; set; }
-
+        public int? SelfAttentionDay { get; set; }
         public string Description { get; set; }
         public string AddDescription { get; set; }
         public DateTime? DueDate { get; set; }

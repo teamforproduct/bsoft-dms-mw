@@ -26,7 +26,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// Номер этапа, если null, то 
+        /// Номер этапа, если null, то выполняется ПРЯМОЕ действие без сохранения в план
         /// </summary>
         public int? Stage { get; set; }
         /// <summary>
@@ -51,7 +51,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public int? TargetAgentId { get; set; }
         /// <summary>
-        /// Задача
+        /// ИД Задачи
         /// </summary>
         public string Task { get; set; }
         /// <summary>
@@ -78,6 +78,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Дата постоянное внимание для самоконтроля
         /// </sumпmary>
         public Nullable<DateTime> SelfAttentionDate { get; set; }
+        /// <summary>
+        /// Дни для определения даты постоянного внимания для самоконтроля
+        /// </sumпmary>
+        public int? SelfAttentionDay { get; set; }
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>

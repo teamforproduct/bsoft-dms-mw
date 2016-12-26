@@ -70,6 +70,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </sumпmary>
         public Nullable<DateTime> SelfAttentionDate { get; set; }
         /// <summary>
+        /// Дни для определения даты постоянного внимания для самоконтроля
+        /// </sumпmary>
+        public int? SelfAttentionDay { get; set; }
+        /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
         public bool IsAvailableWithinTask { get; set; }

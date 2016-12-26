@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> IDs { get; set; }
         /// <summary>
-        /// Ссылка на шаблон
+        /// ИД шаблона
         /// </summary>
         public int? TemplateId { get; set; }
         public EnumSendTypes? SendType { get; set; }

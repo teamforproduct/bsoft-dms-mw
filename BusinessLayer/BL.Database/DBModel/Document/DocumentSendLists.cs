@@ -43,6 +43,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }
         public Nullable<DateTime> SelfAttentionDate { get; set; }
+        public int? SelfAttentionDay { get; set; }
         public bool IsAvailableWithinTask { get; set; }
         public Nullable<int> StartEventId { get; set; }
         public Nullable<int> CloseEventId { get; set; }

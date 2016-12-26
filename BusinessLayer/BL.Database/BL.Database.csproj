@@ -492,6 +492,10 @@
     <Compile Include="Migrations\201612222121072_StageTypes.Designer.cs">
       <DependentUpon>201612222121072_StageTypes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612261349536_ModifySendList.cs" />
+    <Compile Include="Migrations\201612261349536_ModifySendList.Designer.cs">
+      <DependentUpon>201612261349536_ModifySendList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -730,6 +734,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612222121072_StageTypes.resx">
       <DependentUpon>201612222121072_StageTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612261349536_ModifySendList.resx">
+      <DependentUpon>201612261349536_ModifySendList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

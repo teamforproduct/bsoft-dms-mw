@@ -10,17 +10,15 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public EnumSendTypes SendType { get; set; }
-        public int? SourcePositionId { get; set; }
         public int? TargetPositionId { get; set; }
         public int? TargetAgentId { get; set; }
 
         public int? TaskId { get; set; }
         public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
-
-        public Nullable<DateTime> SelfDueDate { get; set; }
+        public string SelfDescription { get; set; }
         public int? SelfDueDay { get; set; }
-        public Nullable<DateTime> SelfAttentionDate { get; set; }
+        public int? SelfAttentionDay { get; set; }
 
         public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
@@ -41,24 +39,20 @@ namespace BL.Model.DocumentCore.InternalModel
             this.DocumentId=list.DocumentId;
             this.SendType = list.SendType;
             this.StageType = list.StageType;
-            this.SourcePositionId = list.SourcePositionId;
             this.TargetPositionId = list.TargetPositionId;
             this.TargetAgentId = list.TargetAgentId;
             this.TaskId = list.TaskId;
             this.IsWorkGroup = list.IsWorkGroup;
             this.IsAddControl = list.IsAddControl;
-
-            this.SelfDueDate = list.SelfDueDate;
+            this.SelfDescription = list.SelfDescription;
             this.SelfDueDay = list.SelfDueDay;
-            this.SelfAttentionDate = list.SelfAttentionDate;
+            this.SelfAttentionDay = list.SelfAttentionDay;
 
             this.IsAvailableWithinTask = list.IsAvailableWithinTask;
             this.Description= list.Description;
             this.Stage = list.Stage;
             this.DueDay=list.DueDay;
             this.AccessLevel = list.AccessLevel;
-            this.LastChangeDate = list.LastChangeDate;
-            this.LastChangeUserId = list.LastChangeUserId;
         }
 
 

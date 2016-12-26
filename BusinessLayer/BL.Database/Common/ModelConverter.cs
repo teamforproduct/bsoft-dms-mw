@@ -221,7 +221,7 @@ namespace BL.Database.Common
                     SelfDueDate = sendList.SelfDueDate,
                     SelfDueDay = sendList.SelfDueDay,
                     SelfAttentionDate = sendList.SelfAttentionDate,
-
+                    SelfAttentionDay = sendList.SelfAttentionDay,
                     Description = sendList.Description,
                     AddDescription = sendList.AddDescription,
                     DueDate = sendList.DueDate,

@@ -324,7 +324,9 @@ namespace BL.Logic.Common
                 DueDate = eventType == EnumEventTypes.ControlOn
                             ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value) }.Max()
                             : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value) }.Max(),
-                AttentionDate = eventType == EnumEventTypes.ControlOn ? sendListModel.SelfAttentionDate : null,
+                AttentionDate = eventType == EnumEventTypes.ControlOn 
+                            ? new[] { sendListModel.SelfAttentionDate, (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value) }.Max() 
+                            : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
                 OnEvent = //eventType == null ? null :
@@ -440,6 +442,7 @@ namespace BL.Logic.Common
                 SelfDueDate = model.SelfDueDate,
                 SelfDueDay = model.SelfDueDay,
                 SelfAttentionDate = model.SelfAttentionDate,
+                SelfAttentionDay = model.SelfAttentionDay,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
 

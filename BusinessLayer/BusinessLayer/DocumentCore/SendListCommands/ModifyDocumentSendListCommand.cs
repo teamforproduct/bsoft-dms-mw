@@ -110,7 +110,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList.SelfDueDate = Model.SelfDueDate;
             _sendList.SelfDueDay = Model.SelfDueDay;
             _sendList.SelfAttentionDate = Model.SelfAttentionDate;
-
+            _sendList.SelfAttentionDay = Model.SelfAttentionDay;
             CommonDocumentUtilities.VerifySendLists(_document);
 
             return true;

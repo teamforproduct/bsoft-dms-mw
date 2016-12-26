@@ -1862,6 +1862,7 @@ namespace BL.Database.Documents
                 entry.Property(e => e.SelfDueDate).IsModified = true;
                 entry.Property(e => e.SelfDueDay).IsModified = true;
                 entry.Property(e => e.SelfAttentionDate).IsModified = true;
+                entry.Property(e => e.SelfAttentionDay).IsModified = true;
                 entry.Property(e => e.IsInitial).IsModified = true;
                 entry.Property(e => e.Description).IsModified = true;
                 entry.Property(e => e.AddDescription).IsModified = true;
@@ -2018,6 +2019,7 @@ namespace BL.Database.Documents
                                             SelfDueDate = x.SelfDueDate,
                                             SelfDueDay = x.SelfDueDay,
                                             SelfAttentionDate = x.SelfAttentionDate,
+                                            SelfAttentionDay = x.SelfAttentionDay,
                                             IsInitial = x.IsInitial,
                                             Description = x.Description,
                                             DueDay = x.DueDay,

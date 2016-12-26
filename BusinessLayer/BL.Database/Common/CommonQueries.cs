@@ -2664,6 +2664,7 @@ namespace BL.Database.Common
                 SelfDueDate = y.SelfDueDate,
                 SelfDueDay = y.SelfDueDay,
                 SelfAttentionDate = y.SelfAttentionDate,
+                SelfAttentionDay = y.SelfAttentionDay,
                 Description = y.Description,
                 AddDescription = y.AddDescription,
                 DueDate = y.DueDate,
