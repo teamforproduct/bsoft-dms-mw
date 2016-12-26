@@ -169,6 +169,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStageType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontShortListJournals.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontListAgentPersonSimlpe.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUser.cs" />
@@ -575,7 +576,9 @@
     <Compile Include="WebAPI\IncomingModel\SetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserServer.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DictionaryCore\FrontModel\Positions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

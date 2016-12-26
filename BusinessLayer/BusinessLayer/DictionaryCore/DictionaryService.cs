@@ -802,6 +802,47 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
+        public IEnumerable<FrontShortListJournals> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging)
+        {
+            var tree = GetRegistrationJournalsTree(context, filter);
+
+            var list = new List<FrontShortListJournals>();
+
+            var path = string.Empty;
+
+            GetRegistrationJournalShortList(tree, list, path);
+
+            return list;
+
+        }
+
+        private void GetRegistrationJournalShortList(IEnumerable<ITreeItem> tree, List<FrontShortListJournals> list, string path)
+        {
+            foreach (var treeItem in tree)
+            {
+                
+                if (treeItem.ObjectId == (int)EnumObjects.DictionaryRegistrationJournals)
+                {
+                    var tmp = new FrontShortListJournals
+                    {
+                        Id = treeItem.Id,
+                        Name = treeItem.Name,
+                        Path = path
+                    };
+
+                    list.Add(tmp);
+
+                    path = string.Empty;
+
+                    continue;
+                }
+
+                path += (path == string.Empty ? string.Empty : " -> ") + treeItem.Name;
+
+                GetRegistrationJournalShortList(treeItem.Childs, list, path);
+            }
+        }
+
         #endregion DictionaryRegistrationJournals
 
         // Компании

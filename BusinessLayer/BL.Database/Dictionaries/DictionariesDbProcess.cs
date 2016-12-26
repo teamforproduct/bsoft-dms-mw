@@ -5257,7 +5257,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
+       
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
@@ -6066,7 +6066,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetTagsQuery(ctx, dbContext, new FilterDictionaryTag {  IDs = new List<int> { id } });
+                var qry = GetTagsQuery(ctx, dbContext, new FilterDictionaryTag { IDs = new List<int> { id } });
 
                 var res = qry.Select(x => new FrontTag
                 {

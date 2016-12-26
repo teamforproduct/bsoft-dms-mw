@@ -182,6 +182,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter);
+        IEnumerable<FrontShortListJournals> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging);
         #endregion DictionaryRegistrationJournals
 
         // Компании
