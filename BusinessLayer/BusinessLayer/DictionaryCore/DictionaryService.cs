@@ -174,7 +174,7 @@ namespace BL.Logic.DictionaryCore
         {
             var newFilter = new FilterDictionaryAgentPerson();
 
-            if (!string.IsNullOrEmpty(ftSearch.FullTextSearchString))
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons, ftSearch.FullTextSearchString);
             }
@@ -208,7 +208,7 @@ namespace BL.Logic.DictionaryCore
 
             var newFilter = new FilterDictionaryAgentEmployee();
 
-            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
 
@@ -334,7 +334,7 @@ namespace BL.Logic.DictionaryCore
         {
 
             var newFilter = new FilterDictionaryAgentCompany();
-            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, ftSearch.FullTextSearchString, ResolveSearchResultAgentCompanies);
 
@@ -399,7 +399,7 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgentBank();
-            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, ftSearch.FullTextSearchString, ResolveSearchResultAgentBanks);
 
@@ -898,7 +898,7 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainTag> GetMainTags(IContext context, FullTextSearch ftSearch, FilterDictionaryTag filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryTag();
-            if (!String.IsNullOrEmpty(ftSearch.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryTag, ftSearch.FullTextSearchString);
             }
