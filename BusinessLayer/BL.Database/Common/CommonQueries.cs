@@ -36,6 +36,7 @@ using BL.Model.Reports.FrontModel;
 using System.Data.Entity.Core.Objects;
 using System.Threading.Tasks;
 using BL.Database.DBModel.Admin;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Common
 {
@@ -3097,6 +3098,7 @@ namespace BL.Database.Common
                     {
                         if (isUseCertificateSign && (newSubscription?.CertificateId).HasValue)
                         {
+                            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash GetDocumentCertificateSign ", @"C:\sign.log");
                             document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, newSubscription.CertificateId.Value, newSubscription.CertificatePassword);
                         }
                         else
@@ -3189,6 +3191,8 @@ namespace BL.Database.Common
                     }
                 }
                 document.Subscriptions = subscriptions;
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash CertificateSignPdfFileIdentity ", @"C:\sign.log");
+
                 document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword);
             }
 
@@ -3196,6 +3200,7 @@ namespace BL.Database.Common
             {
                 throw new DocumentFileWasChangedExternally();
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash end ", @"C:\sign.log");
 
             return document;
         }
@@ -3412,11 +3417,14 @@ namespace BL.Database.Common
 
         public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword)
         {
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf begin ", @"C:\sign.log");
+
             var fileStore = DmsResolver.Current.Get<IFileStore>();
             var pdf = GetDocumentCertificateSignPdf(dbContext, ctx, doc);
 
             if (certificateId.HasValue)
                 pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
+            //FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf FileContent " + pdf.FileContent.Count().ToString(), @"C:\sign.log");
 
             var positionId = (int)EnumSystemPositions.AdminPosition;
             try
@@ -3451,14 +3459,20 @@ namespace BL.Database.Common
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
 
             var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
+
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\sign.log");
+
             if (ordInDoc == -1)
             {
                 att.Version = 1;
                 att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf GetNextFileOrderNumber " , @"C:\sign.log");
             }
             else
             {
                 att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf GetFileNextVersion ", @"C:\sign.log");
+
                 att.OrderInDocument = ordInDoc;
             }
 
@@ -3466,8 +3480,10 @@ namespace BL.Database.Common
             att.LastChangeUserId = ctx.CurrentAgentId;
 
             fileStore.SaveFile(ctx, att);
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf SaveFile ", @"C:\sign.log");
 
             operationDb.AddNewFileOrVersion(ctx, att);
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\sign.log");
 
             return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
         }
