@@ -160,14 +160,16 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryPositionExecutor.cs" />
+    <Compile Include="DictionaryCore\FrontModel\AddressTypes\FrontShortListAddressType.cs" />
     <Compile Include="DictionaryCore\FrontModel\Banks\FrontAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\Companies\FrontMainAgentCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontShortListContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\AddressTypes\FrontDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStageType.cs" />
     <Compile Include="DictionaryCore\FrontModel\Journals\FrontShortListJournals.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontListAgentPersonSimlpe.cs" />
@@ -200,7 +202,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontMainAgentPerson.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContactType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontDictionaryContactType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontMainTag.cs" />

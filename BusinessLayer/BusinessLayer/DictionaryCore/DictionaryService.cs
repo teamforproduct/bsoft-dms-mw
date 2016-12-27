@@ -267,12 +267,12 @@ namespace BL.Logic.DictionaryCore
 
         #region DictionaryAddressTypes
 
-        public FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id)
+        public FrontAddressType GetDictionaryAddressType(IContext context, int id)
         {
             return _dictDb.GetAddressTypes(context, new FilterDictionaryAddressType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        public IEnumerable<FrontAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
             var newFilter = new FilterDictionaryAddressType();
 
@@ -288,6 +288,15 @@ namespace BL.Logic.DictionaryCore
 
 
             return _dictDb.GetAddressTypes(context, newFilter);
+        }
+
+        public IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        {
+            if (filter == null) filter = new FilterDictionaryAddressType();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListAddressTypes(context, filter);
         }
 
 
@@ -500,6 +509,15 @@ namespace BL.Logic.DictionaryCore
             }
 
             return _dictDb.GetContactTypes(context, newFilter);
+        }
+
+        public IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            if (filter == null) filter = new FilterDictionaryContactType();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListContactTypes(context, filter);
         }
         #endregion
 

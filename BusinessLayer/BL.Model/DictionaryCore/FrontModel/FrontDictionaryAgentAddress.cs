@@ -24,7 +24,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Тип адреса
         /// </summary>
-        public FrontDictionaryAddressType AddressType { get; set; }
+        public FrontAddressType AddressType { get; set; }
         
         /// <summary>
         /// Индекс

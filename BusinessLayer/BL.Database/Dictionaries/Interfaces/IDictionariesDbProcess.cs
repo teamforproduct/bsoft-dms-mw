@@ -86,7 +86,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAddressType(IContext context, InternalDictionaryAddressType addrType);
         int AddAddressType(IContext context, InternalDictionaryAddressType addrType);
         bool ExistsAddressTypeSpecCode(IContext context, int addressTypeId);
-        IEnumerable<FrontDictionaryAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        IEnumerable<FrontAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter);
 
         #endregion
 
@@ -139,6 +140,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteContactType(IContext context, InternalDictionaryContactType contactType);
         int AddContactType(IContext context, InternalDictionaryContactType contactType);
         bool ExistsContactTypeSpecCode(IContext context, int contactTypeId);
+        IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter);
         IEnumerable<FrontDictionaryContactType> GetContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion
 

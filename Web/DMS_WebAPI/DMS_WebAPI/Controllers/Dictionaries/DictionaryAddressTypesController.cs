@@ -77,7 +77,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAddressType, ctx, id);
-            FrontDictionaryAddressType tmp = new FrontDictionaryAddressType();
+            FrontAddressType tmp = new FrontAddressType();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

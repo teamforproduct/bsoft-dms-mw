@@ -1,30 +1,29 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
+using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Helper;
 using BL.Model.AdminCore;
-using BL.Model.SystemCore;
+using BL.Model.AdminCore.FrontModel;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using BL.Model.FullTextSearch;
-using LinqKit;
-using System.Data.Entity;
-using BL.Model.Common;
-using System.Transactions;
+using BL.Model.SystemCore;
 using BL.Model.Tree;
 using EntityFramework.Extensions;
-using BL.Database.DBModel.Admin;
-using BL.Model.AdminCore.FrontModel;
-using BL.CrossCutting.Helpers;
-using BL.Database.Helper;
-using BL.Model.DictionaryCore.FrontMainModel;
+using LinqKit;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace BL.Database.Dictionaries
 {
@@ -1334,7 +1333,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,
-                    AddressType = new FrontDictionaryAddressType { Id = x.AdressTypeId, Name = x.AddressType.Name, IsActive = x.AddressType.IsActive },
+                    AddressType = new FrontAddressType { Id = x.AdressTypeId, Name = x.AddressType.Name, IsActive = x.AddressType.IsActive },
                     PostCode = x.PostCode,
                     Address = x.Address,
                     Description = x.Description,
@@ -1481,7 +1480,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     AgentId = x.AgentId,
-                    AddressType = new FrontDictionaryAddressType { Id = x.AddressType.Id, Code = x.AddressType.Code, Name = x.AddressType.Name },
+                    AddressType = new FrontAddressType { Id = x.AddressType.Id, Code = x.AddressType.Code, Name = x.AddressType.Name },
                     Address = x.Address,
                     PostCode = x.PostCode,
                     Description = x.Description,
@@ -1598,7 +1597,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        public IEnumerable<FrontAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1606,12 +1605,33 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Name);
 
-                var res = qry.Select(x => new FrontDictionaryAddressType
+                var res = qry.Select(x => new FrontAddressType
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
                     IsActive = x.IsActive
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAddressTypeQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => new FrontShortListAddressType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    SpecCode = x.SpecCode,
                 }).ToList();
 
                 transaction.Complete();
@@ -2617,77 +2637,19 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryAgentAccounts
 
         #region [+] DictionaryContactTypes ...
-        public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
+        public int AddContactType(IContext context, InternalDictionaryContactType model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+                var dbModel = DictionaryModelConverter.GetDbContactType(context, model);
 
-                if (filter.IDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                dbContext.DictionaryContactTypesSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
 
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionaryContactTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!String.IsNullOrEmpty(filter.Code))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!String.IsNullOrEmpty(filter.CodeExact))
-                {
-                    qry = qry.Where(x => x.Code == filter.CodeExact);
-                }
-
-                if (!String.IsNullOrEmpty(filter.NameExact))
-                {
-
-                    qry = qry.Where(x => x.Name == filter.NameExact);
-
-                }
-
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
-                }
-
-                var res = qry.Select(x => new FrontDictionaryContactType
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    InputMask = x.InputMask,
-                    Code = x.Code,
-                    SpecCode = x.SpecCode,
-                    IsActive = x.IsActive
-                }).FirstOrDefault();
-
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.AddNew);
                 transaction.Complete();
-                return res;
+                return dbModel.Id;
             }
         }
         public void UpdateContactType(IContext context, InternalDictionaryContactType model)
@@ -2733,27 +2695,89 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public int AddContactType(IContext context, InternalDictionaryContactType model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = DictionaryModelConverter.GetDbContactType(context, model);
 
-                dbContext.DictionaryContactTypesSet.Add(dbModel);
-                dbContext.SaveChanges();
-                model.Id = dbModel.Id;
-
-                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.AddNew);
-                transaction.Complete();
-                return dbModel.Id;
-            }
-        }
         public IEnumerable<FrontDictionaryContactType> GetContactTypes(IContext context, FilterDictionaryContactType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+                var qry = GetContactTypeQuery(context, dbContext, filter);
 
+                var res = qry.Select(x => new FrontDictionaryContactType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    InputMask = x.InputMask,
+                    Code = x.Code,
+                    SpecCode = x.SpecCode,
+                    IsActive = x.IsActive
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetContactTypeQuery(context, dbContext, filter);
+
+                var res = qry.Select(x => new FrontDictionaryContactType
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    InputMask = x.InputMask,
+                    Code = x.Code,
+                    SpecCode = x.SpecCode,
+                    IsActive = x.IsActive
+                }).FirstOrDefault();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+        public IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetContactTypeQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => new FrontShortListContactType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    SpecCode = x.SpecCode
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+        public string GetContactTypeSpecCode(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryContactTypesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.Id == id).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.SpecCode).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        private static IQueryable<DictionaryContactTypes> GetContactTypeQuery(IContext context, DmsContext dbContext, FilterDictionaryContactType filter)
+        {
+            var qry = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            if (filter != null)
+            {
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
@@ -2809,34 +2833,9 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Code == filter.CodeExact);
                 }
 
-                var res = qry.Select(x => new FrontDictionaryContactType
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    InputMask = x.InputMask,
-                    Code = x.Code,
-                    SpecCode = x.SpecCode,
-                    IsActive = x.IsActive
-                }).ToList();
-
-                transaction.Complete();
-                return res;
             }
-        }
 
-        public string GetContactTypeSpecCode(IContext context, int id)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.DictionaryContactTypesSet.
-                    Where(x => x.ClientId == context.CurrentClientId).
-                    Where(x => x.Id == id).
-                    AsQueryable();
-
-                var res = qry.Select(x => x.SpecCode).FirstOrDefault();
-                transaction.Complete();
-                return res;
-            }
+            return qry;
         }
         #endregion
 
@@ -5249,7 +5248,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-       
+
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
