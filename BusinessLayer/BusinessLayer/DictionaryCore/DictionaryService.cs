@@ -653,6 +653,10 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryPosition();
+
+            filter.IsActive = true;
+
             return _dictDb.GetPositionList(context, filter, paging);
         }
 
@@ -971,6 +975,10 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<ListItem> GetTagList(IContext context, FilterDictionaryTag filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryTag();
+
+            filter.IsActive = true;
+
             return _dictDb.GetTagList(context, filter, paging);
         }
 

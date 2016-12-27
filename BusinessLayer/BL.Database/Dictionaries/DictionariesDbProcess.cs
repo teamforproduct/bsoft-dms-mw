@@ -1257,6 +1257,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
+                //var u = dbContext.DictionaryAgentUsersSet.Where(x => x.Id == User.Id).Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
                 var dbModel = DictionaryModelConverter.GetDbAgentUser(context, User);
 
                 dbContext.DictionaryAgentUsersSet.Attach(dbModel);
@@ -4555,110 +4557,113 @@ namespace BL.Database.Dictionaries
 
             qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
-            // Список первичных ключей
-            if (filter.IDs?.Count > 0)
+            if (filter != null)
             {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Исключение списка первичных ключей
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<DictionaryPositions>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DictionaryPositions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // по вышестоящим отделам
-            if (filter.ParentIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = filter.ParentIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.ParentId == value).Expand());
+                // по вышестоящим отделам
+                if (filter.ParentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = filter.ParentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ParentId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // по отделам
-            if (filter.DepartmentIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = filter.DepartmentIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.DepartmentId == value).Expand());
+                // по отделам
+                if (filter.DepartmentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = filter.DepartmentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DepartmentId == value).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Условие по IsActive
-            if (filter.IsActive != null)
-            {
-                qry = qry.Where(x => filter.IsActive == x.IsActive);
-            }
+                // Условие по IsActive
+                if (filter.IsActive != null)
+                {
+                    qry = qry.Where(x => filter.IsActive == x.IsActive);
+                }
 
-            // Поиск по наименованию
-            if (!string.IsNullOrEmpty(filter.Name))
-            {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                // Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            // Условие по полному имени
-            if (!string.IsNullOrEmpty(filter.FullName))
-            {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
+                // Условие по полному имени
+                if (!string.IsNullOrEmpty(filter.FullName))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
 
-                qry = qry.Where(filterContains);
-            }
+                    qry = qry.Where(filterContains);
+                }
 
-            if (filter.DocumentIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-                filterContains = filter.DocumentIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.DocumentId == value).Expand());
+                if (filter.DocumentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                    filterContains = filter.DocumentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                qry = qry.Where(x =>
-                        dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                            .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.Id)
-                            ||
+                    qry = qry.Where(x =>
                             dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                            .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
-                            );
-            }
+                                .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.Id)
+                                ||
+                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
+                                );
+                }
 
-            if (filter.RoleIDs?.Count > 0)
-            {
-                qry = qry.Where(x => x.PositionRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
-            }
+                if (filter.RoleIDs?.Count > 0)
+                {
+                    qry = qry.Where(x => x.PositionRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
+                }
 
-            if (filter.OrderMore.HasValue)
-            {
-                qry = qry.Where(x => x.Order > filter.OrderMore);
-            }
+                if (filter.OrderMore.HasValue)
+                {
+                    qry = qry.Where(x => x.Order > filter.OrderMore);
+                }
 
-            if (filter.OrderLess.HasValue)
-            {
-                qry = qry.Where(x => x.Order < filter.OrderLess);
-            }
+                if (filter.OrderLess.HasValue)
+                {
+                    qry = qry.Where(x => x.Order < filter.OrderLess);
+                }
 
-            // по отделам
-            if (filter.Orders?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<DictionaryPositions>();
-                filterContains = filter.Orders.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Order == value).Expand());
+                // по отделам
+                if (filter.Orders?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = filter.Orders.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Order == value).Expand());
 
-                qry = qry.Where(filterContains);
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
@@ -6222,13 +6227,17 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
 
-                if (filter.AccessLevelId?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Admin.AdminAccessLevels>();
-                    filterContains = filter.AccessLevelId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
+                    if (filter.AccessLevelId?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DBModel.Admin.AdminAccessLevels>();
+                        filterContains = filter.AccessLevelId.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
                 }
 
                 var res = qry.Select(x => new FrontAdminAccessLevel
