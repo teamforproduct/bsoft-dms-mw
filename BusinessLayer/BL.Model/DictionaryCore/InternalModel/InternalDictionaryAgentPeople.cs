@@ -44,7 +44,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             PassportDate = model.PassportDate;
         }
 
-        private void SetInternalDictionaryAgentPerson(AddAgentPerson model)
+        private void SetInternalDictionaryAgentPerson(AddAgentPeople model)
         {
             Name = model.Name;
             FirstName = model.FirstName;

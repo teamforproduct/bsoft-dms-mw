@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список назначений сотрудника
+        /// Возвращает список назначений сотрудника (история назначений)
         /// </summary>
         /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter"></param>
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Возвращает список назначений сотрудника
+        /// Возвращает список назначений сотрудника (только текущие, актуальные назначения)
         /// </summary>
         /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter"></param>

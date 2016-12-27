@@ -9,7 +9,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// <summary>
     /// контрагент - сотрудник
     /// </summary>
-    public class AddAgentEmployee : AddAgentPerson
+    public class AddAgentEmployee : AddAgentPeople
     {
 
         /// <summary>
@@ -32,6 +32,17 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
         public int LanguageId { get; set; }
+
+        /// <summary>
+        /// Дополнительная информация
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        ///Признак активности
+        /// </summary>
+        [Required]
+        public bool IsActive { get; set; }
 
     }
 }

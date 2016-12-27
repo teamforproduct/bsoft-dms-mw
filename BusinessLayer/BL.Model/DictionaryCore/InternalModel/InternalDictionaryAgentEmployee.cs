@@ -53,18 +53,16 @@ namespace BL.Model.DictionaryCore.InternalModel
             FirstName = model.FirstName;
             LastName = model.LastName;
             MiddleName = model.MiddleName;
-            TaxCode = model.TaxCode;
             IsMale = model.IsMale;
-            Description = model.Description;
             BirthDate = model.BirthDate;
-            IsActive = model.IsActive;
+
             LanguageId = model.LanguageId;
 
-
-            #region [+] Employee ...
+            TaxCode = model.TaxCode;
             PersonnelNumber = model.PersonnelNumber;
-            #endregion
 
+            IsActive = model.IsActive;
+            Description = model.Description;
         }
 
         /// <summary>
@@ -94,12 +92,12 @@ namespace BL.Model.DictionaryCore.InternalModel
         public string UserId { get; set; }
 
         /// <summary>
-        /// Основной имейл, на который высылается письмо с приглашением
+        /// Имейл, на который высылается письмо с приглашением
         /// </summary>
         public string Login { get; set; }
 
         /// <summary>
-        /// Основной номер мобильного телефона
+        /// Номер мобильного телефона
         /// </summary>
         public string Phone { get; set; }
 

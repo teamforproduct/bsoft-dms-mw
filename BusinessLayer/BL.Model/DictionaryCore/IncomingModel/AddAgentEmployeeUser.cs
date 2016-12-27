@@ -21,22 +21,17 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [IgnoreDataMember]
         public string UserId { get; set; }
 
-        #region [+] AgentUser ...
-
-        
-
         /// <summary>
-        /// Основной имейл, на который высылается письмо с приглашением
+        /// Имейл, на который высылается письмо с приглашением
         /// </summary>
         [Required]
         //[EmailAddress]
         public string Login { get; set; }
 
         /// <summary>
-        /// Основной номер мобильного телефона
+        /// Номер мобильного телефона
         /// </summary>
         public string Phone { get; set; }
 
-        #endregion
     }
 }

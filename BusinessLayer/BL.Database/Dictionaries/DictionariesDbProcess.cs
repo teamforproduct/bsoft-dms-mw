@@ -339,15 +339,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                if (ExistsAgents(context, new FilterDictionaryAgent() { IDs = new List<int> { people.Id } }))
-                {
-                    //pss Здесь перетирается имя сформированное предыдущей выноской (для персон и пользователей оно формируется по разному)
-                    UpdateAgentName(context, people.Id, people);
-                }
-                else
-                {
-                    people.Id = AddAgent(context, people);
-                };
+                people.Id = AddAgent(context, people);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(context, people);
 

@@ -92,7 +92,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <summary>
         /// Корректирует реквизиты сотрудника
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
