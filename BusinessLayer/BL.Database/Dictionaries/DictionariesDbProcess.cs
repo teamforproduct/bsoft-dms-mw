@@ -1005,7 +1005,7 @@ namespace BL.Database.Dictionaries
                     .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order).ThenBy(y => y.Position.Name)
                     .Select(y => new FrontDictionaryPositionExecutor
                     {
-                        Id = y.Id,
+                        AssignmentId = y.Id,
                         PositionName = y.Position.Name,
                         DepartmentName = y.Position.Department.Name,
                         PositionExecutorTypeSuffix = y.PositionExecutorType.Suffix
@@ -4291,7 +4291,7 @@ namespace BL.Database.Dictionaries
                             OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Agent.Name).
                             Select(y => new FrontDictionaryPositionExecutor
                             {
-                                Id = y.Id,
+                                AssignmentId = y.Id,
                                 IsActive = y.IsActive,
                                 AgentId = y.Agent.Id,
                                 AgentName = y.Agent.Name,
@@ -4814,7 +4814,7 @@ namespace BL.Database.Dictionaries
 
                 var res = qry.Select(x => new FrontDictionaryPositionExecutor
                 {
-                    Id = x.Id,
+                    AssignmentId = x.Id,
                     IsActive = x.IsActive,
                     AgentId = x.AgentId,
                     PositionId = x.PositionId,
@@ -4922,7 +4922,7 @@ namespace BL.Database.Dictionaries
 
                 var res = qry.Select(x => new FrontDictionaryPositionExecutor
                 {
-                    Id = x.Id,
+                    AssignmentId = x.Id,
                     IsActive = x.IsActive,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
@@ -5054,7 +5054,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                var res = qry.Select(x => new FrontDictionaryPositionExecutor { Id = x.Id }).Any();
+                var res = qry.Select(x => new FrontDictionaryPositionExecutor { AssignmentId = x.Id }).Any();
 
                 transaction.Complete();
                 return res;

@@ -34,14 +34,6 @@ namespace BL.Logic.Common
             return internalModel;
         }
 
-        public static InternalAdminUserRole UserRoleModifyToInternal(IContext context, ModifyAdminUserRole modifyModel)
-        {
-            InternalAdminUserRole internalModel = new InternalAdminUserRole(modifyModel);
-
-            CommonDocumentUtilities.SetLastChange(context, internalModel);
-
-            return internalModel;
-        }
 
     }
 }

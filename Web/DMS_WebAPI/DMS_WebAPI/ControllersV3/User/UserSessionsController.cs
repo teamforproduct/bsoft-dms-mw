@@ -20,13 +20,13 @@ using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore.Filters;
 
-namespace DMS_WebAPI.ControllersV3.Employees
+namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
     /// Сессии 
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
     public class UserSessionsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("Sessions")]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult Get(FilterSystemSession filter, UIPaging paging)
+        public IHttpActionResult Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();

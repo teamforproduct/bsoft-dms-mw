@@ -82,12 +82,12 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminUserRole</param>
         /// <returns>FrontAdminUserRole</returns>
-        public IHttpActionResult Post([FromBody]ModifyAdminUserRole model)
+        public IHttpActionResult Post([FromBody]SetUserRole model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.AddUserRole, cxt, model);
+            var tmpItem = tmpService.ExecuteAction(EnumAdminActions.SetUserRole, cxt, model);
             return Get((int)tmpItem);
         }
 
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.Controllers.Admins
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
 
-            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRole, cxt, id);
+            tmpService.ExecuteAction(EnumAdminActions.SetUserRole, cxt, id);
             var tmpItem = new FrontAdminUserRole() { Id = id };
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.Controllers.Admins
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByPositionExecutor, cxt, id);
+            //tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByPositionExecutor, cxt, id);
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
@@ -139,7 +139,7 @@ namespace DMS_WebAPI.Controllers.Admins
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByUser, cxt, id);
+            //tmpService.ExecuteAction(EnumAdminActions.DeleteUserRoleByUser, cxt, id);
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;

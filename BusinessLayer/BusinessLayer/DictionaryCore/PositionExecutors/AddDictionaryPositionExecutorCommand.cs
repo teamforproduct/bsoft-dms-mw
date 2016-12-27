@@ -31,7 +31,7 @@ namespace BL.Logic.DictionaryCore
                     model.Id = _dictDb.AddExecutor(_context, model);
 
                     var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { model.Id } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.AssignmentId, frontObj);
 
                     // При назначении сотрудника добавляю все роли должности
                     _adminService.AddAllPositionRoleForUser(_context, model);

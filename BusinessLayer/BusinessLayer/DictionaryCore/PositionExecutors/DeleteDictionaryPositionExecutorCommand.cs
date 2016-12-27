@@ -92,7 +92,7 @@ namespace BL.Logic.DictionaryCore
                 using (var transaction = Transactions.GetTransaction())
                 {
                     var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.AssignmentId, frontObj);
 
                     _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole() {  PositionExecutorIDs = new List<int> { Model } });
                     _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });

@@ -20,5 +20,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         //public string PositionName { get; set; }
 
         public string ExecutorTypeName { get; set; }
+
+        public int PositionId { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace BL.Logic.DictionaryCore
 
                     _dictDb.UpdateExecutor(_context, model);
                     var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { model.Id } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
+                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.AssignmentId, frontObj);
 
                     // Синхронизация параметров в UserRoles:
                     transaction.Complete();

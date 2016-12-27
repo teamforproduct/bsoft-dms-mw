@@ -18,7 +18,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// ID
         /// </summary>
-        public new int Id { get; set; }
+        public new int AssignmentId { get; set; }
 
         /// <summary>
         /// Признак активности.

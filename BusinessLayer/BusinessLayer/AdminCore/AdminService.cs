@@ -373,13 +373,14 @@ namespace BL.Logic.AdminCore
 
             if (executors.Count() > 0)
             {
-                var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.Id).ToList() });
+                var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.AssignmentId).ToList() });
 
                 foreach (var executor in executors)
                 {
                     var e = new FrontDIPUserRolesExecutor()
                     {
-                        Id = executor.Id,
+                        Id = executor.AssignmentId,
+                        PositionId = executor.PositionId ?? -1,
                         Name = executor.PositionName,
                         StartDate = executor.StartDate,
                         EndDate = executor.EndDate,

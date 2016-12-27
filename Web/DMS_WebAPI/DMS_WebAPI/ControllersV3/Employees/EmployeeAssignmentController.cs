@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
-    public class EmployeeAssignmentController : ApiController
+    public class EmployeeAssignmentsController : ApiController
     {
 
         Stopwatch stopWatch = new Stopwatch();

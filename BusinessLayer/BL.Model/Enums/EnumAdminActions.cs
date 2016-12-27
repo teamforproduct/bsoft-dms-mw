@@ -55,7 +55,7 @@
         /// <summary>
         /// Добавить
         /// </summary>
-        AddUserRole = 703001,
+        SetUserRoleByAssignment = 703001,
         /// <summary>
         /// Изменить
         /// </summary>
@@ -63,9 +63,9 @@
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteUserRoleByUser = 703007,
-        DeleteUserRoleByPositionExecutor = 703008,
-        DeleteUserRole = 703009,
+        //DeleteUserRoleByUser = 703007,
+        //DeleteUserRoleByPositionExecutor = 703008,
+        // DeleteUserRole = 703009,
         #endregion
 
         #region [+] Subordinations ...

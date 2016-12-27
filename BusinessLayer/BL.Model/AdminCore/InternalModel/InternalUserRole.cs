@@ -11,9 +11,8 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalAdminUserRole()
         { }
 
-        public InternalAdminUserRole(ModifyAdminUserRole model)
+        public InternalAdminUserRole(SetUserRole model)
         {
-            Id = model.Id;
             RoleId = model.RoleId;
             PositionExecutorId = model.PositionExecutorId;
         }

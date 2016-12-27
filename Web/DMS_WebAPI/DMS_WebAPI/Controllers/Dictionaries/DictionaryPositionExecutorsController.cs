@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, cxt, id);
             FrontDictionaryPositionExecutor tmp = new FrontDictionaryPositionExecutor();
-            tmp.Id = id;
+            tmp.AssignmentId = id;
 
             return new JsonResult(tmp, this);
 

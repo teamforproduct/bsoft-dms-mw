@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/Sessions")]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult Get(int Id, FilterSystemSession filter, UIPaging paging)
+        public IHttpActionResult Get([FromUri]int Id, [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
