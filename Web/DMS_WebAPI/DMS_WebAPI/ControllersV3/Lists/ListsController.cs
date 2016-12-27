@@ -158,7 +158,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AddressTypes")]
+        [Route("ContactTypes")]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryContactType filter)
         {
