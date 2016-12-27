@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route("Info/Main")]
-        [ResponseType(typeof(List<FrontDictionaryAddressType>))]
+        [ResponseType(typeof(List<FrontAddressType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAddressType filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -5,7 +5,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// ОСНОВНОЙ. Справочник типов адресов. 
     /// </summary>
-    public class FrontDictionaryAddressType : ModifyAddressType
+    public class FrontAddressType : ModifyAddressType
     {
         /// <summary>
         /// ID
