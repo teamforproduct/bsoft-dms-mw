@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.System
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentContact(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryAddressType(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
