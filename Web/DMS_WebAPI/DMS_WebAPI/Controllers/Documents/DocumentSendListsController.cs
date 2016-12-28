@@ -127,5 +127,21 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(actions, this);
         }
 
+        /// <summary>
+        /// Получение списка доступных команд по документу
+        /// </summary>
+        /// <param name="model">модель</param>
+        /// <returns>Массив команд</returns>
+        [Route("AdditinalLinkedDocumentSendLists")]
+        [HttpPost]
+        public IHttpActionResult AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+            var sendList = docProc.GetAdditinalLinkedDocumentSendLists(ctx, model);
+
+            return new JsonResult(sendList, this);
+        }
+
     }
 }

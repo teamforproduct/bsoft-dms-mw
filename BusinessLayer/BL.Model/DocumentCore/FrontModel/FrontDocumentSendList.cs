@@ -7,7 +7,10 @@ using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontDocumentSendList
+    /// <summary>
+    /// Модель отображения плана для фронте
+    /// </summary>
+    public class FrontDocumentSendList : FrontDocumentInfo
     {
         /// <summary>
         /// ИЗ записи плана
