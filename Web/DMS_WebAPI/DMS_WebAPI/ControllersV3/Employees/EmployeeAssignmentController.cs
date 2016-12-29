@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddEmployeeAddress, ctx, model);
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, ctx, model);
             return Get(tmpItem);
         }
 
@@ -123,7 +123,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyEmployeeAddress, ctx, model);
+            tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, ctx, model);
             return Get(model.Id);
         }
 
@@ -140,7 +140,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteEmployeeAddress, ctx, Id);
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, ctx, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
