@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddDepartment model)
+        public IHttpActionResult Post([FromBody]AddRegistrationJournal model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddRegistrationJournal, model);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyDepartment model)
+        public IHttpActionResult Put([FromBody]ModifyRegistrationJournal model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyRegistrationJournal, model);

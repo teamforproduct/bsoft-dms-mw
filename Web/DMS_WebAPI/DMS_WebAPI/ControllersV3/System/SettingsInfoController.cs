@@ -48,9 +48,9 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
-        [HttpPost]
+        [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]List<ModifySystemSetting> model)
+        public IHttpActionResult Put([FromBody]List<ModifySystemSetting> model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumSystemActions.SetSetting, model);

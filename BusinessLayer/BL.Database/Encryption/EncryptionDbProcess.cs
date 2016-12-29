@@ -344,6 +344,10 @@ namespace BL.Database.Encryption
             {
                 throw e;
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
             finally
             {
                 File.Delete(file);
@@ -546,7 +550,7 @@ namespace BL.Database.Encryption
                 }
                 catch (Exception ex2)
                 {
-
+                    throw ex2;
                 }
             }
         }
@@ -619,9 +623,9 @@ namespace BL.Database.Encryption
             {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-
+                throw ex;
             }
             FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign end ", @"C:\sign.log");
             return res;
@@ -649,7 +653,7 @@ namespace BL.Database.Encryption
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign end ", @"C:\sign.log");
             return res;
@@ -734,7 +738,7 @@ namespace BL.Database.Encryption
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
             FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf end ", @"C:\sign.log");
 
@@ -771,6 +775,10 @@ namespace BL.Database.Encryption
                 catch (CryptographicException e)
                 {
                     throw e;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
                 }
                 finally
                 {
