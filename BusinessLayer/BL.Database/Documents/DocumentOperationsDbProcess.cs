@@ -1324,10 +1324,11 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
                 if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
                 {
-                    doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    var qryWaits = doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                         .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
                                     && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution
-                                    && x.OnEvent.SourcePositionId == sendList.SourcePositionId)
+                                    //&& x.OnEvent.SourcePositionId == sendList.SourcePositionId
+                                    )
                         .Select(x => new InternalDocumentWait
                         {
                             Id = x.Id,
@@ -1338,7 +1339,8 @@ namespace BL.Database.Documents
                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                                 TargetPositionExecutorTypeId = x.OnEvent.TargetPositionExecutorTypeId,
                             }
-                        }).ToList();
+                        });
+                    doc.Waits = qryWaits.ToList();
                 }
                 if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl)
                 {

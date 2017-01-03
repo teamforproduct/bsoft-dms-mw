@@ -264,7 +264,7 @@ namespace BL.Database.Common
                 FirstName = item.FirstName,
                 LastName = item.LastName,
                 MiddleName = item.MiddleName,
-                FullName = item.LastName.Trim() + " " + item.FirstName.Trim() + " " + item.MiddleName.Trim(),
+                FullName = item.LastName?.Trim() + " " + item.FirstName?.Trim() + " " + item.MiddleName?.Trim(),
                 
                 IsMale = item.IsMale,
                 BirthDate = item.BirthDate,
