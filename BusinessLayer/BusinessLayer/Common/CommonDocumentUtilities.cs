@@ -316,24 +316,30 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
         {
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = eventType == EnumEventTypes.ControlOn
-                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value) }.Max()
-                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value) }.Max(),
-                AttentionDate = eventType == EnumEventTypes.ControlOn 
-                            ? new[] { sendListModel.SelfAttentionDate, (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value) }.Max() 
+                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate??false)
+                            ? new[] {   sendListModel.SelfDueDate,
+                                        (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value)
+                                    }.Max()
+                            : new[] {   sendListModel.DueDate,
+                                        (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value)
+                                    }.Max(),
+                AttentionDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
+                            ? new[] {   sendListModel.SelfAttentionDate,
+                                        (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value)
+                                    }.Max()
                             : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
                 OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType, null, 
-                                ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription: sendListModel.Description), 
+                                context, sendListModel.DocumentId, eventType, null,
+                                ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription : sendListModel.Description),
                                 null, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
@@ -343,11 +349,11 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
         {
             return new List<InternalDocumentWait>
             {
-                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType)
+                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType,isTakeMainDueDate)
             };
         }
 
@@ -738,7 +744,7 @@ namespace BL.Logic.Common
             }
             if (templateDoc.IsUsedInDocument ?? false)
             {
-                uiElements?.Where(x =>  x.Code.Equals("DocumentDirection", StringComparison.OrdinalIgnoreCase) ||
+                uiElements?.Where(x => x.Code.Equals("DocumentDirection", StringComparison.OrdinalIgnoreCase) ||
                                         x.Code.Equals("DocumentType", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
             }
             return uiElements;
@@ -1129,13 +1135,13 @@ namespace BL.Logic.Common
             return model.Select(GetNewPropertyValue);
         }
 
-        public static List<int> GetLinkedDocuments (int id, IEnumerable<InternalDocumentLink> link)
+        public static List<int> GetLinkedDocuments(int id, IEnumerable<InternalDocumentLink> link)
         {
             List<int> res = new List<int> { id };
             List<int> resInit = new List<int> { id };
             var oldCount = 1;
             var newCount = 0;
-            while (oldCount != newCount && res.Count>0)
+            while (oldCount != newCount && res.Count > 0)
             {
                 oldCount = res.Count;
                 res = link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.DocumentId)

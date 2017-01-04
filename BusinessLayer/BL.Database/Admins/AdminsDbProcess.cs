@@ -428,10 +428,16 @@ namespace BL.Database.Admins
                     if (filter.IsChecked == true)
                     {
                         List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
+                        if (roles?.Count > 0)
+                        {
+                            if (filter.IDs == null) filter.IDs = new List<int>();
+                            filter.IDs.AddRange(roles);
+                        }
+                        else
+                        {
+                            qry = qry.Where(x=>false);
+                        }
 
-                        if (filter.IDs == null) filter.IDs = new List<int>();
-
-                        filter.IDs.AddRange(roles);
                     }
                 }
 
