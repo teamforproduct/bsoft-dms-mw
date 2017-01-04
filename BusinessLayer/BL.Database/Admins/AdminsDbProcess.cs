@@ -423,6 +423,17 @@ namespace BL.Database.Admins
 
             if (filter != null)
             {
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    if (filter.IsChecked == true)
+                    {
+                        List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
+
+                        if (filter.IDs == null) filter.IDs = new List<int>();
+
+                        filter.IDs.AddRange(roles);
+                    }
+                }
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -483,17 +494,7 @@ namespace BL.Database.Admins
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.PositionIDs?.Count > 0)
-                {
-                    if (filter.IsChecked == true)
-                    {
-                        List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
 
-                        if (filter.IDs == null) filter.IDs = new List<int>();
-
-                        filter.IDs.AddRange(roles);
-                    }
-                }
 
                 if (filter.LinkIDs?.Count > 0)
                 {
