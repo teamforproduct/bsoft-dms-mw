@@ -741,6 +741,7 @@ namespace BL.Database.Documents
                         IsWorkGroup = y.IsWorkGroup,
                         IsAddControl = y.IsAddControl,
                         SelfDueDay = y.SelfDueDay,
+                        SelfDescription = y.SelfDescription,
                         SelfAttentionDay = y.SelfAttentionDay,
                         Description = y.Description,
                         Stage = y.Stage,

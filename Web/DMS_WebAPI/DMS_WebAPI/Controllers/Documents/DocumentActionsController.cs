@@ -7,6 +7,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.IncomingModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -801,6 +803,21 @@ namespace DMS_WebAPI.Controllers.Documents
             var res = ap.ManualRunAutoPlan(ctx);
             
             return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Направить документ
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("SendDocument")]
+        [HttpPost]
+        public IHttpActionResult SendDocument([FromBody]List<ModifyDocumentSendList> model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
+            return new JsonResult(null, true, this);
         }
 
     }

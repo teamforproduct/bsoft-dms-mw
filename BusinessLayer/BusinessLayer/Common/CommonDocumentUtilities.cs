@@ -447,6 +447,7 @@ namespace BL.Logic.Common
                 IsAddControl = model.IsAddControl,
                 SelfDueDate = model.SelfDueDate,
                 SelfDueDay = model.SelfDueDay,
+                SelfDescription = model.SelfDescription,
                 SelfAttentionDate = model.SelfAttentionDate,
                 SelfAttentionDay = model.SelfAttentionDay,
                 LastChangeUserId = context.CurrentAgentId,

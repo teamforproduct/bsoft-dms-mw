@@ -251,6 +251,7 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
     <Compile Include="DocumentCore\TemplateCommands\CopyTemplateCommand.cs" />
