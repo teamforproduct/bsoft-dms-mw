@@ -68,6 +68,27 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
+        /// Отделы
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Departments")]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetListDepartments([FromUri] FilterTree filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDepartmentShortList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Должности
         /// </summary>
         /// <param name="filter"></param>
@@ -88,26 +109,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             return res;
         }
 
-        /// <summary>
-        /// Теги
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Tags")]
-        [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetTagList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
+        
 
         /// <summary>
         /// Журналы
@@ -172,5 +174,25 @@ namespace DMS_WebAPI.ControllersV3.Lists
             return res;
         }
 
+        /// <summary>
+        /// Теги
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Tags")]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetTagList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
     }
 }

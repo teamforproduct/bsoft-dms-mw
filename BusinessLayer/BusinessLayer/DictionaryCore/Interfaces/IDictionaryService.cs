@@ -110,6 +110,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
 
+        IEnumerable<ListItemWithPath> GetDepartmentShortList(IContext context, FilterTree filter, UIPaging paging);
+
         string GetDepartmentPrefix(IContext context, int parentId);
         #endregion DictionaryDepartments
 
@@ -184,7 +186,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter);
-        IEnumerable<FrontShortListJournals> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging);
+        IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging);
         #endregion DictionaryRegistrationJournals
 
         // Компании
