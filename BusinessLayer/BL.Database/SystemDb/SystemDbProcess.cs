@@ -1452,7 +1452,7 @@ namespace BL.Database.SystemDb
 
         #endregion Filter Properties
 
-        #region Full text search
+        #region [+] Full text search ...
 
         public int GetEntityNumbers(IContext ctx, EnumObjects objType)
         {
@@ -1621,6 +1621,16 @@ namespace BL.Database.SystemDb
                 //}).ToList());
 
                 res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryDocumentSubjects,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     DocumentId = 0,
                     ItemType = EnumObjects.DictionaryDocumentSubjects,
@@ -2320,6 +2330,20 @@ namespace BL.Database.SystemDb
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentSubjects))
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects).Join(dbContext.DictionaryDocumentSubjectsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    {
+                        Id = x.ind.Id,
+                        DocumentId = 0,
+                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        OperationType = (EnumOperationType)x.ind.OperationType,
+                        ClientId = ctx.CurrentClientId,
+                        ObjectId = x.id,
+                        ObjectText = x.doc.Name.Trim()
+                    }).ToList());
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryTag))
+                {
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects).Join(dbContext.DictionaryTagsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
