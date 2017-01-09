@@ -15,6 +15,8 @@ namespace DMS_WebAPI
 
         public const string Settings = "Settings";
 
+        public const string Auditlog = "Auditlog";
+
         public const string Tools = "Tools";
 
         public const string List = "List";

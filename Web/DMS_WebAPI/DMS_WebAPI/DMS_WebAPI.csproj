@@ -276,7 +276,7 @@
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
     <Compile Include="ControllersV3\System\DevController.cs" />
-    <Compile Include="ControllersV3\Sessions\SessionInfoController.cs" />
+    <Compile Include="ControllersV3\Sessions\AuditlogInfoController.cs" />
     <Compile Include="ControllersV3\System\TempStorageController.cs" />
     <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
     <Compile Include="ControllersV3\System\AddressTypeInfoController.cs" />

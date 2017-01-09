@@ -6147,6 +6147,9 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryTagsSet.Add(dbModel);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryTag, EnumOperationType.AddNew);
+
                 model.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -6184,6 +6187,9 @@ namespace BL.Database.Dictionaries
                     //TODO Это нарушение. дб уровень не содержит логики, он молча выполняет вставки и обновления. все проверки должны быть на уровне логики.
                     throw new DictionaryTagNotFoundOrUserHasNoAccess();
                 }
+
+                CommonQueries.AddFullTextCashInfo(dbContext, model.Id, EnumObjects.DictionaryTag, EnumOperationType.Update);
+
                 transaction.Complete();
             }
         }
@@ -6195,6 +6201,7 @@ namespace BL.Database.Dictionaries
                 var item = dbContext.DictionaryTagsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
                 dbContext.DictionaryTagsSet.Remove(item);
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, model.Id, EnumObjects.DictionaryTag, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }

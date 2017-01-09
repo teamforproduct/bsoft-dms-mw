@@ -542,6 +542,48 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDepartmentPrefix(context, parentId);
         }
 
+        public IEnumerable<ListItemWithPath> GetDepartmentShortList(IContext context, FilterTree filter, UIPaging paging)
+        {
+            var tree = GetRegistrationJournalsTree(context, filter);
+
+            var list = new List<ListItemWithPath>();
+
+            GetDepartmentShortList(tree, list, string.Empty);
+
+            return list;
+
+        }
+
+        private void GetDepartmentShortList(IEnumerable<ITreeItem> tree, List<ListItemWithPath> list, string path)
+        {
+
+            foreach (var treeItem in tree)
+            {
+                var name = treeItem.Name.Trim();
+
+                if (treeItem.ObjectId == (int)EnumObjects.DictionaryDepartments)
+                {
+                    var tmp = new ListItemWithPath
+                    {
+                        Id = treeItem.Id,
+                        Name = name,
+                        Path = path
+                    };
+
+                    list.Add(tmp);
+
+                    // чтобы лишний раз не пытаться выполнить GetDepartmentShortList для листа
+                    continue;
+                }
+
+                if (treeItem is FrontDictionaryDepartmentTreeItem)
+                { name = (treeItem as FrontDictionaryDepartmentTreeItem).Code.Trim() + " " + name; }
+
+                GetDepartmentShortList(treeItem.Childs, list, path + (path == string.Empty ? string.Empty : " -> ") + name);
+
+            }
+        }
+
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
@@ -824,28 +866,27 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        public IEnumerable<FrontShortListJournals> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging)
+        public IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging)
         {
             var tree = GetRegistrationJournalsTree(context, filter);
 
-            var list = new List<FrontShortListJournals>();
+            var list = new List<ListItemWithPath>();
 
-            var path = string.Empty;
-
-            GetRegistrationJournalShortList(tree, list, path);
+            GetRegistrationJournalShortList(tree, list, string.Empty);
 
             return list;
 
         }
 
-        private void GetRegistrationJournalShortList(IEnumerable<ITreeItem> tree, List<FrontShortListJournals> list, string path)
+        private void GetRegistrationJournalShortList(IEnumerable<ITreeItem> tree, List<ListItemWithPath> list, string path)
         {
+
             foreach (var treeItem in tree)
             {
-                
+
                 if (treeItem.ObjectId == (int)EnumObjects.DictionaryRegistrationJournals)
                 {
-                    var tmp = new FrontShortListJournals
+                    var tmp = new ListItemWithPath
                     {
                         Id = treeItem.Id,
                         Name = treeItem.Name,
@@ -854,14 +895,16 @@ namespace BL.Logic.DictionaryCore
 
                     list.Add(tmp);
 
-                    path = string.Empty;
-
+                    // чтобы лишний раз не пытаться выполнить GetRegistrationJournalShortList для листа
                     continue;
                 }
 
-                path += (path == string.Empty ? string.Empty : " -> ") + treeItem.Name;
+                var name = treeItem.Name;
 
-                GetRegistrationJournalShortList(treeItem.Childs, list, path);
+                if (treeItem is FrontDictionaryDepartmentTreeItem)
+                { name = (treeItem as FrontDictionaryDepartmentTreeItem).Code.Trim() + " " + name; }
+
+                GetRegistrationJournalShortList(treeItem.Childs, list, path + (path == string.Empty ? string.Empty : " -> ") + name);
             }
         }
 

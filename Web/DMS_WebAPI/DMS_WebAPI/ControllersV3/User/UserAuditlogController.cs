@@ -20,28 +20,27 @@ using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore.Filters;
 
-namespace DMS_WebAPI.ControllersV3.Employees
+namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
     /// Сессии 
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
-    public class EmployeeSessionsController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    public class UserAuditlogController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Возвращает историю подключений
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Sessions")]
+        [Route("Auditlog")]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult Get([FromUri]int Id, [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
@@ -49,7 +48,32 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var sesions = ctxs.GetContextListQuery();
             var tmpService = DmsResolver.Current.Get<ILogger>();
             if (filter == null) filter = new FilterSystemSession();
-            filter.ExecutorAgentIDs = new List<int> { Id };
+            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
+            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает текущие подключения
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Auditlog/Current")]
+        [ResponseType(typeof(FrontSystemSession))]
+        public IHttpActionResult GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            var ctx = ctxs.Get();
+            var sesions = ctxs.GetContextListQuery();
+            var tmpService = DmsResolver.Current.Get<ILogger>();
+            if (filter == null) filter = new FilterSystemSession();
+            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
+            filter.IsOnlyActive = true;
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;

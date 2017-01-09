@@ -1,12 +1,9 @@
-﻿using BL.Model.Common;
-using BL.Model.DictionaryCore.IncomingModel;
-
-namespace BL.Model.DictionaryCore.FrontModel
+﻿namespace BL.Model.Common
 {
     /// <summary>
     ///
     /// </summary>
-    public class FrontShortListJournals : ListItem
+    public class ListItemWithPath : ListItem
     {
         /// <summary>
         /// Путь к вложенному элементу
