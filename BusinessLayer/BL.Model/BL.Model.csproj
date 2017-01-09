@@ -255,10 +255,12 @@
     <Compile Include="DocumentCore\Filters\FilterDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocument.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontMainTemplateDocument.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="DocumentCore\IncomingModel\AdditinalLinkedDocumentSendList.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentLink.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalAdditinalLinkedDocumentSendListsPrepare.cs" />
@@ -583,6 +585,7 @@
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserServer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DictionaryCore\FrontModel\DocumentTemplates\" />
     <Folder Include="DictionaryCore\FrontModel\Journals\" />
     <Folder Include="DictionaryCore\FrontModel\Positions\" />
   </ItemGroup>

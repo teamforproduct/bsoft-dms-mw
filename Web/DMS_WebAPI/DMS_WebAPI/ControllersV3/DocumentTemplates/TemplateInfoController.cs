@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ModifyTemplateDocument, model);
-            return Get(model.Id ?? -1); // TODO - почему Id nullable?
+            return Get(model.Id); // TODO - почему Id nullable?
         }
 
         /// <summary>

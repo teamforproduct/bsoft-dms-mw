@@ -39,7 +39,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public InternalTemplateDocument(ModifyTemplateDocument model)
         {
-            this.Id = model.Id ?? -1;
+            this.Id = model.Id;
             this.Name = model.Name;
             this.IsHard = model.IsHard;
             this.IsForProject = model.IsForProject;
@@ -53,8 +53,6 @@ namespace BL.Model.DocumentCore.InternalModel
             this.SenderAgentPersonId = model.SenderAgentPersonId;
             this.Addressee = model.Addressee;
             this.IsActive = model.IsActive;
-            this.LastChangeDate = model.LastChangeDate;
-            this.LastChangeUserId = model.LastChangeUserId;
         }
 
 
