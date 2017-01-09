@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
-    public class UserAuditlogController : ApiController
+    public class UserSessionsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Auditlog")]
+        [Route("Sessions")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Auditlog/Current")]
+        [Route("Sessions/Current")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {

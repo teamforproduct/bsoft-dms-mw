@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
+using BL.Logic.DocumentCore;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Enums;
@@ -53,5 +54,16 @@ namespace DMS_WebAPI
             if (res is int) return (int)res;
             else return -1;
         }
+
+        public static int Execute(EnumDocumentActions action, object model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var res = tmpService.ExecuteAction(action, ctx, model);
+
+            if (res is int) return (int)res;
+            else return -1;
+        }
+
     }
 }

@@ -17,6 +17,7 @@ namespace BL.Database.Documents.Interfaces
         #region TemplateDocument
         IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocument filter);
         bool ExistsTemplateDocuments(IContext context, FilterTemplateDocument filter);
+        IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
         IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);

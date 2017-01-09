@@ -20,6 +20,7 @@ using BL.Model.SystemCore;
 using System;
 using System.Data.Entity;
 using BL.CrossCutting.Helpers;
+using BL.Database.Helper;
 
 namespace BL.Database.Documents
 {
@@ -105,30 +106,46 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
+
                 qry = qry.OrderByDescending(x => x.Name);
 
-                if (paging != null)
-                {
-                    if (paging.IsOnlyCounter ?? true)
-                    {
-                        paging.TotalItemsCount = qry.Count();
-                    }
-
-                    if (paging.IsOnlyCounter ?? false)
-                    {
-                        return new List<FrontTemplateDocument>();
-                    }
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.Skip(() => skip).Take(() => take);
-                    }
-                }
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontTemplateDocument>();
 
                 var res = qry.Select(x => new FrontTemplateDocument
+                {
+                    Id = x.Id,
+                    DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                    DocumentDirectionName = x.DocumentDirection.Name,
+                    IsHard = x.IsHard,
+                    IsForProject = x.IsForProject,
+                    IsForDocument = x.IsForDocument,
+                    IsActive = x.IsActive,
+                    DocumentTypeId = x.DocumentTypeId,
+                    DocumentTypeName = x.DocumentType.Name,
+                    Name = x.Name,
+                    Description = x.Description,
+                    //DocumentSubjectId = x.DocumentSubjectId,
+                    //LastChangeDate = x.LastChangeDate,
+                    //RegistrationJournalId = x.RegistrationJournalId,
+                    //DocumentSubjectName = x.DocumentSubject.Name,
+                    //LastChangeUserId = x.LastChangeUserId,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
+
+                qry = qry.OrderByDescending(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainTemplateDocument>();
+
+                var res = qry.Select(x => new FrontMainTemplateDocument
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,

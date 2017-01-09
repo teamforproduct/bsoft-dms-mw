@@ -6,26 +6,13 @@ using System.Threading.Tasks;
 using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.SystemCore.IncomingModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class ModifyTemplateDocument : LastChangeInfo
+    public class ModifyTemplateDocument : AddTemplateDocument
     {
-        public int? Id { get; set; }
-        public string Name { get; set; }
-        public bool IsHard { get; set; }
-        public bool IsForProject { get; set; }
-        public bool IsForDocument { get; set; }
-        public EnumDocumentDirections DocumentDirection { get; set; }
-        public int DocumentTypeId { get; set; }
-        public int? DocumentSubjectId { get; set; }
-        public string Description { get; set; }
-        public int? RegistrationJournalId { get; set; }
-        public int? SenderAgentId { get; set; }
-        public int? SenderAgentPersonId { get; set; }
-        public string Addressee { get; set; }
-        public bool IsActive { get; set; }
-
-        public IEnumerable<ModifyPropertyValue> Properties { get; set; }
+        [Required]
+        public int Id { get; set; }
     }
 }
