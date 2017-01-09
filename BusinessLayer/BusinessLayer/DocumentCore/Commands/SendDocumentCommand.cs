@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.CrossCutting.Helpers;
+using System;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -48,16 +49,26 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
+            Dictionary<int, string> res = new Dictionary<int, string>();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             using (var transaction = Transactions.GetTransaction())
             {
-                foreach (var sendList in Model)
+                for (var i = 0; i < Model.Count; i++)
                 {
-                    docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, sendList);
+                    try
+                    {
+                        docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, Model[i]);
+                    }
+                    catch (Exception e)
+                    {
+                        res.Add(i, e.Message);
+                        break;
+                    }
                 }
-                transaction.Complete();
+                if (!res.Any())
+                    transaction.Complete();
             }
-            return null;
+            return res;
         }
 
     }

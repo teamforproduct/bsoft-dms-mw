@@ -816,8 +816,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
-            return new JsonResult(null, true, this);
+            var res = (Dictionary<int, string>)docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
+            return new JsonResult(res, !res.Any(), this);
         }
 
     }
