@@ -39,6 +39,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public string TargetPositionName { get; set; }
         /// <summary>
+        /// Имя кому направлена рассылка
+        /// </summary>
+        public string TargetPositionExecutorAgentName { get; set; }
+        /// <summary>
         /// ИД внешнего агента кому направлена рассылка
         /// </summary>
         public int? TargetAgentId { get; set; }
