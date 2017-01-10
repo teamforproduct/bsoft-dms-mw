@@ -171,6 +171,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\AddressTypes\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStageType.cs" />
     <Compile Include="Common\ListItemWithPath.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontListAgentPersonSimlpe.cs" />
@@ -181,22 +182,23 @@
     <Compile Include="DictionaryCore\FrontModel\Companies\FrontAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontFile.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionarySettingType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsBase.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsDepartment.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsJournal.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPUserRolesExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPosition.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryRegistrationJournal.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorExtended.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Positions\FrontShortListPosition.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Positions\FrontDictionaryPosition.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontMainAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
@@ -586,11 +588,7 @@
     <Compile Include="WebAPI\IncomingModel\SetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserServer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DictionaryCore\FrontModel\DocumentTemplates\" />
-    <Folder Include="DictionaryCore\FrontModel\Journals\" />
-    <Folder Include="DictionaryCore\FrontModel\Positions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

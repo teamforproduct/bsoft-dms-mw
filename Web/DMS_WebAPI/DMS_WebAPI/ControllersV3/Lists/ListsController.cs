@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route("Positions")]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<FrontShortListPosition>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
