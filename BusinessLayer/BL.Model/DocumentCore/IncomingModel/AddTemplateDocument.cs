@@ -7,6 +7,7 @@ using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.SystemCore.IncomingModel;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.SystemCore.FrontModel;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -72,6 +73,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Динамические аттрибуты шаблона документа
         /// </summary>
-        public IEnumerable<ModifyPropertyValue> Properties { get; set; }
+        public IEnumerable<FrontPropertyValue> Properties { get; set; }
     }
 }
