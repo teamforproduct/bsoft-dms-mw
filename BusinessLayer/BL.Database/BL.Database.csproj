@@ -500,6 +500,10 @@
     <Compile Include="Migrations\201701042033505_PlanDueDate.Designer.cs">
       <DependentUpon>201701042033505_PlanDueDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701101956476_IsPdfCreated.cs" />
+    <Compile Include="Migrations\201701101956476_IsPdfCreated.Designer.cs">
+      <DependentUpon>201701101956476_IsPdfCreated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -744,6 +748,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701042033505_PlanDueDate.resx">
       <DependentUpon>201701042033505_PlanDueDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701101956476_IsPdfCreated.resx">
+      <DependentUpon>201701101956476_IsPdfCreated.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

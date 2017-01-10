@@ -23,6 +23,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent OnEvent { get; set; }
         public InternalDocumentEvent OffEvent { get; set; }
         public InternalDocumentWait ParentWait { get; set; }
+        public InternalDocumentWait AskPostponeDueDateWait { get; set; }
 
         #region For Report
         public DateTime CreateDate { get; set; }

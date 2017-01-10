@@ -38,14 +38,17 @@ namespace BL.Logic.DocumentCore.Commands
                 return false;
             _actionRecords =
                 _document.Waits.Where(
-                    x =>
-                        x.OnEvent.SourcePositionId == positionId &&
+                    x => (x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && x.OnEvent.TargetPositionId == positionId ||
+                        x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
-                            WaitId = x.Id
+                            WaitId = x.Id,
+                            IsHideInMainMenu = x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate ||
+                                                x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.IsHasAskPostponeDueDate
+
                         });
             if (!_actionRecords.Any())
             {
@@ -100,6 +103,14 @@ namespace BL.Logic.DocumentCore.Commands
 
                 CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
+                if (_document.Waits.Any(x=>x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate))
+                {
+                    newWait.AskPostponeDueDateWait = _document.Waits.First(x => x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate);
+                    newWait.AskPostponeDueDateWait.ResultTypeId = (int)EnumResultTypes.CloseByChanging;
+                    newWait.AskPostponeDueDateWait.OffEventId = newEvent.Id;
+                    newWait.AskPostponeDueDateWait.ParentId = 0;
+                    CommonDocumentUtilities.SetLastChange(_context, newWait.AskPostponeDueDateWait);
+                }
                 //var waits = new List<InternalDocumentWait> { newWait };
 
                 _operationDb.ChangeDocumentWait(_context, newWait);

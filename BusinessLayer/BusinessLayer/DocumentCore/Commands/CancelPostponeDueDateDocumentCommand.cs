@@ -9,13 +9,13 @@ using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class CancelPostponeDueDate : BaseDocumentCommand
+    public class CancelPostponeDueDateDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
         private InternalDocumentWait _docWait;
 
-        public CancelPostponeDueDate(IDocumentOperationsDbProcess operationDb)
+        public CancelPostponeDueDateDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }

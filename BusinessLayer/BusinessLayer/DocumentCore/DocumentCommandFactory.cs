@@ -178,7 +178,7 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<AskPostponeDueDateDocumentCommand>();
                     break;
                 case EnumDocumentActions.CancelPostponeDueDate:
-                    cmd = DmsResolver.Current.Get<CancelPostponeDueDate>();
+                    cmd = DmsResolver.Current.Get<CancelPostponeDueDateDocumentCommand>();
                     break;
                 case EnumDocumentActions.MarkExecution:
                     cmd = DmsResolver.Current.Get<MarkExecutionDocumentCommand>();

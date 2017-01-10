@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.Waits.Where(
                     x =>
                         (x.OnEvent.EventType == EnumEventTypes.MarkExecution && x.OnEvent.TargetPositionId == positionId ||
-                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.OnEvent.SourcePositionId == positionId) &&
+                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
@@ -49,9 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
                             EventId = x.OnEvent.Id,
                             WaitId = x.Id,
                             IsHideInMainMenu =  x.OnEvent.EventType == EnumEventTypes.MarkExecution && CommandType == EnumDocumentActions.CancelExecution ||
-                                                x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && CommandType == EnumDocumentActions.CancelExecution ||
-                                                x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate 
-                                                    && CommandType == EnumDocumentActions.AcceptResult && x.IsHasMarkExecution
+                                                x.OnEvent.EventType != EnumEventTypes.MarkExecution && CommandType == EnumDocumentActions.AcceptResult && x.IsHasMarkExecution
                         });
             if (!_actionRecords.Any())
             {

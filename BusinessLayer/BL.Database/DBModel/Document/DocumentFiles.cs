@@ -54,6 +54,9 @@ namespace BL.Database.DBModel.Document
         [Column("ExecutorPositionExeTypeId")]
         public int? ExecutorPositionExecutorTypeId { get; set; }
 
+        public bool? IsPdfCreated { get; set; }
+        public DateTime? LastPdfAccessDate { get; set; }        
+
         public int LastChangeUserId { get; set; }
 
         [Index("IX_LastChangeDate",1)]

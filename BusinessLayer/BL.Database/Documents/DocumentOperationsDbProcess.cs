@@ -394,6 +394,21 @@ namespace BL.Database.Documents
                 dbContext.Entry(waitDb).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
+                if (wait.AskPostponeDueDateWait!= null)
+                {
+                    var askWaitDb = ModelConverter.GetDbDocumentWait(wait.AskPostponeDueDateWait);
+                    askWaitDb.ParentId = waitParentDb.Id;
+                    askWaitDb.OnEvent = null;
+                    dbContext.DocumentWaitsSet.Attach(askWaitDb);
+                    var entry = dbContext.Entry(askWaitDb);
+                    entry.Property(x => x.ResultTypeId).IsModified = true;
+                    entry.Property(x => x.ParentId).IsModified = true;
+                    entry.Property(x => x.OffEventId).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    dbContext.SaveChanges();
+                }
+
                 transaction.Complete();
 
             }
@@ -587,9 +602,10 @@ namespace BL.Database.Documents
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => (x.OnEventId == eventId && x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate) ||
-                                (x.Id == dbContext.DocumentWaitsSet.Where(y => y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate).Select(y => y.ParentId).FirstOrDefault())
-                    )
+                    .Where(x => x.OnEventId == eventId && x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate) 
+                    .Concat(dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).
+                            Where(x=>x.Id == dbContext.DocumentWaitsSet.Where(y => y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate).Select(y => y.ParentId).FirstOrDefault())
+                            )
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
