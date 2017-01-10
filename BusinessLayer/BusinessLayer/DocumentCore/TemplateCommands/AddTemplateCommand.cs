@@ -24,15 +24,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private ModifyTemplateDocument Model
+        private AddTemplateDocument Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocument))
+                if (!(_param is AddTemplateDocument))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocument)_param;
+                return (AddTemplateDocument)_param;
             }
         }
 
@@ -87,6 +87,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }
             _templateDoc = new InternalTemplateDocument(Model) { Properties = properties };
+            CommonDocumentUtilities.SetLastChange(_context, _templateDoc);
             return _operationDb.AddOrUpdateTemplate(_context, _templateDoc);
 
         }

@@ -266,6 +266,7 @@
     <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateTasksController.cs" />
     <Compile Include="ControllersV3\DocumentTemplates\TemplateInfoController.cs" />
     <Compile Include="ControllersV3\Documents\TagsInfoController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeSessionsController.cs" />

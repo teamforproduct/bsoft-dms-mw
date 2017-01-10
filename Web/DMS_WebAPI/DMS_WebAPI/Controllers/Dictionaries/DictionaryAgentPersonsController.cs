@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <returns>коллекцию контрагентов</returns>
-        [HttpGet]
+        [HttpGet] 
         [Route("WithContacts")]
         public IHttpActionResult GetWithContacts([FromUri] FilterDictionaryAgentPerson filter)
         {

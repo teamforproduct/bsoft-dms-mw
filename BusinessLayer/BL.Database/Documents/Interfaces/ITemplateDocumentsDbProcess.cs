@@ -26,7 +26,7 @@ namespace BL.Database.Documents.Interfaces
         InternalTemplateDocument CopyTemplatePrepare(IContext ctx, int id);
         void DeleteTemplate(IContext ctx, int id);
         bool CanModifyTemplate(IContext ctx, ModifyTemplateDocument template);
-        bool CanAddTemplate(IContext ctx, ModifyTemplateDocument template);
+        bool CanAddTemplate(IContext ctx, AddTemplateDocument template);
         bool CanModifyTemplate(IContext ctx, int templateId);
         #endregion TemplateDocument
 
@@ -57,7 +57,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext ctx, FilterTemplateDocumentTask filter);
         FrontTemplateDocumentTask GetTemplateDocumentTask(IContext ctx, int id);
         int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateDocumentTask template);
-        bool CanAddTemplateTask(IContext ctx, ModifyTemplateDocumentTask task);
+        bool CanAddTemplateTask(IContext ctx, AddTemplateDocumentTask task);
         void DeleteTemplateTask(IContext ctx, int id);
         #endregion TemplateDocumentTasks
 
