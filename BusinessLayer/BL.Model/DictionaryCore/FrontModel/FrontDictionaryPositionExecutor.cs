@@ -12,59 +12,8 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Карточка элемента из справочника "Исполнители". 
     /// </summary>
-    public class FrontDictionaryPositionExecutor 
+    public class FrontDictionaryPositionExecutor: ModifyPositionExecutor
     {
-
-        /// <summary>
-        /// ID
-        /// </summary>
-        public new int AssignmentId { get; set; }
-
-        /// <summary>
-        /// Признак активности.
-        /// </summary>
-        public bool? IsActive { get; set; }
-
-        /// <summary>
-        /// Сотрудник-пользователь-агент (Id совпадают)
-        /// </summary>
-        public int? AgentId { get; set; }
-
-        /// <summary>
-        /// Должность
-        /// </summary>
-        public int? PositionId { get; set; }
-
-        /// <summary>
-        /// Тип исполнения: 
-        /// </summary>
-        public EnumPositionExecutionTypes? PositionExecutorTypeId { get; set; }
-
-        /// <summary>
-        /// Уровень доступа к документам: лично, референт, ио
-        /// При создании документов всегда указывается уровень доступа для ио и референтов
-        /// </summary>
-        public EnumAccessLevels? AccessLevelId { get; set; }
-
-        /// <summary>
-        /// Описание
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Дата начала исполнения должности
-        /// </summary>
-        public DateTime? StartDate { get { return _StartDate; } set { _StartDate=value.ToUTC(); } }
-        private DateTime?  _StartDate; 
-
-
-        /// <summary>
-        /// Дата окончания исполнения должности
-        /// </summary>
-        //[Required]
-        public DateTime? EndDate { get { return _EndDate; } set { _EndDate=value.ToUTC(); } }
-        private DateTime?  _EndDate; 
-
 
         /// <summary>
         /// Агент
@@ -101,10 +50,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string AccessLevelName { get; set; }
 
-        /// <summary>
-        ///  Роли должности
-        /// </summary>
-        public IEnumerable<FrontAdminPositionRole> PositionRoles { get; set; }
 
     }
 }

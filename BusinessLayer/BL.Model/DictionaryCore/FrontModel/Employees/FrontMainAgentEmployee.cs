@@ -104,7 +104,7 @@ namespace BL.Model.DictionaryCore.FrontMainModel
         /// <summary>
         /// Список адресов контрагента
         /// </summary>
-        public IEnumerable<FrontDictionaryPositionExecutor> PositionExecutors { get; set; }
+        public IEnumerable<FrontDictionaryPositionExecutorExtended> PositionExecutors { get; set; }
 
     }
 }

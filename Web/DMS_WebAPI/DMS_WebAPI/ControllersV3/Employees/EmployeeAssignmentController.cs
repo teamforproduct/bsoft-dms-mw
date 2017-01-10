@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Assignments/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryPositionExecutor))]
+        [ResponseType(typeof(FrontDictionaryPositionExecutorExtended))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -113,7 +113,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <summary>
         /// Корректирует параметры назначения сотрудника на должности
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
