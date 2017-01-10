@@ -56,6 +56,9 @@ namespace BL.Logic.Common
 
                 { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
 
+                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+
                 { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
@@ -321,7 +324,7 @@ namespace BL.Logic.Common
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate??false)
+                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
                             ? new[] {   sendListModel.SelfDueDate,
                                         (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value)
                                     }.Max()

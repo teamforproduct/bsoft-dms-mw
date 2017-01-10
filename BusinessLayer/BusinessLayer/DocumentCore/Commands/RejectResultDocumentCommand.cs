@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.Waits.Where(
                     x =>
                         (x.OnEvent.EventType == EnumEventTypes.MarkExecution && x.OnEvent.TargetPositionId == positionId ||
-                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.IsHasMarkExecution && x.OnEvent.SourcePositionId == positionId) &&
+                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.IsHasMarkExecution && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord

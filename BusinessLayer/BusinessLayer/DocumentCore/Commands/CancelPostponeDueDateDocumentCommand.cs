@@ -39,15 +39,15 @@ namespace BL.Logic.DocumentCore.Commands
             _actionRecords =
                 _document.Waits.Where(
                     x =>
-                        (x.OnEvent.EventType == EnumEventTypes.MarkExecution && x.OnEvent.TargetPositionId == positionId ||
-                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.IsHasMarkExecution && x.OnEvent.SourcePositionId == positionId) &&
+                        (x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && x.OnEvent.TargetPositionId == positionId ||
+                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.IsHasAskPostponeDueDate && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
                             WaitId = x.Id,
-                            IsHideInMainMenu = x.OnEvent.EventType != EnumEventTypes.MarkExecution
+                            IsHideInMainMenu = x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate
                         });
             if (!_actionRecords.Any())
             {
@@ -65,14 +65,14 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            if (_docWait.OnEvent.EventType == EnumEventTypes.MarkExecution && _docWait.ParentOnEventId.HasValue)
+            if (_docWait.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && _docWait.ParentOnEventId.HasValue)
             {
                 ((List<InternalDocumentWait>)_document.Waits).AddRange(_operationDb.ControlOffDocumentPrepare(_context, _docWait.ParentOnEventId.Value).Waits);
             }
             else
             {
-                _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
-                _docWait = _document?.Waits.FirstOrDefault(x => x.OnEvent.EventType == EnumEventTypes.MarkExecution);
+                _operationDb.ControlOffAskPostponeDueDateWaitPrepare(_context, _document);
+                _docWait = _document?.Waits.FirstOrDefault(x => x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate);
             }
 
             if (_docWait?.OnEvent?.TargetPositionId == null
@@ -89,7 +89,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByRejecting;
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.RejectResult, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _document.Waits = new List<InternalDocumentWait> { _docWait };
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
