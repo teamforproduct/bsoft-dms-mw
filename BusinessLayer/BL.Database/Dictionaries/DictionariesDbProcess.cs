@@ -4425,10 +4425,13 @@ namespace BL.Database.Dictionaries
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
 
-                var res = qry.Select(x => new ListItem
+                var res = qry.Select(x => new FrontShortListPosition
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    CompanyName = x.Department.Company.Agent.Name,
+                    DepartmentName = x.Department.Name,
+                    DepartmentCodePath = x.Department.FullPath,
                 }).ToList();
 
                 transaction.Complete();
