@@ -7,13 +7,8 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Изменение файла, прикрепленного к шаблону документа
     /// </summary>
-    public class ModifyTemplateAttachedFile
+    public class AddTemplateAttachedFile
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        [IgnoreDataMember]
-        public int? Id { get; set; }
         /// <summary>
         /// Ид. шаблона документа, которому принадлежит файл
         /// </summary>

@@ -21,32 +21,32 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 {
     /// <summary>
-    /// Шаблоны документов. Задачи.
+    /// Шаблоны документов. Рассылка.
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
-    public class TemplateTasksController : ApiController
+    public class TemplateSendListsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список задач
+        /// Возвращает список рассылок
         /// </summary>
         /// <param name="Id">ИД сотрудника</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Tasks")]
-        [ResponseType(typeof(List<FrontTemplateDocumentTask>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
+        [Route("{Id:int}/SendLists")]
+        [ResponseType(typeof(List<FrontTemplateDocumentSendList>))]
+        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentSendList filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterTemplateDocumentTask();
+            if (filter == null) filter = new FilterTemplateDocumentSendList();
             filter.TemplateId =  Id ;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentTasks(ctx, filter);
+            var tmpItems = tmpService.GetTemplateDocumentSendLists(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -54,63 +54,63 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 
 
         /// <summary>
-        /// Возвращает задачу по Id
+        /// Возвращает пункт списка рассылки по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Tasks/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentTask))]
+        [Route("SendLists/{Id:int}")]
+        [ResponseType(typeof(FrontTemplateDocumentSendList))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentTask(ctx, Id);
+            var tmpItem = tmpService.GetTemplateDocumentSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет задачу
+        /// Добавляет пункт в список рассылки
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Tasks")]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentTask model)
+        [Route("SendLists")]
+        public IHttpActionResult Post([FromBody]AddTemplateDocumentSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentTask, model);
+            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentSendList, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует задачу
+        /// Корректирует пункт в списке рассылки
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Tasks")]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentTask model)
+        [Route("SendLists")]
+        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentTask, model);
+            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentSendList, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет задачу
+        /// Удаляет пункт из списка рассылки
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Tasks/{Id:int}")]
+        [Route("SendLists/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentTask, Id);
+            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

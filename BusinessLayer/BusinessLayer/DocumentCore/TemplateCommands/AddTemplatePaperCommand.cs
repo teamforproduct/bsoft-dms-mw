@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private ModifyTemplateDocumentPaper Model
+        private AddTemplateDocumentPaper Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentPaper))
+                if (!(_param is AddTemplateDocumentPaper))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentPaper)_param;
+                return (AddTemplateDocumentPaper)_param;
             }
         }
 

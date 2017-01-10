@@ -77,7 +77,7 @@ namespace BL.Database.Documents
                 }
                 if (!String.IsNullOrEmpty(filter.NameExectly))
                 {
-                    qry = qry.Where(x=>string.Equals(x.Name, filter.NameExectly));
+                    qry = qry.Where(x => string.Equals(x.Name, filter.NameExectly));
                 }
                 if (!String.IsNullOrEmpty(filter.Description))
                 {
@@ -951,7 +951,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, ModifyTemplateDocumentPaper model)
+        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, AddTemplateDocumentPaper model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -962,7 +962,15 @@ namespace BL.Database.Documents
                         Id = x.Id,
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                if (model.Id == 0)
+                if (model is ModifyTemplateDocumentPaper) 
+                {
+                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => (x.Id == (model as ModifyTemplateDocumentPaper).Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
+                        .Select(x => new InternalTemplateDocumentPaper
+                        {
+                            Id = x.Id,
+                        }).ToList();
+                }
+                else // if (model.Id == 0)
                 {
                     doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
                         .Where(
@@ -970,14 +978,6 @@ namespace BL.Database.Documents
                                 x.DocumentId == model.DocumentId && x.Name == model.Name && x.IsMain == model.IsMain &&
                                 x.IsCopy == model.IsCopy && x.IsOriginal == model.IsOriginal)
                         .OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault();
-                }
-                else
-                {
-                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => (x.Id == model.Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
-                        .Select(x => new InternalTemplateDocumentPaper
-                        {
-                            Id = x.Id,
-                        }).ToList();
                 }
                 transaction.Complete();
                 return doc;
@@ -1190,7 +1190,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplateAttachedFile(IContext ctx, ModifyTemplateAttachedFile file)
+        public bool CanAddTemplateAttachedFile(IContext ctx, AddTemplateAttachedFile file)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {

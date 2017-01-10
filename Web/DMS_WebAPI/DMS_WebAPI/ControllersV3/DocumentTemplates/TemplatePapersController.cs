@@ -21,32 +21,32 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 {
     /// <summary>
-    /// Шаблоны документов. Задачи.
+    /// Шаблоны документов. Бумажные носители.
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
-    public class TemplateTasksController : ApiController
+    public class TemplatePapersController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список задач
+        /// Возвращает список бумажных носителей
         /// </summary>
-        /// <param name="Id">ИД сотрудника</param>
+        /// <param name="Id">ИД шаблона</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Tasks")]
-        [ResponseType(typeof(List<FrontTemplateDocumentTask>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
+        [Route("{Id:int}/Papers")]
+        [ResponseType(typeof(List<FrontTemplateDocumentPaper>))]
+        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentPaper filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterTemplateDocumentTask();
+            if (filter == null) filter = new FilterTemplateDocumentPaper();
             filter.TemplateId =  Id ;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentTasks(ctx, filter);
+            var tmpItems = tmpService.GetTemplateDocumentPapers(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -54,63 +54,63 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 
 
         /// <summary>
-        /// Возвращает задачу по Id
+        /// Возвращает бумажный носитель по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Tasks/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentTask))]
+        [Route("Papers/{Id:int}")]
+        [ResponseType(typeof(FrontTemplateDocumentPaper))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentTask(ctx, Id);
+            var tmpItem = tmpService.GetTemplateDocumentPaper(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет задачу
+        /// Добавляет бумажный носитель
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Tasks")]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentTask model)
+        [Route("Papers")]
+        public IHttpActionResult Post([FromBody]AddTemplateDocumentPaper model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentTask, model);
+            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentPaper, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует задачу
+        /// Корректирует бумажный носитель
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Tasks")]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentTask model)
+        [Route("Papers")]
+        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentPaper model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentTask, model);
+            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentPaper, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет задачу
+        /// Удаляет бумажный носитель
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Tasks/{Id:int}")]
+        [Route("Papers/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentTask, Id);
+            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentPaper, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

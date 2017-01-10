@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class ModifyTemplateDocumentPaper
+    public class AddTemplateDocumentPaper
     {
-        public int Id { get; set; }
         /// <summary>
         /// ИД документа
         /// </summary>
