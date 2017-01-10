@@ -23,15 +23,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _fStore = fStore;
         }
 
-        private ModifyTemplateAttachedFile Model
+        private AddTemplateAttachedFile Model
         {
             get
             {
-                if (!(_param is ModifyTemplateAttachedFile))
+                if (!(_param is AddTemplateAttachedFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateAttachedFile)_param;
+                return (AddTemplateAttachedFile)_param;
             }
         }
 

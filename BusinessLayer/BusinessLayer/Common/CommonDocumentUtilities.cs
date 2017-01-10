@@ -498,7 +498,7 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, ModifyTemplateDocumentPaper model, int orderNumber)
+        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, AddTemplateDocumentPaper model, int orderNumber)
         {
             return new InternalTemplateDocumentPaper
             {
@@ -515,7 +515,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, ModifyTemplateDocumentPaper model, int maxOrderNumber)
+        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, AddTemplateDocumentPaper model, int maxOrderNumber)
         {
             var res = new List<InternalTemplateDocumentPaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)

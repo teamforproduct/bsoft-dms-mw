@@ -262,8 +262,11 @@
     <Compile Include="DocumentCore\IncomingModel\AdditinalLinkedDocumentSendList.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocument.cs" />
     <Compile Include="DocumentCore\IncomingModel\CopyId.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentTask.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentLink.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalAdditinalLinkedDocumentSendListsPrepare.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentPaper.cs" />
@@ -394,10 +397,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyModels.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentRestrictedSendLists.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumnRegistration.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />

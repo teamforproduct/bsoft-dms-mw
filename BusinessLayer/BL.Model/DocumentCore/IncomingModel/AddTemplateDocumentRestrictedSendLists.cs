@@ -11,12 +11,8 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Ограничительный список рассылки для шаблона документа
     /// </summary>
-    public class ModifyTemplateDocumentRestrictedSendLists :LastChangeInfo
+    public class AddTemplateDocumentRestrictedSendLists
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public int? Id { get; set; }
         /// <summary>
         /// Ссылка на шаблон
         /// </summary>

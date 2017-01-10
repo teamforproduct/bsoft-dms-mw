@@ -266,6 +266,10 @@
     <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateAccessListController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateFilesController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateSendListsController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplatePapersController.cs" />
     <Compile Include="ControllersV3\DocumentTemplates\TemplateTasksController.cs" />
     <Compile Include="ControllersV3\DocumentTemplates\TemplateInfoController.cs" />
     <Compile Include="ControllersV3\Documents\TagsInfoController.cs" />

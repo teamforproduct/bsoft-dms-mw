@@ -1,16 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSearch;
-using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
@@ -21,32 +15,32 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 {
     /// <summary>
-    /// Шаблоны документов. Задачи.
+    /// Шаблоны документов. Ограничительные списки рассылки.
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
-    public class TemplateTasksController : ApiController
+    public class TemplateAccessListController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список задач
+        /// Возвращает список
         /// </summary>
-        /// <param name="Id">ИД сотрудника</param>
+        /// <param name="Id">Id шаблона</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Tasks")]
-        [ResponseType(typeof(List<FrontTemplateDocumentTask>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
+        [Route("{Id:int}/AccessList")]
+        [ResponseType(typeof(List<FrontTemplateDocumentRestrictedSendList>))]
+        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentRestrictedSendList filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterTemplateDocumentTask();
+            if (filter == null) filter = new FilterTemplateDocumentRestrictedSendList();
             filter.TemplateId =  Id ;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentTasks(ctx, filter);
+            var tmpItems = tmpService.GetTemplateDocumentRestrictedSendLists(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -54,63 +48,63 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 
 
         /// <summary>
-        /// Возвращает задачу по Id
+        /// Возвращает по Id
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Tasks/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentTask))]
+        [Route("AccessList/{Id:int}")]
+        [ResponseType(typeof(FrontTemplateDocumentRestrictedSendList))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentTask(ctx, Id);
+            var tmpItem = tmpService.GetTemplateDocumentRestrictedSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет задачу
+        /// Добавляет
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Tasks")]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentTask model)
+        [Route("AccessList")]
+        public IHttpActionResult Post([FromBody]AddTemplateDocumentRestrictedSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentTask, model);
+            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentRestrictedSendList, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует задачу
+        /// Корректирует
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Tasks")]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentTask model)
+        [Route("AccessList")]
+        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentRestrictedSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentTask, model);
+            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет задачу
+        /// Удаляет
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Tasks/{Id:int}")]
+        [Route("AccessList/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentTask, Id);
+            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

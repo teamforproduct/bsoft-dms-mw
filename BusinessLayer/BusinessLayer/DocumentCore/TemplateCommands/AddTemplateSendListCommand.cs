@@ -11,7 +11,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     public class AddTemplateSendListCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
-        private InternalTemplateDocumentSendList _sendList;
 
         public AddTemplateSendListCommand(ITemplateDocumentsDbProcess operationDb)
         {
@@ -19,15 +18,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private ModifyTemplateDocumentSendLists Model
+        private AddTemplateDocumentSendLists Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentSendLists))
+                if (!(_param is AddTemplateDocumentSendLists))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentSendLists)_param;
+                return (AddTemplateDocumentSendLists)_param;
             }
         }
 
@@ -44,12 +43,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            _sendList = new InternalTemplateDocumentSendList(Model);
-            CommonDocumentUtilities.SetLastChange(_context, _sendList);
-            return _operationDb.AddOrUpdateTemplateSendList(_context, _sendList);
-
+            var model = new InternalTemplateDocumentSendList(Model);
+            CommonDocumentUtilities.SetLastChange(_context, model);
+            return _operationDb.AddOrUpdateTemplateSendList(_context, model);
         }
-
 
     }
 }
