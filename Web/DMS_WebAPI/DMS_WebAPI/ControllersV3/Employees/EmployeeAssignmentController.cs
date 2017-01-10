@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpGet]
         [Route("Assignments/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryPositionExecutorExtended))]
+        [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

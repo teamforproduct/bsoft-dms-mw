@@ -1003,9 +1003,9 @@ namespace BL.Database.Dictionaries
                     PositionExecutors = x.PositionExecutors
                     .Where(y => y.StartDate <= now && y.EndDate >= now && y.IsActive)
                     .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order).ThenBy(y => y.Position.Name)
-                    .Select(y => new FrontDictionaryPositionExecutorExtended
+                    .Select(y => new FrontDictionaryPositionExecutor
                     {
-                        AssignmentId = y.Id,
+                        Id = y.Id,
                         PositionName = y.Position.Name,
                         DepartmentName = y.Position.Department.Name,
                         PositionExecutorTypeSuffix = y.PositionExecutorType.Suffix
@@ -5055,7 +5055,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                var res = qry.Select(x => new FrontDictionaryPositionExecutorExtended { AssignmentId = x.Id }).Any();
+                var res = qry.Any();
 
                 transaction.Complete();
                 return res;

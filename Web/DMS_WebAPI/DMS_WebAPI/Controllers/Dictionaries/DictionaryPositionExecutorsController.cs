@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">Параметры для фильтрации записей "Исполнители должности"</param>
         /// <returns>FrontDictionaryPositionExecutors</returns>
         // GET: api/DictionaryPositionExecutors
-        [ResponseType(typeof(List<FrontDictionaryPositionExecutorExtended>))]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutor filter)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns>FrontDictionaryPositionExecutors</returns>
-        [ResponseType(typeof(FrontDictionaryPositionExecutorExtended))]
+        [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int id)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpGet]
         [Route("GetCurrent")]
-        [ResponseType(typeof(List<FrontDictionaryPositionExecutorExtended>))]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrent([FromUri] FilterDictionaryPositionExecutor filter)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <returns></returns>
         [HttpGet]
         [Route("GetCurrentByAgent")]
-        [ResponseType(typeof(List<FrontDictionaryPositionExecutorExtended>))]
+        [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrentByAgent([FromUri] int agentId, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -128,8 +128,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, cxt, id);
-            FrontDictionaryPositionExecutorExtended tmp = new FrontDictionaryPositionExecutorExtended();
-            tmp.AssignmentId = id;
+            FrontDictionaryPositionExecutor tmp = new FrontDictionaryPositionExecutor();
+            tmp.Id = id;
 
             return new JsonResult(tmp, this);
 

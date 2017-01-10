@@ -160,12 +160,12 @@ namespace BL.Logic.Logging
                 return string.Format("{0}\r\n{1}\r\n{2}",
                     model.CompanyName, model.DepartmentName, model.Name);
             }
-            if (logObject is FrontDictionaryPositionExecutorExtended)
+            if (logObject is FrontDictionaryPositionExecutor)
             {
-                var model = logObject as FrontDictionaryPositionExecutorExtended;
+                var model = logObject as FrontDictionaryPositionExecutor;
                 return string.Format("{0}\r\n{1}\r\n{2} {3} - {4}",
                     model.DepartmentName, model.PositionName, model.AgentName,
-                    model.StartDate.HasValue ? model.StartDate.Value.ToString("dd.MM.yyyy") : " ",
+                    model.StartDate.ToString("dd.MM.yyyy"),
                     model.EndDate.HasValue ? model.EndDate.Value.ToString("dd.MM.yyyy") : " ");
             }
             return null;
