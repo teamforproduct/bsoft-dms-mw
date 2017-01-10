@@ -12,6 +12,18 @@ namespace BL.Model.DocumentCore.IncomingModel
 {
     public class ModifyTemplateDocument : AddTemplateDocument
     {
+        /// <summary>
+        /// ИД шаблона
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+    }
+
+    public class ModifyTemplateDocumentTask : AddTemplateDocumentTask
+    {
+        /// <summary>
+        /// ИД задачи
+        /// </summary>
         [Required]
         public int Id { get; set; }
     }

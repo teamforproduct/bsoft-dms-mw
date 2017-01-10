@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class ModifyTemplateDocumentTask
+    public class AddTemplateDocumentTask
     {
-        [IgnoreDataMember]
-        public int Id { get; set; }
         public int DocumentId { get; set; }
         public string Task { get; set; }
         public string Description { get; set; }

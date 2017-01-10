@@ -416,11 +416,10 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplate(IContext ctx, ModifyTemplateDocument template)
+        public bool CanAddTemplate(IContext ctx, AddTemplateDocument template)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-
                 var count = dbContext.TemplateDocumentsSet.Count(x => x.ClientId == ctx.CurrentClientId && x.Name == template.Name);
                 transaction.Complete();
                 return count == 0;
@@ -806,7 +805,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplateTask(IContext ctx, ModifyTemplateDocumentTask task)
+        public bool CanAddTemplateTask(IContext ctx, AddTemplateDocumentTask task)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
