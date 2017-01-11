@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.Enums;
+using PDFCreator;
 
 namespace BL.Database.FileWorker
 {
@@ -69,6 +70,8 @@ namespace BL.Database.FileWorker
                     Directory.CreateDirectory(path);
                 }
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
+                var pdfFileName = path + "\\" + attFile.Name + ".pdf";
+                var previewFile = path + "\\" + attFile.Name + ".jpg";
 
                 if (File.Exists(localFilePath) && isOverride)
                 {
@@ -83,6 +86,20 @@ namespace BL.Database.FileWorker
                 FileInfo fileInfo = new FileInfo(localFilePath);
 
                 attFile.FileSize = fileInfo.Length;
+
+                try
+                {
+                    if (attFile.Extension.ToLower() != "pdf")
+                    {
+                        if (PdfGenerator.CreatePdf(localFilePath, pdfFileName))
+                        {
+                        }
+                    }
+                    PdfGenerator.CreatePdfPreview(pdfFileName, previewFile);
+                }
+                catch
+                {
+                }
 
                 //File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha512(localFilePath);
@@ -112,22 +129,52 @@ namespace BL.Database.FileWorker
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
                 var localFilePathNew = path + "\\" + newName + "." + attFile.Extension;
 
+                var pdfFileName = path + "\\" + attFile.Name + ".pdf";
+                var pdfFilePathNew = path + "\\" + newName + ".pdf";
+
+                var previewFileName = path + "\\" + attFile.Name + ".jpg";
+                var previewFilePathNew = path + "\\" + newName + ".jpg";
+
                 if (File.Exists(localFilePath))
                 {
                     try
                     {
-
                         File.Move(localFilePath, localFilePathNew);
                     }
                     catch
                     {
                         return false;
                     }
-                    return true;
-
                 }
 
-                return false;
+                if (File.Exists(pdfFileName))
+                {
+                    try
+                    {
+                        File.Move(pdfFileName, pdfFilePathNew);
+                    }
+                    catch
+                    {
+                        File.Move(localFilePathNew, localFilePath);
+                        return false;
+                    }
+                }
+
+                if (File.Exists(previewFileName))
+                {
+                    try
+                    {
+                        File.Move(previewFileName, previewFilePathNew);
+                    }
+                    catch
+                    {
+                        File.Move(localFilePathNew, localFilePath);
+                        File.Move(previewFilePathNew, previewFileName);
+                        return false;
+                    }
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -160,7 +207,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile)
+        public byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile, EnumDocumentFileType fileType)
         {
             try
             {
@@ -192,7 +239,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile)
+        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile, EnumDocumentFileType fileType)
         {
             try
             {
@@ -235,7 +282,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile)
+        public byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile, EnumDocumentFileType fileType)
         {
             try
             {
