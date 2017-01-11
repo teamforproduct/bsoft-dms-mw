@@ -128,12 +128,18 @@ namespace BL.Logic.TreeBuilder
 
                 foreach (var item in tree)
                 {
-                    var addToSafeList = true;
+                    var searchText = item.SearchText;
+
+                    var addToSafeList = true; 
 
                     if (existsNameFilter & addToSafeList)
                     {
-                        // Поиск присходит по специальному полю для поиска
-                        addToSafeList = (item.SearchText.ToLower().ContainsArray(arrName));
+                        if (!string.IsNullOrEmpty(searchText))
+                        {
+                            // Поиск присходит по специальному полю для поиска
+                            addToSafeList = (searchText.ToLower().ContainsArray(arrName));
+                        }
+                        else addToSafeList = false;
                     }
 
                     if (existsCheckFilter & addToSafeList)

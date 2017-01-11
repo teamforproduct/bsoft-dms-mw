@@ -51,6 +51,25 @@ namespace DMS_WebAPI.ControllersV3.Org
         }
 
         /// <summary>
+        /// Возвращает список организаций
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Info")]
+        [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryAgentClientCompanies(ctx, filter);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Возвращает реквизиты организации
         /// </summary>
         /// <param name="Id"></param>
