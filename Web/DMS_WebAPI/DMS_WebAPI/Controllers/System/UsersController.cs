@@ -474,7 +474,7 @@ namespace DMS_WebAPI.Controllers
             var ctx = mngContext.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.MustChangePassword, ctx, model.AgentId);
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.MustChangePassword, ctx, model.Id);
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 

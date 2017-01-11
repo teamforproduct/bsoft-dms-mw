@@ -140,6 +140,8 @@
     <Compile Include="Common\BaseFilter.cs" />
     <Compile Include="Common\FrontDeleteModel.cs" />
     <Compile Include="Common\DictionaryItem.cs" />
+    <Compile Include="Common\IItem.cs" />
+    <Compile Include="Common\Item.cs" />
     <Compile Include="Common\ListItem.cs" />
     <Compile Include="Common\EnumModel.cs" />
     <Compile Include="Common\Period.cs" />
@@ -165,6 +167,7 @@
     <Compile Include="DictionaryCore\FrontModel\Banks\FrontAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\Companies\FrontMainAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontShortListContactType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontAuthInfo.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontAgentEmployee.cs" />

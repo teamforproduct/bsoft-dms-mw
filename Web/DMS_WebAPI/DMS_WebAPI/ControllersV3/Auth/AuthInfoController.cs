@@ -17,6 +17,12 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 using BL.Model.FullTextSearch;
+using System.Threading.Tasks;
+using DMS_WebAPI.Models;
+using BL.Model.Exception;
+using BL.Model.Users;
+using BL.Logic.AdminCore.Interfaces;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace DMS_WebAPI.ControllersV3.Auth
 {
@@ -30,69 +36,166 @@ namespace DMS_WebAPI.ControllersV3.Auth
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает реквизиты банка
+        /// Возвращает авторизационные сведения сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Info/{Id:int}")]
-        [ResponseType(typeof(FrontAgentBank))]
-        public IHttpActionResult Get(int Id)
+        [ResponseType(typeof(FrontAuthInfo))]
+        public async Task<IHttpActionResult> Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentBank(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
+
+            var webService = new WebAPIService();
+
+            ApplicationUser user = await webService.GetUserAsync(ctx, Id);
+
+            if (user == null) throw new UserIsNotDefined();
+
+            var authInfo = new FrontAuthInfo
+            {
+                Id = Id,
+                Email = user.Email,
+                Login = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                IsLockout = user.IsLockout,
+               
+            };
+
+            var res = new JsonResult(authInfo, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
-        /// <summary>
-        /// Добавляет банк
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddAgentBank model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentBank, model);
-            return Get(tmpItem);
-        }
 
         /// <summary>
-        /// Корректирует реквизиты банка
+        /// Измененяет логин
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyAgentBank model)
+        [Route("Info/ChangeLogin")]
+        public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLoginAgentUser model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyAgentBank, model);
-            return Get(model.Id);
-        }
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-        /// <summary>
-        /// Удаляет банк
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Route("Info/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
-        {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteAgentBank, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
+
+            var webService = new WebAPIService();
+            webService.ChangeLoginAgentUser(model);
+
+            var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
         }
+
+        /// <summary>
+        /// Измененяет пароль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/ChangePassword")]
+        public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordAgentUser model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var webService = new WebAPIService();
+
+            await webService.ChangePasswordAgentUserAsync(model);
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Управляет блокировкой пользователя (управляет возможностью войти в систему)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/ChangeLockout")]
+        public async Task<IHttpActionResult> ChangeLockoutAgentUser([FromBody]ChangeLockoutAgentUser model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = new WebAPIService();
+            await webService.ChangeLockoutAgentUserAsync(ctx, model);
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Убиение всех активных сессий пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/KillSessionsAgentUser")]
+        public IHttpActionResult KillSessionsAgentUser([FromBody]Item model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = userContexts.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, model.Id);
+
+            userContexts.RemoveByAgentId(model.Id);
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Заставляет пользователя сменить пароль при первом входе
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Info/SetMustChangePassword")]
+        public async Task<IHttpActionResult> SetMustChangePasswordAgentUser([FromBody]MustChangePasswordAgentUser model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            var mngContext = DmsResolver.Current.Get<UserContexts>();
+
+            var ctx = mngContext.Get();
+
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var userId = (string)admService.ExecuteAction(EnumAdminActions.MustChangePassword, ctx, model.Id);
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            ApplicationUser user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new UserIsNotDefined();
+
+            user.IsChangePasswordRequired = model.MustChangePassword;//true;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+                //return GetErrorResult(result);
+            }
+            return new JsonResult(null, this);
+        }
+
 
     }
 }

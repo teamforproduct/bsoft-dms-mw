@@ -1,8 +1,7 @@
 ﻿namespace BL.Model.Common
 {
-    public interface IListItem
+    public interface IListItem: IItem
     {
-        int Id { get; set; }
         string Name { get; set; }
     }
 
