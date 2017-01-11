@@ -74,9 +74,9 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteAgentEmployee:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAgentEmployeeLanguage:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
-                    break;
+                //case EnumDictionaryActions.ModifyAgentEmployeeLanguage:
+                    //cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
+                    //break;
                 case EnumDictionaryActions.ModifyAgentCompany:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCompanyCommand>();
                     break;

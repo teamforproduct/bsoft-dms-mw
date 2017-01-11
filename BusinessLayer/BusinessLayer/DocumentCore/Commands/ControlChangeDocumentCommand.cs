@@ -38,14 +38,17 @@ namespace BL.Logic.DocumentCore.Commands
                 return false;
             _actionRecords =
                 _document.Waits.Where(
-                    x =>
-                        x.OnEvent.SourcePositionId == positionId &&
+                    x => (x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && x.OnEvent.TargetPositionId == positionId ||
+                        x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
-                        CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
+                        CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType]
+                            .Contains(x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate ? x.OnEvent.EventType : _document.Waits.Where(y=>y.Id == x.ParentId).Select(y=>y.OnEvent.EventType).FirstOrDefault()))
                         .Select(x => new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
-                            WaitId = x.Id
+                            WaitId = x.Id,
+                            IsHideInMainMenu = x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.IsHasAskPostponeDueDate
+
                         });
             if (!_actionRecords.Any())
             {
@@ -64,6 +67,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
+            if (_docWait.IsHasAskPostponeDueDate)
+                _operationDb.ControlOffAskPostponeDueDateWaitPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
             return true;
@@ -98,6 +103,14 @@ namespace BL.Logic.DocumentCore.Commands
 
                 CommonDocumentUtilities.SetLastChange(_context, _docWait);
 
+                if (_document.Waits.Any(x=>x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate))
+                {
+                    newWait.AskPostponeDueDateWait = _document.Waits.First(x => x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate);
+                    newWait.AskPostponeDueDateWait.ResultTypeId = (int)EnumResultTypes.CloseByChanging;
+                    newWait.AskPostponeDueDateWait.OffEventId = newEvent.Id;
+                    newWait.AskPostponeDueDateWait.ParentId = 0;
+                    CommonDocumentUtilities.SetLastChange(_context, newWait.AskPostponeDueDateWait);
+                }
                 //var waits = new List<InternalDocumentWait> { newWait };
 
                 _operationDb.ChangeDocumentWait(_context, newWait);

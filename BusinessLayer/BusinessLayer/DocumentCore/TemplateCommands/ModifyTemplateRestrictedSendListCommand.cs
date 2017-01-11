@@ -39,18 +39,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             _admin.VerifyAccess(_context, CommandType, false);
 
-
             return true;
         }
 
         public override object Execute()
         {
-
-            CommonDocumentUtilities.SetLastChange(_context, Model);
-            return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, new InternalTemplateDocumentRestrictedSendList(Model));
-
+            var model = new InternalTemplateDocumentRestrictedSendList(Model);
+            CommonDocumentUtilities.SetLastChange(_context, model);
+            return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, model);
         }
-
 
     }
 }

@@ -15,6 +15,10 @@ namespace DMS_WebAPI
 
         public const string Settings = "Settings";
 
+        public const string Auth = "Auth";
+
+        public const string Auditlog = "Auditlog";
+
         public const string Tools = "Tools";
 
         public const string List = "List";
@@ -44,5 +48,7 @@ namespace DMS_WebAPI
         public const string AddressType = "AddressType";
 
         public const string Tags = "Tags";
+
+        public const string Templates = "Templates";
     }
 }

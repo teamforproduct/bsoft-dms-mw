@@ -15,9 +15,19 @@ namespace BL.Model.DocumentCore.InternalModel
         {
         }
 
+        public InternalTemplateDocumentTask(AddTemplateDocumentTask model)
+        {
+            SetInternalTemplateDocumentTask(model);
+        }
+
         public InternalTemplateDocumentTask(ModifyTemplateDocumentTask model)
         {
             Id = model.Id;
+            SetInternalTemplateDocumentTask(model);
+        }
+
+        private void SetInternalTemplateDocumentTask(AddTemplateDocumentTask model)
+        {
             DocumentId = model.DocumentId;
             Task = model.Task;
             Description = model.Description;

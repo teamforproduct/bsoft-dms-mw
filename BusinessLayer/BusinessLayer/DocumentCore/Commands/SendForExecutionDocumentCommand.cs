@@ -63,7 +63,9 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new TaskIsNotDefined();
             }
-            else if (Model.IsWorkGroup && (_document.Waits == null || !_document.Waits.Any() || _document.Waits.Count() > 1))
+            else if (Model.IsWorkGroup
+                && (_document.Waits == null || !_document.Waits.Any() || _document.Waits.Count() > 1)
+                && (_document.Events == null || !_document.Events.Any() || _document.Events.Count() > 1))
             {
                 ex = new ResponsibleExecutorIsNotDefined();
             }
@@ -103,11 +105,21 @@ namespace BL.Logic.DocumentCore.Commands
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
             if (Model.IsWorkGroup)
             {
-                var waitParent = _document.Waits.FirstOrDefault();
-                waitTarget.ParentId = waitParent.Id;
-                waitTarget.OnEvent.SourcePositionId = waitParent.OnEvent.TargetPositionId;
-                waitTarget.OnEvent.SourcePositionExecutorAgentId = waitParent.OnEvent.TargetPositionExecutorAgentId;
-                waitTarget.OnEvent.SourcePositionExecutorTypeId = waitParent.OnEvent.TargetPositionExecutorTypeId;
+                if (_document.Waits?.Any() ?? false)
+                {
+                    var waitRespExecutor = _document.Waits.FirstOrDefault();
+                    waitTarget.ParentId = waitRespExecutor.Id;
+                    waitTarget.OnEvent.SourcePositionId = waitRespExecutor.OnEvent.TargetPositionId;
+                    waitTarget.OnEvent.SourcePositionExecutorAgentId = waitRespExecutor.OnEvent.TargetPositionExecutorAgentId;
+                    waitTarget.OnEvent.SourcePositionExecutorTypeId = waitRespExecutor.OnEvent.TargetPositionExecutorTypeId;
+                }
+                if (_document.Events?.Any() ?? false)
+                {
+                    var eventControler = _document.Events.FirstOrDefault();
+                    waitTarget.OnEvent.SourcePositionId = eventControler.TargetPositionId;
+                    waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControler.TargetPositionExecutorAgentId;
+                    waitTarget.OnEvent.SourcePositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
+                }
             }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)

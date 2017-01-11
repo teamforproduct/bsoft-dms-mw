@@ -14,8 +14,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public string ResultTypeName { get; set; }
 
         public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }
-        private DateTime?  _DueDate; 
-		
+        private DateTime?  _DueDate;
+
+        public DateTime? PlanDueDate { get { return _PlanDueDate; } set { _PlanDueDate = value.ToUTC(); } }
+        private DateTime? _PlanDueDate;
+
         public DateTime? AttentionDate { get { return _AttentionDate; } set { _AttentionDate=value.ToUTC(); } }
         private DateTime?  _AttentionDate; 
 		

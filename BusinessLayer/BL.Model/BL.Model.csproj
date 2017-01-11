@@ -140,6 +140,8 @@
     <Compile Include="Common\BaseFilter.cs" />
     <Compile Include="Common\FrontDeleteModel.cs" />
     <Compile Include="Common\DictionaryItem.cs" />
+    <Compile Include="Common\IItem.cs" />
+    <Compile Include="Common\Item.cs" />
     <Compile Include="Common\ListItem.cs" />
     <Compile Include="Common\EnumModel.cs" />
     <Compile Include="Common\Period.cs" />
@@ -165,12 +167,14 @@
     <Compile Include="DictionaryCore\FrontModel\Banks\FrontAgentBank.cs" />
     <Compile Include="DictionaryCore\FrontModel\Companies\FrontMainAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontShortListContactType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontAuthInfo.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontAgentEmployeeUser.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FrontModel\AddressTypes\FrontDictionaryAddressType.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStageType.cs" />
     <Compile Include="Common\ListItemWithPath.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontListAgentPersonSimlpe.cs" />
@@ -181,22 +185,23 @@
     <Compile Include="DictionaryCore\FrontModel\Companies\FrontAgentCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontFile.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionarySettingType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsBase.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsBase.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsClientCompany.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsDepartment.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsBase.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDIPRegistrationJournalPositionsJournal.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDIPRegistrationJournalPositionsJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPUserRolesExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPSubordinationsPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartmentTreeItem.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPosition.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryRegistrationJournal.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorExtended.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Positions\FrontShortListPosition.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Positions\FrontDictionaryPosition.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Journals\FrontDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontMainAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
@@ -214,6 +219,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeople.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyPositionOrder.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
@@ -227,7 +233,6 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentImage.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="AdminCore\IncomingModel\AddAdminDepartmentAdmin.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddPositionExecutor.cs" />
@@ -251,15 +256,23 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendList.cs" />
+    <Compile Include="DocumentCore\Actions\AskPostponeDueDate.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentEventNatively.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocument.cs" />
     <Compile Include="DocumentCore\Filters\FilterTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontMainTemplateDocument.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="DocumentCore\IncomingModel\AdditinalLinkedDocumentSendList.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocument.cs" />
+    <Compile Include="DocumentCore\IncomingModel\CopyId.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentTask.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentSendLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentRestrictedSendLists.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddTemplateAttachedFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentLink.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalAdditinalLinkedDocumentSendListsPrepare.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentPaper.cs" />
@@ -391,11 +404,7 @@
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentPapers.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTasks.cs" />
     <Compile Include="DocumentCore\IncomingModel\ModifyDocumentTags.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateAttachedFile.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocument.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentRestrictedSendLists.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentSendLists.cs" />
-    <Compile Include="DocumentCore\IncomingModel\ModifyTemplateDocumentTasks.cs" />
+    <Compile Include="DocumentCore\IncomingModel\ModifyModels.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumnRegistration.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
@@ -583,10 +592,7 @@
     <Compile Include="WebAPI\IncomingModel\SetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserServer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DictionaryCore\FrontModel\Journals\" />
-    <Folder Include="DictionaryCore\FrontModel\Positions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

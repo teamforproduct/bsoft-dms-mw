@@ -31,7 +31,14 @@
         // Формулировка задачи
         TaskFormulation = 601,
 
-
+        /// <summary>
+        /// Попросить о переносе сроков исполнения
+        /// </summary>
+        AskPostponeDueDate = 325,
+        /// <summary>
+        /// Отказать в переносе сроков исполнения
+        /// </summary>
+        CancelPostponeDueDate = 326,
         // Поручение выполнено
         MarkExecution = 320,
         // Результат принят

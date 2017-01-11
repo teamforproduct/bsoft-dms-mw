@@ -462,7 +462,6 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentName(context, person.Id, person);
                 UpdateAgentPeople(context, person);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(context, person);
@@ -1005,7 +1004,7 @@ namespace BL.Database.Dictionaries
                     .OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Position.Order).ThenBy(y => y.Position.Name)
                     .Select(y => new FrontDictionaryPositionExecutor
                     {
-                        AssignmentId = y.Id,
+                        Id = y.Id,
                         PositionName = y.Position.Name,
                         DepartmentName = y.Position.Department.Name,
                         PositionExecutorTypeSuffix = y.PositionExecutorType.Suffix
@@ -4291,7 +4290,7 @@ namespace BL.Database.Dictionaries
                             OrderBy(y => y.PositionExecutorTypeId).ThenBy(y => y.Agent.Name).
                             Select(y => new FrontDictionaryPositionExecutor
                             {
-                                AssignmentId = y.Id,
+                                Id = y.Id,
                                 IsActive = y.IsActive,
                                 AgentId = y.Agent.Id,
                                 AgentName = y.Agent.Name,
@@ -4425,10 +4424,13 @@ namespace BL.Database.Dictionaries
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
 
-                var res = qry.Select(x => new ListItem
+                var res = qry.Select(x => new FrontShortListPosition
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    CompanyName = x.Department.Company.Agent.Name,
+                    DepartmentName = x.Department.Name,
+                    DepartmentCodePath = x.Department.FullPath,
                 }).ToList();
 
                 transaction.Complete();
@@ -4814,7 +4816,7 @@ namespace BL.Database.Dictionaries
 
                 var res = qry.Select(x => new FrontDictionaryPositionExecutor
                 {
-                    AssignmentId = x.Id,
+                    Id = x.Id,
                     IsActive = x.IsActive,
                     AgentId = x.AgentId,
                     PositionId = x.PositionId,
@@ -4828,7 +4830,8 @@ namespace BL.Database.Dictionaries
                     PositionFullName = x.Position.FullName,
                     DepartmentName = x.Position.Department.Name,
                     AccessLevelName = x.AccessLevel.Name,
-                    PositionExecutorTypeName = x.PositionExecutorType.Name
+                    PositionExecutorTypeName = x.PositionExecutorType.Name,
+                    PositionExecutorTypeSuffix = x.PositionExecutorType.Suffix,
                 }).ToList();
 
                 transaction.Complete();
@@ -4908,7 +4911,7 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter)
+        public IEnumerable<FrontDictionaryPositionExecutorExtended> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -4920,7 +4923,7 @@ namespace BL.Database.Dictionaries
                 string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
                 string parObjId = string.Empty;
 
-                var res = qry.Select(x => new FrontDictionaryPositionExecutor
+                var res = qry.Select(x => new FrontDictionaryPositionExecutorExtended
                 {
                     AssignmentId = x.Id,
                     IsActive = x.IsActive,
@@ -5054,7 +5057,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                var res = qry.Select(x => new FrontDictionaryPositionExecutor { AssignmentId = x.Id }).Any();
+                var res = qry.Any();
 
                 transaction.Complete();
                 return res;

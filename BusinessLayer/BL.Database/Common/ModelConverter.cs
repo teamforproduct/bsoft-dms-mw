@@ -158,6 +158,7 @@ namespace BL.Database.Common
                     AttentionDate = wait.AttentionDate,
                     DocumentId = wait.DocumentId,
                     DueDate = wait.DueDate ?? DateTime.MaxValue,
+                    PlanDueDate = wait.PlanDueDate,
                     LastChangeDate = wait.LastChangeDate,
                     LastChangeUserId = wait.LastChangeUserId,
                     OffEventId = wait.OffEventId,

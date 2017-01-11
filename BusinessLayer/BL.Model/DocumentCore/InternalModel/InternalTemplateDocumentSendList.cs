@@ -33,28 +33,37 @@ namespace BL.Model.DocumentCore.InternalModel
         {
         }
 
-        public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendLists list)
+        public InternalTemplateDocumentSendList(AddTemplateDocumentSendLists model)
         {
-            this.Id =list.Id ?? -1;
-            this.DocumentId=list.DocumentId;
-            this.SendType = list.SendType;
-            this.StageType = list.StageType;
-            this.TargetPositionId = list.TargetPositionId;
-            this.TargetAgentId = list.TargetAgentId;
-            this.TaskId = list.TaskId;
-            this.IsWorkGroup = list.IsWorkGroup;
-            this.IsAddControl = list.IsAddControl;
-            this.SelfDescription = list.SelfDescription;
-            this.SelfDueDay = list.SelfDueDay;
-            this.SelfAttentionDay = list.SelfAttentionDay;
-
-            this.IsAvailableWithinTask = list.IsAvailableWithinTask;
-            this.Description= list.Description;
-            this.Stage = list.Stage;
-            this.DueDay=list.DueDay;
-            this.AccessLevel = list.AccessLevel;
+            SetInternalTemplateDocumentSendList(model);
         }
 
+        public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendLists model)
+        {
+            Id = model.Id;
+            SetInternalTemplateDocumentSendList(model);
+        }
+
+        private void SetInternalTemplateDocumentSendList(AddTemplateDocumentSendLists model)
+        {
+            DocumentId = model.DocumentId;
+            SendType = model.SendType;
+            StageType = model.StageType;
+            TargetPositionId = model.TargetPositionId;
+            TargetAgentId = model.TargetAgentId;
+            TaskId = model.TaskId;
+            IsWorkGroup = model.IsWorkGroup;
+            IsAddControl = model.IsAddControl;
+            SelfDescription = model.SelfDescription;
+            SelfDueDay = model.SelfDueDay;
+            SelfAttentionDay = model.SelfAttentionDay;
+
+            IsAvailableWithinTask = model.IsAvailableWithinTask;
+            Description = model.Description;
+            Stage = model.Stage;
+            DueDay = model.DueDay;
+            AccessLevel = model.AccessLevel;
+        }
 
     }
 }

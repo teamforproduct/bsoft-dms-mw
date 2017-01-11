@@ -51,6 +51,25 @@ namespace DMS_WebAPI.ControllersV3.Org
         }
 
         /// <summary>
+        /// Возвращает список организаций
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Info")]
+        [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryAgentClientCompanies(ctx, filter);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Возвращает реквизиты организации
         /// </summary>
         /// <param name="Id"></param>
@@ -76,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddAgentClientCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentClientCompany, model);
@@ -91,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
+        public IHttpActionResult Put([FromBody]ModifyAgentClientCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAgentClientCompany, model);

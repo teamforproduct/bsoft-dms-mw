@@ -56,6 +56,9 @@ namespace BL.Logic.Common
 
                 { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
 
+                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+
                 { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
@@ -321,7 +324,7 @@ namespace BL.Logic.Common
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate??false)
+                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
                             ? new[] {   sendListModel.SelfDueDate,
                                         (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value)
                                     }.Max()
@@ -498,7 +501,7 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, ModifyTemplateDocumentPaper model, int orderNumber)
+        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, AddTemplateDocumentPaper model, int orderNumber)
         {
             return new InternalTemplateDocumentPaper
             {
@@ -515,7 +518,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, ModifyTemplateDocumentPaper model, int maxOrderNumber)
+        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, AddTemplateDocumentPaper model, int maxOrderNumber)
         {
             var res = new List<InternalTemplateDocumentPaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)

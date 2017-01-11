@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PositionExecutorAgentPhoneNumber { get; set; }
 
         public bool IsFactExecutor { get; set; }
-
+        /// <summary>
+        /// ИД типа рассылки
+        /// </summary>
+        public EnumSendTypes ExecutorSendType { get; set; }
+        public string ExecutorType { get; set; }
         public string ResponsibleExecutorPositionName { get; set; }
         public string ResponsibleExecutorPositionExecutorAgentName { get; set; }
 

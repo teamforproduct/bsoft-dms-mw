@@ -9,8 +9,11 @@ namespace BL.Model.Users
 {
     public class ChangePasswordAgentUser : ChangePassword
     {
+        /// <summary>
+        /// Id сотрудника - пользователя
+        /// </summary>
         [Required]
-        public int AgentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Требуется изменение пароля при следующем входе в систему

@@ -101,6 +101,7 @@ namespace BL.Database.Documents
                         OffEventId = x.OffEventId,
                         ParentId = x.ParentId,
                         IsHasMarkExecution = x.ChildWaits.Any(y => y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution && !y.OffEventId.HasValue),
+                        IsHasAskPostponeDueDate = x.ChildWaits.Any(y => y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate && !y.OffEventId.HasValue),
                         OnEvent = new InternalDocumentEvent
                         {
                             Id = x.OnEvent.Id,
@@ -393,6 +394,21 @@ namespace BL.Database.Documents
                 dbContext.Entry(waitDb).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
+                if (wait.AskPostponeDueDateWait!= null)
+                {
+                    var askWaitDb = ModelConverter.GetDbDocumentWait(wait.AskPostponeDueDateWait);
+                    askWaitDb.ParentId = waitParentDb.Id;
+                    askWaitDb.OnEvent = null;
+                    dbContext.DocumentWaitsSet.Attach(askWaitDb);
+                    var entry = dbContext.Entry(askWaitDb);
+                    entry.Property(x => x.ResultTypeId).IsModified = true;
+                    entry.Property(x => x.ParentId).IsModified = true;
+                    entry.Property(x => x.OffEventId).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    dbContext.SaveChanges();
+                }
+
                 transaction.Complete();
 
             }
@@ -586,7 +602,10 @@ namespace BL.Database.Documents
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId)
+                    .Where(x => x.OnEventId == eventId && x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate) 
+                    .Concat(dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).
+                            Where(x=>x.Id == dbContext.DocumentWaitsSet.Where(y => y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate).Select(y => y.ParentId).FirstOrDefault())
+                            )
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -601,6 +620,7 @@ namespace BL.Database.Documents
                                             OffEventId = x.OffEventId,
                                             DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                                             AttentionDate = x.AttentionDate,
+                                            IsHasAskPostponeDueDate = x.ChildWaits.Any(y=>y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate && !y.OffEventId.HasValue),
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
@@ -692,6 +712,7 @@ namespace BL.Database.Documents
                                             OffEventId = x.OffEventId,
                                             OnEventId = x.OnEventId,
                                             IsHasMarkExecution = x.ChildWaits.Any(y=>y.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution && !y.OffEventId.HasValue),
+                                            IsHasAskPostponeDueDate = x.ChildWaits.Any(y=>y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate && !y.OffEventId.HasValue),
                                             OnEvent = new InternalDocumentEvent
                                             {
                                                 Id = x.OnEvent.Id,
@@ -749,6 +770,39 @@ namespace BL.Database.Documents
             }
         }
 
+
+        public void ControlOffAskPostponeDueDateWaitPrepare(IContext context, InternalDocument document)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var filterContains = PredicateBuilder.False<DocumentWaits>();
+                filterContains = document.Waits.Select(x => x.Id).ToList().Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.ParentId == value).Expand());
+
+                var waitRes = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                    .Where(filterContains)
+                    .Where(x => !x.OffEventId.HasValue && x.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
+                    .Select(x => new InternalDocumentWait
+                    {
+                        Id = x.Id,
+                        ParentId = x.ParentId,
+                        DocumentId = x.OnEvent.DocumentId,
+                        OnEvent = new InternalDocumentEvent
+                        {
+                            Id = x.OnEvent.Id,
+                            DocumentId = x.OnEvent.DocumentId,
+                            EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                            SourcePositionId = x.OnEvent.SourcePositionId,
+                            TargetPositionId = x.OnEvent.TargetPositionId,
+                            TaskId = x.OnEvent.TaskId,
+                            IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
+                        }
+                    }
+                    ).ToList();
+                ((List<InternalDocumentWait>)document.Waits).AddRange(waitRes);
+                transaction.Complete();
+            }
+        }
         public void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1091,7 +1145,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = sendList.LastChangeUserId
                 };
                 var startEventDb = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
-                
+
                 if (sendList.Stage.HasValue)
                 {
                     dbContext.DocumentSendListsSet.Attach(sendListDb);
@@ -1342,7 +1396,7 @@ namespace BL.Database.Documents
                         });
                     doc.Waits = qryWaits.ToList();
                 }
-                if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl)
+                if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
                 {
                     doc.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                         .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId

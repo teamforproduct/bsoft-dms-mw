@@ -51,7 +51,7 @@ namespace BL.Logic.DictionaryCore
             executor = PositionExecutors.FirstOrDefault();
 
             if (executor != null)
-            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName,  executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName,  executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
 
 
@@ -74,7 +74,7 @@ namespace BL.Logic.DictionaryCore
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
                     break;
                 case EnumPositionExecutionTypes.IO:
                     filter = new FilterDictionaryPositionExecutor
@@ -92,7 +92,7 @@ namespace BL.Logic.DictionaryCore
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
                     break;
                 case EnumPositionExecutionTypes.Referent:
                     filter = new FilterDictionaryPositionExecutor
@@ -107,11 +107,11 @@ namespace BL.Logic.DictionaryCore
                     if (TypeModelIs<ModifyPositionExecutor>())
                     { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
                     
-                    // Референтов может быть несколько может быть н на должности за период
+                    // Референтов может быть несколько может быть на должности за период
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
                     break;
                 default:
@@ -131,7 +131,7 @@ namespace BL.Logic.DictionaryCore
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
                     break;
             }

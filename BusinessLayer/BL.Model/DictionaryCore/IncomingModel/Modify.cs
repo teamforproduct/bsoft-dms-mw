@@ -128,7 +128,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int Id { get; set; }
     }
 
-   
+
 
     /// <summary>
     /// Типы контактов
@@ -241,5 +241,19 @@ namespace BL.Model.DictionaryCore.IncomingModel
         //TODO [Required]
         public int Id { get; set; }
 
+    }
+
+    /// <summary>
+    /// Модель для добавления/редактирования записи справочника "Компании"
+    /// </summary>
+    // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
+    // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
+    public class ModifyDictionaryAgentUser: AddDictionaryAgentUser
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
     }
 }

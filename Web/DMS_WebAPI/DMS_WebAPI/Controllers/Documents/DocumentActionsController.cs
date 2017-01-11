@@ -439,6 +439,40 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Попросить о переносе сроков исполнения
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("AskPostponeDueDate")]
+        [HttpPost]
+        public IHttpActionResult AskPostponeDueDate(AskPostponeDueDate model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.AskPostponeDueDate, ctx, model);
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
+        /// <summary>
+        /// Отказать в переносе сроков исполнения
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("CancelPostponeDueDate")]
+        [HttpPost]
+        public IHttpActionResult CancelPostponeDueDate(SendEventMessage model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var docId = (int)docProc.ExecuteAction(EnumDocumentActions.CancelPostponeDueDate, ctx, model);
+
+            var ctrl = new DocumentsController { ControllerContext = ControllerContext };
+            return ctrl.Get(docId);
+        }
+
+        /// <summary>
         /// Отметить выполнение поручения
         /// </summary>
         /// <param name="model"></param>
@@ -816,8 +850,8 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
-            return new JsonResult(null, true, this);
+            var res = (Dictionary<int, string>)docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
+            return new JsonResult(res, !res.Any(), this);
         }
 
     }

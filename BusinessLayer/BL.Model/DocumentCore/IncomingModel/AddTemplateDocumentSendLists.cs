@@ -12,13 +12,8 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи плана работы для шаблона
     /// </summary>
-    public class ModifyTemplateDocumentSendLists 
+    public class AddTemplateDocumentSendLists 
     {
-        /// <summary>
-        /// ИД записи плана
-        /// </summary>
-        [IgnoreDataMember]
-        public int? Id { get; set; }
         /// <summary>
         /// ИД шаблона
         /// </summary>
@@ -57,7 +52,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int? SelfDueDay { get; set; }
         /// <summary>
         /// Дни для определения даты постоянного внимания для самоконтроля
-        /// </sumпmary>
+        /// </summary>
         public int SelfAttentionDay { get; set; }
         /// <summary>
         /// Событие доступно в рамках задачи

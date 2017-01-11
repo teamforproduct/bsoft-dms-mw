@@ -55,6 +55,31 @@ namespace DMS_WebAPI.ControllersV3.User
             return res;
         }
 
+        /// <summary>
+        /// Возвращает текущие подключения
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Sessions/Current")]
+        [ResponseType(typeof(FrontSystemSession))]
+        public IHttpActionResult GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            var ctx = ctxs.Get();
+            var sesions = ctxs.GetContextListQuery();
+            var tmpService = DmsResolver.Current.Get<ILogger>();
+            if (filter == null) filter = new FilterSystemSession();
+            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
+            filter.IsOnlyActive = true;
+            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
 
     }
 }

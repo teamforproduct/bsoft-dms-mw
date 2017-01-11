@@ -35,19 +35,19 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// </summary>
         /// <param name="filter">"</param>
         /// <returns></returns>
-        //[HttpGet]
-        //[Route("Info")]
-        //[ResponseType(typeof(List<FrontDictionaryDepartment>))]
-        //public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-        //    var tmpItems = tmpService.GetDictionaryDepartments(ctx, filter);
-        //    var res = new JsonResult(tmpItems, this);
-        //    res.SpentTime = stopWatch;
-        //    return res;
-        //}
+        [HttpGet]
+        [Route("Info")]
+        [ResponseType(typeof(List<FrontDictionaryDepartment>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryDepartments(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
         /// <summary>
         /// Возвращает отдел по Id

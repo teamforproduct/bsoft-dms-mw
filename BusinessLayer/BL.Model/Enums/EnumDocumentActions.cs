@@ -124,6 +124,15 @@
         /// </summary>
         SendForExecution = 100032,
 
+
+        /// <summary>
+        /// Попросить о переносе сроков исполнения
+        /// </summary>
+        AskPostponeDueDate = 100033,
+        /// <summary>
+        /// Отказать в переносе сроков исполнения
+        /// </summary>
+        CancelPostponeDueDate = 100034,
         /// <summary>
         /// Отметить исполнение
         /// </summary>

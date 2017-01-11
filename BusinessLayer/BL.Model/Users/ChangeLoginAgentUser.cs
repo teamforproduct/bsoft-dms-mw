@@ -9,8 +9,11 @@ namespace BL.Model.Users
 {
     public class ChangeLoginAgentUser: ChangeLogin
     {
+        /// <summary>
+        /// Id сотрудника - пользователя
+        /// </summary>
         [Required]
-        public int AgentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// EmailConfirmRequired

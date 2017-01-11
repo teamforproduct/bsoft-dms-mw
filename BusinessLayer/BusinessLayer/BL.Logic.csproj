@@ -161,9 +161,6 @@
     <Compile Include="DictionaryCore\AgentCompany\ModifyDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\BaseDictionaryContactCommand.cs" />
     <Compile Include="DictionaryCore\AgentPeople\ModifyDictionaryAgentEmployeePassportCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\BaseDictionaryAgentUserCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserLanguageCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\AddDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\DeleteDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\BaseDictionaryAgentEmployeeCommand.cs" />
@@ -237,6 +234,8 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\Commands\AskPostponeDueDateDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\CancelPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />

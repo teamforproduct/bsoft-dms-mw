@@ -31,6 +31,14 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public string StageTypeName { get; set; }
         /// <summary>
+        /// ИД одтела должности, кому направлена рассылка
+        /// </summary>
+        public int? TargetPositionDepartmentId { get; set; }
+        /// <summary>
+        /// Название отдела должности, кому направлена рассылка
+        /// </summary>
+        public string TargetPositionDepartmentName { get; set; }
+        /// <summary>
         /// ИД должности кому направлена рассылка
         /// </summary>
         public int? TargetPositionId { get; set; }
@@ -38,6 +46,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Название должности кому направлена рассылка
         /// </summary>
         public string TargetPositionName { get; set; }
+        /// <summary>
+        /// Имя кому направлена рассылка
+        /// </summary>
+        public string TargetPositionExecutorAgentName { get; set; }
         /// <summary>
         /// ИД внешнего агента кому направлена рассылка
         /// </summary>

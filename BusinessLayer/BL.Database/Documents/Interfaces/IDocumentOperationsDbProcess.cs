@@ -94,6 +94,7 @@ namespace BL.Database.Documents.Interfaces
         void ControlOffSendListPrepare(IContext context, InternalDocument document);
         void ControlOffSubscriptionPrepare(IContext context, InternalDocument document);
         void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);
+        void ControlOffAskPostponeDueDateWaitPrepare(IContext context, InternalDocument document);
 
         InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model);
 

@@ -26,7 +26,7 @@ namespace BL.Logic.DictionaryCore
                 {
 
                     var model = new InternalDictionaryAgentOrg(Model);
-
+                    CommonDocumentUtilities.SetLastChange(_context, model);
                     _dictDb.UpdateAgentOrg(_context, model);
 
                     var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { model.Id } }).FirstOrDefault();

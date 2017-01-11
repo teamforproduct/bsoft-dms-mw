@@ -9,12 +9,16 @@ namespace BL.Model.Users
 {
     public class ChangeLockoutAgentUser
     {
+        /// <summary>
+        /// Id сотрудника - пользователя
+        /// </summary>
         [Required]
-        public int AgentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// блокирование/разблокирование пользователя
         /// </summary>
+        [Required]
         public bool IsLockout { get; set; }
 
         /// <summary>

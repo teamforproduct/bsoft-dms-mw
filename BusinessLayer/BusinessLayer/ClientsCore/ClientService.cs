@@ -356,6 +356,8 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForControl });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForResponsibleExecution });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForExecution });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AskPostponeDueDate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CancelPostponeDueDate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.MarkExecution });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AcceptResult });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CancelExecution });

@@ -55,13 +55,17 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, Model);
 
-            var filterTemplate= CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(new InternalTemplateDocument {
+            var tModel = new InternalTemplateDocument
+            {
                 DocumentTypeId = Model.DocumentTypeId,
                 DocumentDirection = Model.DocumentDirection,
                 DocumentSubjectId = Model.DocumentSubjectId,
-            }).ToArray();
+            };
+
+            CommonDocumentUtilities.SetLastChange(_context, tModel);
+
+            var filterTemplate= CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(tModel).ToArray();
 
             var properties = new List<InternalPropertyValue>();
 
@@ -84,6 +88,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }
             _templateDoc = new InternalTemplateDocument(Model) { Properties = properties };
+            CommonDocumentUtilities.SetLastChange(_context, _templateDoc);
             return _operationDb.AddOrUpdateTemplate(_context, _templateDoc);
             
         }

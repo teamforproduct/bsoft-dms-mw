@@ -1681,6 +1681,7 @@ namespace BL.Database.Common
                     OffEventId = x.OffEventId,
                     ResultTypeId = x.ResultTypeId,
                     ResultTypeName = x.ResultType.Name,
+                    PlanDueDate = x.PlanDueDate,
                     DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                     AttentionDate = x.AttentionDate,
                     TargetDescription = x.TargetDescription,
@@ -1975,33 +1976,73 @@ namespace BL.Database.Common
                 //PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
             }).ToList();
 
-            {
-                var filterContains = PredicateBuilder.False<DocumentSendLists>();
-                filterContains = tasks.Select(x => x.Id).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.TaskId == value).Expand());
+            var eventFilterContains = PredicateBuilder.False<DocumentEvents>();
+            eventFilterContains = tasks.Select(x => x.Id).Aggregate(eventFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
-                var sendLists = dbContext.DocumentSendListsSet.Where(filterContains)
-                                    .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
-                                    .Select(x => new
-                                    {
-                                        TaskId = x.TaskId,
-                                        ResponsibleExecutorPositionName = x.TargetPosition.Name,
-                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
-                                        IsFactExecutor = x.StartEventId.HasValue,
-                                    }).ToList();
-
-                tasks.ForEach(x =>
-                {
-                    var sendList = sendLists.FirstOrDefault(y => y.TaskId == x.Id);
-                    if (sendList != null)
+            var taskFactRespEx = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+                    .Where(x=>x.OnWait.Any(y=>!y.OffEventId.HasValue))
+                    .Select(x => new FrontDocumentTask
                     {
-                        x.IsFactExecutor = sendList.IsFactExecutor;
-                        x.ResponsibleExecutorPositionName = sendList.ResponsibleExecutorPositionName;
-                        x.ResponsibleExecutorPositionExecutorAgentName = sendList.ResponsibleExecutorPositionExecutorAgentName;
-                    }
-                });
+                        Id = x.TaskId.Value,
+                        IsFactExecutor = true,
+                        ExecutorSendType = EnumSendTypes.SendForResponsibleExecution,
+                        ExecutorType = "##l@TaskExecutor:ResponsibleExecutor@l##",
+                        ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                    }).ToList();
 
-            }
+            var taskFactContr = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForControl)
+                .Select(x => new FrontDocumentTask
+                {
+                    Id = x.TaskId.Value,
+                    IsFactExecutor = true,
+                    ExecutorSendType = EnumSendTypes.SendForControl,
+                    ExecutorType = "##l@TaskExecutor:Controler@l##",
+                    ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                    ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                }).ToList();
+
+
+            var sendListFilterContains = PredicateBuilder.False<DocumentSendLists>();
+            sendListFilterContains = tasks.Select(x => x.Id).Aggregate(sendListFilterContains,  (current, value) => current.Or(e => e.TaskId == value).Expand());
+
+            var taskPlanRespEx = dbContext.DocumentSendListsSet.Where(sendListFilterContains).Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
+                                .Select(x => new FrontDocumentTask
+                                {
+                                    Id = x.TaskId.Value,
+                                    IsFactExecutor = false,
+                                    ExecutorSendType = EnumSendTypes.SendForResponsibleExecution,
+                                    ExecutorType = "##l@TaskExecutor:ResponsibleExecutor@l##",
+                                    ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                                    ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                                }).ToList();
+
+            var taskPlanContr = dbContext.DocumentSendListsSet.Where(sendListFilterContains).Where(x => x.SendTypeId == (int)EnumSendTypes.SendForControl)
+                .Select(x => new FrontDocumentTask
+                {
+                    Id = x.TaskId.Value,
+                    IsFactExecutor = false,
+                    ExecutorSendType = EnumSendTypes.SendForControl,
+                    ExecutorType = "##l@TaskExecutor:Controler@l##",
+                    ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                    ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                }).ToList();
+
+            tasks.ForEach(x =>
+            {
+                FrontDocumentTask taskExecutor = taskFactRespEx.FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskFactContr.FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanRespEx.FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanContr.FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor != null)
+                {
+                    x.IsFactExecutor = taskExecutor.IsFactExecutor;
+                    x.ExecutorSendType = taskExecutor.ExecutorSendType;
+                    x.ExecutorType = taskExecutor.ExecutorType;
+                    x.ResponsibleExecutorPositionName = taskExecutor.ResponsibleExecutorPositionName;
+                    x.ResponsibleExecutorPositionExecutorAgentName = taskExecutor.ResponsibleExecutorPositionExecutorAgentName;
+                }
+            });
 
             tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
@@ -2585,10 +2626,10 @@ namespace BL.Database.Common
             {
                 CommonQueries.ChangeRegistrationFullNumber(x);
                 var links = x.Links.ToList();
-                links.ForEach(y => 
+                links.ForEach(y =>
                 {
                     CommonQueries.ChangeRegistrationFullNumber(y);
-                    y.CanDelete = context.CurrentPositionsIdList.Contains(y.ExecutorPositionId??(int)EnumSystemPositions.AdminPosition);
+                    y.CanDelete = context.CurrentPositionsIdList.Contains(y.ExecutorPositionId ?? (int)EnumSystemPositions.AdminPosition);
                 });
                 x.Links = links;
                 x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, context, new FilterDictionaryPosition { DocumentIDs = new List<int> { x.Id } });
@@ -3467,7 +3508,7 @@ namespace BL.Database.Common
             {
                 att.Version = 1;
                 att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf GetNextFileOrderNumber " , @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf GetNextFileOrderNumber ", @"C:\sign.log");
             }
             else
             {

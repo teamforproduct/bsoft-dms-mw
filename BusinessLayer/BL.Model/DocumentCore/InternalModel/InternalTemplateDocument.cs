@@ -37,26 +37,32 @@ namespace BL.Model.DocumentCore.InternalModel
         {
         }
 
-        public InternalTemplateDocument(ModifyTemplateDocument model)
+        public InternalTemplateDocument(AddTemplateDocument model)
         {
-            this.Id = model.Id ?? -1;
-            this.Name = model.Name;
-            this.IsHard = model.IsHard;
-            this.IsForProject = model.IsForProject;
-            this.IsForDocument = model.IsForDocument;
-            this.DocumentDirection = model.DocumentDirection;
-            this.DocumentTypeId = model.DocumentTypeId;
-            this.DocumentSubjectId = model.DocumentSubjectId;
-            this.Description = model.Description;
-            this.RegistrationJournalId = model.RegistrationJournalId;
-            this.SenderAgentId = model.SenderAgentId;
-            this.SenderAgentPersonId = model.SenderAgentPersonId;
-            this.Addressee = model.Addressee;
-            this.IsActive = model.IsActive;
-            this.LastChangeDate = model.LastChangeDate;
-            this.LastChangeUserId = model.LastChangeUserId;
+            SetInternalTemplateDocument(model);
         }
 
+        public InternalTemplateDocument(ModifyTemplateDocument model)
+        {
+            Id = model.Id;
+            SetInternalTemplateDocument(model);
+        }
 
+        private void SetInternalTemplateDocument(AddTemplateDocument model)
+        {
+            Name = model.Name;
+            IsHard = model.IsHard;
+            IsForProject = model.IsForProject;
+            IsForDocument = model.IsForDocument;
+            DocumentDirection = model.DocumentDirection;
+            DocumentTypeId = model.DocumentTypeId;
+            DocumentSubjectId = model.DocumentSubjectId;
+            Description = model.Description;
+            RegistrationJournalId = model.RegistrationJournalId;
+            SenderAgentId = model.SenderAgentId;
+            SenderAgentPersonId = model.SenderAgentPersonId;
+            Addressee = model.Addressee;
+            IsActive = model.IsActive;
+        }
     }
 }

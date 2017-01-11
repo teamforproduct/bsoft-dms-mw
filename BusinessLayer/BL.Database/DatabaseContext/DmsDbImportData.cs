@@ -189,6 +189,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecutionChange, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.ControlTargetChange, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.ControlOff, EnumObjects.DocumentWaits, category: "Контроль"));
+            items.Add(GetSysAct(EnumDocumentActions.AskPostponeDueDate, EnumObjects.DocumentWaits, category: "Контроль"));
+            items.Add(GetSysAct(EnumDocumentActions.CancelPostponeDueDate, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.MarkExecution, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.AcceptResult, EnumObjects.DocumentWaits, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.CancelExecution, EnumObjects.DocumentWaits, category: "Контроль"));
@@ -708,6 +710,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlOff, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlChange, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlTargetChange, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AskPostponeDueDate, EnumImportanceEventTypes.ImportantEvents, "Перенос срока"));
+            items.Add(GetDictionaryEventType(EnumEventTypes.CancelPostponeDueDate, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.MarkExecution, EnumImportanceEventTypes.ImportantEvents, "Контроль"));
             items.Add(GetDictionaryEventType(EnumEventTypes.AcceptResult, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.CancelExecution, EnumImportanceEventTypes.ImportantEvents, null));

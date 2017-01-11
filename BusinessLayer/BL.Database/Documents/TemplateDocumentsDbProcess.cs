@@ -20,6 +20,7 @@ using BL.Model.SystemCore;
 using System;
 using System.Data.Entity;
 using BL.CrossCutting.Helpers;
+using BL.Database.Helper;
 
 namespace BL.Database.Documents
 {
@@ -76,7 +77,7 @@ namespace BL.Database.Documents
                 }
                 if (!String.IsNullOrEmpty(filter.NameExectly))
                 {
-                    qry = qry.Where(x=>string.Equals(x.Name, filter.NameExectly));
+                    qry = qry.Where(x => string.Equals(x.Name, filter.NameExectly));
                 }
                 if (!String.IsNullOrEmpty(filter.Description))
                 {
@@ -105,30 +106,46 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
+
                 qry = qry.OrderByDescending(x => x.Name);
 
-                if (paging != null)
-                {
-                    if (paging.IsOnlyCounter ?? true)
-                    {
-                        paging.TotalItemsCount = qry.Count();
-                    }
-
-                    if (paging.IsOnlyCounter ?? false)
-                    {
-                        return new List<FrontTemplateDocument>();
-                    }
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-
-                        qry = qry.Skip(() => skip).Take(() => take);
-                    }
-                }
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontTemplateDocument>();
 
                 var res = qry.Select(x => new FrontTemplateDocument
+                {
+                    Id = x.Id,
+                    DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                    DocumentDirectionName = x.DocumentDirection.Name,
+                    IsHard = x.IsHard,
+                    IsForProject = x.IsForProject,
+                    IsForDocument = x.IsForDocument,
+                    IsActive = x.IsActive,
+                    DocumentTypeId = x.DocumentTypeId,
+                    DocumentTypeName = x.DocumentType.Name,
+                    Name = x.Name,
+                    Description = x.Description,
+                    //DocumentSubjectId = x.DocumentSubjectId,
+                    //LastChangeDate = x.LastChangeDate,
+                    //RegistrationJournalId = x.RegistrationJournalId,
+                    //DocumentSubjectName = x.DocumentSubject.Name,
+                    //LastChangeUserId = x.LastChangeUserId,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
+
+                qry = qry.OrderByDescending(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainTemplateDocument>();
+
+                var res = qry.Select(x => new FrontMainTemplateDocument
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
@@ -399,11 +416,10 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplate(IContext ctx, ModifyTemplateDocument template)
+        public bool CanAddTemplate(IContext ctx, AddTemplateDocument template)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-
                 var count = dbContext.TemplateDocumentsSet.Count(x => x.ClientId == ctx.CurrentClientId && x.Name == template.Name);
                 transaction.Complete();
                 return count == 0;
@@ -460,16 +476,26 @@ namespace BL.Database.Documents
                     DocumentId = x.DocumentId,
                     SendType = x.SendTypeId,
                     StageType = x.StageTypeId,
-                    TargetPositionId = x.TargetPositionId,
-                    TargetAgentId = x.TargetAgentId,
+
                     Description = x.Description,
                     Stage = x.Stage,
-
+                    IsWorkGroup = x.IsWorkGroup,
+                    IsAddControl = x.IsAddControl,
+                    TaskId = x.TaskId,
                     TaskName = x.Task.Task,
+                    IsAvailableWithinTask = x.IsAvailableWithinTask,
                     DueDay = x.DueDay,
+                    SelfDueDay = x.SelfDueDay,
+                    SelfAttentionDay = x.SelfAttentionDay,
                     AccessLevelId = x.AccessLevelId,
+                    TargetPositionId = x.TargetPositionId,
                     TargetPositionName = x.TargetPosition.Name,
+                    TargetPositionDepartmentId = x.TargetPosition.Department.Id,
+                    TargetPositionDepartmentName = x.TargetPosition.Department.Name,
+                    TargetPositionExecutorAgentName = (x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : (string)null)),
+                    TargetAgentId = x.TargetAgentId,
                     TargetAgentName = x.TargetAgent.Name,
+
                     SendTypeName = x.SendType.Name,
                     StageTypeName = x.StageType.Name,
                     AccessLevelName = x.AccessLevel.Name,
@@ -490,14 +516,18 @@ namespace BL.Database.Documents
                             DocumentId = x.DocumentId,
                             SendType = x.SendTypeId,
                             StageType = x.StageTypeId,
-                            TargetPositionId = x.TargetPositionId,
-                            TargetAgentId = x.TargetAgentId,
                             Description = x.Description,
                             Stage = x.Stage,
+                            TaskId = x.TaskId,
                             TaskName = x.Task.Task,
                             DueDay = x.DueDay,
                             AccessLevelId = x.AccessLevelId,
+                            TargetPositionId = x.TargetPositionId,
                             TargetPositionName = x.TargetPosition.Name,
+                            TargetPositionDepartmentId = x.TargetPosition.Department.Id,
+                            TargetPositionDepartmentName = x.TargetPosition.Department.Name,
+                            TargetPositionExecutorAgentName = (x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : (string)null)),
+                            TargetAgentId = x.TargetAgentId,
                             TargetAgentName = x.TargetAgent.Name,
                             SendTypeName = x.SendType.Name,
                             StageTypeName = x.StageType.Name,
@@ -789,7 +819,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplateTask(IContext ctx, ModifyTemplateDocumentTask task)
+        public bool CanAddTemplateTask(IContext ctx, AddTemplateDocumentTask task)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -921,7 +951,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, ModifyTemplateDocumentPaper model)
+        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, AddTemplateDocumentPaper model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -932,7 +962,15 @@ namespace BL.Database.Documents
                         Id = x.Id,
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                if (model.Id == 0)
+                if (model is ModifyTemplateDocumentPaper) 
+                {
+                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => (x.Id == (model as ModifyTemplateDocumentPaper).Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
+                        .Select(x => new InternalTemplateDocumentPaper
+                        {
+                            Id = x.Id,
+                        }).ToList();
+                }
+                else // if (model.Id == 0)
                 {
                     doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
                         .Where(
@@ -940,14 +978,6 @@ namespace BL.Database.Documents
                                 x.DocumentId == model.DocumentId && x.Name == model.Name && x.IsMain == model.IsMain &&
                                 x.IsCopy == model.IsCopy && x.IsOriginal == model.IsOriginal)
                         .OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault();
-                }
-                else
-                {
-                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => (x.Id == model.Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
-                        .Select(x => new InternalTemplateDocumentPaper
-                        {
-                            Id = x.Id,
-                        }).ToList();
                 }
                 transaction.Complete();
                 return doc;
@@ -1160,7 +1190,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplateAttachedFile(IContext ctx, ModifyTemplateAttachedFile file)
+        public bool CanAddTemplateAttachedFile(IContext ctx, AddTemplateAttachedFile file)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {

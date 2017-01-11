@@ -113,7 +113,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <summary>
         /// Корректирует параметры назначения сотрудника на должности
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]

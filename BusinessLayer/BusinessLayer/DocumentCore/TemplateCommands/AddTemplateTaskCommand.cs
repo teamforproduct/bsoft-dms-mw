@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private ModifyTemplateDocumentTask Model
+        private AddTemplateDocumentTask Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentTask))
+                if (!(_param is AddTemplateDocumentTask))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentTask)_param;
+                return (AddTemplateDocumentTask)_param;
             }
         }
 
