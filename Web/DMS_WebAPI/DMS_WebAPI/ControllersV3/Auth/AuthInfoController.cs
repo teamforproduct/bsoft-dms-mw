@@ -27,7 +27,7 @@ using Microsoft.AspNet.Identity.Owin;
 namespace DMS_WebAPI.ControllersV3.Auth
 {
     /// <summary>
-    /// Банки
+    /// Управление авторизацией сотрудников-пользователей
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Auth)]
