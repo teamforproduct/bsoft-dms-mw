@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
     /// В списках отображаются только активные элементы справочников.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.List)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.List)]
     public class ListsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

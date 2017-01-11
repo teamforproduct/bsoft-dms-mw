@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Адреса юридического лица
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.ContactType)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.ContactType)]
     public class ContactTypeInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -29,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryContactType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryContactType filter)
         {
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryContactType))]
         public IHttpActionResult Get(int Id)
         {
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddContactType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyContactType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

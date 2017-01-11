@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Паспортные данные пользователя
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserPassportController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Passport")]
+        [Route(Features.Passport)]
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public IHttpActionResult Get()
         {
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Passport")]
+        [Route(Features.Passport)]
         public IHttpActionResult Put([FromBody]AddAgentPeoplePassport model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

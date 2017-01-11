@@ -29,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Например, референт директора может не иметь права подписания и т.д. 
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeRolesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Roles")]
+        [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Roles/Edit")]
+        [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Roles/Set")]
+        [Route(Features.Roles + "/Set")]
         public IHttpActionResult Set([FromBody] SetUserRole model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Roles/SetByAssignment")]
+        [Route(Features.Roles + "/SetByAssignment")]
         public IHttpActionResult SetByDepartment([FromBody] SetUserRoleByAssignment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

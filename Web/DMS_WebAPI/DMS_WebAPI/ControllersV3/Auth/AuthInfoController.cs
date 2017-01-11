@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
     /// Управление авторизацией сотрудников-пользователей
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Auth)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Auth)]
     public class AuthInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontAuthInfo))]
         public async Task<IHttpActionResult> Get(int Id)
         {
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/ChangeLogin")]
+        [Route(Features.Info + "/ChangeLogin")]
         public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLoginAgentUser model)
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/ChangePassword")]
+        [Route(Features.Info + "/ChangePassword")]
         public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordAgentUser model)
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/ChangeLockout")]
+        [Route(Features.Info + "/ChangeLockout")]
         public async Task<IHttpActionResult> ChangeLockout([FromBody]ChangeLockoutAgentUser model)
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
@@ -141,7 +141,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/KillSessions")]
+        [Route(Features.Info + "/KillSessions")]
         public IHttpActionResult KillSessions([FromBody]Item model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -165,7 +165,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/SetMustChangePassword")]
+        [Route(Features.Info + "/SetMustChangePassword")]
         public async Task<IHttpActionResult> SetMustChangePassword([FromBody]MustChangePasswordAgentUser model)
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);

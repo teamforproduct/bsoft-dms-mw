@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Org
     /// Организация - рутовый элемент в иерархии штатного расписания
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Org)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Org)]
     public class OrgInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)
         {
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
+        [Route(Features.Info)]
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
         {
@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public IHttpActionResult Get(int Id)
         {
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentClientCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -109,7 +109,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentClientCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -123,7 +123,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

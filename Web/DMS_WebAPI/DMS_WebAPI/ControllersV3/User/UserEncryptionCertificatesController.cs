@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Ключи ЕЦП
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserEncryptionCertificatesController : ApiController
     {
 
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("EncryptionCertificates")]
+        [Route(Features.EncryptionCertificates)]
         [ResponseType(typeof(List<FrontEncryptionCertificate>))]
         public IHttpActionResult Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
         {
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("EncryptionCertificates/{Id:int}")]
+        [Route(Features.EncryptionCertificates + "/{Id:int}")]
         [ResponseType(typeof(FrontEncryptionCertificate))]
         public IHttpActionResult Get(int Id)
         {
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("EncryptionCertificates")]
+        [Route(Features.EncryptionCertificates)]
         public IHttpActionResult Post([FromBody]AddEncryptionCertificate model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("EncryptionCertificates")]
+        [Route(Features.EncryptionCertificates)]
         public IHttpActionResult Put([FromBody]ModifyEncryptionCertificate model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("EncryptionCertificates/{Id:int}")]
+        [Route(Features.EncryptionCertificates + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Аватарка пользователя
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserImageController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Image")]
+        [Route(Features.Image)]
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public IHttpActionResult Get()
         {
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Image")]
+        [Route(Features.Image)]
         public IHttpActionResult Put([FromUri]ModifyDictionaryAgentImage model)
         {
             throw new NotImplementedException();
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Image/{Id:int}")]
+        [Route(Features.Image + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

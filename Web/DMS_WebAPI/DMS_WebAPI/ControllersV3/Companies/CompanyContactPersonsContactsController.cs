@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
     /// Контакты контактного лица
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Company)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyContactPersonsContactsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ContactPersons/{Id:int}/Contacts")]
+        [Route(Features.ContactPersons + "/{Id:int}/Contacts")]
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryContact filter)
         {
@@ -52,7 +52,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ContactPersons/Contacts/{Id:int}")]
+        [Route(Features.ContactPersons + "/Contacts/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("ContactPersons/Contacts")]
+        [Route(Features.ContactPersons + "/Contacts")]
         public IHttpActionResult Post([FromBody]AddAgentContact model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("ContactPersons/Contacts")]
+        [Route(Features.ContactPersons + "/Contacts")]
         public IHttpActionResult Put([FromBody]ModifyAgentContact model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("ContactPersons/Contacts/{Id:int}")]
+        [Route(Features.ContactPersons + "/Contacts/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
