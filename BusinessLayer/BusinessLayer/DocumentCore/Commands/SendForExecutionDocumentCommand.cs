@@ -113,7 +113,7 @@ namespace BL.Logic.DocumentCore.Commands
                     waitTarget.OnEvent.SourcePositionExecutorAgentId = waitRespExecutor.OnEvent.TargetPositionExecutorAgentId;
                     waitTarget.OnEvent.SourcePositionExecutorTypeId = waitRespExecutor.OnEvent.TargetPositionExecutorTypeId;
                 }
-                if (_document.Events?.Any() ?? false)
+                else if (_document.Events?.Any() ?? false)
                 {
                     var eventControler = _document.Events.FirstOrDefault();
                     waitTarget.OnEvent.SourcePositionId = eventControler.TargetPositionId;
