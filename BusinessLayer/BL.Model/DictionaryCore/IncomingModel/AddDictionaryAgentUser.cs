@@ -22,12 +22,6 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public string Login { get; set; }
 
         /// <summary>
-        /// Хеш пароля, пароль генерируется автоматически
-        /// </summary>
-        //[IgnoreDataMember]
-        //public string PasswordHash { get; set; }
-
-        /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
         public int LanguageId { get; set; }
