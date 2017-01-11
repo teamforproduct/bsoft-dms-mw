@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     /// Шаблоны документов. Ограничительные списки рассылки.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateAccessListController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/AccessList")]
+        [Route("{Id:int}/" + Features.AccessList)]
         [ResponseType(typeof(List<FrontTemplateDocumentRestrictedSendList>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentRestrictedSendList filter)
         {
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AccessList/{Id:int}")]
+        [Route(Features.AccessList + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocumentRestrictedSendList))]
         public IHttpActionResult Get(int Id)
         {
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("AccessList")]
+        [Route(Features.AccessList)]
         public IHttpActionResult Post([FromBody]AddTemplateDocumentRestrictedSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("AccessList")]
+        [Route(Features.AccessList)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentRestrictedSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("AccessList/{Id:int}")]
+        [Route(Features.AccessList + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -224,6 +224,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id);
 
         IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
+        IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

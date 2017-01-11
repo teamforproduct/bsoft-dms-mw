@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Системные справочники и типы. Для вызова апи требуется авторизация (доступ для авторизованных пользователей не ограничивается) 
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.System)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class SystemListsController : ApiController
     {
 

@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Пользователь-сотрудник может одновременно занимать должность и исполнять обязанноти другой должности или реферировать
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAssignmentsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns>список должностей</returns>
         [HttpGet]
-        [Route("Assignments/Current")]
+        [Route(Features.Assignments + "/Current")]
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public IHttpActionResult Assignments()
         {
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns>массива ИД должностей</returns>
         [HttpGet]
-        [Route("Assignments")]
+        [Route(Features.Assignments)]
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public IHttpActionResult GetAssignments()
         {
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="positionsIdList">ИД должности</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Assignments")]
+        [Route(Features.Assignments)]
         public IHttpActionResult Assignments([FromBody]List<int> positionsIdList)
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();

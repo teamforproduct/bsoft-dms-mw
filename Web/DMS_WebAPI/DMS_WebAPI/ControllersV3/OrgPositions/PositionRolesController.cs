@@ -29,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// При изменнии ролей для должности возникает задача синхронизации шаблона и экземпляров
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Position)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionRolesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Roles")]
+        [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminRole filter)
         {
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Roles/Edit")]
+        [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminRole filter)
         {
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Roles/Set")]
+        [Route(Features.Roles + "/Set")]
         public IHttpActionResult Set([FromBody] SetAdminPositionRole model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Roles/Duplicate")]
+        [Route(Features.Roles + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

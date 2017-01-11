@@ -5656,12 +5656,12 @@ namespace BL.Database.Dictionaries
 
         #region [+] DictionaryStandartSendListContents ...
 
-        public IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        public IQueryable<DictionaryStandartSendListContents> GetStandartSendListContentsQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendListContent filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).AsQueryable();
 
+            if (filter != null)
+            {
                 // Список первичных ключей
                 if (filter.StandartSendListId?.Count > 0)
                 {
@@ -5734,6 +5734,16 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
+            }
+
+            return qry;
+        }
+
+        public IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListContentsQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
@@ -5807,12 +5817,12 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryStandartSendListContents
 
         #region [+] DictionaryStandartSendLists ...
-        public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IQueryable<DictionaryStandartSendLists> GetStandartSendListQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendList filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
+            if (filter != null)
+            {
                 // Список первичных ключей
                 if (filter.IDs != null && filter.IDs.Count > 0)
                 {
@@ -5854,6 +5864,18 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.PositionID == x.PositionId);
                 }
+            }
+
+            return qry;
+        }
+
+
+        public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListQuery(context, dbContext, filter);
+
                 var res = qry.Select(x => new FrontDictionaryStandartSendList
                 {
                     Id = x.Id,
@@ -5883,6 +5905,31 @@ namespace BL.Database.Dictionaries
                                     AccessLevelName = y.AccessLevel.Name,
                                     SendTypeIsExternal = y.SendTypeId == 45
                                 })
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainDictionaryStandartSendList>();
+
+                var res = qry.Select(x => new FrontMainDictionaryStandartSendList
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    PositionId = x.PositionId,
+                    PositionName = x.Position.Name,
+                    PositionExecutorName = x.Position.ExecutorAgent.Name,
+                    PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix,
                 }).ToList();
 
                 transaction.Complete();

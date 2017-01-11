@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
     /// Юридические лица
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Company)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentCompany>))]
         public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontAgentCompany))]
         public IHttpActionResult Get(int Id)
         {
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

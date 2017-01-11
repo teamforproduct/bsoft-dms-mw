@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Системные настройки
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Settings)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Settings)]
     public class SettingsInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -29,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
+        [Route(Features.Info)]
         [ResponseType(typeof(FrontDictionarySettingType))]
         public IHttpActionResult Get([FromUri] FilterSystemSetting filter)
         {
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]List<ModifySystemSetting> model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

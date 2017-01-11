@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// Этот функционал по умолчанию выключен для нового клиента, рассылка по-умолчанию устанавливается на все должности. 
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Position)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionSendRulesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/SendRules")]
+        [Route("{Id:int}/" + Features.SendRules)]
         [ResponseType(typeof(List<FrontAdminSubordination>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/SendRules/Edit")]
+        [Route("{Id:int}/" + Features.SendRules + "/Edit")]
         [ResponseType(typeof(List<FrontAdminSubordination>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendRules/Set")]
+        [Route(Features.SendRules + "/Set")]
         public IHttpActionResult Set([FromBody] ModifyAdminSubordination model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendRules/SetByDepartment")]
+        [Route(Features.SendRules + "/SetByDepartment")]
         public IHttpActionResult SetByDepartment([FromBody] ModifyAdminSubordinationByDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendRules/SetByCompany")]
+        [Route(Features.SendRules + "/SetByCompany")]
         public IHttpActionResult SetByCompany([FromBody] ModifyAdminSubordinationByCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendRules/SetDefault")]
+        [Route(Features.SendRules + "/SetDefault")]
         public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -150,7 +150,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendRules/SetAll")]
+        [Route(Features.SendRules + "/SetAll")]
         public IHttpActionResult SetAll([FromBody] ModifyAdminDefaultByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -166,7 +166,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendRules/Duplicate")]
+        [Route(Features.SendRules + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

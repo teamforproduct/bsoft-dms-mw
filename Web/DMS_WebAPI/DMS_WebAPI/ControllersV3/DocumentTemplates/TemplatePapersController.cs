@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     /// Шаблоны документов. Бумажные носители.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplatePapersController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Papers")]
+        [Route("{Id:int}/" + Features.Papers)]
         [ResponseType(typeof(List<FrontTemplateDocumentPaper>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentPaper filter)
         {
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Papers/{Id:int}")]
+        [Route(Features.Papers + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocumentPaper))]
         public IHttpActionResult Get(int Id)
         {
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Papers")]
+        [Route(Features.Papers)]
         public IHttpActionResult Post([FromBody]AddTemplateDocumentPaper model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Papers")]
+        [Route(Features.Papers)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentPaper model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Papers/{Id:int}")]
+        [Route(Features.Papers + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

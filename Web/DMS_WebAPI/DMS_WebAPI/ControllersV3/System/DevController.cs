@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Для разработки
     /// </summary>
     //[Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.System)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class DevController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

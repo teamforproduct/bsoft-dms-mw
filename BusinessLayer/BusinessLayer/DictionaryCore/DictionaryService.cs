@@ -985,6 +985,21 @@ namespace BL.Logic.DictionaryCore
         {
             return _dictDb.GetStandartSendLists(context, filter);
         }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            var newFilter = new FilterDictionaryStandartSendList();
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryStandartSendLists, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetMainStandartSendLists(context, filter, paging);
+        }
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Теги
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Tags)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Tags)]
     public class TagsInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainTag>))]
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, UIPaging paging)
         {
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontTag))]
         public IHttpActionResult Get(int Id)
         {
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddTag model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyTag model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
