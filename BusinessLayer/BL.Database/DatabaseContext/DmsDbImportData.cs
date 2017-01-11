@@ -710,7 +710,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlOff, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlChange, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.ControlTargetChange, EnumImportanceEventTypes.ImportantEvents, null));
-            items.Add(GetDictionaryEventType(EnumEventTypes.AskPostponeDueDate, EnumImportanceEventTypes.ImportantEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.AskPostponeDueDate, EnumImportanceEventTypes.ImportantEvents, "Перенос срока"));
             items.Add(GetDictionaryEventType(EnumEventTypes.CancelPostponeDueDate, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.MarkExecution, EnumImportanceEventTypes.ImportantEvents, "Контроль"));
             items.Add(GetDictionaryEventType(EnumEventTypes.AcceptResult, EnumImportanceEventTypes.ImportantEvents, null));

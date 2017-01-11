@@ -1681,6 +1681,7 @@ namespace BL.Database.Common
                     OffEventId = x.OffEventId,
                     ResultTypeId = x.ResultTypeId,
                     ResultTypeName = x.ResultType.Name,
+                    PlanDueDate = x.PlanDueDate,
                     DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                     AttentionDate = x.AttentionDate,
                     TargetDescription = x.TargetDescription,

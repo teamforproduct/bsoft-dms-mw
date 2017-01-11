@@ -44,9 +44,9 @@ namespace BL.Logic.Common
 
                 { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.SendForResponsibleExecutionChange, new List<EnumEventTypes> {  EnumEventTypes.AskPostponeDueDate,EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForResponsibleExecutionChange } },
+                { EnumDocumentActions.SendForResponsibleExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForResponsibleExecutionChange } },
 
-                { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
+                { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
 
                 //{ EnumDocumentActions.SendForControlChange, new List<EnumEventTypes> { EnumEventTypes.SendForControl, EnumEventTypes.SendForControlChange} },
 

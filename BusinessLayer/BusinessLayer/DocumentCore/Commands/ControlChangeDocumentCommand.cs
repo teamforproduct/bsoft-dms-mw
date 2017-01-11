@@ -41,13 +41,13 @@ namespace BL.Logic.DocumentCore.Commands
                     x => (x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && x.OnEvent.TargetPositionId == positionId ||
                         x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.OnEvent.SourcePositionId == positionId) &&
                         x.OffEventId == null &&
-                        CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
+                        CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType]
+                            .Contains(x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate ? x.OnEvent.EventType : _document.Waits.Where(y=>y.Id == x.ParentId).Select(y=>y.OnEvent.EventType).FirstOrDefault()))
                         .Select(x => new InternalActionRecord
                         {
                             EventId = x.OnEvent.Id,
                             WaitId = x.Id,
-                            IsHideInMainMenu = x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate ||
-                                                x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.IsHasAskPostponeDueDate
+                            IsHideInMainMenu = x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.IsHasAskPostponeDueDate
 
                         });
             if (!_actionRecords.Any())
