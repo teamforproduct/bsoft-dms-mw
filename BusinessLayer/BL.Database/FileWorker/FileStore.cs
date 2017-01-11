@@ -207,7 +207,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile, EnumDocumentFileType fileType)
+        public byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
@@ -239,7 +239,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile, EnumDocumentFileType fileType)
+        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
@@ -282,7 +282,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile, EnumDocumentFileType fileType)
+        public byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {

@@ -9,9 +9,9 @@ namespace BL.Database.FileWorker
     {
         string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true);
         bool RenameFile(IContext ctx, InternalTemplateAttachedFile attFile, string newName);
-        byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile);
-        byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile);
-        byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile);
+        byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile);
+        byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile);
+        byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile);
         void DeleteAllFileInDocument(IContext ctx, int documentId);
         void DeleteAllFileInTemplate(IContext ctx, int templateId);
         void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile);
