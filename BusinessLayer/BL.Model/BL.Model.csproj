@@ -209,8 +209,9 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontMainAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontDictionaryContactType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontMainDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendListContent.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontMainTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgent.cs" />

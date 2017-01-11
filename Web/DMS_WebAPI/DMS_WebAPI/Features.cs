@@ -49,5 +49,7 @@ namespace DMS_WebAPI
 
         public const string Sessions = "Sessions";
 
+        public const string Contents = "Contents";
+
     }
 }
