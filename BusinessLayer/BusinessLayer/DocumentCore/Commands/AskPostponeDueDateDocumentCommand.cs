@@ -43,7 +43,7 @@ namespace BL.Logic.DocumentCore.Commands
                         x.OnEvent.TargetPositionId == positionId &&
                         x.OnEvent.TargetPositionId != x.OnEvent.SourcePositionId &&
                         x.OffEventId == null &&
-                        !x.IsHasMarkExecution &&
+                        !x.IsHasAskPostponeDueDate &&
                         //!askPostponeDueDateWaitId.Contains(x.Id) &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
