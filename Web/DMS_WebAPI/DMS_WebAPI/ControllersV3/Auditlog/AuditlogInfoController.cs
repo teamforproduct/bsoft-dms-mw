@@ -1,45 +1,60 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.Enums;
+﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
+using BL.Model.SystemCore.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-
-using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
-using BL.CrossCutting.Context;
-using BL.CrossCutting.Interfaces;
-using BL.Model.SystemCore.Filters;
+using System.Web.Http;
+using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.Employees
+namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// Сессии 
+    /// Аудит подключений
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
-    public class EmployeeSessionsController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Auditlog)]
+    public class AuditlogInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает историю подключений
+        /// Сессии пользователей
+        /// </summary>
+        /// <param name="ftSearch">модель фильтров сессий</param>
+        /// <param name="filter">модель фильтров сессий</param>
+        /// <param name="paging">параметры пейджинга</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Info/Main")]
+        [ResponseType(typeof(FrontSystemSession))]
+        public IHttpActionResult Sessions([FromUri]FullTextSearch ftSearch, [FromUri] FilterSystemSession filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            var ctx = ctxs.Get();
+            var sesions = ctxs.GetContextListQuery();
+            var tmpService = DmsResolver.Current.Get<ILogger>();
+            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает историю подключений сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Sessions")]
+        [Route("Info/Employee/{Id:int}")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult Get([FromUri]int Id, [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
@@ -57,14 +72,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Возвращает текущие подключения
+        /// Возвращает текущие подключения сотрудника
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Sessions/Current")]
+        [Route("Info/Employee/{Id:int}/Current")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult GetCurrent([FromUri]int Id, [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
@@ -81,7 +96,5 @@ namespace DMS_WebAPI.ControllersV3.Employees
             res.SpentTime = stopWatch;
             return res;
         }
-
-
     }
 }

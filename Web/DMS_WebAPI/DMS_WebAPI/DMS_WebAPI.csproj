@@ -258,6 +258,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="ControllersV3\Auth\AuthInfoController.cs" />
     <Compile Include="ControllersV3\Banks\BankAddressesController.cs" />
     <Compile Include="ControllersV3\Banks\BankContactsController.cs" />
     <Compile Include="ControllersV3\Banks\BankInfoController.cs" />
@@ -273,7 +274,6 @@
     <Compile Include="ControllersV3\DocumentTemplates\TemplateTasksController.cs" />
     <Compile Include="ControllersV3\DocumentTemplates\TemplateInfoController.cs" />
     <Compile Include="ControllersV3\Documents\TagsInfoController.cs" />
-    <Compile Include="ControllersV3\Employees\EmployeeSessionsController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeePassportController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeRolesController.cs" />
     <Compile Include="ControllersV3\Journals\JournalPositionsController.cs" />
@@ -282,7 +282,7 @@
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
     <Compile Include="ControllersV3\System\DevController.cs" />
-    <Compile Include="ControllersV3\Sessions\AuditlogInfoController.cs" />
+    <Compile Include="ControllersV3\Auditlog\AuditlogInfoController.cs" />
     <Compile Include="ControllersV3\System\TempStorageController.cs" />
     <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
     <Compile Include="ControllersV3\System\AddressTypeInfoController.cs" />

@@ -19,7 +19,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             UserId = model.UserId;
             Login = model.Login;
-            //PasswordHash = model.PasswordHash;
             IsActive = model.IsActive;
         }
 
@@ -30,7 +29,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             UserId = model.UserId;
             Login = model.Login;
-            //PasswordHash = model.PasswordHash;
             LastChangeDate = model.LastChangeDate;
             LastChangeUserId = model.LastChangeUserId;
         }

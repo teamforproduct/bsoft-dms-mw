@@ -3,13 +3,8 @@
     /// <summary>
     /// Элемент простого списка
     /// </summary>
-    public class ListItem : IListItem
+    public class ListItem : Item, IListItem
     {
-        /// <summary>
-        /// Id
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// Наименование
         /// </summary>

@@ -10,7 +10,7 @@ namespace BL.Model.Users
     public class MustChangePasswordAgentUser
     {
         [Required]
-        public int AgentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         ///

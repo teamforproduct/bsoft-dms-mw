@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPost]
         [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
+        public IHttpActionResult Post([FromBody]AddAgentClientCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentClientCompany, model);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPut]
         [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
+        public IHttpActionResult Put([FromBody]ModifyAgentClientCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAgentClientCompany, model);

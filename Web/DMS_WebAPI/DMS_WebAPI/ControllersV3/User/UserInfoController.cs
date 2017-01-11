@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Permissions")]
+        [Route("Permissions")]
         [ResponseType(typeof(List<FrontPermission>))]
         public IHttpActionResult GetPermissions()
         {
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/AuthLog")]
+        [Route("AuthLog")]
         [ResponseType(typeof(List<FrontSystemSession>))]
         public IHttpActionResult GetAuthLog()
         {
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/ChangeLogin")]
+        [Route("ChangeLogin")]
         public IHttpActionResult ChangeLogin([FromBody]ChangeLogin model)
         {
             throw new NotImplementedException();
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/ChangePassword")]
+        [Route("ChangePassword")]
         public IHttpActionResult ChangePassword([FromBody]ChangePassword model)
         {
             throw new NotImplementedException();

@@ -239,7 +239,7 @@ namespace DMS_WebAPI.Utilities
             // При деактивации сотрудника деактивирую пользователя
             if (!model.IsActive)
             {
-                ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, AgentId = model.Id, IsKillSessions = true });
+                ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, Id = model.Id, IsKillSessions = true });
             }
 
 
@@ -593,9 +593,9 @@ namespace DMS_WebAPI.Utilities
 
             // VerifyAccessCommand
             var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangeLogin, userContext, model.AgentId);
+            admService.ExecuteAction(EnumAdminActions.ChangeLogin, userContext, model.Id);
 
-            var user = GetUser(userContext, model.AgentId);
+            var user = GetUser(userContext, model.Id);
 
             user.UserName = FormUserName(model.NewEmail, userContext.CurrentClientId);//  model.NewEmail.UserNameFormatByClientId(userContext.CurrentClientId);
             user.Email = model.NewEmail;
@@ -610,7 +610,7 @@ namespace DMS_WebAPI.Utilities
             if (!result.Succeeded) throw new DatabaseError();
 
             // выкидываю пользователя из системы
-            userContexts.RemoveByAgentId(model.AgentId);
+            userContexts.RemoveByAgentId(model.Id);
 
             if (model.IsVerificationRequired)
             {
@@ -715,9 +715,9 @@ namespace DMS_WebAPI.Utilities
             var ctx = userContexts.Get();
 
             var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangePassword, ctx, model.AgentId);
+            admService.ExecuteAction(EnumAdminActions.ChangePassword, ctx, model.Id);
 
-            var user = await GetUserAsync(ctx, model.AgentId);
+            var user = await GetUserAsync(ctx, model.Id);
 
             if (user == null) throw new UserIsNotDefined();
 
@@ -741,16 +741,16 @@ namespace DMS_WebAPI.Utilities
             }
 
             if (model.IsKillSessions)
-                userContexts.RemoveByAgentId(model.AgentId);
+                userContexts.RemoveByAgentId(model.Id);
 
         }
 
         public async Task ChangeLockoutAgentUserAsync(IContext context, ChangeLockoutAgentUser model)
         {
             var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangeLockout, context, model.AgentId);
+            admService.ExecuteAction(EnumAdminActions.ChangeLockout, context, model.Id);
 
-            var user = await GetUserAsync(context, model.AgentId);
+            var user = await GetUserAsync(context, model.Id);
 
             if (user == null) throw new UserIsNotDefined();
 
@@ -763,7 +763,7 @@ namespace DMS_WebAPI.Utilities
 
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             if (model.IsKillSessions)
-                userContexts.RemoveByAgentId(model.AgentId);
+                userContexts.RemoveByAgentId(model.Id);
         }
 
         public async Task ConfirmEmailAgentUser(string userId, string code)
