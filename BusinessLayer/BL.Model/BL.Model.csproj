@@ -219,6 +219,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeople.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyPositionOrder.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
@@ -232,7 +233,6 @@
     <Compile Include="DictionaryCore\IncomingModel\AddAgentEmployee.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentImage.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgentUser.cs" />
     <Compile Include="AdminCore\IncomingModel\AddAdminDepartmentAdmin.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContact.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddPositionExecutor.cs" />

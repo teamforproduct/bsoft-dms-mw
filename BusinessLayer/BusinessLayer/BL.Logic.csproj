@@ -175,9 +175,6 @@
     <Compile Include="DictionaryCore\AgentCompany\ModifyDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\BaseDictionaryContactCommand.cs" />
     <Compile Include="DictionaryCore\AgentPeople\ModifyDictionaryAgentEmployeePassportCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\BaseDictionaryAgentUserCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserLanguageCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\AddDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\DeleteDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\BaseDictionaryAgentEmployeeCommand.cs" />
