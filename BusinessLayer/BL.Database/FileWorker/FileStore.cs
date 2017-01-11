@@ -8,7 +8,6 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.Enums;
-using System.Collections.Generic;
 
 namespace BL.Database.FileWorker
 {
@@ -18,44 +17,44 @@ namespace BL.Database.FileWorker
         {
             var sett = DmsResolver.Current.Get<ISettings>();
             return sett.GetFileStorePath(ctx);
-            //try
-            //{
-            //    return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
-            //}
-            //catch
-            //{
-            //    sett.SaveSetting(ctx, SettingConstants.FILE_STORE_PATH, SettingConstants.FILE_STORE_DEFAULT_PATH);
-            //    return sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_PATH);
-            //}
         }
 
         private string GetFullDocumentFilePath(IContext ctx, FrontDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            path = Path.Combine(path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString());
             return path;
         }
 
         private string GetFullDocumentFilePath(IContext ctx, FrontTemplateAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
-
 
         private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString() });
+            path = Path.Combine(path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString());
             return path;
         }
 
         private string GetFullDocumentFilePath(IContext ctx, InternalTemplateAttachedFile attFile)
         {
             var path = GetStorePath(ctx);
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
+        }
+
+        private string FileToSha512(string sourceFileName)
+        {
+            using (var stream = File.OpenRead(sourceFileName))
+            {
+                var sha = new SHA512Managed();
+                byte[] hash = sha.ComputeHash(stream);
+                return BitConverter.ToString(hash).Replace("-", String.Empty);
+            }
         }
 
         public string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
@@ -63,11 +62,11 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                var path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
 
                 if (!Directory.Exists(path))
                 {
-                    var dir = Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(path);
                 }
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
@@ -97,16 +96,18 @@ namespace BL.Database.FileWorker
             }
         }
 
+
+
         public bool RenameFile(IContext ctx, InternalTemplateAttachedFile attFile, string newName)
         {
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                var path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
 
                 if (!Directory.Exists(path))
                 {
-                    var dir = Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(path);
                 }
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
                 var localFilePathNew = path + "\\" + newName + "." + attFile.Extension;
@@ -140,7 +141,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                string path = GetFullDocumentFilePath(ctx, docFile);
+                var path = GetFullDocumentFilePath(ctx, docFile);
 
                 var localFilePath = path + "\\" + docFile.Name + "." + docFile.Extension;
 
@@ -163,7 +164,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                string path = GetFullDocumentFilePath(ctx, attFile);
+                var path = GetFullDocumentFilePath(ctx, attFile);
 
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
@@ -195,7 +196,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                string path = GetFullDocumentFilePath(ctx, attFile);
+                var path = GetFullDocumentFilePath(ctx, attFile);
 
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
@@ -239,7 +240,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                string path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
 
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
 
@@ -252,13 +253,13 @@ namespace BL.Database.FileWorker
 
                 attFile.FileContent = Convert.ToBase64String(fileContent);
 
-                if (docFile != null)
+                if (docFile == null) return fileContent;
+
+                docFile.WasChangedExternal = docFile.Hash != FileToSha512(localFilePath);
+
+                if (docFile.WasChangedExternal)
                 {
-                    docFile.WasChangedExternal = docFile.Hash != FileToSha512(localFilePath);
-                    if (docFile.WasChangedExternal)
-                    {
-                        throw new DocumentFileWasChangedExternally();
-                    }
+                    throw new DocumentFileWasChangedExternally();
                 }
                 return fileContent;
             }
@@ -283,14 +284,14 @@ namespace BL.Database.FileWorker
         /// delete all file for the specific template
         /// </summary>
         /// <param name="ctx"></param>
-        /// <param name="attFile"></param>
+        /// <param name="templateId"></param>
         public void DeleteAllFileInTemplate(IContext ctx, int templateId)
         {
             try
             {
                 //TODO CurrentAgentId
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString() });
+                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString() });
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -306,7 +307,7 @@ namespace BL.Database.FileWorker
         /// delete all file for the specific document
         /// </summary>
         /// <param name="ctx"></param>
-        /// <param name="attFile"></param>
+        /// <param name="documentId"></param>
         public void DeleteAllFileInDocument(IContext ctx, int documentId)
         {
             try
@@ -314,7 +315,7 @@ namespace BL.Database.FileWorker
                 //TODO CurrentAgentId
 
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString() });
+                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString() });
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -336,7 +337,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new string[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -391,7 +392,7 @@ namespace BL.Database.FileWorker
 
                 if (!Directory.Exists(toPath))
                 {
-                    var dir = Directory.CreateDirectory(toPath);
+                    Directory.CreateDirectory(toPath);
                 }
 
                 File.Copy(localFromPath, localToPath, true);
@@ -406,16 +407,6 @@ namespace BL.Database.FileWorker
                 var log = DmsResolver.Current.Get<ILogger>();
                 log.Error(ctx, ex, "Cannot access to one of file", Environment.StackTrace);
                 throw new CannotAccessToFile(ex);
-            }
-        }
-
-        private string FileToSha512(string sourceFileName)
-        {
-            using (var stream = File.OpenRead(sourceFileName))
-            {
-                var sha = new SHA512Managed();
-                byte[] hash = sha.ComputeHash(stream);
-                return BitConverter.ToString(hash).Replace("-", String.Empty);
             }
         }
 
@@ -441,21 +432,9 @@ namespace BL.Database.FileWorker
                 case EnumReportTypes.DocumentForDigitalSignature:
                     templateReportFile = sett.GetReportDocumentForDigitalSignature(ctx);
                     break;
-                default:
-                    break;
             }
 
-            //try
-            //{
-            //    templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
-            //}
-            //catch
-            //{
-            //    sett.SaveSetting(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType, SettingConstants.FILE_STORE_DEFAULT_TEMPLATE_REPORT_FILE);
-            //    templateReportFile = sett.GetSetting<string>(ctx, SettingConstants.FILE_STORE_TEMPLATE_REPORT_FILE + reportType);
-            //}
-
-            path = Path.Combine(new string[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
+            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
             return path;
         }
 

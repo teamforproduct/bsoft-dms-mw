@@ -3385,6 +3385,7 @@ namespace BL.Database.Common
         public static FrontReport GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc)
         {
             var fileStore = DmsResolver.Current.Get<IFileStore>();
+            // такое не делают на уровне БД! Это должно происходит на уровне логики! SZ
             var pdf = DmsResolver.Current.Get<DmsReport>().ReportExportToStream(doc, fileStore.GetFullTemplateReportFilePath(ctx, EnumReportTypes.DocumentForDigitalSignature));
 
             using (PdfReader reader = new PdfReader(pdf.FileContent))
