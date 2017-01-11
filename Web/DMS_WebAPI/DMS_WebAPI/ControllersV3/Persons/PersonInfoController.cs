@@ -88,7 +88,6 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <summary>
         /// Корректирует реквизиты физического лица
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
