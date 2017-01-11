@@ -34,20 +34,25 @@
   <ItemGroup>
     <Reference Include="Aspose.Cells">
       <HintPath>..\..\Thirdparty\Aspose\Aspose.Cells.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Aspose.Email, Version=16.12.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Thirdparty\Aspose\Aspose.Email.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Aspose.Pdf">
       <HintPath>..\..\Thirdparty\Aspose\Aspose.Pdf.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Aspose.Slides">
       <HintPath>..\..\Thirdparty\Aspose\Aspose.Slides.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Aspose.Words, Version=16.12.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Thirdparty\Aspose\Aspose.Words.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,9 +61,11 @@
   <ItemGroup>
     <Compile Include="Converters\ConverterFactory.cs" />
     <Compile Include="Converters\DocToPdfConverter.cs" />
+    <Compile Include="Converters\EmailToPdfConverter.cs" />
     <Compile Include="Converters\ExcelToPdfConverter.cs" />
     <Compile Include="Converters\IPdfConverter.cs" />
     <Compile Include="Converters\OtherToPdfConverter.cs" />
+    <Compile Include="Converters\SlidesToPdfConverter.cs" />
     <Compile Include="PdfGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -66,6 +73,7 @@
     <ProjectReference Include="..\ghostscriptsharp\GhostScriptSharp\GhostscriptSharp.csproj">
       <Project>{56605627-e6fa-4f47-9440-fb877cea5c84}</Project>
       <Name>GhostscriptSharp</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

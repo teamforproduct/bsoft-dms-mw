@@ -79,9 +79,6 @@
       <HintPath>..\..\Web\DMS_WebAPI\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PDFCreator">
-      <HintPath>..\..\Thirdparty\PdfCreator\PDFCreator.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />

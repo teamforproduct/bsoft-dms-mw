@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using GhostscriptSharp;
 using PDFCreator.Converters;
 
@@ -7,6 +8,13 @@ namespace PDFCreator
 {
     public static class PdfGenerator
     {
+        public static bool IsAcceptedFileType(string fileName)
+        {
+            var ext = Path.GetExtension(fileName);
+            
+            return !string.IsNullOrEmpty(ext) && ConverterFactory.SupportedTypes.Contains(ext.ToLower());
+        }
+
         public static bool CreatePdf(string inputFile, string outputFile)
         {
             if (string.IsNullOrEmpty(inputFile) || !File.Exists(inputFile))
