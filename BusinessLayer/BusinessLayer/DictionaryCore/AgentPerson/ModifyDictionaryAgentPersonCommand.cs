@@ -22,8 +22,6 @@ namespace BL.Logic.DictionaryCore
                 var newPerson = new InternalDictionaryAgentPerson(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
                 _dictDb.UpdateAgentPerson(_context, newPerson);
-
-
             }
             catch (DictionaryRecordWasNotFound)
             {
