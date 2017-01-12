@@ -24,6 +24,8 @@ namespace BL.Logic.DictionaryCore
             {
                 var model = new InternalDictionaryDepartment(Model);
 
+                CommonDocumentUtilities.SetLastChange(_context, model);
+
                 using (var transaction = Transactions.GetTransaction())
                 {
                     if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
