@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddDepartment model)
+        public IHttpActionResult Post([FromBody]AddPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyDepartment model)
+        public IHttpActionResult Put([FromBody]ModifyPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyPosition, model);
