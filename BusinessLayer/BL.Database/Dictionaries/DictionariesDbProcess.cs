@@ -5759,8 +5759,8 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetAgentName = (x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null))
-                                        ?? x.TargetAgent.Name,
+                    TargetExecutorName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
+                    TargetExecutorTypeSuffix = x.TargetPosition.ExecutorType.Suffix,
                     AccessLevelName = x.AccessLevel.Name,
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
@@ -5881,30 +5881,31 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
+                    //LastChangeUserId = x.LastChangeUserId,
+                    //LastChangeDate = x.LastChangeDate,
                     PositionName = x.Position.Name,
-                    PositionExecutorName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                    StandartSendListContents =
-                                x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
-                                {
-                                    Id = y.Id,
-                                    StandartSendListId = x.Id,
-                                    Stage = y.Stage,
-                                    SendTypeId = y.SendTypeId,
-                                    TargetPositionId = y.TargetPositionId,
-                                    Task = y.Task,
-                                    Description = y.Description,
-                                    DueDate = y.DueDate,
-                                    DueDay = y.DueDay,
-                                    AccessLevelId = y.AccessLevelId,
-                                    SendTypeName = y.SendType.Name,
-                                    TargetPositionName = y.TargetPosition.Name,
-                                    TargetAgentName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : null))
-                                                        ?? y.TargetAgent.Name,
-                                    AccessLevelName = y.AccessLevel.Name,
-                                    SendTypeIsExternal = y.SendTypeId == 45
-                                })
+                    PositionExecutorName = x.Position.ExecutorAgent.Name,
+                    PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix
+                    //StandartSendListContents =
+                    //            x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
+                    //            {
+                    //                Id = y.Id,
+                    //                StandartSendListId = x.Id,
+                    //                Stage = y.Stage,
+                    //                SendTypeId = y.SendTypeId,
+                    //                TargetPositionId = y.TargetPositionId,
+                    //                Task = y.Task,
+                    //                Description = y.Description,
+                    //                DueDate = y.DueDate,
+                    //                DueDay = y.DueDay,
+                    //                AccessLevelId = y.AccessLevelId,
+                    //                SendTypeName = y.SendType.Name,
+                    //                TargetPositionName = y.TargetPosition.Name,
+                    //                TargetExecutorName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : null))
+                    //                                    ?? y.TargetAgent.Name,
+                    //                AccessLevelName = y.AccessLevel.Name,
+                    //                SendTypeIsExternal = y.SendTypeId == 45
+                //})
                 }).ToList();
 
                 transaction.Complete();
