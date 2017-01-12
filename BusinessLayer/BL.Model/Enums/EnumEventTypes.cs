@@ -27,6 +27,10 @@
         // Изменить параметры направлен для исполнения (отв. исполнитель)
         SendForResponsibleExecutionChange = 215,
 
+        InfoSendForResponsibleExecutionReportingControler = 216,
+
+        InfoSendForExecutionReportingControler = 218,
+        InfoSendForExecutionReportingResponsibleExecutor = 219,
 
         // Формулировка задачи
         TaskFormulation = 601,

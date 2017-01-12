@@ -112,6 +112,12 @@ namespace BL.Logic.DocumentCore.Commands
                     waitTarget.OnEvent.SourcePositionId = waitRespExecutor.OnEvent.TargetPositionId;
                     waitTarget.OnEvent.SourcePositionExecutorAgentId = waitRespExecutor.OnEvent.TargetPositionExecutorAgentId;
                     waitTarget.OnEvent.SourcePositionExecutorTypeId = waitRespExecutor.OnEvent.TargetPositionExecutorTypeId;
+                    if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
+                    {
+                        _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForExecutionReportingResponsibleExecutor);
+                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {waitRespExecutor.SourcePositionExecutorAgentName}({waitRespExecutor.SourcePositionName}), ##l@TaskExecutor:ResponsibleExecutor@l## - {waitRespExecutor.TargetPositionExecutorAgentName}({waitRespExecutor.TargetPositionName})";
+                        CommonDocumentUtilities.SetLastChange(_context, waitTarget);
+                    }
                 }
                 else if (_document.Events?.Any() ?? false)
                 {
@@ -119,13 +125,15 @@ namespace BL.Logic.DocumentCore.Commands
                     waitTarget.OnEvent.SourcePositionId = eventControler.TargetPositionId;
                     waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControler.TargetPositionExecutorAgentId;
                     waitTarget.OnEvent.SourcePositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
+                    if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
+                    {
+                        _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForExecutionReportingControler);
+                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {eventControler.SourcePositionExecutorAgentName}({eventControler.SourcePositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
+                        CommonDocumentUtilities.SetLastChange(_context, waitTarget);
+                    }
                 }
             }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
-            if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
-            {
-                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
-            }
 
             _document.Subscriptions = null;
 

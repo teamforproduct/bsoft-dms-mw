@@ -1380,8 +1380,8 @@ namespace BL.Database.Documents
                 {
                     var qryWaits = doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                         .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
-                                    && x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution
-                                    //&& x.OnEvent.SourcePositionId == sendList.SourcePositionId
+                                    && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
+                                    && x.OnEvent.SourcePositionId == sendList.SourcePositionId
                                     )
                         .Select(x => new InternalDocumentWait
                         {
@@ -1389,9 +1389,13 @@ namespace BL.Database.Documents
                             OnEvent = new InternalDocumentEvent
                             {
                                 SourcePositionId = x.OnEvent.SourcePositionId,
+                                SourcePositionName = x.OnEvent.SourcePosition.Name,
+                                SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name + (x.OnEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.OnEvent.SourcePosition.ExecutorType.Suffix + ")" : null),
                                 TargetPositionId = x.OnEvent.TargetPositionId,
+                                TargetPositionName = x.OnEvent.TargetPosition.Name,
                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                                 TargetPositionExecutorTypeId = x.OnEvent.TargetPositionExecutorTypeId,
+                                TargetPositionExecutorAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name + (x.OnEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.OnEvent.TargetPosition.ExecutorType.Suffix + ")" : null),
                             }
                         });
                     doc.Waits = qryWaits.ToList();
@@ -1406,9 +1410,13 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             SourcePositionId = x.SourcePositionId,
+                            SourcePositionName = x.SourcePosition.Name,
+                            SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name + (x.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SourcePosition.ExecutorType.Suffix + ")" : null),
                             TargetPositionId = x.TargetPositionId,
+                            TargetPositionName = x.TargetPosition.Name,
                             TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
                             TargetPositionExecutorTypeId = x.TargetPositionExecutorTypeId,
+                            TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
                         }).ToList();
                 }
                 if (sendList.IsInitial)

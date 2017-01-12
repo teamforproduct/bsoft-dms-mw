@@ -54,7 +54,7 @@ namespace BL.Logic.Common
                                                                                       EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
                                                                                      } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn,/* EnumEventTypes.SendForControl,*/ EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
 
                 { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
                 { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
@@ -218,14 +218,14 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model)
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, model.SourcePositionId);
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, model.TargetPositionId);
             return new InternalDocumentEvent
             {
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
-                EventType = (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
+                EventType = eventType ?? (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
                 TaskId = model.TaskId,
                 IsAvailableWithinTask = model.TaskId.HasValue ? model.IsAvailableWithinTask : false,
                 Description = model.Description,
@@ -244,11 +244,11 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, InternalDocumentSendList model)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,model),
+                GetNewDocumentEvent(context,model,eventType),
             };
         }
 

@@ -688,6 +688,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionaryEventType(EnumEventTypes.SendForControl, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
             items.Add(GetDictionaryEventType(EnumEventTypes.SendForResponsibleExecution, EnumImportanceEventTypes.DocumentMoovement, "Контроль"));
             items.Add(GetDictionaryEventType(EnumEventTypes.SendForResponsibleExecutionChange, EnumImportanceEventTypes.DocumentMoovement, "Контроль"));
+
+            items.Add(GetDictionaryEventType(EnumEventTypes.InfoSendForResponsibleExecutionReportingControler, EnumImportanceEventTypes.AdditionalEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.InfoSendForExecutionReportingControler, EnumImportanceEventTypes.AdditionalEvents, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.InfoSendForExecutionReportingResponsibleExecutor, EnumImportanceEventTypes.AdditionalEvents, null));
+
             items.Add(GetDictionaryEventType(EnumEventTypes.SendForConsideration, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
             items.Add(GetDictionaryEventType(EnumEventTypes.SendForInformationExternal, EnumImportanceEventTypes.DocumentMoovement, "Исполнение"));
             items.Add(GetDictionaryEventType(EnumEventTypes.SendForVisaing, EnumImportanceEventTypes.DocumentMoovement, null));
