@@ -23,6 +23,8 @@ using EntityFramework.Extensions;
 using BL.Model.SystemCore.InternalModel;
 using BL.CrossCutting.Helpers;
 using BL.Model.Common;
+using BL.Model.SystemCore;
+using BL.Database.Helper;
 
 namespace BL.Database.Admins
 {
@@ -374,6 +376,26 @@ namespace BL.Database.Admins
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<ListItem> GetMainRoles(IContext context, FilterAdminRole filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRolesQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
+
+                var res = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToList();
                 transaction.Complete();
                 return res;
             }

@@ -543,7 +543,7 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontMainAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {

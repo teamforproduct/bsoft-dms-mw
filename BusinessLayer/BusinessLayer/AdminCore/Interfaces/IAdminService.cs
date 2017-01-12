@@ -14,6 +14,8 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.SystemCore;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
@@ -44,7 +46,9 @@ namespace BL.Logic.AdminCore.Interfaces
         #region [+] Roles ...
         //FrontAdminRole GetAdminRole(IContext context, int id);
         int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions);
+        FrontAdminRole GetAdminRole(IContext context, int id);
         IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter);
+        IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging);
         #endregion
 
         #region [+] RoleActions ...

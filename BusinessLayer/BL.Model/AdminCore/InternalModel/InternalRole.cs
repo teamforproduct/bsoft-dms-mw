@@ -9,9 +9,19 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalAdminRole()
         { }
 
+        public InternalAdminRole(AddAdminRole model)
+        {
+            SetInternalAdminRole(model);
+        }
+
         public InternalAdminRole(ModifyAdminRole model)
         {
             Id = model.Id;
+            SetInternalAdminRole(model);
+        }
+
+        private void SetInternalAdminRole(AddAdminRole model)
+        {
             Name = model.Name;
             Description = model.Description;
             RoleTypeId = model.RoleTypeId;

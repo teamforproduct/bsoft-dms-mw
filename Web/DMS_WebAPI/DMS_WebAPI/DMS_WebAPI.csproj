@@ -224,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
+    <Compile Include="ControllersV3\Roles\RolePositionsController.cs" />
+    <Compile Include="ControllersV3\Roles\RoleInfoController.cs" />
     <Compile Include="ControllersV3\SendLists\SendListContentsController.cs" />
     <Compile Include="ControllersV3\SendLists\SendListInfoController.cs" />
     <Compile Include="Modules.cs" />

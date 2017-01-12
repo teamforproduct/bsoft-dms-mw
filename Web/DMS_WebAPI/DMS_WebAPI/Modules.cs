@@ -48,5 +48,7 @@ namespace DMS_WebAPI
         public const string Templates = "Templates";
 
         public const string SendList = "SendList";
+
+        public const string Role = "Role";
     }
 }
