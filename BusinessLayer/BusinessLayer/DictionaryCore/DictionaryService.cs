@@ -1000,6 +1000,12 @@ namespace BL.Logic.DictionaryCore
 
             return _dictDb.GetMainStandartSendLists(context, filter, paging);
         }
+
+        public FrontFilterDictionaryStandartSendList GetFilterStandartSendLists(IContext context)
+        {
+            return _dictDb.GetFilterStandartSendLists(context);
+        }
+
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

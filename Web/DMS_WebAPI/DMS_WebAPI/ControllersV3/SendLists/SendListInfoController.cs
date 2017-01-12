@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Список списков рассылки
+        /// Список заголовков списков рассылки
         /// </summary>
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentBank>))]
-        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -47,6 +47,24 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             var tmpItems = tmpService.GetMainStandartSendLists(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Фильтры
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Info + "/Filters")]
+        [ResponseType(typeof(List<FrontMainAgentBank>))]
+        public IHttpActionResult GetFilters()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetFilterStandartSendLists(ctx);
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }

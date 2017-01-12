@@ -5937,6 +5937,29 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public FrontFilterDictionaryStandartSendList GetFilterStandartSendLists(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = new FrontFilterDictionaryStandartSendList();
+
+                var qry = GetStandartSendListQuery(context, dbContext, null);
+                qry = qry.OrderBy(x => x.Name);
+
+                res.Positions = qry.Select(x => new FrontPositionExecutorList
+                { 
+                    Id = x.PositionId ?? -1,
+                    Name = x.Position.Name,
+                    ExecutorId = x.Position.ExecutorAgentId,
+                    ExecutorName = x.Position.ExecutorAgent.Name,
+                    ExecutorTypeSuffix = x.Position.ExecutorType.Suffix,
+                }).Distinct().ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public int AddStandartSendList(IContext context, InternalDictionaryStandartSendList model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
