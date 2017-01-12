@@ -13,15 +13,7 @@ namespace BL.Logic.AdminCore
 {
     public class BaseRoleCommand : BaseAdminCommand
     {
-
-        protected ModifyAdminRole Model
-        {
-            get
-            {
-                if (!(_param is ModifyAdminRole)) throw new WrongParameterTypeError();
-                return (ModifyAdminRole)_param;
-            }
-        }
+        private AddAdminRole Model { get { return GetModel<AddAdminRole>(); } }
 
         public override bool CanBeDisplayed(int Id) => true;
 
@@ -31,9 +23,11 @@ namespace BL.Logic.AdminCore
 
             var filter = new FilterAdminRole
             {
-                NotContainsIDs = new List<int> { Model.Id },
                 NameExact = Model.Name
             };
+
+            if (TypeModelIs<ModifyAdminRole>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyAdminRole>().Id }; }
 
             if (_adminDb.ExistsRole(_context, filter)) throw new AdminRecordNotUnique();
 

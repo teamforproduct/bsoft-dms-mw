@@ -17,20 +17,24 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 using BL.Model.FullTextSearch;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Model.AdminCore.FilterModel;
+using BL.Model.AdminCore.FrontModel;
+using BL.Model.AdminCore.IncomingModel;
 
-namespace DMS_WebAPI.ControllersV3.Banks
+namespace DMS_WebAPI.ControllersV3.Roles
 {
     /// <summary>
-    /// Банки
+    /// Роли
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
-    public class BankInfoController : ApiController
+    [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
+    public class RoleInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Список банков
+        /// Список ролей
         /// </summary>
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
@@ -38,13 +42,13 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
-        [ResponseType(typeof(List<FrontMainAgentBank>))]
-        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainAgentBanks(ctx, ftSearch, filter, paging);
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetMainRoles(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -53,54 +57,54 @@ namespace DMS_WebAPI.ControllersV3.Banks
 
 
         /// <summary>
-        /// Возвращает реквизиты банка
+        /// Возвращает реквизиты роли
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
-        [ResponseType(typeof(FrontAgentBank))]
+        [ResponseType(typeof(FrontAdminRole))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentBank(ctx, Id);
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.GetAdminRole(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет банк
+        /// Добавляет роль
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAgentBank model)
+        public IHttpActionResult Post([FromBody]AddAdminRole model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentBank, model);
+            var tmpItem = Action.Execute(EnumAdminActions.AddRole, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует реквизиты банка
+        /// Корректирует реквизиты роли
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentBank model)
+        public IHttpActionResult Put([FromBody]ModifyAdminRole model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyAgentBank, model);
+            Action.Execute(EnumAdminActions.ModifyRole, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет банк
+        /// Удаляет роль
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -109,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteAgentBank, Id);
+            Action.Execute(EnumAdminActions.DeleteRole, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

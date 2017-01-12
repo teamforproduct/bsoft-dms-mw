@@ -183,7 +183,7 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentPersons(context, newFilter, paging);
+            return _dictDb.GetMainAgentPersons(context, newFilter, paging);
         }
         #endregion DictionaryAgentPersons
 
