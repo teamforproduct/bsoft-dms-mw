@@ -1395,12 +1395,13 @@ namespace BL.Database.Documents
                             TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
                         }).ToList();
 
-                    var controler = doc.Events.Select(x => x.TargetPositionId).FirstOrDefault();
+                    var controlerId = doc.Events.Select(x => x.TargetPositionId).FirstOrDefault();
+                    var controler = doc.Events.FirstOrDefault();
 
                     var qryWaits = doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                         .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
                                     && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
-                                    && (x.OnEvent.SourcePositionId == sendList.SourcePositionId || x.OnEvent.SourcePositionId == controler)
+                                    && (x.OnEvent.SourcePositionId == sendList.SourcePositionId || x.OnEvent.SourcePositionId == controlerId)
                                     )
                         .Select(x => new InternalDocumentWait
                         {
@@ -1408,8 +1409,9 @@ namespace BL.Database.Documents
                             OnEvent = new InternalDocumentEvent
                             {
                                 SourcePositionId = x.OnEvent.SourcePositionId,
-                                SourcePositionName = x.OnEvent.SourcePosition.Name,
-                                SourcePositionExecutorAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name + (x.OnEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.OnEvent.SourcePosition.ExecutorType.Suffix + ")" : null),
+                                SourcePositionName = controlerId == x.OnEvent.SourcePositionId ? controler.SourcePositionName : x.OnEvent.SourcePosition.Name,
+                                SourcePositionExecutorAgentName = controlerId == x.OnEvent.SourcePositionId ? controler.SourcePositionExecutorAgentName
+                                                                    : x.OnEvent.SourcePosition.ExecutorAgent.Name + (x.OnEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.OnEvent.SourcePosition.ExecutorType.Suffix + ")" : null),
                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                 TargetPositionName = x.OnEvent.TargetPosition.Name,
                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
