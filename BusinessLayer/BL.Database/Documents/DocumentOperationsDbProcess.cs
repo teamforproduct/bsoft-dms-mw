@@ -394,7 +394,7 @@ namespace BL.Database.Documents
                 dbContext.Entry(waitDb).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
-                if (wait.AskPostponeDueDateWait!= null)
+                if (wait.AskPostponeDueDateWait != null)
                 {
                     var askWaitDb = ModelConverter.GetDbDocumentWait(wait.AskPostponeDueDateWait);
                     askWaitDb.ParentId = waitParentDb.Id;
@@ -602,9 +602,9 @@ namespace BL.Database.Documents
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
 
                 var doc = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.OnEventId == eventId && x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate) 
+                    .Where(x => x.OnEventId == eventId && x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate)
                     .Concat(dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).
-                            Where(x=>x.Id == dbContext.DocumentWaitsSet.Where(y => y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate).Select(y => y.ParentId).FirstOrDefault())
+                            Where(x => x.Id == dbContext.DocumentWaitsSet.Where(y => y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate).Select(y => y.ParentId).FirstOrDefault())
                             )
                     .Select(x => new InternalDocument
                     {
@@ -1378,10 +1378,29 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
                 if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
                 {
+                    doc.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                        .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
+                                    && x.EventTypeId == (int)EnumEventTypes.SendForControl
+                                    && x.SourcePositionId == sendList.SourcePositionId)
+                        .Select(x => new InternalDocumentEvent
+                        {
+                            Id = x.Id,
+                            SourcePositionId = x.SourcePositionId,
+                            SourcePositionName = x.SourcePosition.Name,
+                            SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name + (x.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SourcePosition.ExecutorType.Suffix + ")" : null),
+                            TargetPositionId = x.TargetPositionId,
+                            TargetPositionName = x.TargetPosition.Name,
+                            TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
+                            TargetPositionExecutorTypeId = x.TargetPositionExecutorTypeId,
+                            TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                        }).ToList();
+
+                    var controler = doc.Events.Select(x => x.TargetPositionId).FirstOrDefault();
+
                     var qryWaits = doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
                         .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
                                     && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
-                                    && x.OnEvent.SourcePositionId == sendList.SourcePositionId
+                                    && (x.OnEvent.SourcePositionId == sendList.SourcePositionId || x.OnEvent.SourcePositionId == controler)
                                     )
                         .Select(x => new InternalDocumentWait
                         {
@@ -1399,25 +1418,8 @@ namespace BL.Database.Documents
                             }
                         });
                     doc.Waits = qryWaits.ToList();
-                }
-                if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
-                {
-                    doc.Events = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                        .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
-                                    && x.EventTypeId == (int)EnumEventTypes.SendForControl
-                                    && x.SourcePositionId == sendList.SourcePositionId)
-                        .Select(x => new InternalDocumentEvent
-                        {
-                            Id = x.Id,
-                            SourcePositionId = x.SourcePositionId,
-                            SourcePositionName = x.SourcePosition.Name,
-                            SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name + (x.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SourcePosition.ExecutorType.Suffix + ")" : null),
-                            TargetPositionId = x.TargetPositionId,
-                            TargetPositionName = x.TargetPosition.Name,
-                            TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
-                            TargetPositionExecutorTypeId = x.TargetPositionExecutorTypeId,
-                            TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
-                        }).ToList();
+
+
                 }
                 if (sendList.IsInitial)
                 {

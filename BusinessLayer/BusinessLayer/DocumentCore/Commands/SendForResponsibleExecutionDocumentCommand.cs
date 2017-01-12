@@ -112,7 +112,9 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForResponsibleExecutionReportingControler);
                     waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {eventControler.SourcePositionExecutorAgentName}({eventControler.SourcePositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
-                    CommonDocumentUtilities.SetLastChange(_context, waitTarget);
+                    CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
+                    if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
+                        waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
                 }
             }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };

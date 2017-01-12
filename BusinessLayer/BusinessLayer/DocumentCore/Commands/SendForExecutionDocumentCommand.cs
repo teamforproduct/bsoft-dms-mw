@@ -115,8 +115,10 @@ namespace BL.Logic.DocumentCore.Commands
                     if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
                     {
                         _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForExecutionReportingResponsibleExecutor);
-                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {waitRespExecutor.SourcePositionExecutorAgentName}({waitRespExecutor.SourcePositionName}), ##l@TaskExecutor:ResponsibleExecutor@l## - {waitRespExecutor.TargetPositionExecutorAgentName}({waitRespExecutor.TargetPositionName})";
-                        CommonDocumentUtilities.SetLastChange(_context, waitTarget);
+                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {waitRespExecutor.OnEvent.SourcePositionExecutorAgentName}({waitRespExecutor.OnEvent.SourcePositionName}), ##l@TaskExecutor:ResponsibleExecutor@l## - {waitRespExecutor.OnEvent.TargetPositionExecutorAgentName}({waitRespExecutor.OnEvent.TargetPositionName})";
+                        CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
+                        if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
+                            waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
                     }
                 }
                 else if (_document.Events?.Any() ?? false)
@@ -129,7 +131,9 @@ namespace BL.Logic.DocumentCore.Commands
                     {
                         _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForExecutionReportingControler);
                         waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {eventControler.SourcePositionExecutorAgentName}({eventControler.SourcePositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
-                        CommonDocumentUtilities.SetLastChange(_context, waitTarget);
+                        CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
+                        if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
+                            waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
                     }
                 }
             }
