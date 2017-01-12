@@ -8,6 +8,7 @@ namespace BL.Database.FileWorker
     public interface IFileStore
     {
         string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true);
+        bool CreatePdfFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true);
         bool RenameFile(IContext ctx, InternalTemplateAttachedFile attFile, string newName);
         byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile);
         byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile);

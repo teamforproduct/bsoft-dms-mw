@@ -70,8 +70,6 @@ namespace BL.Database.FileWorker
                     Directory.CreateDirectory(path);
                 }
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
-                var pdfFileName = path + "\\" + attFile.Name + ".pdf";
-                var previewFile = path + "\\" + attFile.Name + ".jpg";
 
                 if (File.Exists(localFilePath) && isOverride)
                 {
@@ -87,20 +85,6 @@ namespace BL.Database.FileWorker
 
                 attFile.FileSize = fileInfo.Length;
 
-                try
-                {
-                    if (attFile.Extension.ToLower() != "pdf")
-                    {
-                        if (PdfGenerator.CreatePdf(localFilePath, pdfFileName))
-                        {
-                        }
-                    }
-                    PdfGenerator.CreatePdfPreview(pdfFileName, previewFile);
-                }
-                catch
-                {
-                }
-
                 //File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha512(localFilePath);
                 return attFile.Hash;
@@ -113,7 +97,47 @@ namespace BL.Database.FileWorker
             }
         }
 
+        public bool CreatePdfFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
+        {
+            try
+            {
+                var docFile = attFile as InternalDocumentAttachedFile;
+                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
 
+                if (!Directory.Exists(path))
+                {
+                    return false;
+                }
+                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
+                var pdfFileName = path + "\\" + attFile.Name + ".pdf";
+                var previewFile = path + "\\" + attFile.Name + ".jpg";
+
+                if (!PdfGenerator.IsAcceptedFileType(localFilePath)) return false;
+
+                if (File.Exists(pdfFileName) && isOverride)
+                {
+                    File.Delete(pdfFileName);
+                }
+
+                if (File.Exists(previewFile) && isOverride)
+                {
+                    File.Delete(previewFile);
+                }
+
+                if (PdfGenerator.CreatePdf(localFilePath, pdfFileName))
+                {
+                }
+
+                PdfGenerator.CreatePdfPreview(pdfFileName, previewFile);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot save user file", Environment.StackTrace);
+                throw new CannotSaveFile(ex);
+            }
+        }
 
         public bool RenameFile(IContext ctx, InternalTemplateAttachedFile attFile, string newName)
         {
@@ -442,7 +466,14 @@ namespace BL.Database.FileWorker
                     Directory.CreateDirectory(toPath);
                 }
 
-                File.Copy(localFromPath, localToPath, true);
+                foreach (var fl in Directory.GetFiles(fromPath))
+                {
+                    if (Path.GetFileNameWithoutExtension(fl) == fromTempl.Name)
+                    {
+                        File.Copy(fl, Path.Combine(toPath, toTempl.Name + Path.GetExtension(fl)), true);
+                    }
+                }
+                
                 toTempl.Hash = FileToSha512(localToPath);
             }
             catch (UserFileNotExists)

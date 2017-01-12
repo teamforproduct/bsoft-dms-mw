@@ -388,8 +388,10 @@
     <Compile Include="PropertyCore\PropertyService.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="SystemServices\QueueWorker\IQueueTask.cs" />
+    <Compile Include="SystemServices\QueueWorker\IQueueWorkerService.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
+    <Compile Include="SystemServices\QueueWorker\QueueWorkerService.cs" />
     <Compile Include="SystemServices\TempStorage\ITempStorageService.cs" />
     <Compile Include="SystemServices\TempStorage\TempStorageService.cs" />
     <Compile Include="TreeBuilder\Tree.cs" />
