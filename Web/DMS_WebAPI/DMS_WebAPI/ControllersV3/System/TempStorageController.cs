@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Файлы, прикрепленные к объекту, сразу загружаются во временное файловое хранилище. При записи объекта с фронта отправляются Id файлов, которые из временного хранилища записываются вместе с объектом.   
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.System)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class TempFileStorageController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("TempFileStorage/{Id:int}")]
+        [Route(Features.TempFileStorage + "/{Id:int}")]
         [ResponseType(typeof(FrontFile))]
         public IHttpActionResult Get(int Id)
         {
@@ -60,7 +60,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("TempFileStorage")]
+        [Route(Features.TempFileStorage)]
         public IHttpActionResult Post()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("TempFileStorage/{Id:int}")]
+        [Route(Features.TempFileStorage + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

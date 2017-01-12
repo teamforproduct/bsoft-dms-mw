@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     /// Шаблоны документов
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainTemplateDocument>))]
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterTemplateDocument filter, UIPaging paging)
         {
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocument))]
         public IHttpActionResult Get(int Id)
         {
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddTemplateDocument model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info/Duplicate")]
+        [Route(Features.Info + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody]CopyId model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocument model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

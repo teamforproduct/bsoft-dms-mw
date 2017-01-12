@@ -285,6 +285,8 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void UpdateStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void DeleteStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging);
+        FrontFilterDictionaryStandartSendList GetFilterStandartSendLists(IContext context);
         IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 

@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Контекст пользователя (Все пользователя являются сотрудниками, но у сотрудника может быть выключена возможность авторизации)
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
+        [Route(Features.Info)]
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public IHttpActionResult Get()
         {

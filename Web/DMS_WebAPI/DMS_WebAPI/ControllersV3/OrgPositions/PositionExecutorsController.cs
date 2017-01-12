@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// Исполнители назначаются на определенный срок.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Position)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionExecutorsController : ApiController
     {
 
@@ -34,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Executors")]
+        [Route("{Id:int}/" + Features.Executors)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Executors/Current")]
+        [Route("{Id:int}/" + Features.Executors + "/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Executors/{Id:int}")]
+        [Route(Features.Executors + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Executors")]
+        [Route(Features.Executors)]
         public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Executors")]
+        [Route(Features.Executors)]
         public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -131,7 +131,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Executors/{Id:int}")]
+        [Route(Features.Executors + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

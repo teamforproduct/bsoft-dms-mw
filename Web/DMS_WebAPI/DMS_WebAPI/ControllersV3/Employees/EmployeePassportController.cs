@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Паспортные данные сотрудника
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeePassportController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -34,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Passport/{Id:int}")]
+        [Route(Features.Passport + "/{Id:int}")]
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public IHttpActionResult Get(int Id)
         {
@@ -50,11 +50,10 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <summary>
         /// Корректирует паспортные данные сотрудника
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Passport")]
+        [Route(Features.Passport)]
         public IHttpActionResult Put([FromBody]ModifyAgentPeoplePassport model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

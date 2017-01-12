@@ -61,14 +61,22 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Название типа рассылки
         /// </summary>
         public string SendTypeName { get; set; }
+        
         /// <summary>
         /// Название должности получателя
         /// </summary>
         public string TargetPositionName { get; set; }
+        
         /// <summary>
         /// ФИО получателя
         /// </summary>
-        public string TargetAgentName { get; set; }
+        public string TargetExecutorName { get; set; }
+
+        /// <summary>
+        /// Суффикс типа исполнения
+        /// </summary>
+        public string TargetExecutorTypeSuffix { get; set; }
+
         /// <summary>
         /// Название уровня доступа
         /// </summary>

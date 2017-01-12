@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     /// Исполнители назначаются на определенный срок.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Department)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentPositionsController : ApiController
     {
 
@@ -34,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Positions")]
+        [Route("{Id:int}/" + Features.Positions)]
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPosition filter)
         {

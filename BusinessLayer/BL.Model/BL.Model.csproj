@@ -199,6 +199,7 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutorExtended.cs" />
+    <Compile Include="DictionaryCore\FrontModel\Positions\FrontPositionExecutorList.cs" />
     <Compile Include="DictionaryCore\FrontModel\Positions\FrontShortListPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\Positions\FrontDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\Journals\FrontDictionaryRegistrationJournal.cs" />
@@ -209,8 +210,10 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontMainAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontDictionaryContactType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendListContent.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontFilterDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontMainDictionaryStandartSendList.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendListContent.cs" />
+    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontMainTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgent.cs" />

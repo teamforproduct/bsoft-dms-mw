@@ -224,6 +224,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\SendLists\SendListContentsController.cs" />
+    <Compile Include="ControllersV3\SendLists\SendListInfoController.cs" />
+    <Compile Include="Modules.cs" />
+    <Compile Include="Features.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
