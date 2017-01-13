@@ -381,7 +381,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<ListItem> GetMainRoles(IContext context, FilterAdminRole filter, UIPaging paging)
+        public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -852,7 +852,6 @@ namespace BL.Database.Admins
                 return res;
             }
         }
-
 
         public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter)
         {

@@ -298,7 +298,12 @@ namespace BL.Logic.AdminCore
             }
 
 
-            return _adminDb.GetMainRoles(context, filter, paging);
+            return _adminDb.GetListRoles(context, newFilter, paging);
+        }
+
+        public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)
+        {
+            return _adminDb.GetListRoles(context, filter, paging);
         }
 
         public FrontAdminRole GetAdminRole(IContext context, int id)
@@ -356,11 +361,15 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] PositionRoles ...
-        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter)
+        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter)
         {
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
 
+        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            return _adminDb.GetPositionRoles(context, filter);
+        }
         public FrontAdminPositionRole GetPositionRole(IContext context, int id)
         {
             return _adminDb.GetPositionRole(context, id);

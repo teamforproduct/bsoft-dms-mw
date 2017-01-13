@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRoles(ctx, filter);
+            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             filter.IsChecked = false;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRoles(ctx, filter);
+            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

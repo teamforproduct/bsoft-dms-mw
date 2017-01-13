@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Controllers.Admins
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRoles(ctx, filter);
+            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System;
 using BL.Model.Common;
 using System.Diagnostics;
+using BL.Model.AdminCore.FilterModel;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -76,6 +79,31 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
+        /// Возвращает список ролей должности, на которую назначается сотрудник
+        /// </summary>
+        /// <param name="Id">ИД сотрудника</param>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Assignments + "/Position/{Id:int}/Roles")]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetPositionRoles(int Id, [FromUri] FilterAdminRole filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterAdminRole();
+
+            filter.PositionIDs = new List<int> { Id };
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetListRoles(ctx,  filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Возвращает назначение по Id
         /// </summary>
         /// <param name="Id"></param>
@@ -95,7 +123,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         }
 
         /// <summary>
-        /// Назначает сотрудника на новую должность
+        /// Назначает сотрудника на новую должность (при назначении сотруднику устанавлючаются все роли от должности)
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
