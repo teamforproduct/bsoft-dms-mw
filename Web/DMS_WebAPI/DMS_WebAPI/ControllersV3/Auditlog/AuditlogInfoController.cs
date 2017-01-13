@@ -67,6 +67,7 @@ namespace DMS_WebAPI.ControllersV3.System
             filter.ExecutorAgentIDs = new List<int> { Id };
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
@@ -93,6 +94,7 @@ namespace DMS_WebAPI.ControllersV3.System
             filter.IsOnlyActive = true;
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }

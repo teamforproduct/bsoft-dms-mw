@@ -129,5 +129,25 @@ namespace DMS_WebAPI.ControllersV3.Employees
             return res;
         }
 
+
+
+        /// <summary>
+        /// Удаляет картинку (аватарку) сотрудника
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route(Features.Info + "/DeleteImage/{Id:int}")]
+        public IHttpActionResult DeleteImage([FromUri] int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDictionaryActions.DeleteAgentImage, Id);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+
     }
 }
