@@ -801,7 +801,7 @@ namespace BL.Logic.Common
 
         public static IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists)
         {
-            if (sendLists?.Count() > 0)
+            if (sendLists.Any())
             {
                 var stages = Enumerable.Range(0, sendLists.Max(x => x.Stage) + 1)
                     .GroupJoin(sendLists, s => s, sl => sl.Stage
@@ -814,14 +814,11 @@ namespace BL.Logic.Common
                         IsOpen = false
                     }).ToList();
 
-                var isOpen = true;
-
                 foreach (var stage in stages.OrderBy(x => x.Stage))
                 {
-                    stage.IsOpen = isOpen;
+                    stage.IsOpen = true;
                     if (!stage.IsClose)
                     {
-                        isOpen = false;
                         break;
                     }
                 }
@@ -845,6 +842,8 @@ namespace BL.Logic.Common
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Hash = src.Hash,
                 Description = src.Description,
+                PdfCreated = src.PdfCreated,
+                LastPdfAccess = src.LastPdfAccess
             };
         }
 
@@ -870,6 +869,8 @@ namespace BL.Logic.Common
                 ExecutorPositionId = src.ExecutorPositionId,
                 ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
                 ExecutorPositionExecutorTypeId = src.ExecutorPositionExecutorTypeId,
+                PdfCreated = src.PdfCreated,
+                LastPdfAccess = src.LastPdfAccess
             };
         }
 

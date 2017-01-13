@@ -9,7 +9,6 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
-using System.Transactions;
 using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
@@ -259,6 +258,21 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
+
+        public void UpdateFilePdfView(IContext ctx, InternalDocumentAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var fl = ModelConverter.GetDbDocumentFile(docFile);
+                dbContext.DocumentFilesSet.Attach(fl);
+                var entry = dbContext.Entry(fl);
+                entry.Property(x => x.IsPdfCreated).IsModified = true;
+                entry.Property(x => x.LastPdfAccessDate).IsModified = true;
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
         public void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())

@@ -4,12 +4,13 @@ using System.IO;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
+using BL.CrossCutting.Context;
+using BL.Logic.SystemServices.QueueWorker;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -17,11 +18,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
+        private readonly IQueueWorkerService _queueWorkerService;
 
-        public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
             _operationDb = operationDb;
             _fStore = fStore;
+            _queueWorkerService = queueWorkerService;
         }
 
         private AddDocumentFile Model
@@ -56,8 +59,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 }
                 return true;
             }
-            else
-                return true;
+            return true;
         }
 
         public override bool CanExecute()
@@ -156,7 +158,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
             // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
             //res.Add(new FrontDocumentAttachedFile(att));
-
+            var admContext = new AdminContext(_context);
+            _queueWorkerService.AddNewTask(admContext, () =>
+            {
+                _fStore.CreatePdfFile(admContext, att);
+                _operationDb.UpdateFilePdfView(admContext, att);
+            });
 
             return res;
         }

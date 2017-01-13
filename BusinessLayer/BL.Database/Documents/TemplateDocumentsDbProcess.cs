@@ -12,13 +12,11 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
-using System.Transactions;
 using BL.Model.FullTextSearch;
 using LinqKit;
 using System.IO;
 using BL.Model.SystemCore;
 using System;
-using System.Data.Entity;
 using BL.CrossCutting.Helpers;
 using BL.Database.Helper;
 
@@ -1161,6 +1159,24 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
+
+        public void UpdateFilePdfView(IContext ctx, InternalTemplateAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var fl = ModelConverter.GetDbTemplateFile(docFile);
+                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                //TODO PDF
+                var entry = dbContext.Entry(fl);
+                //entry.Property(x => x.TypeId).IsModified = true;
+                //entry.Property(x => x.Description).IsModified = true;
+
+                dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
+                transaction.Complete();
+            }
+        }
+
         public InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())

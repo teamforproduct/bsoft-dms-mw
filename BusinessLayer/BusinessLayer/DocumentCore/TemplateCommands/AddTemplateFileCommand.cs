@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
+using BL.CrossCutting.Context;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Model.DocumentCore.FrontModel;
+using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
@@ -16,11 +14,13 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
+        private readonly IQueueWorkerService _queueWorkerService;
 
-        public AddTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
+        public AddTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
             _operationDb = operationDb;
             _fStore = fStore;
+            _queueWorkerService = queueWorkerService;
         }
 
         private AddTemplateAttachedFile Model
@@ -55,7 +55,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-
             var att = new InternalTemplateAttachedFile
             {
                 DocumentId = Model.DocumentId,
@@ -72,6 +71,13 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _fStore.SaveFile(_context, att);
             CommonDocumentUtilities.SetLastChange(_context, att);
             _operationDb.AddNewFile(_context, att);
+
+            var admContext = new AdminContext(_context);
+            _queueWorkerService.AddNewTask(admContext, () =>
+            {
+                _fStore.CreatePdfFile(admContext, att);
+                _operationDb.UpdateFilePdfView(admContext, att);
+            });
 
             return att.Id;
         }

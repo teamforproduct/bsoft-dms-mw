@@ -4,7 +4,6 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore;
 using System.Linq;
 using BL.Database.DBModel.Template;
@@ -67,6 +66,7 @@ namespace BL.Database.Documents.Interfaces
         int GetNextFileOrderNumber(IContext ctx, int templateId);
         int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile);
         void UpdateFile(IContext ctx, InternalTemplateAttachedFile docFile);
+        void UpdateFilePdfView(IContext ctx, InternalTemplateAttachedFile docFile);
         InternalTemplateAttachedFile UpdateFilePrepare(IContext ctx, int id);
         void DeleteTemplateAttachedFile(IContext ctx, int id);
         InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext ctx, int id);

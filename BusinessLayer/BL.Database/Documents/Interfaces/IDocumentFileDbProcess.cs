@@ -15,6 +15,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
         int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
         void UpdateFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
+        void UpdateFilePdfView(IContext ctx, InternalDocumentAttachedFile docFile);
         void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents);
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version);
         InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber);

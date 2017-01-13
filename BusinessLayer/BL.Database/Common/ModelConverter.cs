@@ -385,7 +385,7 @@ namespace BL.Database.Common
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,
                 Description = docFile.Description,
-
+                
             };
         }
 

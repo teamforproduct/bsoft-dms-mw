@@ -1,4 +1,5 @@
-﻿using BL.Model.Common;
+﻿using System;
+using BL.Model.Common;
 using BL.Model.Enums;
 using System.Web;
 
@@ -69,5 +70,15 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Хэш файла. для проверки целостности файла в хранилище
         /// </summary>
         public string Hash { get; set; }
+
+        /// <summary>
+        /// Был ли создан пдф файл на основании данного файла
+        /// </summary>
+        public bool PdfCreated { get; set; }
+
+        /// <summary>
+        /// Время последнего обращения к пдф файлу.
+        /// </summary>
+        public DateTime? LastPdfAccess { get; set; }
     }
 }

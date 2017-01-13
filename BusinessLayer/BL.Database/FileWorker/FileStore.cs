@@ -58,6 +58,31 @@ namespace BL.Database.FileWorker
             }
         }
 
+        private string GetFilePath(string path, string fileName, string fileExt, EnumDocumentFileType fileType)
+        {
+            string localFilePath;
+            switch (fileType)
+            {
+                case EnumDocumentFileType.UserFile:
+                    localFilePath = path + "\\" + fileName + "." + fileExt;
+                    break;
+                case EnumDocumentFileType.PdfFile:
+                    localFilePath = path + "\\" + fileName + ".pdf";
+                    break;
+                case EnumDocumentFileType.PdfPreview:
+                    localFilePath = path + "\\" + fileName + ".jpg";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fileType), fileType, null);
+            }
+            if (!File.Exists(localFilePath))
+            {
+                throw new UserFileNotExists();
+            }
+
+            return localFilePath;
+        }
+
         public string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
         {
             try
@@ -126,6 +151,8 @@ namespace BL.Database.FileWorker
 
                 if (PdfGenerator.CreatePdf(localFilePath, pdfFileName))
                 {
+                    attFile.LastPdfAccess = DateTime.Now;
+                    attFile.PdfCreated = true;
                 }
 
                 PdfGenerator.CreatePdfPreview(pdfFileName, previewFile);
@@ -153,12 +180,6 @@ namespace BL.Database.FileWorker
                 var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
                 var localFilePathNew = path + "\\" + newName + "." + attFile.Extension;
 
-                var pdfFileName = path + "\\" + attFile.Name + ".pdf";
-                var pdfFilePathNew = path + "\\" + newName + ".pdf";
-
-                var previewFileName = path + "\\" + attFile.Name + ".jpg";
-                var previewFilePathNew = path + "\\" + newName + ".jpg";
-
                 if (File.Exists(localFilePath))
                 {
                     try
@@ -171,33 +192,42 @@ namespace BL.Database.FileWorker
                     }
                 }
 
-                if (File.Exists(pdfFileName))
+                if (attFile.PdfCreated)
                 {
-                    try
+
+                    var pdfFileName = path + "\\" + attFile.Name + ".pdf";
+                    var pdfFilePathNew = path + "\\" + newName + ".pdf";
+
+                    var previewFileName = path + "\\" + attFile.Name + ".jpg";
+                    var previewFilePathNew = path + "\\" + newName + ".jpg";
+
+                    if (File.Exists(pdfFileName))
                     {
-                        File.Move(pdfFileName, pdfFilePathNew);
+                        try
+                        {
+                            File.Move(pdfFileName, pdfFilePathNew);
+                        }
+                        catch
+                        {
+                            File.Move(localFilePathNew, localFilePath);
+                            return false;
+                        }
                     }
-                    catch
+
+                    if (File.Exists(previewFileName))
                     {
-                        File.Move(localFilePathNew, localFilePath);
-                        return false;
+                        try
+                        {
+                            File.Move(previewFileName, previewFilePathNew);
+                        }
+                        catch
+                        {
+                            File.Move(localFilePathNew, localFilePath);
+                            File.Move(previewFilePathNew, previewFileName);
+                            return false;
+                        }
                     }
                 }
-
-                if (File.Exists(previewFileName))
-                {
-                    try
-                    {
-                        File.Move(previewFileName, previewFilePathNew);
-                    }
-                    catch
-                    {
-                        File.Move(localFilePathNew, localFilePath);
-                        File.Move(previewFilePathNew, previewFileName);
-                        return false;
-                    }
-                }
-
                 return true;
             }
             catch (Exception ex)
@@ -237,12 +267,7 @@ namespace BL.Database.FileWorker
             {
                 var path = GetFullDocumentFilePath(ctx, attFile);
 
-                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
-
-                if (!File.Exists(localFilePath))
-                {
-                    throw new UserFileNotExists();
-                }
+                var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
                 var fileContent = File.ReadAllBytes(localFilePath);
 
@@ -269,14 +294,11 @@ namespace BL.Database.FileWorker
             {
                 var path = GetFullDocumentFilePath(ctx, attFile);
 
-                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
-
-                if (!File.Exists(localFilePath))
-                {
-                    throw new UserFileNotExists();
-                }
+                var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
                 var fileContent = File.ReadAllBytes(localFilePath);
+
+                if (fileType != EnumDocumentFileType.UserFile) return fileContent;
 
                 attFile.FileContent = Convert.ToBase64String(fileContent);
 
@@ -289,13 +311,9 @@ namespace BL.Database.FileWorker
 
                 return fileContent;
             }
-            catch (UserFileNotExists)
+            catch (DmsExceptions ex)
             {
-                throw new UserFileNotExists();
-            }
-            catch (DocumentFileWasChangedExternally)
-            {
-                throw new DocumentFileWasChangedExternally();
+                throw ex;
             }
             catch (Exception ex)
             {
@@ -313,18 +331,13 @@ namespace BL.Database.FileWorker
                 var docFile = attFile as InternalDocumentAttachedFile;
                 var path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
 
-                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
-
-                if (!File.Exists(localFilePath))
-                {
-                    throw new UserFileNotExists();
-                }
+                var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
                 var fileContent = File.ReadAllBytes(localFilePath);
 
                 attFile.FileContent = Convert.ToBase64String(fileContent);
 
-                if (docFile == null) return fileContent;
+                if (docFile == null || fileType != EnumDocumentFileType.UserFile) return fileContent;
 
                 docFile.WasChangedExternal = docFile.Hash != FileToSha512(localFilePath);
 
@@ -334,13 +347,9 @@ namespace BL.Database.FileWorker
                 }
                 return fileContent;
             }
-            catch (UserFileNotExists)
+            catch (DmsExceptions ex)
             {
-                throw new UserFileNotExists();
-            }
-            catch (DocumentFileWasChangedExternally)
-            {
-                throw new DocumentFileWasChangedExternally();
+                throw ex;
             }
             catch (Exception ex)
             {
@@ -362,7 +371,7 @@ namespace BL.Database.FileWorker
             {
                 //TODO CurrentAgentId
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString() });
+                path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString()});
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -386,7 +395,7 @@ namespace BL.Database.FileWorker
                 //TODO CurrentAgentId
 
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString() });
+                path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString()});
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -408,7 +417,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var path = GetStorePath(ctx);
-                path = Path.Combine(new[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new[] {path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString()});
 
                 Directory.Delete(path, true);
             }
@@ -446,12 +455,8 @@ namespace BL.Database.FileWorker
             {
                 var fromDoc = fromTempl as InternalDocumentAttachedFile;
                 var toDoc = toTempl as InternalDocumentAttachedFile;
-                var fromPath = (fromDoc == null)
-                    ? GetFullDocumentFilePath(ctx, fromTempl)
-                    : GetFullDocumentFilePath(ctx, fromDoc);
-                var toPath = (toDoc == null)
-                    ? GetFullDocumentFilePath(ctx, toTempl)
-                    : GetFullDocumentFilePath(ctx, toDoc);
+                var fromPath = (fromDoc == null) ? GetFullDocumentFilePath(ctx, fromTempl) : GetFullDocumentFilePath(ctx, fromDoc);
+                var toPath = (toDoc == null) ? GetFullDocumentFilePath(ctx, toTempl) : GetFullDocumentFilePath(ctx, toDoc);
 
                 var localFromPath = fromPath + "\\" + fromTempl.Name + "." + fromTempl.Extension;
                 var localToPath = toPath + "\\" + toTempl.Name + "." + toTempl.Extension;
@@ -473,7 +478,7 @@ namespace BL.Database.FileWorker
                         File.Copy(fl, Path.Combine(toPath, toTempl.Name + Path.GetExtension(fl)), true);
                     }
                 }
-                
+
                 toTempl.Hash = FileToSha512(localToPath);
             }
             catch (UserFileNotExists)
@@ -512,9 +517,8 @@ namespace BL.Database.FileWorker
                     break;
             }
 
-            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
+            path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile});
             return path;
         }
-
     }
 }
