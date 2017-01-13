@@ -5762,6 +5762,7 @@ namespace BL.Database.Dictionaries
                     Stage = x.Stage,
                     SendTypeId = x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
+                    TargetAgentId = x.TargetAgentId,
                     Task = x.Task,
                     Description = x.Description,
                     DueDate = x.DueDate,
