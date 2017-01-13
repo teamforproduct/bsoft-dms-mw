@@ -5663,6 +5663,16 @@ namespace BL.Database.Dictionaries
             if (filter != null)
             {
                 // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Список первичных ключей
                 if (filter.StandartSendListId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
@@ -5824,7 +5834,7 @@ namespace BL.Database.Dictionaries
             if (filter != null)
             {
                 // Список первичных ключей
-                if (filter.IDs != null && filter.IDs.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
                     filterContains = filter.IDs.Aggregate(filterContains,
