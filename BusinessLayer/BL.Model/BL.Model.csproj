@@ -211,7 +211,6 @@
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontMainAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\ContactTypes\FrontDictionaryContactType.cs" />
-    <Compile Include="DictionaryCore\FrontModel\SendLists\FrontFilterDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\SendLists\FrontMainDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendList.cs" />

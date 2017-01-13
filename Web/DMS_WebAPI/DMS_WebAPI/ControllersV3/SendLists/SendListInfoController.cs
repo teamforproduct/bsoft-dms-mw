@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
-        [ResponseType(typeof(List<FrontMainAgentBank>))]
+        [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -50,25 +50,6 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             res.SpentTime = stopWatch;
             return res;
         }
-
-        /// <summary>
-        /// Фильтры
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route(Features.Info + "/Filters")]
-        [ResponseType(typeof(List<FrontMainAgentBank>))]
-        public IHttpActionResult GetFilters()
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetFilterStandartSendLists(ctx);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
 
         /// <summary>
         /// Возвращает заголовок списка рассылки

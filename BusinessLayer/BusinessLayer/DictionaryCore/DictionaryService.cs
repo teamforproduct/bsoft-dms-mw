@@ -978,12 +978,12 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryStandartSendLists
         public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
-            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
-            return _dictDb.GetStandartSendLists(context, filter);
+            return _dictDb.GetStandartSendLists(context, filter, null);
         }
 
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging)
@@ -998,12 +998,21 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetMainStandartSendLists(context, filter, paging);
-        }
+            var sendLists = _dictDb.GetStandartSendLists(context, filter, paging);
 
-        public FrontFilterDictionaryStandartSendList GetFilterStandartSendLists(IContext context)
-        {
-            return _dictDb.GetFilterStandartSendLists(context);
+            var res = sendLists.GroupBy(x => new {x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
+                 .OrderBy(x => x.Key.PositionName)
+                 .Select(x => new FrontMainDictionaryStandartSendList()
+                 {
+                     Id = x.Key.PositionId ?? -1,
+                     Name = x.Key.PositionName,
+                     ExecutorName = x.Key.PositionExecutorName,
+                     ExecutorTypeSuffix = x.Key.PositionExecutorTypeSuffix,
+                     SendLists = x.OrderBy(y => y.Name).ToList()
+                 });
+
+
+            return res;
         }
 
         #endregion DictionaryStandartSendList

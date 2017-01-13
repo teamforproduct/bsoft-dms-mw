@@ -5870,91 +5870,25 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryStandartSendList>();
 
                 var res = qry.Select(x => new FrontDictionaryStandartSendList
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
-                    //LastChangeUserId = x.LastChangeUserId,
-                    //LastChangeDate = x.LastChangeDate,
                     PositionName = x.Position.Name,
                     PositionExecutorName = x.Position.ExecutorAgent.Name,
                     PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix
-                    //StandartSendListContents =
-                    //            x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
-                    //            {
-                    //                Id = y.Id,
-                    //                StandartSendListId = x.Id,
-                    //                Stage = y.Stage,
-                    //                SendTypeId = y.SendTypeId,
-                    //                TargetPositionId = y.TargetPositionId,
-                    //                Task = y.Task,
-                    //                Description = y.Description,
-                    //                DueDate = y.DueDate,
-                    //                DueDay = y.DueDay,
-                    //                AccessLevelId = y.AccessLevelId,
-                    //                SendTypeName = y.SendType.Name,
-                    //                TargetPositionName = y.TargetPosition.Name,
-                    //                TargetExecutorName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : null))
-                    //                                    ?? y.TargetAgent.Name,
-                    //                AccessLevelName = y.AccessLevel.Name,
-                    //                SendTypeIsExternal = y.SendTypeId == 45
-                //})
                 }).ToList();
-
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetStandartSendListQuery(context, dbContext, filter);
-
-                qry = qry.OrderBy(x => x.Name);
-
-                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainDictionaryStandartSendList>();
-
-                var res = qry.Select(x => new FrontMainDictionaryStandartSendList
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    PositionId = x.PositionId,
-                    PositionName = x.Position.Name,
-                    PositionExecutorName = x.Position.ExecutorAgent.Name,
-                    PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix,
-                }).ToList();
-
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public FrontFilterDictionaryStandartSendList GetFilterStandartSendLists(IContext context)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = new FrontFilterDictionaryStandartSendList();
-
-                var qry = GetStandartSendListQuery(context, dbContext, null);
-                qry = qry.OrderBy(x => x.Name);
-
-                res.Positions = qry.Select(x => new FrontPositionExecutorList
-                { 
-                    Id = x.PositionId ?? -1,
-                    Name = x.Position.Name,
-                    ExecutorId = x.Position.ExecutorAgentId,
-                    ExecutorName = x.Position.ExecutorAgent.Name,
-                    ExecutorTypeSuffix = x.Position.ExecutorType.Suffix,
-                }).Distinct().ToList();
 
                 transaction.Complete();
                 return res;

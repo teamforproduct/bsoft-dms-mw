@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore
             if (TypeModelIs<ModifyStandartSendList>())
             { filter.NotContainsIDs = new List<int> { GetModel<ModifyStandartSendList>().Id }; }
 
-            var contents = _dictDb.GetStandartSendLists(_context, filter);
+            var contents = _dictDb.GetStandartSendLists(_context, filter, null);
 
             if (contents.Any())
             {
