@@ -1417,7 +1417,7 @@ namespace BL.Database.Documents
                         .Select(x => new
                         {
                             waitRE = x,
-                            eventC = x.OnEvent.ChildEvents.Where(y => y.ParentEventId == x.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler).FirstOrDefault()
+                            eventC = x.OnEvent.ChildEvents.Where(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler).FirstOrDefault()
                         }).Where(x => x.eventC == null && x.waitRE.OnEvent.SourcePositionId == sendList.SourcePositionId || x.eventC != null && x.eventC.SourcePositionId == sendList.SourcePositionId)
                         .Select(x => new InternalDocumentWait
                         {
