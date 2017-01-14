@@ -48,5 +48,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public List<InternalDocumentEvent> PaperEvents { get; set; }
         public InternalDictionaryAgent TargetAgent { get; set; }
 
+        public string InitiatorPositionName { get; set; }
+        public string InitiatorPositionExecutorAgentName { get; set; }
+
     }
 }

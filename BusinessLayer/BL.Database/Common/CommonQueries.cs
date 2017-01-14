@@ -2030,10 +2030,10 @@ namespace BL.Database.Common
 
             tasks.ForEach(x =>
             {
-                FrontDocumentTask taskExecutor = taskFactRespEx.FirstOrDefault(y => y.Id == x.Id);
-                if (taskExecutor == null) taskExecutor = taskFactContr.FirstOrDefault(y => y.Id == x.Id);
-                if (taskExecutor == null) taskExecutor = taskPlanRespEx.FirstOrDefault(y => y.Id == x.Id);
-                if (taskExecutor == null) taskExecutor = taskPlanContr.FirstOrDefault(y => y.Id == x.Id);
+                FrontDocumentTask taskExecutor = taskFactRespEx.OrderByDescending(y=>y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskFactContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanRespEx.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
                 if (taskExecutor != null)
                 {
                     x.IsFactExecutor = taskExecutor.IsFactExecutor;

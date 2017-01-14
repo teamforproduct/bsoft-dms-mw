@@ -115,7 +115,7 @@ namespace BL.Logic.DocumentCore.Commands
                     if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
                     {
                         _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForExecutionReportingResponsibleExecutor);
-                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {waitRespExecutor.OnEvent.SourcePositionExecutorAgentName}({waitRespExecutor.OnEvent.SourcePositionName}), ##l@TaskExecutor:ResponsibleExecutor@l## - {waitRespExecutor.OnEvent.TargetPositionExecutorAgentName}({waitRespExecutor.OnEvent.TargetPositionName})";
+                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName}), ##l@TaskExecutor:ResponsibleExecutor@l## - {waitRespExecutor.OnEvent.TargetPositionExecutorAgentName}({waitRespExecutor.OnEvent.TargetPositionName})";
                         CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
                         if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
                             waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
