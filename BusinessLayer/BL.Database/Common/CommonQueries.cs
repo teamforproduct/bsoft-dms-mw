@@ -1376,7 +1376,7 @@ namespace BL.Database.Common
                         filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value && e.OnEvent.SourcePositionId != value).Expand());
 
-                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution))
+                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecutionChange || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange))
                                 .Where(filterContains);
                     }
 
@@ -1421,7 +1421,7 @@ namespace BL.Database.Common
                         filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId != value && e.OnEvent.SourcePositionId == value).Expand());
 
-                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution))
+                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecutionChange || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange))
                                 .Where(filterContains);
                     }
 
@@ -1593,8 +1593,8 @@ namespace BL.Database.Common
                         IsClosed = y.OffEventId.HasValue,
                         IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
-                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name + (y.OnEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.OnEvent.SourcePositionExecutorType.Suffix + ")" : (string)null) : null,
-                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name + (y.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.OnEvent.TargetPositionExecutorType.Suffix + ")" : (string)null) : null,
+                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name + (y.OnEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.OnEvent.SourcePositionExecutorType.Suffix + ")" : null) : null,
+                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name + (y.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.OnEvent.TargetPositionExecutorType.Suffix + ")" : null) : null,
                     })
                     .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
                                         ).ToList();
@@ -1979,7 +1979,7 @@ namespace BL.Database.Common
             var eventFilterContains = PredicateBuilder.False<DocumentEvents>();
             eventFilterContains = tasks.Select(x => x.Id).Aggregate(eventFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
-            var taskFactRespEx = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution)
+            var taskFactRespEx = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
                     .Where(x=>x.OnWait.Any(y=>!y.OffEventId.HasValue))
                     .Select(x => new FrontDocumentTask
                     {
@@ -2030,10 +2030,10 @@ namespace BL.Database.Common
 
             tasks.ForEach(x =>
             {
-                FrontDocumentTask taskExecutor = taskFactRespEx.FirstOrDefault(y => y.Id == x.Id);
-                if (taskExecutor == null) taskExecutor = taskFactContr.FirstOrDefault(y => y.Id == x.Id);
-                if (taskExecutor == null) taskExecutor = taskPlanRespEx.FirstOrDefault(y => y.Id == x.Id);
-                if (taskExecutor == null) taskExecutor = taskPlanContr.FirstOrDefault(y => y.Id == x.Id);
+                FrontDocumentTask taskExecutor = taskFactRespEx.OrderByDescending(y=>y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskFactContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanRespEx.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
                 if (taskExecutor != null)
                 {
                     x.IsFactExecutor = taskExecutor.IsFactExecutor;

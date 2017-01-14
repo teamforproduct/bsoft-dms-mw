@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Position)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         //[HttpGet]
-        //[Route("Info")]
+        //[Route(Features.Info)]
         //[ResponseType(typeof(List<FrontDictionaryPosition>))]
         //public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         //{
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryPosition))]
         public IHttpActionResult Get(int Id)
         {
@@ -74,8 +74,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
-        public IHttpActionResult Post([FromBody]AddDepartment model)
+        [Route(Features.Info)]
+        public IHttpActionResult Post([FromBody]AddPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
@@ -88,8 +88,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
-        public IHttpActionResult Put([FromBody]ModifyDepartment model)
+        [Route(Features.Info)]
+        public IHttpActionResult Put([FromBody]ModifyPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyPosition, model);
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info/Order")]
+        [Route(Features.Info + "/Order")]
         public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

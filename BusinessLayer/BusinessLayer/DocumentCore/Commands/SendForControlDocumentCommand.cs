@@ -118,7 +118,11 @@ namespace BL.Logic.DocumentCore.Commands
 
             Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
 
-            ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true));
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true);
+
+            waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName})";
+
+            ((List<InternalDocumentWait>)_document.Waits).Add(waitTarget);
 
             if (Model.IsAddControl)
             {

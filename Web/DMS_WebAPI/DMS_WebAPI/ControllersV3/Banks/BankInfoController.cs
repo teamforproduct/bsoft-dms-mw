@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
     /// Банки
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Bank)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
     public class BankInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentBank>))]
         public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontAgentBank))]
         public IHttpActionResult Get(int Id)
         {
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentBank model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -88,11 +88,10 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <summary>
         /// Корректирует реквизиты банка
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentBank model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -106,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

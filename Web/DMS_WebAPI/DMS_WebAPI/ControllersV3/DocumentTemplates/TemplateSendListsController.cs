@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     /// Шаблоны документов. Рассылка.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateSendListsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/SendLists")]
+        [Route("{Id:int}/" + Features.SendLists)]
         [ResponseType(typeof(List<FrontTemplateDocumentSendList>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentSendList filter)
         {
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("SendLists/{Id:int}")]
+        [Route(Features.SendLists + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocumentSendList))]
         public IHttpActionResult Get(int Id)
         {
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("SendLists")]
+        [Route(Features.SendLists)]
         public IHttpActionResult Post([FromBody]AddTemplateDocumentSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("SendLists")]
+        [Route(Features.SendLists)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentSendLists model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("SendLists/{Id:int}")]
+        [Route(Features.SendLists + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

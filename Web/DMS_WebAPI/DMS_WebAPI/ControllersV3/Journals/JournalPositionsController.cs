@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
     /// Управление доступом должностей к журналам регистрации документов
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Journal)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Journal)]
     public class JournalPositionsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Positions")]
+        [Route("{Id:int}/" + Features.Positions)]
         [ResponseType(typeof(List<FrontDIPRegistrationJournalPositions>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterDictionaryPosition filter)
         {

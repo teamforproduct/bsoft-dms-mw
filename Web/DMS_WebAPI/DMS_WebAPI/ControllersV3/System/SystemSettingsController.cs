@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Системные настройки
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.System)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class SystemSettingsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/IsSendAllForExecution")]
+        [Route(Features.Settings + "/IsSendAllForExecution")]
         public IHttpActionResult IsSendAllForExecution()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/IsSendAllForInforming")]
+        [Route(Features.Settings + "/IsSendAllForInforming")]
         public IHttpActionResult IsSendAllForInforming()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/IsDigitalSignatureIsUseCertificateSign")]
+        [Route(Features.Settings + "/IsDigitalSignatureIsUseCertificateSign")]
         public IHttpActionResult IsDigitalSignatureIsUseCertificateSign()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/IsDigitalSignatureIsUseInternalSign")]
+        [Route(Features.Settings + "/IsDigitalSignatureIsUseInternalSign")]
         public IHttpActionResult IsDigitalSignatureIsUseInternalSign()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/FulltextRefreshTimeout")]
+        [Route(Features.Settings + "/FulltextRefreshTimeout")]
         public IHttpActionResult GetFulltextRefreshTimeout()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/AutoplanTimeout")]
+        [Route(Features.Settings + "/AutoplanTimeout")]
         public IHttpActionResult GetAutoplanTimeoutMinute()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/ClearTrashDocumentsTimeout")]
+        [Route(Features.Settings + "/ClearTrashDocumentsTimeout")]
         public IHttpActionResult GetClearTrashDocumentsTimeoutMinute()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -151,7 +151,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Settings/ClearTrashDocumentsTimeoutMinuteForClear")]
+        [Route(Features.Settings + "/ClearTrashDocumentsTimeoutMinuteForClear")]
         public IHttpActionResult GetClearTrashDocumentsTimeoutMinuteForClear()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

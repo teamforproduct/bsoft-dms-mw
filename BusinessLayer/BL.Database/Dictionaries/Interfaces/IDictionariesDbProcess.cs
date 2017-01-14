@@ -39,7 +39,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
-        IEnumerable<FrontMainAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         FrontAgentPerson GetAgentPerson(IContext context, int id);
         #endregion DictionaryAgentPerson
@@ -285,7 +285,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void UpdateStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void DeleteStandartSendList(IContext context, InternalDictionaryStandartSendList list);
-        IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
+        IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

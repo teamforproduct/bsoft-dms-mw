@@ -543,7 +543,7 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontMainAgentPerson> GetAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -5656,11 +5656,21 @@ namespace BL.Database.Dictionaries
 
         #region [+] DictionaryStandartSendListContents ...
 
-        public IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        public IQueryable<DictionaryStandartSendListContents> GetStandartSendListContentsQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendListContent filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).AsQueryable();
+
+            if (filter != null)
             {
-                var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).AsQueryable();
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
 
                 // Список первичных ключей
                 if (filter.StandartSendListId?.Count > 0)
@@ -5734,6 +5744,16 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
+            }
+
+            return qry;
+        }
+
+        public IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListContentsQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
@@ -5742,6 +5762,7 @@ namespace BL.Database.Dictionaries
                     Stage = x.Stage,
                     SendTypeId = x.SendTypeId,
                     TargetPositionId = x.TargetPositionId,
+                    TargetAgentId = x.TargetAgentId,
                     Task = x.Task,
                     Description = x.Description,
                     DueDate = x.DueDate,
@@ -5749,8 +5770,8 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetAgentName = (x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null))
-                                        ?? x.TargetAgent.Name,
+                    TargetExecutorName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
+                    TargetExecutorTypeSuffix = x.TargetPosition.ExecutorType.Suffix,
                     AccessLevelName = x.AccessLevel.Name,
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
@@ -5807,14 +5828,14 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryStandartSendListContents
 
         #region [+] DictionaryStandartSendLists ...
-        public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
+        public IQueryable<DictionaryStandartSendLists> GetStandartSendListQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendList filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
+            if (filter != null)
+            {
                 // Список первичных ключей
-                if (filter.IDs != null && filter.IDs.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
                     filterContains = filter.IDs.Aggregate(filterContains,
@@ -5854,35 +5875,30 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.PositionID == x.PositionId);
                 }
+            }
+
+            return qry;
+        }
+
+
+        public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryStandartSendList>();
+
                 var res = qry.Select(x => new FrontDictionaryStandartSendList
                 {
                     Id = x.Id,
                     Name = x.Name,
                     PositionId = x.PositionId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                     PositionName = x.Position.Name,
-                    PositionExecutorName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                    StandartSendListContents =
-                                x.StandartSendListContents.Select(y => new FrontDictionaryStandartSendListContent()
-                                {
-                                    Id = y.Id,
-                                    StandartSendListId = x.Id,
-                                    Stage = y.Stage,
-                                    SendTypeId = y.SendTypeId,
-                                    TargetPositionId = y.TargetPositionId,
-                                    Task = y.Task,
-                                    Description = y.Description,
-                                    DueDate = y.DueDate,
-                                    DueDay = y.DueDay,
-                                    AccessLevelId = y.AccessLevelId,
-                                    SendTypeName = y.SendType.Name,
-                                    TargetPositionName = y.TargetPosition.Name,
-                                    TargetAgentName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : null))
-                                                        ?? y.TargetAgent.Name,
-                                    AccessLevelName = y.AccessLevel.Name,
-                                    SendTypeIsExternal = y.SendTypeId == 45
-                                })
+                    PositionExecutorName = x.Position.ExecutorAgent.Name,
+                    PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix
                 }).ToList();
 
                 transaction.Complete();

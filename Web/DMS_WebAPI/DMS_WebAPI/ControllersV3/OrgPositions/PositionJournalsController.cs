@@ -29,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// По умолчанию должность может просматривать и регистрировать документы во всех журналах своего отдела 
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Position)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionJournalsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Journals")]
+        [Route("{Id:int}/" + Features.Journals)]
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterTree filter)
         {
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Journals/Edit")]
+        [Route("{Id:int}/" + Features.Journals+ "/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterTree filter)
         {
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Journals/Set")]
+        [Route(Features.Journals + "/Set")]
         public IHttpActionResult Set([FromBody] ModifyAdminRegistrationJournalPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Journals/SetByDepartment")]
+        [Route(Features.Journals + "/SetByDepartment")]
         public IHttpActionResult SetByDepartment([FromBody] ModifyAdminRegistrationJournalPositionByDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Journals/SetByCompany")]
+        [Route(Features.Journals + "/SetByCompany")]
         public IHttpActionResult SetByCompany([FromBody] ModifyAdminRegistrationJournalPositionByCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -133,7 +133,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Journals/SetDefault")]
+        [Route(Features.Journals + "/SetDefault")]
         public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Journals/SetAll")]
+        [Route(Features.Journals + "/SetAll")]
         public IHttpActionResult SetAll([FromBody] ModifyAdminRegistrationJournalPositions model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -165,7 +165,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Journals/Duplicate")]
+        [Route(Features.Journals + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

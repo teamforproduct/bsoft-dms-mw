@@ -12,13 +12,15 @@ namespace BL.Model.DictionaryCore.FrontModel
         public int Id { get; set; }
         public string Name { get; set; }
         public int? PositionId { get; set; }
-        public int LastChangeUserId { get; set; }
-        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
-        private DateTime  _LastChangeDate; 
+        //public int LastChangeUserId { get; set; }
+        //public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
+        //private DateTime  _LastChangeDate; 
 
         public string PositionName { get; set; }
         public string PositionExecutorName { get; set; }
 
-        public virtual IEnumerable<FrontDictionaryStandartSendListContent> StandartSendListContents { get; set; }
+        public string PositionExecutorTypeSuffix { get; set; }
+
+        //public virtual IEnumerable<FrontDictionaryStandartSendListContent> StandartSendListContents { get; set; }
     }
 }

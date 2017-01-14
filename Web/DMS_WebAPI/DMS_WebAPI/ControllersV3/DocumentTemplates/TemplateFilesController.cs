@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     /// Шаблоны документов. Файлы.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateFilesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Files")]
+        [Route("{Id:int}/" + Features.Files)]
         [ResponseType(typeof(List<FrontTemplateAttachedFile>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
         {
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Files/{Id:int}")]
+        [Route(Features.Files + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateAttachedFile))]
         public IHttpActionResult Get(int Id)
         {
@@ -73,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Files")]
+        [Route(Features.Files)]
         public IHttpActionResult Post([FromBody]AddTemplateAttachedFile model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Files")]
+        [Route(Features.Files)]
         public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Files/{Id:int}")]
+        [Route(Features.Files + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

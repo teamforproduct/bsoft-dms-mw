@@ -31,6 +31,7 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
 using BL.CrossCutting.Helpers;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.AdminCore
 {
@@ -281,6 +282,29 @@ namespace BL.Logic.AdminCore
         //{
         //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
         //}
+
+        public IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
+        {
+            var newFilter = new FilterAdminRole();
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                //newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.AdminRoles, ftSearch.FullTextSearchString);
+                newFilter.Name = ftSearch.FullTextSearchString;
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+
+            return _adminDb.GetMainRoles(context, filter, paging);
+        }
+
+        public FrontAdminRole GetAdminRole(IContext context, int id)
+        {
+            return _adminDb.GetRoles(context, new FilterAdminRole {IDs = new List<int> { id } } ).FirstOrDefault();
+        }
 
         public IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter)
         {

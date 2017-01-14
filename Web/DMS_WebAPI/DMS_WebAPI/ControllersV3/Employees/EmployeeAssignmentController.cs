@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Назначения сотрудника на должности
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Employee)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeAssignmentsController : ApiController
     {
 
@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Assignments")]
+        [Route("{Id:int}/" + Features.Assignments)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Assignments/Current")]
+        [Route("{Id:int}/" + Features.Assignments + "/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Assignments/{Id:int}")]
+        [Route(Features.Assignments + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Assignments")]
+        [Route(Features.Assignments)]
         public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Assignments")]
+        [Route(Features.Assignments)]
         public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Assignments/{Id:int}")]
+        [Route(Features.Assignments + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

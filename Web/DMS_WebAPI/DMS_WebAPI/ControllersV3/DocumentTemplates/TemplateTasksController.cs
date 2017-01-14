@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     /// Шаблоны документов. Задачи.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Templates)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateTasksController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/Tasks")]
+        [Route("{Id:int}/" + Features.Tasks)]
         [ResponseType(typeof(List<FrontTemplateDocumentTask>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
         {
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Tasks/{Id:int}")]
+        [Route(Features.Tasks + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocumentTask))]
         public IHttpActionResult Get(int Id)
         {
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Tasks")]
+        [Route(Features.Tasks)]
         public IHttpActionResult Post([FromBody]AddTemplateDocumentTask model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Tasks")]
+        [Route(Features.Tasks)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentTask model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Tasks/{Id:int}")]
+        [Route(Features.Tasks + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

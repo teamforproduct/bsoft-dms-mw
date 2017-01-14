@@ -17,7 +17,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Аудит подключений
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Auditlog)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Auditlog)]
     public class AuditlogInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="paging">параметры пейджинга</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult Sessions([FromUri]FullTextSearch ftSearch, [FromUri] FilterSystemSession filter, [FromUri]UIPaging paging)
         {
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Employee/{Id:int}")]
+        [Route(Features.Info + "/Employee/{Id:int}")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult Get([FromUri]int Id, [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
@@ -67,6 +67,7 @@ namespace DMS_WebAPI.ControllersV3.System
             filter.ExecutorAgentIDs = new List<int> { Id };
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
@@ -79,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Employee/{Id:int}/Current")]
+        [Route(Features.Info + "/Employee/{Id:int}/Current")]
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult GetCurrent([FromUri]int Id, [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
@@ -93,6 +94,7 @@ namespace DMS_WebAPI.ControllersV3.System
             filter.IsOnlyActive = true;
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }

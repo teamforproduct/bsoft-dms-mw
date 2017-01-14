@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Адреса пользователя-сотрудника
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.User)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAddressesController : ApiController
     {
 
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Addresses")]
+        [Route(Features.Addresses)]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentAddress filter)
         {
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Addresses/{Id:int}")]
+        [Route(Features.Addresses + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Addresses")]
+        [Route(Features.Addresses)]
         public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Addresses")]
+        [Route(Features.Addresses)]
         public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Addresses/{Id:int}")]
+        [Route(Features.Addresses + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

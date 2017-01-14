@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     /// Отдел всегда подчинен организации, может подчиняться вышестоящему отделу.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.Department)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info")]
+        [Route(Features.Info)]
         [ResponseType(typeof(List<FrontDictionaryDepartment>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
         {
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryDepartment))]
         public IHttpActionResult Get(int Id)
         {
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

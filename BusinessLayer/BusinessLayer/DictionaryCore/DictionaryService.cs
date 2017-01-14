@@ -183,7 +183,7 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentPersons(context, newFilter, paging);
+            return _dictDb.GetMainAgentPersons(context, newFilter, paging);
         }
         #endregion DictionaryAgentPersons
 
@@ -978,13 +978,43 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryStandartSendLists
         public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
-            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
-            return _dictDb.GetStandartSendLists(context, filter);
+            return _dictDb.GetStandartSendLists(context, filter, null);
         }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            var newFilter = new FilterDictionaryStandartSendList();
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryStandartSendLists, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            var sendLists = _dictDb.GetStandartSendLists(context, filter, paging);
+
+            var res = sendLists.GroupBy(x => new {x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
+                 .OrderBy(x => x.Key.PositionName)
+                 .Select(x => new FrontMainDictionaryStandartSendList()
+                 {
+                     Id = x.Key.PositionId ?? -1,
+                     Name = x.Key.PositionName,
+                     ExecutorName = x.Key.PositionExecutorName,
+                     ExecutorTypeSuffix = x.Key.PositionExecutorTypeSuffix,
+                     SendLists = x.OrderBy(y => y.Name).ToList()
+                 });
+
+
+            return res;
+        }
+
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes

@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Типы документов
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + ApiPrefix.DocumentType)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.DocumentType)]
     public class DocumentTypeInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/Main")]
+        [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryDocumentType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
         {
@@ -50,7 +50,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontMainAgentBank))]
         public IHttpActionResult Get(int Id)
         {
@@ -69,7 +69,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddDocumentType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("Info")]
+        [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyDocumentType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -98,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("Info/{Id:int}")]
+        [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

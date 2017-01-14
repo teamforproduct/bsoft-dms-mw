@@ -104,16 +104,19 @@ namespace BL.Logic.DocumentCore.Commands
 
             if (_document.Events?.Any() ?? false)
             {
-                var eventControlor = _document.Events.First();
-                waitTarget.OnEvent.SourcePositionId = eventControlor.TargetPositionId;
-                waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControlor.TargetPositionExecutorAgentId;
-                waitTarget.OnEvent.SourcePositionExecutorTypeId = eventControlor.TargetPositionExecutorTypeId;
+                var eventControler = _document.Events.First();
+                waitTarget.OnEvent.SourcePositionId = eventControler.TargetPositionId;
+                waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControler.TargetPositionExecutorAgentId;
+                waitTarget.OnEvent.SourcePositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
                 if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
                 {
-                    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
+                    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForResponsibleExecutionReportingControler);
+                    waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
+                    CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
+                    if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
+                        waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
                 }
             }
-
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
             _document.Subscriptions = null;
