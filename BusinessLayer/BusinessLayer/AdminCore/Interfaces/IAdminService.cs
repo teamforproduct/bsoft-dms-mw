@@ -70,7 +70,7 @@ namespace BL.Logic.AdminCore.Interfaces
         #endregion
 
         #region [+] DepartmentAdmins ...
-        IEnumerable<ListItem> GetDepartmentAdmins(IContext context, int departmentId);
+        IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId);
         #endregion
 
         #region [+] Subordinations ...

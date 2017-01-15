@@ -1619,6 +1619,21 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public string GetAddressTypeSpecCode(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryAddressTypesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.Id == id).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.SpecCode).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())

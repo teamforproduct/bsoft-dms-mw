@@ -53,5 +53,7 @@ namespace DMS_WebAPI
 
         public const string Employees = "Employees";
 
+        public const string Admins = "Admins";
+
     }
 }

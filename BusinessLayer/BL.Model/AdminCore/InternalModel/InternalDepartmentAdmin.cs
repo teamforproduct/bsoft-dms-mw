@@ -17,14 +17,17 @@ namespace BL.Model.AdminCore.InternalModel
         /// <summary>
         /// Отдел
         /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Отдел
+        /// </summary>
         public int DepartmentId { get; set; }
 
         /// <summary>
         /// Сотрудник
         /// </summary>
         public int EmployeeId { get; set; }
-
-        public string EmployeeName { get; set; }
 
     }
 }

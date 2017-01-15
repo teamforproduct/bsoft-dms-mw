@@ -31,8 +31,6 @@ namespace BL.Database.Admins
     public class AdminsDbProcess : CoreDb.CoreDb, IAdminsDbProcess
     {
 
-        private List<InternalDepartmentAdmin> DepartmentAdminsSet = new List<InternalDepartmentAdmin>();
-
         public AdminsDbProcess()
         {
         }
@@ -419,6 +417,21 @@ namespace BL.Database.Admins
                     //RoleCode = x.RoleType.Code,
                     //RoleName = x.RoleType.Name
                 }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public string GetRoleTypeCode(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.AdminRolesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.Id == id).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.RoleType.Code).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
@@ -1174,27 +1187,45 @@ namespace BL.Database.Admins
 
         public int AddDepartmentAdmin(IContext context, InternalDepartmentAdmin model)
         {
-            DepartmentAdminsSet.Add(model);
-            return model.EmployeeId;
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = AdminModelConverter.GetDbEmployeeDepartments(context, model);
+                dbContext.AdminEmployeeDepartmentsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                transaction.Complete();
+                return dbModel.Id;
+            }
+
         }
 
-        public void DeleteDepartmentAdmin(IContext context, InternalDepartmentAdmin model)
+        public void DeleteDepartmentAdmin(IContext context, int id)
         {
-            var da = DepartmentAdminsSet.Where(x => x.DepartmentId == model.DepartmentId & x.EmployeeId == model.EmployeeId);
-            foreach (var item in da)
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                DepartmentAdminsSet.Remove(item);
-                break;
+                dbContext.AdminEmployeeDepartmentsSet.Where(x => x.Id == id).Delete();
+
+                transaction.Complete();
             }
         }
 
-        public IEnumerable<ListItem> GetDepartmentAdmins(IContext context, int departmentId)
+        public IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId)
         {
-            return DepartmentAdminsSet.Where(x => x.DepartmentId == departmentId).Select(x => new ListItem()
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                Id = x.EmployeeId,
-                Name = x.EmployeeName
-            });
+                var qry = dbContext.AdminEmployeeDepartmentsSet.Where(x => x.DepartmentId == departmentId);
+
+                var res = qry.Select(x => new FrontAdminEmployeeDepartments
+                {
+                    Id = x.EmployeeId,
+                    EmployeeId = x.EmployeeId,
+                    EmployeeName = x.Employee.Agent.Name,
+                    DepartmentId = x.DepartmentId,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+
         }
         #endregion
 
