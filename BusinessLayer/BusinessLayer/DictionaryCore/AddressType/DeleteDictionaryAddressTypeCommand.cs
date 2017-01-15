@@ -33,6 +33,14 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             _adminService.VerifyAccess(_context, CommandType,false,true);
+
+            string specCode = _dictDb.GetAddressTypeSpecCode(_context, Model);
+
+            if (!string.IsNullOrEmpty(specCode))
+            {
+                throw new DictionarySystemRecordCouldNotBeDeleted();
+            }
+
             return true;
         }
 

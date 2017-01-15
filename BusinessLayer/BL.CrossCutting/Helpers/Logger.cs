@@ -19,7 +19,7 @@ namespace BL.CrossCutting.Helpers
             AppendTextToFile(text, System.Web.HttpContext.Current.Server.MapPath("~/SiteErrors.txt"));
         }
 
-        public static void AppendTextToFile(string text, string FilePath)
+        public static void AppendTextToFile(string text, string FilePath, Exception ex = null)
         {
             try
             {
@@ -40,8 +40,11 @@ namespace BL.CrossCutting.Helpers
                 sw = System.IO.File.AppendText(FilePath);
                 try
                 {
-                    string line = text;
-                    sw.WriteLine(line);
+                    sw.WriteLine(text);
+                    if (ex != null)
+                    {
+                        sw.WriteLine(ex.StackTrace);
+                    }
                 }
                 catch
                 {

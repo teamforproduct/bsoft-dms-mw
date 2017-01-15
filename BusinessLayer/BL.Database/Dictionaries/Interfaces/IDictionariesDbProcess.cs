@@ -88,6 +88,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsAddressTypeSpecCode(IContext context, int addressTypeId);
         IEnumerable<FrontAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter);
         IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        string GetAddressTypeSpecCode(IContext context, int id);
 
         #endregion
 

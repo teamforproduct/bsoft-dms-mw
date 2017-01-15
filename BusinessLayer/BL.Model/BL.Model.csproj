@@ -84,6 +84,7 @@
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPRegistrationJournalPositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminUserLanguage.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAvailablePositions.cs" />

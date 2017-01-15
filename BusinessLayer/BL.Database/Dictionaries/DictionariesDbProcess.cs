@@ -1619,6 +1619,21 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public string GetAddressTypeSpecCode(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryAddressTypesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.Id == id).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.SpecCode).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -5547,40 +5562,44 @@ namespace BL.Database.Dictionaries
         #endregion DictionaryResultTypes
 
         #region [+] DictionarySendTypes ...
+
         public IEnumerable<FrontDictionarySendType> GetSendTypes(IContext context, FilterDictionarySendType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionarySendTypesSet.AsQueryable();
 
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DictionarySendTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    // Список первичных ключей
+                    if (filter.IDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                        qry = qry.Where(filterContains);
+                    }
 
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionarySendTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
+                    // Исключение списка первичных ключей
+                    if (filter.NotContainsIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.True<DictionarySendTypes>();
+                        filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                            (current, value) => current.And(e => e.Id != value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                        qry = qry.Where(filterContains);
+                    }
 
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionarySendTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    // Поиск по наименованию
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
+                        qry = qry.Where(filterContains);
+                    }
                 }
                 qry = qry.OrderBy(x => x.Code);
                 var res = qry.Select(x => new FrontDictionarySendType
