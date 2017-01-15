@@ -422,6 +422,21 @@ namespace BL.Database.Admins
             }
         }
 
+        public string GetRoleTypeCode(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.AdminRolesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.Id == id).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.RoleType.Code).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public bool ExistsRole(IContext context, FilterAdminRole filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())

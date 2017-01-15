@@ -34,6 +34,7 @@ namespace BL.Database.Admins.Interfaces
         void UpdateRole(IContext context, InternalAdminRole model);
         void DeleteRole(IContext context, InternalAdminRole model);
         bool ExistsRole(IContext context, FilterAdminRole filter);
+        string GetRoleTypeCode(IContext context, int id);
         InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter);
