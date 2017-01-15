@@ -84,6 +84,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminRoleTypes> AdminRolesTypesSet { get; set; }
         public virtual DbSet<AdminPositionRoles> AdminPositionRolesSet { get; set; }
         public virtual DbSet<AdminUserRoles> AdminUserRolesSet { get; set; }
+        public virtual DbSet<AdminEmployeeDepartments> AdminEmployeeDepartmentsSet { get; set; }
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
         public virtual DbSet<AdminRegistrationJournalPositions> AdminRegistrationJournalPositionsSet { get; set; }
 
