@@ -295,6 +295,7 @@ namespace BL.Database.Encryption
                 {
                     fs.Write(item.Certificate, 0, item.Certificate.Length);
                 }
+                string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
                 FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate FileStream Write ", @"C:\sign.log");
                 var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
                 FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\sign.log");

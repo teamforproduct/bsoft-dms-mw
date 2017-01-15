@@ -6,7 +6,6 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Constants;
 using BL.Model.ClearTrashDocuments;
 
 namespace BL.Logic.SystemServices.ClearTrashDocuments

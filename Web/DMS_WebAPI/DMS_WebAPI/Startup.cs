@@ -40,7 +40,7 @@ namespace DMS_WebAPI
 
             var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
             
-            // Проверка на целостность Actions в процедуре импорта 
+            // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
 

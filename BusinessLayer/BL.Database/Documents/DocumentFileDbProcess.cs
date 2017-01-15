@@ -15,10 +15,6 @@ namespace BL.Database.Documents
 {
     public class DocumentFileDbProcess : CoreDb.CoreDb, IDocumentFileDbProcess
     {
-        public DocumentFileDbProcess()
-        {
-        }
-
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())

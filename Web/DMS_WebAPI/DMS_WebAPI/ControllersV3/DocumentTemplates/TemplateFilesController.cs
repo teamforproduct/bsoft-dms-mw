@@ -58,6 +58,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         [ResponseType(typeof(FrontTemplateAttachedFile))]
         public IHttpActionResult Get(int Id)
         {
+            //TODO PDF
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
