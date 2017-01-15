@@ -479,7 +479,7 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] DepartmentAdmin ...
-        public IEnumerable<ListItem> GetDepartmentAdmins(IContext context, int departmentId)
+        public IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId)
         {
             return _adminDb.GetDepartmentAdmins(context, departmentId);
         }

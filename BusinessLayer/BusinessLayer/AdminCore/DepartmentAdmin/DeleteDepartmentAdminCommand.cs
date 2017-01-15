@@ -13,13 +13,20 @@ namespace BL.Logic.AdminCore
 {
     public class DeleteDepartmentAdminCommand : BaseDepartmentAdminCommand
     {
+        protected int Model
+        {
+            get
+            {
+                if (!(_param is int)) throw new WrongParameterTypeError();
+                return (int)_param;
+            }
+        }
+
         public override object Execute()
         {
             try
             {
-                var da = new InternalDepartmentAdmin(Model);
-
-                _adminDb.DeleteDepartmentAdmin(_context, da);
+                _adminDb.DeleteDepartmentAdmin(_context, Model);
             }
             catch (AdminRecordWasNotFound)
             {

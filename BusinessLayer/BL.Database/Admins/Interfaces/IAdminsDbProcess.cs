@@ -76,7 +76,7 @@ namespace BL.Database.Admins.Interfaces
         List<int> GetRolesByUsers(IContext context, FilterAdminUserRole filter);
         #endregion
 
-        IEnumerable<ListItem> GetDepartmentAdmins(IContext context, int departmentId);
+        IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId);
 
         #region [+] Subordination ...
         int AddSubordination(IContext context, InternalAdminSubordination model);
@@ -116,7 +116,7 @@ namespace BL.Database.Admins.Interfaces
 
         int AddDepartmentAdmin(IContext context, InternalDepartmentAdmin model);
 
-        void DeleteDepartmentAdmin(IContext context, InternalDepartmentAdmin model);
+        void DeleteDepartmentAdmin(IContext context, int id);
 
     }
 }
