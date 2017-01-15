@@ -23,11 +23,10 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                var da = new InternalDepartmentAdmin(Model);
-                //da.EmployeeName = _dictDb.GetAgents(_context, new BL.Model.DictionaryCore.FilterModel.FilterDictionaryAgent { IDs = new List<int> { Model.EmployeeId } }, null). .Name;
+                var model = new InternalDepartmentAdmin(Model);
+                CommonDocumentUtilities.SetLastChange(_context, model);
 
-
-                return _adminDb.AddDepartmentAdmin(_context, da);
+                return _adminDb.AddDepartmentAdmin(_context, model);
             }
             catch (Exception ex)
             {
