@@ -294,7 +294,9 @@ namespace BL.Database.Encryption
                 using (FileStream fs = File.Create(file))
                 {
                     fs.Write(item.Certificate, 0, item.Certificate.Length);
+                    fs.Flush();
                 }
+                FileLogger.AppendTextToFile("File on disc "+File.Exists(file), @"C:\sign.log");
                 FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate FileStream Write ", @"C:\sign.log");
                 var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
                 FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\sign.log");
@@ -305,7 +307,7 @@ namespace BL.Database.Encryption
             }
             catch (CryptographicException e)
             {
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate " + e.Message, @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate " + e.Message, @"C:\sign.log", true);
 
                 throw e;
 
