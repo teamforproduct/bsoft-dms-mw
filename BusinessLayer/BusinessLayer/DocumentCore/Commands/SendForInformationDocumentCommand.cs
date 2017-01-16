@@ -7,6 +7,8 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -112,6 +114,10 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             _operationDb.SendBySendList(_context, _document);
+
+            if (_document.IsLaunchPlan)
+                DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
+
 
             return null;
         }

@@ -67,8 +67,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan);
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
 
-            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(_context, null, _document.Id);
+            DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
             return Model;
         }

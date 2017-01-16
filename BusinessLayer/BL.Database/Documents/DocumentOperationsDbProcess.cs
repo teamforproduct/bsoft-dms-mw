@@ -1374,7 +1374,8 @@ namespace BL.Database.Documents
                     .Where(x => x.Id == sendList.DocumentId)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Id
+                        Id = x.Id,
+                        IsLaunchPlan = x.IsLaunchPlan,
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
@@ -1471,7 +1472,8 @@ namespace BL.Database.Documents
                     .Where(x => x.Id == sendList.DocumentId)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Id
+                        Id = x.Id,
+                        IsLaunchPlan = x.IsLaunchPlan,
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 if (sendList.IsInitial)

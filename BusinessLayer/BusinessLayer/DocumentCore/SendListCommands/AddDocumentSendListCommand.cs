@@ -120,15 +120,10 @@ namespace BL.Logic.DocumentCore.SendListCommands
                     docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
                 }
                 else if (Model.IsLaunchItem ?? false)
-                {
-                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                    aplan.ManualRunAutoPlan(_context, res, _document.Id);
-                }
+                    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, res, _document.Id);
                 else
-                {
-                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                    aplan.ManualRunAutoPlan(_context, null, _document.Id);
-                }
+                    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
+
                 //                transaction.Complete();
             }
             return res;

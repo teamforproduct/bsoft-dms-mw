@@ -7,6 +7,8 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -95,6 +97,8 @@ namespace BL.Logic.DocumentCore.Commands
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
+            if (_document.IsLaunchPlan)
+                DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
             return _document.Id;
         }
         private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), CommandType.ToString());
