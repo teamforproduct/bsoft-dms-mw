@@ -75,12 +75,11 @@ namespace BL.Database.FileWorker
                 default:
                     throw new ArgumentOutOfRangeException(nameof(fileType), fileType, null);
             }
-            if (!File.Exists(localFilePath))
-            {
-                throw new UserFileNotExists();
-            }
 
-            return localFilePath;
+            if (File.Exists(localFilePath)) return localFilePath;
+
+            if (fileType == EnumDocumentFileType.UserFile) throw new UserFileNotExists();
+            throw new UserPdfFileNotExists();
         }
 
         public string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
@@ -403,6 +402,41 @@ namespace BL.Database.FileWorker
             {
                 var log = DmsResolver.Current.Get<ILogger>();
                 log.Error(ctx, ex, "Cannot access to user file", Environment.StackTrace);
+                throw new CannotAccessToFile(ex);
+            }
+        }
+
+        /// <summary>
+        /// Delete PDF version of the file and small preview picture for that file.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="attFile"></param>
+        public void DeletePdfCopy(IContext ctx, InternalTemplateAttachedFile attFile)
+        {
+            try
+            {
+                var docFile = attFile as InternalDocumentAttachedFile;
+                var path = docFile == null
+                    ? GetFullDocumentFilePath(ctx, attFile)
+                    : GetFullDocumentFilePath(ctx, docFile);
+
+                var localPdfFilePath = path + "\\" + attFile.Name + ".pdf";
+                var localPreviewFilePathNew = path + "\\" + attFile.Name + ".jpg";
+
+                if (File.Exists(localPdfFilePath))
+                {
+                    File.Delete(localPdfFilePath);
+                }
+
+                if (File.Exists(localPreviewFilePathNew))
+                {
+                    File.Delete(localPreviewFilePathNew);
+                }
+            }
+            catch (Exception ex)
+            {
+                var log = DmsResolver.Current.Get<ILogger>();
+                log.Error(ctx, ex, "Cannot access to user PDF/Preview file", Environment.StackTrace);
                 throw new CannotAccessToFile(ex);
             }
         }

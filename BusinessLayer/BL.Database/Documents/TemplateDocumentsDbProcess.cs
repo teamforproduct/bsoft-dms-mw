@@ -342,6 +342,8 @@ namespace BL.Database.Documents
                         Type = (EnumFileTypes)x.TypeId,
                         Hash = x.Hash,
                         Description = x.Description,
+                        PdfCreated = x.IsPdfCreated??false,
+                        LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue,
                     }).ToList();
                 doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateDocumentPaper
@@ -1039,6 +1041,8 @@ namespace BL.Database.Documents
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
+                            PdfCreated = x.fl.IsPdfCreated??false,
+                            LastPdfAccess = x.fl.LastPdfAccessDate??DateTime.MinValue
 
                         }).ToList();
                 transaction.Complete();
@@ -1071,8 +1075,9 @@ namespace BL.Database.Documents
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
-                            Description = x.fl.Description
-
+                            Description = x.fl.Description,
+                            PdfCreated = x.fl.IsPdfCreated ?? false,
+                            LastPdfAccess = x.fl.LastPdfAccessDate ?? DateTime.MinValue
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -1123,6 +1128,8 @@ namespace BL.Database.Documents
                             OrderInDocument = x.OrderNumber,
                             Type = (EnumFileTypes)x.TypeId,
                             Description = x.Description,
+                            PdfCreated = x.IsPdfCreated??false,
+                            LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue,
                             //Name = x.Name,
                             //Extension = x.Extention,
                             //FileType = x.FileType,

@@ -45,7 +45,7 @@ namespace PDFCreator
 
             try
             {
-                GhostscriptWrapper.GeneratePageThumb(inputFile, outputFile, 1, 300, 300);
+                GhostscriptWrapper.GeneratePageThumb(inputFile, outputFile, 1,200,200, 208, 268);
                 return true;
             }
             catch (Exception ex)

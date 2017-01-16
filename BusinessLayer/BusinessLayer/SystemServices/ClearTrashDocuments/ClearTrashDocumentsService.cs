@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using System.Threading;
 using BL.CrossCutting.DependencyInjection;
+using BL.Database.Documents.Interfaces;
+using BL.Database.FileWorker;
 using BL.Database.SystemDb;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
@@ -15,11 +17,15 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
         private readonly Dictionary<ClearTrashDocumentsSettings, Timer> _timers;
         private ISystemDbProcess _sysDb;
         private ICommandService _cmdService;
+        private readonly IDocumentFileDbProcess _docFileDb;
+        private readonly IFileStore _fileStore;
 
-        public ClearTrashDocumentsService(ISettings settings, ILogger logger, ICommandService cmdService) : base(settings, logger)
+        public ClearTrashDocumentsService(ISettings settings, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settings, logger)
         {
-            _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
+            _sysDb = sysDb;
             _cmdService = cmdService;
+            _docFileDb = docFileDb;
+            _fileStore = fileStore;
             _timers = new Dictionary<ClearTrashDocumentsSettings, Timer>();
         }
 
@@ -64,7 +70,8 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
             var tmr = GetTimer(md);
             var ctx = GetAdminContext(md.DatabaseKey);
-
+            
+            // Clear trash documents.
             if (ctx == null) return;
             try
             {
@@ -88,6 +95,23 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             {
                 _logger.Error(ctx, "Could not process clear trash documents", ex);
             }
+
+            // CLEAR unused PDF copy of the files and their previews. 
+            try
+            {
+                var fileTodelete = _docFileDb.GetOldPdfForAttachedFiles(ctx);
+                foreach (var file in fileTodelete)
+                {
+                    _fileStore.DeletePdfCopy(ctx,file);
+                    file.PdfCreated = false;
+                    _docFileDb.UpdateFilePdfView(ctx, file);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ctx, "Could not process clear trash documents", ex);
+            }
+
             tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite);//start new iteration of the timer
         }
 

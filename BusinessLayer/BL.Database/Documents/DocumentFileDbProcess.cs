@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -252,6 +253,27 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
                 transaction.Complete();
+            }
+        }
+
+        public IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+               return  dbContext.DocumentFilesSet.Where(x=>x.IsPdfCreated.HasValue && x.IsPdfCreated.Value && (!x.LastPdfAccessDate.HasValue || (DateTime.Now - x.LastPdfAccessDate.Value)
+                .TotalDays>60)).Select(x => new InternalDocumentAttachedFile
+                {
+                    Id = x.Id,
+                    ExecutorPositionId = x.ExecutorPositionId,
+                    Name = x.Name,
+                    Extension = x.Extension,
+                    Type = (EnumFileTypes) x.TypeId,
+                    IsMainVersion = x.IsMainVersion,
+                    Version = x.Version,
+                    IsDeleted = x.IsDeleted,
+                    PdfCreated = x.IsPdfCreated.Value,
+                    LastPdfAccess = x.LastPdfAccessDate.Value
+                }).ToList();
             }
         }
 

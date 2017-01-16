@@ -17,6 +17,7 @@ namespace BL.Database.FileWorker
         void DeleteAllFileInTemplate(IContext ctx, int templateId);
         void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile);
         void DeleteFileVersion(IContext ctx, InternalDocumentAttachedFile attFile);
+        void DeletePdfCopy(IContext ctx, InternalTemplateAttachedFile attFile);
         void CopyFile(IContext ctx, InternalTemplateAttachedFile fromTempl, InternalTemplateAttachedFile toTempl);
         bool IsFileCorrect(IContext ctx, InternalDocumentAttachedFile docFile);
         //IEnumerable<InternalTemplateAttachedFile> CopyFiles(IContext ctx, IEnumerable<InternalTemplateAttachedFile> fromTempl,int newDocNumber, bool newIsTemplate = false);

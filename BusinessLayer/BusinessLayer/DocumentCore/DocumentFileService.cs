@@ -8,7 +8,6 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using System.Transactions;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
