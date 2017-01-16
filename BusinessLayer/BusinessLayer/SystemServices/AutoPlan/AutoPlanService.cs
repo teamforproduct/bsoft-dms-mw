@@ -13,10 +13,11 @@ using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Constants;
 using BL.Model.Enums;
 using BL.Database.Dictionaries.Interfaces;
+using System.Linq;
 
 namespace BL.Logic.SystemServices.AutoPlan
 {
-    public class AutoPlanService: BaseSystemWorkerService, IAutoPlanService
+    public class AutoPlanService : BaseSystemWorkerService, IAutoPlanService
     {
         private readonly Dictionary<AutoPlanSettings, Timer> _timers;
         private ISystemDbProcess _sysDb;
@@ -94,31 +95,41 @@ namespace BL.Logic.SystemServices.AutoPlan
 
             var wrkUnit = new QueueTask(() =>
             {
+                bool isRepeat = true;
+
                 try
                 {
-                    var lst = _sysDb.GetSendListIdsForAutoPlan(ctx, sendListId, documentId);
-                    foreach (int id in lst)
+                    while (isRepeat)
                     {
-                        try
+                        var lst = _sysDb.GetSendListIdsForAutoPlan(ctx, sendListId, documentId);
+                        if (lst.Any() && documentId != null && sendListId == null)
+                            isRepeat = true;
+                        else
+                            isRepeat = false;
+                        foreach (int id in lst)
                         {
-                            var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
-                            _cmdService.ExecuteCommand(cmd);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
                             try
                             {
-                                var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
-                                if (docId > 0)
-                                {
-                                    var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, docId);
-                                    _cmdService.ExecuteCommand(cmdStop);
-                                }
+                                var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
+                                _cmdService.ExecuteCommand(cmd);
                             }
-                            catch (Exception ex2)
+                            catch (Exception ex)
                             {
-                                _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                                isRepeat = false;
+                                _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                                try
+                                {
+                                    var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
+                                    if (docId > 0)
+                                    {
+                                        var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, docId);
+                                        _cmdService.ExecuteCommand(cmdStop);
+                                    }
+                                }
+                                catch (Exception ex2)
+                                {
+                                    _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                                }
                             }
                         }
                     }
@@ -190,9 +201,9 @@ namespace BL.Logic.SystemServices.AutoPlan
                 {
                     _logger.Error(ctx, "Could not process autoplan", ex);
                 }
-                tmr.Change(md.TimeToUpdate*60000, Timeout.Infinite); //start new iteration of the timer
+                tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
             });
-            
+
             wrkr.AddToQueue(wrkUnit);
 
         }

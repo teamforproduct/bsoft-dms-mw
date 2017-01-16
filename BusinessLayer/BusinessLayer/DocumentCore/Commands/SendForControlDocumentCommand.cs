@@ -136,8 +136,8 @@ namespace BL.Logic.DocumentCore.Commands
 
             _operationDb.SendBySendList(_context, _document);
 
-            if (_document.IsLaunchPlan)
-                DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
+            //if (_document.IsLaunchPlan)
+            //    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
 
             return null;
