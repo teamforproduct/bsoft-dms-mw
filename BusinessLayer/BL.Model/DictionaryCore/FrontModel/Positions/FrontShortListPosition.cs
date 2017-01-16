@@ -25,5 +25,15 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public string CompanyName { get; set; }
 
+        /// <summary>
+        /// Имя исполнителя
+        /// </summary>
+        public string ExecutorName { get; set; }
+
+        /// <summary>
+        /// Тип исполнения (приставка)
+        /// </summary>
+        public string ExecutorTypeSuffix { get; set; }
+
     }
 }
