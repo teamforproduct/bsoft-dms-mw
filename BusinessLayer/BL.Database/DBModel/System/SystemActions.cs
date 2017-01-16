@@ -18,6 +18,7 @@ namespace BL.Database.DBModel.System
 
         public int Id { get; set; }
         [Index("IX_ObjectCode", 1, IsUnique = true)]
+        public int? PermissionId { get; set; }
         public int ObjectId { get; set; }
         [MaxLength(400)]
         [Index("IX_ObjectCode", 2, IsUnique = true)]
@@ -34,15 +35,9 @@ namespace BL.Database.DBModel.System
         public bool IsVisibleInMenu { get; set; }
         public Nullable<int> GrantId { get; set; }
 
-        [MaxLength(2000)]
-        public string Module { get; set; }
 
-        [MaxLength(2000)]
-        public string Feature { get; set; }
-
-        [MaxLength(2000)]
-        public string CRUR { get; set; }
-
+        [ForeignKey("PermissionId")]
+        public virtual SystemPermissions Permission { get; set; }
 
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }

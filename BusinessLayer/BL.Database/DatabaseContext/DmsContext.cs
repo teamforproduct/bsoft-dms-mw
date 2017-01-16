@@ -80,6 +80,7 @@ namespace BL.Database.DatabaseContext
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
         public virtual DbSet<AdminRoleActions> AdminRoleActionsSet { get; set; }
+        public virtual DbSet<AdminRolePermissions> AdminRolePermissionsSet { get; set; }
         public virtual DbSet<AdminRoles> AdminRolesSet { get; set; }
         public virtual DbSet<AdminRoleTypes> AdminRolesTypesSet { get; set; }
         public virtual DbSet<AdminPositionRoles> AdminPositionRolesSet { get; set; }
@@ -162,6 +163,13 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<TemplateDocumentTasks> TemplateDocumentTasksSet { get; set; }
         public virtual DbSet<TemplateDocumentPapers> TemplateDocumentPapersSet { get; set; }
 
+
+
+        
+        public virtual DbSet<SystemModules> SystemModulesSet { get; set; }
+        public virtual DbSet<SystemFeatures> SystemFeaturesSet { get; set; }
+        public virtual DbSet<SystemAccessTypes> SystemAccessTypesSet { get; set; }
+        public virtual DbSet<SystemPermissions> SystemPermissionsSet { get; set; }
         public virtual DbSet<SystemActions> SystemActionsSet { get; set; }
         public virtual DbSet<SystemFields> SystemFieldsSet { get; set; }
         public virtual DbSet<SystemObjects> SystemObjectsSet { get; set; }
