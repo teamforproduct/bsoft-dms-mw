@@ -1217,7 +1217,7 @@ namespace BL.Database.Admins
 
                 var res = qry.Select(x => new FrontAdminEmployeeDepartments
                 {
-                    Id = x.EmployeeId,
+                    Id = x.Id,
                     EmployeeId = x.EmployeeId,
                     EmployeeName = x.Employee.Agent.Name,
                     DepartmentId = x.DepartmentId,
