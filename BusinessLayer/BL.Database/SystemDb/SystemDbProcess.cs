@@ -1359,54 +1359,22 @@ namespace BL.Database.SystemDb
                 if (sendListId.HasValue)
                     return new List<int> { sendListId.GetValueOrDefault() };
 
-                var qryPrepare = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                .Where(x => x.IsInitial && !x.CloseEventId.HasValue).AsQueryable();
+                var closedSendLists = dbContext.DocumentSendListsSet.Where(x => x.IsInitial && !x.CloseEventId.HasValue);
 
                 if (documentId.HasValue)
                 {
-                    qryPrepare = qryPrepare.Where(x => x.DocumentId == documentId);
+                    closedSendLists = closedSendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var qry = qryPrepare.GroupBy(x => x.DocumentId)
-                    .Select(x => new
-                    {
-                        DocId = x.Key,
-                        MinStage = x.Min(s => s.Stage)
-                    });
-
-                var sendListsSet = dbContext.DocumentSendListsSet
-                                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                    .Where(x => x.Document.IsLaunchPlan)
-                                    .AsQueryable();
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                    .Where(x => x.Document.IsLaunchPlan && !x.StartEventId.HasValue);
 
                 if (documentId.HasValue)
                 {
-                    sendListsSet = sendListsSet.Where(x => x.DocumentId == documentId);
+                    sendLists = sendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var qry2 = sendListsSet
-                    .Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
-                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue)
-                    .OrderBy(x => x.sl.DocumentId)
-                    .ThenBy(
-                        x =>
-                            new
-                            {
-                                x.sl.Stage,
-                                SendTypeId = x.sl.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.sl.SendTypeId
-                            })
-                    .Select(x => x.sl.Id);
-
-                if (!documentId.HasValue)
-                {
-                    qry2 = qry2.Take(50);
-                }
-
-                var res = qry2.ToList();
-
-                var qry3 = sendListsSet
-                    .Where(x => !x.IsInitial && !x.StartEventId.HasValue
-                                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
+                var qry2 = sendLists.Where(x => !closedSendLists.Any(y=>y.DocumentId == x.DocumentId && x.Stage > y.Stage))
                     .OrderBy(x => x.DocumentId)
                     .ThenBy(
                         x =>
@@ -1419,10 +1387,30 @@ namespace BL.Database.SystemDb
 
                 if (!documentId.HasValue)
                 {
-                    qry3 = qry3.Take(50);
+                    qry2 = qry2.Take(50);
                 }
 
-                res.AddRange(qry3.ToList());
+                var res = qry2.ToList();
+
+                //var qry3 = sendListsSet
+                //    .Where(x => !x.IsInitial && !x.StartEventId.HasValue
+                //                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
+                //    .OrderBy(x => x.DocumentId)
+                //    .ThenBy(
+                //        x =>
+                //            new
+                //            {
+                //                x.Stage,
+                //                SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId
+                //            })
+                //    .Select(x => x.Id);
+
+                //if (!documentId.HasValue)
+                //{
+                //    qry3 = qry3.Take(50);
+                //}
+
+                //res.AddRange(qry3.ToList());
 
                 transaction.Complete();
 
