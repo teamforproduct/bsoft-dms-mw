@@ -63,6 +63,21 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocumentAttachedFile GetInternalAttachedFile(IContext ctx, int fileId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return
+                    dbContext.DocumentFilesSet.Where(x => x.Id == fileId)
+                        .Select(x => new InternalDocumentAttachedFile
+                        {
+                            Id = x.Id,
+                            PdfCreated = x.IsPdfCreated??false,
+                            LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue
+                        }).FirstOrDefault();
+            }
+        }
+
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -78,8 +93,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                        .Where(
-                            x => x.DocumentId == documentId && x.Version == version && x.OrderNumber == orderNumber)
+                        .Where(x => x.DocumentId == documentId && x.Version == version && x.OrderNumber == orderNumber)
                         .Where(x => !x.IsDeleted)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })

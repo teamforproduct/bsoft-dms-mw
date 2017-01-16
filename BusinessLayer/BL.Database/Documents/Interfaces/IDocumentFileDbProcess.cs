@@ -24,5 +24,6 @@ namespace BL.Database.Documents.Interfaces
         void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile);
         int GetNextFileOrderNumber(IContext ctx, int documentId);
         int GetFileNextVersion(IContext ctx, int documentId, int fileOrder);
+        InternalDocumentAttachedFile GetInternalAttachedFile(IContext ctx, int fileId);
     }
 }

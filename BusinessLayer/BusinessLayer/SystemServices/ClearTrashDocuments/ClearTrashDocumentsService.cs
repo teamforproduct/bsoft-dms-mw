@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using System.Threading;
-using BL.CrossCutting.DependencyInjection;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Database.SystemDb;
