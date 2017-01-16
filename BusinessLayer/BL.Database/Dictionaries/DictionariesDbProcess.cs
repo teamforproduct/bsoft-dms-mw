@@ -4446,6 +4446,8 @@ namespace BL.Database.Dictionaries
                     CompanyName = x.Department.Company.Agent.Name,
                     DepartmentName = x.Department.Name,
                     DepartmentCodePath = x.Department.FullPath,
+                    ExecutorName = x.ExecutorAgent.Name,
+                    ExecutorTypeSuffix = x.ExecutorType.Suffix
                 }).ToList();
 
                 transaction.Complete();
