@@ -157,6 +157,7 @@
     <Compile Include="DatabaseContext\DmsDbInitializer.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Admin\AdminPositionRoles.cs" />
+    <Compile Include="DBModel\Admin\AdminRolePermissions.cs" />
     <Compile Include="DBModel\Admin\AdminRoleActions.cs" />
     <Compile Include="DBModel\Admin\AdminRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRegistrationJournalPositions.cs" />
@@ -209,6 +210,10 @@
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />
+    <Compile Include="DBModel\System\SystemPermissions.cs" />
+    <Compile Include="DBModel\System\SystemAccessTypes.cs" />
+    <Compile Include="DBModel\System\SystemFeatures.cs" />
+    <Compile Include="DBModel\System\SystemModules.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
     <Compile Include="DBModel\Admin\AdminLanguageValues.cs" />
@@ -513,6 +518,10 @@
     <Compile Include="Migrations\201701151929057_EmployeeDepartments.Designer.cs">
       <DependentUpon>201701151929057_EmployeeDepartments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701171825362_ModuleFeature.cs" />
+    <Compile Include="Migrations\201701171825362_ModuleFeature.Designer.cs">
+      <DependentUpon>201701171825362_ModuleFeature.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -766,6 +775,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701151929057_EmployeeDepartments.resx">
       <DependentUpon>201701151929057_EmployeeDepartments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171825362_ModuleFeature.resx">
+      <DependentUpon>201701171825362_ModuleFeature.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

@@ -506,44 +506,44 @@ namespace BL.Database.DatabaseContext
         }
 
 
-        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, string module = "", string feature = "", string crud = "", string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("AdminActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, module, feature, crud, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, string module = "", string feature = "", string crud = "", string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("EncryptionActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, module, feature, crud, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, string module = "", string feature = "", string crud = "", string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("PropertyActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, module, feature, crud, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, string module = "", string feature = "", string crud = "", string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("DictionaryActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, module, feature, crud, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, string module = "", string feature = "", string crud = "", string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("DocumentActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, module, feature, crud, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, string module = "", string feature = "", string crud = "", string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("SystemActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, module, feature, crud, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSystemAction(int id, string code, EnumObjects objId, string description,
-            string module, string feature, string crud, string category = null,
+            int permissionId, string category = null,
             bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
 
         {
@@ -560,9 +560,7 @@ namespace BL.Database.DatabaseContext
                 IsVisibleInMenu = isVisibleInMenu,
                 GrantId = grantId,
                 Category = category,
-                Module = module,
-                Feature = feature,
-                CRUR = crud,
+                PermissionId = permissionId
             };
         }
         #endregion
