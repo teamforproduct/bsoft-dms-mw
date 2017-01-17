@@ -234,6 +234,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         private void SinchronizeServer(IContext ctx)
         {
+            //_logger.Information(ctx, "Start FullText sinchronization " + DateTime.Now);
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
             if (worker == null) return;
 
@@ -262,6 +263,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 }
 
                 var toUpdateNonDocuments = _systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
+                //_logger.Information(ctx, $"To update Non document {toUpdateNonDocuments.Count} ");
                 if (toUpdateNonDocuments.Any())
                 {
                     foreach (var itm in toUpdateNonDocuments)
@@ -301,6 +303,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 foreach (var objType in objToProcess)
                 {
                     var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, MAX_ROW_PROCESS, maxId);
+                    //_logger.Information(ctx, $"To update Type {objType} Count {toUpdate.Count()} ");
                     while (toUpdate.Any())
                     {
                         foreach (var itm in toUpdate)
@@ -356,6 +359,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             finally
             {
+                //_logger.Information(ctx, "Finisch FullText sinchronization " + DateTime.Now);
                 worker.CommitChanges();
             }
         }

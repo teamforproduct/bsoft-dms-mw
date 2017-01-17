@@ -119,7 +119,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                 {
                     _logger.Error(ctx, "Could not process autoplan", ex);
                 }
-            });
+            }) {CurrentContext = ctx};
             _workerSrv.AddNewTask(ctx, wrkUnit);
 
             // here we can do it through manual or automate reset events or analize wrkr.WorkCompleted event, but do it just stupped and simple
@@ -180,7 +180,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                     _logger.Error(ctx, "Could not process autoplan", ex);
                 }
                 tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
-            });
+            }) { CurrentContext = ctx };
 
             _workerSrv.AddNewTask(ctx, wrkUnit);
 

@@ -286,11 +286,11 @@ namespace BL.Database.Documents
                 var docs = res.ToList();
 
                 //TODO Sort
-                if (paging != null && paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
+                if (paging != null && paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId!=null  && filter.Document.DocumentId.Count > 0)
                 {
                     docs = docs.OrderBy(x => filter.Document.DocumentId.IndexOf(x.Id)).ToList();
                 }
-                else if ((filter?.Document?.FullTextSearchDocumentId).Any())
+                else if (filter?.Document?.FullTextSearchDocumentId!=null && filter.Document.FullTextSearchDocumentId.Any())
                 {
                     docs = docs.OrderBy(x => filter.Document.FullTextSearchDocumentId.IndexOf(x.Id)).ToList();
                 }

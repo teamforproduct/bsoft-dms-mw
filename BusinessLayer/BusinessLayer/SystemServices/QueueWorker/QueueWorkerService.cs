@@ -33,11 +33,12 @@ namespace BL.Logic.SystemServices.QueueWorker
 
         public void AddNewTask(IContext ctx, ICommand command)
         {
-            AddNewTask(ctx, new QueueTask(command));
+            AddNewTask(ctx, new QueueTask(command) { CurrentContext = ctx });
         }
 
         public void AddNewTask(IContext ctx, QueueTask command)
         {
+            command.CurrentContext = ctx;
             var srvKey = CommonSystemUtilities.GetServerKey(ctx);
             var worker = GetWorker(srvKey);
             worker?.AddToQueue(command);
@@ -45,7 +46,7 @@ namespace BL.Logic.SystemServices.QueueWorker
 
         public void AddNewTask(IContext ctx, Action command)
         {
-            AddNewTask(ctx, new QueueTask(command));
+            AddNewTask(ctx, new QueueTask(command) { CurrentContext = ctx });
         }
 
         private QueueWorker GetWorker(string key)

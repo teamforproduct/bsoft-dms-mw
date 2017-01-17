@@ -21,6 +21,8 @@ namespace BL.Logic.SystemServices.QueueWorker
             _action = action;
         }
 
+        public IContext CurrentContext { get; set; }
+
         public bool CanExecute()
         {
             if (_command != null)
