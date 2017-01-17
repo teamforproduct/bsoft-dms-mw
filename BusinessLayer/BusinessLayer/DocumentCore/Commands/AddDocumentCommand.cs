@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
@@ -96,7 +97,7 @@ namespace BL.Logic.DocumentCore.Commands
                 var fileToCopy = CommonDocumentUtilities.GetNewTemplateAttachedFile(x);
 
                 var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x, newOrdNum, 1);
-
+                newDoc.LastPdfAccess = DateTime.Now;
                 newOrdNum++;
                 toCopy.Add(newDoc, fileToCopy);
             });
@@ -108,8 +109,8 @@ namespace BL.Logic.DocumentCore.Commands
             //Properties
             _document.Properties = _document.Properties.ToList()
                 .Join(_propertyLinksByDocument,
-                        pv => new { PropertyId = pv.PropertyLink.PropertyId, pv.PropertyLink.Filers },
-                        pl => new { PropertyId = pl.PropertyId, pl.Filers },
+                        pv => new {pv.PropertyLink.PropertyId, pv.PropertyLink.Filers },
+                        pl => new {pl.PropertyId, pl.Filers },
                         (pv, pl) => { pv.Id = 0; pv.RecordId = 0; pv.PropertyLinkId = pl.Id; pv.PropertyLink = null; return pv; }).ToList();
 
             CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
@@ -123,7 +124,6 @@ namespace BL.Logic.DocumentCore.Commands
                 var src = toCopy[dest];
                 _fStore.CopyFile(_context, src, fl);
             }
-
             return Document.Id;
         }
 

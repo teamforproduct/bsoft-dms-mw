@@ -34,6 +34,7 @@ using System.IO;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Reports.FrontModel;
 using System.Data.Entity.Core.Objects;
+using System.Globalization;
 using System.Threading.Tasks;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
@@ -1114,11 +1115,11 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterBase filter, UIPaging paging = null)
         {
-            var qry = CommonQueries.GetDocumentFileQuery(ctx, dbContext, filter?.File);
+            var qry = GetDocumentFileQuery(ctx, dbContext, filter?.File);
 
             if (filter?.Document != null)
             {
-                var documentIds = CommonQueries.GetDocumentQuery(ctx, dbContext, filter?.Document, true)
+                var documentIds = GetDocumentQuery(ctx, dbContext, filter.Document, true)
                                     .Select(x => x.Id);
 
                 qry = qry.Where(x => documentIds.Contains(x.DocumentId));
@@ -1126,7 +1127,7 @@ namespace BL.Database.Common
 
             if (filter?.Event != null)
             {
-                var eventsDocumentIds = CommonQueries.GetDocumentEventQuery(ctx, dbContext, filter?.Event)
+                var eventsDocumentIds = GetDocumentEventQuery(ctx, dbContext, filter?.Event)
                                             .Select(x => x.DocumentId);
 
                 qry = qry.Where(x => eventsDocumentIds.Contains(x.DocumentId));
@@ -1134,7 +1135,7 @@ namespace BL.Database.Common
 
             if (filter?.Wait != null)
             {
-                var waitsDocumentIds = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, filter?.Wait)
+                var waitsDocumentIds = GetDocumentWaitQuery(ctx, dbContext, filter?.Wait)
                                             .Select(x => x.DocumentId);
 
                 qry = qry.Where(x => waitsDocumentIds.Contains(x.DocumentId));
@@ -3425,7 +3426,9 @@ namespace BL.Database.Common
 
         public static FrontReport GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc)
         {
+            //TODO PDF Can we reuse pdf?? 
             var fileStore = DmsResolver.Current.Get<IFileStore>();
+            // такое не делают на уровне БД! Это должно происходит на уровне логики! SZ
             var pdf = DmsResolver.Current.Get<DmsReport>().ReportExportToStream(doc, fileStore.GetFullTemplateReportFilePath(ctx, EnumReportTypes.DocumentForDigitalSignature));
 
             using (PdfReader reader = new PdfReader(pdf.FileContent))
@@ -3458,14 +3461,16 @@ namespace BL.Database.Common
 
         public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword)
         {
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf begin ", @"C:\sign.log");
 
             var fileStore = DmsResolver.Current.Get<IFileStore>();
             var pdf = GetDocumentCertificateSignPdf(dbContext, ctx, doc);
 
             if (certificateId.HasValue)
-                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
-            //FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf FileContent " + pdf.FileContent.Count().ToString(), @"C:\sign.log");
+            {
+                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>()
+                    .GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
+            }
 
             var positionId = (int)EnumSystemPositions.AdminPosition;
             try
@@ -3507,12 +3512,12 @@ namespace BL.Database.Common
             {
                 att.Version = 1;
                 att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf GetNextFileOrderNumber ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetNextFileOrderNumber ", @"C:\sign.log");
             }
             else
             {
                 att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf GetFileNextVersion ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetFileNextVersion ", @"C:\sign.log");
 
                 att.OrderInDocument = ordInDoc;
             }
@@ -3521,10 +3526,10 @@ namespace BL.Database.Common
             att.LastChangeUserId = ctx.CurrentAgentId;
 
             fileStore.SaveFile(ctx, att);
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf SaveFile ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf SaveFile ", @"C:\sign.log");
 
             operationDb.AddNewFileOrVersion(ctx, att);
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\sign.log");
 
             return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
         }

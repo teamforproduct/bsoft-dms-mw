@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
@@ -7,8 +8,8 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using System.Transactions;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore
@@ -33,15 +34,42 @@ namespace BL.Logic.DocumentCore
 
         }
 
-        public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        private FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent, EnumDocumentFileType fileType)
         {
             var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, fileIdent.Version ?? 0);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();
             }
-            _fStore.GetFile(ctx, fl);
+            if (fileType != EnumDocumentFileType.UserFile)
+            {
+                _fStore.GetFile(ctx, fl, fileType);
+            }
+            else
+            {
+                var internalFile = _dbProcess.GetInternalAttachedFile(ctx, fl.Id);
+                if (internalFile == null || !internalFile.PdfCreated) throw new UserPdfFileNotExists();
+                _fStore.GetFile(ctx, fl, fileType);
+                internalFile.LastPdfAccess = DateTime.Now;
+                _dbProcess.UpdateFilePdfView(ctx, internalFile);
+            }
+
             return fl;
+        }
+
+        public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        {
+            return GetUserFile(ctx, fileIdent, EnumDocumentFileType.UserFile);
+        }
+
+        public FrontDocumentAttachedFile GetUserFilePdf(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        {
+            return GetUserFile(ctx, fileIdent, EnumDocumentFileType.PdfFile);
+        }
+
+        public FrontDocumentAttachedFile GetUserFilePreview(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        {
+            return GetUserFile(ctx, fileIdent, EnumDocumentFileType.PdfPreview);
         }
 
     }

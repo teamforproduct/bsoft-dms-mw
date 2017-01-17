@@ -321,6 +321,14 @@ namespace BL.Model.Exception
         public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    //TODO PDF Change message to pdf file
+    public class UserPdfFileNotExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserFileNotExists@l##";
+        public UserPdfFileNotExists() : base(_MESSAGE) { }
+        public UserPdfFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class UserIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserIsNotDefined@l##";

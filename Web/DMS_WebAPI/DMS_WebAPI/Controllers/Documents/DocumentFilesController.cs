@@ -33,6 +33,34 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
+        /// Получить PDF копию файл документа определенной версии
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public IHttpActionResult PdfFile([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFilePdf(ctx, model);
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Получить картинку-превью для PDF версии документа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public IHttpActionResult PdfPreview([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFilePreview(ctx, model);
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
         /// Общий список файлов
         /// </summary>
         /// <param name="filter">фильтр</param>

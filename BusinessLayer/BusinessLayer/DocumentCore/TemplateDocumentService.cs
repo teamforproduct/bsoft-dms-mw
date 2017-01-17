@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
@@ -8,7 +9,6 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using System.Linq;
@@ -151,18 +151,36 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateAttachedFiles(ctx, filter);
         }
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        private FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
             var fl = _templateDb.GetTemplateAttachedFile(ctx, id);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();
             }
-            _fStore.GetFile(ctx, fl);
+            _fStore.GetFile(ctx, fl, fileType);
+            if (fileType == EnumDocumentFileType.PdfFile)
+            {
+                fl.LastPdfAccess = DateTime.Now;
+                _templateDb.UpdateFilePdfView(ctx,fl);
+            }
             return fl;
         }
 
+        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        {
+            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.UserFile);
+        }
 
+        public FrontTemplateAttachedFile GetTemplateAttachedFilePdf(IContext ctx, int id)
+        {
+            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfFile);
+        }
+
+        public FrontTemplateAttachedFile GetTemplateAttachedFilePreview(IContext ctx, int id)
+        {
+            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfPreview);
+        }
 
         #endregion TemplateAttachedFiles
 

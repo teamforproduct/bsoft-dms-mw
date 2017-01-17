@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Model.DocumentCore.FrontModel;
 using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.InternalModel
@@ -9,13 +8,6 @@ namespace BL.Model.DocumentCore.InternalModel
     /// </summary>
     public class InternalDocumentAttachedFile : InternalTemplateAttachedFile
     {
-        /// <summary>
-        /// default constructor
-        /// </summary>
-        public InternalDocumentAttachedFile()
-        {
-        }
-
         /// <summary>
         /// Признак основная версия файла
         /// </summary>

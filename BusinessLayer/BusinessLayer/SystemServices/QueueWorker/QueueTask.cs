@@ -1,5 +1,7 @@
 ﻿using System;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Enums;
 
 namespace BL.Logic.SystemServices.QueueWorker
@@ -32,7 +34,8 @@ namespace BL.Logic.SystemServices.QueueWorker
         {
             if (_command != null)
             {
-                _command.Execute();
+                var cmdService = DmsResolver.Current.Get<ICommandService>();
+                cmdService.ExecuteCommand(_command);
             }
             else
             {

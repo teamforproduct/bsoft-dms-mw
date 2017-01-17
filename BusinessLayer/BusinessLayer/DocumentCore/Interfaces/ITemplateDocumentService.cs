@@ -34,9 +34,8 @@ namespace BL.Logic.DocumentCore
 
         IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
         FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
-
-
-
+        FrontTemplateAttachedFile GetTemplateAttachedFilePdf(IContext ctx, int id);
+        FrontTemplateAttachedFile GetTemplateAttachedFilePreview(IContext ctx, int id);
 
     }
 }
