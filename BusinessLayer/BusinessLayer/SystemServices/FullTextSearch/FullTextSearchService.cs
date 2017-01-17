@@ -156,7 +156,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Error duing the reindexing database for client.", ex);
+                _logger.Error(ctx, ex, "Error duing the reindexing database for client.");
             }
             finally
             {
@@ -216,7 +216,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, "Could not initialize Full text service for server", ex);
+                    _logger.Error(keyValuePair.Value, ex, "Could not initialize Full text service for server");
                 }
             }
         }
@@ -254,7 +254,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.DocumentId} ");
                         }
                     }
                     _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
@@ -268,6 +268,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         try
                         {
+                            if (itm.ObjectText == null)
+                                _logger.Warning(ctx, $"NonDocument {itm.ItemType} id={itm.Id} has NULL text");
                             switch (itm.OperationType)
                             {
                                 case EnumOperationType.AddNew:
@@ -281,7 +283,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.DocumentId} ");
                         }
                     }
                     _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
@@ -318,7 +320,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                             }
                             catch (Exception ex)
                             {
-                                _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.DocumentId} ");
                             }
                         }
                         _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
@@ -339,7 +341,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ctx, $"FullTextService cannot process docId={itm.DocumentId} ", ex);
+                        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.DocumentId} ");
                     }
                 }
                 if (processedIds.Any())
@@ -379,7 +381,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Could not sinchronize fulltextsearch indexes", ex);
+                _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
+                _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
             }
             tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
