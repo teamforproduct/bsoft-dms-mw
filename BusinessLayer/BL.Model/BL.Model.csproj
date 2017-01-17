@@ -335,6 +335,8 @@
     <Compile Include="Enums\EnumSystemPatterns.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgent.cs" />
+    <Compile Include="SystemCore\Features.cs" />
+    <Compile Include="SystemCore\Modules.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Enums\EnumDatabaseType.cs" />

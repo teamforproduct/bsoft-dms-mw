@@ -5,6 +5,7 @@ using BL.Model.Common;
 using BL.Model.Constants;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using LinqKit;
 using System;
 using System.Collections.Generic;
@@ -561,6 +562,141 @@ namespace BL.Database.DatabaseContext
                 GrantId = grantId,
                 Category = category,
                 PermissionId = permissionId
+            };
+        }
+        #endregion
+
+        #region ModuleFeatures
+
+        public static List<SystemModuleFetures> GetSystemModuleFetures()
+        {
+            var items = new List<SystemModuleFetures>();
+
+            items.Add(GetSystemModuleFeture(102, Modules.List, Features.Companies, 3));
+            items.Add(GetSystemModuleFeture(103, Modules.List, Features.Positions, 4));
+            items.Add(GetSystemModuleFeture(104, Modules.List, Features.Employees, 5));
+            items.Add(GetSystemModuleFeture(105, Modules.List, Features.Journals, 6));
+            items.Add(GetSystemModuleFeture(106, Modules.List, Features.Roles, 7));
+            items.Add(GetSystemModuleFeture(107, Modules.List, Features.Departments, 8));
+            items.Add(GetSystemModuleFeture(108, Modules.System, Features.ValueTypes, 9));
+            items.Add(GetSystemModuleFeture(109, Modules.System, Features.Patterns, 10));
+            items.Add(GetSystemModuleFeture(110, Modules.System, Features.Objects, 11));
+            items.Add(GetSystemModuleFeture(111, Modules.System, Features.Formulas, 12));
+            items.Add(GetSystemModuleFeture(112, Modules.System, Features.Formats, 13));
+            items.Add(GetSystemModuleFeture(113, Modules.System, Features.Actions, 14));
+            items.Add(GetSystemModuleFeture(114, Modules.System, Features.Languages, 15));
+            items.Add(GetSystemModuleFeture(115, Modules.System, Features.SubordinationTypes, 16));
+            items.Add(GetSystemModuleFeture(116, Modules.System, Features.SendTypes, 17));
+            items.Add(GetSystemModuleFeture(117, Modules.System, Features.ResultTypes, 18));
+            items.Add(GetSystemModuleFeture(118, Modules.System, Features.AssignmentTypes, 19));
+            items.Add(GetSystemModuleFeture(119, Modules.System, Features.LinkTypes, 20));
+            items.Add(GetSystemModuleFeture(120, Modules.System, Features.EventTypes, 21));
+            items.Add(GetSystemModuleFeture(121, Modules.System, Features.ImportanceEventTypes, 22));
+            items.Add(GetSystemModuleFeture(122, Modules.System, Features.DocumentDirections, 23));
+            items.Add(GetSystemModuleFeture(123, Modules.System, Features.AccessLevels, 24));
+            items.Add(GetSystemModuleFeture(124, Modules.User, Features.Info, 25));
+            items.Add(GetSystemModuleFeture(125, Modules.User, Features.Assignments, 26));
+            items.Add(GetSystemModuleFeture(126, Modules.User, Features.Permissions, 27));
+            items.Add(GetSystemModuleFeture(127, Modules.User, Features.AuthLog, 28));
+            items.Add(GetSystemModuleFeture(128, Modules.User, Features.Addresses, 29));
+            items.Add(GetSystemModuleFeture(129, Modules.User, Features.Contacts, 30));
+            items.Add(GetSystemModuleFeture(130, Modules.User, Features.SignCertificates, 31));
+            items.Add(GetSystemModuleFeture(131, Modules.User, Features.Passport, 32));
+            items.Add(GetSystemModuleFeture(132, Modules.User, Features.Image, 33));
+            items.Add(GetSystemModuleFeture(133, Modules.User, Features.Sessions, 34));
+            items.Add(GetSystemModuleFeture(134, Modules.Tools, Features.FullTextReindex, 35));
+            items.Add(GetSystemModuleFeture(135, Modules.Org, Features.Info, 36));
+            items.Add(GetSystemModuleFeture(136, Modules.Org, Features.Addresses, 37));
+            items.Add(GetSystemModuleFeture(137, Modules.Org, Features.Contacts, 38));
+            items.Add(GetSystemModuleFeture(138, Modules.Department, Features.Info, 39));
+            items.Add(GetSystemModuleFeture(139, Modules.Department, Features.Positions, 40));
+            items.Add(GetSystemModuleFeture(140, Modules.Department, Features.Admins, 41));
+            items.Add(GetSystemModuleFeture(141, Modules.Position, Features.Info, 42));
+            items.Add(GetSystemModuleFeture(142, Modules.Position, Features.SendRules, 43));
+            items.Add(GetSystemModuleFeture(143, Modules.Position, Features.Executors, 44));
+            items.Add(GetSystemModuleFeture(144, Modules.Position, Features.Roles, 45));
+            items.Add(GetSystemModuleFeture(145, Modules.Position, Features.Journals, 46));
+            items.Add(GetSystemModuleFeture(146, Modules.Journal, Features.Info, 47));
+            items.Add(GetSystemModuleFeture(147, Modules.Journal, Features.Positions, 48));
+            items.Add(GetSystemModuleFeture(148, Modules.Employee, Features.Info, 49));
+            items.Add(GetSystemModuleFeture(149, Modules.Employee, Features.Addresses, 50));
+            items.Add(GetSystemModuleFeture(150, Modules.Employee, Features.Passport, 51));
+            items.Add(GetSystemModuleFeture(151, Modules.Employee, Features.Contacts, 52));
+            items.Add(GetSystemModuleFeture(152, Modules.Employee, Features.Assignments, 53));
+            items.Add(GetSystemModuleFeture(153, Modules.Employee, Features.Roles, 54));
+            items.Add(GetSystemModuleFeture(154, Modules.Person, Features.Info, 55));
+            items.Add(GetSystemModuleFeture(155, Modules.Person, Features.Passport, 56));
+            items.Add(GetSystemModuleFeture(156, Modules.Person, Features.Addresses, 57));
+            items.Add(GetSystemModuleFeture(157, Modules.Person, Features.Contacts, 58));
+            items.Add(GetSystemModuleFeture(158, Modules.Company, Features.Info, 59));
+            items.Add(GetSystemModuleFeture(159, Modules.Company, Features.Addresses, 60));
+            items.Add(GetSystemModuleFeture(160, Modules.Company, Features.Contacts, 61));
+            items.Add(GetSystemModuleFeture(161, Modules.Company, Features.ContactPersons, 62));
+            items.Add(GetSystemModuleFeture(162, Modules.Bank, Features.Info, 63));
+            items.Add(GetSystemModuleFeture(163, Modules.Bank, Features.Addresses, 64));
+            items.Add(GetSystemModuleFeture(164, Modules.Bank, Features.Contacts, 65));
+            items.Add(GetSystemModuleFeture(165, Modules.DocumentType, Features.Info, 66));
+            items.Add(GetSystemModuleFeture(166, Modules.DocumentType, Features.Parameters, 67));
+            items.Add(GetSystemModuleFeture(167, Modules.SendList, Features.Info, 68));
+            items.Add(GetSystemModuleFeture(168, Modules.SendList, Features.Contents, 69));
+            items.Add(GetSystemModuleFeture(169, Modules.Tags, Features.Info, 70));
+            items.Add(GetSystemModuleFeture(170, Modules.ContactType, Features.Info, 71));
+            items.Add(GetSystemModuleFeture(171, Modules.AddressType, Features.Info, 72));
+            items.Add(GetSystemModuleFeture(172, Modules.Settings, Features.Info, 73));
+            items.Add(GetSystemModuleFeture(173, Modules.System, Features.Settings, 74));
+            items.Add(GetSystemModuleFeture(174, Modules.Auth, Features.Info, 75));
+            items.Add(GetSystemModuleFeture(175, Modules.Auditlog, Features.Info, 76));
+            items.Add(GetSystemModuleFeture(176, Modules.Role, Features.Info, 77));
+            items.Add(GetSystemModuleFeture(177, Modules.Role, Features.Permissions, 78));
+            items.Add(GetSystemModuleFeture(178, Modules.Role, Features.Employees, 79));
+            items.Add(GetSystemModuleFeture(179, Modules.Role, Features.Positions, 80));
+            items.Add(GetSystemModuleFeture(180, Modules.Templates, Features.Info, 81));
+            items.Add(GetSystemModuleFeture(181, Modules.Templates, Features.Tasks, 82));
+            items.Add(GetSystemModuleFeture(182, Modules.Templates, Features.Files, 83));
+            items.Add(GetSystemModuleFeture(183, Modules.Templates, Features.Papers, 84));
+            items.Add(GetSystemModuleFeture(184, Modules.Templates, Features.SendLists, 85));
+            items.Add(GetSystemModuleFeture(185, Modules.Templates, Features.SignLists, 86));
+            items.Add(GetSystemModuleFeture(186, Modules.Templates, Features.AccessList, 87));
+
+
+            return items;
+        }
+
+        private static SystemModuleFetures GetSystemModuleFeture(int id, string module, string feture, int order)
+
+        {
+            return new SystemModuleFetures()
+            {
+                Id = id,
+                Module = module,
+                Feature = feture,
+                Name = GetLabel(module, feture),
+                Order = order,
+            };
+        }
+
+
+        public static List<SystemAccessTypes> GetSystemAccessTypes()
+        {
+            var items = new List<SystemAccessTypes>();
+
+            items.Add(GetSystemAccessType(1, "C", 2));
+            items.Add(GetSystemAccessType(2, "R", 1));
+            items.Add(GetSystemAccessType(3, "U", 3));
+            items.Add(GetSystemAccessType(4, "D", 4));
+
+            return items;
+        }
+
+        private static SystemAccessTypes GetSystemAccessType(int id, string code, int order)
+
+        {
+            return new SystemAccessTypes()
+            {
+                Id = id,
+                Code = code,
+                Name = GetLabel("AccessTypes", code),
+                Order = order,
             };
         }
         #endregion

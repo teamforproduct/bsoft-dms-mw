@@ -14,6 +14,7 @@ using System.Diagnostics;
 using BL.Logic.SystemServices.TempStorage;
 using System.Web;
 using System;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.System
 {

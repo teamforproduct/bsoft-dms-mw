@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System;
 using BL.Model.Common;
 using System.Diagnostics;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.OrgDepartments
 {

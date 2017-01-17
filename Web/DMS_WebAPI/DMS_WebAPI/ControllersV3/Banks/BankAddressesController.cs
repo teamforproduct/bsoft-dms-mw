@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using System.Collections.Generic;
 using BL.Model.Common;
 using System.Diagnostics;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.Banks
 {

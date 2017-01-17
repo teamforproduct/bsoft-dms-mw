@@ -3,23 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace DMS_WebAPI
+namespace BL.Model.SystemCore
 {
     public static class Modules
     {
-        public const string System = "System";
-
-        public const string Settings = "Settings";
-
-        public const string Auth = "Auth";
-
-        public const string Auditlog = "Auditlog";
-
-        public const string Tools = "Tools";
-
         public const string List = "List";
 
         public const string User = "User";
+
+        public const string System = "System";
+
+        public const string Org = "Org";
+
+        public const string Department = "Department";
 
         public const string Position = "Position";
 
@@ -32,10 +28,6 @@ namespace DMS_WebAPI
         public const string Bank = "Bank";
 
         public const string Journal = "Journal";
-
-        public const string Org = "Org";
-
-        public const string Department = "Department";
 
         public const string DocumentType = "DocumentType";
 
@@ -50,5 +42,15 @@ namespace DMS_WebAPI
         public const string SendList = "SendList";
 
         public const string Role = "Role";
+
+        
+
+        public const string Auth = "Auth";
+
+        public const string Auditlog = "Auditlog";
+
+        public const string Settings = "Settings";
+
+        public const string Tools = "Tools";
     }
 }
