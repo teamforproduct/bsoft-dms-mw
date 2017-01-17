@@ -3,13 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.System
 {
-    public partial class SystemFeatures
+    public partial class SystemModuleFetures
     {
         public int Id { get; set; }
 
         [MaxLength(400)]
-        [Index("IX_Code", 1, IsUnique = true)]
-        public string Code { get; set; }
+        public string Module { get; set; }
+
+        [MaxLength(400)]
+        public string Feature { get; set; }
 
         [MaxLength(2000)]
         public string Name { get; set; }

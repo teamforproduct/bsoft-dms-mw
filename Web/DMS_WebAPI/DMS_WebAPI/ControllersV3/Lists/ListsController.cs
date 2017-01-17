@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Companies")]
+        [Route(Features.Companies)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Employees")]
+        [Route(Features.Employees)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Departments")]
+        [Route(Features.Departments)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetListDepartments([FromUri] FilterTree filter, [FromUri]UIPaging paging)
         {
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Positions")]
+        [Route(Features.Positions)]
         [ResponseType(typeof(List<FrontShortListPosition>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
@@ -118,7 +118,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Journals")]
+        [Route(Features.Journals)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterTree filter, [FromUri]UIPaging paging)
         {
@@ -139,7 +139,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AddressTypes")]
+        [Route(Features.AddressTypes)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAddressType filter)
         {
@@ -160,7 +160,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ContactTypes")]
+        [Route(Features.ContactTypes)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryContactType filter)
         {
@@ -181,7 +181,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Tags")]
+        [Route(Features.Tags)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
         {

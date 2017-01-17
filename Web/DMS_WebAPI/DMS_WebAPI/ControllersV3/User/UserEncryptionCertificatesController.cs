@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserEncryptionCertificatesController : ApiController
+    public class UserSignCertificatesController : ApiController
     {
 
         Stopwatch stopWatch = new Stopwatch();
@@ -37,12 +37,12 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.EncryptionCertificates)]
+        [Route(Features.SignCertificates)]
         [ResponseType(typeof(List<FrontEncryptionCertificate>))]
         public IHttpActionResult Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (paging == null) paging = new UIPaging(); // pss это не нужно - paging всегда инициализируется 
+            if (paging == null) paging = new UIPaging();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IEncryptionService>();
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.EncryptionCertificates + "/{Id:int}")]
+        [Route(Features.SignCertificates + "/{Id:int}")]
         [ResponseType(typeof(FrontEncryptionCertificate))]
         public IHttpActionResult Get(int Id)
         {
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.EncryptionCertificates)]
+        [Route(Features.SignCertificates)]
         public IHttpActionResult Post([FromBody]AddEncryptionCertificate model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.EncryptionCertificates)]
+        [Route(Features.SignCertificates)]
         public IHttpActionResult Put([FromBody]ModifyEncryptionCertificate model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.EncryptionCertificates + "/{Id:int}")]
+        [Route(Features.SignCertificates + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

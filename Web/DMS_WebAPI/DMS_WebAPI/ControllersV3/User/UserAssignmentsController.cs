@@ -14,6 +14,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.WebAPI.FrontModel;

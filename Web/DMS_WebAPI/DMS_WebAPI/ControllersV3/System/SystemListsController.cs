@@ -7,6 +7,7 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using DMS_WebAPI.Results;
@@ -32,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter">фильтр</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Actions")]
+        [Route(Features.Actions)]
         [ResponseType(typeof(List<FrontSystemAction>))]
         public IHttpActionResult Get([FromUri] FilterSystemAction filter)
         {
@@ -48,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Formats")]
+        [Route(Features.Formats)]
         [ResponseType(typeof(List<FrontSystemFormat>))]
         public IHttpActionResult Get([FromUri] FilterSystemFormat filter)
         {
@@ -64,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Formulas")]
+        [Route(Features.Formulas)]
         [ResponseType(typeof(List<FrontSystemFormula>))]
         public IHttpActionResult Get([FromUri] FilterSystemFormula filter)
         {
@@ -80,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter">фильтр</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Objects")]
+        [Route(Features.Objects)]
         [ResponseType(typeof(List<FrontSystemObject>))]
         public IHttpActionResult Get([FromUri] FilterSystemObject filter)
         {
@@ -96,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Patterns")]
+        [Route(Features.Patterns)]
         [ResponseType(typeof(List<FrontSystemPattern>))]
         public IHttpActionResult Get([FromUri] FilterSystemPattern filter)
         {
@@ -112,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ValueTypes")]
+        [Route(Features.ValueTypes)]
         [ResponseType(typeof(List<FrontSystemValueType>))]
         public IHttpActionResult Get([FromUri] FilterSystemValueType filter)
         {
@@ -129,7 +130,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
         [HttpGet]
-        [Route("Languages")]
+        [Route(Features.Languages)]
         [ResponseType(typeof(List<InternalAdminLanguage>))]
         public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
         {
@@ -146,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
         [HttpGet]
-        [Route("SubordinationTypes")]
+        [Route(Features.SubordinationTypes)]
         [ResponseType(typeof(List<FrontDictionarySubordinationType>))]
         public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
         {
@@ -162,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("SendTypes")]
+        [Route(Features.SendTypes)]
         [ResponseType(typeof(List<FrontDictionarySendType>))]
         public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
         {
@@ -179,7 +180,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ResultTypes")]
+        [Route(Features.ResultTypes)]
         [ResponseType(typeof(List<FrontDictionaryResultType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryResultType filter)
         {
@@ -195,7 +196,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AssignmentTypes")]
+        [Route(Features.AssignmentTypes)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutorType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
@@ -211,7 +212,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("LinkTypes")]
+        [Route(Features.LinkTypes)]
         [ResponseType(typeof(List<FrontDictionaryLinkType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryLinkType filter)
         {
@@ -227,7 +228,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("EventTypes")]
+        [Route(Features.EventTypes)]
         [ResponseType(typeof(List<FrontDictionaryEventType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryEventType filter)
         {

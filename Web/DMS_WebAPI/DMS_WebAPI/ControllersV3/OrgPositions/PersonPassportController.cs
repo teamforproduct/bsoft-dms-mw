@@ -3,6 +3,7 @@ using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Diagnostics;

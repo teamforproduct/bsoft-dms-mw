@@ -11,6 +11,7 @@ using System.Web.Http.Description;
 using System.Collections.Generic;
 using System.Diagnostics;
 using BL.Model.Common;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.User
 {

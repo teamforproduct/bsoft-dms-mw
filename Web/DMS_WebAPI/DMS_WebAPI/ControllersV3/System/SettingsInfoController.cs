@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.IncomingModel;
 using DMS_WebAPI.Results;
