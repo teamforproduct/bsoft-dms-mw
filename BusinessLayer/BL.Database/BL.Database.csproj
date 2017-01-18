@@ -214,9 +214,10 @@
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />
+    <Compile Include="DBModel\System\SystemFetures.cs" />
     <Compile Include="DBModel\System\SystemPermissions.cs" />
     <Compile Include="DBModel\System\SystemAccessTypes.cs" />
-    <Compile Include="DBModel\System\SystemModuleFetures.cs" />
+    <Compile Include="DBModel\System\SystemModules.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
     <Compile Include="DBModel\Admin\AdminLanguageValues.cs" />

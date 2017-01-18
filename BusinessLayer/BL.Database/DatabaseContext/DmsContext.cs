@@ -166,7 +166,8 @@ namespace BL.Database.DatabaseContext
 
 
         
-        public virtual DbSet<SystemModuleFetures> SystemModulesSet { get; set; }
+        public virtual DbSet<SystemModules> SystemModulesSet { get; set; }
+        public virtual DbSet<SystemFeatures> SystemFeaturesSet { get; set; }
         public virtual DbSet<SystemAccessTypes> SystemAccessTypesSet { get; set; }
         public virtual DbSet<SystemPermissions> SystemPermissionsSet { get; set; }
         public virtual DbSet<SystemActions> SystemActionsSet { get; set; }

@@ -1730,12 +1730,12 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.SystemPermissionsSet.AsQueryable();
 
-                qry = qry.OrderBy(x => x.ModuleFeature.Order).ThenBy(x=>x.AccessType.Order);
+                qry = qry.OrderBy(x => x.Module.Order).ThenBy(x=>x.AccessType.Order);
 
                 var res = qry.Select(x => new FrontPermission
                 {
-                    Module = x.ModuleFeature.Module,
-                    Feature = x.ModuleFeature.Feature,
+                    Module = x.Module.Code,
+                    Feature = x.Feature.Code,
                     AccessType = x.AccessType.Code
                 }).ToList();
 

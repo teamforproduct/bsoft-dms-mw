@@ -20,7 +20,154 @@ namespace BL.Database.DatabaseContext
 
         private static int IdSequence = 0;
 
+        private static int ModuleId = 100;
+        private static int FeatureId = 100;
+
+        private static List<SystemModules> systemModules = new List<SystemModules>();
+        private static List<SystemFeatures> systemFeatures = new List<SystemFeatures>();
+        private static List<SystemPermissions> systemPermissions = new List<SystemPermissions>();
+
         private static string GetLabel(string group, string itemName) => "##l@" + group.Trim() + ":" + itemName.Trim() + "@l##";
+
+        public static List<SystemModules> GetSystemModules() => systemModules;
+        public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
+        public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
+
+        private static void AddPermission(string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
+        {
+            int moduleId = 0;
+            int featureId = 0;
+
+            var m = systemModules.Where(x => x.Code == module).FirstOrDefault();
+
+            if (m == null)
+            {
+                moduleId = ModuleId++;
+                systemModules.Add(new SystemModules { Id = moduleId, Code = module, Name = GetLabel("Modules", module), Order = moduleId });
+            }
+            else moduleId = m.Id;
+
+
+            var f = systemFeatures.Where(x => x.Code == feature).FirstOrDefault();
+
+            if (f == null)
+            {
+                featureId = FeatureId++;
+                systemFeatures.Add(new SystemFeatures { Id = featureId, Code = feature, Name = GetLabel("Features", feature), Order = featureId });
+            }
+            else featureId = f.Id;
+
+            var permissionIdstr = moduleId.ToString() + featureId.ToString();
+
+            if (r)
+                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.R.ToString()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = moduleId, FeatureId = featureId });
+
+            if (c)
+                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.C.ToString()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = moduleId, FeatureId = featureId });
+
+            if (u)
+                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.U.ToString()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = moduleId, FeatureId = featureId });
+
+            if (d)
+                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.D.ToString()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = moduleId, FeatureId = featureId });
+
+        }
+
+        public static void InitPermissions()
+        {
+            AddPermission(Modules.Org, Features.Info);
+            AddPermission(Modules.Org, Features.Addresses);
+            AddPermission(Modules.Org, Features.Contacts);
+            AddPermission(Modules.Department, Features.Info);
+            AddPermission(Modules.Department, Features.Positions, c: false, u: false, d: false);
+            AddPermission(Modules.Department, Features.Admins, u: false);
+            AddPermission(Modules.Position, Features.Info);
+            AddPermission(Modules.Position, Features.SendRules, c: false, d: false);
+            AddPermission(Modules.Position, Features.Executors);
+            AddPermission(Modules.Position, Features.Roles, c: false, d: false);
+            AddPermission(Modules.Position, Features.Journals, c: false, d: false);
+
+            AddPermission(Modules.Journal, Features.Info);
+            AddPermission(Modules.Journal, Features.Positions, c: false, d: false);
+
+            AddPermission(Modules.Templates, Features.Info);
+            AddPermission(Modules.Templates, Features.Tasks);
+            AddPermission(Modules.Templates, Features.Files);
+            AddPermission(Modules.Templates, Features.Papers);
+            AddPermission(Modules.Templates, Features.SendLists);
+            AddPermission(Modules.Templates, Features.SignLists);
+            AddPermission(Modules.Templates, Features.AccessList);
+
+            AddPermission(Modules.DocumentType, Features.Info);
+            AddPermission(Modules.DocumentType, Features.Parameters);
+
+            AddPermission(Modules.Role, Features.Info);
+            AddPermission(Modules.Role, Features.Permissions, c: false, d: false);
+            AddPermission(Modules.Role, Features.Employees, c: false, u: false, d: false);
+            AddPermission(Modules.Role, Features.Positions, c: false, u: false, d: false);
+
+
+            AddPermission(Modules.Employee, Features.Info);
+            AddPermission(Modules.Employee, Features.Assignments);
+            AddPermission(Modules.Employee, Features.Roles, c: false, d: false);
+            AddPermission(Modules.Employee, Features.Passport, c: false, d: false);
+            AddPermission(Modules.Employee, Features.Addresses);
+            AddPermission(Modules.Employee, Features.Contacts);
+
+            AddPermission(Modules.Company, Features.Info);
+            AddPermission(Modules.Company, Features.Addresses);
+            AddPermission(Modules.Company, Features.Contacts);
+            AddPermission(Modules.Company, Features.ContactPersons);
+
+            AddPermission(Modules.Person, Features.Info);
+            AddPermission(Modules.Person, Features.Passport, c: false, d: false);
+            AddPermission(Modules.Person, Features.Addresses);
+            AddPermission(Modules.Person, Features.Contacts);
+
+            AddPermission(Modules.Bank, Features.Info);
+            AddPermission(Modules.Bank, Features.Addresses);
+            AddPermission(Modules.Bank, Features.Contacts);
+
+            AddPermission(Modules.Tags, Features.Info);
+
+            AddPermission(Modules.SendList, Features.Info);
+            AddPermission(Modules.SendList, Features.Contents);
+
+            AddPermission(Modules.ContactType, Features.Info);
+            AddPermission(Modules.AddressType, Features.Info);
+
+            AddPermission(Modules.Auditlog, Features.Info, c: false, u: false, d: false);
+
+            AddPermission(Modules.Auth, Features.Info, c: false, d: false);
+            AddPermission(Modules.Settings, Features.Info, c: false, d: false);
+            AddPermission(Modules.Tools, Features.FullTextReindex, r: false, u: false, d: false);
+
+        }
+
+
+        public static List<SystemAccessTypes> GetSystemAccessTypes()
+        {
+            var items = new List<SystemAccessTypes>();
+
+            items.Add(GetSystemAccessType(EnumAccessTypes.C, 2));
+            items.Add(GetSystemAccessType(EnumAccessTypes.R, 1));
+            items.Add(GetSystemAccessType(EnumAccessTypes.U, 3));
+            items.Add(GetSystemAccessType(EnumAccessTypes.D, 4));
+
+            return items;
+        }
+
+        private static SystemAccessTypes GetSystemAccessType(EnumAccessTypes id, int order)
+
+        {
+            return new SystemAccessTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = GetLabel("AccessTypes", id.ToString()),
+                Order = order,
+            };
+        }
 
         #region [+] SystemObjects ...
 
@@ -562,108 +709,6 @@ namespace BL.Database.DatabaseContext
                 GrantId = grantId,
                 Category = category,
                 PermissionId = permissionId
-            };
-        }
-        #endregion
-
-        #region ModuleFeatures
-
-        public static List<SystemModuleFetures> GetSystemModuleFetures()
-        {
-            var items = new List<SystemModuleFetures>();
-
-            items.Add(GetSystemModuleFeture(134, Modules.Tools, Features.FullTextReindex, 35));
-            items.Add(GetSystemModuleFeture(135, Modules.Org, Features.Info, 36));
-            items.Add(GetSystemModuleFeture(136, Modules.Org, Features.Addresses, 37));
-            items.Add(GetSystemModuleFeture(137, Modules.Org, Features.Contacts, 38));
-            items.Add(GetSystemModuleFeture(138, Modules.Department, Features.Info, 39));
-            items.Add(GetSystemModuleFeture(139, Modules.Department, Features.Positions, 40));
-            items.Add(GetSystemModuleFeture(140, Modules.Department, Features.Admins, 41));
-            items.Add(GetSystemModuleFeture(141, Modules.Position, Features.Info, 42));
-            items.Add(GetSystemModuleFeture(142, Modules.Position, Features.SendRules, 43));
-            items.Add(GetSystemModuleFeture(143, Modules.Position, Features.Executors, 44));
-            items.Add(GetSystemModuleFeture(144, Modules.Position, Features.Roles, 45));
-            items.Add(GetSystemModuleFeture(145, Modules.Position, Features.Journals, 46));
-            items.Add(GetSystemModuleFeture(146, Modules.Journal, Features.Info, 47));
-            items.Add(GetSystemModuleFeture(147, Modules.Journal, Features.Positions, 48));
-            items.Add(GetSystemModuleFeture(148, Modules.Employee, Features.Info, 49));
-            items.Add(GetSystemModuleFeture(149, Modules.Employee, Features.Addresses, 50));
-            items.Add(GetSystemModuleFeture(150, Modules.Employee, Features.Passport, 51));
-            items.Add(GetSystemModuleFeture(151, Modules.Employee, Features.Contacts, 52));
-            items.Add(GetSystemModuleFeture(152, Modules.Employee, Features.Assignments, 53));
-            items.Add(GetSystemModuleFeture(153, Modules.Employee, Features.Roles, 54));
-            items.Add(GetSystemModuleFeture(154, Modules.Person, Features.Info, 55));
-            items.Add(GetSystemModuleFeture(155, Modules.Person, Features.Passport, 56));
-            items.Add(GetSystemModuleFeture(156, Modules.Person, Features.Addresses, 57));
-            items.Add(GetSystemModuleFeture(157, Modules.Person, Features.Contacts, 58));
-            items.Add(GetSystemModuleFeture(158, Modules.Company, Features.Info, 59));
-            items.Add(GetSystemModuleFeture(159, Modules.Company, Features.Addresses, 60));
-            items.Add(GetSystemModuleFeture(160, Modules.Company, Features.Contacts, 61));
-            items.Add(GetSystemModuleFeture(161, Modules.Company, Features.ContactPersons, 62));
-            items.Add(GetSystemModuleFeture(162, Modules.Bank, Features.Info, 63));
-            items.Add(GetSystemModuleFeture(163, Modules.Bank, Features.Addresses, 64));
-            items.Add(GetSystemModuleFeture(164, Modules.Bank, Features.Contacts, 65));
-            items.Add(GetSystemModuleFeture(165, Modules.DocumentType, Features.Info, 66));
-            items.Add(GetSystemModuleFeture(166, Modules.DocumentType, Features.Parameters, 67));
-            items.Add(GetSystemModuleFeture(167, Modules.SendList, Features.Info, 68));
-            items.Add(GetSystemModuleFeture(168, Modules.SendList, Features.Contents, 69));
-            items.Add(GetSystemModuleFeture(169, Modules.Tags, Features.Info, 70));
-            items.Add(GetSystemModuleFeture(170, Modules.ContactType, Features.Info, 71));
-            items.Add(GetSystemModuleFeture(171, Modules.AddressType, Features.Info, 72));
-            items.Add(GetSystemModuleFeture(172, Modules.Settings, Features.Info, 73));
-            items.Add(GetSystemModuleFeture(174, Modules.Auth, Features.Info, 75));
-            items.Add(GetSystemModuleFeture(175, Modules.Auditlog, Features.Info, 76));
-            items.Add(GetSystemModuleFeture(176, Modules.Role, Features.Info, 77));
-            items.Add(GetSystemModuleFeture(177, Modules.Role, Features.Permissions, 78));
-            items.Add(GetSystemModuleFeture(178, Modules.Role, Features.Employees, 79));
-            items.Add(GetSystemModuleFeture(179, Modules.Role, Features.Positions, 80));
-            items.Add(GetSystemModuleFeture(180, Modules.Templates, Features.Info, 81));
-            items.Add(GetSystemModuleFeture(181, Modules.Templates, Features.Tasks, 82));
-            items.Add(GetSystemModuleFeture(182, Modules.Templates, Features.Files, 83));
-            items.Add(GetSystemModuleFeture(183, Modules.Templates, Features.Papers, 84));
-            items.Add(GetSystemModuleFeture(184, Modules.Templates, Features.SendLists, 85));
-            items.Add(GetSystemModuleFeture(185, Modules.Templates, Features.SignLists, 86));
-            items.Add(GetSystemModuleFeture(186, Modules.Templates, Features.AccessList, 87));
-
-
-            return items;
-        }
-
-        private static SystemModuleFetures GetSystemModuleFeture(int id, string module, string feture, int order)
-
-        {
-            return new SystemModuleFetures()
-            {
-                Id = id,
-                Module = module,
-                Feature = feture,
-                Name = GetLabel(module, feture),
-                Order = order,
-            };
-        }
-
-
-        public static List<SystemAccessTypes> GetSystemAccessTypes()
-        {
-            var items = new List<SystemAccessTypes>();
-
-            items.Add(GetSystemAccessType(1, "C", 2));
-            items.Add(GetSystemAccessType(2, "R", 1));
-            items.Add(GetSystemAccessType(3, "U", 3));
-            items.Add(GetSystemAccessType(4, "D", 4));
-
-            return items;
-        }
-
-        private static SystemAccessTypes GetSystemAccessType(int id, string code, int order)
-
-        {
-            return new SystemAccessTypes()
-            {
-                Id = id,
-                Code = code,
-                Name = GetLabel("AccessTypes", code),
-                Order = order,
             };
         }
         #endregion
