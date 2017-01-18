@@ -67,7 +67,14 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontPermission>))]
         public IHttpActionResult GetPermissions()
         {
-            throw new NotImplementedException();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.GetPermissions(ctx);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
