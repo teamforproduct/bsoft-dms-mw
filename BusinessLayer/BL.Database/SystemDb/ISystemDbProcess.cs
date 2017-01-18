@@ -50,6 +50,10 @@ namespace BL.Database.SystemDb
         IEnumerable<TreeItem> GetSystemActionsForTree(IContext context, int roleId, FilterSystemAction filter);
         #endregion
 
+        #region [+] Permissions
+        IEnumerable<InternalPermissions> GetPermissions(IContext ctx, FilterSystemPermissions filter);
+        #endregion
+
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);

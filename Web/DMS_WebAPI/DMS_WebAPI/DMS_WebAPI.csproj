@@ -329,7 +329,6 @@
     <Compile Include="Controllers\Admins\AdminActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminUserRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRolesController.cs" />
-    <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />

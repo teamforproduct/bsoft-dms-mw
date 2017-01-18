@@ -4,7 +4,7 @@ using System;
 using BL.Model.Enums;
 using BL.Model.DictionaryCore.InternalModel;
 
-namespace BL.Model.AdminCore.InternalModel
+namespace BL.Model.SystemCore.InternalModel
 {
     public class InternalPermissions
     {

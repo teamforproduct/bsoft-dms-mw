@@ -1723,7 +1723,108 @@ namespace BL.Database.Admins
 
         #endregion
 
+        public int AddRolePermission(IContext context, InternalAdminRolePermission model)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = AdminModelConverter.GetDbRolePermission(context, model);
+                dbContext.AdminRolePermissionsSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+                transaction.Complete();
+                return dbModel.Id;
+            }
+        }
 
+        public void DeleteRolePermission(IContext context, InternalAdminRolePermission model)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                AdminRolePermissions dbModel = null;
+                if (model.Id == 0)
+                {
+                    dbModel = dbContext.AdminRolePermissionsSet.
+                        FirstOrDefault(x => x.RoleId == model.RoleId && x.PermissionId == model.PermissionId);
+                }
+                else
+                {
+                    dbModel = dbContext.AdminRolePermissionsSet.FirstOrDefault(x => x.Id == model.Id);
+                }
+                dbContext.AdminRolePermissionsSet.Remove(dbModel);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        
+
+
+        private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext context, DmsContext dbContext, FilterAdminRolePermissions filter)
+        {
+            var qry = dbContext.AdminRolePermissionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRolePermissions>();
+
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminRolePermissions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.RoleIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRolePermissions>();
+
+                    filterContains = filter.RoleIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.RoleId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.PermissionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminRolePermissions>();
+
+                    filterContains = filter.PermissionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PermissionId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+            }
+
+            return qry;
+        }
+
+        public bool ExistsRolePermissions(IContext context, FilterAdminRolePermissions filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRolePermissionsQuery(context, dbContext, filter);
+
+                var res = qry.Any();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
 
         public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
         {
@@ -1754,7 +1855,7 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked)
         {
-            var permissions = GetInternalPermissions(context, roleId, onlyChecked);
+            var permissions = GetInternalPermissionsByRole(context, roleId, onlyChecked);
 
             var res = permissions.GroupBy(x => new { x.ModuleId, x.ModuleName, x.ModuleOrder })
                  .OrderBy(x => x.Key.ModuleOrder)
@@ -1780,7 +1881,7 @@ namespace BL.Database.Admins
             return res;
         }
 
-        private IEnumerable<InternalPermissions> GetInternalPermissions(IContext context, int roleId, bool onlyChecked)
+        private IEnumerable<InternalPermissions> GetInternalPermissionsByRole(IContext context, int roleId, bool onlyChecked)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {

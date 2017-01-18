@@ -99,8 +99,10 @@
     <Compile Include="AdminCore\DepartmentAdmin\DeleteDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\PositionRole\SetPositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DuplicatePositionRolesCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\SetRoleActionByObjectCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\BaseRolePermissionCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByFeatureCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\BaseRJournalPositionCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\DuplicateRJournalPositionCommand.cs" />
@@ -116,9 +118,6 @@
     <Compile Include="AdminCore\Subordination\SetSubordinationByDepartmentCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetSubordinationCommand.cs" />
     <Compile Include="AdminCore\Subordination\BaseSubordinationCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\AddRoleActionCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\DeleteRoleActionCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\ModifyRoleActionCommand.cs" />
     <Compile Include="AdminCore\Role\AddRoleCommand.cs" />
     <Compile Include="AdminCore\Role\DeleteRoleCommand.cs" />
     <Compile Include="AdminCore\Role\ModifyRoleCommand.cs" />

@@ -75,7 +75,7 @@
         //EncryptionCertificateTypes = 402,
 
         AdminRoles = 700,
-        AdminRoleAction = 701,
+        AdminRolePermission = 701,
         AdminPositionRoles = 702,
         AdminUserRoles = 703,
         AdminSubordination = 704,

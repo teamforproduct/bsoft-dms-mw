@@ -22,24 +22,15 @@
         #endregion
 
         #region [+] RoleActions ...
-        SetRoleAction = 701000,
+        SetRolePermission = 701000,
         /// <summary>
         /// Добавить
         /// </summary>
-        AddRoleAction = 701001,
+        SetRolePermissionByFeature = 701001,
         /// <summary>
         /// Изменить
         /// </summary>
-        //ModifyRoleAction = 701005,
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        DeleteRoleAction = 701009,
-
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        SetRoleActionByObject = 701002,
+        SetRolePermissionByModule = 701002,
         #endregion
 
         #region [+] PositionRole ...

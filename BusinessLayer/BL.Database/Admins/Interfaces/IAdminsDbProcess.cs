@@ -119,6 +119,11 @@ namespace BL.Database.Admins.Interfaces
 
         void DeleteDepartmentAdmin(IContext context, int id);
 
+        int AddRolePermission(IContext context, InternalAdminRolePermission model);
+
+        void DeleteRolePermission(IContext context, InternalAdminRolePermission model);
+
+        bool ExistsRolePermissions(IContext context, FilterAdminRolePermissions filter);
         IEnumerable<FrontPermission> GetUserPermissions(IContext context);
 
         IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked);

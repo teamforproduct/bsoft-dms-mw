@@ -249,7 +249,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.EncryptionCertificates));
 
             items.Add(GetSystemObjects(EnumObjects.AdminRoles));
-            items.Add(GetSystemObjects(EnumObjects.AdminRoleAction));
+            items.Add(GetSystemObjects(EnumObjects.AdminRolePermission));
             items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminUserRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
@@ -536,10 +536,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.SetPositionRole, EnumObjects.AdminPositionRoles));
             items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
 
-            items.Add(GetSysAct(EnumAdminActions.SetRoleAction, EnumObjects.AdminRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.AddRoleAction, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.DeleteRoleAction, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.SetRoleActionByObject, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermission, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByFeature, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
 
 
             items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));

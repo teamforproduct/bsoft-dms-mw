@@ -35,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает роли должности
+        /// Возвращает действия роли
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="filter">"</param>
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         }
 
         /// <summary>
-        /// Режим корректировки. Возвращает роли должности
+        /// Режим корректировки. Возвращает действия роли
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="filter">"</param>
@@ -81,37 +81,54 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         }
 
         /// <summary>
-        /// Добавляет/удаляет роль должности
+        /// Добавляет/удаляет действия роли
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/Set")]
-        public IHttpActionResult Set([FromBody] SetAdminPositionRole model)
+        public IHttpActionResult Set([FromBody] SetRolePermission model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetPositionRole, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermission, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
-
         /// <summary>
-        /// Копирует роли
+        /// Добавляет/удаляет действия роли, которые принадлежат фичи
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Permissions + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
+        [Route(Features.Permissions + "/SetByFeature")]
+        public IHttpActionResult Set([FromBody] SetRolePermissionByFeature model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.DuplicatePositionRoles, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByFeature, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
+
+        /// <summary>
+        /// Добавляет/удаляет действия роли, которые принадлежат модулю
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Permissions + "/SetByModule")]
+        public IHttpActionResult Set([FromBody] SetRolePermissionByModule model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModule, model);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+
 
     }
 }
