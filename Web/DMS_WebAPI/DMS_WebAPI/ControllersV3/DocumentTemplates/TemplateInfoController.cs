@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody]CopyId model)
+        public IHttpActionResult Duplicate([FromBody]Item model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.CopyTemplateDocument, model.Id);
