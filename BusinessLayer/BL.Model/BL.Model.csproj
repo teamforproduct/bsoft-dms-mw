@@ -86,6 +86,7 @@
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />
     <Compile Include="AdminCore\FrontModel\FrontFeature.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontPermissionValue.cs" />
     <Compile Include="AdminCore\FrontModel\FrontModule.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPRegistrationJournalPositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminUserLanguage.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesRoles.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSettingsByPosition.cs" />
     <Compile Include="AdminCore\IncomingModel\AddAdminRole.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermission.cs" />
     <Compile Include="AdminCore\IncomingModel\SetAdminPositionRole.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRoleActionByObject.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRegistrationJournalPosition.cs" />

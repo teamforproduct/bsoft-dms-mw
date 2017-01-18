@@ -20,22 +20,22 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Чтение
         /// </summary>
-        public EnumAccessTypesValue Read { get; set; }
+        public FrontPermissionValue Read { get; set; }
 
         /// <summary>
         /// Чтение
         /// </summary>
-        public EnumAccessTypesValue Create { get; set; }
+        public FrontPermissionValue Create { get; set; }
 
         /// <summary>
         /// Чтение
         /// </summary>
-        public EnumAccessTypesValue Update { get; set; }
+        public FrontPermissionValue Update { get; set; }
 
         /// <summary>
         /// Удаление
         /// </summary>
-        public EnumAccessTypesValue Delete { get; set; }
+        public FrontPermissionValue Delete { get; set; }
 
         /// <summary>
         /// ID

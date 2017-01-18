@@ -120,5 +120,7 @@ namespace BL.Database.SystemDb
         int AddSystemDate(IContext ctx, DateTime date);
         DateTime GetSystemDate(IContext ctx);
 
+        void RefreshModuleFeature(IContext context);
+
     }
 }

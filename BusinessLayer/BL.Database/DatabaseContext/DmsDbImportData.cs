@@ -43,7 +43,8 @@ namespace BL.Database.DatabaseContext
             if (m == null)
             {
                 moduleId = ModuleId++;
-                systemModules.Add(new SystemModules { Id = moduleId, Code = module, Name = GetLabel("Modules", module), Order = moduleId });
+                m = new SystemModules { Id = moduleId, Code = module, Name = GetLabel("Modules", module), Order = moduleId };
+                systemModules.Add(m);
             }
             else moduleId = m.Id;
 
@@ -53,28 +54,33 @@ namespace BL.Database.DatabaseContext
             if (f == null)
             {
                 featureId = FeatureId++;
-                systemFeatures.Add(new SystemFeatures { Id = featureId, Code = feature, Name = GetLabel("Features", feature), Order = featureId });
+                f = new SystemFeatures { Id = featureId, Code = feature, Name = GetLabel("Features", feature), Order = featureId };
+                systemFeatures.Add(f);
             }
             else featureId = f.Id;
 
             var permissionIdstr = moduleId.ToString() + featureId.ToString();
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.R.ToString()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.C.ToString()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.U.ToString()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.D.ToString()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
         }
 
         public static void InitPermissions()
         {
+            systemPermissions.Clear();
+            systemModules.Clear();
+            systemFeatures.Clear();
+
             AddPermission(Modules.Org, Features.Info);
             AddPermission(Modules.Org, Features.Addresses);
             AddPermission(Modules.Org, Features.Contacts);

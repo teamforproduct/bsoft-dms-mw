@@ -2613,5 +2613,48 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public void RefreshModuleFeature(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AdminRolePermissionsSet.Delete();
+
+                dbContext.SystemPermissionsSet.Delete();
+
+                dbContext.SystemModulesSet.Delete();
+
+                dbContext.SystemFeaturesSet.Delete();
+
+                DmsDbImportData.InitPermissions();
+
+                foreach (var item in DmsDbImportData.GetSystemModules())
+                {
+                    dbContext.SystemModulesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemFeatures())
+                {
+                    dbContext.SystemFeaturesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemPermissions())
+                {
+                    item.ModuleId = item.Module.Id;
+                    item.FeatureId = item.Feature.Id;
+
+                    dbContext.SystemPermissionsSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                }
+
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+
+            }
+
+        }
+
     }
 }
