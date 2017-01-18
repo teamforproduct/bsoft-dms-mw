@@ -119,7 +119,7 @@ namespace BL.Database.Admins.Interfaces
 
         void DeleteDepartmentAdmin(IContext context, int id);
 
-        IEnumerable<FrontPermission> GetPermissions(IContext context);
+        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
 
         IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked);
 

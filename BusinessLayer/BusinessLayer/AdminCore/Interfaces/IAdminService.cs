@@ -84,7 +84,7 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter);
         #endregion
 
-        IEnumerable<FrontPermission> GetPermissions(IContext context);
+        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
         IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked);
     }
 }

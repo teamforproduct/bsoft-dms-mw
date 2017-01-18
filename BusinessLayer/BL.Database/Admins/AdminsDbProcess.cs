@@ -25,6 +25,7 @@ using BL.CrossCutting.Helpers;
 using BL.Model.Common;
 using BL.Model.SystemCore;
 using BL.Database.Helper;
+using BL.Database.DBModel.System;
 
 namespace BL.Database.Admins
 {
@@ -1724,11 +1725,18 @@ namespace BL.Database.Admins
 
 
 
-        public IEnumerable<FrontPermission> GetPermissions(IContext context)
+        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemPermissionsSet.AsQueryable();
+
+                var now = DateTime.UtcNow;
+
+                qry = qry.Where(x => x.Roles.Any(y => y.Role.UserRoles.Any(
+                    z => z.PositionExecutor.AgentId == context.CurrentAgentId 
+                    && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate 
+                    && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
 
                 qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.AccessType.Order);
 
@@ -1763,8 +1771,8 @@ namespace BL.Database.Admins
                          Order = y.Key.FeatureOrder,
                          Read = new FrontPermissionValue { Id = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.R).FirstOrDefault().Id : -1, Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.R && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined },
                          Create = new FrontPermissionValue { Id = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.C).FirstOrDefault().Id : -1, Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.C && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined },
-                         Update = new FrontPermissionValue { Id = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.U).FirstOrDefault().Id : -1, Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.U && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined},
-                         Delete = new FrontPermissionValue { Id = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.D).FirstOrDefault().Id : -1, Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.D && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined},
+                         Update = new FrontPermissionValue { Id = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.U).FirstOrDefault().Id : -1, Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.U && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined },
+                         Delete = new FrontPermissionValue { Id = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.D).FirstOrDefault().Id : -1, Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.D && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined },
                      }).ToList()
                  });
 
@@ -1782,6 +1790,7 @@ namespace BL.Database.Admins
                 {
                     qry = qry.Where(x => x.Roles.Any(y => y.RoleId == roleId));
                 }
+
 
                 qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
 
