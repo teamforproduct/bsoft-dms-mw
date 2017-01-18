@@ -121,5 +121,7 @@ namespace BL.Database.Admins.Interfaces
 
         IEnumerable<FrontPermission> GetPermissions(IContext context);
 
+        IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked);
+
     }
 }

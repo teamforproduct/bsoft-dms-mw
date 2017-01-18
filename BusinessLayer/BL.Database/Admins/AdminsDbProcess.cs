@@ -470,7 +470,7 @@ namespace BL.Database.Admins
                         }
                         else
                         {
-                            qry = qry.Where(x=>false);
+                            qry = qry.Where(x => false);
                         }
 
                     }
@@ -1722,7 +1722,7 @@ namespace BL.Database.Admins
 
         #endregion
 
-        
+
 
         public IEnumerable<FrontPermission> GetPermissions(IContext context)
         {
@@ -1730,7 +1730,7 @@ namespace BL.Database.Admins
             {
                 var qry = dbContext.SystemPermissionsSet.AsQueryable();
 
-                qry = qry.OrderBy(x => x.Module.Order).ThenBy(x=>x.AccessType.Order);
+                qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.AccessType.Order);
 
                 var res = qry.Select(x => new FrontPermission
                 {
@@ -1743,6 +1743,74 @@ namespace BL.Database.Admins
                 return res;
             }
         }
+
+        public IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked)
+        {
+            var permissions = GetInternalPermissions(context, roleId, onlyChecked);
+
+            var res = permissions.GroupBy(x => new { x.ModuleId, x.ModuleName, x.ModuleOrder })
+                 .OrderBy(x => x.Key.ModuleOrder)
+                 .Select(x => new FrontModule()
+                 {
+                     Id = x.Key.ModuleId,
+                     Name = x.Key.ModuleName,
+                     Features = x.GroupBy(y => new { y.FeatureId, y.FeatureName, y.FeatureOrder })
+                     .OrderBy(y => y.Key.FeatureOrder)
+                     .Select(y => new FrontFeature
+                     {
+                         Id = y.Key.FeatureId,
+                         Name = y.Key.FeatureName,
+                         Order = y.Key.FeatureOrder,
+                         Read = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? (y.Any(z=>z.AccessTypeId == EnumAccessTypes.R && z.IsChecked)? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined,
+                         Create = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.C && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined,
+                         Update = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.U && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined,
+                         Delete = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.D && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined,
+                     }).ToList()
+                 });
+
+
+            return res;
+        }
+
+        private IEnumerable<InternalPermissions> GetInternalPermissions(IContext context, int roleId, bool onlyChecked)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemPermissionsSet.AsQueryable();
+
+                if (onlyChecked)
+                {
+                    qry = qry.Where(x => x.Roles.Any(y => y.RoleId == roleId));
+                }
+
+                qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
+
+                var res = qry.Select(x => new InternalPermissions
+                {
+                    AccessTypeId = (EnumAccessTypes)x.AccessTypeId,
+                    AccessTypeCode = x.AccessType.Code,
+                    AccessTypeName = x.AccessType.Name,
+                    AccessTypeOrder = x.AccessType.Order,
+
+                    ModuleId = x.ModuleId,
+                    ModuleCode = x.Module.Code,
+                    ModuleName = x.Module.Name,
+                    ModuleOrder = x.Module.Order,
+
+                    FeatureId = x.FeatureId,
+                    FeatureCode = x.Feature.Code,
+                    FeatureName = x.Feature.Name,
+                    FeatureOrder = x.Feature.Order,
+
+                    IsChecked = x.Roles.Any(y => y.RoleId == roleId),
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+
 
         #region [+] AddNewClient ...
 

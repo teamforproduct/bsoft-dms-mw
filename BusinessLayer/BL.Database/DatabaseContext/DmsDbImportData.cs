@@ -33,7 +33,7 @@ namespace BL.Database.DatabaseContext
         public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
         public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
 
-        private static void AddPermission(string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
+        private static void AddPermission(string module, string feature,  bool r = true, bool c = true, bool u = true, bool d = true)
         {
             int moduleId = 0;
             int featureId = 0;
@@ -86,10 +86,10 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Position, Features.Executors);
             AddPermission(Modules.Position, Features.Roles, c: false, d: false);
             AddPermission(Modules.Position, Features.Journals, c: false, d: false);
-
+                
             AddPermission(Modules.Journal, Features.Info);
             AddPermission(Modules.Journal, Features.Positions, c: false, d: false);
-
+             
             AddPermission(Modules.Templates, Features.Info);
             AddPermission(Modules.Templates, Features.Tasks);
             AddPermission(Modules.Templates, Features.Files);
@@ -97,15 +97,15 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Templates, Features.SendLists);
             AddPermission(Modules.Templates, Features.SignLists);
             AddPermission(Modules.Templates, Features.AccessList);
-
+                         
             AddPermission(Modules.DocumentType, Features.Info);
             AddPermission(Modules.DocumentType, Features.Parameters);
-
+                         
             AddPermission(Modules.Role, Features.Info);
             AddPermission(Modules.Role, Features.Permissions, c: false, d: false);
             AddPermission(Modules.Role, Features.Employees, c: false, u: false, d: false);
             AddPermission(Modules.Role, Features.Positions, c: false, u: false, d: false);
-
+                     
 
             AddPermission(Modules.Employee, Features.Info);
             AddPermission(Modules.Employee, Features.Assignments);
@@ -113,31 +113,31 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Employee, Features.Passport, c: false, d: false);
             AddPermission(Modules.Employee, Features.Addresses);
             AddPermission(Modules.Employee, Features.Contacts);
-
+                    
             AddPermission(Modules.Company, Features.Info);
             AddPermission(Modules.Company, Features.Addresses);
             AddPermission(Modules.Company, Features.Contacts);
             AddPermission(Modules.Company, Features.ContactPersons);
-
+                         
             AddPermission(Modules.Person, Features.Info);
             AddPermission(Modules.Person, Features.Passport, c: false, d: false);
             AddPermission(Modules.Person, Features.Addresses);
             AddPermission(Modules.Person, Features.Contacts);
-
+                          
             AddPermission(Modules.Bank, Features.Info);
             AddPermission(Modules.Bank, Features.Addresses);
             AddPermission(Modules.Bank, Features.Contacts);
-
+                       
             AddPermission(Modules.Tags, Features.Info);
-
+                        
             AddPermission(Modules.SendList, Features.Info);
             AddPermission(Modules.SendList, Features.Contents);
-
+                       
             AddPermission(Modules.ContactType, Features.Info);
             AddPermission(Modules.AddressType, Features.Info);
-
+                         
             AddPermission(Modules.Auditlog, Features.Info, c: false, u: false, d: false);
-
+                          
             AddPermission(Modules.Auth, Features.Info, c: false, d: false);
             AddPermission(Modules.Settings, Features.Info, c: false, d: false);
             AddPermission(Modules.Tools, Features.FullTextReindex, r: false, u: false, d: false);

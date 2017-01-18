@@ -885,5 +885,10 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetPermissions(context);
         }
 
+        public IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked)
+        {
+            return _adminDb.GetRolePermissions(context, roleId, onlyChecked);
+        }
+
     }
 }

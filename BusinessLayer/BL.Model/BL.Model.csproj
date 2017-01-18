@@ -85,6 +85,8 @@
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontFeature.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontModule.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPRegistrationJournalPositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminUserLanguage.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAvailablePositions.cs" />
@@ -131,6 +133,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalPermissions.cs" />
     <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
@@ -327,6 +330,7 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
+    <Compile Include="Enums\EnumAccessTypesValue.cs" />
     <Compile Include="Enums\EnumAccessTypes.cs" />
     <Compile Include="Enums\EnumDocumentFileType.cs" />
     <Compile Include="Enums\EnumPagingResult.cs" />

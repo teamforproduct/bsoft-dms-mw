@@ -85,5 +85,6 @@ namespace BL.Logic.AdminCore.Interfaces
         #endregion
 
         IEnumerable<FrontPermission> GetPermissions(IContext context);
+        IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked);
     }
 }
