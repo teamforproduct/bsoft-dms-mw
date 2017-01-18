@@ -1722,6 +1722,28 @@ namespace BL.Database.Admins
 
         #endregion
 
+        
+
+        public IEnumerable<FrontPermission> GetPermissions(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemPermissionsSet.AsQueryable();
+
+                qry = qry.OrderBy(x => x.ModuleFeature.Order).ThenBy(x=>x.AccessType.Order);
+
+                var res = qry.Select(x => new FrontPermission
+                {
+                    Module = x.ModuleFeature.Module,
+                    Feature = x.ModuleFeature.Feature,
+                    AccessType = x.AccessType.Code
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         #region [+] AddNewClient ...
 
         public List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context)
@@ -1737,6 +1759,8 @@ namespace BL.Database.Admins
         }
 
         #endregion
+
+
     }
 }
 
