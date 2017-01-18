@@ -296,6 +296,8 @@ namespace BL.Database.Common
                  ExecutorPositionId = docFile.ExecutorPositionId,
                  ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
                  ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
+                 LastPdfAccessDate = docFile.LastPdfAccess,
+                 IsPdfCreated = docFile.PdfCreated,
              };
 
             return res;

@@ -271,7 +271,6 @@
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="DocumentCore\IncomingModel\AdditinalLinkedDocumentSendList.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocument.cs" />
-    <Compile Include="DocumentCore\IncomingModel\CopyId.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentTask.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentSendLists.cs" />

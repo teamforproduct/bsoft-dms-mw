@@ -37,6 +37,8 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [Route("GetPdfFile")]
+        [HttpGet]
         public IHttpActionResult PdfFile([FromUri]FilterDocumentFileIdentity model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -51,6 +53,8 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [Route("GetPdfPreview")]
+        [HttpGet]
         public IHttpActionResult PdfPreview([FromUri]FilterDocumentFileIdentity model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -129,7 +133,6 @@ namespace DMS_WebAPI.Controllers.Documents
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
             model.IsUseMainNameFile = false;
-
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
             return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);

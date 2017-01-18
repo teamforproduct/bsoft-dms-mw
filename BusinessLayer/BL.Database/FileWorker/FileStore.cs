@@ -153,8 +153,9 @@ namespace BL.Database.FileWorker
                     attFile.LastPdfAccess = DateTime.Now;
                     attFile.PdfCreated = true;
                 }
-
                 PdfGenerator.CreatePdfPreview(pdfFileName, previewFile);
+                attFile.PdfCreated = true;
+                attFile.LastPdfAccess = DateTime.Now;
                 return true;
             }
             catch (Exception ex)

@@ -172,8 +172,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 var admContext = new AdminContext(_context);
                 _queueWorkerService.AddNewTask(admContext, () =>
                 {
-                    _fStore.CreatePdfFile(admContext, att);
-                    _operationDb.UpdateFilePdfView(admContext, att);
+                    if (_fStore.CreatePdfFile(admContext, att))
+                    {
+                        _operationDb.UpdateFilePdfView(admContext, att);
+                    }
                 });
             }
             catch (Exception ex)

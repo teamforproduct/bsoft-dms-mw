@@ -25,6 +25,11 @@ namespace PDFCreator
             {
                 var converter = ConverterFactory.GetConverter(inputFile);
                 var pdf = converter.ConvertToPdf(inputFile);
+                var outPath = Path.GetDirectoryName(outputFile);
+                if (!Directory.Exists(outPath))
+                {
+                    Directory.CreateDirectory(outPath);
+                }
                 using (var fileStream = new FileStream(outputFile, FileMode.Create))
                 {
                     pdf.WriteTo(fileStream);

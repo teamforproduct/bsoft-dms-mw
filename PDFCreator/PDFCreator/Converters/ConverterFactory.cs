@@ -27,10 +27,10 @@ namespace PDFCreator.Converters
                 ".ods", 
 
                 ".msg",
-                ".pst",
-                ".ost",
-                ".oft",
-                ".mbox",
+                //".pst",
+                //".ost",
+                //".oft",
+                //".mbox",
                 ".emlx",
                 ".eml",
 
@@ -75,10 +75,10 @@ namespace PDFCreator.Converters
                 case ".ods": return new ExcelToPdfConverter();
 
                 case ".msg":
-                case ".pst":
-                case ".ost":
-                case ".oft":
-                case ".mbox":
+                //case ".pst":
+                //case ".ost":
+                //case ".oft":
+                //case ".mbox":
                 case ".emlx":
                 case ".eml": return new EmailToPdfConverter();
 
