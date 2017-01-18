@@ -136,7 +136,17 @@ namespace BL.Database.Common
 
             return items;
         }
-
+        public static AdminRolePermissions GetDbRolePermission(IContext context, InternalAdminRolePermission item)
+        {
+            return item == null ? null : new AdminRolePermissions
+            {
+                Id = item.Id,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+                RoleId = item.RoleId,
+                PermissionId = item.PermissionId,
+            };
+        }
 
         public static AdminRegistrationJournalPositions GetDbRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition item)
         {

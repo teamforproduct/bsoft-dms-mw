@@ -71,7 +71,7 @@ namespace DMS_WebAPI.ControllersV3.User
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetPermissions(ctx);
+            var tmpItem = tmpService.GetUserPermissions(ctx);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

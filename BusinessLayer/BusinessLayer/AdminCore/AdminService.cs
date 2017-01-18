@@ -880,9 +880,14 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
-        public IEnumerable<FrontPermission> GetPermissions(IContext context)
+        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
         {
-            return _adminDb.GetPermissions(context);
+            return _adminDb.GetUserPermissions(context);
+        }
+
+        public IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked)
+        {
+            return _adminDb.GetRolePermissions(context, roleId, onlyChecked);
         }
 
     }

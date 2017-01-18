@@ -33,7 +33,7 @@ namespace BL.Database.DatabaseContext
         public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
         public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
 
-        private static void AddPermission(string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
+        private static void AddPermission(string module, string feature,  bool r = true, bool c = true, bool u = true, bool d = true)
         {
             int moduleId = 0;
             int featureId = 0;
@@ -43,7 +43,8 @@ namespace BL.Database.DatabaseContext
             if (m == null)
             {
                 moduleId = ModuleId++;
-                systemModules.Add(new SystemModules { Id = moduleId, Code = module, Name = GetLabel("Modules", module), Order = moduleId });
+                m = new SystemModules { Id = moduleId, Code = module, Name = GetLabel("Modules", module), Order = moduleId };
+                systemModules.Add(m);
             }
             else moduleId = m.Id;
 
@@ -53,28 +54,33 @@ namespace BL.Database.DatabaseContext
             if (f == null)
             {
                 featureId = FeatureId++;
-                systemFeatures.Add(new SystemFeatures { Id = featureId, Code = feature, Name = GetLabel("Features", feature), Order = featureId });
+                f = new SystemFeatures { Id = featureId, Code = feature, Name = GetLabel("Features", feature), Order = featureId };
+                systemFeatures.Add(f);
             }
             else featureId = f.Id;
 
             var permissionIdstr = moduleId.ToString() + featureId.ToString();
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.R.ToString()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.C.ToString()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.U.ToString()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = Int32.Parse(permissionIdstr + EnumAccessTypes.D.ToString()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = moduleId, FeatureId = featureId });
+                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
 
         }
 
         public static void InitPermissions()
         {
+            systemPermissions.Clear();
+            systemModules.Clear();
+            systemFeatures.Clear();
+
             AddPermission(Modules.Org, Features.Info);
             AddPermission(Modules.Org, Features.Addresses);
             AddPermission(Modules.Org, Features.Contacts);
@@ -86,10 +92,10 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Position, Features.Executors);
             AddPermission(Modules.Position, Features.Roles, c: false, d: false);
             AddPermission(Modules.Position, Features.Journals, c: false, d: false);
-
+                
             AddPermission(Modules.Journal, Features.Info);
             AddPermission(Modules.Journal, Features.Positions, c: false, d: false);
-
+             
             AddPermission(Modules.Templates, Features.Info);
             AddPermission(Modules.Templates, Features.Tasks);
             AddPermission(Modules.Templates, Features.Files);
@@ -97,15 +103,15 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Templates, Features.SendLists);
             AddPermission(Modules.Templates, Features.SignLists);
             AddPermission(Modules.Templates, Features.AccessList);
-
+                         
             AddPermission(Modules.DocumentType, Features.Info);
             AddPermission(Modules.DocumentType, Features.Parameters);
-
+                         
             AddPermission(Modules.Role, Features.Info);
             AddPermission(Modules.Role, Features.Permissions, c: false, d: false);
             AddPermission(Modules.Role, Features.Employees, c: false, u: false, d: false);
             AddPermission(Modules.Role, Features.Positions, c: false, u: false, d: false);
-
+                     
 
             AddPermission(Modules.Employee, Features.Info);
             AddPermission(Modules.Employee, Features.Assignments);
@@ -113,31 +119,31 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Employee, Features.Passport, c: false, d: false);
             AddPermission(Modules.Employee, Features.Addresses);
             AddPermission(Modules.Employee, Features.Contacts);
-
+                    
             AddPermission(Modules.Company, Features.Info);
             AddPermission(Modules.Company, Features.Addresses);
             AddPermission(Modules.Company, Features.Contacts);
             AddPermission(Modules.Company, Features.ContactPersons);
-
+                         
             AddPermission(Modules.Person, Features.Info);
             AddPermission(Modules.Person, Features.Passport, c: false, d: false);
             AddPermission(Modules.Person, Features.Addresses);
             AddPermission(Modules.Person, Features.Contacts);
-
+                          
             AddPermission(Modules.Bank, Features.Info);
             AddPermission(Modules.Bank, Features.Addresses);
             AddPermission(Modules.Bank, Features.Contacts);
-
+                       
             AddPermission(Modules.Tags, Features.Info);
-
+                        
             AddPermission(Modules.SendList, Features.Info);
             AddPermission(Modules.SendList, Features.Contents);
-
+                       
             AddPermission(Modules.ContactType, Features.Info);
             AddPermission(Modules.AddressType, Features.Info);
-
+                         
             AddPermission(Modules.Auditlog, Features.Info, c: false, u: false, d: false);
-
+                          
             AddPermission(Modules.Auth, Features.Info, c: false, d: false);
             AddPermission(Modules.Settings, Features.Info, c: false, d: false);
             AddPermission(Modules.Tools, Features.FullTextReindex, r: false, u: false, d: false);
@@ -243,7 +249,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.EncryptionCertificates));
 
             items.Add(GetSystemObjects(EnumObjects.AdminRoles));
-            items.Add(GetSystemObjects(EnumObjects.AdminRoleAction));
+            items.Add(GetSystemObjects(EnumObjects.AdminRolePermission));
             items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminUserRoles));
             items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
@@ -530,10 +536,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.SetPositionRole, EnumObjects.AdminPositionRoles));
             items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
 
-            items.Add(GetSysAct(EnumAdminActions.SetRoleAction, EnumObjects.AdminRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.AddRoleAction, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.DeleteRoleAction, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
-            items.Add(GetSysAct(EnumAdminActions.SetRoleActionByObject, EnumObjects.AdminRoleAction, isVisible: false, grantId: (int)EnumAdminActions.SetRoleAction));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermission, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByFeature, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
 
 
             items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));

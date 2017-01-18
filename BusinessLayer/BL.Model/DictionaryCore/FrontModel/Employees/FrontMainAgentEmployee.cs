@@ -102,7 +102,7 @@ namespace BL.Model.DictionaryCore.FrontMainModel
         public bool? IsActive { get; set; }
 
         /// <summary>
-        /// Список адресов контрагента
+        /// Список исполнителей контрагента
         /// </summary>
         public IEnumerable<FrontDictionaryPositionExecutor> PositionExecutors { get; set; }
 
