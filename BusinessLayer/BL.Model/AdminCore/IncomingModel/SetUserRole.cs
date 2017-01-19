@@ -21,7 +21,7 @@ namespace BL.Model.AdminCore.IncomingModel
         /// Роль
         /// </summary>
         [Required]
-        public int RoleId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Назначение, от должности которого унаследованы роли

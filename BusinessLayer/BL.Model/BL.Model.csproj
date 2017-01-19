@@ -108,7 +108,6 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDefaultSubordination.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByCompany.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByDepartment.cs" />
-    <Compile Include="AdminCore\IncomingModel\SetUserRoleByPosition.cs" />
     <Compile Include="AdminCore\InternalModel\InternalDepartmentAdmin.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminRolePermission.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleType.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
+    <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
     <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
