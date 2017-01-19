@@ -1,4 +1,6 @@
-﻿namespace BL.Model.Common
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BL.Model.Common
 {
     /// <summary>
     /// Id + Сheck
@@ -8,6 +10,7 @@
         /// <summary>
         /// Id
         /// </summary>
+        [Required]
         public bool IsChecked { get; set; }
     }
 }

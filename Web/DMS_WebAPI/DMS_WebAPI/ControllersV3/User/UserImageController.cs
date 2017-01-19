@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Image)]
-        public IHttpActionResult Put([FromUri]ModifyDictionaryAgentImage model)
+        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentImage model)
         {
             throw new NotImplementedException();
         }

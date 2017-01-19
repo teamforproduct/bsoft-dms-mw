@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class AddStandartSendList :LastChangeInfo
+    public class AddStandartSendList
     {
         [Required]
         public string Name { get; set; }

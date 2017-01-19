@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Web;
 
 namespace BL.Model.DictionaryCore.IncomingModel
@@ -11,6 +12,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
+        [Required]
         public int AgentId { get; set; }
 
         /// <summary>
