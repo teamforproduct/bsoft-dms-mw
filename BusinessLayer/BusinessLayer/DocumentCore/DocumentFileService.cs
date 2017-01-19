@@ -47,10 +47,9 @@ namespace BL.Logic.DocumentCore
             }
             else
             {
-                var internalFile = _dbProcess.GetInternalAttachedFile(ctx, fl.Id);
-                if (internalFile == null || !internalFile.PdfCreated) throw new UserPdfFileNotExists();
+                if (!fl.PdfCreated) throw new UserPdfFileNotExists();
                 _fStore.GetFile(ctx, fl, fileType);
-                internalFile.LastPdfAccess = DateTime.Now;
+                var internalFile = new InternalDocumentAttachedFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = fl.PdfCreated };
                 _dbProcess.UpdateFilePdfView(ctx, internalFile);
             }
 

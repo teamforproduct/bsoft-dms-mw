@@ -158,6 +158,11 @@ namespace BL.Logic.DocumentCore
             {
                 throw new UnknownDocumentFile();
             }
+            if (fileType != EnumDocumentFileType.UserFile && !fl.PdfCreated)
+            {
+                throw new UserPdfFileNotExists();
+            }
+
             _fStore.GetFile(ctx, fl, fileType);
             if (fileType == EnumDocumentFileType.PdfFile)
             {

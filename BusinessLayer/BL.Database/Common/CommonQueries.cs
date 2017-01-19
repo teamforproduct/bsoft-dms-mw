@@ -1205,6 +1205,8 @@ namespace BL.Database.Common
                                 RegistrationNumberPrefix = file.Document.RegistrationNumberPrefix,
                                 RegistrationNumberSuffix = file.Document.RegistrationNumberSuffix,
                                 RegistrationFullNumber = "#" + file.Document.Id,
+                                PdfCreated = file.IsPdfCreated??false,
+                                LastPdfAccess = file.LastPdfAccessDate,
                             });
 
             var res = qryFE.ToList();

@@ -108,5 +108,7 @@ namespace BL.Model.DocumentCore.FrontModel
 		
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
+        public bool PdfCreated { get; set; }
+        public DateTime? LastPdfAccess { get; set; }
     }
 }

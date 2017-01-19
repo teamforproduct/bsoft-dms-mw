@@ -51,7 +51,9 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IHttpActionResult PdfVersion(int id)
+        [Route("GetPdfFile")]
+        [HttpGet]
+        public IHttpActionResult PdfFile(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<ITemplateDocumentService>();
@@ -63,6 +65,8 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Route("GetPdfPreview")]
+        [HttpGet]
         public IHttpActionResult PdfPreview(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
