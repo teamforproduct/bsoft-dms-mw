@@ -37,7 +37,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
                         var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
                         var fileModel = new ModifyDictionaryAgentImage
                         {
-                            AgentId = Model.Id,
+                            Id = Model.Id,
                             PostedFileData = Model.PostedFileData
                         };
                         tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, _context, fileModel);

@@ -42,6 +42,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Компания
         /// </summary>
+        [Required]
         public int CompanyId { get; set; }
 
         /// <summary>

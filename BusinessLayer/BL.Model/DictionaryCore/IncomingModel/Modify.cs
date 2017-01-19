@@ -13,7 +13,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -49,7 +49,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Ид
         /// </summary>
-        //[Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -64,7 +64,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -77,7 +77,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -113,8 +113,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        // TODO
-        //[Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -138,7 +137,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -153,7 +152,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -166,7 +165,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
     }
 
@@ -180,7 +179,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
 
@@ -212,7 +211,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ID
         /// </summary>
-        /// //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
@@ -220,7 +219,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
 
     public class ModifyStandartSendList : AddStandartSendList
     {
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
     }
 
@@ -232,13 +231,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// ИД
         /// </summary>
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
     }
 
     public class ModifyTag : AddTag
     {
-        //TODO [Required]
+        [Required]
         public int Id { get; set; }
 
     }
