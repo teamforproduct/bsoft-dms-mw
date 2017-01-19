@@ -13,7 +13,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// ID
         /// </summary>
         [Required]
-        public int AgentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Данные файла

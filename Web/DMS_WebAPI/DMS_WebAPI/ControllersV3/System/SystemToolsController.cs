@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns>сервер</returns>
         [HttpPost]
         [Route("FullTextReindex")]
-        public IHttpActionResult FullTextReindex(int ClientId)
+        public IHttpActionResult FullTextReindex([FromBody]int ClientId)
         {
             var dbProc = new WebAPIDbProcess();
             var clientServer = dbProc.GetClientServer(ClientId);
