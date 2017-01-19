@@ -1,16 +1,12 @@
 ﻿using BL.Model.Users;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    public class ModifyCustomDictionary
+    public class AddCustomDictionary
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
         /// <summary>
         /// Ид. словаря
         /// </summary>
@@ -19,6 +15,11 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Код значения словаря
         /// </summary>
         public string Code { get; set; }
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        [Required]
+        public string Name { get; set; }
         /// <summary>
         /// Описание значения словаря
         /// </summary>

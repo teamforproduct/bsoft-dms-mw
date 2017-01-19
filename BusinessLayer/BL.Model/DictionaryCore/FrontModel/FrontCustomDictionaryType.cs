@@ -9,13 +9,8 @@ namespace BL.Model.DictionaryCore.FrontModel
     public class FrontCustomDictionaryType : ModifyCustomDictionaryType
     {
         /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Значения словаря
         /// </summary>
-        public IEnumerable<FrontCustomDictionary> CustomDictionaries { get; set; }
+        //public IEnumerable<FrontCustomDictionary> CustomDictionaries { get; set; }
     }
 }

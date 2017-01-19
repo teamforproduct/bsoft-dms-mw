@@ -256,4 +256,23 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         public int Id { get; set; }
     }
+
+    public class ModifyCustomDictionaryType : AddCustomDictionaryType
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+
+    }
+
+    public class ModifyCustomDictionary : AddCustomDictionary
+    {
+        /// <summary>
+        /// ID
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+    }
 }

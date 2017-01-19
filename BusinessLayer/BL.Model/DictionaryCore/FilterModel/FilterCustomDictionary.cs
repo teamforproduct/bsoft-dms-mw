@@ -7,5 +7,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         public string Code { get; set; }
 
         public string CodeExact { get; set; }
+
+        public List<int> TypeIDs { get; set; }
     }
 }

@@ -7,9 +7,5 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// </summary>
     public class FrontCustomDictionary : ModifyCustomDictionary
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
     }
 }

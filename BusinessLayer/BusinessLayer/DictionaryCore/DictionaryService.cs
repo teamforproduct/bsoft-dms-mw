@@ -1082,19 +1082,34 @@ namespace BL.Logic.DictionaryCore
 
         public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
         {
-            return _dictDb.GetCustomDictionaryTypeWithCustomDictionaries(context, id);
+            return GetCustomDictionaryTypes(context, new FilterCustomDictionaryType {IDs = new List<int> { id } }).FirstOrDefault();
         }
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
-        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter)
+        public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging)
         {
-            return _dictDb.GetCustomDictionaries(context, filter);
+            var newFilter = new FilterCustomDictionary();
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.CustomDictionaries, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetCustomDictionaries(context, newFilter, paging);
+        }
+
+        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging)
+        {
+            return _dictDb.GetCustomDictionaries(context, filter, paging);
         }
 
         public FrontCustomDictionary GetCustomDictionary(IContext context, int id)
         {
-            return _dictDb.GetCustomDictionaries(context, new FilterCustomDictionary { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetCustomDictionaries(context, new FilterCustomDictionary { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
         #endregion CustomDictionaries
 

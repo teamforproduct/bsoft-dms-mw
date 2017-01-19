@@ -224,6 +224,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\CustomDictionaries\CustomDictionaryTypesInfoController.cs" />
+    <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
     <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
@@ -335,7 +337,6 @@
     <Compile Include="Controllers\Dictionaries\DictionaryStageTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
-    <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentAccountsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentAddressesController.cs" />
