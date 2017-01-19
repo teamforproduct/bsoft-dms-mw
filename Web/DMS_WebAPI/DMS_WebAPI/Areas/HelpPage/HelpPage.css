@@ -132,13 +132,13 @@ section.content-wrapper.main-content.clear-fix>p {
 .help-page h1,
 .help-page .h1 {
     font-size: 36px;
+    border-bottom-style: outset;
     line-height: normal;
 }
 
 .help-page h2,
 .help-page .h2 {
     font-size: 24px;
-    border-bottom-style: outset;
 }
 
 
