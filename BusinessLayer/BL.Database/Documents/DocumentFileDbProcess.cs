@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -270,12 +271,13 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx)
+        public IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-               return  dbContext.DocumentFilesSet.Where(x=>x.IsPdfCreated.HasValue && x.IsPdfCreated.Value && (!x.LastPdfAccessDate.HasValue || (DateTime.Now - x.LastPdfAccessDate.Value)
-                .TotalDays>60)).Select(x => new InternalDocumentAttachedFile
+               var res = dbContext.DocumentFilesSet.Where(x=>x.IsPdfCreated.HasValue && x.IsPdfCreated.Value 
+               && (!x.LastPdfAccessDate.HasValue || Math.Abs(DbFunctions.DiffDays(DateTime.Now, x.LastPdfAccessDate.Value)??0)> pdfAge))
+               .Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
                     ExecutorPositionId = x.ExecutorPositionId,
@@ -288,6 +290,8 @@ namespace BL.Database.Documents
                     PdfCreated = x.IsPdfCreated.Value,
                     LastPdfAccess = x.LastPdfAccessDate.Value
                 }).ToList();
+                transaction.Complete();
+                return res;
             }
         }
 

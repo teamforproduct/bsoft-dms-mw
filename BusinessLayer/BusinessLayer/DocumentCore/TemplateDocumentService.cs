@@ -158,14 +158,14 @@ namespace BL.Logic.DocumentCore
             {
                 throw new UnknownDocumentFile();
             }
-            if (fileType != EnumDocumentFileType.UserFile && !fl.PdfCreated)
+            if (fileType == EnumDocumentFileType.UserFile)
             {
-                throw new UserPdfFileNotExists();
+                _fStore.GetFile(ctx, fl, fileType);
             }
-
-            _fStore.GetFile(ctx, fl, fileType);
-            if (fileType == EnumDocumentFileType.PdfFile)
+            else
             {
+                _fStore.GetFile(ctx, fl, fileType);
+                fl.PdfCreated = true;
                 fl.LastPdfAccess = DateTime.Now;
                 _templateDb.UpdateFilePdfView(ctx,fl);
             }

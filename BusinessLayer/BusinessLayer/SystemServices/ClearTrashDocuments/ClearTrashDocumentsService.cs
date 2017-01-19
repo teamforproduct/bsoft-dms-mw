@@ -26,6 +26,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             _docFileDb = docFileDb;
             _fileStore = fileStore;
             _timers = new Dictionary<ClearTrashDocumentsSettings, Timer>();
+            
         }
 
         protected override void InitializeServers()
@@ -98,7 +99,8 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             // CLEAR unused PDF copy of the files and their previews. 
             try
             {
-                var fileTodelete = _docFileDb.GetOldPdfForAttachedFiles(ctx);
+                var pdfFilePeriod = _settings.GetClearOldPdfCopiesInDay(ctx);
+                var fileTodelete = _docFileDb.GetOldPdfForAttachedFiles(ctx, pdfFilePeriod);
                 foreach (var file in fileTodelete)
                 {
                     _fileStore.DeletePdfCopy(ctx,file);

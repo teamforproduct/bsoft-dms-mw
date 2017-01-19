@@ -53,6 +53,7 @@ namespace BL.CrossCutting.Interfaces
 
         string GetReportRegistrationCardOutcomingDocument(IContext ctx);
 
+        int GetClearOldPdfCopiesInDay(IContext ctx);
 
         int GetAutoplanTimeoutMinute(IContext ctx);
 

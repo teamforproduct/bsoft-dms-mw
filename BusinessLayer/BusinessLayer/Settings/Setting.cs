@@ -286,6 +286,9 @@ namespace BL.Logic.Settings
         public int GetClearTrashDocumentsTimeoutMinute(IContext ctx) =>
              GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE);
 
+        public int GetClearOldPdfCopiesInDay(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.OLDPDFDELETEPERIOD);
+
         public int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx) =>
              GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR);
 
