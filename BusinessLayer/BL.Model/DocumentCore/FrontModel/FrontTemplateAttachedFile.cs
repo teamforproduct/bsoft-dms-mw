@@ -32,8 +32,6 @@ namespace BL.Model.DocumentCore.FrontModel
             TypeName = doc.TypeName;
             Hash = doc.Hash;
             Description = doc.Description;
-            PdfCreated = doc.PdfCreated;
-            LastPdfAccess = doc.LastPdfAccess;
         }
 
         /// <summary>

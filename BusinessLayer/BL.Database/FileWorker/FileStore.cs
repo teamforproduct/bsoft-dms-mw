@@ -76,10 +76,9 @@ namespace BL.Database.FileWorker
                     throw new ArgumentOutOfRangeException(nameof(fileType), fileType, null);
             }
 
-            if (File.Exists(localFilePath)) return localFilePath;
+            if (File.Exists(localFilePath) || fileType != EnumDocumentFileType.UserFile) return localFilePath;
 
-            if (fileType == EnumDocumentFileType.UserFile) throw new UserFileNotExists();
-            throw new UserPdfFileNotExists();
+            throw new UserFileNotExists();
         }
 
         public string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
@@ -269,6 +268,16 @@ namespace BL.Database.FileWorker
 
                 var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
+
+                if (fileType != EnumDocumentFileType.UserFile && !File.Exists(localFilePath)) // если просят ПДФ или превью а оно не создано
+                {
+                    var doc = new InternalTemplateAttachedFile(attFile);
+                    if (!CreatePdfFile(ctx, doc))
+                    {
+                        throw new UserPdfFileNotExists();
+                    }
+                }
+
                 var fileContent = File.ReadAllBytes(localFilePath);
 
                 attFile.FileContent = Convert.ToBase64String(fileContent);
@@ -295,6 +304,15 @@ namespace BL.Database.FileWorker
                 var path = GetFullDocumentFilePath(ctx, attFile);
 
                 var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
+
+                if (fileType != EnumDocumentFileType.UserFile && !File.Exists(localFilePath)) // если просят ПДФ или превью а оно не создано
+                {
+                    var doc = new InternalDocumentAttachedFile(attFile);
+                    if (!CreatePdfFile(ctx, doc))
+                    {
+                        throw new UserPdfFileNotExists();
+                    }
+                }
 
                 var fileContent = File.ReadAllBytes(localFilePath);
 

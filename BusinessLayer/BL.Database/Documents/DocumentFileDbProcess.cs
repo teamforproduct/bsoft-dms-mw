@@ -57,8 +57,6 @@ namespace BL.Database.Documents
                             WasChangedExternal = false,
                             ExecutorPositionName = x.fl.ExecutorPosition.Name,
                             ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name + (x.fl.ExecutorPositionExecutorType.Suffix != null ? " (" + x.fl.ExecutorPositionExecutorType.Suffix + ")" : null),
-                            PdfCreated = x.fl.IsPdfCreated ?? false,
-                            LastPdfAccess = x.fl.LastPdfAccessDate,
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;

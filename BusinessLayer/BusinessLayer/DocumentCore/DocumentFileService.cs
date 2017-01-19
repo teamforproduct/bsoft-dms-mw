@@ -41,15 +41,14 @@ namespace BL.Logic.DocumentCore
             {
                 throw new UnknownDocumentFile();
             }
-            if (fileType != EnumDocumentFileType.UserFile)
+            if (fileType == EnumDocumentFileType.UserFile)
             {
                 _fStore.GetFile(ctx, fl, fileType);
             }
             else
             {
-                if (!fl.PdfCreated) throw new UserPdfFileNotExists();
                 _fStore.GetFile(ctx, fl, fileType);
-                var internalFile = new InternalDocumentAttachedFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = fl.PdfCreated };
+                var internalFile = new InternalDocumentAttachedFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
                 _dbProcess.UpdateFilePdfView(ctx, internalFile);
             }
 

@@ -1041,8 +1041,6 @@ namespace BL.Database.Documents
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
-                            PdfCreated = x.fl.IsPdfCreated??false,
-                            LastPdfAccess = x.fl.LastPdfAccessDate??DateTime.MinValue
 
                         }).ToList();
                 transaction.Complete();
