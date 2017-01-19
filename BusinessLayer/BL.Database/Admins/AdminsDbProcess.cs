@@ -461,21 +461,13 @@ namespace BL.Database.Admins
             {
                 if (filter.PositionIDs?.Count > 0)
                 {
-                    if (filter.IsChecked == true)
-                    {
-                        List<int> roles = GetRolesByPositions(context, filter.PositionIDs);
-                        if (roles?.Count > 0)
-                        {
-                            if (filter.IDs == null) filter.IDs = new List<int>();
-                            filter.IDs.AddRange(roles);
-                        }
-                        else
-                        {
-                            qry = qry.Where(x => false);
-                        }
+                    var filterContains = PredicateBuilder.False<AdminPositionRoles>();
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                    }
+                    qry = qry.Where(x => x.PositionRoles.AsQueryable().Any(filterContains));
                 }
+
 
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
@@ -536,14 +528,6 @@ namespace BL.Database.Admins
                     qry = qry.Where(filterContains);
                 }
 
-
-
-                if (filter.LinkIDs?.Count > 0)
-                {
-                    List<int> roles = GetRolesByPositions(context, filter.LinkIDs);
-
-                    filter.IDs.AddRange(roles);
-                }
             }
 
             return qry;
@@ -867,11 +851,19 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter)
+        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetRolesQuery(context, dbContext, filter);
+                var roleFilter = new FilterAdminRole();
+
+                if (filter.IsChecked)
+                {
+                    roleFilter.PositionIDs = filter.PositionIDs;
+                }
+
+
+                var qry = GetRolesQuery(context, dbContext, roleFilter);
 
                 qry = qry.OrderBy(x => x.Name);
 
@@ -1756,7 +1748,7 @@ namespace BL.Database.Admins
             }
         }
 
-        
+
 
 
         private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext context, DmsContext dbContext, FilterAdminRolePermissions filter)
@@ -1835,8 +1827,8 @@ namespace BL.Database.Admins
                 var now = DateTime.UtcNow;
 
                 qry = qry.Where(x => x.Roles.Any(y => y.Role.UserRoles.Any(
-                    z => z.PositionExecutor.AgentId == context.CurrentAgentId 
-                    && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate 
+                    z => z.PositionExecutor.AgentId == context.CurrentAgentId
+                    && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
                     && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
 
                 qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.AccessType.Order);

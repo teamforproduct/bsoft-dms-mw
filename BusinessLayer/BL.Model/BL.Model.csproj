@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminPositionRoleDIP.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissions.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />

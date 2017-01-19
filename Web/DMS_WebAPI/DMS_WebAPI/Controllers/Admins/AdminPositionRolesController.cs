@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <param name="filter">Filter parms</param>
         /// <returns>FrontAdminPositions</returns>
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult Get([FromUri] int positionId, [FromUri] FilterAdminRole filter)
+        public IHttpActionResult Get([FromUri] int positionId, [FromUri] FilterAdminPositionRoleDIP filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter.PositionIDs == null) filter.PositionIDs = new List<int>();

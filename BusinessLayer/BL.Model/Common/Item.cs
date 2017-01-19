@@ -1,4 +1,6 @@
-﻿namespace BL.Model.Common
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BL.Model.Common
 {
     /// <summary>
     /// Id
@@ -8,6 +10,7 @@
         /// <summary>
         /// Id
         /// </summary>
+        [Required]
         public int Id { get; set; }
     }
 }

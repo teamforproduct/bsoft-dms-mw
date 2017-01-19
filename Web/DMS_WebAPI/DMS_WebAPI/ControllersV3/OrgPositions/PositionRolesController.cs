@@ -43,10 +43,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminRole filter)
+        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterAdminRole();
+            if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -66,10 +66,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminRole filter)
+        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterAdminRole();
+            if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = false;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

@@ -60,7 +60,7 @@ namespace BL.Database.Admins.Interfaces
         InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter);
         FrontAdminPositionRole GetPositionRole(IContext context, int id);
         IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter);
-        IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter);
+        IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter);
         //IEnumerable<FrontDIPUserRolesRoles> GetPositionRolesDIPUserRoles(IContext context, FilterAdminPositionRole filter);
         #endregion
 
