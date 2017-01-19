@@ -10,7 +10,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Ид. словаря
         /// </summary>
-        public int DictionaryTypeId { get; set; }
+        [Required]
+        public int TypeId { get; set; }
+
         /// <summary>
         /// Код значения словаря
         /// </summary>

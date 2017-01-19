@@ -26,7 +26,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Code = model.Code;
             Name = model.Name;
             Description = model.Description;
-            DictionaryTypeId = model.DictionaryTypeId;
+            DictionaryTypeId = model.TypeId;
         }
 
         /// <summary>

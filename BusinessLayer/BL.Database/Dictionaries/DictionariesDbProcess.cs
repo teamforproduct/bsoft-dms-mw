@@ -6556,7 +6556,7 @@ namespace BL.Database.Dictionaries
                     Code = x.Code,
                     Name = x.Name,
                     Description = x.Description,
-                    DictionaryTypeId = x.DictionaryTypeId
+                    TypeId = x.DictionaryTypeId
                 }).ToList();
 
                 transaction.Complete();

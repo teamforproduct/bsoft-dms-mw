@@ -23,7 +23,7 @@ namespace BL.Logic.DictionaryCore
 
             var filter = new FilterCustomDictionary
             {
-                TypeIDs = new List<int> { Model.DictionaryTypeId },
+                TypeIDs = new List<int> { Model.TypeId },
                 CodeExact = Model.Code
             };
 

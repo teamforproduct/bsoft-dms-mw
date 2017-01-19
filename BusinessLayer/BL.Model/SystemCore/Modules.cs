@@ -49,6 +49,8 @@ namespace BL.Model.SystemCore
 
         public const string CustomDictionaries = "CustomDictionaries";
 
+        public const string CustomDictionaryTypes = "CustomDictionaryTypes";
+
         public const string Tools = "Tools";
     }
 }
