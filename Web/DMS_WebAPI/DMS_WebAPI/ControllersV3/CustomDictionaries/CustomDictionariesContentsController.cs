@@ -21,23 +21,27 @@ namespace DMS_WebAPI.ControllersV3.Banks
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.CustomDictionaries)]
-    public class CustomDictionariesDetailsController : ApiController
+    public class CustomDictionariesContentsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Возвращает список элементов пользовательского справочника
         /// </summary>
+        /// <param name="Id"></param>
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Contents + "/Main")]
+        [Route("{Id:int}/" + Features.Contents + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetWithPositions(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterCustomDictionary();
+            filter.TypeIDs = new List<int> { Id };
+
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging);
