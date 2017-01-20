@@ -224,8 +224,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
-    <Compile Include="ControllersV3\CustomDictionaries\CustomDictionaryTypesInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
+    <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesDetailsController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
     <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />

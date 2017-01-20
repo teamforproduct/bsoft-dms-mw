@@ -5,7 +5,6 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -17,7 +16,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Banks
 {
     /// <summary>
-    /// Элементы пользовательского справочника
+    /// Типы пользовательских справочников
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.CustomDictionaries)]
@@ -26,77 +25,73 @@ namespace DMS_WebAPI.ControllersV3.Banks
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список элементов пользовательского справочника
+        /// Возвращает список пользовательских справочников
         /// </summary>
-        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Info + "/Main")]
-        [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging)
+        [Route(Features.Info)]
+        [ResponseType(typeof(List<FrontCustomDictionaryType>))]
+        public IHttpActionResult Get([FromUri]FilterCustomDictionaryType filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-
-        /// <summary>
-        /// Возвращает элемент пользовательского справочника
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route(Features.Info + "/{Id:int}")]
-        [ResponseType(typeof(FrontCustomDictionary))]
-        public IHttpActionResult Get(int Id)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetCustomDictionary(ctx, Id);
+            var tmpItem = tmpService.GetCustomDictionaryTypes(ctx, filter);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Добавляет элемент пользовательского справочника
+        /// Возвращает реквизиты пользовательского справочника
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Info + "/{Id:int}")]
+        [ResponseType(typeof(FrontCustomDictionaryType))]
+        public IHttpActionResult Get(int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetCustomDictionaryType(ctx, Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Добавляет пользовательский справочник
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddCustomDictionary model)
+        public IHttpActionResult Post([FromBody]AddCustomDictionaryType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionary, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionaryType, model);
             return Get(tmpItem);
         }
 
         /// <summary>
-        /// Корректирует элемент пользовательского справочника
+        /// Корректирует реквизиты пользовательского справочника
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyCustomDictionary model)
+        public IHttpActionResult Put([FromBody]ModifyCustomDictionaryType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyCustomDictionary, model);
+            Action.Execute(EnumDictionaryActions.ModifyCustomDictionaryType, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаляет элемент пользовательского справочника
+        /// Удаляет пользовательский справочник
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>

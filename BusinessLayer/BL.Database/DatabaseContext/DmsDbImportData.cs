@@ -147,7 +147,7 @@ namespace BL.Database.DatabaseContext
             AddPermission(Modules.Auth, Features.Info, c: false, d: false);
             AddPermission(Modules.Settings, Features.Info, c: false, d: false);
             AddPermission(Modules.CustomDictionaries, Features.Info);
-            AddPermission(Modules.CustomDictionaryTypes, Features.Info);
+            AddPermission(Modules.CustomDictionaries, Features.Contents);
 
             AddPermission(Modules.Tools, Features.FullTextReindex, r: false, u: false, d: false);
 
