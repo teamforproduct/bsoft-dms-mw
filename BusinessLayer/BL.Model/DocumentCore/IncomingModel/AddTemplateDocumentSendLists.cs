@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Common;
-using BL.Model.Enums;
-using System.Runtime.Serialization;
+﻿using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -17,10 +11,12 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД шаблона
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// ИД типа рассылки
         /// </summary>
+        [Required]
         public EnumSendTypes SendType { get; set; }
         /// <summary>
         /// ИД должности кому направлена рассылка
@@ -37,10 +33,12 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Признак "В рамках рабочей группы"
         /// </summary>
+        [Required]
         public bool IsWorkGroup { get; set; }
         /// <summary>
         /// Добавлять самоконтроль для отправителя
         /// </summary>
+        [Required]
         public bool IsAddControl { get; set; }
         /// <summary>
         /// Комментарий к самоконтролю
@@ -57,6 +55,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
+        [Required]
         public bool IsAvailableWithinTask { get; set; }
         /// <summary>
         /// Комментарий
@@ -65,10 +64,12 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Номер этапа
         /// </summary>
+        [Required]
         public int Stage { get; set; }
         /// <summary>
         /// ИД типа этапа
         /// </summary>
+        [Required]
         public EnumStageTypes? StageType { get; set; }
         /// <summary>
         /// Срок исполнения (дни)
@@ -77,6 +78,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
+        [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
     }
 }

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Common;
-using BL.Model.Enums;
-using BL.Model.SystemCore.IncomingModel;
-using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Enums;
 using BL.Model.SystemCore.FrontModel;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -21,19 +15,23 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Признак, можно ли указанные в шаблоне значения поменять в документе
         /// </summary>
+        [Required]
         public bool IsHard { get; set; }
         /// <summary>
         /// Признак того, что шаблон может использоваться для создания проектов
         /// </summary>
+        [Required]
         public bool IsForProject { get; set; }
         /// <summary>
         /// Признак того, что шаблон может использоваться для создания документов
         /// </summary>
+        [Required]
         public bool IsForDocument { get; set; }
-        
+
         /// <summary>
         /// ИД Направление документа - обязательное
         /// </summary>
+        [Required]
         public EnumDocumentDirections DocumentDirection { get; set; }
         /// <summary>
         /// ИД Тип документа - обязательное

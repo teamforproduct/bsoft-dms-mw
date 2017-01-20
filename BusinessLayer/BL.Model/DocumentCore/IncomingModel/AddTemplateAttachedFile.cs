@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Web;
 
@@ -12,11 +13,13 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Ид. шаблона документа, которому принадлежит файл
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// Порядковый номер файла в списке файлов документа
         /// Только для изменения файла
         /// </summary>
+        [Required]
         public int OrderInDocument { get; set; }
         /// <summary>
         /// Является ли файл дополнительным или основным. 
