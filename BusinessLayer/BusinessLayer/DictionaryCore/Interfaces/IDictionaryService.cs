@@ -130,8 +130,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryDocumentTypes
         FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id);
-
-        IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
+        IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
+        IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
+        IEnumerable<FrontDictionaryDocumentType> GetMainDictionaryDocumentTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryDocumentType filter, UIPaging paging);
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryEventTypes

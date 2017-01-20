@@ -182,8 +182,9 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDocumentType(IContext context, InternalDictionaryDocumentType docType);
         void DeleteDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
         IEnumerable<InternalDictionaryDocumentType> GetInternalDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
-        IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
+        IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes

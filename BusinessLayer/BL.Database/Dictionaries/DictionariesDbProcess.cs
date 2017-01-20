@@ -3803,7 +3803,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        public IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -3811,11 +3811,34 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Name);
 
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryDocumentType>();
+
                 var res = qry.Select(x => new FrontDictionaryDocumentType
                 {
                     Id = x.Id,
                     Name = x.Name,
                     IsActive = x.IsActive
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetDocumentTypesQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
+
+                var res = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
                 }).ToList();
 
                 transaction.Complete();

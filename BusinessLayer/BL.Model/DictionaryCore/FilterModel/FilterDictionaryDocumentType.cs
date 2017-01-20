@@ -7,10 +7,6 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryDocumentType : DictionaryBaseFilterParameters
     {
-        /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
 
     }
 }

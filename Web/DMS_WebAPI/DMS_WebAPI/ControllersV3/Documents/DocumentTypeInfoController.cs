@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -27,18 +28,19 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Типы документов
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryDocumentType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryDocumentTypes(ctx, filter);
+            var tmpItems = tmpService.GetMainDictionaryDocumentTypes(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -52,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
-        [ResponseType(typeof(FrontMainAgentBank))]
+        [ResponseType(typeof(FrontDictionaryDocumentType))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
