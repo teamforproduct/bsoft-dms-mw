@@ -14,7 +14,7 @@
 
 @if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName == "Lists")
 {
-    <h1>@Model.Key.ControllerName.Replace("Info", "")</h1>
+    <h1 id="@Model.Key.ControllerName.Replace("Info", "")">  @Model.Key.ControllerName.Replace("Info", "")</h1>
 }
 @if (@Model.Key.ControllerName == "Settings")
 {
