@@ -32,6 +32,7 @@ namespace BL.Model.SystemCore
         public const string Parameters = "Parameters";
         public const string Passport = "Passport";
         public const string Permissions = "Permissions";
+        public const string Persons = "Persons";
         public const string Positions = "Positions";
         public const string Roles = "Roles";
         public const string SendLists = "SendLists";

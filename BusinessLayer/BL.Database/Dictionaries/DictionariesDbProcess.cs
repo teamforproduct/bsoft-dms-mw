@@ -572,6 +572,27 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentPersonsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
+
+                var res = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())

@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgentPersons
         FrontAgentPerson GetAgentPerson(IContext context, int id);
-
+        IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging);
 
         #endregion DictionaryAgentPersons

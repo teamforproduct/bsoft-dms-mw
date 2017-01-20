@@ -40,6 +40,7 @@ namespace BL.Database.Dictionaries.Interfaces
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
         IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         FrontAgentPerson GetAgentPerson(IContext context, int id);
         #endregion DictionaryAgentPerson

@@ -170,6 +170,15 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentPerson(context, id);
         }
 
+        public IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryAgentPerson();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListAgentPersons(context, filter, paging);
+        }
+
         public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgentPerson();
