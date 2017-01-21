@@ -21,18 +21,20 @@ namespace BL.Logic.DictionaryCore
 
             Model.Code?.Trim();
 
-            var filter = new FilterCustomDictionaryType
+            if (!string.IsNullOrEmpty(Model.Code))
             {
-                CodeExact = Model.Code
-            };
+                var filter = new FilterCustomDictionaryType
+                {
+                    CodeExact = Model.Code
+                };
 
-            if (TypeModelIs<ModifyCustomDictionaryType>())
-            { filter.NotContainsIDs = new List<int> { GetModel<ModifyCustomDictionaryType>().Id }; }
+                if (TypeModelIs<ModifyCustomDictionaryType>())
+                { filter.NotContainsIDs = new List<int> { GetModel<ModifyCustomDictionaryType>().Id }; }
 
-            var cdt = _dictDb.GetInternalCustomDictionaryTypes(_context, filter).FirstOrDefault();
+                var cdt = _dictDb.GetInternalCustomDictionaryTypes(_context, filter).FirstOrDefault();
 
-            if (cdt != null) throw new DictionaryCostomDictionaryTypeNotUnique(Model.Code);
-
+                if (cdt != null) throw new DictionaryCostomDictionaryTypeNotUnique(Model.Code);
+            }
             return true;
         }
 

@@ -36,7 +36,6 @@ namespace BL.Model.SystemCore.InternalModel
         public int FeatureId { get; set; }
         public string FeatureCode { get; set; }
         public string FeatureName { get; set; }
-        public string FeatureModuleCode { get; set; }
         public int FeatureOrder { get; set; }
 
         public bool IsChecked { get; set; }
