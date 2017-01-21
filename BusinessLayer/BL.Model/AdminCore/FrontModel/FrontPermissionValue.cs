@@ -10,9 +10,20 @@ namespace BL.Model.AdminCore.FrontModel
     public class FrontPermissionValue
     {
         /// <summary>
-        /// ID
+        /// Модуль
         /// </summary>
-        public int Id { get; set; }
+        public string Module { get; set; }
+
+        /// <summary>
+        /// Фича
+        /// </summary>
+        public string Feature { get; set; }
+
+        /// <summary>
+        /// Тип доступа
+        /// </summary>
+        public string AccessType { get; set; }
+
 
         public EnumAccessTypesValue Value { get; set; }
 

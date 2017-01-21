@@ -9,12 +9,6 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalAdminRolePermission()
         { }
 
-        public InternalAdminRolePermission(SetRolePermission model)
-        {
-            RoleId = model.RoleId;
-            PermissionId = model.PermissionId;
-        }
-
         /// <summary>
         /// ID
         /// </summary>

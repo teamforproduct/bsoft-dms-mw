@@ -102,11 +102,27 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Permissions + "/SetByFeature")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByFeature model)
+        [Route(Features.Permissions + "/SetByAccessType")]
+        public IHttpActionResult Set([FromBody] SetRolePermissionByModuleAccessType model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByFeature, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleAccessType, model);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Добавляет/удаляет действия роли, которые принадлежат фичи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Permissions + "/SetByFeature")]
+        public IHttpActionResult Set([FromBody] SetRolePermissionByModuleFeature model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleFeature, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

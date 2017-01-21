@@ -26,11 +26,13 @@
         /// <summary>
         /// Добавить
         /// </summary>
-        SetRolePermissionByFeature = 701001,
+        SetRolePermissionByModuleFeature = 701001,
         /// <summary>
         /// Изменить
         /// </summary>
         SetRolePermissionByModule = 701002,
+
+        SetRolePermissionByModuleAccessType = 701003,
         #endregion
 
         #region [+] PositionRole ...

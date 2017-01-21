@@ -100,8 +100,9 @@
     <Compile Include="AdminCore\PositionRole\SetPositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DuplicatePositionRolesCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\BaseRolePermissionCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByAccessTypeCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleCommand.cs" />
-    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByFeatureCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleFeatureCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\SetRolePermissionCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\BaseRJournalPositionCommand.cs" />

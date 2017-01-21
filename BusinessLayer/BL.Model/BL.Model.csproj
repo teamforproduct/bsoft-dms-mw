@@ -96,8 +96,9 @@
     <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesRoles.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSettingsByPosition.cs" />
     <Compile Include="AdminCore\IncomingModel\AddAdminRole.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermissionByModuleAccessType.cs" />
     <Compile Include="AdminCore\IncomingModel\SetRolePermissionByModule.cs" />
-    <Compile Include="AdminCore\IncomingModel\SetRolePermissionByFeature.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermissionByModuleFeature.cs" />
     <Compile Include="AdminCore\IncomingModel\SetRolePermission.cs" />
     <Compile Include="AdminCore\IncomingModel\SetAdminPositionRole.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRoleActionByObject.cs" />

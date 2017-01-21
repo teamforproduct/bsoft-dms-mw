@@ -23,8 +23,13 @@ namespace BL.Logic.AdminCore
             return true;
         }
 
-        protected void Set(InternalAdminRolePermission model, bool IsChecked)
+        protected void Set(string module, string feature, string accessType, int roleId, bool IsChecked)
         {
+            var permissionId = _systemDb.GetPermissionId(_context, module, feature, accessType);
+
+            if (permissionId < 0) throw new AdminRecordWasNotFound();
+
+            var model = new InternalAdminRolePermission { PermissionId = permissionId , RoleId = roleId };
             CommonDocumentUtilities.SetLastChange(_context, model);
 
             var exists = _adminDb.ExistsRolePermissions(_context, new FilterAdminRolePermissions

@@ -18,62 +18,53 @@ namespace BL.Database.DatabaseContext
     public static class DmsDbImportData
     {
 
-        private static int IdSequence = 0;
-
-        private static int ModuleId = 100;
-        private static int FeatureId = 100;
-
         private static List<SystemModules> systemModules = new List<SystemModules>();
         private static List<SystemFeatures> systemFeatures = new List<SystemFeatures>();
         private static List<SystemPermissions> systemPermissions = new List<SystemPermissions>();
 
-        private static string GetLabel(string group, string itemName) => "##l@" + group.Trim() + ":" + itemName.Trim() + "@l##";
+        private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
+        private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
 
         public static List<SystemModules> GetSystemModules() => systemModules;
         public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
         public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
 
-        private static void AddPermission(string module, string feature,  bool r = true, bool c = true, bool u = true, bool d = true)
+        private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
         {
-            int moduleId = 0;
-            int featureId = 0;
-
             var m = systemModules.Where(x => x.Code == module).FirstOrDefault();
 
             if (m == null)
             {
-                moduleId = ModuleId++;
-                m = new SystemModules { Id = moduleId, Code = module, Name = GetLabel("Modules", module), Order = moduleId };
+                m = new SystemModules { Id = Modules.GetId(module), Code = module, Name = GetLabel("Modules", module), Order = order };
                 systemModules.Add(m);
             }
-            else moduleId = m.Id;
 
 
-            var f = systemFeatures.Where(x => x.Code == feature).FirstOrDefault();
+            //var f = systemFeatures.Where(x => x.Code == feature).FirstOrDefault();
 
-            if (f == null)
-            {
-                featureId = FeatureId++;
-                f = new SystemFeatures { Id = featureId, Code = feature, Name = GetLabel("Features", feature), Order = featureId };
-                systemFeatures.Add(f);
-            }
-            else featureId = f.Id;
+            //if (f == null)
+            //{
+            var f = new SystemFeatures { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature)), ModuleId = Modules.GetId(module), Code = feature, Name = GetLabel(module, feature), Order = order };
+            systemFeatures.Add(f);
+            //}
 
-            var permissionIdstr = moduleId.ToString() + featureId.ToString();
+            var permissionIdstr = m.Id.ToString() + f.Id.ToString();
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id }); // , Module = m, Feature = f
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id }); // , Module = m, Feature = f
 
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id }); // , Module = m, Feature = f 
 
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = Convert.ToInt32(permissionIdstr + EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = moduleId, FeatureId = featureId, Module = m, Feature = f });
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id }); // , Module = m, Feature = f 
 
         }
+
+
 
         public static void InitPermissions()
         {
@@ -81,75 +72,75 @@ namespace BL.Database.DatabaseContext
             systemModules.Clear();
             systemFeatures.Clear();
 
-            AddPermission(Modules.Org, Features.Info);
-            AddPermission(Modules.Org, Features.Addresses);
-            AddPermission(Modules.Org, Features.Contacts);
-            AddPermission(Modules.Department, Features.Info);
-            AddPermission(Modules.Department, Features.Positions, c: false, u: false, d: false);
-            AddPermission(Modules.Department, Features.Admins, u: false);
-            AddPermission(Modules.Position, Features.Info);
-            AddPermission(Modules.Position, Features.SendRules, c: false, d: false);
-            AddPermission(Modules.Position, Features.Executors);
-            AddPermission(Modules.Position, Features.Roles, c: false, d: false);
-            AddPermission(Modules.Position, Features.Journals, c: false, d: false);
-                
-            AddPermission(Modules.Journal, Features.Info);
-            AddPermission(Modules.Journal, Features.Positions, c: false, d: false);
-             
-            AddPermission(Modules.Templates, Features.Info);
-            AddPermission(Modules.Templates, Features.Tasks);
-            AddPermission(Modules.Templates, Features.Files);
-            AddPermission(Modules.Templates, Features.Papers);
-            AddPermission(Modules.Templates, Features.SendLists);
-            AddPermission(Modules.Templates, Features.SignLists);
-            AddPermission(Modules.Templates, Features.AccessList);
-                         
-            AddPermission(Modules.DocumentType, Features.Info);
-            AddPermission(Modules.DocumentType, Features.Parameters);
-                         
-            AddPermission(Modules.Role, Features.Info);
-            AddPermission(Modules.Role, Features.Permissions, c: false, d: false);
-            AddPermission(Modules.Role, Features.Employees, c: false, u: false, d: false);
-            AddPermission(Modules.Role, Features.Positions, c: false, u: false, d: false);
-                     
+            AddPermission(100, Modules.Org, Features.Info);
+            AddPermission(110, Modules.Org, Features.Addresses);
+            AddPermission(120, Modules.Org, Features.Contacts);
+            AddPermission(200, Modules.Department, Features.Info);
+            AddPermission(210, Modules.Department, Features.Positions, c: false, u: false, d: false);
+            AddPermission(220, Modules.Department, Features.Admins, u: false);
+            AddPermission(300, Modules.Position, Features.Info);
+            AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false);
+            AddPermission(320, Modules.Position, Features.Executors);
+            AddPermission(330, Modules.Position, Features.Roles, c: false, d: false);
+            AddPermission(340, Modules.Position, Features.Journals, c: false, d: false);
 
-            AddPermission(Modules.Employee, Features.Info);
-            AddPermission(Modules.Employee, Features.Assignments);
-            AddPermission(Modules.Employee, Features.Roles, c: false, d: false);
-            AddPermission(Modules.Employee, Features.Passport, c: false, d: false);
-            AddPermission(Modules.Employee, Features.Addresses);
-            AddPermission(Modules.Employee, Features.Contacts);
-                    
-            AddPermission(Modules.Company, Features.Info);
-            AddPermission(Modules.Company, Features.Addresses);
-            AddPermission(Modules.Company, Features.Contacts);
-            AddPermission(Modules.Company, Features.ContactPersons);
-                         
-            AddPermission(Modules.Person, Features.Info);
-            AddPermission(Modules.Person, Features.Passport, c: false, d: false);
-            AddPermission(Modules.Person, Features.Addresses);
-            AddPermission(Modules.Person, Features.Contacts);
-                          
-            AddPermission(Modules.Bank, Features.Info);
-            AddPermission(Modules.Bank, Features.Addresses);
-            AddPermission(Modules.Bank, Features.Contacts);
-                       
-            AddPermission(Modules.Tags, Features.Info);
-                        
-            AddPermission(Modules.SendList, Features.Info);
-            AddPermission(Modules.SendList, Features.Contents);
-                       
-            AddPermission(Modules.ContactType, Features.Info);
-            AddPermission(Modules.AddressType, Features.Info);
-                         
-            AddPermission(Modules.Auditlog, Features.Info, c: false, u: false, d: false);
-                          
-            AddPermission(Modules.Auth, Features.Info, c: false, d: false);
-            AddPermission(Modules.Settings, Features.Info, c: false, d: false);
-            AddPermission(Modules.CustomDictionaries, Features.Info);
-            AddPermission(Modules.CustomDictionaries, Features.Contents);
+            AddPermission(400, Modules.Journal, Features.Info);
+            AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false);
 
-            AddPermission(Modules.Tools, Features.FullTextReindex, r: false, u: false, d: false);
+            AddPermission(500, Modules.Templates, Features.Info);
+            AddPermission(510, Modules.Templates, Features.Tasks);
+            AddPermission(520, Modules.Templates, Features.Files);
+            AddPermission(530, Modules.Templates, Features.Papers);
+            AddPermission(540, Modules.Templates, Features.SendLists);
+            AddPermission(550, Modules.Templates, Features.SignLists);
+            AddPermission(560, Modules.Templates, Features.AccessList);
+
+            AddPermission(600, Modules.DocumentType, Features.Info);
+            AddPermission(610, Modules.DocumentType, Features.Parameters);
+
+            AddPermission(700, Modules.Role, Features.Info);
+            AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false);
+            AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false);
+            AddPermission(730, Modules.Role, Features.Positions, c: false, u: false, d: false);
+
+
+            AddPermission(800, Modules.Employee, Features.Info);
+            AddPermission(810, Modules.Employee, Features.Assignments);
+            AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false);
+            AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false);
+            AddPermission(840, Modules.Employee, Features.Addresses);
+            AddPermission(850, Modules.Employee, Features.Contacts);
+
+            AddPermission(900, Modules.Company, Features.Info);
+            AddPermission(910, Modules.Company, Features.ContactPersons);
+            AddPermission(920, Modules.Company, Features.Addresses);
+            AddPermission(930, Modules.Company, Features.Contacts);
+
+            AddPermission(1000, Modules.Person, Features.Info);
+            AddPermission(1010, Modules.Person, Features.Passport, c: false, d: false);
+            AddPermission(1020, Modules.Person, Features.Addresses);
+            AddPermission(1030, Modules.Person, Features.Contacts);
+
+            AddPermission(1110, Modules.Bank, Features.Info);
+            AddPermission(1120, Modules.Bank, Features.Addresses);
+            AddPermission(1130, Modules.Bank, Features.Contacts);
+
+            AddPermission(1200, Modules.Tags, Features.Info);
+
+            AddPermission(1300, Modules.SendList, Features.Info);
+            AddPermission(1310, Modules.SendList, Features.Contents);
+
+            AddPermission(1400, Modules.ContactType, Features.Info);
+            AddPermission(1410, Modules.AddressType, Features.Info);
+
+            AddPermission(1500, Modules.Auditlog, Features.Info, c: false, u: false, d: false);
+
+            AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false);
+            AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false);
+            AddPermission(1620, Modules.CustomDictionaries, Features.Info);
+            AddPermission(1630, Modules.CustomDictionaries, Features.Contents);
+
+            AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false);
 
         }
 
@@ -540,8 +531,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
 
             items.Add(GetSysAct(EnumAdminActions.SetRolePermission, EnumObjects.AdminRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByFeature, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleFeature, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
             items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleAccessType, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
 
 
             items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));

@@ -876,12 +876,54 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.AccessTypeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.AccessTypeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AccessTypeId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
+                if (!string.IsNullOrEmpty(filter.Module))
+                {
+                    qry = qry.Where(x => x.Module.Code == filter.Module);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Feature))
+                {
+                    qry = qry.Where(x => x.Feature.Code == filter.Feature);
+                }
+
+                if (!string.IsNullOrEmpty(filter.AccessType))
+                {
+                    qry = qry.Where(x => x.AccessType.Code == filter.AccessType);
+                }
+
+
             }
 
             return qry;
         }
 
-        public IEnumerable<InternalPermissions> GetPermissions(IContext ctx, FilterSystemPermissions filter)
+        public int GetPermissionId(IContext context, string module, string feture, string accessType)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture , AccessType = accessType } );
+
+                var item = qry.FirstOrDefault();
+
+                transaction.Complete();
+
+                if (item != null) return item.Id;
+                else return -1;
+            }
+        }
+
+        public IEnumerable<InternalPermissions> GetInternalPermissions(IContext ctx, FilterSystemPermissions filter)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {

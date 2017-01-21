@@ -23,10 +23,10 @@ namespace BL.Model.AdminCore.IncomingModel
         public int RoleId { get; set; }
 
         /// <summary>
-        /// Действие
+        /// Модуль
         /// </summary>
         [Required]
-        public int ModuleId { get; set; }
+        public string Module { get; set; }
 
         /// <summary>
         /// Галочка

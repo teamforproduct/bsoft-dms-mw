@@ -11,7 +11,7 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// ID
         /// </summary>
-        public int Id { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// Наименование роли

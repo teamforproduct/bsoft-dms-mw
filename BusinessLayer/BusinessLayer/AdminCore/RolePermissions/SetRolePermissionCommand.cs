@@ -25,13 +25,7 @@ namespace BL.Logic.AdminCore
 
         public override object Execute()
         {
-            var row = new InternalAdminRolePermission()
-            {
-                PermissionId = Model.PermissionId,
-                RoleId = Model.RoleId,
-            };
-
-            Set(row, Model.IsChecked);
+            Set(Model.Module, Model.Feature, Model.AccessType, Model.RoleId, Model.IsChecked);
 
             return null;
         }

@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
-    public class SetRolePermissionByModuleCommand : BaseRolePermissionCommand
+    public class SetRolePermissionByModuleFeatureCommand : BaseRolePermissionCommand
     {
 
-        protected SetRolePermissionByModule Model
+        protected SetRolePermissionByModuleFeature Model
         {
             get
             {
-                if (!(_param is SetRolePermissionByModule)) throw new WrongParameterTypeError();
-                return (SetRolePermissionByModule)_param;
+                if (!(_param is SetRolePermissionByModuleFeature)) throw new WrongParameterTypeError();
+                return (SetRolePermissionByModuleFeature)_param;
             }
         }
 
@@ -22,12 +22,13 @@ namespace BL.Logic.AdminCore
         {
             var list = _systemDb.GetInternalPermissions(_context, new FilterSystemPermissions
             {
-                Module = Model.Module
+                Module = Model.Module,
+                Feature = Model.Feature
             });
 
             foreach (var item in list)
             {
-                Set(Model.Module, item.FeatureCode, item.AccessTypeCode, Model.RoleId, Model.IsChecked);
+                Set(Model.Module, Model.Feature, item.AccessTypeCode, Model.RoleId, Model.IsChecked);
             }
 
             return null;

@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns>сервер</returns>
         [HttpPost]
-        [Route("FullTextReindex")]
+        [Route(Features.Info + "/FullTextReindex")]
         public IHttpActionResult FullTextReindex([FromBody]Item model)
         {
             var dbProc = new WebAPIDbProcess();

@@ -51,7 +51,8 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region [+] Permissions
-        IEnumerable<InternalPermissions> GetPermissions(IContext ctx, FilterSystemPermissions filter);
+        IEnumerable<InternalPermissions> GetInternalPermissions(IContext ctx, FilterSystemPermissions filter);
+        int GetPermissionId(IContext context, string module, string feture, string accessType);
         #endregion
 
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);

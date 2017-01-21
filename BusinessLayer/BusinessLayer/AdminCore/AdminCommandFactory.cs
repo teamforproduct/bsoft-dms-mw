@@ -35,8 +35,11 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.SetRolePermission:
                     cmd = DmsResolver.Current.Get<SetRolePermissionCommand>();
                     break;
-                case EnumAdminActions.SetRolePermissionByFeature:
-                    cmd = DmsResolver.Current.Get<SetRolePermissionByFeatureCommand>();
+                case EnumAdminActions.SetRolePermissionByModuleAccessType:
+                    cmd = DmsResolver.Current.Get<SetRolePermissionByModuleAccessTypeCommand>();
+                    break;
+                case EnumAdminActions.SetRolePermissionByModuleFeature:
+                    cmd = DmsResolver.Current.Get<SetRolePermissionByModuleFeatureCommand>();
                     break;
                 case EnumAdminActions.SetRolePermissionByModule:
                     cmd = DmsResolver.Current.Get<SetRolePermissionByModuleCommand>();

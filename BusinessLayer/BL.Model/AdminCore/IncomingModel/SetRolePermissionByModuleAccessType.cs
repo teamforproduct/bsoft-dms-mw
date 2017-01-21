@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using BL.Model.Enums;
+﻿using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.AdminCore.IncomingModel
@@ -14,7 +8,7 @@ namespace BL.Model.AdminCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class SetRolePermission
+    public class SetRolePermissionByModuleAccessType
     {
         /// <summary>
         /// Роль
@@ -27,12 +21,6 @@ namespace BL.Model.AdminCore.IncomingModel
         /// </summary>
         [Required]
         public string Module { get; set; }
-
-        /// <summary>
-        /// Фича
-        /// </summary>
-        [Required]
-        public string Feature { get; set; }
 
         /// <summary>
         /// Тип доступа
