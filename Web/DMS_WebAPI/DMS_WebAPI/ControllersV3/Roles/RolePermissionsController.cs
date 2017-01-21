@@ -20,6 +20,7 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.FilterModel;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.IncomingModel;
+using System.Linq;
 
 namespace DMS_WebAPI.ControllersV3.OrgPositions
 {
@@ -99,9 +100,9 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
                 IsChecked = false,
                 Module = model.Module,
                 Feature = model.Feature,
-            });
+            }).FirstOrDefault();
 
-            var res = new JsonResult(tmpItems, this);
+            var res = new JsonResult(tmpItems?.Features.FirstOrDefault(), this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -125,7 +126,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
                 RoleId = model.RoleId,
                 IsChecked = false,
                 Module = model.Module,
-            });
+            }).FirstOrDefault();
 
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
@@ -151,7 +152,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
                 RoleId = model.RoleId,
                 IsChecked = false,
                 Module = model.Module,
-            });
+            }).FirstOrDefault();
 
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
