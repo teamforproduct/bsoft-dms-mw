@@ -8,9 +8,14 @@ namespace BL.Model.AdminCore.FrontModel
     public class FrontFeature
     {
         /// <summary>
-        /// ID
+        /// Фича
         /// </summary>
-        public string Code { get; set; }
+        public string Feature { get; set; }
+
+        /// <summary>
+        /// Модуль
+        /// </summary>
+        public string Module { get; set; }
 
         /// <summary>
         /// Наименование роли

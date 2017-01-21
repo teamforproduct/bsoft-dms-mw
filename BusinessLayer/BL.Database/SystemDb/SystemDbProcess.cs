@@ -2759,6 +2759,7 @@ namespace BL.Database.SystemDb
                 {
                     dbContext.SystemModulesSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
+                    //dbContext.SaveChanges();
                 }
 
                 foreach (var item in DmsDbImportData.GetSystemFeatures())

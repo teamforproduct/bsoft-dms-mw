@@ -538,6 +538,10 @@
     <Compile Include="Migrations\201701191329527_CustomDictionaries.Designer.cs">
       <DependentUpon>201701191329527_CustomDictionaries.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701211318140_FeatureModueId.cs" />
+    <Compile Include="Migrations\201701211318140_FeatureModueId.Designer.cs">
+      <DependentUpon>201701211318140_FeatureModueId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -803,6 +807,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701191329527_CustomDictionaries.resx">
       <DependentUpon>201701191329527_CustomDictionaries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701211318140_FeatureModueId.resx">
+      <DependentUpon>201701211318140_FeatureModueId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

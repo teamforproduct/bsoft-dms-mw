@@ -1853,13 +1853,14 @@ namespace BL.Database.Admins
                  .OrderBy(x => x.Key.ModuleOrder)
                  .Select(x => new FrontModule()
                  {
-                     Code = x.Key.ModuleCode,
+                     Module = x.Key.ModuleCode,
                      Name = x.Key.ModuleName,
                      Features = x.GroupBy(y => new { y.FeatureCode, y.FeatureName, y.FeatureOrder })
                      .OrderBy(y => y.Key.FeatureOrder)
                      .Select(y => new FrontFeature
                      {
-                         Code = y.Key.FeatureCode,
+                         Feature = y.Key.FeatureCode,
+                         //Module = x.FirstOrDefault
                          Name = y.Key.FeatureName,
                          Order = y.Key.FeatureOrder,
                          Read = new FrontPermissionValue
