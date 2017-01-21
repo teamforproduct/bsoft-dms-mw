@@ -1855,12 +1855,12 @@ namespace BL.Database.Admins
                  {
                      Module = x.Key.ModuleCode,
                      Name = x.Key.ModuleName,
-                     Features = x.GroupBy(y => new { y.FeatureCode, y.FeatureName, y.FeatureOrder })
+                     Features = x.GroupBy(y => new { y.FeatureCode, y.FeatureName, y.FeatureOrder, y.FeatureModuleCode })
                      .OrderBy(y => y.Key.FeatureOrder)
                      .Select(y => new FrontFeature
                      {
                          Feature = y.Key.FeatureCode,
-                         //Module = x.FirstOrDefault
+                         Module = y.Key.FeatureModuleCode,
                          Name = y.Key.FeatureName,
                          Order = y.Key.FeatureOrder,
                          Read = new FrontPermissionValue
@@ -1929,6 +1929,7 @@ namespace BL.Database.Admins
                     FeatureId = x.FeatureId,
                     FeatureCode = x.Feature.Code,
                     FeatureName = x.Feature.Name,
+                    FeatureModuleCode = x.Feature.Module.Code,
                     FeatureOrder = x.Feature.Order,
 
                     IsChecked = x.Roles.Any(y => y.RoleId == roleId),
