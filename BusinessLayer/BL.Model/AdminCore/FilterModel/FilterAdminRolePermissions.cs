@@ -22,5 +22,6 @@ namespace BL.Model.AdminCore.FilterModel
         /// Role
         /// </summary>
         public List<int> RoleIDs { get; set; }
+
     }
 }

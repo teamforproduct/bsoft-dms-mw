@@ -1845,9 +1845,9 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontModule> GetRolePermissions(IContext context, int roleId, bool onlyChecked)
+        public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)
         {
-            var permissions = GetInternalPermissionsByRole(context, roleId, onlyChecked);
+            var permissions = GetInternalPermissionsByRole(context, filter);
 
             var res = permissions.GroupBy(x => new { x.ModuleCode, x.ModuleName, x.ModuleOrder })
                  .OrderBy(x => x.Key.ModuleOrder)
@@ -1899,15 +1899,25 @@ namespace BL.Database.Admins
             return res;
         }
 
-        private IEnumerable<InternalPermissions> GetInternalPermissionsByRole(IContext context, int roleId, bool onlyChecked)
+        private IEnumerable<InternalPermissions> GetInternalPermissionsByRole(IContext context, FilterAdminRolePermissionsDIP filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemPermissionsSet.AsQueryable();
 
-                if (onlyChecked)
+                if (!string.IsNullOrEmpty(filter.Module))
                 {
-                    qry = qry.Where(x => x.Roles.Any(y => y.RoleId == roleId));
+                    qry = qry.Where(x => x.Module.Code == filter.Module);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Feature))
+                {
+                    qry = qry.Where(x => x.Feature.Code == filter.Feature);
+                }
+
+                if (filter.IsChecked)
+                {
+                    qry = qry.Where(x => x.Roles.Any(y => y.RoleId == filter.RoleId));
                 }
 
                 qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
@@ -1931,7 +1941,7 @@ namespace BL.Database.Admins
                     FeatureName = x.Feature.Name,
                     FeatureOrder = x.Feature.Order,
 
-                    IsChecked = x.Roles.Any(y => y.RoleId == roleId),
+                    IsChecked = x.Roles.Any(y => y.RoleId == filter.RoleId),
                 }).ToList();
 
                 transaction.Complete();

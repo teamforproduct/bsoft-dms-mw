@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             //filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, Id, true);
+            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = true });
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             //filter.IsChecked = false;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, Id, false);
+            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = false });
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -91,7 +91,17 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermission, model);
-            var res = new JsonResult(tmpItem, this);
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP {
+                RoleId = model.RoleId,
+                IsChecked = false,
+                Module = model.Module,
+                Feature = model.Feature,
+            });
+
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -107,7 +117,17 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleAccessType, model);
-            var res = new JsonResult(tmpItem, this);
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP
+            {
+                RoleId = model.RoleId,
+                IsChecked = false,
+                Module = model.Module,
+            });
+
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -123,7 +143,17 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleFeature, model);
-            var res = new JsonResult(tmpItem, this);
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP
+            {
+                RoleId = model.RoleId,
+                IsChecked = false,
+                Module = model.Module,
+            });
+
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -139,7 +169,17 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModule, model);
-            var res = new JsonResult(tmpItem, this);
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP
+            {
+                RoleId = model.RoleId,
+                IsChecked = false,
+                Module = model.Module,
+            });
+
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
