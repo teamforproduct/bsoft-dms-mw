@@ -7,7 +7,7 @@ using BL.Model.Exception;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.SystemCore;
 using System.Collections.Generic;
-
+using BL.Model.Enums;
 
 namespace BL.Logic.AdminCore
 {
@@ -18,7 +18,7 @@ namespace BL.Logic.AdminCore
 
         public override bool CanExecute()
         {
-            _adminService.VerifyAccess(_context, CommandType, false);
+            _adminService.VerifyAccess(_context, EnumAdminActions.SetRolePermission, false);
 
             return true;
         }
