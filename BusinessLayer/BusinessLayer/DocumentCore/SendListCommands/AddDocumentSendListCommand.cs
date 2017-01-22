@@ -66,7 +66,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (Model.IsInitial && _document.ExecutorPositionId != Model.CurrentPositionId)
+            if (Model.IsInitial && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
                 throw new CouldNotPerformOperation();
             }

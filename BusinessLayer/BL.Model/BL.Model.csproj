@@ -267,6 +267,7 @@
     <Compile Include="DocumentCore\Filters\FilterTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontMainTemplateDocument.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontTemplateDocumentPaper.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentSendList.cs" />
     <Compile Include="DocumentCore\IncomingModel\DigitalSignatureDocumentPdf.cs" />
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="DocumentCore\IncomingModel\AdditinalLinkedDocumentSendList.cs" />
@@ -277,6 +278,12 @@
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentSendLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentRestrictedSendLists.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateAttachedFile.cs" />
+    <Compile Include="DocumentCore\IncomingModel\BaseModifyDocumentTasks.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentTasks.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentSavedFilter.cs" />
+    <Compile Include="DocumentCore\IncomingModel\BaseModifyDocumentSendList.cs" />
+    <Compile Include="DocumentCore\IncomingModel\BaseModifyDocumentPapers.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AddDocumentPapers.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentLink.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalAdditinalLinkedDocumentSendListsPrepare.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentPaper.cs" />

@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore
 
             if (isLastStage)
             {
-                int lastStage = sendLists.Count > 0 ? sendLists.Max(x => x.Stage) + 1 : 0;
+                int lastStage = sendLists.Count > 0 ? sendLists.Max(x => x.Stage??0) + 1 : 0;
                 sendLists.Add(new FrontDocumentSendList { Id = 0, Stage = lastStage });
             }
 

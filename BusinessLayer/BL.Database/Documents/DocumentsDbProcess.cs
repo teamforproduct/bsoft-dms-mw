@@ -366,7 +366,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
+        public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -446,11 +446,11 @@ namespace BL.Database.Documents
                         res.LinkedDocuments = res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x => x.DocumentDate);
                     }
                     res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
-                    if (filter?.DocumentsIdForAIP?.Count() > 0)
-                    {
-                        docIds = filter.DocumentsIdForAIP;
-                    }
-                    else
+                    //if (filter?.DocumentsIdForAIP?.Count() > 0)
+                    //{
+                    //    docIds = filter.DocumentsIdForAIP;
+                    //}
+                    //else
                     {
                         docIds = res.LinkedDocuments.Select(x => x.Id).ToList();
                     }
@@ -1652,11 +1652,11 @@ namespace BL.Database.Documents
 
         #region DocumentPaperLists
 
-        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter)
+        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentPaperLists(dbContext, ctx, filter);
+                var res = CommonQueries.GetDocumentPaperLists(dbContext, ctx, filter, paging);
                 transaction.Complete();
                 return res;
             }
@@ -1666,7 +1666,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentPaperLists(dbContext, ctx, new FilterDocumentPaperList { PaperListId = new List<int> { id } }).FirstOrDefault();
+                var res = CommonQueries.GetDocumentPaperLists(dbContext, ctx, new FilterDocumentPaperList { PaperListId = new List<int> { id } }, null).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }

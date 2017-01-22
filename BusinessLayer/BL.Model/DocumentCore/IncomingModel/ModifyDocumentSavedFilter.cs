@@ -6,28 +6,18 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи сохраненного фильтра для документом
     /// </summary>
-    public class ModifyDocumentSavedFilter //: CurrentPosition
+    public class ModifyDocumentSavedFilter : AddDocumentSavedFilter
     {
+        public ModifyDocumentSavedFilter(AddDocumentSavedFilter model)
+        {
+            Name = model.Name;
+            Icon = model.Icon;
+            Filter = model.Filter;
+            IsCommon = model.IsCommon;
+        }
         /// <summary>
         /// ИД записи сохраненного фильтра
-        /// </summary>
-        [IgnoreDataMember]        
+        /// </summary>      
         public int Id { get; set; }
-        /// <summary>
-        /// Имя фильтра
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Иконка фильтра
-        /// </summary>
-        public string Icon { get; set; }
-        /// <summary>
-        /// Содержание фильтра
-        /// </summary>
-        public object Filter { get; set; }
-        /// <summary>
-        /// Признак является ли фильтр общим
-        /// </summary>
-        public bool IsCommon { get; set; }
     }
 }

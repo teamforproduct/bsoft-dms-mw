@@ -224,6 +224,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentPaperController.cs" />
+    <Compile Include="ControllersV3\Documents\PaperListInfoController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentTagController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentWorkGroupController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentAccessController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentLinkController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentFileController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentTaskController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentSavedFilterController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentSignController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentWaitController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentEventController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentSendListController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentAccessListController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentInfoController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
     <Compile Include="ControllersV3\Roles\RolePositionsController.cs" />
@@ -350,7 +365,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryAgentClientCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
     <Compile Include="Controllers\Documents\DocumentAccessesController.cs" />
-    <Compile Include="Controllers\Documents\DocumentWorkGroupController.cs" />
+    <Compile Include="Controllers\Documents\DocumentWorkGroupsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
     <Compile Include="Controllers\Documents\DocumentLinksController.cs" />
     <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />

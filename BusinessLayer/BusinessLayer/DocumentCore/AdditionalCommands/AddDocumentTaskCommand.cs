@@ -39,6 +39,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
+            _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ModifyDocumentTaskPrepare(_context, Model);
             if (_document == null)
             {
@@ -48,7 +49,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new RecordNotUnique();
             }
-            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 

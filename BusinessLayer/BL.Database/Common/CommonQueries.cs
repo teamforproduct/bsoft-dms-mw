@@ -2839,7 +2839,6 @@ namespace BL.Database.Common
                 PositionId = y.PositionId,
                 PositionName = y.Position.Name,
                 PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                PositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
                 DepartmentName = y.Position.Department.Name,
@@ -2987,7 +2986,7 @@ namespace BL.Database.Common
         #endregion
 
         #region PaperLists
-        public static IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(DmsContext dbContext, IContext ctx, FilterDocumentPaperList filter)
+        public static IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(DmsContext dbContext, IContext ctx, FilterDocumentPaperList filter, UIPaging paging)
         {
             var itemsDb = dbContext.DocumentPaperListsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -3002,7 +3001,30 @@ namespace BL.Database.Common
                     itemsDb = itemsDb.Where(filterContains);
                 }
             }
+            itemsDb = itemsDb.OrderByDescending(x => x.LastChangeDate);
 
+            if (paging != null)
+            {
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = itemsDb.Count();
+                }
+
+                if (paging.IsOnlyCounter ?? false)
+                {
+                    return new List<FrontDocumentPaperList>();
+                }
+
+
+                if (!paging.IsAll)
+                {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
+                    itemsDb = itemsDb
+                        .Skip(() => skip).Take(() => take);
+                }
+            }
             var itemsRes = itemsDb.Select(x => x);
 
             var items = itemsRes.Select(x => new FrontDocumentPaperList

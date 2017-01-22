@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentFilesController : ApiController
     {
         /// <summary>
-        /// Получить файл документа определенной версии
+        /// Получить файл документа определенной версии use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -33,7 +33,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Общий список файлов
+        /// Общий список файлов don't use
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <param name="paging">paging</param>
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
         /// <summary>
-        /// Общий список файлов
+        /// Общий список файлов use V3
         /// </summary>
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление нового файла
+        /// Добавление нового файла use V3
         /// Если файл есть с таким именем создаться новая версия файла
         /// </summary>
         /// <param name="model"></param>
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменить описание(Description) файла
+        /// Изменить описание(Description) файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -123,7 +123,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменить имя файла
+        /// Изменить имя файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -139,7 +139,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление основного файла
+        /// Удаление основного файла use V3
         /// удаляются все версии этого файла
         /// </summary>
         /// <param name="model"></param>
@@ -153,7 +153,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по документу
+        /// Получение списка доступных команд по документу use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Массив команд</returns>
@@ -169,7 +169,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по файлу
+        /// Получение списка доступных команд по файлу use V3
         /// </summary>
         /// <param name="id">ИД файлу</param>
         /// <returns>Массив команд</returns>
@@ -185,7 +185,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Вставка версии файла к файлу
+        /// Вставка версии файла к файлу use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -207,7 +207,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Принять версию файла
+        /// Принять версию файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -223,7 +223,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отклонить версию файла
+        /// Отклонить версию файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -239,7 +239,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Сделать основной версией
+        /// Сделать основной версией use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -255,7 +255,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление версии файла
+        /// Удаление версии файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -270,7 +270,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление версии файла из базы
+        /// Удаление версии файла из базы use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

@@ -55,5 +55,20 @@ namespace DMS_WebAPI
 
         public const string Admins = "Admins";
 
+        public const string Events = "Events";
+
+        public const string Waits = "Waits";
+
+        public const string Signs = "Signs";
+
+        public const string Links = "Links";
+
+        public const string WorkGroups = "WorkGroups";
+
+        public const string Accesses = "Accesses";
+
+        public const string SavedFilters = "SavedFilters";
+
+        public const string Tags = "Tags";
     }
 }

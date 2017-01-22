@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentWaitsController : ApiController
     {
         /// <summary>
-        /// Получение списка ожиданий 
+        /// Получение списка ожиданий use V3
         /// </summary>
         /// <param name="filter">модель фильтра ожиданий</param>
         /// <param name="paging">paging</param>
@@ -34,7 +34,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка ожиданий 
+        /// Получение списка ожиданий use V3
         /// </summary>
         /// <param name="model">Входящая модель</param>
         /// <returns>Список ожиданий</returns>

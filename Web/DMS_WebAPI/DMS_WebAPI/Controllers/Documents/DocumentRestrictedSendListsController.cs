@@ -12,7 +12,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentRestrictedSendListsController : ApiController
     {
         /// <summary>
-        /// Получение записи ограничительного списка
+        /// Получение записи ограничительного списка use V3
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Запись ограничительного списка</returns>
@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(docProc.GetRestrictedSendList(ctx, id), this);
         }
         /// <summary>
-        /// Получение записей ограничительного списка
+        /// Получение записей ограничительного списка use V3
         /// </summary>
         /// <param name="documentId"></param>
         /// <returns>Записи ограничительного списка</returns>
@@ -33,8 +33,9 @@ namespace DMS_WebAPI.Controllers.Documents
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             return new JsonResult(docProc.GetRestrictedSendLists(ctx, documentId), this);
         }
+
         /// <summary>
-        /// Добавление записи ограничительного списка
+        /// Добавление записи ограничительного списка use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененные записи ограничительного списка</returns>
@@ -47,11 +48,11 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление ограничительного списка по стандартному списку
+        /// Добавление ограничительного списка по стандартному списку use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная записи ограничительного списка</returns>
-        public IHttpActionResult Put([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
+        public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -59,7 +60,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return GetByDocument(model.DocumentId);
         }
         /// <summary>
-        /// Удаление записи ограничительного списка
+        /// Удаление записи ограничительного списка use V3
         /// </summary>
         /// <param name="id">ИД записи ограничительного списка</param>
         /// <returns></returns>

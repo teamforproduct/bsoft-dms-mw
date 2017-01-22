@@ -68,10 +68,10 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetDocuments(ctx, filter, paging);
         }
 
-        public FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter)
+        public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
-            var doc = _documentDb.GetDocument(ctx, documentId, filter);
+            var doc = _documentDb.GetDocument(ctx, documentId);
             doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
             doc.SendLists = null;
             return doc;
@@ -191,9 +191,9 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetDocumentPaperList(context, itemId);
         }
 
-        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter)
+        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter, UIPaging paging)
         {
-            return _documentDb.GetDocumentPaperLists(context, filter).ToList();
+            return _documentDb.GetDocumentPaperLists(context, filter, paging).ToList();
         }
 
         #endregion DocumentPaperLists        

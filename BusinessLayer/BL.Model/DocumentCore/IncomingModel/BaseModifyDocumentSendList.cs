@@ -1,23 +1,27 @@
 ﻿using System;
-using BL.Model.DocumentCore.IncomingModel;
-using BL.Model.Enums;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.Enums;
+using BL.Model.Users;
 using BL.Model.Extensions;
 
-namespace BL.Model.DocumentCore.FrontModel
+namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
-    /// Модель отображения плана для фронте
+    /// Модель для добавления/изменения записи плана работы над документом
     /// </summary>
-    public class FrontDocumentSendList : FrontDocumentInfo
+    public class BaseModifyDocumentSendList
     {
         /// <summary>
-        /// ИЗ записи плана
+        /// ИД документа
         /// </summary>
-        public int Id { get; set; }
+        [Required]
+        public int DocumentId { get; set; }
         /// <summary>
-        /// Номер этапа
+        /// Номер этапа, если null, то выполняется ПРЯМОЕ действие без сохранения в план
         /// </summary>
         public int? Stage { get; set; }
         /// <summary>
@@ -27,6 +31,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД типа рассылки
         /// </summary>
+        [Required]
         public EnumSendTypes SendType { get; set; }
         /// <summary>
         /// ИД должности от кого идет рассылка
@@ -41,7 +46,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public int? TargetAgentId { get; set; }
         /// <summary>
-        /// Задача
+        /// ИД Задачи
         /// </summary>
         public string Task { get; set; }
         /// <summary>
@@ -92,6 +97,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
+        [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
         /// <summary>
         /// Признак первоначальный пункт
@@ -105,36 +111,5 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Признак, запуска пункта плана сразу после сохранения
         /// </summary>
         public bool? IsLaunchItem { get; set; }
-
-        public int? StartEventId { get; set; }
-        public int? CloseEventId { get; set; }
-        public string StageTypeName { get; set; }
-        public string StageTypeCode { get; set; }
-        public string SendTypeName { get; set; }
-        public string SendTypeCode { get; set; }
-        public bool SendTypeIsImportant { get; set; }
-        public int SourceAgentId { get; set; }
-        public string SourcePositionName { get; set; }
-        public int? SourcePositionExecutorAgentId { get; set; }
-        public string SourcePositionExecutorAgentName { get; set; }
-        public string SourceAgentName { get; set; }
-
-        public string TargetPositionName { get; set; }
-        public int? TargetPositionExecutorAgentId { get; set; }
-        public string TargetPositionExecutorAgentName { get; set; }
-        public string TargetAgentName { get; set; }
-
-        public string SourcePositionExecutorNowAgentName { get; set; }
-        public string SourcePositionExecutorAgentPhoneNumber { get; set; }
-
-        public string TargetPositionExecutorNowAgentName { get; set; }
-        public string TargetPositionExecutorAgentPhoneNumber { get; set; }
-
-        public string AccessLevelName { get; set; }
-
-        public string AddDescription { get; set; }
-
-        public FrontDocumentEvent StartEvent { get; set; }
-        public FrontDocumentEvent CloseEvent { get; set; }
     }
 }

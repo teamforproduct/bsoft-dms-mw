@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentEventsController : ApiController
     {
         /// <summary>
-        /// Получение списка ивентов 
+        /// Получение списка ивентов - don't use
         /// </summary>
         /// <param name="filter">модель фильтра ивентов</param>
         /// <param name="paging">paging</param>
@@ -35,13 +35,13 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
         /// <summary>
-        /// Получение списка ивентов 
+        /// Получение списка ивентов  use V3
         /// </summary>
         /// <param name="model">Входящая модель</param>
         /// <returns>Список ивентов</returns>
         [HttpPost]
         [Route("GetList")]
-        [ResponseType(typeof(List<FrontDocumentWait>))]
+        [ResponseType(typeof(List<FrontDocumentEvent>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
             if (model == null) model = new IncomingBase();
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
         /// <summary>
-        /// Получение ивента по ИД
+        /// Получение ивента по ИД use V3
         /// </summary>
         /// <param name="id">ИД ивента</param>
         /// <returns>Ивент</returns>

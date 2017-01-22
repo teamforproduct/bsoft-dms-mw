@@ -13,7 +13,7 @@ namespace DMS_WebAPI.Controllers.Documents
     {
         /// <summary>
         /// Получение тегов документа.
-        /// Зависит от выставленных позиций
+        /// Зависит от выставленных позиций use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Теги документа</returns>
@@ -25,7 +25,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменение списка тега документа
+        /// Изменение списка тега документа use V3
         /// Зависит от выставленных позиций
         /// </summary>
         /// <param name="model"></param>

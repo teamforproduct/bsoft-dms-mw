@@ -803,7 +803,7 @@ namespace BL.Logic.Common
         {
             if (sendLists?.Count() > 0)
             {
-                var stages = Enumerable.Range(0, sendLists.Max(x => x.Stage) + 1)
+                var stages = Enumerable.Range(0, sendLists.Max(x => x.Stage??0) + 1)
                     .GroupJoin(sendLists, s => s, sl => sl.Stage
                     , (s, sls) => new { s, sls = sls.Where(x => x.Id > 0) })
                     .Select(x => new FrontDocumentSendListStage

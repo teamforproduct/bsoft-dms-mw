@@ -12,7 +12,11 @@ namespace DMS_WebAPI.Controllers.Documents
     [Authorize]
     public class DocumentSavedFiltersController : ApiController
     {
-        // GET: api/DocumentSavedFilters
+        /// <summary>
+        /// use v3
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public IHttpActionResult Get([FromUri] FilterDocumentSavedFilter filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -21,7 +25,11 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(savFilters, this);
         }
 
-        // GET: api/DocumentSavedFilters/5
+        /// <summary>
+        /// use v3
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -30,16 +38,25 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(savFilter, this);
         }
 
-        // POST: api/DocumentSavedFilters
-        public IHttpActionResult Post([FromBody]ModifyDocumentSavedFilter model)
+        /// <summary>
+        /// use v3
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public IHttpActionResult Post([FromBody]AddDocumentSavedFilter model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, ctx, model);
+            var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, ctx, new ModifyDocumentSavedFilter(model));
             return Get(id);
         }
 
-        // PUT: api/DocumentSavedFilters/5
+        /// <summary>
+        /// use v3
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSavedFilter model)
         {
             model.Id = id;
@@ -49,7 +66,11 @@ namespace DMS_WebAPI.Controllers.Documents
             return Get(model.Id);
         }
 
-        // DELETE: api/DocumentSavedFilters/5
+        /// <summary>
+        /// use v3
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IHttpActionResult Delete(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

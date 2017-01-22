@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (!Model.IsCopy && _document.ExecutorPositionId != Model.CurrentPositionId)
+            if (!Model.IsCopy && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
                 throw new CouldNotPerformOperationWithPaper();
             }

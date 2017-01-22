@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentActionsController : ApiController
     {
         /// <summary>
-        /// Получение списка доступных команд по документу
+        /// Получение списка доступных команд по документу use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Массив команд</returns>
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по событию
+        /// Получение списка доступных команд по событию use V3
         /// </summary>
         /// <param name="eventId">ИД события</param>
         /// <returns>Массив команд</returns>
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
-        /// Регистрация документа
+        /// Регистрация документа use V3
         /// Возможности:
         /// 1. Получить регистрационный номер
         /// 2. Зарегистрировать документ
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(nextNumb, this);
         }
         /// <summary>
-        /// Регистрация документа
+        /// Регистрация документа use V3
         /// Возможности:
         /// 1. Получить регистрационный номер
         /// 2. Зарегистрировать документ
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
-        /// Добавление связи между документами
+        /// Добавление связи между документами use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление связи между документами
+        /// Удаление связи между документами use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Обновленный документ</returns>
@@ -217,7 +217,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Взятие на контроль
+        /// Взятие на контроль use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -234,7 +234,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменить контроль
+        /// Изменить контроль use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -252,7 +252,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
         /// <summary>
-        /// Изменить параметры направлен для исполнения
+        /// Изменить параметры направлен для исполнения use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -286,7 +286,7 @@ namespace DMS_WebAPI.Controllers.Documents
         //}
 
         /// <summary>
-        /// Изменить параметры направлен для исполнения (отв. исполнитель)
+        /// Изменить параметры направлен для исполнения (отв. исполнитель) use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -303,7 +303,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменить контроль для исполнителя
+        /// Изменить контроль для исполнителя use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -320,7 +320,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Снять с контроль
+        /// Снять с контроль use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -337,7 +337,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Копирование документа
+        /// Копирование документа use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Добавленный документ</returns>
@@ -405,7 +405,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// отметить для пользователя ивенты документа как прочтенные 
+        /// отметить для пользователя ивенты документа как прочтенные use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -439,7 +439,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Попросить о переносе сроков исполнения
+        /// Попросить о переносе сроков исполнения use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -456,7 +456,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отказать в переносе сроков исполнения
+        /// Отказать в переносе сроков исполнения use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -473,7 +473,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить выполнение поручения
+        /// Отметить выполнение поручения use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -490,7 +490,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отклонить прием результата
+        /// Отклонить прием результата use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -507,7 +507,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Принять результат
+        /// Принять результат use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -523,7 +523,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отменить поручение
+        /// Отменить поручение use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -539,7 +539,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отклонить подписание
+        /// Отклонить подписание use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -555,7 +555,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отклонить визирование
+        /// Отклонить визирование use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -571,7 +571,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отклонить согласование
+        /// Отклонить согласование use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -587,7 +587,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отклонить утверждение
+        /// Отклонить утверждение use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -605,7 +605,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отозвать с подписания
+        /// Отозвать с подписания use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -622,7 +622,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отозвать с визирования
+        /// Отозвать с визирования use V3
         ///  </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -638,7 +638,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отозвать с согласования
+        /// Отозвать с согласования use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -655,7 +655,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Отозвать с утверждения
+        /// Отозвать с утверждения use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -672,7 +672,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Подписать
+        /// Подписать use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -690,7 +690,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Самоподписание
+        /// Самоподписание use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -726,7 +726,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Завизировать
+        /// Завизировать use V3
         ///  </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -743,7 +743,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Согласовать
+        /// Согласовать use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -759,7 +759,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Утвердить
+        /// Утвердить use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -776,7 +776,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получить отчет
+        /// Получить отчет use V3
         /// </summary>
         /// <param name="id">ИД документа</param>>
         /// <returns></returns>
@@ -792,7 +792,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получить отчет Реестр передачи документов
+        /// Получить отчет Реестр передачи документов use V3
         /// </summary>
         /// <param name="id">ИД PaperList</param>>
         /// <returns></returns>
@@ -846,7 +846,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <returns></returns>
         [Route("SendDocument")]
         [HttpPost]
-        public IHttpActionResult SendDocument([FromBody]List<ModifyDocumentSendList> model)
+        public IHttpActionResult SendDocument([FromBody]List<AddDocumentSendList> model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();

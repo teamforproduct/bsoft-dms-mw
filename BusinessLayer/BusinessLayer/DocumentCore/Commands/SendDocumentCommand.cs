@@ -22,15 +22,15 @@ namespace BL.Logic.DocumentCore.Commands
             _documentDb = documentDb;
         }
 
-        private List<ModifyDocumentSendList> Model
+        private List<AddDocumentSendList> Model
         {
             get
             {
-                if (!(_param is List<ModifyDocumentSendList>))
+                if (!(_param is List<AddDocumentSendList>))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (List<ModifyDocumentSendList>)_param;
+                return (List<AddDocumentSendList>)_param;
             }
         }
 
@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     try
                     {
-                        docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, Model[i]);
+                        docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, new ModifyDocumentSendList(Model[i]));
                     }
                     catch (Exception e)
                     {

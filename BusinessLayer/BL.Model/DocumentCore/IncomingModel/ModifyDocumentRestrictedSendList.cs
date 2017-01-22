@@ -12,8 +12,8 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД записи
         /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
+       // [IgnoreDataMember]
+       // public int Id { get; set; }
         /// <summary>
         /// ИД документа
         /// </summary>

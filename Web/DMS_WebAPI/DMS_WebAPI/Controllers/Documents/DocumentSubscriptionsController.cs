@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentSubscriptionsController : ApiController
     {
         /// <summary>
-        /// Получение списка подписей 
+        /// Получение списка подписей use V3
         /// </summary>
         /// <param name="filter">модель фильтра подписей</param>
         /// <param name="paging">paging</param>

@@ -7,6 +7,7 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -14,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentPaperListsController : ApiController
     {
         /// <summary>
-        /// Получение PaperList
+        /// Получение PaperList use V3
         /// </summary>
         /// <param name="id"></param>
         /// <returns>PaperList</returns>
@@ -26,19 +27,19 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка PaperLists для документов
+        /// Получение списка PaperLists для документов use V3
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>Список PaperLists</returns>
-        public IHttpActionResult Get([FromUri]FilterDocumentPaperList filter)
+        public IHttpActionResult Get([FromUri]FilterDocumentPaperList filter, UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            return new JsonResult(docProc.GetDocumentPaperLists(ctx, filter), this);
+            return new JsonResult(docProc.GetDocumentPaperLists(ctx, filter, paging), this);
         }
 
         /// <summary>
-        /// Добавление записи PaperLists
+        /// Добавление записей PaperLists use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
@@ -47,11 +48,11 @@ namespace DMS_WebAPI.Controllers.Documents
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaperList, ctx, model);
-            return Get(new FilterDocumentPaperList { PaperListId = newIds });
+            return Get(new FilterDocumentPaperList { PaperListId = newIds }, null);
         }
 
         /// <summary>
-        /// Изменение записи PaperLists
+        /// Изменение записи PaperLists use V3
         /// </summary>
         /// <param name="id">ИД записи</param>
         /// <param name="model"></param>
@@ -66,7 +67,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление записи PaperLists
+        /// Удаление записи PaperLists use V3
         /// </summary>
         /// <param name="id">ИД записи</param>
         /// <returns></returns>
