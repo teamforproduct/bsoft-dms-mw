@@ -58,6 +58,15 @@
         public const string SubordinationTypes = "SubordinationTypes";
         public const string ValueTypes = "ValueTypes";
 
+
+        public const string Events = "Events";
+        public const string Accesses = "Accesses";
+        public const string Links = "Links";
+        public const string SavedFilters = "SavedFilters";
+        public const string Signs = "Signs";
+        public const string Waits = "Waits";
+        public const string WorkGroups = "WorkGroups";
+
         public static int GetId(string Name)
         {
             int res = 0;

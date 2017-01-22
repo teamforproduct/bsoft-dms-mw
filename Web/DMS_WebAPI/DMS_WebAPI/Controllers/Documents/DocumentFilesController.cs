@@ -65,7 +65,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Общий список файлов
+        /// Общий список файлов don't use
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <param name="paging">paging</param>

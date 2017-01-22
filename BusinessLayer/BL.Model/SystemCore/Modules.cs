@@ -27,6 +27,10 @@ namespace BL.Model.SystemCore
         public const string CustomDictionaries = "CustomDictionaries";
         public const string Tools = "Tools";
 
+
+        public const string Document = "Document";
+        public const string PaperList = "PaperList";
+
         public static int GetId(string Name)
         {
             int res = 0;

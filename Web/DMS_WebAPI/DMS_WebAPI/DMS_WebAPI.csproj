@@ -224,7 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
-<<<<<<< HEAD
+
     <Compile Include="ControllersV3\Documents\DocumentPaperController.cs" />
     <Compile Include="ControllersV3\Documents\PaperListInfoController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentTagController.cs" />
@@ -240,10 +240,10 @@
     <Compile Include="ControllersV3\Documents\DocumentSendListController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentAccessListController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentInfoController.cs" />
-=======
+
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesContentsController.cs" />
->>>>>>> a3467aa20d72cf9f4046f8bef0749bcd76b5a3af
+
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
     <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
