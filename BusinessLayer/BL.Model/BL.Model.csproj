@@ -83,14 +83,24 @@
   <ItemGroup>
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminPositionRoleDIP.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissionsDIP.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissions.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontFeature.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontPermissionValue.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontModule.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPRegistrationJournalPositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminUserLanguage.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAvailablePositions.cs" />
     <Compile Include="AdminCore\FrontModel\FrontDIPUserRolesRoles.cs" />
     <Compile Include="AdminCore\IncomingModel\CopyAdminSettingsByPosition.cs" />
     <Compile Include="AdminCore\IncomingModel\AddAdminRole.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermissionByModuleAccessType.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermissionByModule.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermissionByModuleFeature.cs" />
+    <Compile Include="AdminCore\IncomingModel\SetRolePermission.cs" />
     <Compile Include="AdminCore\IncomingModel\SetAdminPositionRole.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRoleActionByObject.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminRegistrationJournalPosition.cs" />
@@ -101,8 +111,8 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDefaultSubordination.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByCompany.cs" />
     <Compile Include="AdminCore\IncomingModel\ModifyAdminSubordinationByDepartment.cs" />
-    <Compile Include="AdminCore\IncomingModel\SetUserRoleByPosition.cs" />
     <Compile Include="AdminCore\InternalModel\InternalDepartmentAdmin.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminRolePermission.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleType.cs" />
     <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
@@ -131,6 +141,10 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
+    <Compile Include="Common\ItemCheck.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionaryType.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionary.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
     <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
@@ -225,8 +239,6 @@
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDictionaryAgentUser.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyPositionOrder.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionary.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAddressType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\Modify.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDepartment.cs" />
@@ -272,7 +284,6 @@
     <Compile Include="DocumentCore\IncomingModel\IncomingBase.cs" />
     <Compile Include="DocumentCore\IncomingModel\AdditinalLinkedDocumentSendList.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocument.cs" />
-    <Compile Include="DocumentCore\IncomingModel\CopyId.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentPaper.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentTask.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateDocumentSendLists.cs" />
@@ -335,6 +346,9 @@
     <Compile Include="AdminCore\VerifyAccess.cs" />
     <Compile Include="AdminCore\VerifySubordination.cs" />
     <Compile Include="Common\LastChangeInfo.cs" />
+    <Compile Include="Enums\EnumAccessTypesValue.cs" />
+    <Compile Include="Enums\EnumAccessTypes.cs" />
+    <Compile Include="Enums\EnumDocumentFileType.cs" />
     <Compile Include="Enums\EnumPagingResult.cs" />
     <Compile Include="Enums\EnumStageTypes.cs" />
     <Compile Include="Enums\EnumSystemFormats.cs" />
@@ -342,6 +356,9 @@
     <Compile Include="Enums\EnumSystemPatterns.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgent.cs" />
+    <Compile Include="SystemCore\Features.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemPermissions.cs" />
+    <Compile Include="SystemCore\Modules.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
     <Compile Include="Database\DatabaseModel.cs" />
     <Compile Include="Enums\EnumDatabaseType.cs" />

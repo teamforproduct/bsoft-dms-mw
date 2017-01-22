@@ -60,7 +60,7 @@ namespace BL.Database.Admins.Interfaces
         InternalAdminPositionRole GetInternalPositionRole(IContext context, FilterAdminPositionRole filter);
         FrontAdminPositionRole GetPositionRole(IContext context, int id);
         IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter);
-        IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter);
+        IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter);
         //IEnumerable<FrontDIPUserRolesRoles> GetPositionRolesDIPUserRoles(IContext context, FilterAdminPositionRole filter);
         #endregion
 
@@ -118,6 +118,15 @@ namespace BL.Database.Admins.Interfaces
         int AddDepartmentAdmin(IContext context, InternalDepartmentAdmin model);
 
         void DeleteDepartmentAdmin(IContext context, int id);
+
+        int AddRolePermission(IContext context, InternalAdminRolePermission model);
+
+        void DeleteRolePermission(IContext context, InternalAdminRolePermission model);
+
+        bool ExistsRolePermissions(IContext context, FilterAdminRolePermissions filter);
+        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
+
+        IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter);
 
     }
 }

@@ -33,7 +33,39 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Общий список файлов don't use
+        /// Получить PDF копию файл документа определенной версии
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GetPdfFile")]
+        [HttpGet]
+        public IHttpActionResult PdfFile([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFilePdf(ctx, model);
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Получить картинку-превью для PDF версии документа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GetPdfPreview")]
+        [HttpGet]
+        public IHttpActionResult PdfPreview([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFilePreview(ctx, model);
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Общий список файлов
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <param name="paging">paging</param>
@@ -101,7 +133,6 @@ namespace DMS_WebAPI.Controllers.Documents
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
             model.IsUseMainNameFile = false;
-
 
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
             return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);

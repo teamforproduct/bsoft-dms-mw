@@ -12,17 +12,17 @@ namespace BL.Model.Users
         /// <summary>
         /// Модуль
         /// </summary>
-        public string module { get; set; }
+        public string Module { get; set; }
 
         /// <summary>
         /// Фича
         /// </summary>
-        public string feature { get; set; }
+        public string Feature { get; set; }
 
         /// <summary>
         /// Доступ по CRUD
         /// </summary>
-        public string accessType { get; set; }
+        public string AccessType { get; set; }
 
     }
 }

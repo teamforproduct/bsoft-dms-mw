@@ -7,33 +7,9 @@ using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddCustomDictionaryTypeCommand : BaseDictionaryCommand
+    public class AddCustomDictionaryTypeCommand : BaseCustomDictionaryTypeCommand
     {
-        private ModifyCustomDictionaryType Model
-        {
-            get
-            {
-                if (!(_param is ModifyCustomDictionaryType))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyCustomDictionaryType)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            //pss А где _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyCostomDictionaryType(_context, _dictDb, Model);
-
-            return true;
-        }
+        private AddCustomDictionaryType Model { get { return GetModel<AddCustomDictionaryType>(); } }
 
         public override object Execute()
         {

@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/SetByAssignment")]
-        public IHttpActionResult SetByDepartment([FromBody] SetUserRoleByAssignment model)
+        public IHttpActionResult SetByDepartment([FromBody] ItemCheck model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetUserRoleByAssignment, model);

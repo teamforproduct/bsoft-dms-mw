@@ -14,6 +14,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Users;
@@ -64,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Image)]
-        public IHttpActionResult Put([FromUri]ModifyDictionaryAgentImage model)
+        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentImage model)
         {
             throw new NotImplementedException();
         }

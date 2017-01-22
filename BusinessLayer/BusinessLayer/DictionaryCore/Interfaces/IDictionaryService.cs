@@ -32,7 +32,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgentPersons
         FrontAgentPerson GetAgentPerson(IContext context, int id);
-
+        IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging);
 
         #endregion DictionaryAgentPersons
@@ -130,8 +130,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryDocumentTypes
         FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id);
-
-        IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
+        IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
+        IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
+        IEnumerable<FrontDictionaryDocumentType> GetMainDictionaryDocumentTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryDocumentType filter, UIPaging paging);
         #endregion DictionaryDocumentSubjects
 
         #region DictionaryEventTypes
@@ -255,8 +256,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
-        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
-
+        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging);
+        IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging);
         FrontCustomDictionary GetCustomDictionary(IContext context, int id);
         #endregion CustomDictionaries
 

@@ -361,7 +361,7 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] PositionRoles ...
-        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminRole filter)
+        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter)
         {
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
@@ -879,6 +879,16 @@ namespace BL.Logic.AdminCore
             RegGr = rGr;
         }
         #endregion
+
+        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
+        {
+            return _adminDb.GetUserPermissions(context);
+        }
+
+        public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)
+        {
+            return _adminDb.GetRolePermissions(context, filter);
+        }
 
     }
 }

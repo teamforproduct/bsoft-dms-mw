@@ -321,6 +321,14 @@ namespace BL.Model.Exception
         public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    //TODO PDF Change message to pdf file
+    public class UserPdfFileNotExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserPdfFileNotExists@l##";
+        public UserPdfFileNotExists() : base(_MESSAGE) { }
+        public UserPdfFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     public class UserIsNotDefined : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserIsNotDefined@l##";
@@ -344,14 +352,14 @@ namespace BL.Model.Exception
 
     public class UserMustChangePassword : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:UserMustChangePassword@l##";
         public UserMustChangePassword() : base(_MESSAGE) { }
         public UserMustChangePassword(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class UserMustConfirmEmail : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:UserMustConfirmEmail@l##";
         public UserMustConfirmEmail() : base(_MESSAGE) { }
         public UserMustConfirmEmail(System.Exception ex) : base(_MESSAGE, ex) { }
     }
@@ -775,11 +783,11 @@ namespace BL.Model.Exception
     }
 
     /// <summary>
-    /// Ошибка возникает при попытке задублировать паспортные данные сотрудника
+    /// Ошибка возникает при попытке задублировать паспортные данные человека
     /// </summary>
     public class DictionaryAgentPeoplePassportNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##";
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentPeoplePassportNotUnique@l##";
         public DictionaryAgentPeoplePassportNotUnique(string PassportSerial, int? PassportNumber) : base(_MESSAGE) { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
         public DictionaryAgentPeoplePassportNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }

@@ -87,6 +87,7 @@ namespace BL.Database.Common
             {
                 Id = item.Id,
                 Code = item.Code,
+                Name = item.Name,
                 Description = item.Description,
                 DictionaryTypeId = item.DictionaryTypeId,
                 LastChangeDate = item.LastChangeDate,
@@ -102,6 +103,7 @@ namespace BL.Database.Common
 
                 Id = item.Id,
                 Code = item.Code,
+                Name = item.Name,
                 Description = item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,

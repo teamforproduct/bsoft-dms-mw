@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BL.Database.DBModel.Admin;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.System
@@ -26,6 +27,9 @@ namespace BL.Database.DBModel.System
 
         [ForeignKey("AccessTypeId")]
         public virtual SystemAccessTypes AccessType { get; set; }
+
+        [ForeignKey("PermissionId")]
+        public virtual ICollection<AdminRolePermissions> Roles { get; set; }
 
     }
 }

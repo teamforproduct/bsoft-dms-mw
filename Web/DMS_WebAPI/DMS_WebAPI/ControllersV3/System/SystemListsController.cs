@@ -7,12 +7,12 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter">фильтр</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Actions")]
+        [Route(Features.Actions)]
         [ResponseType(typeof(List<FrontSystemAction>))]
         public IHttpActionResult Get([FromUri] FilterSystemAction filter)
         {
@@ -42,152 +42,24 @@ namespace DMS_WebAPI.ControllersV3.System
             return new JsonResult(tmpDicts, this);
         }
 
+
         /// <summary>
-        /// Форматы значений для формул
+        /// Уровни доступа
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Formats")]
-        [ResponseType(typeof(List<FrontSystemFormat>))]
-        public IHttpActionResult Get([FromUri] FilterSystemFormat filter)
+        [Route(Features.AccessLevels)]
+        [ResponseType(typeof(List<FrontAdminAccessLevel>))]
+        public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemFormats(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetAdminAccessLevels(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            return res;
         }
 
-        /// <summary>
-        /// Функции для формул
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Formulas")]
-        [ResponseType(typeof(List<FrontSystemFormula>))]
-        public IHttpActionResult Get([FromUri] FilterSystemFormula filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemFormulas(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-        /// <summary>
-        /// Объекты системы
-        /// </summary>
-        /// <param name="filter">фильтр</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Objects")]
-        [ResponseType(typeof(List<FrontSystemObject>))]
-        public IHttpActionResult Get([FromUri] FilterSystemObject filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemObjects(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-        /// <summary>
-        /// Элементы для формул
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Patterns")]
-        [ResponseType(typeof(List<FrontSystemPattern>))]
-        public IHttpActionResult Get([FromUri] FilterSystemPattern filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemPatterns(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-        /// <summary>
-        /// Типы значений
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("ValueTypes")]
-        [ResponseType(typeof(List<FrontSystemValueType>))]
-        public IHttpActionResult Get([FromUri] FilterSystemValueType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemValueTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-
-        /// <summary>
-        /// Локали (языки системы)
-        /// </summary>
-        /// <param name="filter">Filter parms</param>
-        /// <returns>FrontAdminPositions</returns>
-        [HttpGet]
-        [Route("Languages")]
-        [ResponseType(typeof(List<InternalAdminLanguage>))]
-        public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ILanguages>();
-            var tmpItems = tmpService.GetLanguages(filter);
-            return new JsonResult(tmpItems, this);
-        }
-
-
-        /// <summary>
-        /// Типы рассылки (для сведения, для исполнения)
-        /// </summary>
-        /// <param name="filter">Filter parms</param>
-        /// <returns>FrontAdminPositions</returns>
-        [HttpGet]
-        [Route("SubordinationTypes")]
-        [ResponseType(typeof(List<FrontDictionarySubordinationType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionarySubordinationTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-        /// <summary>
-        /// Еще одни типы рассылки (для рассмотрения, для исполнения, на контроль, на подпись, на визирование, на согласование, на утверждение...)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("SendTypes")]
-        [ResponseType(typeof(List<FrontDictionarySendType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionarySendTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-
-        /// <summary>
-        /// Результаты исполнения (изменение контроля, отзыв, отказ...)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("ResultTypes")]
-        [ResponseType(typeof(List<FrontDictionaryResultType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryResultType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryResultTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
 
         /// <summary>
         /// Типы назначений на должность (назначен, исполняет обязанности, референт)
@@ -195,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AssignmentTypes")]
+        [Route(Features.AssignmentTypes)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutorType>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
@@ -205,54 +77,6 @@ namespace DMS_WebAPI.ControllersV3.System
             return new JsonResult(tmpDicts, this);
         }
 
-        /// <summary>
-        /// Типы связей документов (в ответ, во исполнение, в дополнение, повторно)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("LinkTypes")]
-        [ResponseType(typeof(List<FrontDictionaryLinkType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryLinkType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryLinkTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-        /// <summary>
-        /// Типы событий с документами (добавлен файл, взят на контроль...)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("EventTypes")]
-        [ResponseType(typeof(List<FrontDictionaryEventType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryEventType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryEventTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
-
-
-        /// <summary>
-        /// Типы важных событий с документами (важные события, второстепенные события, факты движения документов, собственные примечания...)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("ImportanceEventTypes")]
-        [ResponseType(typeof(List<FrontDictionaryImportanceEventType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryImportanceEventType filter)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryImportanceEventTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
-        }
 
         /// <summary>
         /// Направление документа (входящий, исходящий, внутренний)
@@ -260,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("DocumentDirections")]
+        [Route(Features.DocumentDirections)]
         [ResponseType(typeof(List<FrontDictionaryDocumentDirection>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentDirection filter)
         {
@@ -272,20 +96,206 @@ namespace DMS_WebAPI.ControllersV3.System
 
 
         /// <summary>
-        /// Уровни доступа
+        /// Типы событий с документами (добавлен файл, взят на контроль...)
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AccessLevels")]
-        [ResponseType(typeof(List<FrontAdminAccessLevel>))]
-        public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
+        [Route(Features.EventTypes)]
+        [ResponseType(typeof(List<FrontDictionaryEventType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryEventType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAdminAccessLevels(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionaryEventTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Форматы значений для формул
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Formats)]
+        [ResponseType(typeof(List<FrontSystemFormat>))]
+        public IHttpActionResult Get([FromUri] FilterSystemFormat filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
+            var tmpDicts = tmpSysProc.GetSystemFormats(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Функции для формул
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Formulas)]
+        [ResponseType(typeof(List<FrontSystemFormula>))]
+        public IHttpActionResult Get([FromUri] FilterSystemFormula filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
+            var tmpDicts = tmpSysProc.GetSystemFormulas(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Типы важных событий с документами (важные события, второстепенные события, факты движения документов, собственные примечания...)
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.ImportanceEventTypes)]
+        [ResponseType(typeof(List<FrontDictionaryImportanceEventType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryImportanceEventType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionaryImportanceEventTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Локали (языки системы)
+        /// </summary>
+        /// <param name="filter">Filter parms</param>
+        /// <returns>FrontAdminPositions</returns>
+        [HttpGet]
+        [Route(Features.Languages)]
+        [ResponseType(typeof(List<InternalAdminLanguage>))]
+        public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ILanguages>();
+            var tmpItems = tmpService.GetLanguages(filter);
+            return new JsonResult(tmpItems, this);
+        }
+
+
+        /// <summary>
+        /// Типы связей документов (в ответ, во исполнение, в дополнение, повторно)
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.LinkTypes)]
+        [ResponseType(typeof(List<FrontDictionaryLinkType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryLinkType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionaryLinkTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Объекты системы
+        /// </summary>
+        /// <param name="filter">фильтр</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Objects)]
+        [ResponseType(typeof(List<FrontSystemObject>))]
+        public IHttpActionResult Get([FromUri] FilterSystemObject filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
+            var tmpDicts = tmpSysProc.GetSystemObjects(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Элементы для формул
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Patterns)]
+        [ResponseType(typeof(List<FrontSystemPattern>))]
+        public IHttpActionResult Get([FromUri] FilterSystemPattern filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
+            var tmpDicts = tmpSysProc.GetSystemPatterns(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Результаты исполнения (изменение контроля, отзыв, отказ...)
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.ResultTypes)]
+        [ResponseType(typeof(List<FrontDictionaryResultType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryResultType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionaryResultTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Еще одни типы рассылки (для рассмотрения, для исполнения, на контроль, на подпись, на визирование, на согласование, на утверждение...)
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.SendTypes)]
+        [ResponseType(typeof(List<FrontDictionarySendType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionarySendTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Типы рассылки (для сведения, для исполнения)
+        /// </summary>
+        /// <param name="filter">Filter parms</param>
+        /// <returns>FrontAdminPositions</returns>
+        [HttpGet]
+        [Route(Features.SubordinationTypes)]
+        [ResponseType(typeof(List<FrontDictionarySubordinationType>))]
+        public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionarySubordinationTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
+
+        /// <summary>
+        /// Типы значений
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.ValueTypes)]
+        [ResponseType(typeof(List<FrontSystemValueType>))]
+        public IHttpActionResult Get([FromUri] FilterSystemValueType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
+            var tmpDicts = tmpSysProc.GetSystemValueTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
         }
 
     }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Common;
-using BL.Model.Enums;
+﻿using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -16,14 +11,17 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Ссылка на шаблон
         /// </summary>
+        [Required]
         public int DocumentId { get; set; }
         /// <summary>
         /// Ссылка на должность
         /// </summary>
-        public int? PositionId { get; set; }
+        [Required]
+        public int PositionId { get; set; }
         /// <summary>
         /// Уровень доступа
         /// </summary>
+        [Required]
         public EnumDocumentAccesses AccessLevel { get; set; }
     }
 }

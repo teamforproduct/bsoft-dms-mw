@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Enums;
 
 namespace BL.Logic.SystemServices.QueueWorker
@@ -11,6 +13,7 @@ namespace BL.Logic.SystemServices.QueueWorker
         BackgroundWorker worker = new BackgroundWorker();
         Queue<IQueueTask> workqueue = new Queue<IQueueTask>();
         AutoResetEvent workAdded = new AutoResetEvent(false);
+        ILogger _logger; 
 
         public event Action<IQueueTask> WorkUnitAdded;
         public event Action<IQueueTask> WorkCompleted;
@@ -19,6 +22,7 @@ namespace BL.Logic.SystemServices.QueueWorker
         {
             worker.DoWork += worker_DoWork;
             worker.RunWorkerAsync();
+            _logger = DmsResolver.Current.Get<ILogger>();
         }
 
         public void StopWorker()
@@ -87,7 +91,7 @@ namespace BL.Logic.SystemServices.QueueWorker
                     }
                     catch (Exception ex)
                     {
-                        //Trace.TraceError(ex.ToString());
+                        _logger.Error(workInProgress.CurrentContext, ex, "Error in Queue worker");
                         if (workInProgress != null)
                         {
                             workInProgress.StatusDescription = ex.Message;

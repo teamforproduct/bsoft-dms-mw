@@ -1,10 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
@@ -92,10 +88,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody]CopyId model)
+        public IHttpActionResult Duplicate([FromBody]Item model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.CopyTemplateDocument, model);
+            var tmpItem = Action.Execute(EnumDocumentActions.CopyTemplateDocument, model.Id);
             return Get(tmpItem);
         }
 

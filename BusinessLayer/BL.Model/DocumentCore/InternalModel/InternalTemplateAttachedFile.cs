@@ -1,6 +1,8 @@
-﻿using BL.Model.Common;
+﻿using System;
+using BL.Model.Common;
 using BL.Model.Enums;
 using System.Web;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -9,6 +11,22 @@ namespace BL.Model.DocumentCore.InternalModel
     /// </summary>
     public class InternalTemplateAttachedFile : LastChangeInfo
     {
+        public InternalTemplateAttachedFile()
+        {
+        }
+
+        public InternalTemplateAttachedFile(FrontTemplateAttachedFile doc)
+        {
+            Name = doc.Name;
+            Extension = doc.Extension;
+            Description = doc.Description;
+            DocumentId = doc.DocumentId;
+            Id = doc.Id;
+            FileType = doc.FileType;
+            OrderInDocument = doc.OrderInDocument;
+            FileContent = doc.FileContent;
+            
+        }
         /// <summary>
         /// ИД.
         /// </summary>
@@ -69,5 +87,15 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Хэш файла. для проверки целостности файла в хранилище
         /// </summary>
         public string Hash { get; set; }
+
+        /// <summary>
+        /// Был ли создан пдф файл на основании данного файла
+        /// </summary>
+        public bool PdfCreated { get; set; }
+
+        /// <summary>
+        /// Время последнего обращения к пдф файлу.
+        /// </summary>
+        public DateTime? LastPdfAccess { get; set; }
     }
 }

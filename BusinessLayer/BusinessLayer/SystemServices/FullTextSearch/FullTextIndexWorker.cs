@@ -88,7 +88,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             objIdFld.SetIntValue(item.ObjectId);
             doc.Add(objIdFld);
 
-            doc.Add(new Field(FIELD_BODY, item.ObjectText, Field.Store.NO, Field.Index.ANALYZED));
+            doc.Add(new Field(FIELD_BODY, item.ObjectText??"", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
             _writer.AddDocument(doc);

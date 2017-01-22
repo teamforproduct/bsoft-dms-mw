@@ -31,18 +31,18 @@ namespace BL.Logic.AdminCore
                     break;
                 #endregion
 
-                #region AdminRoleActions
-                case EnumAdminActions.AddRoleAction:
-                    cmd = DmsResolver.Current.Get<AddRoleActionCommand>();
+                #region AdminRolePermission
+                case EnumAdminActions.SetRolePermission:
+                    cmd = DmsResolver.Current.Get<SetRolePermissionCommand>();
                     break;
-                //case EnumAdminActions.ModifyRoleAction:
-                //    cmd = DmsResolver.Current.Get<ModifyRoleActionCommand>();
-                //    break;
-                case EnumAdminActions.DeleteRoleAction:
-                    cmd = DmsResolver.Current.Get<DeleteRoleActionCommand>();
+                case EnumAdminActions.SetRolePermissionByModuleAccessType:
+                    cmd = DmsResolver.Current.Get<SetRolePermissionByModuleAccessTypeCommand>();
                     break;
-                case EnumAdminActions.SetRoleActionByObject:
-                    cmd = DmsResolver.Current.Get<SetRoleActionByObjectCommand>();
+                case EnumAdminActions.SetRolePermissionByModuleFeature:
+                    cmd = DmsResolver.Current.Get<SetRolePermissionByModuleFeatureCommand>();
+                    break;
+                case EnumAdminActions.SetRolePermissionByModule:
+                    cmd = DmsResolver.Current.Get<SetRolePermissionByModuleCommand>();
                     break;
                 #endregion
 

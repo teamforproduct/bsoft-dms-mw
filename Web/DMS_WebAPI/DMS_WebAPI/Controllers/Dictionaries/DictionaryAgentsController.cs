@@ -125,7 +125,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var fileContent = Convert.ToBase64String(buffer);
 
             var tmpStore= DmsResolver.Current.Get<ITempStorageService>();
-            var imgageId = tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.AgentId, 0, fileContent);
+            var imgageId = tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.Id, 0, fileContent);
             return new JsonResult(imgageId, this);
         }
 

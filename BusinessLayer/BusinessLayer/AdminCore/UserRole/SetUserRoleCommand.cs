@@ -31,7 +31,7 @@ namespace BL.Logic.AdminCore
             var filter = new FilterAdminUserRole
             {
                 PositionExecutorIDs = new List<int> { Model.PositionExecutorId },
-                RoleIDs = new List<int> { Model.RoleId }
+                RoleIDs = new List<int> { Model.Id }
             };
 
             var exists = _adminDb.ExistsUserRole(_context, filter);

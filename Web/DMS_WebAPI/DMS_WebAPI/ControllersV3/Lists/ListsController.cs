@@ -25,112 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
     {
         Stopwatch stopWatch = new Stopwatch();
 
-        /// <summary>
-        /// Юридические лица
-        /// </summary>
-        /// <param name="filter">параметры фильтрации</param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Companies")]
-        [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentCompanyList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
-        /// Сотрудники
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Employees")]
-        [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentEmployeeList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
-        /// Отделы
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Departments")]
-        [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetListDepartments([FromUri] FilterTree filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDepartmentShortList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
-        /// Должности
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Positions")]
-        [ResponseType(typeof(List<FrontShortListPosition>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionList(ctx, filter, paging); 
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        
-
-        /// <summary>
-        /// Журналы
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("Journals")]
-        [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterTree filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournalShortList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }
 
         /// <summary>
         /// Типы адресов
@@ -139,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("AddressTypes")]
+        [Route(Features.AddressTypes)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAddressType filter)
         {
@@ -160,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("ContactTypes")]
+        [Route(Features.ContactTypes)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryContactType filter)
         {
@@ -175,13 +69,160 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
+        /// Юридические лица
+        /// </summary>
+        /// <param name="filter">параметры фильтрации</param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Companies)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetAgentCompanyList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отделы
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Departments)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetListDepartments([FromUri] FilterTree filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDepartmentShortList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Типы документов
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.DocumentTypes)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetShortListDocumentTypes(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Сотрудники
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Employees)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetAgentEmployeeList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Журналы
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Journals)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterTree filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetRegistrationJournalShortList(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Физические лица
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Persons)]
+        [ResponseType(typeof(List<FrontShortListPosition>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetShortListAgentPersons(ctx, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Должности
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Positions)]
+        [ResponseType(typeof(List<FrontShortListPosition>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetPositionList(ctx, filter, paging); 
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Теги
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Tags")]
+        [Route(Features.Tags)]
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
         {

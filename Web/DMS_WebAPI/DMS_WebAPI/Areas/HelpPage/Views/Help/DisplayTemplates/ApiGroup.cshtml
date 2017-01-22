@@ -6,18 +6,19 @@
 @model IGrouping<HttpControllerDescriptor, ApiDescription>
 
 @{
-    var controllerDocumentation = ViewBag.DocumentationProvider != null ? 
-        ViewBag.DocumentationProvider.GetDocumentation(Model.Key) : 
+    var controllerDocumentation = ViewBag.DocumentationProvider != null ?
+        ViewBag.DocumentationProvider.GetDocumentation(Model.Key) :
         null;
+
 }
 
-@if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName=="Lists")
+@if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName == "Lists")
 {
-    <h1>@Model.Key.ControllerName.Replace("Info","")</h1>
+    <h1 id="@Model.Key.ControllerName.Replace("Info", "")">  @Model.Key.ControllerName.Replace("Info", "")</h1>
 }
 @if (@Model.Key.ControllerName == "Settings")
 {
-    <h1>System</h1>
+    <h1 id="System">System</h1>
 }
 <h2 id="@Model.Key.ControllerName">@Model.Key.ControllerName</h2>
 @if (!String.IsNullOrEmpty(controllerDocumentation))
@@ -25,15 +26,47 @@
     <p>@controllerDocumentation</p>
 }
 <table class="help-page-table">
-    <thead>
-        <tr><th>API</th><th>Description</th></tr>
-    </thead>
-    <tbody>
+  @*<thead>
+    <tr><th>API</th><th>Description</th></tr>
+  </thead>*@
+  <tbody>
     @foreach (var api in Model)
     {
         <tr>
-            <td class="api-name"><a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">@api.HttpMethod.Method @api.RelativePath</a></td>
-            <td class="api-documentation">
+          <td class="api-name">
+            <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">@api.HttpMethod.Method @api.RelativePath</a>
+            @if ("POST,PUT".Contains(@api.HttpMethod.Method))
+            {
+              HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
+              var text = string.Empty;
+
+              if (apiModel.RequestBodyParameters != null)
+              {
+                foreach (var item in apiModel.RequestBodyParameters.OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1))
+                {
+                  var itemName = item.Name;
+                  if (item.Annotations.Any(x => x.Documentation == "Required"))
+                  {
+                    itemName = "<b>" + itemName + "</b>";
+                  }
+                  text = text + (text == string.Empty ? string.Empty : ", ") + itemName;
+                }
+
+                if (!string.IsNullOrEmpty(text))
+                {
+                  text = "(" + text + ")";
+
+                  @Html.Raw(text);
+
+                }
+
+              }
+
+            }
+
+          </td>
+
+          <td class="api-documentation">
             @if (api.Documentation != null)
             {
                 <p>@api.Documentation</p>
@@ -42,8 +75,8 @@
             {
                 <p>No documentation available.</p>
             }
-            </td>
+          </td>
         </tr>
     }
-    </tbody>
+  </tbody>
 </table>

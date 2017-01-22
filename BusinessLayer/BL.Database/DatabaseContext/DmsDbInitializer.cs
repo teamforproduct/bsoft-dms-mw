@@ -15,6 +15,15 @@ namespace BL.Database.DatabaseContext
         {
             //context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
             //context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
+
+            // ModuleFeatures последовательность вызовов важна!11
+            DmsDbImportData.InitPermissions();
+            context.SystemAccessTypesSet.AddRange(DmsDbImportData.GetSystemAccessTypes());
+            context.SystemModulesSet.AddRange(DmsDbImportData.GetSystemModules());
+            context.SystemFeaturesSet.AddRange(DmsDbImportData.GetSystemFeatures());
+            context.SystemPermissionsSet.AddRange(DmsDbImportData.GetSystemPermissions());
+            // ModuleFeatures
+
             context.AdminAccessLevelsSet.AddRange(DmsDbImportData.GetAdminAccessLevels());
             context.SystemObjectsSet.AddRange(DmsDbImportData.GetSystemObjects());
             context.SystemActionsSet.AddRange(DmsDbImportData.GetSystemActions());

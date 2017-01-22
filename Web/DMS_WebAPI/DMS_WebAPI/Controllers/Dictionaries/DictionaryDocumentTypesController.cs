@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDocumentTypes(ctx, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryDocumentTypes(ctx, filter, null);
             return new JsonResult(tmpDicts, this);
         }
 

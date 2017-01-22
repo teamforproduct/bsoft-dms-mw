@@ -827,6 +827,134 @@ namespace BL.Database.SystemDb
 
         #endregion
 
+        #region [+] Permissions
+        private IQueryable<SystemPermissions> GetPermissionsQuery(IContext context, DmsContext dbContext, FilterSystemPermissions filter)
+        {
+            var qry = dbContext.SystemPermissionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<SystemPermissions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.ModuleIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.ModuleIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ModuleId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.FeatureIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.FeatureIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.FeatureId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.AccessTypeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.AccessTypeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AccessTypeId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
+                if (!string.IsNullOrEmpty(filter.Module))
+                {
+                    qry = qry.Where(x => x.Module.Code == filter.Module);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Feature))
+                {
+                    qry = qry.Where(x => x.Feature.Code == filter.Feature);
+                }
+
+                if (!string.IsNullOrEmpty(filter.AccessType))
+                {
+                    qry = qry.Where(x => x.AccessType.Code == filter.AccessType);
+                }
+
+
+            }
+
+            return qry;
+        }
+
+        public int GetPermissionId(IContext context, string module, string feture, string accessType)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture , AccessType = accessType } );
+
+                var item = qry.FirstOrDefault();
+
+                transaction.Complete();
+
+                if (item != null) return item.Id;
+                else return -1;
+            }
+        }
+
+        public IEnumerable<InternalPermissions> GetInternalPermissions(IContext ctx, FilterSystemPermissions filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPermissionsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new InternalPermissions
+                {
+                    Id = x.Id,
+
+                    AccessTypeId = (EnumAccessTypes)x.AccessTypeId,
+                    AccessTypeCode = x.AccessType.Code,
+                    AccessTypeName = x.AccessType.Name,
+                    AccessTypeOrder = x.AccessType.Order,
+
+                    ModuleId = x.ModuleId,
+                    ModuleCode = x.Module.Code,
+                    ModuleName = x.Module.Name,
+                    ModuleOrder = x.Module.Order,
+
+                    FeatureId = x.FeatureId,
+                    FeatureCode = x.Feature.Code,
+                    FeatureName = x.Feature.Name,
+                    FeatureOrder = x.Feature.Order,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+        #endregion
 
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
         {
@@ -1374,7 +1502,7 @@ namespace BL.Database.SystemDb
                     sendLists = sendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var qry2 = sendLists.Where(x => !closedSendLists.Any(y=>y.DocumentId == x.DocumentId && x.Stage > y.Stage))
+                var qry2 = sendLists.Where(x => !closedSendLists.Any(y => y.DocumentId == x.DocumentId && x.Stage > y.Stage))
                     .OrderBy(x => x.DocumentId)
                     .ThenBy(
                         x =>
@@ -2611,6 +2739,50 @@ namespace BL.Database.SystemDb
 
                 return res;
             }
+        }
+
+        public void RefreshModuleFeature(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AdminRolePermissionsSet.Delete();
+
+                dbContext.SystemPermissionsSet.Delete();
+
+                dbContext.SystemModulesSet.Delete();
+
+                dbContext.SystemFeaturesSet.Delete();
+
+                DmsDbImportData.InitPermissions();
+
+                foreach (var item in DmsDbImportData.GetSystemModules())
+                {
+                    dbContext.SystemModulesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    //dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemFeatures())
+                {
+                    dbContext.SystemFeaturesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemPermissions())
+                {
+                    item.ModuleId = item.Module.Id;
+                    item.FeatureId = item.Feature.Id;
+
+                    dbContext.SystemPermissionsSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                }
+
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+
+            }
+
         }
 
     }

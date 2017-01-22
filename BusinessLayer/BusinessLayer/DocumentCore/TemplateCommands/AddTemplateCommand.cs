@@ -1,6 +1,4 @@
-﻿
-using BL.Database.Documents.Interfaces;
-using BL.Database.FileWorker;
+﻿using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;

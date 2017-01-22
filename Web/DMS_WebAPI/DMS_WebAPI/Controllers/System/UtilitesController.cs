@@ -64,6 +64,19 @@ namespace DMS_WebAPI.Controllers
             return SetDate(item);
         }
 
+
+        [HttpPost]
+        [Route("RefPermi")]
+        public IHttpActionResult RefPermi()
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+
+            tmpService.RefreshModuleFeature(ctx);
+
+            return new JsonResult(null, this);
+        }
+
         [HttpPost]
         [Route("SetDate")]
         public IHttpActionResult SetDate([FromBody]ModifyDate item)

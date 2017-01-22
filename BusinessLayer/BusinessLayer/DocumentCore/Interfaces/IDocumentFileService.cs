@@ -10,5 +10,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
         FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent);
+        FrontDocumentAttachedFile GetUserFilePdf(IContext ctx, FilterDocumentFileIdentity fileIdent);
+        FrontDocumentAttachedFile GetUserFilePreview(IContext ctx, FilterDocumentFileIdentity fileIdent);
     }
 }

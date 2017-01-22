@@ -10,10 +10,22 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         public InternalCustomDictionaryType()
         { }
+
+        public InternalCustomDictionaryType(AddCustomDictionaryType model)
+        {
+            SetInternalCustomDictionaryType(model);
+        }
+
         public InternalCustomDictionaryType(ModifyCustomDictionaryType model)
         {
             Id = model.Id;
+            SetInternalCustomDictionaryType(model);
+        }
+
+        private void SetInternalCustomDictionaryType(AddCustomDictionaryType model)
+        {
             Code = model.Code;
+            Name = model.Name;
             Description = model.Description;
         }
 
@@ -25,14 +37,15 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Код словаря
         /// </summary>
         public string Code { get; set; }
+
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public string Name { get; set; }
         /// <summary>
         /// Описание словаря
         /// </summary>
         public string Description { get; set; }
 
-        /// <summary>
-        /// Значения словаря
-        /// </summary>
-        public IEnumerable<InternalCustomDictionary> CustomDictionaries { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using BL.Model.Enums;
 using BL.Model.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -17,6 +18,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Ссылка на типовую рассылку
         /// </summary>
+        [Required]
         public int StandartSendListId { get; set; }
         /// <summary>
         /// Этап

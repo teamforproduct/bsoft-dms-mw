@@ -51,12 +51,6 @@ namespace BL.Model.AdminCore.FilterModel
         public List<int> UserIDs { get; set; }
 
         /// <summary>
-        /// Список ключей из таблицы AdminPositionRoles
-        /// </summary>
-        [IgnoreDataMember]
-        public List<int> LinkIDs { get; set; }
-
-        /// <summary>
         /// Дата разрешения роли для сотрудника
         /// </summary>
         public DateTime? StartDate { get { return _StartDate; } set { _StartDate = value.ToUTC(); } }

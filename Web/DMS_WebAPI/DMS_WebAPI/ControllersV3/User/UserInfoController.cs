@@ -14,6 +14,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Users;
@@ -62,11 +63,18 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Permissions")]
+        [Route(Features.Permissions)]
         [ResponseType(typeof(List<FrontPermission>))]
         public IHttpActionResult GetPermissions()
         {
-            throw new NotImplementedException();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.GetUserPermissions(ctx);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
@@ -74,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("AuthLog")]
+        [Route(Features.AuthLog)]
         [ResponseType(typeof(List<FrontSystemSession>))]
         public IHttpActionResult GetAuthLog()
         {
@@ -84,11 +92,10 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <summary>
         /// Устанавливает новый логин
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("ChangeLogin")]
+        [Route(Features.ChangeLogin)]
         public IHttpActionResult ChangeLogin([FromBody]ChangeLogin model)
         {
             throw new NotImplementedException();
@@ -101,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("ChangePassword")]
+        [Route(Features.ChangePassword)]
         public IHttpActionResult ChangePassword([FromBody]ChangePassword model)
         {
             throw new NotImplementedException();

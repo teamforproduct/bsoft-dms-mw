@@ -10,6 +10,7 @@ using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
 using System.Collections.Generic;
+using BL.Logic.SystemServices.QueueWorker;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -38,6 +39,11 @@ namespace DMS_WebAPI
             var dbProc = new WebAPIDbProcess();
 
             var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
+#if !DEBUG
+            // Сервис бекграундной обработки задач/экшенов/команд. 
+            var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
+            queueWorker.Initialize(dbs);
+#endif
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{
@@ -46,6 +52,7 @@ namespace DMS_WebAPI
 
             //var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             //mailService.Initialize(dbs);
+
 
 #if !DEBUG
             //TODO

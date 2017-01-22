@@ -29,13 +29,15 @@ namespace BL.Logic.DocumentCore
         private readonly ICommandService _commandService;
         private readonly IAdminService _adminService;
         private readonly IDocumentOperationsDbProcess _operationDb;
+        private readonly ILogger _logger;
 
-        public DocumentService(IDocumentsDbProcess documentDb, ICommandService commandService, IAdminService adminService, IDocumentOperationsDbProcess operationDb)
+        public DocumentService(IDocumentsDbProcess documentDb, ICommandService commandService, IAdminService adminService, IDocumentOperationsDbProcess operationDb, ILogger logger)
         {
             _documentDb = documentDb;
             _adminService = adminService;
             _commandService = commandService;
             _operationDb = operationDb;
+            _logger = logger;
         }
 
         #region Documents
@@ -47,25 +49,33 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
-            if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
+            try
             {
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDocument(ctx, filter.Document.FullTextSearch);
-                if (ftRes != null)
+                _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
+                if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
                 {
-                    var resWithRanges =
-                        ftRes.GroupBy(x => x.DocumentId)
-                            .Select(x => new { DocId = x.Key, Rate = x.Max(s=>s.Score) })
-                            .OrderByDescending(x => x.Rate);
-                    filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
+                    var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                    var ftRes = ftService.SearchDocument(ctx, filter.Document.FullTextSearch);
+                    if (ftRes != null)
+                    {
+                        var resWithRanges =
+                            ftRes.GroupBy(x => x.DocumentId)
+                                .Select(x => new {DocId = x.Key, Rate = x.Max(s => s.Score)})
+                                .OrderByDescending(x => x.Rate);
+                        filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
+                    }
+                    else
+                    {
+                        filter.Document.FullTextSearchDocumentId = new List<int>();
+                    }
                 }
-                else
-                {
-                    filter.Document.FullTextSearchDocumentId = new List<int>();
-                }
+                return _documentDb.GetDocuments(ctx, filter, paging);
             }
-            return _documentDb.GetDocuments(ctx, filter, paging);
+            catch (Exception ex)
+            {
+                _logger.Error(ctx, ex, "Cannot perform GetDocument");
+                throw new Exception("Ошибка при формировании списка документов.");
+            }
         }
 
         public FrontDocument GetDocument(IContext ctx, int documentId)

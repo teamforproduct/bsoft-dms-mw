@@ -13,7 +13,7 @@ namespace BL.Model.AdminCore.InternalModel
 
         public InternalAdminUserRole(SetUserRole model)
         {
-            RoleId = model.RoleId;
+            RoleId = model.Id;
             PositionExecutorId = model.PositionExecutorId;
         }
 

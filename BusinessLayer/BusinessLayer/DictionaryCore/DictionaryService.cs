@@ -170,6 +170,15 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentPerson(context, id);
         }
 
+        public IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryAgentPerson();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListAgentPersons(context, filter, paging);
+        }
+
         public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgentPerson();
@@ -618,18 +627,31 @@ namespace BL.Logic.DictionaryCore
         // следить за списком полей необхдимых в каждом конкретном случае
         public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            return _dictDb.GetDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        public IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryDocumentType();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListDocumentTypes(context, filter, paging);
+        }
+
+        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
+        {
+            return _dictDb.GetDocumentTypes(context, filter, paging);
+        }
+
+        public IEnumerable<FrontDictionaryDocumentType> GetMainDictionaryDocumentTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryDocumentType filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryDocumentType();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
-
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, ftSearch.FullTextSearchString);
             }
             else
             {
@@ -637,10 +659,9 @@ namespace BL.Logic.DictionaryCore
             }
 
 
-            return _dictDb.GetDocumentTypes(context, newFilter);
+            return _dictDb.GetDocumentTypes(context, newFilter, paging);
 
         }
-
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
@@ -1082,19 +1103,34 @@ namespace BL.Logic.DictionaryCore
 
         public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
         {
-            return _dictDb.GetCustomDictionaryTypeWithCustomDictionaries(context, id);
+            return GetCustomDictionaryTypes(context, new FilterCustomDictionaryType {IDs = new List<int> { id } }).FirstOrDefault();
         }
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
-        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter)
+        public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging)
         {
-            return _dictDb.GetCustomDictionaries(context, filter);
+            var newFilter = new FilterCustomDictionary();
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.CustomDictionaries, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetCustomDictionaries(context, newFilter, paging);
+        }
+
+        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging)
+        {
+            return _dictDb.GetCustomDictionaries(context, filter, paging);
         }
 
         public FrontCustomDictionary GetCustomDictionary(IContext context, int id)
         {
-            return _dictDb.GetCustomDictionaries(context, new FilterCustomDictionary { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetCustomDictionaries(context, new FilterCustomDictionary { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
         #endregion CustomDictionaries
 

@@ -1,19 +1,20 @@
-﻿using BL.CrossCutting.DependencyInjection;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.Description;
+using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Web;
-using System.Web.Http;
-using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.DocumentTemlates
+namespace DMS_WebAPI.ControllersV3.DocumentTemplates
 {
     /// <summary>
     /// Шаблоны документов. Файлы.
@@ -58,6 +59,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         [ResponseType(typeof(FrontTemplateAttachedFile))]
         public IHttpActionResult Get(int Id)
         {
+            //TODO PDF
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();

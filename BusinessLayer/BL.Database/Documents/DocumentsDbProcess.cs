@@ -251,13 +251,6 @@ namespace BL.Database.Documents
                 filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains, (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
                 #endregion Counter
 
-                //var t = dbContext.DictionaryPositionExecutorsSet.Where(x=>true).Select(x=> new
-                //{
-                //    x.AgentId,
-                //    x.Description,
-                //    x.
-                //}
-                //)
 
                 var res = qry.Select(doc => new FrontDocument
                 {
@@ -278,32 +271,26 @@ namespace BL.Database.Documents
                     ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
                     ExecutorPositionName = doc.ExecutorPosition.Name,
 
-                    WaitCount = doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue /*&& !x.OnEvent.IsAvailableWithinTask*/).Where(filterOnEventPositionsContains)
-                        /*.Concat(doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue && x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue &&
-                            x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)))*/
+                    WaitCount = doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue ).Where(filterOnEventPositionsContains)
                             .GroupBy(x => x.DocumentId)
                             .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow) })
                             .FirstOrDefault(),
 
                     NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId != x.SourcePositionId),
 
-                    AttachedFilesCount = doc.Files.Where(fl => fl.IsMainVersion && !fl.IsDeleted && fl.TypeId != (int)EnumFileTypes.SubscribePdf).Count(),
+                    AttachedFilesCount = doc.Files.Count(fl => fl.IsMainVersion && !fl.IsDeleted && fl.TypeId != (int)EnumFileTypes.SubscribePdf),
 
                     LinkId = doc.LinkId,
-                    //LinkedDocumentsCount = doc.Links
-                    //.GroupBy(x => x.LinkId)
-                    //.Select(x => x.Count())
-                    //.Select(x => x < 2 ? 0 : x - 1).FirstOrDefault(),
                 });
 
                 var docs = res.ToList();
 
                 //TODO Sort
-                if (paging != null && paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
+                if (paging != null && paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId!=null  && filter.Document.DocumentId.Count > 0)
                 {
                     docs = docs.OrderBy(x => filter.Document.DocumentId.IndexOf(x.Id)).ToList();
                 }
-                else if (filter?.Document?.FullTextSearchDocumentId?.Count() > 0)
+                else if (filter?.Document?.FullTextSearchDocumentId!=null && filter.Document.FullTextSearchDocumentId.Any())
                 {
                     docs = docs.OrderBy(x => filter.Document.FullTextSearchDocumentId.IndexOf(x.Id)).ToList();
                 }
@@ -318,7 +305,6 @@ namespace BL.Database.Documents
                         .GroupBy(x => x.LinkId.Value)
                         .Select(x => new { LinkId = x.Key, Count = x.Count() })
                         .ToList();
-                    //.Select(x => x < 2 ? 0 : x - 1)
 
                     docs.ForEach(x =>
                     {

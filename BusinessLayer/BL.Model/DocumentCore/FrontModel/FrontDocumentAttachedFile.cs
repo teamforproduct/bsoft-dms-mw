@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Extensions;
 
@@ -11,17 +10,9 @@ namespace BL.Model.DocumentCore.FrontModel
     public class FrontDocumentAttachedFile : FrontRegistrationFullNumber
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public FrontDocumentAttachedFile()
-        {
-        }
-
-        /// <summary>
         /// ИД.
         /// </summary>
         public int Id { get; set; }
-
 
         /// <summary>
         /// Номер вложения в документе

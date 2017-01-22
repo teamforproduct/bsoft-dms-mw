@@ -29,6 +29,7 @@ using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
+using BL.Logic.SystemServices.QueueWorker;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.Enums;
 using Ninject.Modules;
@@ -48,6 +49,7 @@ namespace BL.Logic.DependencyInjection
             LoadReportCommands();
             LoadEncryptionModule();
             LoadEncryptionCommands();
+            LoadPropertyCommands();
         }
 
         private void LoadSystemModule()
@@ -61,6 +63,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
+            Bind<IQueueWorkerService>().To<QueueWorkerService>().InSingletonScope();
             Bind<IClearTrashDocumentsService>().To<ClearTrashDocumentsService>().InSingletonScope();
             Bind<ITempStorageService>().To<TempStorageService>().InSingletonScope();
             Bind<ISystemService>().To<SystemService>().InSingletonScope();

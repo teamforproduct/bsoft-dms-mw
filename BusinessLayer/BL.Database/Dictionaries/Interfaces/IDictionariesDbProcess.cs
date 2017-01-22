@@ -40,6 +40,7 @@ namespace BL.Database.Dictionaries.Interfaces
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
         IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         FrontAgentPerson GetAgentPerson(IContext context, int id);
         #endregion DictionaryAgentPerson
@@ -182,8 +183,9 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateDocumentType(IContext context, InternalDictionaryDocumentType docType);
         void DeleteDocumentType(IContext context, InternalDictionaryDocumentType docType);
         int AddDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
         IEnumerable<InternalDictionaryDocumentType> GetInternalDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
-        IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
+        IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
@@ -322,7 +324,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<InternalCustomDictionaryType> GetInternalCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
 
-        FrontCustomDictionaryType GetCustomDictionaryTypeWithCustomDictionaries(IContext context, int id);
+        //FrontCustomDictionaryType GetCustomDictionaryTypeWithCustomDictionaries(IContext context, int id);
 
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
         #endregion CustomDictionaryTypes
@@ -336,7 +338,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         IEnumerable<InternalCustomDictionary> GetInternalCustomDictionarys(IContext context, FilterCustomDictionary filter);
 
-        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter);
+        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging);
         #endregion CustomDictionaries
 
 

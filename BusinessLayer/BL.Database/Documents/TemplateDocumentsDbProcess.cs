@@ -12,13 +12,11 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
-using System.Transactions;
 using BL.Model.FullTextSearch;
 using LinqKit;
 using System.IO;
 using BL.Model.SystemCore;
 using System;
-using System.Data.Entity;
 using BL.CrossCutting.Helpers;
 using BL.Database.Helper;
 
@@ -344,6 +342,8 @@ namespace BL.Database.Documents
                         Type = (EnumFileTypes)x.TypeId,
                         Hash = x.Hash,
                         Description = x.Description,
+                        PdfCreated = x.IsPdfCreated??false,
+                        LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue,
                     }).ToList();
                 doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateDocumentPaper
@@ -1073,8 +1073,9 @@ namespace BL.Database.Documents
                             LastChangeUserName = x.agName,
                             Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
-                            Description = x.fl.Description
-
+                            Description = x.fl.Description,
+                            PdfCreated = x.fl.IsPdfCreated ?? false,
+                            LastPdfAccess = x.fl.LastPdfAccessDate ?? DateTime.MinValue
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -1125,6 +1126,8 @@ namespace BL.Database.Documents
                             OrderInDocument = x.OrderNumber,
                             Type = (EnumFileTypes)x.TypeId,
                             Description = x.Description,
+                            PdfCreated = x.IsPdfCreated??false,
+                            LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue,
                             //Name = x.Name,
                             //Extension = x.Extention,
                             //FileType = x.FileType,
@@ -1148,19 +1151,29 @@ namespace BL.Database.Documents
                 entry.Property(x => x.Description).IsModified = true;
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                //if (docFile.PostedFileData != null)
-                //{
-                //    entry.Property(x => x.Name).IsModified = true;
-                //    entry.Property(x => x.Extention).IsModified = true;
-                //    entry.Property(x => x.FileType).IsModified = true;
-                //    entry.Property(x => x.FileSize).IsModified = true;
-                //    entry.Property(x => x.Hash).IsModified = true;
-                //}
+
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
+
+        public void UpdateFilePdfView(IContext ctx, InternalTemplateAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var fl = ModelConverter.GetDbTemplateFile(docFile);
+                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                var entry = dbContext.Entry(fl);
+                entry.Property(x => x.IsPdfCreated).IsModified = true;
+                entry.Property(x => x.LastPdfAccessDate).IsModified = true;
+
+                dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
+                transaction.Complete();
+            }
+        }
+
         public InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1206,9 +1219,6 @@ namespace BL.Database.Documents
                 return !res;
             }
         }
-
-
-
 
         #endregion TemplateDocumentAttachedFiles
     }

@@ -20,9 +20,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             Id = model.Id;
             Name = model.Name;
             PositionId = model.PositionId;
-            LastChangeDate = model.LastChangeDate;
-            LastChangeUserId = model.LastChangeUserId;
-
         }
 
         public int Id { get; set; }

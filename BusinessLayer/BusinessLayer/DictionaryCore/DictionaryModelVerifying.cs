@@ -18,35 +18,6 @@ namespace BL.Logic.DictionaryCore
     {
 
 
-        public static void VerifyCostomDictionary(IContext context, IDictionariesDbProcess dictDb, ModifyCustomDictionary Model)
-        {
-            Model.Code?.Trim();
-
-            var cd = dictDb.GetInternalCustomDictionarys(context, new FilterCustomDictionary
-            {
-                //pss Порверить почему IDs
-                IDs = new List<int> { Model.DictionaryTypeId },
-                CodeExact = Model.Code
-            }).FirstOrDefault();
-            if (cd != null && cd.Id != Model.Id)
-            {
-                throw new DictionaryCostomDictionaryNotUnique();
-            }
-        }
-
-        public static void VerifyCostomDictionaryType(IContext context, IDictionariesDbProcess dictDb, ModifyCustomDictionaryType Model)
-        {
-            Model.Code?.Trim();
-
-            var cdt = dictDb.GetInternalCustomDictionaryTypes(context, new FilterCustomDictionaryType
-            {
-                CodeExact = Model.Code
-            }).FirstOrDefault();
-            if (cdt != null && cdt.Id != Model.Id)
-            {
-                throw new DictionaryCostomDictionaryTypeNotUnique(Model.Code);
-            }
-        }
 
         public static void VerifyDocumentSubject(IContext context, IDictionariesDbProcess dictDb, ModifyDictionaryDocumentSubject Model)
         {

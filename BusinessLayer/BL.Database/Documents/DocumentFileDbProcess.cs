@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
@@ -9,17 +11,12 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
-using System.Transactions;
 using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
 {
     public class DocumentFileDbProcess : CoreDb.CoreDb, IDocumentFileDbProcess
     {
-        public DocumentFileDbProcess()
-        {
-        }
-
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -67,6 +64,21 @@ namespace BL.Database.Documents
             }
         }
 
+        public InternalDocumentAttachedFile GetInternalAttachedFile(IContext ctx, int fileId)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            {
+                return
+                    dbContext.DocumentFilesSet.Where(x => x.Id == fileId)
+                        .Select(x => new InternalDocumentAttachedFile
+                        {
+                            Id = x.Id,
+                            PdfCreated = x.IsPdfCreated??false,
+                            LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue
+                        }).FirstOrDefault();
+            }
+        }
+
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -82,8 +94,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
 
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                        .Where(
-                            x => x.DocumentId == documentId && x.Version == version && x.OrderNumber == orderNumber)
+                        .Where(x => x.DocumentId == documentId && x.Version == version && x.OrderNumber == orderNumber)
                         .Where(x => !x.IsDeleted)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
@@ -259,6 +270,45 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
+
+        public IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+               var res = dbContext.DocumentFilesSet.Where(x=>x.IsPdfCreated.HasValue && x.IsPdfCreated.Value 
+               && (!x.LastPdfAccessDate.HasValue || Math.Abs(DbFunctions.DiffDays(DateTime.Now, x.LastPdfAccessDate.Value)??0)> pdfAge))
+               .Select(x => new InternalDocumentAttachedFile
+                {
+                    Id = x.Id,
+                    ExecutorPositionId = x.ExecutorPositionId,
+                    Name = x.Name,
+                    Extension = x.Extension,
+                    Type = (EnumFileTypes) x.TypeId,
+                    IsMainVersion = x.IsMainVersion,
+                    Version = x.Version,
+                    IsDeleted = x.IsDeleted,
+                    PdfCreated = x.IsPdfCreated.Value,
+                    LastPdfAccess = x.LastPdfAccessDate.Value
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public void UpdateFilePdfView(IContext ctx, InternalDocumentAttachedFile docFile)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var fl = ModelConverter.GetDbDocumentFile(docFile);
+                dbContext.DocumentFilesSet.Attach(fl);
+                var entry = dbContext.Entry(fl);
+                entry.Property(x => x.IsPdfCreated).IsModified = true;
+                entry.Property(x => x.LastPdfAccessDate).IsModified = true;
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
         public void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())

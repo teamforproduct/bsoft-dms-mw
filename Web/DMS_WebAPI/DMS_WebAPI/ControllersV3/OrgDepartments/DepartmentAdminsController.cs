@@ -14,6 +14,7 @@ using System.Diagnostics;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.IncomingModel;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.OrgDepartments
 {
