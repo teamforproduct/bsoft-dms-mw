@@ -298,7 +298,7 @@ namespace BL.Database.Encryption
                 }
                 FileLogger.AppendTextToFile("File on disc "+File.Exists(file), @"C:\sign.log");
                 FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate FileStream Write ", @"C:\sign.log");
-                var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+                var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
                 FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\sign.log");
 
                 item.Thumbprint = certificate.Thumbprint;
@@ -335,9 +335,9 @@ namespace BL.Database.Encryption
                 //Если в X509Certificate2 передавать byte[] он все ровно его сохранит на диск и не факт что удалит
                 File.WriteAllBytes(file, item.Certificate);
 
-                var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+                var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
 
-                var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+                var store = new X509Store(StoreName.TrustedPeople, StoreLocation.LocalMachine);
                 store.Open(OpenFlags.ReadWrite);
                 store.Add(certificate);
                 store.Close();
