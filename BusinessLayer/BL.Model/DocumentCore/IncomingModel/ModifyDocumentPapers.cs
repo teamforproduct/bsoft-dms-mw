@@ -8,9 +8,20 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// </summary>
     public class ModifyDocumentPapers: BaseModifyDocumentPapers
     {
-        public ModifyDocumentPapers (AddDocumentPapers model)
+        public ModifyDocumentPapers()
         {
 
+        }
+        public ModifyDocumentPapers (AddDocumentPapers model)
+        {
+            DocumentId = model.DocumentId;
+            Name = model.Name;
+            Description = model.Description;
+            IsMain = model.IsMain;
+            IsOriginal = model.IsOriginal;
+            IsCopy = model.IsCopy;
+            PageQuantity = model.PageQuantity;
+            PaperQuantity = model.PaperQuantity;
         }
         /// <summary>
         /// ИД Бумажного носителя

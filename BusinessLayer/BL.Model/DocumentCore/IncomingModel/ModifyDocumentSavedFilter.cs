@@ -8,6 +8,9 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// </summary>
     public class ModifyDocumentSavedFilter : AddDocumentSavedFilter
     {
+        public ModifyDocumentSavedFilter()
+        {
+        }
         public ModifyDocumentSavedFilter(AddDocumentSavedFilter model)
         {
             Name = model.Name;

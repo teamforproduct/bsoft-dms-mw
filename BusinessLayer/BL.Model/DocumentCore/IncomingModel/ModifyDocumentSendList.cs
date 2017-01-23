@@ -15,6 +15,9 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// </summary>
     public class ModifyDocumentSendList : BaseModifyDocumentSendList
     {
+        public ModifyDocumentSendList()
+        {
+        }
         public ModifyDocumentSendList(AddDocumentSendList model)
         {
             DocumentId = model.DocumentId;
@@ -44,7 +47,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИЗ записи плана
         /// </summary>
-        [IgnoreDataMember]
         public int Id { get; set; }
     }
 }

@@ -8,6 +8,9 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// </summary>
     public class ModifyDocumentTasks : BaseModifyDocumentTasks
     {
+        public ModifyDocumentTasks()
+        {
+        }
         public ModifyDocumentTasks(AddDocumentTasks model)
         {
             DocumentId = model.DocumentId;
