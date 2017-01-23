@@ -1,15 +1,33 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.AdminCore.FilterModel;
+using System.Collections.Generic;
 
 namespace BL.Model.AdminCore
 {
     /// <summary>
     /// Фильтр словаря уровней доступа
     /// </summary>
-    public class FilterAdminAccessLevel
+    public class FilterAdminAccessLevel: AdminBaseFilterParameters
     {
+
         /// <summary>
-        /// Массив ИД уровней доступа
+        /// Сужение по коду (вхождение)
         /// </summary>
-        public List<int> AccessLevelId { get; set; }
+        public string Code { get; set; }
+
+        /// <summary>
+        /// Сужение по коду (равенство)
+        /// </summary>
+        public string CodeExact { get; set; }
+
+        /// <summary>
+        /// Сужение по наименованию (вхождение)
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Сужение по наименованию (равенство)
+        /// </summary>
+        public string NameExact { get; set; }
     }
+
 }
