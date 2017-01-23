@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ModifyDocumentPaperPrepare(_context, Model);
+            _document = _operationDb.ModifyDocumentPaperPrepare(_context, Model.Id, Model);
             _paper = _document?.Papers.First();
             if (_paper == null)
             {

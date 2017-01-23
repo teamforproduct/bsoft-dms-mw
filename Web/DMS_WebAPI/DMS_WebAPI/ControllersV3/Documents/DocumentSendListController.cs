@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public IHttpActionResult Post([FromBody]AddDocumentSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentSendList, new ModifyDocumentSendList(model), model.CurrentPositionId);
+            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

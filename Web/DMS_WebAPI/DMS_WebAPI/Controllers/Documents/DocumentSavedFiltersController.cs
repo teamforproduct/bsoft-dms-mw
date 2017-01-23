@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, ctx, new ModifyDocumentSavedFilter(model));
+            var id = (int)docProc.ExecuteAction(EnumDocumentActions.AddSavedFilter, ctx, model);
             return Get(id);
         }
 

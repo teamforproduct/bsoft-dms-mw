@@ -15,35 +15,6 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// </summary>
     public class ModifyDocumentSendList : BaseModifyDocumentSendList
     {
-        public ModifyDocumentSendList()
-        {
-        }
-        public ModifyDocumentSendList(AddDocumentSendList model)
-        {
-            DocumentId = model.DocumentId;
-            Stage = model.Stage;
-            StageType = model.StageType;
-            SendType = model.SendType;
-            SourcePositionId = model.SourcePositionId;
-            TargetPositionId = model.TargetPositionId;
-            TargetAgentId = model.TargetAgentId;
-            Task = model.Task;
-            IsWorkGroup = model.IsWorkGroup;
-            IsAddControl = model.IsAddControl;
-            SelfDescription = model.SelfDescription;
-            SelfDueDate = model.SelfDueDate;
-            SelfDueDay = model.SelfDueDay;
-            SelfAttentionDate = model.SelfAttentionDate;
-            SelfAttentionDay = model.SelfAttentionDay;
-            IsAvailableWithinTask = model.IsAvailableWithinTask;
-            Description = model.Description;
-            DueDate = model.DueDate;
-            DueDay = model.DueDay;
-            AccessLevel = model.AccessLevel;
-            IsInitial = model.IsInitial;
-            PaperEvents = model.PaperEvents;
-            IsLaunchItem = model.IsLaunchItem;
-        }
         /// <summary>
         /// ИЗ записи плана
         /// </summary>

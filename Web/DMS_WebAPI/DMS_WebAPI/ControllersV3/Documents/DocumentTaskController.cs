@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public IHttpActionResult Post([FromBody]AddDocumentTasks model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentTask, new ModifyDocumentTasks(model), model.CurrentPositionId);
+            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
                 {
                     try
                     {
-                        docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, new ModifyDocumentSendList(Model[i]));
+                        docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, Model[i]);
                     }
                     catch (Exception e)
                     {

@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ModifyDocumentTaskPrepare(_context, Model);
+            _document = _operationDb.ModifyDocumentTaskPrepare(_context, Model.Id, Model);
             _task = _document?.Tasks.First();
             if (_task == null)
             {

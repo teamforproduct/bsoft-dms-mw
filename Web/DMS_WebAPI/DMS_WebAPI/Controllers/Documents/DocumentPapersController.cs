@@ -51,7 +51,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, ctx, new ModifyDocumentPapers(model));
+            var newIds = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaper, ctx, model);
             return Get(new FilterDocumentPaper {Id = newIds }, null);
         }
 

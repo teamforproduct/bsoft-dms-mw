@@ -26,15 +26,15 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentSendList Model
+        private AddDocumentSendList Model
         {
             get
             {
-                if (!(_param is ModifyDocumentSendList))
+                if (!(_param is AddDocumentSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentSendList)_param;
+                return (AddDocumentSendList)_param;
             }
         }
 

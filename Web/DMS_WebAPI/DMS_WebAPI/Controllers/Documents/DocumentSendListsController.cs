@@ -48,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var newId = docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, new ModifyDocumentSendList(model));
+            var newId = docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
             if (newId == null)
                 return new JsonResult(true, this);
             else

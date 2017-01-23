@@ -99,7 +99,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddNoteDocumentPrepare(IContext context, AddNote model);
 
         #region DocumentTasks
-        InternalDocument ModifyDocumentTaskPrepare(IContext context, ModifyDocumentTasks model);
+        InternalDocument ModifyDocumentTaskPrepare(IContext context, int? id, BaseModifyDocumentTasks model);
         IEnumerable<int> AddDocumentTasks(IContext context, InternalDocument document);
         InternalDocument DeleteDocumentTaskPrepare(IContext context, int itemId);
         void ModifyDocumentTask(IContext context, InternalDocument document);
@@ -107,7 +107,7 @@ namespace BL.Database.Documents.Interfaces
         #endregion DocumentTasks
 
         #region DocumentPapers
-        InternalDocument ModifyDocumentPaperPrepare(IContext context, ModifyDocumentPapers model);
+        InternalDocument ModifyDocumentPaperPrepare(IContext context, int? id, BaseModifyDocumentPapers model);
         InternalDocument DeleteDocumentPaperPrepare(IContext context, int paperId);
         InternalDocument EventDocumentPaperPrepare(IContext context, PaperList paperIds, bool isCalcPreLastPaperEvent = false);
 

@@ -2271,7 +2271,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ModifyDocumentTaskPrepare(IContext context, ModifyDocumentTasks model)
+        public InternalDocument ModifyDocumentTaskPrepare(IContext context, int? id, BaseModifyDocumentTasks model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2283,7 +2283,7 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.ExecutorPositionId
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => (x.Task == model.Name || x.Id == model.Id) && x.DocumentId == model.DocumentId)
+                doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => (x.Task == model.Name || x.Id == id) && x.DocumentId == model.DocumentId)
                     .Select(x => new InternalDocumentTask
                     {
                         Id = x.Id,
@@ -2387,7 +2387,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ModifyDocumentPaperPrepare(IContext context, ModifyDocumentPapers model)
+        public InternalDocument ModifyDocumentPaperPrepare(IContext context, int? id, BaseModifyDocumentPapers model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2400,7 +2400,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
 
                 if (doc == null) return null;
-                if (model.Id == 0)
+                if (!id.HasValue)
                 {
                     doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
                         .Where(
@@ -2411,7 +2411,7 @@ namespace BL.Database.Documents
                 }
                 else
                 {
-                    doc.Papers = dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => (x.Id == model.Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
+                    doc.Papers = dbContext.DocumentPapersSet.Where(x => x.Document.TemplateDocument.ClientId == context.CurrentClientId).Where(x => (x.Id == id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
                         .Select(x => new InternalDocumentPaper
                         {
                             Id = x.Id,

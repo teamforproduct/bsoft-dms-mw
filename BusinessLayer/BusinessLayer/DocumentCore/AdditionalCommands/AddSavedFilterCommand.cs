@@ -20,15 +20,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentSavedFilter Model
+        private AddDocumentSavedFilter Model
         {
             get
             {
-                if (!(_param is ModifyDocumentSavedFilter))
+                if (!(_param is AddDocumentSavedFilter))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentSavedFilter)_param;
+                return (AddDocumentSavedFilter)_param;
             }
         }
 

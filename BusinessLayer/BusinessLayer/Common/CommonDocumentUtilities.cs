@@ -423,7 +423,7 @@ namespace BL.Logic.Common
             return taskId;
         }
 
-        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, ModifyDocumentSendList model, int? taskId = null)
+        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, BaseModifyDocumentSendList model, int? taskId = null)
         {
             return new InternalDocumentSendList
             {
@@ -472,7 +472,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model, int orderNumber)
+        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, BaseModifyDocumentPapers model, int orderNumber)
         {
             return new InternalDocumentPaper
             {
@@ -491,7 +491,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model, int maxOrderNumber)
+        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, BaseModifyDocumentPapers model, int maxOrderNumber)
         {
             var res = new List<InternalDocumentPaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)

@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public IHttpActionResult Post([FromBody]AddDocumentSavedFilter model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddSavedFilter, new ModifyDocumentSavedFilter(model));
+            var tmpItem = Action.Execute(EnumDocumentActions.AddSavedFilter, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
