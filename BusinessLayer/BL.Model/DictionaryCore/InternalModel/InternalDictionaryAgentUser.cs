@@ -40,6 +40,8 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// </summary>
         public int LanguageId { get; set; }
 
+        public string LastPositionChose { get; set; }        
+
         public string UserId { get; set; }
 
         /// <summary>

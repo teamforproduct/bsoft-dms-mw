@@ -122,6 +122,17 @@ namespace BL.Database.Admins
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                 }).ToList();
 
+                try
+                {
+                    var lastPositionChose =
+                        dbContext.DictionaryAgentUsersSet.Where(x => x.Id == ctx.CurrentAgentId)
+                        .Select(x => x.LastPositionChose).FirstOrDefault()
+                        .Split(',').Select(n => Convert.ToInt32(n)).ToArray();
+
+                    res.Where(x => x.RolePositionId.HasValue && lastPositionChose.Contains(x.RolePositionId.Value)).ToList().ForEach(x => x.IsLastChosen = true);
+                }
+                catch { };
+
                 var roleList = res.Select(s => s.RolePositionId).ToList();
 
                 var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();

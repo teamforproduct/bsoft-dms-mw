@@ -12,6 +12,7 @@ using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using Newtonsoft.Json;
 using BL.CrossCutting.Helpers;
+using BL.Logic.DictionaryCore.Interfaces;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -248,6 +249,7 @@ namespace DMS_WebAPI.Utilities
             var context = GetInternal(token);
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+            DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
             // Контекст полностью сформирован и готов к работе
             context.IsFormed = true;
             KeepAlive(token);

@@ -473,12 +473,19 @@ namespace BL.Logic.DictionaryCore
 
         #endregion DictionaryAgentCompanies
 
-        #region DictionaryAgentBanks
+        #region DictionaryAgentUser
         public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
         {
             return _dictDb.GetAgentUser(context, id);
         }
-        #endregion DictionaryAgentBanks
+
+        public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
+        {
+            _dictDb.SetAgentUserLastPositionChose(context, 
+                new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LastPositionChose = string.Join(",",positionsIdList) });
+        }
+
+        #endregion DictionaryAgentUser
 
         #region DictionaryContacts
         public FrontDictionaryAgentContact GetAgentContact(IContext context, int id)

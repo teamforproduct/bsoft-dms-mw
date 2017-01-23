@@ -1273,6 +1273,20 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void SetAgentUserLastPositionChose(IContext context, InternalDictionaryAgentUser User)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentUser(context, User);
+
+                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.LastPositionChose).IsModified = true;
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
         public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
