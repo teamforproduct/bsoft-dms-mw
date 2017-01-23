@@ -16,6 +16,7 @@ using System.Web;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
+using BL.Model.DocumentCore.Actions;
 
 namespace DMS_WebAPI.ControllersV3.OrgPositions
 {
@@ -127,6 +128,22 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
             tmpItem.SetPositionOrder(cxt, model);
             var res = new JsonResult(model.Order, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Заменяет должность по документу
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.DocumentAccesses)]
+        public IHttpActionResult ChangePosition([FromBody]ChangePosition model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.ChangePosition, model);
+            var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
         }

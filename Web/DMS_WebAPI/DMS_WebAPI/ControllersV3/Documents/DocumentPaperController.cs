@@ -139,6 +139,118 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return res;
         }
 
+        /// <summary>
+        /// Отмечает нахождение бумажного носителя у себя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/MarkOwnerDocumentPaper")]
+        [HttpPut]
+        public IHttpActionResult MarkOwnerDocumentPaper([FromBody]MarkOwnerDocumentPaper model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.MarkOwnerDocumentPaper, model, model.CurrentPositionId);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отмечает порчу бумажного носителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/MarkСorruptionDocumentPaper")]
+        [HttpPut]
+        public IHttpActionResult MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.MarkСorruptionDocumentPaper, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Планирует движение бумажного носителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/PlanDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult PlanDocumentPaperEvent([FromBody]List<PlanMovementPaper> model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.PlanDocumentPaperEvent, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отменяет планирование движения бумажного носителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/CancelPlanDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]PaperList model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отмечает передачу бумажного носителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/SendDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult SendDocumentPaperEvent([FromBody]PaperList model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        ///  Отменяет передачу бумажного носителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/CancelSendDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]PaperList model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отмечает прием бумажного носителя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Papers + "/RecieveDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult RecieveDocumentPaperEvent([FromBody]PaperList model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
 
     }
 }

@@ -61,6 +61,7 @@
 
         public const string Events = "Events";
         public const string Accesses = "Accesses";
+        public const string DocumentAccesses = "DocumentAccesses";
         public const string Links = "Links";
         public const string SavedFilters = "SavedFilters";
         public const string Signs = "Signs";

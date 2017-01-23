@@ -17,6 +17,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -105,6 +106,56 @@ namespace DMS_WebAPI.ControllersV3.Documents
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.MarkDocumentEventAsRead, model);
             var res = new JsonResult(true, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отправляет сообщение группе
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Events + "/SendMessage")]
+        public IHttpActionResult SendMessage([FromBody]SendMessage model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.SendMessage, model, model.CurrentPositionId);
+            var res = new JsonResult(true, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Добавляет примечание
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Events + "/AddNote")]
+        public IHttpActionResult AddNote([FromBody]AddNote model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.AddNote, model, model.CurrentPositionId);
+            var res = new JsonResult(true, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Добавляет примечание
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Events + "/SendDocument")]
+        public IHttpActionResult SendDocument([FromBody]List<AddDocumentSendList> model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var tmpItem = (Dictionary<int, string>)docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
+            var res = new JsonResult(tmpItem, !tmpItem.Any(), this);
             res.SpentTime = stopWatch;
             return res;
         }

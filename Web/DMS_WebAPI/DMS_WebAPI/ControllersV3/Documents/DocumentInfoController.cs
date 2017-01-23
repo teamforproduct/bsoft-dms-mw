@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.EncryptionCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -16,8 +17,11 @@ using BL.Model.Reports.FrontModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -90,6 +94,59 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, ctx, Id);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает отчет Документ для подписания ЕЦП
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Info + "/ReportDocumentForDigitalSignature")]
+        [ResponseType(typeof(FrontReport))]
+        public IHttpActionResult GetReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, ctx, model);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Проверяет подписанный PDF-файл на нарушение ЕЦП
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Info + "/VerifyPdf")]
+        [ResponseType(typeof(bool))]
+        public IHttpActionResult VerifyPdf()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
+            var tmpItem = false;
+            try
+            {
+                HttpPostedFile file = HttpContext.Current.Request.Files[0];
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.InputStream.CopyTo(memoryStream);
+                    var model = memoryStream.ToArray();
+
+                    tmpItem = (bool)encryptionProc.ExecuteAction(EnumEncryptionActions.VerifyPdf, ctx, model);
+                }
+            }
+            catch (Exception ex)
+            {
+                tmpItem = false;
+            }
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -217,5 +274,118 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return res;
         }
 
+        /// <summary>
+        /// Добавляет в Избранное
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Info + "/AddFavourite")]
+        [HttpPut]
+        public IHttpActionResult AddFavourite(ChangeFavourites model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.AddFavourite, model, model.CurrentPositionId);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Удаляет из Избранного
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Info + "/DeleteFavourite")]
+        [HttpPut]
+        public IHttpActionResult DeleteFavourite(ChangeFavourites model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.DeleteFavourite, model, model.CurrentPositionId);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возобновляет работу с документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Info + "/StartWork")]
+        [HttpPut]
+        public IHttpActionResult StartWork(ChangeWorkStatus model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.StartWork, model, model.CurrentPositionId);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Заканчивает работу с документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Info + "/FinishWork")]
+        [HttpPut]
+        public IHttpActionResult FinishWork(ChangeWorkStatus model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.FinishWork, model, model.CurrentPositionId);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Запускает автоматическую отработку плана
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [Route(Features.Info + "/LaunchPlan")]
+        [HttpPut]
+        public IHttpActionResult LaunchPlan([FromBody]int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.LaunchPlan, Id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Останавливет автоматическую отработку плана
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [Route(Features.Info + "/StopPlan")]
+        [HttpPut]
+        public IHttpActionResult StopPlan([FromBody]int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.StopPlan, Id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+
+
+        /// <summary>
+        /// Изменяет исполнителя по документу
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Info + "/ChangeExecutor")]
+        [HttpPut]
+        public IHttpActionResult ChangeExecutor(ChangeExecutor model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.ChangeExecutor, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
     }
 }

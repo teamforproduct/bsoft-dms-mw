@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление в Избранного
+        /// Удаление в Избранного use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(model.DocumentId);
         }
         /// <summary>
-        /// Добавление в Избранное
+        /// Добавление в Избранное use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Возобновление работы с документом
+        /// Возобновление работы с документом use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -166,7 +166,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Окончание работы с документом
+        /// Окончание работы с документом use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -183,7 +183,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отправка сообщения группе
+        /// Отправка сообщения группе use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -200,7 +200,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление примечания
+        /// Добавление примечания use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -353,7 +353,7 @@ namespace DMS_WebAPI.Controllers.Documents
             return ctrl.Get(docId);
         }
         /// <summary>
-        /// Изменение исполнителя по документу
+        /// Изменение исполнителя по документу use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
@@ -370,7 +370,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Замена должности по документу
+        /// Замена должности по документу use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
@@ -387,7 +387,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Запустить план
+        /// Запустить план use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns></returns>
@@ -421,7 +421,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Остановить план
+        /// Остановить план use V3
         /// </summary>
         /// <param name="id">ИД документа</param>>
         /// <returns>Обновленный документ</returns>
@@ -808,7 +808,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получить отчет pdf документа перед подписанием
+        /// Получить отчет pdf документа перед подписанием use V3
         /// </summary>
         /// <param name="model">model</param>>
         /// <returns></returns>
@@ -840,7 +840,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Направить документ
+        /// Направить документ use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

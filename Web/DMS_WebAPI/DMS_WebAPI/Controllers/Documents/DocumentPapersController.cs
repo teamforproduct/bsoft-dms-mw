@@ -84,7 +84,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить нахождение бумажного носителя у себя
+        /// Отметить нахождение бумажного носителя у себя use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить порчу бумажного носителя
+        /// Отметить порчу бумажного носителя use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Планировать движение бумажного носителя
+        /// Планировать движение бумажного носителя use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отменить планирование движения бумажного носителя
+        /// Отменить планирование движения бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -144,7 +144,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить передачу бумажного носителя
+        /// Отметить передачу бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -159,7 +159,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отменить передачу бумажного носителя
+        /// Отменить передачу бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -174,7 +174,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить прием бумажного носителя
+        /// Отметить прием бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
