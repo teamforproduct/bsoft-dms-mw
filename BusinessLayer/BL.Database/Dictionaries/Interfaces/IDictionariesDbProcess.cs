@@ -309,8 +309,6 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region Admins
         #region AdminAccessLevels
-        FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id);
-
         IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter);
         #endregion AdminAccessLevels
         #endregion

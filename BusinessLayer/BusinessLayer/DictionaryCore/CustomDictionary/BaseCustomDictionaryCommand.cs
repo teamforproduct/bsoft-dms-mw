@@ -19,22 +19,25 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            Model.Code?.Trim();
-
-            var filter = new FilterCustomDictionary
+            if (!string.IsNullOrEmpty(Model.Code))
             {
-                TypeIDs = new List<int> { Model.TypeId },
-                CodeExact = Model.Code
-            };
+                Model.Code?.Trim();
 
-            if (TypeModelIs<ModifyCustomDictionary>())
-            { filter.NotContainsIDs = new List<int> { GetModel<ModifyCustomDictionary>().Id }; }
+                var filter = new FilterCustomDictionary
+                {
+                    TypeIDs = new List<int> { Model.TypeId },
+                    CodeExact = Model.Code
+                };
 
-            var cd = _dictDb.GetInternalCustomDictionarys(_context, filter).FirstOrDefault();
+                if (TypeModelIs<ModifyCustomDictionary>())
+                { filter.NotContainsIDs = new List<int> { GetModel<ModifyCustomDictionary>().Id }; }
 
-            if (cd != null)
-            {
-                throw new DictionaryCostomDictionaryNotUnique();
+                var cd = _dictDb.GetInternalCustomDictionarys(_context, filter).FirstOrDefault();
+
+                if (cd != null)
+                {
+                    throw new DictionaryCostomDictionaryNotUnique();
+                }
             }
 
             return true;

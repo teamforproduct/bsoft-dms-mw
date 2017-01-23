@@ -3532,16 +3532,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryDocumentDirectionsSet.AsQueryable();
-
-                if (filter.IDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
+                var qry = GetDocumentDirectionQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontDictionaryDocumentDirection
                 {
@@ -3555,6 +3546,65 @@ namespace BL.Database.Dictionaries
                 transaction.Complete();
                 return res;
             }
+        }
+
+        private static IQueryable<DictionaryDocumentDirections> GetDocumentDirectionQuery(IContext context, DmsContext dbContext, FilterDictionaryDocumentDirection filter)
+        {
+            var qry = dbContext.DictionaryDocumentDirectionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DictionaryDocumentDirections>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Условие по Name
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExact);
+                }
+
+                // Условие по Code
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.CodeExact))
+                {
+                    qry = qry.Where(x => x.Code == filter.CodeExact);
+                }
+            }
+            return qry;
         }
         #endregion DictionaryDepartments
 
@@ -6294,55 +6344,85 @@ namespace BL.Database.Dictionaries
 
         // pss перенести в AdminCore
         #region [+] AdminAccessLevels ...
-        public FrontAdminAccessLevel GetAdminAccessLevel(IContext ctx, int id)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-
-                var res = dbContext.AdminAccessLevelsSet.Where(x => x.Id == id).Select(x => new FrontAdminAccessLevel
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
-                }).FirstOrDefault();
-                transaction.Complete();
-                return res;
-            }
-        }
-
         public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
-
-                if (filter != null)
-                {
-
-                    if (filter.AccessLevelId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<DBModel.Admin.AdminAccessLevels>();
-                        filterContains = filter.AccessLevelId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-                }
+                var qry = GetAccessLevelsQuery(ctx, dbContext , filter);
 
                 var res = qry.Select(x => new FrontAdminAccessLevel
                 {
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                 }).ToList();
                 transaction.Complete();
                 return res;
             }
         }
+
+        public IQueryable<AdminAccessLevels> GetAccessLevelsQuery(IContext context, DmsContext dbContext, FilterAdminAccessLevel filter)
+        {
+            var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
+
+            // Список первичных ключей
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminAccessLevels>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminAccessLevels>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
+                // Поиск но Code
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    var filterContains = PredicateBuilder.False<AdminAccessLevels>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.CodeExact))
+                {
+                    qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    var filterContains = PredicateBuilder.False<AdminAccessLevels>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.NameExact))
+                {
+                    qry = qry.Where(x => filter.NameExact.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
+                }
+
+            }
+
+            return qry;
+        }
+
         #endregion AdminAccessLevels
 
         #region [+] CustomDictionaryTypes ...

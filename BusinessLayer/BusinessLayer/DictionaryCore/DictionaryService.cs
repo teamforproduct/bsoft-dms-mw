@@ -1021,7 +1021,7 @@ namespace BL.Logic.DictionaryCore
 
             var sendLists = _dictDb.GetStandartSendLists(context, filter, paging);
 
-            var res = sendLists.GroupBy(x => new {x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
+            var res = sendLists.GroupBy(x => new { x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
                  .OrderBy(x => x.Key.PositionName)
                  .Select(x => new FrontMainDictionaryStandartSendList()
                  {
@@ -1085,7 +1085,7 @@ namespace BL.Logic.DictionaryCore
         #region AdminAccessLevels
         public FrontAdminAccessLevel GetAdminAccessLevel(IContext context, int id)
         {
-            return _dictDb.GetAdminAccessLevel(context, id);
+            return _dictDb.GetAdminAccessLevels(context, new FilterAdminAccessLevel { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext context, FilterAdminAccessLevel filter)
@@ -1103,7 +1103,7 @@ namespace BL.Logic.DictionaryCore
 
         public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
         {
-            return GetCustomDictionaryTypes(context, new FilterCustomDictionaryType {IDs = new List<int> { id } }).FirstOrDefault();
+            return GetCustomDictionaryTypes(context, new FilterCustomDictionaryType { IDs = new List<int> { id } }).FirstOrDefault();
         }
         #endregion CustomDictionaryTypes
 
