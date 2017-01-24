@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.System
 {
-    public partial class SystemPermissions2
+    public partial class SystemPermissions
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
@@ -22,13 +22,13 @@ namespace BL.Database.DBModel.System
 
 
         [ForeignKey("ModuleId")]
-        public virtual SystemModules2 Module { get; set; }
+        public virtual SystemModules Module { get; set; }
 
         [ForeignKey("FeatureId")]
-        public virtual SystemFeatures2 Feature { get; set; }
+        public virtual SystemFeatures Feature { get; set; }
 
         [ForeignKey("AccessTypeId")]
-        public virtual SystemAccessTypes2 AccessType { get; set; }
+        public virtual SystemAccessTypes AccessType { get; set; }
 
         [ForeignKey("PermissionId")]
         public virtual ICollection<AdminRolePermissions> Roles { get; set; }

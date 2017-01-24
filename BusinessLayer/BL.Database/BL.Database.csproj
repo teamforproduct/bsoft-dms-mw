@@ -214,7 +214,11 @@
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />
+    <Compile Include="DBModel\System\SystemAccessTypes - Копировать.cs" />
+    <Compile Include="DBModel\System\SystemFetures - Копировать.cs" />
     <Compile Include="DBModel\System\SystemFetures.cs" />
+    <Compile Include="DBModel\System\SystemModules - Копировать.cs" />
+    <Compile Include="DBModel\System\SystemPermissions - Копировать.cs" />
     <Compile Include="DBModel\System\SystemPermissions.cs" />
     <Compile Include="DBModel\System\SystemAccessTypes.cs" />
     <Compile Include="DBModel\System\SystemModules.cs" />
@@ -554,6 +558,14 @@
     <Compile Include="Migrations\201701241052167_SysAction+Perm.Designer.cs">
       <DependentUpon>201701241052167_SysAction+Perm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701241224515_Temp.cs" />
+    <Compile Include="Migrations\201701241224515_Temp.Designer.cs">
+      <DependentUpon>201701241224515_Temp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701241247341_Temp2.cs" />
+    <Compile Include="Migrations\201701241247341_Temp2.Designer.cs">
+      <DependentUpon>201701241247341_Temp2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -831,6 +843,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701241052167_SysAction+Perm.resx">
       <DependentUpon>201701241052167_SysAction+Perm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701241224515_Temp.resx">
+      <DependentUpon>201701241224515_Temp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701241247341_Temp2.resx">
+      <DependentUpon>201701241247341_Temp2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

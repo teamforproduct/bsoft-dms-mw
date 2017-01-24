@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.System
 {
-    public partial class SystemAccessTypes
+    public partial class SystemAccessTypes2
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
