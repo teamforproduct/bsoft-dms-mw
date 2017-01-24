@@ -83,6 +83,8 @@ namespace BL.Database.DatabaseContext
             AddPermission(320, Modules.Position, Features.Executors);
             AddPermission(330, Modules.Position, Features.Roles, c: false, d: false);
             AddPermission(340, Modules.Position, Features.Journals, c: false, d: false);
+            AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false);
+
 
             AddPermission(400, Modules.Journal, Features.Info);
             AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false);
@@ -142,6 +144,25 @@ namespace BL.Database.DatabaseContext
 
             AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false);
 
+            AddPermission(2000, Modules.Document, Features.Info);
+            AddPermission(2010, Modules.Document, Features.Files);
+            AddPermission(2020, Modules.Document, Features.Papers);
+
+            AddPermission(2040, Modules.Document, Features.Tasks);
+            AddPermission(2050, Modules.Document, Features.AccessList, u: false);
+            AddPermission(2060, Modules.Document, Features.Plan);
+            AddPermission(2070, Modules.Document, Features.Tags, u: false, d: false);
+            AddPermission(2080, Modules.Document, Features.Links, u: false);
+
+
+            AddPermission(2110, Modules.Document, Features.Events, d: false);
+            AddPermission(2120, Modules.Document, Features.Waits, d: false);
+            AddPermission(2130, Modules.Document, Features.Signs, d: false);
+            AddPermission(2140, Modules.Document, Features.Accesses, c: false, u: false, d: false);
+            AddPermission(2150, Modules.Document, Features.WorkGroups, c: false, u: false, d: false);
+            AddPermission(2190, Modules.Document, Features.SavedFilters);
+
+            AddPermission(2200, Modules.PaperList, Features.Info);
 
         }
 
