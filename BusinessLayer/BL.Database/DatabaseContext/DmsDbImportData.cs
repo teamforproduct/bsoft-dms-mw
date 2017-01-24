@@ -91,7 +91,7 @@ namespace BL.Database.DatabaseContext
             AddPermission(510, Modules.Templates, Features.Tasks);
             AddPermission(520, Modules.Templates, Features.Files);
             AddPermission(530, Modules.Templates, Features.Papers);
-            AddPermission(540, Modules.Templates, Features.SendLists);
+            AddPermission(540, Modules.Templates, Features.Plan);
             AddPermission(550, Modules.Templates, Features.SignLists);
             AddPermission(560, Modules.Templates, Features.AccessList);
 

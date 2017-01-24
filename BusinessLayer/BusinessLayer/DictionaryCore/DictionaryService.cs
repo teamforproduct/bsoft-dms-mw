@@ -1117,17 +1117,13 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging)
         {
-            var newFilter = new FilterCustomDictionary();
             if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.CustomDictionaries, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
+                if (filter == null) filter = new FilterCustomDictionary();
+                filter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.CustomDictionaries, ftSearch.FullTextSearchString);
             }
 
-            return _dictDb.GetCustomDictionaries(context, newFilter, paging);
+            return _dictDb.GetCustomDictionaries(context, filter, paging);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging)

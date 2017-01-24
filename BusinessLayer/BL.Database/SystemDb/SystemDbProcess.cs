@@ -1843,7 +1843,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Name + " " + x.Code
+                    ObjectText = x.Name + " " + x.Code + " " + x.Description
                 }).ToList());
 
                 #endregion Dictionaries
@@ -2590,7 +2590,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Name + " " + x.doc.Code
+                        ObjectText = x.doc.Name + " " + x.doc.Code + " " + x.doc.Description
                     }).ToList());
                 }
 
