@@ -15,7 +15,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Признак, можно ли указанные в шаблоне значения поменять в документе
         /// </summary>
-        [Required]
         public bool IsHard { get; set; }
         /// <summary>
         /// Признак того, что шаблон может использоваться для создания проектов
