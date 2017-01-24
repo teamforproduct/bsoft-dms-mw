@@ -275,38 +275,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Добавляет в Избранное
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route(Features.Info + "/AddFavourite")]
-        [HttpPut]
-        public IHttpActionResult AddFavourite(ChangeFavourites model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AddFavourite, model, model.CurrentPositionId);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
-        /// Удаляет из Избранного
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route(Features.Info + "/DeleteFavourite")]
-        [HttpPut]
-        public IHttpActionResult DeleteFavourite(ChangeFavourites model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteFavourite, model, model.CurrentPositionId);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
-
-        /// <summary>
         /// Возобновляет работу с документом
         /// </summary>
         /// <param name="model"></param>
@@ -383,6 +351,38 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ChangeExecutor, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Добавляет в Избранное
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Favourite)]
+        [HttpPost]
+        public IHttpActionResult AddFavourite(ChangeFavourites model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.AddFavourite, model, model.CurrentPositionId);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Удаляет из Избранного
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route(Features.Favourite)]
+        [HttpDelete]
+        public IHttpActionResult DeleteFavourite(ChangeFavourites model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.DeleteFavourite, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;

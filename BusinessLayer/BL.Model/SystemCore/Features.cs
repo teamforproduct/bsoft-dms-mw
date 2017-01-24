@@ -67,6 +67,8 @@
         public const string Signs = "Signs";
         public const string Waits = "Waits";
         public const string WorkGroups = "WorkGroups";
+        public const string Favourite = "Favourite";
+        
 
         public static int GetId(string Name)
         {
