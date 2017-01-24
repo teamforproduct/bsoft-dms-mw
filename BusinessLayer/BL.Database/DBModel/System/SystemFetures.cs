@@ -5,11 +5,14 @@ namespace BL.Database.DBModel.System
 {
     public partial class SystemFeatures
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
+        [Index("IX_ModuleCode", 1, IsUnique = true)]
         public int ModuleId { get; set; }
 
         [MaxLength(400)]
+        [Index("IX_ModuleCode", 2, IsUnique = true)]
         public string Code { get; set; }
 
         [MaxLength(2000)]
