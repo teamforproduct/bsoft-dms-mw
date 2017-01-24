@@ -1212,7 +1212,7 @@ namespace BL.Database.Documents
 
                 var res = dbContext.TemplateDocumentFilesSet.Any(x =>
                     x.Document.ClientId == ctx.CurrentClientId &&
-                    ((x.DocumentId == file.DocumentId && x.OrderNumber == file.OrderInDocument) ||
+                    (//(x.DocumentId == file.DocumentId && x.OrderNumber == file.OrderInDocument) ||
                     (x.DocumentId == file.DocumentId && x.Extention == fileExtention && x.Name == fileName))
                     );
                 transaction.Complete();

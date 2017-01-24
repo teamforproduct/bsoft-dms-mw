@@ -16,12 +16,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int DocumentId { get; set; }
         /// <summary>
-        /// Порядковый номер файла в списке файлов документа
-        /// Только для изменения файла
-        /// </summary>
-        [Required]
-        public int OrderInDocument { get; set; }
-        /// <summary>
         /// Является ли файл дополнительным или основным. 
         /// </summary>
         public EnumFileTypes Type { get; set; }

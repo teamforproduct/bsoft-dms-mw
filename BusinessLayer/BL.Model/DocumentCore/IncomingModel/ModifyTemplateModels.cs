@@ -68,6 +68,11 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [Required]
         public int Id { get; set; }
+        /// <summary>
+        /// Порядковый номер файла в списке файлов документа
+        /// Только для изменения файла
+        /// </summary>
+        public int OrderInDocument { get; set; }
     }
 
 }
