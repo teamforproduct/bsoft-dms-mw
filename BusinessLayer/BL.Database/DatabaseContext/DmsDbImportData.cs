@@ -291,11 +291,11 @@ namespace BL.Database.DatabaseContext
             // TODO добавить свзь с пермиссией. функуция GetPermissionId
 
             items.Add(GetSysAct(EnumDocumentActions.ViewDocument, EnumObjects.Documents, category: "Документ", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.AddLinkedDocument, EnumObjects.Documents, category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, category: "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, GetPermissionId(Modules.Document, Features.Info, EnumAccessTypes.C), category: "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.AddLinkedDocument, EnumObjects.Documents, GetPermissionId(Modules.Document, Features.Info, EnumAccessTypes.C), category: "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, GetPermissionId(Modules.Document, Features.Info, EnumAccessTypes.C), category: "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Document, Features.Info, EnumAccessTypes.U), category: "Документ"));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Document, Features.Info, EnumAccessTypes.D), category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, category: "Действия"));
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListItem, EnumObjects.Documents, category: "Действия"));
             items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, category: "Действия"));
