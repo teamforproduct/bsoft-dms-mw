@@ -42,6 +42,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
+            ApiPrefix.VerifyPermission();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainAgentEmployees(ctx, ftSearch, filter, paging);
