@@ -6,6 +6,8 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -34,6 +36,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             _actionRecords =
                 _document.Waits.Where(
                     x =>
@@ -89,16 +93,20 @@ namespace BL.Logic.DocumentCore.Commands
                 subscription.CertificateId = Model.CertificateId;
                 subscription.CertificatePassword = Model.CertificatePassword;
                 subscription.CertificatePositionId = _context.CurrentPositionId;
-                subscription.CertificatePositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-                if (!subscription.CertificatePositionExecutorAgentId.HasValue)
+                var positionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+                if (!positionExecutor?.ExecutorAgentId.HasValue ?? true)
                 {
                     throw new ExecutorAgentForPositionIsNotDefined();
                 }
+                subscription.CertificatePositionExecutorAgentId = positionExecutor.ExecutorAgentId;
+                subscription.CertificatePositionExecutorTypeId = positionExecutor.ExecutorTypeId;
             }
 
             //TODO HASH!!!!
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), isUseCertificateSign);
+            if (_document.IsLaunchPlan)
+                DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
             return _document.Id;
         }
 

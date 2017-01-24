@@ -22,7 +22,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Банк, в котором открыт счет
         /// </summary>
-        public FrontDictionaryAgentBank Bank { get; set; }
+        public FrontMainAgentBank Bank { get; set; }
         /// <summary>
         /// ССылка на контрагента
         /// </summary>

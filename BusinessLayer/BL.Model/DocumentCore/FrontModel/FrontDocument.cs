@@ -128,7 +128,9 @@ namespace BL.Model.DocumentCore.FrontModel
         public string DocumentSubjectName { get; set; }
         public string RegistrationJournalName { get; set; }
 
+        public int? ExecutorPositionId { get; set; }
         public string ExecutorPositionName { get; set; }
+        public int? ExecutorPositionExecutorAgentId { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
         public string ExecutorPositionExecutorNowAgentName { get; set; }
         public string ExecutorPositionAgentPhoneNumber { get; set; }
@@ -141,7 +143,7 @@ namespace BL.Model.DocumentCore.FrontModel
 
 
         public int? TemplateDocumentId { get; set; }
-        public int? ExecutorPositionId { get; set; }
+
 		
         public DateTime? CreateDate { get { return _CreateDate; } set { _CreateDate=value.ToUTC(); } }
         private DateTime?  _CreateDate; 

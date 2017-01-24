@@ -9,6 +9,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
+using System;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -25,12 +26,18 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="agentId">ИД агента</param>
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
+        [Obsolete()]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryAgentAddress filter)
+        public IHttpActionResult Get(int agentId, [FromUri] FilterDictionaryAgentAddress filter)
         {
+            if (filter == null) filter = new FilterDictionaryAgentAddress();
+
+            if (filter.AgentIDs == null) filter.AgentIDs = new List<int> { agentId };
+            else filter.AgentIDs.Add(agentId);
+
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentAddresses(ctx, agentId,filter);
+            var tmpDicts = tmpDictProc.GetAgentAddresses(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -39,12 +46,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Obsolete()]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentAddress(ctx, id);
+            var tmpDict = tmpDictProc.GetAgentAddress(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -53,7 +61,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentAddress model)
+        [Obsolete()]
+        public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -65,7 +74,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentAddress model)
+        [Obsolete()]
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentAddress model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -79,6 +89,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Obsolete()]
         public IHttpActionResult Delete([FromUri] int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

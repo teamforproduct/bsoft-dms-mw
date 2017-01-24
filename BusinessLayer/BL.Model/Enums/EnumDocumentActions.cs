@@ -14,6 +14,10 @@
         /// Создать документ по шаблону
         /// </summary>
         AddDocument = 100001,
+        /// <summary>
+        /// Создать связанный документ
+        /// </summary>
+        AddLinkedDocument = 100019,
 
         /// <summary>
         /// Создать документ копированием
@@ -120,11 +124,23 @@
         /// </summary>
         SendForExecution = 100032,
 
+
+        /// <summary>
+        /// Попросить о переносе сроков исполнения
+        /// </summary>
+        AskPostponeDueDate = 100033,
+        /// <summary>
+        /// Отказать в переносе сроков исполнения
+        /// </summary>
+        CancelPostponeDueDate = 100034,
         /// <summary>
         /// Отметить исполнение
         /// </summary>
         MarkExecution = 100035,
-
+        /// <summary>
+        /// Отменить исполнение
+        /// </summary>
+        CancelExecution = 100036,
         /// <summary>
         /// Принять результат
         /// </summary>
@@ -408,6 +424,7 @@
         ReportDocumentForDigitalSignature = 100087,
 
         AddTemplateDocument = 251001,
+        CopyTemplateDocument = 251002,
         ModifyTemplateDocument = 251005,
         DeleteTemplateDocument = 251009,
         AddTemplateDocumentSendList = 252001,

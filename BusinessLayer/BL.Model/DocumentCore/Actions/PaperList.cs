@@ -5,6 +5,7 @@ namespace BL.Model.DocumentCore.Actions
 {
     /// <summary>
     /// Модель перечня бумажных носителей
+    /// можно указать перечень БН и/или акт приема/передачи БН
     /// </summary>
     public class PaperList
     {

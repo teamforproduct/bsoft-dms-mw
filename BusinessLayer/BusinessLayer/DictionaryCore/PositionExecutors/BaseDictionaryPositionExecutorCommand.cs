@@ -14,25 +14,14 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryPositionExecutorCommand : BaseDictionaryCommand
     {
-
-        protected ModifyDictionaryPositionExecutor Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryPositionExecutor))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryPositionExecutor)_param;
-            }
-        }
+        private AddPositionExecutor Model { get { return GetModel<AddPositionExecutor>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
         public void PrepareData()
         {
-            Model.StartDate = Model.StartDate.StartOfDay();
-            Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
+            // Model.StartDate = Model.StartDate.StartOfDay();
+            //Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
 
 
             if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();
@@ -46,81 +35,103 @@ namespace BL.Logic.DictionaryCore
 
             FrontDictionaryPositionExecutor executor = null;
 
-
-            var PositionExecutors = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
+            var filter = new FilterDictionaryPositionExecutor
             {
-                NotContainsIDs = new List<int> { Model.Id },
                 PositionIDs = new List<int> { Model.PositionId },
                 StartDate = Model.StartDate,
                 EndDate = Model.EndDate,
                 AgentIDs = new List<int> { Model.AgentId },
-            });
+            };
+
+            if (TypeModelIs<ModifyPositionExecutor>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
+
+            var PositionExecutors = _dictDb.GetPositionExecutors(_context, filter);
 
             executor = PositionExecutors.FirstOrDefault();
 
             if (executor != null)
-            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName,  executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName,  executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+
 
 
             switch (Model.PositionExecutorTypeId)
             {
                 case EnumPositionExecutionTypes.Personal:
-                    // Personal может быть только один на должности за период
-                    executor = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
+
+                    filter = new FilterDictionaryPositionExecutor
                     {
-                        NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
-                    }).FirstOrDefault();
+                    };
+
+                    if (TypeModelIs<ModifyPositionExecutor>())
+                    { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
+                    
+                    // Personal может быть только один на должности за период
+                    executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorPersonalNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
                     break;
                 case EnumPositionExecutionTypes.IO:
-                    // IO может быть только один на должности за период
-                    executor = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
+                    filter = new FilterDictionaryPositionExecutor
                     {
-                        NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
-                    }).FirstOrDefault();
+                    };
+
+                    if (TypeModelIs<ModifyPositionExecutor>())
+                    { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
+                    
+                    // IO может быть только один на должности за период
+                    executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorIONotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
                     break;
                 case EnumPositionExecutionTypes.Referent:
-                    // Референтов может быть несколько может быть н на должности за период
-                    executor = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
+                    filter = new FilterDictionaryPositionExecutor
                     {
-                        NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
-                    }).FirstOrDefault();
+                    };
+
+                    if (TypeModelIs<ModifyPositionExecutor>())
+                    { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
+                    
+                    // Референтов может быть несколько может быть на должности за период
+                    executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
                     break;
                 default:
-                    executor = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor
+
+                    filter = new FilterDictionaryPositionExecutor
                     {
-                        NotContainsIDs = new List<int> { Model.Id },
                         PositionIDs = new List<int> { Model.PositionId },
                         StartDate = Model.StartDate,
                         EndDate = Model.EndDate,
                         PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { Model.PositionExecutorTypeId },
                         AgentIDs = new List<int> { Model.AgentId },
-                    }).FirstOrDefault();
+                    };
+
+                    if (TypeModelIs<ModifyPositionExecutor>())
+                    { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
+
+                    executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
                     if (executor != null)
-                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.HasValue ? executor.StartDate.Value.ToString("dd.MM.yyyy HH:mm") : "-", executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+                    { throw new DictionaryPositionExecutorReferentNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
                     break;
             }

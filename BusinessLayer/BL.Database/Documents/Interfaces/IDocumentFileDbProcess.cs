@@ -15,6 +15,8 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
         int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
         void UpdateFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
+        void UpdateFilePdfView(IContext ctx, InternalDocumentAttachedFile docFile);
+        IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge);
         void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents);
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version);
         InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber);
@@ -22,5 +24,6 @@ namespace BL.Database.Documents.Interfaces
         void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile);
         int GetNextFileOrderNumber(IContext ctx, int documentId);
         int GetFileNextVersion(IContext ctx, int documentId, int fileOrder);
+        InternalDocumentAttachedFile GetInternalAttachedFile(IContext ctx, int fileId);
     }
 }

@@ -15,7 +15,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     {
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
-        FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
+        FrontDocument GetDocument(IContext ctx, int documentId);
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
 
@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         #region DocumentPaperLists
         FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId);
 
-        IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter);
+        IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter, UIPaging paging);
 
         #endregion DocumentPaperLists        
 

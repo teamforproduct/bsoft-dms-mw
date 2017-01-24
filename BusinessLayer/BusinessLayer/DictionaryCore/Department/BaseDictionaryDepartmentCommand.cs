@@ -16,17 +16,7 @@ namespace BL.Logic.DictionaryCore
     public class BaseDictionaryDepartmentCommand : BaseDictionaryCommand
     {
 
-        protected ModifyDictionaryDepartment Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryDepartment))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryDepartment)_param;
-            }
-        }
+        private AddDepartment Model { get { return GetModel<AddDepartment>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -36,18 +26,24 @@ namespace BL.Logic.DictionaryCore
 
             Model.Name?.Trim();
 
-            // отдел нельзя подчинить сасому себе и (дочерним отделам)
-            if ((Model.ParentId ?? -1) == Model.Id)
+            if (TypeModelIs<ModifyDepartment>())
             {
-                throw new DictionarysdDepartmentNotBeSubordinated(Model.Name);
+                // отдел нельзя подчинить сасому себе и (дочерним отделам)
+                if ((Model.ParentId ?? -1) == GetModel<ModifyDepartment>().Id)
+                {
+                    throw new DictionarysdDepartmentNotBeSubordinated(Model.Name);
+                }
             }
 
-            if (_dictDb.ExistsDictionaryDepartment(_context, new FilterDictionaryDepartment
+            var filter = new FilterDictionaryDepartment
             {
                 NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
-            { throw new DictionaryDepartmentNameNotUnique(Model.Name); }
+            };
+
+            if (TypeModelIs<ModifyDepartment>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyDepartment>().Id }; }
+
+            if (_dictDb.ExistsDictionaryDepartment(_context, filter)) throw new DictionaryDepartmentNameNotUnique(Model.Name);
 
             return true;
         }
@@ -79,7 +75,7 @@ namespace BL.Logic.DictionaryCore
 
             foreach (var dep in childDepartments)
             {
-                UpdateCodeForChildDepartment( dep.Id, dep.Code);
+                UpdateCodeForChildDepartment(dep.Id, dep.Code);
             }
 
         }

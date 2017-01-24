@@ -7,6 +7,8 @@ using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.SystemCore;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -19,11 +21,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>Список доступных тегов для выставленых должностей</returns>
-        public IHttpActionResult Get([FromUri]FilterDictionaryTag filter)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryTags(ctx, filter);
+            var tmpDicts = tmpDictProc.GetMainTags(ctx, ftSearch,  filter, paging);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -37,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryTag(ctx, id);
+            var tmpDict = tmpDictProc.GetTag(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -46,7 +48,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Тег</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryTag model)
+        public IHttpActionResult Post([FromBody]AddTag model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
@@ -62,7 +64,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="model"></param>
         /// <returns>Тег</returns>
         /// 
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryTag model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyTag model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -81,7 +83,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteTag, ctx, id);
-            FrontDictionaryTag tmp = new FrontDictionaryTag();
+            FrontTag tmp = new FrontTag();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

@@ -1,13 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using BL.Database.Documents.Interfaces;
+﻿using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
@@ -17,7 +13,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalTemplateAttachedFile fl;
+        private InternalTemplateAttachedFile _docFile;
 
         public ModifyTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
         {
@@ -45,28 +41,34 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-
+            _docFile = _operationDb.UpdateFilePrepare(_context, Model.Id);
+            if (_docFile == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             return true;
         }
 
         public override object Execute()
         {
-
-            fl.DocumentId = Model.DocumentId;
-            fl.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
+            //            _docFile.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             //fl.FileContent = Convert.FromBase64String(Model.FileData);
-            fl.FileType = Model.FileType;
-            fl.FileSize = Model.FileSize;
-            fl.Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "");
-            fl.Name = Path.GetFileNameWithoutExtension(Model.FileName);
-            fl.Type = fl.Type;
-            fl.PostedFileData = Model.PostedFileData;
-            fl.Description = Model.Description;
-            _fStore.SaveFile(_context, fl);
-            CommonDocumentUtilities.SetLastChange(_context, fl);
-            _operationDb.UpdateFile(_context, fl);
+            _docFile.Type = Model.Type;
+            _docFile.Description = Model.Description;
+            //if (Model.PostedFileData != null)
+            //{
+            //    _docFile.FileSize = Model.FileSize;
+            //    _docFile.Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", "");
+            //    _docFile.Name = Path.GetFileNameWithoutExtension(Model.FileName);
+            //    _docFile.FileType = Model.FileType;
+            //    _docFile.PostedFileData = Model.PostedFileData;
+            //    _fStore.SaveFile(_context, _docFile);
+            //}
+            CommonDocumentUtilities.SetLastChange(_context, _docFile);
 
-            return new FrontTemplateAttachedFile(fl);
+            _operationDb.UpdateFile(_context, _docFile);
+
+            return new FrontTemplateAttachedFile(_docFile);
         }
 
 

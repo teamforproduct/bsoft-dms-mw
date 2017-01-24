@@ -129,6 +129,10 @@
       <HintPath>..\..\Web\DMS_WebAPI\packages\Oracle.ManagedDataAccess.EntityFramework.12.1.2400\lib\net45\Oracle.ManagedDataAccess.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PDFCreator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Thirdparty\PdfCreator\PDFCreator.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -157,10 +161,12 @@
     <Compile Include="DatabaseContext\DmsDbInitializer.cs" />
     <Compile Include="DBModel\Admin\AdminAccessLevels.cs" />
     <Compile Include="DBModel\Admin\AdminPositionRoles.cs" />
+    <Compile Include="DBModel\Admin\AdminRolePermissions.cs" />
     <Compile Include="DBModel\Admin\AdminRoleActions.cs" />
     <Compile Include="DBModel\Admin\AdminRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRegistrationJournalPositions.cs" />
     <Compile Include="DBModel\Admin\AdminSubordinations.cs" />
+    <Compile Include="DBModel\Admin\AdminEmployeeDepartments.cs" />
     <Compile Include="DBModel\Admin\AdminUserRoles.cs" />
     <Compile Include="DBModel\Admin\AdminRoleTypes.cs" />
     <Compile Include="DBModel\Dictionary\CustomDictionaries.cs" />
@@ -170,10 +176,12 @@
     <Compile Include="DBModel\Dictionary\DictionaryAgentAddresses.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentBanks.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentCompanies.cs" />
-    <Compile Include="DBModel\Dictionary\DictionaryAgentEmploeyes.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentEmployees.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryAgentPeople.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentUsers.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentPersons.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryAgentContacts.cs" />
+    <Compile Include="DBModel\Dictionary\DictionaryStageTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySettingTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySigningTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryFileTypes.cs" />
@@ -206,6 +214,10 @@
     <Compile Include="DBModel\System\Properties.cs" />
     <Compile Include="DBModel\System\PropertyLinks.cs" />
     <Compile Include="DBModel\System\PropertyValues.cs" />
+    <Compile Include="DBModel\System\SystemFetures.cs" />
+    <Compile Include="DBModel\System\SystemPermissions.cs" />
+    <Compile Include="DBModel\System\SystemAccessTypes.cs" />
+    <Compile Include="DBModel\System\SystemModules.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
     <Compile Include="DBModel\Admin\AdminLanguageValues.cs" />
@@ -269,6 +281,7 @@
     <Compile Include="FileWorker\IFileStore.cs" />
     <Compile Include="Helper\ConnectionHelper.cs" />
     <Compile Include="Helper\IConnectionHelper.cs" />
+    <Compile Include="Helper\Paging.cs" />
     <Compile Include="Migrations\201607221315516_InitialMigration.cs" />
     <Compile Include="Migrations\201607221315516_InitialMigration.Designer.cs">
       <DependentUpon>201607221315516_InitialMigration.cs</DependentUpon>
@@ -440,6 +453,98 @@
     <Compile Include="Migrations\201611292119354_PositionExecutorType.cs" />
     <Compile Include="Migrations\201611292119354_PositionExecutorType.Designer.cs">
       <DependentUpon>201611292119354_PositionExecutorType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612012028038_DictionaryPositionExecutorTypesSuffix.cs" />
+    <Compile Include="Migrations\201612012028038_DictionaryPositionExecutorTypesSuffix.Designer.cs">
+      <DependentUpon>201612012028038_DictionaryPositionExecutorTypesSuffix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612012101576_DocumentsPositionExecutorType.cs" />
+    <Compile Include="Migrations\201612012101576_DocumentsPositionExecutorType.Designer.cs">
+      <DependentUpon>201612012101576_DocumentsPositionExecutorType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612041747227_PositionExecutorTypeId.cs" />
+    <Compile Include="Migrations\201612041747227_PositionExecutorTypeId.Designer.cs">
+      <DependentUpon>201612041747227_PositionExecutorTypeId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612070845309_ModuleFeature_Columns.cs" />
+    <Compile Include="Migrations\201612070845309_ModuleFeature_Columns.Designer.cs">
+      <DependentUpon>201612070845309_ModuleFeature_Columns.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612140802074_PersonsPosotion.cs" />
+    <Compile Include="Migrations\201612140802074_PersonsPosotion.Designer.cs">
+      <DependentUpon>201612140802074_PersonsPosotion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612172034078_LanguageIdNotNull.cs" />
+    <Compile Include="Migrations\201612172034078_LanguageIdNotNull.Designer.cs">
+      <DependentUpon>201612172034078_LanguageIdNotNull.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612181954456_SelfDescription.cs" />
+    <Compile Include="Migrations\201612181954456_SelfDescription.Designer.cs">
+      <DependentUpon>201612181954456_SelfDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612201654101_LinkExecutorPositionId.cs" />
+    <Compile Include="Migrations\201612201654101_LinkExecutorPositionId.Designer.cs">
+      <DependentUpon>201612201654101_LinkExecutorPositionId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612201703138_LinkExecutorPositionId1.cs" />
+    <Compile Include="Migrations\201612201703138_LinkExecutorPositionId1.Designer.cs">
+      <DependentUpon>201612201703138_LinkExecutorPositionId1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612211100306_AgentPeople.cs" />
+    <Compile Include="Migrations\201612211100306_AgentPeople.Designer.cs">
+      <DependentUpon>201612211100306_AgentPeople.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612211618326_DellPersonFields.cs" />
+    <Compile Include="Migrations\201612211618326_DellPersonFields.Designer.cs">
+      <DependentUpon>201612211618326_DellPersonFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612222121072_StageTypes.cs" />
+    <Compile Include="Migrations\201612222121072_StageTypes.Designer.cs">
+      <DependentUpon>201612222121072_StageTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612261349536_ModifySendList.cs" />
+    <Compile Include="Migrations\201612261349536_ModifySendList.Designer.cs">
+      <DependentUpon>201612261349536_ModifySendList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701042033505_PlanDueDate.cs" />
+    <Compile Include="Migrations\201701042033505_PlanDueDate.Designer.cs">
+      <DependentUpon>201701042033505_PlanDueDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701101956476_IsPdfCreated.cs" />
+    <Compile Include="Migrations\201701101956476_IsPdfCreated.Designer.cs">
+      <DependentUpon>201701101956476_IsPdfCreated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701141158008_IsPdfCreatedInTemplates.cs" />
+    <Compile Include="Migrations\201701141158008_IsPdfCreatedInTemplates.Designer.cs">
+      <DependentUpon>201701141158008_IsPdfCreatedInTemplates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701151929057_EmployeeDepartments.cs" />
+    <Compile Include="Migrations\201701151929057_EmployeeDepartments.Designer.cs">
+      <DependentUpon>201701151929057_EmployeeDepartments.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701171825362_ModuleFeature.cs" />
+    <Compile Include="Migrations\201701171825362_ModuleFeature.Designer.cs">
+      <DependentUpon>201701171825362_ModuleFeature.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701172229096_ModuleFeature2.cs" />
+    <Compile Include="Migrations\201701172229096_ModuleFeature2.Designer.cs">
+      <DependentUpon>201701172229096_ModuleFeature2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701181612346_MF2.cs" />
+    <Compile Include="Migrations\201701181612346_MF2.Designer.cs">
+      <DependentUpon>201701181612346_MF2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701191329527_CustomDictionaries.cs" />
+    <Compile Include="Migrations\201701191329527_CustomDictionaries.Designer.cs">
+      <DependentUpon>201701191329527_CustomDictionaries.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701230801499_LastPositionChose.cs" />
+    <Compile Include="Migrations\201701230801499_LastPositionChose.Designer.cs">
+      <DependentUpon>201701230801499_LastPositionChose.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701241308237_AddNewPermissions.cs" />
+    <Compile Include="Migrations\201701241308237_AddNewPermissions.Designer.cs">
+      <DependentUpon>201701241308237_AddNewPermissions.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -643,6 +748,75 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611292119354_PositionExecutorType.resx">
       <DependentUpon>201611292119354_PositionExecutorType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612012028038_DictionaryPositionExecutorTypesSuffix.resx">
+      <DependentUpon>201612012028038_DictionaryPositionExecutorTypesSuffix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612012101576_DocumentsPositionExecutorType.resx">
+      <DependentUpon>201612012101576_DocumentsPositionExecutorType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612041747227_PositionExecutorTypeId.resx">
+      <DependentUpon>201612041747227_PositionExecutorTypeId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612070845309_ModuleFeature_Columns.resx">
+      <DependentUpon>201612070845309_ModuleFeature_Columns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612140802074_PersonsPosotion.resx">
+      <DependentUpon>201612140802074_PersonsPosotion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612172034078_LanguageIdNotNull.resx">
+      <DependentUpon>201612172034078_LanguageIdNotNull.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612181954456_SelfDescription.resx">
+      <DependentUpon>201612181954456_SelfDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612201654101_LinkExecutorPositionId.resx">
+      <DependentUpon>201612201654101_LinkExecutorPositionId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612201703138_LinkExecutorPositionId1.resx">
+      <DependentUpon>201612201703138_LinkExecutorPositionId1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612211100306_AgentPeople.resx">
+      <DependentUpon>201612211100306_AgentPeople.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612211618326_DellPersonFields.resx">
+      <DependentUpon>201612211618326_DellPersonFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612222121072_StageTypes.resx">
+      <DependentUpon>201612222121072_StageTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612261349536_ModifySendList.resx">
+      <DependentUpon>201612261349536_ModifySendList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701042033505_PlanDueDate.resx">
+      <DependentUpon>201701042033505_PlanDueDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701101956476_IsPdfCreated.resx">
+      <DependentUpon>201701101956476_IsPdfCreated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701141158008_IsPdfCreatedInTemplates.resx">
+      <DependentUpon>201701141158008_IsPdfCreatedInTemplates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701151929057_EmployeeDepartments.resx">
+      <DependentUpon>201701151929057_EmployeeDepartments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171825362_ModuleFeature.resx">
+      <DependentUpon>201701171825362_ModuleFeature.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701172229096_ModuleFeature2.resx">
+      <DependentUpon>201701172229096_ModuleFeature2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701181612346_MF2.resx">
+      <DependentUpon>201701181612346_MF2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701191329527_CustomDictionaries.resx">
+      <DependentUpon>201701191329527_CustomDictionaries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701230801499_LastPositionChose.resx">
+      <DependentUpon>201701230801499_LastPositionChose.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701241308237_AddNewPermissions.resx">
+      <DependentUpon>201701241308237_AddNewPermissions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

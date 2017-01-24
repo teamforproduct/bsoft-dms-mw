@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BL.Model.AdminCore.WebUser
 {
     /// <summary>
-    /// Модель для добавления нового клиента
+    /// Модель для добавления нового аккаунта
     /// </summary>
     public class AddWebUser
     {

@@ -15,14 +15,15 @@ namespace BL.Database.DBModel.Document
         }
         public int Id { get; set; }
         public int DocumentId { get; set; }
+        public int? StageTypeId { get; set; }
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
         public int SourcePositionId { get; set; }
         public int? SourcePositionExecutorAgentId { get; set; }
         public int? SourcePositionExecutorTypeId { get; set; }
         public int SourceAgentId { get; set; }
-        public Nullable<int> TargetPositionId { get; set; }
-        public Nullable<int> TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionId { get; set; }
+        public int? TargetPositionExecutorAgentId { get; set; }
         public int? TargetPositionExecutorTypeId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
         public Nullable<int> TaskId { get; set; }
@@ -37,9 +38,12 @@ namespace BL.Database.DBModel.Document
         public bool IsInitial { get; set; }
         public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
+        [MaxLength(2000)]
+        public string SelfDescription { get; set; }
         public Nullable<DateTime> SelfDueDate { get; set; }
         public int? SelfDueDay { get; set; }
         public Nullable<DateTime> SelfAttentionDate { get; set; }
+        public int? SelfAttentionDay { get; set; }
         public bool IsAvailableWithinTask { get; set; }
         public Nullable<int> StartEventId { get; set; }
         public Nullable<int> CloseEventId { get; set; }
@@ -48,6 +52,8 @@ namespace BL.Database.DBModel.Document
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
+        [ForeignKey("StageTypeId")]
+        public virtual DictionaryStageTypes StageType { get; set; }
         [ForeignKey("SendTypeId")]
         public virtual DictionarySendTypes SendType { get; set; }
         [ForeignKey("TaskId")]

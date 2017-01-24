@@ -19,7 +19,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             UserId = model.UserId;
             Login = model.Login;
-            //PasswordHash = model.PasswordHash;
             IsActive = model.IsActive;
         }
 
@@ -30,7 +29,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             LanguageId = model.LanguageId;
             UserId = model.UserId;
             Login = model.Login;
-            //PasswordHash = model.PasswordHash;
             LastChangeDate = model.LastChangeDate;
             LastChangeUserId = model.LastChangeUserId;
         }
@@ -40,7 +38,9 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
-        public int? LanguageId { get; set; }
+        public int LanguageId { get; set; }
+
+        public string LastPositionChose { get; set; }        
 
         public string UserId { get; set; }
 

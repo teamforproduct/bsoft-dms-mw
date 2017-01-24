@@ -27,14 +27,6 @@ namespace BL.Database.DBModel.Dictionary
         public string Name { get; set; }
         public byte[] Image { get; set; }
         public Nullable<int> ResidentTypeId { get; set; }
-        //public bool IsCompany { get; set; }
-        //public bool IsIndividual { get; set; }
-        //public bool IsEmployee { get; set; }
-        //public bool IsBank { get; set; }
-        //public bool IsUser { get; set; }
-        [MaxLength(2000)]
-        public string Description { get; set; }
-        public bool IsActive { get; set; }
 
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
@@ -44,16 +36,17 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("Id")]
         public virtual DictionaryAgentCompanies AgentCompany { get; set; }
         [ForeignKey("Id")]
+        public virtual DictionaryAgentPeople AgentPeople { get; set; }
+        [ForeignKey("Id")]
         public virtual DictionaryAgentPersons AgentPerson { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgentBanks AgentBank { get; set; }
         [ForeignKey("Id")]
         public virtual DictionaryAgentEmployees AgentEmployee { get; set; }
-
         [ForeignKey("Id")]
         public virtual DictionaryAgentUsers AgentUser { get; set; }
         [ForeignKey("Id")]
-        public virtual DictionaryCompanies Company { get; set; }
+        public virtual DictionaryCompanies AgentOrg { get; set; }
 
         public virtual DictionaryResidentTypes ResidentType { get; set; }
 

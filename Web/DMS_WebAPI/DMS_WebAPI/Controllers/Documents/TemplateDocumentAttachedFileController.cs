@@ -46,11 +46,39 @@ namespace DMS_WebAPI.Controllers.Documents
             return new JsonResult(docFileProc.GetTemplateAttachedFile(ctx, id), this);
         }
 
-       /// <summary>
-       /// Добавить вложенный файл в шаблон
-       /// </summary>
-       /// <param name="model"></param>
-       /// <returns></returns>
+        /// <summary>
+        /// Получить вложенный в шаблон файл по ИД в формате PDF
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("GetPdfFile")]
+        [HttpGet]
+        public IHttpActionResult PdfFile(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            return new JsonResult(docFileProc.GetTemplateAttachedFilePdf(ctx, id), this);
+        }
+
+        /// <summary>
+        /// Получить картинку-превью для вложенного в шаблон файла по ИД файла
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("GetPdfPreview")]
+        [HttpGet]
+        public IHttpActionResult PdfPreview(int id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<ITemplateDocumentService>();
+            return new JsonResult(docFileProc.GetTemplateAttachedFilePreview(ctx, id), this);
+        }
+
+        /// <summary>
+        /// Добавить вложенный файл в шаблон
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public IHttpActionResult Post([FromUri]ModifyTemplateAttachedFile model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -68,18 +96,21 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Изменить вложенный в шаблон файл
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateAttachedFile model)
         {
+            model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
-            model.PostedFileData = file;
-            model.FileName = file.FileName;
-            model.FileType = file.ContentType;
-
+            //if (HttpContext.Current.Request.Files.Count > 0)
+            //{
+            //    HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            //    model.PostedFileData = file;
+            //    model.FileName = file.FileName;
+            //    model.FileType = file.ContentType;
+            //}
             var fl = (FrontTemplateAttachedFile)docProc.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, ctx, model);
 
             return new JsonResult(fl, this);
@@ -88,13 +119,13 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Удалить вложенный в шаблон файл
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public IHttpActionResult Delete([FromUri]ModifyTemplateAttachedFile model)
+        public IHttpActionResult Delete([FromUri]int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ITemplateDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, model);
+            docProc.ExecuteAction(EnumDocumentActions.DeleteTemplateAttachedFile, ctx, id);
             return new JsonResult(null, this);
         }
     }

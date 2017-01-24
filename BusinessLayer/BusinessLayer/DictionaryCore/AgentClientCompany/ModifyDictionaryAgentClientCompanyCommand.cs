@@ -10,23 +10,26 @@ using System.Collections.Generic;
 using System.Transactions;
 using BL.Model.Enums;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentClientCompanyCommand : BaseDictionaryAgentClientCompanyCommand
     {
+        private ModifyAgentClientCompany Model { get { return GetModel<ModifyAgentClientCompany>(); } }
+
         public override object Execute()
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
 
-                    var dp = CommonDictionaryUtilities.CompanyModifyToInternal(_context, Model);
+                    var model = new InternalDictionaryAgentOrg(Model);
+                    CommonDocumentUtilities.SetLastChange(_context, model);
+                    _dictDb.UpdateAgentOrg(_context, model);
 
-                    _dictDb.UpdateAgentClientCompany(_context, dp);
-
-                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

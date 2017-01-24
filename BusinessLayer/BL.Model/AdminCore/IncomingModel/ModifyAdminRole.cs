@@ -13,29 +13,13 @@ namespace BL.Model.AdminCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyAdminRole
+    public class ModifyAdminRole : AddAdminRole
     {
         /// <summary>
         /// ID
         /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Наименование
-        /// </summary>
         [Required]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Описание
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Классификатор роли
-        /// </summary>
-        public int? RoleTypeId { get; set; }
+        public int Id { get; set; }
 
     }
 }

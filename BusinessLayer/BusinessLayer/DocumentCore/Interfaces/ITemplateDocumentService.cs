@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DocumentCore
 {
@@ -15,6 +16,7 @@ namespace BL.Logic.DocumentCore
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
 
         IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging);
+        IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext context, FullTextSearch ftSearch, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc);
 
@@ -32,9 +34,8 @@ namespace BL.Logic.DocumentCore
 
         IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
         FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
-
-
-
+        FrontTemplateAttachedFile GetTemplateAttachedFilePdf(IContext ctx, int id);
+        FrontTemplateAttachedFile GetTemplateAttachedFilePreview(IContext ctx, int id);
 
     }
 }

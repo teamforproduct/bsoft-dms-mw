@@ -1,9 +1,7 @@
 ﻿using BL.Model.Enums;
-using BL.Model.SystemCore.Filters;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
@@ -45,11 +43,13 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате создания файла документа
         /// </summary>
-        public DateTime? CreateFromDate { get; set; }
+        public DateTime? CreateFromDate { get { return _CreateFromDate; } set { _CreateFromDate = value.ToUTC(); } }
+        private DateTime? _CreateFromDate;
         /// <summary>
         /// Дата "по" для отбора по дате создания файла документа
         /// </summary>
-        public DateTime? CreateToDate { get; set; }
+        public DateTime? CreateToDate { get { return _CreateToDate; } set { _CreateToDate = value.ToUTC(); } }
+        private DateTime? _CreateToDate;
         /// <summary>
         /// Массив ИД пользователей по файлу
         /// </summary>

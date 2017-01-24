@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Users;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
 {
     /// <summary>
     /// Модель для связывания документов
     /// </summary>
-    public class AddDocumentLink
+    public class AddDocumentLink : CurrentPosition
     {
         /// <summary>
         /// ИД документа

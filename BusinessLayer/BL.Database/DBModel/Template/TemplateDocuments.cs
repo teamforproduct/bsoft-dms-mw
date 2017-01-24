@@ -10,6 +10,7 @@ namespace BL.Database.DBModel.Template
     {
         public TemplateDocuments()
         {
+            this.Documents = new HashSet<Document.Documents>();
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
             this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
             this.DocumentFiles = new HashSet<TemplateDocumentFiles>();
@@ -40,6 +41,8 @@ namespace BL.Database.DBModel.Template
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+        [ForeignKey("TemplateDocumentId")]
+        public virtual ICollection<Document.Documents> Documents { get; set; }
         [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentSendLists> SendLists { get; set; }
         [ForeignKey("DocumentId")]

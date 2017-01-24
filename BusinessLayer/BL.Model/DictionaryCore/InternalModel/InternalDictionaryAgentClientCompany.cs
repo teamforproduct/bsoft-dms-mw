@@ -6,15 +6,25 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Internal элемент справочника "Компании"
     /// </summary>
-    public class InternalDictionaryAgentClientCompany : LastChangeInfo
+    public class InternalDictionaryAgentOrg : InternalDictionaryAgent
     {
 
-        public InternalDictionaryAgentClientCompany()
+        public InternalDictionaryAgentOrg()
         { }
 
-        public InternalDictionaryAgentClientCompany(ModifyDictionaryAgentClientCompany model)
+        public InternalDictionaryAgentOrg(AddAgentClientCompany model)
+        {
+            SetInternalDictionaryAgentClientCompany(model);
+        }
+
+        public InternalDictionaryAgentOrg(ModifyAgentClientCompany model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentClientCompany(model);
+        }
+
+        private void SetInternalDictionaryAgentClientCompany(AddAgentClientCompany model)
+        {
             IsActive = model.IsActive;
             Name = model.Name;
             FullName = model.FullName;
@@ -22,19 +32,9 @@ namespace BL.Model.DictionaryCore.InternalModel
         }
 
         /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-
-        /// <summary>
-        /// Наименование компании
-        /// </summary>
-        public string Name { get; set; }
 
         /// <summary>
         /// Наименование компании

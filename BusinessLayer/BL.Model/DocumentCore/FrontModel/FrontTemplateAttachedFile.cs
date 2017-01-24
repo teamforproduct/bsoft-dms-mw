@@ -31,6 +31,7 @@ namespace BL.Model.DocumentCore.FrontModel
             Type = doc.Type;
             TypeName = doc.TypeName;
             Hash = doc.Hash;
+            Description = doc.Description;
         }
 
         /// <summary>

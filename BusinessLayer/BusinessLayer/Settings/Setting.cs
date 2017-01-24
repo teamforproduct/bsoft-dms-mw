@@ -8,7 +8,6 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Constants;
 
 namespace BL.Logic.Settings
 {
@@ -286,6 +285,9 @@ namespace BL.Logic.Settings
 
         public int GetClearTrashDocumentsTimeoutMinute(IContext ctx) =>
              GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE);
+
+        public int GetClearOldPdfCopiesInDay(IContext ctx) =>
+             GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.OLDPDFDELETEPERIOD);
 
         public int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx) =>
              GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR);

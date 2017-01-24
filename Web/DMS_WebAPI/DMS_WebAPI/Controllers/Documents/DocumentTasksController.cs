@@ -14,7 +14,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentTasksController : ApiController
     {
         /// <summary>
-        /// Получение Task
+        /// Получение Task use V3
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Task</returns>
@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка Tasks для документов
+        /// Получение списка Tasks для документов use V3
         /// </summary>
         /// <param name="filter"></param>
         /// <returns>Список Tasks</returns>
@@ -38,11 +38,11 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление записи Task
+        /// Добавление записи Task use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDocumentTasks model)
+        public IHttpActionResult Post([FromBody]AddDocumentTasks model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -51,22 +51,20 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменение записи Task
+        /// Изменение записи Task use V3
         /// </summary>
-        /// <param name="id">ИД записи</param>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentTasks model)
+        public IHttpActionResult Put([FromBody]ModifyDocumentTasks model)
         {
-            model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentTask, ctx, model);
             return Get(model.Id);
         }
 
         /// <summary>
-        /// Удаление записи Task
+        /// Удаление записи Task use V3
         /// </summary>
         /// <param name="id">ИД записи</param>
         /// <returns></returns>

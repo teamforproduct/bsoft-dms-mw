@@ -14,6 +14,8 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_DictionaryTypeCode", 2, IsUnique = true)]
         public string Code { get; set; }
         [MaxLength(2000)]
+        public string Name { get; set; }
+        [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

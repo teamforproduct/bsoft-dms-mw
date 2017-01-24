@@ -14,7 +14,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.Controllers.WebAPI
 {
     [Authorize]
-    [RoutePrefix("api/v2/Licences")]
+    [RoutePrefix(ApiPrefix.V2 + "Licences")]
     public class LicencesController : ApiController
     {
         public IHttpActionResult Get(FilterAspNetLicences filter)

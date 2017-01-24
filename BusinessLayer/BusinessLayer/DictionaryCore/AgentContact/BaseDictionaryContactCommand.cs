@@ -11,17 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryContactCommand : BaseDictionaryCommand
     {
-        protected ModifyDictionaryContact Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryContact))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryContact)_param;
-            }
-        }
+        private AddAgentContact Model { get { return GetModel<AddAgentContact>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -43,15 +33,22 @@ namespace BL.Logic.DictionaryCore
             //if (spr.Count() != 0) throw new DictionaryContactTypeNotUnique(Model.AgentId.ToString(), Model.Value);
 
             // У одного агента не должно быть два контакта с одинаковыми значениями
-            var spr = _dictDb.GetContacts(_context, 
-                   new FilterDictionaryContact
-                   {
-                       NotContainsIDs = new List<int> { Model.Id },
-                       ContactExact = Model.Value,
-                       AgentIDs = new List<int> { Model.AgentId }
-                   }).FirstOrDefault();
+
+            var filter = new FilterDictionaryContact
+            {
+                ContactExact = Model.Value,
+                AgentIDs = new List<int> { Model.AgentId }
+            };
+
+
+            if (TypeModelIs<ModifyAgentContact>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentContact>().Id }; }
+
+
+            var spr = _dictDb.GetContacts(_context, filter).FirstOrDefault();
 
             if (spr != null) throw new DictionaryContactNotUnique(spr.Value);
+
             return true;
         }
 

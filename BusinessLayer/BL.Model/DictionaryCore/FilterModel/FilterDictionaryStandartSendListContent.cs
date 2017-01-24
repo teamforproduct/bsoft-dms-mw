@@ -8,17 +8,11 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// фильтр содержания типовой рассылки
     /// </summary>
     public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParameters
-   
     {
-
         /// <summary>
         /// список типовых рассылок
         /// </summary>
         public List<int> StandartSendListId { get; set; }
-        /// <summary>
-        /// игнорировать при поиске
-        /// </summary>
-        public List<int> NotContainsId { get; set; }
         /// <summary>
         /// список типов рассылок
         /// </summary>

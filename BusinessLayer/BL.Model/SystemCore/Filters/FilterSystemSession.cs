@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.SystemCore.Filters
@@ -15,11 +16,13 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Дата создания сессии с
         /// </summary>
-        public DateTime? CreateDateFrom { get; set; }
+        public DateTime? CreateDateFrom { get { return _CreateDateFrom; } set { _CreateDateFrom = value.ToUTC(); } }
+        private DateTime? _CreateDateFrom;
         /// <summary>
         /// Дата создания сессии по
         /// </summary>
-        public DateTime? CreateDateTo { get; set; }
+        public DateTime? CreateDateTo { get { return _CreateDateTo; } set { _CreateDateTo = value.ToUTC(); } }
+        private DateTime? _CreateDateTo;
         /// <summary>
         /// Признак показывать только активные сессии
         /// </summary>

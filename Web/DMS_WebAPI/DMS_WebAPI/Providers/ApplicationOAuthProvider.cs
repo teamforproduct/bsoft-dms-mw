@@ -70,25 +70,29 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userName = context.UserName;
+            var userEmail = context.UserName;
 
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
-            // если фронт передал код (доменное имя) клиента добавляю его к адресу
-            userName = userName.UserNameFormatByClientCode(clientCode);
+            var webService = new WebAPIService();
+            
+            ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindAsync(userName, context.Password);
-
+            //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
+            // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
+            // Эта штука доступна только в OAuthGrantResourceOwnerCredentialsContext в OAuthTokenEndpointResponseContext я ее уже не обнаружил
+            // Эта штука НЕ отлавливается нашим обработчиком ошибок и не фиксируется в файл лог
 
             // Эти исключения отлавливает Application_Error в Global.asax
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 
-            //if (user.IsEmailConfirmRequired && !user.EmailConfirmed) throw new EmailConfirmRequiredAgentUser();
+            // 
+            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) throw new UserMustConfirmEmail();
 
+            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);
@@ -169,7 +173,7 @@ namespace DMS_WebAPI.Providers
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
 
-                // Добавляю в пользовательский сведения о браузере
+                // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, loginLogId, message);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);

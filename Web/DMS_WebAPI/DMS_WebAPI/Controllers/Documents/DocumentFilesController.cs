@@ -15,11 +15,11 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentFiles")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentFiles")]
     public class DocumentFilesController : ApiController
     {
         /// <summary>
-        /// Получить файл документа определенной версии
+        /// Получить файл документа определенной версии use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -33,7 +33,39 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Общий список файлов
+        /// Получить PDF копию файл документа определенной версии
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GetPdfFile")]
+        [HttpGet]
+        public IHttpActionResult PdfFile([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFilePdf(ctx, model);
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Получить картинку-превью для PDF версии документа
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Route("GetPdfPreview")]
+        [HttpGet]
+        public IHttpActionResult PdfPreview([FromUri]FilterDocumentFileIdentity model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var res = docFileProc.GetUserFilePreview(ctx, model);
+
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Общий список файлов don't use
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <param name="paging">paging</param>
@@ -64,7 +96,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
         /// <summary>
-        /// Общий список файлов
+        /// Общий список файлов use V3
         /// </summary>
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
@@ -86,7 +118,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление нового файла
+        /// Добавление нового файла use V3
         /// Если файл есть с таким именем создаться новая версия файла
         /// </summary>
         /// <param name="model"></param>
@@ -102,13 +134,12 @@ namespace DMS_WebAPI.Controllers.Documents
             model.FileType = file.ContentType;
             model.IsUseMainNameFile = false;
 
-
             docProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, ctx, model);
             return GetFileList(new FilterBase { File = new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId } } }, null);
         }
 
         /// <summary>
-        /// Изменить описание(Description) файла
+        /// Изменить описание(Description) файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -123,7 +154,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменить имя файла
+        /// Изменить имя файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -139,7 +170,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление основного файла
+        /// Удаление основного файла use V3
         /// удаляются все версии этого файла
         /// </summary>
         /// <param name="model"></param>
@@ -153,7 +184,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по документу
+        /// Получение списка доступных команд по документу use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Массив команд</returns>
@@ -169,7 +200,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по файлу
+        /// Получение списка доступных команд по файлу use V3
         /// </summary>
         /// <param name="id">ИД файлу</param>
         /// <returns>Массив команд</returns>
@@ -185,7 +216,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Вставка версии файла к файлу
+        /// Вставка версии файла к файлу use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -207,7 +238,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Принять версию файла
+        /// Принять версию файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -223,7 +254,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отклонить версию файла
+        /// Отклонить версию файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -239,7 +270,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Сделать основной версией
+        /// Сделать основной версией use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -255,7 +286,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление версии файла
+        /// Удаление версии файла use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -270,7 +301,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление версии файла из базы
+        /// Удаление версии файла из базы use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

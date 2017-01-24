@@ -14,7 +14,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Действия связанные с пользовательской настройкой системы
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminActions")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminActions")]
     public class AdminActionsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

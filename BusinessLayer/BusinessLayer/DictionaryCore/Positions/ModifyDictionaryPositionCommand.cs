@@ -10,25 +10,29 @@ using System.Collections.Generic;
 using System.Transactions;
 using System.Linq;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryPositionCommand : BaseDictionaryPositionCommand
     {
+        private ModifyPosition Model { get { return GetModel<ModifyPosition>(); } }
 
         public override object Execute()
         {
             try
             {
-                var dp = CommonDictionaryUtilities.PositionModifyToInternal(_context, Model);
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-                {
+                var model = new InternalDictionaryPosition(Model);
 
-                    _dictDb.UpdatePosition(_context, dp);
-                    var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { dp.Id } }).FirstOrDefault();
+                CommonDocumentUtilities.SetLastChange(_context, model);
+
+                using (var transaction = Transactions.GetTransaction())
+                {
+                    _dictDb.UpdatePosition(_context, model);
+                    var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
 
-                    _dictService.SetPositionOrder(_context, Model.Id, Model.Order);
+                    _dictService.SetPositionOrder(_context, new ModifyPositionOrder { PositionId = Model.Id, Order = Model.Order });
 
                     transaction.Complete();
                 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using BL.Model.DictionaryCore.FrontModel;
 using System.Web.Http.Description;
 using System.Diagnostics;
+using BL.Model.Common;
 
 namespace DMS_WebAPI.Controllers.Admins
 {
@@ -27,7 +28,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="DepartmentId">Id подразделения</param>
         /// <returns></returns>
-        [ResponseType(typeof(List<FrontDictionaryAgentEmployee>))]
+        [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult Get(int DepartmentId)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Admins
         /// </summary>
         /// <param name="model">ModifyAdminUserRole</param>
         /// <returns>FrontAdminUserRole</returns>
-        public IHttpActionResult Post([FromBody]ModifyAdminDepartmentAdmin model)
+        public IHttpActionResult Post([FromBody]AddAdminDepartmentAdmin model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -57,13 +58,13 @@ namespace DMS_WebAPI.Controllers.Admins
         /// Удаляет сотрудника с роли администратора подразделения
         /// </summary>
         /// <returns>FrontAdminUserRole</returns> 
-        public IHttpActionResult Delete([FromUri]ModifyAdminDepartmentAdmin model)
+        public IHttpActionResult Delete([FromUri]AddAdminDepartmentAdmin model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             tmpService.ExecuteAction(EnumAdminActions.DeleteDepartmentAdmin, cxt, model);
-            var tmpItem = new FrontDictionaryAgentEmployee() { Id = model.EmployeeId };
+            var tmpItem = new ListItem() { Id = model.EmployeeId };
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

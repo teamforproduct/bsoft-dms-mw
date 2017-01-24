@@ -4,26 +4,13 @@ using System.Runtime.Serialization;
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
-    /// Модель для перезаписи списка тегов документа
+    /// Модель для исправления задачи
     /// </summary>
-    public class ModifyDocumentTasks : CurrentPosition
+    public class ModifyDocumentTasks : BaseModifyDocumentTasks
     {
         /// <summary>
         /// ИД Task
         /// </summary>
-        [IgnoreDataMember]
         public int Id { get; set; }
-        /// <summary>
-        /// ИД Документа
-        /// </summary>
-        public int DocumentId { get; set; }
-        /// <summary>
-        /// Название
-        /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Описание
-        /// </summary>
-        public string Description { get; set; }
     }
 }

@@ -37,6 +37,7 @@ namespace BL.Logic.SystemServices.TempStorage
             {
                 storeObjects.Add(newObj);
 
+                // ToDo переполнение переменной mod int.MaxValue()
                 newObj.Id = storeObjects.Max(x => x.Id) + 1;
             }
             return newObj.Id;

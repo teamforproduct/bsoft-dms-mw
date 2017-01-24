@@ -58,5 +58,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Номер в списке
         /// </summary>
         public List<int> Orders { get; set; }
+
+        /// <summary>
+        /// Сужение по списку вышестоящих элементов
+        /// </summary>
+        public List<int> ParentIDs { get; set; }
     }
 }

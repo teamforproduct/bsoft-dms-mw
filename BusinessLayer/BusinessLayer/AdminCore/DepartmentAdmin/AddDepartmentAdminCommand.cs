@@ -10,15 +10,23 @@ namespace BL.Logic.AdminCore
 {
     public class AddDepartmentAdminCommand : BaseDepartmentAdminCommand
     {
+        private AddAdminDepartmentAdmin Model
+        {
+            get
+            {
+                if (!(_param is AddAdminDepartmentAdmin)) throw new WrongParameterTypeError();
+                return (AddAdminDepartmentAdmin)_param;
+            }
+        }
+
         public override object Execute()
         {
             try
             {
-                var da = new InternalDepartmentAdmin(Model);
-                da.EmployeeName = _dictDb.GetAgent(_context, Model.EmployeeId).Name;
+                var model = new InternalDepartmentAdmin(Model);
+                CommonDocumentUtilities.SetLastChange(_context, model);
 
-
-                return _adminDb.AddDepartmentAdmin(_context, da);
+                return _adminDb.AddDepartmentAdmin(_context, model);
             }
             catch (Exception ex)
             {

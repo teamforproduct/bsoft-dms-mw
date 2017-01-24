@@ -19,6 +19,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.AddTemplateDocument:
                     cmd = DmsResolver.Current.Get<AddTemplateCommand>();
                     break;
+                case EnumDocumentActions.CopyTemplateDocument:
+                    cmd = DmsResolver.Current.Get<CopyTemplateCommand>();
+                    break;
                 case EnumDocumentActions.DeleteTemplateDocument:
                     cmd = DmsResolver.Current.Get<DeleteTemplateCommand>();
                     break;

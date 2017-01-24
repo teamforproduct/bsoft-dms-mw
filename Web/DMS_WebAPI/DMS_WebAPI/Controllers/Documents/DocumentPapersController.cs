@@ -14,11 +14,11 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentPapers")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentPapers")]
     public class DocumentPapersController : ApiController
     {
         /// <summary>
-        /// Получение Paper
+        /// Получение Paper use V3
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Paper</returns>
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка Papers для документов
+        /// Получение списка Papers для документов use V3
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
@@ -43,11 +43,11 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление записи Papers
+        /// Добавление записи Papers use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDocumentPapers model)
+        public IHttpActionResult Post([FromBody]AddDocumentPapers model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменение записи Papers
+        /// Изменение записи Papers use V3
         /// </summary>
         /// <param name="id">ИД записи</param>
         /// <param name="model"></param>
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление записи Papers
+        /// Удаление записи Papers use V3
         /// </summary>
         /// <param name="id">ИД записи</param>
         /// <returns></returns>
@@ -84,9 +84,9 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить нахождение бумажного носителя у себя
+        /// Отметить нахождение бумажного носителя у себя use V3
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [Route("MarkOwnerDocumentPaper")]
         [HttpPost]
@@ -99,9 +99,9 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить порчу бумажного носителя
+        /// Отметить порчу бумажного носителя use V3
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [Route("MarkСorruptionDocumentPaper")]
         [HttpPost]
@@ -114,9 +114,9 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Планировать движение бумажного носителя
+        /// Планировать движение бумажного носителя use V3
         /// </summary>
-        /// <param name="id">ИД записи</param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [Route("PlanDocumentPaperEvent")]
         [HttpPost]
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отменить планирование движения бумажного носителя
+        /// Отменить планирование движения бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -144,7 +144,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить передачу бумажного носителя
+        /// Отметить передачу бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -159,7 +159,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отменить передачу бумажного носителя
+        /// Отменить передачу бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -174,7 +174,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Отметить прием бумажного носителя
+        /// Отметить прием бумажного носителя use V3
         /// </summary>
         /// <param name="model">перечень бумажных носителей</param>
         /// <returns></returns>
@@ -189,7 +189,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по документу
+        /// Получение списка доступных команд по документу use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Массив команд</returns>

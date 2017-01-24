@@ -11,6 +11,9 @@
     font-family: "Segoe UI Light", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
+
+
+
 #body.help-page div>p:first-child {
     color: #ee0000;
     font-size: 21px;
@@ -93,11 +96,11 @@ section.content-wrapper.main-content.clear-fix>p {
 }
 
 .help-page .api-name {
-    width: 40%;
+    width: 50%;
 }
 
 .help-page .api-documentation {
-    width: 60%;
+    width: 50%;
 }
 
 .help-page .parameters {
@@ -129,14 +132,16 @@ section.content-wrapper.main-content.clear-fix>p {
 .help-page h1,
 .help-page .h1 {
     font-size: 36px;
+    border-bottom-style: outset;
     line-height: normal;
 }
 
 .help-page h2,
 .help-page .h2 {
     font-size: 24px;
-    border-bottom-style: outset;
 }
+
+
 
 .help-page h3,
 .help-page .h3 {
@@ -146,11 +151,12 @@ section.content-wrapper.main-content.clear-fix>p {
 #body.help-page {
     font-size: 15px;
     line-height: 143%;
-    color: #333;
+    color: #000;
 }
 
 .help-page a {
     color: #0000EE;
     text-decoration: none;
 }
+
 

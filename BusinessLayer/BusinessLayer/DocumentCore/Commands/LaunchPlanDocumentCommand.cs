@@ -4,6 +4,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -30,6 +31,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (_document.ExecutorPositionId != positionId
                 || _document.IsLaunchPlan
                 )
@@ -64,8 +67,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan);
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
 
-            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(_context, null, _document.Id);
+            DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
             return Model;
         }

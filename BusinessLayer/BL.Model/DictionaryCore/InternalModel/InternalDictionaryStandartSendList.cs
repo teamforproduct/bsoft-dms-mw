@@ -15,14 +15,11 @@ namespace BL.Model.DictionaryCore.InternalModel
         {
         }
 
-        public InternalDictionaryStandartSendList(ModifyDictionaryStandartSendList model)
+        public InternalDictionaryStandartSendList(ModifyStandartSendList model)
         {
             Id = model.Id;
             Name = model.Name;
             PositionId = model.PositionId;
-            LastChangeDate = model.LastChangeDate;
-            LastChangeUserId = model.LastChangeUserId;
-
         }
 
         public int Id { get; set; }

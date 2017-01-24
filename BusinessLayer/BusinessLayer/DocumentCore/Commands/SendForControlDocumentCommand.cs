@@ -7,6 +7,8 @@ using BL.Model.AdminCore;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.AutoPlan;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -116,16 +118,27 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Subscriptions = null;
 
+            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true);
+
+            waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName})";
+
+            ((List<InternalDocumentWait>)_document.Waits).Add(waitTarget);
+
             if (Model.IsAddControl)
             {
                 ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
             }
 
-            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             _operationDb.SendBySendList(_context, _document);
+
+            //if (_document.IsLaunchPlan)
+            //    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
+
 
             return null;
         }

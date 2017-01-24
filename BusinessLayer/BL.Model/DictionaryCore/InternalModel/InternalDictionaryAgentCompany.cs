@@ -7,37 +7,38 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Контрагент - юридическое лицо
     /// </summary>
-    public class InternalDictionaryAgentCompany : LastChangeInfo
+    public class InternalDictionaryAgentCompany : InternalDictionaryAgent
     {
 
         public InternalDictionaryAgentCompany()
         { }
 
-        public InternalDictionaryAgentCompany(ModifyDictionaryAgentCompany model)
+        public InternalDictionaryAgentCompany(AddAgentCompany model)
+        {
+            SetInternalDictionaryAgentCompany(model);
+        }
+
+        public InternalDictionaryAgentCompany(ModifyAgentCompany model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentCompany(model);
+        }
+
+        private void SetInternalDictionaryAgentCompany(AddAgentCompany model)
+        {
             FullName = model.FullName;
             Name = model.Name;
             TaxCode = model.TaxCode;
             Description = model.Description;
             OKPOCode = model.OKPOCode;
             VATCode = model.VATCode;
-            ContactsPersonsId = model.ContactsPersonsId;
             IsActive = model.IsActive;
         }
-        
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// Полное наименование
         /// </summary>
         public string FullName { get; set; }
-        /// <summary>
-        /// Краткое наименование
-        /// </summary>
-        public string Name { get; set; }
+
         /// <summary>
         /// ИНН
         /// </summary>
@@ -58,10 +59,6 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        /// <summary>
-        /// список контактов
-        /// </summary>
-        public IEnumerable<int> ContactsPersonsId { get; set; }
 
     }
 }

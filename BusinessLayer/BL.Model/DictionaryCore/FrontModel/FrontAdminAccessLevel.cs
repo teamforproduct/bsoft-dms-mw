@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
-    public class FrontAdminAccessLevel : LastChangeInfo
+    public class FrontAdminAccessLevel 
     {
         public int Id { get; set; }
         public string Code { get; set; }

@@ -1,6 +1,5 @@
 ﻿using System;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
@@ -10,12 +9,9 @@ using BL.Model.SystemCore.Filters;
 using System.Web.Script.Serialization;
 using System.Linq;
 using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.FrontModel;
-using System.Linq;
 using LinqKit;
 using BL.Database.Common;
-using BL.Database.DBModel.System;
 
 namespace BL.Logic.Logging
 {
@@ -164,7 +160,7 @@ namespace BL.Logic.Logging
                 var model = logObject as FrontDictionaryPositionExecutor;
                 return string.Format("{0}\r\n{1}\r\n{2} {3} - {4}",
                     model.DepartmentName, model.PositionName, model.AgentName,
-                    model.StartDate.HasValue ? model.StartDate.Value.ToString("dd.MM.yyyy") : " ",
+                    model.StartDate.ToString("dd.MM.yyyy"),
                     model.EndDate.HasValue ? model.EndDate.Value.ToString("dd.MM.yyyy") : " ");
             }
             return null;
@@ -189,10 +185,9 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Trace,
                 Message = message,
-                LogTrace = string.Join(" / ", args)
+                LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
-
 
         public int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null)
         {
@@ -216,7 +211,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Warning,
                 Message = message,
-                LogTrace = string.Join(" / ", args)
+                LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
 
@@ -226,7 +221,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
-                LogTrace = string.Join(" / ", args)
+                LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
 
@@ -236,8 +231,8 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
-                LogException = string.Format("{0} // {1} // {2} // {3}", exception.GetType(), exception.Message, exception.Data, exception.StackTrace),
-                LogTrace = string.Join(" / ", args)
+                LogException = $"{message ?? ""} // {exception.GetType()} // {exception.Message} // {exception.Data} // {exception.StackTrace}",
+                LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
 
@@ -247,7 +242,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
-                LogTrace = string.Join(" / ", args)
+                LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
 
@@ -257,8 +252,8 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
-                LogException = string.Format("{0} // {1} // {2} // {3}", exception.GetType(), exception.Message, exception.Data, exception.StackTrace),
-                LogTrace = string.Join(" / ", args)
+                LogException =$"{message ?? ""} // {exception.GetType()} // {exception.Message} // {exception.Data} // {exception.StackTrace}",
+                LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
 

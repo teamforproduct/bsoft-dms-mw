@@ -19,7 +19,7 @@ namespace BL.Database.Documents.Interfaces
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
         int GetDocumentIdBySendListId(IContext ctx, int id);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
-        FrontDocument GetDocument(IContext ctx, int documentId, FilterDocumentById filter);
+        FrontDocument GetDocument(IContext ctx, int documentId);
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
         InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model);
@@ -49,7 +49,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext context, int documentId);
 
         void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document);
-        InternalDocument GetBlankInternalDocumentById(IContext context, int documentId);
+        //InternalDocument GetBlankInternalDocumentById(IContext context, int documentId);
 
         #region DocumentPapers
 
@@ -60,7 +60,7 @@ namespace BL.Database.Documents.Interfaces
 
         #region DocumentPaperLists
 
-        IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter);
+        IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter, UIPaging paging);
 
         FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id);
         #endregion DocumentPaperLists   

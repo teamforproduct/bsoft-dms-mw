@@ -9,6 +9,7 @@ using BL.Logic.SystemCore.Interfaces;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore;
 using System.Web;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers
 {
@@ -16,7 +17,7 @@ namespace DMS_WebAPI.Controllers
     /// Логи
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/SystemLogs")]
+    [RoutePrefix(ApiPrefix.V2 + "SystemLogs")]
     public class SystemLogsController : ApiController
     {
         /// <summary>
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.Controllers
         /// <returns></returns>
         [Route("Sessions")]
         [HttpGet]
-        public IHttpActionResult Sessions([FromUri] FilterSystemSession filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Sessions([FromUri]FullTextSearch ftSearch, [FromUri] FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();

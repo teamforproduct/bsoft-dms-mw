@@ -18,7 +18,9 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(128)]
         [Index("IX_UserId", 1, IsUnique = true)]
         public string UserId { get; set; }
-        public int? LanguageId { get; set; }
+        public int LanguageId { get; set; }
+        [MaxLength(2000)]
+        public string LastPositionChose { get; set; }
         public bool IsSendEMail { get; set; }
         /// <summary>
         /// Определяет может ли пользователь войти в систему

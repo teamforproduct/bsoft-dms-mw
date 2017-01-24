@@ -1,9 +1,13 @@
 ﻿namespace BL.Model.Common
 {
-    public class ListItem : IListItem
+    /// <summary>
+    /// Элемент простого списка
+    /// </summary>
+    public class ListItem : Item, IListItem
     {
-        public int Id { get; set; }
-
+        /// <summary>
+        /// Наименование
+        /// </summary>
         public string Name { get; set; }
     }
 }

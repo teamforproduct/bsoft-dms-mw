@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Web.Http.Description;
 using BL.Model.Common;
 using System.Diagnostics;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -21,7 +22,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryPositions")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryPositions")]
     public class DictionaryPositionsController : ApiController
     {
 
@@ -52,12 +53,12 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [HttpGet]
         [Route("GetList")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter)
+        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionList(ctx, filter);
+            var tmpItems = tmpService.GetPositionList(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -94,7 +95,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            tmpItem.SetPositionOrder(cxt, positionId, order);
+            tmpItem.SetPositionOrder(cxt, new ModifyPositionOrder { PositionId = positionId, Order = order });
             var res = new JsonResult(order, this);
             res.SpentTime = stopWatch;
             return res;
@@ -105,7 +106,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryPosition</param>
         /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryPosition model)
+        public IHttpActionResult Post([FromBody]AddPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
@@ -120,7 +121,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryPosition</param>
         /// <returns>DictionaryPositions</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryPosition model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyPosition model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryPosition
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// По умолчанию должность может просматривать и регистрировать документы во всех журналах своего отдела 
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminRegistrationJournalPositions")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminRegistrationJournalPositions")]
     public class AdminRegistrationJournalPositionsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

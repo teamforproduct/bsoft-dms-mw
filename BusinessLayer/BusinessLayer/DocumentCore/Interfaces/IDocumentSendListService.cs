@@ -13,5 +13,6 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FrontDocumentSendListStage> GetSendListStage(IContext context, int documentId, bool isLastStage = false);
         FrontDocumentSendList GetSendList(IContext context, int sendListId);
         IEnumerable<FrontDocumentSendList> GetSendLists(IContext context, int documentId);
+        IEnumerable<FrontDocument> GetAdditinalLinkedDocumentSendLists(IContext context, AdditinalLinkedDocumentSendList model);
     }
 }

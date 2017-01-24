@@ -31,6 +31,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (_document.ExecutorPositionId != positionId
                 || _document.LinkId != null
                 || (_document.IsRegistered.HasValue && _document.IsRegistered.Value)
@@ -40,7 +42,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 return false;
             }
-
             return true;
         }
 

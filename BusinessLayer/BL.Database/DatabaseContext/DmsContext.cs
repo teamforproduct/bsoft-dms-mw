@@ -53,6 +53,10 @@ namespace BL.Database.DatabaseContext
             .WithRequired(s => s.Agent);
 
             modelBuilder.Entity<DictionaryAgents>()
+            .HasOptional(f => f.AgentPeople)
+            .WithRequired(s => s.Agent);
+
+            modelBuilder.Entity<DictionaryAgents>()
             .HasOptional(f => f.AgentUser)
             .WithRequired(s => s.Agent);
 
@@ -69,17 +73,19 @@ namespace BL.Database.DatabaseContext
             .WithRequired(s => s.Agent);
 
             modelBuilder.Entity<DictionaryAgents>()
-            .HasOptional(f => f.Company)
+            .HasOptional(f => f.AgentOrg)
             .WithRequired(s => s.Agent);
 
         }
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
         public virtual DbSet<AdminRoleActions> AdminRoleActionsSet { get; set; }
+        public virtual DbSet<AdminRolePermissions> AdminRolePermissionsSet { get; set; }
         public virtual DbSet<AdminRoles> AdminRolesSet { get; set; }
         public virtual DbSet<AdminRoleTypes> AdminRolesTypesSet { get; set; }
         public virtual DbSet<AdminPositionRoles> AdminPositionRolesSet { get; set; }
         public virtual DbSet<AdminUserRoles> AdminUserRolesSet { get; set; }
+        public virtual DbSet<AdminEmployeeDepartments> AdminEmployeeDepartmentsSet { get; set; }
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
         public virtual DbSet<AdminRegistrationJournalPositions> AdminRegistrationJournalPositionsSet { get; set; }
 
@@ -89,6 +95,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
 
         public virtual DbSet<DictionaryAgentPersons> DictionaryAgentPersonsSet { get; set; }
+
+        public virtual DbSet<DictionaryAgentPeople> DictionaryAgentPeopleSet { get; set; }
         public virtual DbSet<DictionaryAgentUsers> DictionaryAgentUsersSet { get; set; }
         public virtual DbSet<DictionaryAgentCompanies> DictionaryAgentCompaniesSet { get; set; }
         public virtual DbSet<DictionaryAgentBanks> DictionaryAgentBanksSet { get; set; }
@@ -120,6 +128,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryResultTypes> DictionaryResultTypesSet { get; set; }
         public virtual DbSet<DictionarySubscriptionStates> DictionarySubscriptionStatesSet { get; set; }
         public virtual DbSet<DictionarySendTypes> DictionarySendTypesSet { get; set; }
+        public virtual DbSet<DictionaryStageTypes> DictionaryStageTypesSet { get; set; }
         public virtual DbSet<DictionaryStandartSendListContents> DictionaryStandartSendListContentsSet { get; set; }
         public virtual DbSet<DictionaryStandartSendLists> DictionaryStandartSendListsSet { get; set; }
         public virtual DbSet<DictionarySubordinationTypes> DictionarySubordinationTypesSet { get; set; }
@@ -154,6 +163,13 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<TemplateDocumentTasks> TemplateDocumentTasksSet { get; set; }
         public virtual DbSet<TemplateDocumentPapers> TemplateDocumentPapersSet { get; set; }
 
+
+
+        
+        public virtual DbSet<SystemModules> SystemModulesSet { get; set; }
+        public virtual DbSet<SystemFeatures> SystemFeaturesSet { get; set; }
+        public virtual DbSet<SystemAccessTypes> SystemAccessTypesSet { get; set; }
+        public virtual DbSet<SystemPermissions> SystemPermissionsSet { get; set; }
         public virtual DbSet<SystemActions> SystemActionsSet { get; set; }
         public virtual DbSet<SystemFields> SystemFieldsSet { get; set; }
         public virtual DbSet<SystemObjects> SystemObjectsSet { get; set; }

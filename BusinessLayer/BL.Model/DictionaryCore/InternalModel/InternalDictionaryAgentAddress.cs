@@ -14,9 +14,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentAddress()
         { }
 
-        public InternalDictionaryAgentAddress(ModifyDictionaryAgentAddress Model)
+        public InternalDictionaryAgentAddress(ModifyAgentAddress Model)
         {
             Id = Model.Id;
+            GetInternalDictionaryAgentAddress(Model);
+        }
+
+        public InternalDictionaryAgentAddress(AddAgentAddress Model)
+        {
+            GetInternalDictionaryAgentAddress(Model);
+        }
+
+        public void GetInternalDictionaryAgentAddress(AddAgentAddress Model)
+        {
             AgentId = Model.AgentId;
             AddressTypeID = Model.AddressTypeId;
             PostCode = Model.PostCode;
@@ -24,19 +34,22 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsActive = Model.IsActive;
             Description = Model.Description;
         }
-        
+
         /// <summary>
         /// ИД
         /// </summary>
         public int Id { get; set; }
+
         /// <summary>
         /// ссылка на контрагента
         /// </summary>
         public int AgentId { get; set; }
+
         /// <summary>
         /// ссылка на тип адреса
         /// </summary>
         public int AddressTypeID { get; set; }
+
         /// <summary>
         /// индекс
         /// </summary>
@@ -45,10 +58,12 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// адрес
         /// </summary>
         public string Address { get; set; }
+
         /// <summary>
         /// комментарии
         /// </summary>
         public string Description { get; set; }
+
         /// <summary>
         /// признак активности
         /// </summary>

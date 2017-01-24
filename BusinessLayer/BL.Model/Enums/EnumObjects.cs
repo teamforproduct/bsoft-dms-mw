@@ -43,6 +43,20 @@
         DictionaryPositionExecutorTypes = 219, // Типы исполнителей
         DictionaryPositionExecutors = 220, // Исполнители должности
         DictionaryAgentUsers = 221, // Контрагенты - пользователи
+        DictionaryBankAddress = 222, // Контрагенты - пользователи
+        DictionaryCompanyAddress = 223, // Контрагенты - пользователи
+        DictionaryEmployeeAddress = 224, // Контрагенты - пользователи
+        DictionaryClientCompanyAddress = 225, // Контрагенты - пользователи
+        DictionaryPersonAddress = 226, // Контрагенты - пользователи
+
+
+        DictionaryBankContact = 229,
+        DictionaryCompanyContact = 230,
+        DictionaryEmployeeContact = 231,
+        DictionaryClientCompanyContact = 232,
+        DictionaryPersonContact = 233,
+        DictionaryAgentPeople = 234,
+
 
         TemplateDocument = 251, // Шаблоны документов
         TemplateDocumentSendList = 252, // Списки рассылки в шаблонах
@@ -61,7 +75,7 @@
         //EncryptionCertificateTypes = 402,
 
         AdminRoles = 700,
-        AdminRoleAction = 701,
+        AdminRolePermission = 701,
         AdminPositionRoles = 702,
         AdminUserRoles = 703,
         AdminSubordination = 704,

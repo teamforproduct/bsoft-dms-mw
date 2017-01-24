@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
@@ -8,11 +9,13 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using System.Linq;
 using BL.Logic.Common;
+using BL.Model.Exception;
+using BL.Model.SystemCore.FrontModel;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DocumentCore
 {
@@ -24,12 +27,13 @@ namespace BL.Logic.DocumentCore
         private readonly ISystemDbProcess _systemDb;
 
 
-        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb,IAdminService admin,
-            IFileStore fstore, ICommandService commandService, ISystemDbProcess systemDb)
+        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb, IAdminService admin,
+            IFileStore fStore, ICommandService commandService, ISystemDbProcess systemDb)
         {
             _templateDb = templateDb;
-           _commandService = commandService;
+            _commandService = commandService;
             _systemDb = systemDb;
+            _fStore = fStore;
 
         }
 
@@ -46,7 +50,23 @@ namespace BL.Logic.DocumentCore
         {
             return _templateDb.GetTemplateDocument(context, filter, paging);
         }
- 
+
+        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext context, FullTextSearch ftSearch, FilterTemplateDocument filter, UIPaging paging)
+        {
+            var newFilter = new FilterTemplateDocument();
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                // TODO FullTextSearch in TemplateDocument
+                //newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryTag, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _templateDb.GetMainTemplateDocument(context, newFilter, paging);
+        }
+
         public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
         {
             return _templateDb.GetTemplateDocument(context, templateDocumentId);
@@ -56,9 +76,11 @@ namespace BL.Logic.DocumentCore
         {
             var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplateDocument } }).ToList();
             uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
-
-            uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray()));
-
+            var uiPropertyElements = CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray());
+            uiElements.AddRange(uiPropertyElements);
+            var addProp = uiPropertyElements.Where(x => x.PropertyLinkId.HasValue && !templateDoc.Properties.Select(y => y.PropertyLinkId).ToList().Contains(x.PropertyLinkId.Value) )
+                .Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId.Value, Value = string.Empty, PropertyCode = x.Code }).ToList();
+            templateDoc.Properties = templateDoc.Properties.Concat(addProp).ToList();
             return uiElements;
         }
 
@@ -66,11 +88,11 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateDocumentsSendList
 
-        public IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context,FilterTemplateDocumentSendList filter)
+        public IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context, FilterTemplateDocumentSendList filter)
         {
-            return _templateDb.GetTemplateDocumentSendLists(context,filter);
+            return _templateDb.GetTemplateDocumentSendLists(context, filter);
         }
-      
+
         public FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentSendList(context, id);
@@ -99,7 +121,7 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateDocumentTasks(context, filter);
         }
 
-   
+
         public FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id)
         {
             return _templateDb.GetTemplateDocumentTask(context, id);
@@ -129,12 +151,41 @@ namespace BL.Logic.DocumentCore
             return _templateDb.GetTemplateAttachedFiles(ctx, filter);
         }
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        private FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
-            return _templateDb.GetTemplateAttachedFile(ctx, id);
+            var fl = _templateDb.GetTemplateAttachedFile(ctx, id);
+            if (fl == null)
+            {
+                throw new UnknownDocumentFile();
+            }
+            if (fileType == EnumDocumentFileType.UserFile)
+            {
+                _fStore.GetFile(ctx, fl, fileType);
+            }
+            else
+            {
+                _fStore.GetFile(ctx, fl, fileType);
+                fl.PdfCreated = true;
+                fl.LastPdfAccess = DateTime.Now;
+                _templateDb.UpdateFilePdfView(ctx,fl);
+            }
+            return fl;
         }
 
+        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        {
+            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.UserFile);
+        }
 
+        public FrontTemplateAttachedFile GetTemplateAttachedFilePdf(IContext ctx, int id)
+        {
+            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfFile);
+        }
+
+        public FrontTemplateAttachedFile GetTemplateAttachedFilePreview(IContext ctx, int id)
+        {
+            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfPreview);
+        }
 
         #endregion TemplateAttachedFiles
 

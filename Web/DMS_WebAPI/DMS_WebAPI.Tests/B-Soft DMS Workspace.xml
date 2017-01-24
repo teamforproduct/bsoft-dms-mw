@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-workspace name="IsSetDefaultsForExecution" soapui-version="5.2.1" xmlns:con="http://eviware.com/soapui/config">
+<con:soapui-workspace name="IsSetDefaultsForExecution" soapui-version="5.3.0" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
   <con:project name="BSOFT-BASE">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/BSOFT-BASE-soapui-project.xml</con:project>
   <con:project name="Dictionary">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DICTIONARY-soapui-project.xml</con:project>

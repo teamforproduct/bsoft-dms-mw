@@ -10,25 +10,31 @@ using System.Collections.Generic;
 using System.Transactions;
 using BL.Model.Enums;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryDepartmentCommand : BaseDictionaryDepartmentCommand
     {
+        private ModifyDepartment Model { get { return GetModel<ModifyDepartment>(); } }
+
         public override object Execute()
         {
             try
             {
-                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                var model = new InternalDictionaryDepartment(Model);
+
+                CommonDocumentUtilities.SetLastChange(_context, model);
+
+                using (var transaction = Transactions.GetTransaction())
                 {
-                    if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
+                    if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
 
-                    _dictDb.UpdateDepartment(_context, dds);
+                    _dictDb.UpdateDepartment(_context, model);
 
-                    UpdateCodeForChildDepartment(dds.Id, dds.Code);
+                    UpdateCodeForChildDepartment(model.Id, model.Code);
 
-                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { dds.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentAccessesController : ApiController
     {
         /// <summary>
-        /// Получение списка доступов по документу
+        /// Получение списка доступов по документу use V3
         /// </summary>
         /// <param name="filter">модель фильтра</param>
         /// <param name="paging">paging</param>

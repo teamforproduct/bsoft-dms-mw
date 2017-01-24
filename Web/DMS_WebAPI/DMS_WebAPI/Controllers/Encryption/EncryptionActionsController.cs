@@ -15,11 +15,11 @@ using System;
 namespace DMS_WebAPI.Controllers.Encryption
 {
     [Authorize]
-    [RoutePrefix("api/v2/EncryptionActions")]
+    [RoutePrefix(ApiPrefix.V2 + "EncryptionActions")]
     public class EncryptionActionsController : ApiController
     {
         /// <summary>
-        /// Получить отчет pdf документа перед подписанием
+        /// Получить отчет pdf документа перед подписанием use V3
         /// </summary>
         /// <param name="model">model</param>>
         /// <returns></returns>
@@ -29,9 +29,7 @@ namespace DMS_WebAPI.Controllers.Encryption
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
-
             var res = false;
-
             try
             {
                 HttpPostedFile file = HttpContext.Current.Request.Files[0];

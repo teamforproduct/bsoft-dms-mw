@@ -13,17 +13,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentClientCompanyCommand : BaseDictionaryCommand
     {
-        protected ModifyDictionaryAgentClientCompany Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentClientCompany))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentClientCompany)_param;
-            }
-        }
+        private AddAgentClientCompany Model { get { return GetModel<AddAgentClientCompany>(); } }
 
         public override bool CanBeDisplayed(int CompanyId) => true;
 

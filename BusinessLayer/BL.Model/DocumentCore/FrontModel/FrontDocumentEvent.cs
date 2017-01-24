@@ -39,15 +39,18 @@ namespace BL.Model.DocumentCore.FrontModel
         private DateTime?  _LastChangeDate; 
         
         public DateTime? ReadDate { get { return _ReadDate; } set { _ReadDate=value.ToUTC(); } }
-        private DateTime?  _ReadDate; 
-
+        private DateTime?  _ReadDate;
+        public int? ReadAgentId { get; set; }
         public string ReadAgentName { get; set; }
         public bool? IsRead { get; set; }
-
+        public int? SourceAgentId { get; set; }
         public string SourceAgentName { get; set; }
+        public int? SourcePositionExecutorAgentId { get; set; }
         public string SourcePositionExecutorAgentName { get; set; }
         public int? TargetPositionId { get; set; }
+        public int? TargetAgentId { get; set; }
         public string TargetAgentName { get; set; }
+        public int? TargetPositionExecutorAgentId { get; set; }
         public string TargetPositionExecutorAgentName { get; set; }
         public int? SourcePositionId { get; set; }
         public string SourcePositionExecutorNowAgentName { get; set; }

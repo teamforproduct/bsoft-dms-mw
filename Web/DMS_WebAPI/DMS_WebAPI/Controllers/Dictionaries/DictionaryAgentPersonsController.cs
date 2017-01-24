@@ -8,6 +8,8 @@ using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.SystemCore;
+using BL.Model.Common;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -15,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Контрагент - физическое лицо
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryAgentPersons")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryAgentPersons")]
     public class DictionaryAgentPersonsController : ApiController
     {
        
@@ -24,26 +26,42 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">фильтр</param>
         /// <returns>коллекцию контрагентов</returns>
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgentPersons(ctx, filter,paging);
+            var tmpDicts = tmpDictProc.GetMainAgentPersons(ctx, ftSearch, filter,paging);
             var res= new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;
         }
 
-       /// <summary>
-       /// Получить физлицо по ИД
-       /// </summary>
-       /// <param name="id">ИД</param>
-       /// <returns>запись справочника агентов-физлиц</returns>
+        /// <summary>
+        /// ПОлучить список физлиц с контактами
+        /// </summary>
+        /// <param name="filter">фильтр</param>
+        /// <returns>коллекцию контрагентов</returns>
+        [HttpGet] 
+        [Route("WithContacts")]
+        public IHttpActionResult GetWithContacts([FromUri] FilterDictionaryAgentPerson filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetAgentPersonsWithContacts(ctx, filter);
+            var res = new JsonResult(tmpDicts, this);
+            return res;
+        }
+
+        /// <summary>
+        /// Получить физлицо по ИД
+        /// </summary>
+        /// <param name="id">ИД</param>
+        /// <returns>запись справочника агентов-физлиц</returns>
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgentPerson(ctx, id);
+            var tmpDict = tmpDictProc.GetAgentPerson(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -52,7 +70,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">параметры физлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryAgentPerson model)
+        public IHttpActionResult Post([FromBody]AddAgentPerson model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -66,20 +84,20 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="AgentId">ИД агента</param>
         /// <param name="model">параметры физлица</param>
         /// <returns>добавленную запись</returns>
-        public IHttpActionResult PostToExistingAgent(int AgentId,[FromBody]ModifyDictionaryAgentPerson model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
-            model.Id = AgentId;
-            return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentPerson, ctx, model));
-        }
+        //public IHttpActionResult PostToExistingAgent(int AgentId,[FromBody]ModifyDictionaryAgentPerson model)
+        //{
+        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
+        //    model.Id = AgentId;
+        //    return Get((int)tmpDict.ExecuteAction(EnumDictionaryActions.AddAgentPerson, ctx, model));
+        //}
         /// <summary>
         /// изменить физлицо. контрагент меняется, если он является только физлицом
         /// </summary>
         /// <param name="id">ИД</param>
         /// <param name="model">параметры</param>
         /// <returns>возвращает измененную запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentPerson model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentPerson model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -101,9 +119,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentPerson, ctx, id);
             
              
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
-            tmp.Id = id;
-
+            FrontDeleteModel tmp = new FrontDeleteModel(id);
             return new JsonResult(tmp, this);
 
         }

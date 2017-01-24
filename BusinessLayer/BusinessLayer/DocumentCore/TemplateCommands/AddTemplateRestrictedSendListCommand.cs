@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private ModifyTemplateDocumentRestrictedSendLists Model
+        private AddTemplateDocumentRestrictedSendLists Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentRestrictedSendLists))
+                if (!(_param is AddTemplateDocumentRestrictedSendLists))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentRestrictedSendLists)_param;
+                return (AddTemplateDocumentRestrictedSendLists)_param;
             }
         }
 
@@ -46,8 +46,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, Model);
-            return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, new InternalTemplateDocumentRestrictedSendList(Model));
+            var model = new InternalTemplateDocumentRestrictedSendList(Model);
+            CommonDocumentUtilities.SetLastChange(_context, model);
+            return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, model);
 
         }
 

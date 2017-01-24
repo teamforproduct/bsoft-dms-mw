@@ -87,6 +87,7 @@ namespace BL.Database.Common
             {
                 Id = item.Id,
                 Code = item.Code,
+                Name = item.Name,
                 Description = item.Description,
                 DictionaryTypeId = item.DictionaryTypeId,
                 LastChangeDate = item.LastChangeDate,
@@ -102,6 +103,7 @@ namespace BL.Database.Common
 
                 Id = item.Id,
                 Code = item.Code,
+                Name = item.Name,
                 Description = item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
@@ -159,7 +161,7 @@ namespace BL.Database.Common
         }
 
 
-        public static DictionaryCompanies GetDbAgentClientCompany(IContext context, InternalDictionaryAgentClientCompany item)
+        public static DictionaryCompanies GetDbAgentOrg(IContext context, InternalDictionaryAgentOrg item)
         {
             return item == null ? null : new DictionaryCompanies
             {
@@ -217,11 +219,11 @@ namespace BL.Database.Common
 
                 Id = item.Id,
                 Name = item.Name,
-                ResidentTypeId = item.ResidentTypeId,
-                Description = string.Empty, // item.Description,
+                //ResidentTypeId = item.ResidentTypeId,
+                //Description = string.Empty, // item.Description,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                IsActive = true// item.IsActive
+                //IsActive = true// item.IsActive
             };
 
         }
@@ -233,21 +235,50 @@ namespace BL.Database.Common
                 ClientId = context.CurrentClientId,
 
                 Id = item.Id,
+                //FirstName = item.FirstName,
+                //LastName = item.LastName,
+                //MiddleName = item.MiddleName,
+                //FullName = item.LastName + " " + item.FirstName + " " + item.MiddleName,
+                //TaxCode = item.TaxCode,
+                //IsMale = item.IsMale,
+                //PassportSerial = item.PassportSerial,
+                //PassportNumber = item.PassportNumber,
+                //PassportText = item.PassportText,
+                //PassportDate = item.PassportDate,
+                //BirthDate = item.BirthDate,
+                AgentCompanyId = item.AgentCompanyId,
+                Position= item.Position,
+                Description = item.Description,
+                IsActive = item.IsActive,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+
+        }
+
+        public static DictionaryAgentPeople GetDbAgentPeople(IContext context, InternalDictionaryAgentPeople item)
+        {
+            return item == null ? null : new DictionaryAgentPeople
+            {
+                ClientId = context.CurrentClientId,
+
+                Id = item.Id,
                 FirstName = item.FirstName,
                 LastName = item.LastName,
                 MiddleName = item.MiddleName,
-                FullName = item.LastName + " " + item.FirstName + " " + item.MiddleName,
-                TaxCode = item.TaxCode,
+                FullName = item.LastName?.Trim() + " " + item.FirstName?.Trim() + " " + item.MiddleName?.Trim(),
+                
                 IsMale = item.IsMale,
+                BirthDate = item.BirthDate,
+
                 PassportSerial = item.PassportSerial,
                 PassportNumber = item.PassportNumber,
                 PassportText = item.PassportText,
                 PassportDate = item.PassportDate,
-                BirthDate = item.BirthDate,
-                Description = item.Description,
+                TaxCode = item.TaxCode,
+
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive
             };
 
         }
@@ -277,6 +308,7 @@ namespace BL.Database.Common
                 Id = item.Id,
                 UserId = item.UserId,
                 LanguageId = item.LanguageId,
+                LastPositionChose = item.LastPositionChose,
                 //IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
@@ -291,7 +323,7 @@ namespace BL.Database.Common
                 ClientId = context.CurrentClientId,
 
                 Id = item.Id,
-                
+
                 Image = item.Image,
 
                 LastChangeDate = item.LastChangeDate,

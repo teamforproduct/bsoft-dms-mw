@@ -27,7 +27,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="filter">Параметры для фильтрации контактов</param>
         /// <returns>Cписок контактов контрагента</returns>
         // GET: api/DictionaryContacts
-        [ResponseType(typeof(List<FrontDictionaryContact>))]
+        [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public IHttpActionResult Get(int agentId,[FromUri] FilterDictionaryContact filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -40,19 +40,19 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             else
                 filter.AgentIDs.Add(agentId);
 
-            var tmpDicts = tmpDictProc.GetDictionaryContacts(ctx, filter);
+            var tmpDicts = tmpDictProc.GetAgentContacts(ctx, filter);
             return new JsonResult(tmpDicts, this);
         }
 
         /// <summary>
         /// Возвращает контакт
         /// </summary>
-        [ResponseType(typeof(FrontDictionaryContact))]
+        [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryContact(ctx, id);
+            var tmpDict = tmpDictProc.GetAgentContact(ctx, id);
             return new JsonResult(tmpDict, this);
         }
 
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря типа документа</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryContact model)
+        public IHttpActionResult Post([FromBody]AddAgentContact model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns>Измененный запись словаря типа адреса</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryContact model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentContact model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -93,7 +93,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpDict.ExecuteAction(EnumDictionaryActions.DeleteAgentContact, ctx, id);
-            FrontDictionaryContact tmp = new FrontDictionaryContact();
+            FrontDictionaryAgentContact tmp = new FrontDictionaryAgentContact();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);

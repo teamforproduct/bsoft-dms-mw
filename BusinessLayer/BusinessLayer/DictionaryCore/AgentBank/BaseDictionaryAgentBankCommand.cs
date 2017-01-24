@@ -11,17 +11,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentBankCommand : BaseDictionaryCommand
     {
-        protected ModifyDictionaryAgentBank Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentBank))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentBank)_param;
-            }
-        }
+        private AddAgentBank Model { get { return GetModel<AddAgentBank>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
@@ -43,11 +33,15 @@ namespace BL.Logic.DictionaryCore
 
             if (!string.IsNullOrEmpty(Model.MFOCode))
             {
-                if (_dictDb.ExistsAgentBanks(_context, new FilterDictionaryAgentBank
+                var filter = new FilterDictionaryAgentBank
                 {
                     MFOCodeExact = Model.MFOCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
+                };
+
+                if (TypeModelIs<ModifyAgentBank>())
+                { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentBank>().Id }; }
+
+                if (_dictDb.ExistsAgentBanks(_context, filter))
                 {
                     throw new DictionaryAgentBankMFOCodeNotUnique(Model.Name, Model.MFOCode);
                 }

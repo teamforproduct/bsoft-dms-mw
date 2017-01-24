@@ -6,6 +6,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using System.Transactions;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -40,9 +41,9 @@ namespace BL.Logic.DictionaryCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
-                    var frontObj = _dictDb.GetAgentCompany(_context, Model); ;
+                    var frontObj = _dictService.GetAgentCompany(_context, Model); ;
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                     _dictDb.DeleteAgentCompanies(_context, new System.Collections.Generic.List<int>() { Model });

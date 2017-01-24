@@ -6,6 +6,7 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using System.Transactions;
 using BL.Model.DocumentCore.Filters;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
 {
@@ -18,8 +19,7 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx, FilterDocumentSavedFilter filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -31,7 +31,7 @@ namespace BL.Database.Documents
                     }
                 }
 
-                    var res = qry.Select(x => new FrontDocumentSavedFilter
+                var res = qry.Select(x => new FrontDocumentSavedFilter
                 {
                     Id = x.Id,
                     UserId = x.UserId,
@@ -43,14 +43,14 @@ namespace BL.Database.Documents
                     LastChangeDate = x.LastChangeDate,
                     UserName = x.User.Agent.Name
                 }).ToList();
+                transaction.Complete();
                 return res;
             }
         }
 
         public FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
 
                 var savFilter =
@@ -67,6 +67,7 @@ namespace BL.Database.Documents
                             LastChangeDate = x.LastChangeDate,
                             UserName = x.User.Agent.Name
                         }).FirstOrDefault();
+                transaction.Complete();
                 return savFilter;
             }
         }

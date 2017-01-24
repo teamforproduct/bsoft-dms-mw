@@ -22,41 +22,21 @@
         #endregion
 
         #region [+] RoleActions ...
-        SetRoleAction = 701000,
+        SetRolePermission = 701000,
         /// <summary>
         /// Добавить
         /// </summary>
-        AddRoleAction = 701001,
+        SetRolePermissionByModuleFeature = 701001,
         /// <summary>
         /// Изменить
         /// </summary>
-        //ModifyRoleAction = 701005,
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        DeleteRoleAction = 701009,
+        SetRolePermissionByModule = 701002,
 
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        SetRoleActionByObject = 701002,
+        SetRolePermissionByModuleAccessType = 701003,
         #endregion
 
         #region [+] PositionRole ...
         SetPositionRole = 702000,
-        /// <summary>
-        /// Добавить
-        /// </summary>
-        AddPositionRole = 702001,
-        /// <summary>
-        /// Изменить
-        /// </summary>
-        //ModifyPositionRole = 702005,
-        /// <summary>
-        /// Удалить 
-        /// </summary>
-        DeletePositionRole = 702009,
-
         /// <summary>
         /// Дублировать 
         /// </summary>
@@ -68,7 +48,7 @@
         /// <summary>
         /// Добавить
         /// </summary>
-        AddUserRole = 703001,
+        SetUserRoleByAssignment = 703001,
         /// <summary>
         /// Изменить
         /// </summary>
@@ -76,9 +56,9 @@
         /// <summary>
         /// Удалить 
         /// </summary>
-        DeleteUserRoleByUser = 703007,
-        DeleteUserRoleByPositionExecutor = 703008,
-        DeleteUserRole = 703009,
+        //DeleteUserRoleByUser = 703007,
+        //DeleteUserRoleByPositionExecutor = 703008,
+        // DeleteUserRole = 703009,
         #endregion
 
         #region [+] Subordinations ...

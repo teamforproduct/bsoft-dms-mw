@@ -14,6 +14,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
+        InternalTemplateAttachedFile _docFile;
 
         public DeleteTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
         {
@@ -21,15 +22,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _fStore = fStore;
         }
 
-        private ModifyTemplateAttachedFile Model
+        private int Model
         {
             get
             {
-                if (!(_param is ModifyTemplateAttachedFile))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateAttachedFile)_param;
+                return (int)_param;
             }
         }
 
@@ -40,24 +41,19 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0)
-            {
-                throw new WrongParameterValueError();
-            }
             _admin.VerifyAccess(_context, CommandType, false);
+            _docFile = _operationDb.DeleteTemplateAttachedFilePrepare(_context, Model);
+            if (_docFile == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             return true;
         }
 
         public override object Execute()
         {
-            var docFile = new InternalTemplateAttachedFile
-            {
-                DocumentId = Model.DocumentId,
-                OrderInDocument = Model.OrderInDocument
-            };
-
-            _fStore.DeleteFile(_context, docFile);
-            _operationDb.DeleteTemplateAttachedFile(_context, docFile);
+            _fStore.DeleteFile(_context, _docFile);
+            _operationDb.DeleteTemplateAttachedFile(_context, Model);
             return null;
         }
 

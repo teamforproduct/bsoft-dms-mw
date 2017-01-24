@@ -10,11 +10,14 @@ namespace BL.Logic.AdminCore
 {
     public class AddRoleCommand : BaseRoleCommand
     {
+        private AddAdminRole Model { get { return GetModel<AddAdminRole>(); } }
+
         public override object Execute()
         {
             try
             {
-                var model = CommonAdminUtilities.RoleModifyToInternal(_context, Model);
+                var model = new InternalAdminRole(Model);
+                CommonDocumentUtilities.SetLastChange(_context, model);
                 return _adminDb.AddRole(_context, model);
             }
             catch (Exception ex)

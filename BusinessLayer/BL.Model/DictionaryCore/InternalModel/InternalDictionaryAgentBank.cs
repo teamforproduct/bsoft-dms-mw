@@ -6,14 +6,24 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Контрагент - Банк
     /// </summary>
-    public class InternalDictionaryAgentBank : LastChangeInfo
+    public class InternalDictionaryAgentBank : InternalDictionaryAgent
     {
         public InternalDictionaryAgentBank()
         { }
 
-        public InternalDictionaryAgentBank(ModifyDictionaryAgentBank model)
+        public InternalDictionaryAgentBank(ModifyAgentBank model)
         {
             Id = model.Id;
+            SetInternalDictionaryAgentBank(model);
+        }
+
+        public InternalDictionaryAgentBank(AddAgentBank model)
+        {
+            SetInternalDictionaryAgentBank(model);
+        }
+
+        public void SetInternalDictionaryAgentBank(AddAgentBank model)
+        {
             Name = model.Name;
             FullName = model.FullName;
             MFOCode = model.MFOCode;
@@ -21,16 +31,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             IsActive = model.IsActive;
             Description = model.Description;
         }
-
-        /// <summary>
-        /// Ид
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Название
-        /// </summary>
-        public string Name { get; set; }
 
         /// <summary>
         /// Полное название

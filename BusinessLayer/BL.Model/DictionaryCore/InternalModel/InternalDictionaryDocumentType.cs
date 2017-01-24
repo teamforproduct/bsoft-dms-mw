@@ -12,9 +12,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryDocumentType()
         { }
 
-        public InternalDictionaryDocumentType(ModifyDictionaryDocumentType model)
+        public InternalDictionaryDocumentType(AddDocumentType model)
+        {
+            SetInternalDictionaryDocumentType(model);
+        }
+
+        public InternalDictionaryDocumentType(ModifyDocumentType model)
         {
             Id = model.Id;
+            SetInternalDictionaryDocumentType(model);
+        }
+
+        private void SetInternalDictionaryDocumentType(AddDocumentType model)
+        {
             Name = model.Name;
             IsActive = model.IsActive;
         }

@@ -20,7 +20,6 @@ namespace BL.Model.DictionaryCore.FilterModel
 
         public string CodeExact { get; set; }
 
-        public string NameExact { get; set; }
          
     }
 }

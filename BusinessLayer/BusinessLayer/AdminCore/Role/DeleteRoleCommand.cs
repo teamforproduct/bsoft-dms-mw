@@ -28,6 +28,14 @@ namespace BL.Logic.AdminCore
         public override bool CanExecute()
         {
             _adminService.VerifyAccess(_context, CommandType, false);
+
+            string roleCode = _adminDb.GetRoleTypeCode(_context, Model);
+
+            if (!string.IsNullOrEmpty(roleCode))
+            {
+                throw new DictionarySystemRecordCouldNotBeDeleted();
+            }
+
             return true;
         }
 

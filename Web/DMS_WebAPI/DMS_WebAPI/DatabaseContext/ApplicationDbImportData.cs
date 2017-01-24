@@ -125,6 +125,7 @@ namespace DMS_WebAPI.Models
             list.AddRange(GetListByEnum<EnumImportanceEventTypes>());
             list.AddRange(GetListByEnum<EnumLinkTypes>());
             list.AddRange(GetListByEnum<EnumSendTypes>());
+            list.AddRange(GetListByEnum<EnumStageTypes>());
             list.AddRange(GetListByEnum<EnumSubordinationTypes>());
             list.AddRange(GetListByEnum<EnumSubscriptionStates>());
 

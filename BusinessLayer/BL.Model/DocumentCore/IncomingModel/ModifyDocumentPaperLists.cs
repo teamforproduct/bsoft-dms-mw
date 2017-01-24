@@ -12,7 +12,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД БН
         /// </summary>
-        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// Комментарий

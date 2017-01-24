@@ -19,6 +19,8 @@ using BL.Model.SystemCore.IncomingModel;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.Common
 {
@@ -52,11 +54,15 @@ namespace BL.Logic.Common
                                                                                       EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
                                                                                      } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.SendForControl, EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn,/* EnumEventTypes.SendForControl,*/ EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
+
+                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
 
                 { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution} },
+                { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
 
                 { EnumDocumentActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
                 { EnumDocumentActions.RejectАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
@@ -75,6 +81,19 @@ namespace BL.Logic.Common
 
         };
 
+        internal static string GetTemplateNameForCopy(IContext context, string name)
+        {
+            var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var i = 1;
+            var res = name + " ##l@SuffixCopy@l##";
+            while (_templateDb.ExistsTemplateDocuments(context, new FilterTemplateDocument { NameExectly = res }))
+            {
+                i++;
+                res = name + $" ##l@SuffixCopy@l## {i}";
+            }
+            return res;
+        }
+
         public static void SetAtrributesForNewDocument(IContext context, InternalDocument document)
         {
             document.CreateDate = DateTime.UtcNow.Date;
@@ -85,21 +104,23 @@ namespace BL.Logic.Common
             SetLastChange(context, document);
         }
 
-        public static void SetTaskAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentTask> tasks, int _executorPositionExecutorAgentId)
+        public static void SetTaskAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentTask> tasks, InternalDictionaryPositionExecutorForDocument _executorPositionExecutor)
         {
             foreach (var t in tasks)
             {
                 if (t.PositionId == 0)
                 {
                     t.PositionId = context.CurrentPositionId;
-                    t.PositionExecutorAgentId = _executorPositionExecutorAgentId;
+                    t.PositionExecutorAgentId = _executorPositionExecutor.ExecutorAgentId.Value;
+                    t.PositionExecutorTypeId = _executorPositionExecutor.ExecutorTypeId;
                 }
                 else
                 {
-                    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, t.PositionId);
-                    if (positionExecutorAgentId.HasValue)
+                    var positionExecutor = GetExecutorAgentIdByPositionId(context, t.PositionId);
+                    if (positionExecutor?.ExecutorAgentId.HasValue ?? false)
                     {
-                        t.PositionExecutorAgentId = positionExecutorAgentId.Value;
+                        t.PositionExecutorAgentId = positionExecutor.ExecutorAgentId.Value;
+                        t.PositionExecutorTypeId = positionExecutor.ExecutorTypeId;
                     }
                     else
                     {
@@ -111,7 +132,7 @@ namespace BL.Logic.Common
             }
         }
 
-        public static void SetSendListAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentSendList> sendLists, int _executorPositionExecutorAgentId, bool? isInitial)
+        public static void SetSendListAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentSendList> sendLists, bool? isInitial)
         {
             foreach (var sl in sendLists)
             {
@@ -122,33 +143,35 @@ namespace BL.Logic.Common
                 if (sl.SourcePositionId == 0)
                 {
                     sl.SourcePositionId = context.CurrentPositionId;
-                    sl.SourcePositionExecutorAgentId = _executorPositionExecutorAgentId;
                 }
-                else
-                {
-                    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sl.SourcePositionId);
-                    if (positionExecutorAgentId.HasValue)
-                    {
-                        sl.SourcePositionExecutorAgentId = positionExecutorAgentId.Value;
-                    }
-                    else
-                    {
-                        throw new ExecutorAgentForPositionIsNotDefined();
-                    }
-                }
-                if (sl.TargetPositionId.HasValue)
-                {
-                    var positionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, sl.TargetPositionId);
-                    if (positionExecutorAgentId.HasValue)
-                    {
-                        sl.TargetPositionExecutorAgentId = positionExecutorAgentId.Value;
-                    }
-                    else
-                    {
-                        throw new ExecutorAgentForPositionIsNotDefined();
-                    }
-
-                }
+                sl.SourcePositionExecutorAgentId = null;
+                sl.TargetPositionExecutorAgentId = null;
+                sl.SourcePositionExecutorTypeId = null;
+                sl.TargetPositionExecutorTypeId = null;
+                //else
+                //{
+                //    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sl.SourcePositionId);
+                //    if (positionExecutorAgentId.HasValue)
+                //    {
+                //        sl.SourcePositionExecutorAgentId = positionExecutorAgentId.Value;
+                //    }
+                //    else
+                //    {
+                //        throw new ExecutorAgentForPositionIsNotDefined();
+                //    }
+                //}
+                //if (sl.TargetPositionId.HasValue)
+                //{
+                //    var positionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, sl.TargetPositionId);
+                //    if (positionExecutorAgentId.HasValue)
+                //    {
+                //        sl.TargetPositionExecutorAgentId = positionExecutorAgentId.Value;
+                //    }
+                //    else
+                //    {
+                //        throw new ExecutorAgentForPositionIsNotDefined();
+                //    }
+                //}
                 sl.StartEventId = null;
                 sl.CloseEventId = null;
                 sl.SourceAgentId = context.CurrentAgentId;
@@ -195,20 +218,24 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model)
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
         {
+            var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, model.SourcePositionId);
+            var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, model.TargetPositionId);
             return new InternalDocumentEvent
             {
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
-                EventType = (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
+                EventType = eventType ?? (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
                 TaskId = model.TaskId,
                 IsAvailableWithinTask = model.TaskId.HasValue ? model.IsAvailableWithinTask : false,
                 Description = model.Description,
                 SourceAgentId = model.SourceAgentId,
                 SourcePositionId = model.SourcePositionId,
-                SourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.SourcePositionId),
+                SourcePositionExecutorAgentId = sourcePositionExecutor?.ExecutorAgentId,
+                SourcePositionExecutorTypeId = sourcePositionExecutor?.ExecutorTypeId,
                 TargetPositionId = model.TargetPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.TargetPositionId),
+                TargetPositionExecutorAgentId = targetPositionExecutor?.ExecutorAgentId,
+                TargetPositionExecutorTypeId = targetPositionExecutor?.ExecutorTypeId,
                 TargetAgentId = model.TargetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
@@ -217,18 +244,18 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, InternalDocumentSendList model)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,model),
+                GetNewDocumentEvent(context,model,eventType),
             };
         }
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
         {
-            var sourcePositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
-            var targetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
+            var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
+            var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             return new InternalDocumentEvent
             {
                 DocumentId = documentId ?? 0,
@@ -239,9 +266,11 @@ namespace BL.Logic.Common
                 AddDescription = addDescription,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = sourcePositionExecutorAgentId,
+                SourcePositionExecutorAgentId = sourcePositionExecutor?.ExecutorAgentId,
+                SourcePositionExecutorTypeId = sourcePositionExecutor?.ExecutorTypeId,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = targetPositionExecutorAgentId,
+                TargetPositionExecutorAgentId = targetPositionExecutor?.ExecutorAgentId,
+                TargetPositionExecutorTypeId = targetPositionExecutor?.ExecutorTypeId,
                 TargetAgentId = targetAgentId,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
@@ -290,21 +319,31 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
         {
             return new InternalDocumentWait
             {
                 DocumentId = sendListModel.DocumentId,
-                DueDate = eventType == EnumEventTypes.ControlOn
-                            ? new[] { sendListModel.SelfDueDate, (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value) }.Max()
-                            : new[] { sendListModel.DueDate, (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value) }.Max(),
-                AttentionDate = eventType == EnumEventTypes.ControlOn ? sendListModel.SelfAttentionDate : null,
+                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
+                            ? new[] {   sendListModel.SelfDueDate,
+                                        (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value)
+                                    }.Max()
+                            : new[] {   sendListModel.DueDate,
+                                        (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value)
+                                    }.Max(),
+                AttentionDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
+                            ? new[] {   sendListModel.SelfAttentionDate,
+                                        (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value)
+                                    }.Max()
+                            : null,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
                 OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.DocumentId, eventType, null, sendListModel.Description, null, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
+                                context, sendListModel.DocumentId, eventType, null,
+                                ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription : sendListModel.Description),
+                                null, sendListModel.TaskId, sendListModel.IsAvailableWithinTask,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
@@ -313,11 +352,11 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
         {
             return new List<InternalDocumentWait>
             {
-                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType)
+                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType,isTakeMainDueDate)
             };
         }
 
@@ -360,9 +399,8 @@ namespace BL.Logic.Common
             else
             {
                 if (string.IsNullOrEmpty(task)) return taskId;
-                var positionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context,
-                    positionId ?? context.CurrentPositionId);
-                if (!positionExecutorAgentId.HasValue)
+                var positionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, positionId ?? context.CurrentPositionId);
+                if (!positionExecutor?.ExecutorAgentId.HasValue ?? true)
                 {
                     throw new ExecutorAgentForPositionIsNotDefined();
                 }
@@ -372,7 +410,8 @@ namespace BL.Logic.Common
                     {
                         DocumentId = document.Id,
                         PositionId = context.CurrentPositionId,
-                        PositionExecutorAgentId = positionExecutorAgentId.Value,
+                        PositionExecutorAgentId = positionExecutor.ExecutorAgentId.Value,
+                        PositionExecutorTypeId = positionExecutor.ExecutorTypeId,
                         AgentId = context.CurrentAgentId,
                         Name = task,
                         Description = description,
@@ -384,23 +423,21 @@ namespace BL.Logic.Common
             return taskId;
         }
 
-        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, ModifyDocumentSendList model, int? taskId = null)
+        public static InternalDocumentSendList GetNewDocumentSendList(IContext context, BaseModifyDocumentSendList model, int? taskId = null)
         {
-            var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, context.CurrentPositionId);
-            if (!executorPositionExecutorAgentId.HasValue)
-            {
-                throw new ExecutorAgentForPositionIsNotDefined();
-            }
             return new InternalDocumentSendList
             {
                 DocumentId = model.DocumentId,
                 Stage = model.Stage,
+                StageType = model.StageType,
                 SendType = model.SendType,
                 SourcePositionId = context.CurrentPositionId,
-                SourcePositionExecutorAgentId = executorPositionExecutorAgentId.Value,
+                SourcePositionExecutorAgentId = null,
+                SourcePositionExecutorTypeId = null,
                 SourceAgentId = context.CurrentAgentId,
                 TargetPositionId = model.TargetPositionId,
-                TargetPositionExecutorAgentId = GetExecutorAgentIdByPositionId(context, model.TargetPositionId),
+                TargetPositionExecutorAgentId = null,
+                TargetPositionExecutorTypeId = null,
                 TargetAgentId = model.TargetAgentId,
                 TaskId = taskId,
                 Description = model.Description,
@@ -413,7 +450,9 @@ namespace BL.Logic.Common
                 IsAddControl = model.IsAddControl,
                 SelfDueDate = model.SelfDueDate,
                 SelfDueDay = model.SelfDueDay,
+                SelfDescription = model.SelfDescription,
                 SelfAttentionDate = model.SelfAttentionDate,
+                SelfAttentionDay = model.SelfAttentionDay,
                 LastChangeUserId = context.CurrentAgentId,
                 LastChangeDate = DateTime.UtcNow,
 
@@ -433,7 +472,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, ModifyDocumentPapers model, int orderNumber)
+        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, BaseModifyDocumentPapers model, int orderNumber)
         {
             return new InternalDocumentPaper
             {
@@ -452,7 +491,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, ModifyDocumentPapers model, int maxOrderNumber)
+        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, BaseModifyDocumentPapers model, int maxOrderNumber)
         {
             var res = new List<InternalDocumentPaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)
@@ -462,7 +501,7 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, ModifyTemplateDocumentPaper model, int orderNumber)
+        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, AddTemplateDocumentPaper model, int orderNumber)
         {
             return new InternalTemplateDocumentPaper
             {
@@ -479,7 +518,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, ModifyTemplateDocumentPaper model, int maxOrderNumber)
+        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, AddTemplateDocumentPaper model, int maxOrderNumber)
         {
             var res = new List<InternalTemplateDocumentPaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)
@@ -491,6 +530,8 @@ namespace BL.Logic.Common
 
         public static InternalDocumentEvent GetNewDocumentPaperEvent(IContext context, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
         {
+            var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
+            var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             return new InternalDocumentEvent
             {
                 DocumentId = documentId,
@@ -501,9 +542,11 @@ namespace BL.Logic.Common
                 Description = description,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId) : null,
+                SourcePositionExecutorAgentId = IsMarkPlan ? sourcePositionExecutor.ExecutorAgentId : null,
+                SourcePositionExecutorTypeId = IsMarkPlan ? sourcePositionExecutor.ExecutorTypeId : null,
                 TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = IsMarkPlan ? GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId) : null,
+                TargetPositionExecutorAgentId = IsMarkPlan ? targetPositionExecutor.ExecutorAgentId : null,
+                TargetPositionExecutorTypeId = IsMarkPlan ? targetPositionExecutor.ExecutorTypeId : null,
                 TargetAgentId = targetAgentId,
                 PaperPlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
                 PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.UtcNow : null,
@@ -703,6 +746,11 @@ namespace BL.Logic.Common
             {
                 throw new NeedInformationAboutCorrespondent();
             }
+            if (templateDoc.IsUsedInDocument ?? false)
+            {
+                uiElements?.Where(x => x.Code.Equals("DocumentDirection", StringComparison.OrdinalIgnoreCase) ||
+                                        x.Code.Equals("DocumentType", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
+            }
             return uiElements;
         }
 
@@ -753,9 +801,9 @@ namespace BL.Logic.Common
 
         public static IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists)
         {
-            if (sendLists?.Count() > 0)
+            if (sendLists.Any())
             {
-                var stages = Enumerable.Range(0, sendLists.Max(x => x.Stage) + 1)
+                var stages = Enumerable.Range(0, sendLists.Max(x => x.Stage??0) + 1)
                     .GroupJoin(sendLists, s => s, sl => sl.Stage
                     , (s, sls) => new { s, sls = sls.Where(x => x.Id > 0) })
                     .Select(x => new FrontDocumentSendListStage
@@ -766,14 +814,11 @@ namespace BL.Logic.Common
                         IsOpen = false
                     }).ToList();
 
-                var isOpen = true;
-
                 foreach (var stage in stages.OrderBy(x => x.Stage))
                 {
-                    stage.IsOpen = isOpen;
+                    stage.IsOpen = true;
                     if (!stage.IsClose)
                     {
-                        isOpen = false;
                         break;
                     }
                 }
@@ -797,6 +842,8 @@ namespace BL.Logic.Common
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Hash = src.Hash,
                 Description = src.Description,
+                PdfCreated = src.PdfCreated,
+                LastPdfAccess = src.LastPdfAccess
             };
         }
 
@@ -821,10 +868,13 @@ namespace BL.Logic.Common
                 WasChangedExternal = false,
                 ExecutorPositionId = src.ExecutorPositionId,
                 ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
+                ExecutorPositionExecutorTypeId = src.ExecutorPositionExecutorTypeId,
+                PdfCreated = src.PdfCreated,
+                LastPdfAccess = src.LastPdfAccess
             };
         }
 
-        public static int? GetExecutorAgentIdByPositionId(IContext context, int? positionId)
+        public static InternalDictionaryPositionExecutorForDocument GetExecutorAgentIdByPositionId(IContext context, int? positionId)
         {
             if (positionId.HasValue)
             {
@@ -835,7 +885,7 @@ namespace BL.Logic.Common
                 return null;
         }
 
-        public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document)
+        public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document, bool isTakeSendList = false)
         {
             var res = new List<int> { sendList.SourcePositionId };
             if (document.Events?.Any() ?? false)
@@ -849,6 +899,12 @@ namespace BL.Logic.Common
             if (document.Subscriptions?.Any() ?? false)
             {
                 res.AddRange(document.Subscriptions.Select(x => x.DoneEvent.SourcePositionId.Value));
+            }
+            if (isTakeSendList && (document.SendLists?.Any() ?? false))
+            {
+                res.AddRange(document.SendLists
+                    .Where(x => x.TargetPositionId.HasValue && x.Stage < sendList.Stage && (x.SendType == EnumSendTypes.SendForSigning || x.SendType == EnumSendTypes.SendForVisaing || x.SendType == EnumSendTypes.SendForАgreement || x.SendType == EnumSendTypes.SendForАpproval))
+                    .Select(x => x.TargetPositionId.Value));
             }
             return res;
         }
@@ -896,7 +952,7 @@ namespace BL.Logic.Common
                             break;
                     }
 
-                    var mFormats = Regex.Matches(mFormula.Value, patternLength);
+                    var mFormats = Regex.Matches(mFormula.Value, patternFormat);
                     string format = string.Empty;
                     foreach (Match mFormat in mFormats)
                     {
@@ -1084,6 +1140,23 @@ namespace BL.Logic.Common
             return model.Select(GetNewPropertyValue);
         }
 
+        public static List<int> GetLinkedDocuments(int id, IEnumerable<InternalDocumentLink> link)
+        {
+            List<int> res = new List<int> { id };
+            List<int> resInit = new List<int> { id };
+            var oldCount = 1;
+            var newCount = 0;
+            while (oldCount != newCount && res.Count > 0)
+            {
+                oldCount = res.Count;
+                res = link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.DocumentId)
+                        .Concat(link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.ParentDocumentId))
+                        .Concat(resInit)
+                        .GroupBy(x => x).Select(x => x.Key).ToList();
+                newCount = res.Count;
+            }
+            return res;
+        }
 
     }
 }

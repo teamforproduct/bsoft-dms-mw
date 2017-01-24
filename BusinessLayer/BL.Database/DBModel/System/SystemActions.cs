@@ -17,6 +17,8 @@ namespace BL.Database.DBModel.System
         }
 
         public int Id { get; set; }
+        public Nullable<int> PermissionId { get; set; }
+
         [Index("IX_ObjectCode", 1, IsUnique = true)]
         public int ObjectId { get; set; }
         [MaxLength(400)]
@@ -33,6 +35,11 @@ namespace BL.Database.DBModel.System
         public bool IsVisible { get; set; }
         public bool IsVisibleInMenu { get; set; }
         public Nullable<int> GrantId { get; set; }
+
+
+        [ForeignKey("PermissionId")]
+        public virtual SystemPermissions Permission { get; set; }
+
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }
 

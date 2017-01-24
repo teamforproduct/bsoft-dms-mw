@@ -21,6 +21,7 @@ namespace BL.Database.DBModel.Document
 
         [Index("IX_DueDate",1)]
         public Nullable<DateTime> DueDate { get; set; }
+        public Nullable<DateTime> PlanDueDate { get; set; }
         public Nullable<DateTime> AttentionDate { get; set; }
         [MaxLength(2000)]
         public string TargetDescription { get; set; }

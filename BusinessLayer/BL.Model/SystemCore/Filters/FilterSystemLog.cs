@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace BL.Model.SystemCore.Filters
@@ -39,11 +40,13 @@ namespace BL.Model.SystemCore.Filters
         /// <summary>
         /// Дата записи лог с
         /// </summary>
-        public DateTime? LogDateFrom { get; set; }
+        public DateTime? LogDateFrom { get { return _LogDateFrom; } set { _LogDateFrom = value.ToUTC(); } }
+        private DateTime? _LogDateFrom;
         /// <summary>
         /// Дата записи лог по
         /// </summary>
-        public DateTime? LogDateTo { get; set; }
+        public DateTime? LogDateTo { get { return _LogDateTo; } set { _LogDateTo = value.ToUTC(); } }
+        private DateTime? _LogDateTo;
         /// <summary>
         /// Отрывок сообщения
         /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System;
-using BL.Model.DocumentCore.FrontModel;
 using System.Collections.Generic;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -9,11 +9,24 @@ namespace BL.Model.DocumentCore.InternalModel
     /// </summary>
     public class InternalDocumentAttachedFile : InternalTemplateAttachedFile
     {
-        /// <summary>
-        /// default constructor
-        /// </summary>
         public InternalDocumentAttachedFile()
         {
+        }
+
+        public InternalDocumentAttachedFile(FrontDocumentAttachedFile doc)
+        {
+            Date = doc.Date;
+            IsDeleted = doc.IsDeleted;
+            IsMainVersion = doc.IsMainVersion;
+            Version = doc.Version;
+            Name = doc.Name;
+            Extension = doc.Extension;
+            Description = doc.Description;
+            DocumentId = doc.DocumentId ?? -1;
+            Id = doc.Id;
+            FileType = doc.FileType;
+            OrderInDocument = doc.OrderInDocument;
+            FileContent = doc.FileContent;
         }
 
         /// <summary>
@@ -44,6 +57,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public int ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
+        public int? ExecutorPositionExecutorTypeId { get; set; }
         public IEnumerable<InternalDocumentEvent> Events { get; set; }
     }
 }

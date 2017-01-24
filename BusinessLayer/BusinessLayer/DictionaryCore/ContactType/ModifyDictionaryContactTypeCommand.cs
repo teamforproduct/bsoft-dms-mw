@@ -8,33 +8,9 @@ using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryContactTypeCommand : BaseDictionaryCommand
+    public class ModifyDictionaryContactTypeCommand : BaseDictionaryContactTypeCommand
     {
-        private ModifyDictionaryContactType Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryContactType))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryContactType)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
-
-            DictionaryModelVerifying.VerifyContactType(_context, _dictDb, Model);
-
-            return true;
-        }
+        private ModifyContactType Model { get { return GetModel<ModifyContactType>(); } }
 
         public override object Execute()
         {

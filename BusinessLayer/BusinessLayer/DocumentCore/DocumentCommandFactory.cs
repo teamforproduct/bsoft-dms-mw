@@ -27,6 +27,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.AddDocument:
                     cmd = DmsResolver.Current.Get<AddDocumentCommand>();
                     break;
+                case EnumDocumentActions.AddLinkedDocument:
+                    cmd = DmsResolver.Current.Get<AddDocumentCommand>();
+                    break;
                 case EnumDocumentActions.ModifyDocument:
                     cmd = DmsResolver.Current.Get<ModifyDocumentCommand>();
                     break;
@@ -102,8 +105,10 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.AddDocumentSendList:
                 case EnumDocumentActions.CopyDocumentSendList:
-                case EnumDocumentActions.SendDocument:
                     cmd = DmsResolver.Current.Get<AddDocumentSendListCommand>();
+                    break;
+                case EnumDocumentActions.SendDocument:
+                    cmd = DmsResolver.Current.Get<SendDocumentCommand>();
                     break;
                 case EnumDocumentActions.AddByStandartSendListDocumentSendList:
                     cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentSendListCommand>();
@@ -169,6 +174,12 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.SendForExecution:
                     cmd = DmsResolver.Current.Get<SendForExecutionDocumentCommand>();
                     break;
+                case EnumDocumentActions.AskPostponeDueDate:
+                    cmd = DmsResolver.Current.Get<AskPostponeDueDateDocumentCommand>();
+                    break;
+                case EnumDocumentActions.CancelPostponeDueDate:
+                    cmd = DmsResolver.Current.Get<CancelPostponeDueDateDocumentCommand>();
+                    break;
                 case EnumDocumentActions.MarkExecution:
                     cmd = DmsResolver.Current.Get<MarkExecutionDocumentCommand>();
                     break;
@@ -178,7 +189,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.AcceptResult:
                     cmd = DmsResolver.Current.Get<AcceptResultDocumentCommand>();
                     break;
-
+                case EnumDocumentActions.CancelExecution:
+                    cmd = DmsResolver.Current.Get<AcceptResultDocumentCommand>();
+                    break;
                 case EnumDocumentActions.SendForSigning:
                     cmd = DmsResolver.Current.Get<SendForSigningDocumentCommand>();
                     break;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
@@ -8,6 +9,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore.InternalModel;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -16,7 +18,7 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IFileStore _fStore;
 
-        private int? _executorPositionExecutorAgentId;
+        InternalDictionaryPositionExecutorForDocument _executorPosition;
         private IEnumerable<InternalPropertyLink> _propertyLinksByTemplateDocument;
         private IEnumerable<InternalPropertyLink> _propertyLinksByDocument;
 
@@ -52,10 +54,11 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-            if (_executorPositionExecutorAgentId.HasValue)
+            _executorPosition = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+            if (_executorPosition?.ExecutorAgentId.HasValue ?? false)
             {
-                _document.ExecutorPositionExecutorAgentId = _executorPositionExecutorAgentId.Value;
+                _document.ExecutorPositionExecutorAgentId = _executorPosition.ExecutorAgentId.Value;
+                _document.ExecutorPositionExecutorTypeId = _executorPosition.ExecutorTypeId;
             }
             else
             {
@@ -75,8 +78,8 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             CommonDocumentUtilities.SetAtrributesForNewDocument(_context, _document);
-            CommonDocumentUtilities.SetTaskAtrributesForNewDocument(_context, _document.Tasks, _executorPositionExecutorAgentId.Value);
-            CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, _executorPositionExecutorAgentId.Value, true);
+            CommonDocumentUtilities.SetTaskAtrributesForNewDocument(_context, _document.Tasks, _executorPosition);
+            CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, true);
             CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
             Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, null, EnumEventTypes.AddNewDocument);
@@ -89,11 +92,12 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 x.ExecutorPositionId = _document.ExecutorPositionId;
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
+                x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
 
                 var fileToCopy = CommonDocumentUtilities.GetNewTemplateAttachedFile(x);
 
                 var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x, newOrdNum, 1);
-
+                newDoc.LastPdfAccess = DateTime.Now;
                 newOrdNum++;
                 toCopy.Add(newDoc, fileToCopy);
             });
@@ -105,8 +109,8 @@ namespace BL.Logic.DocumentCore.Commands
             //Properties
             _document.Properties = _document.Properties.ToList()
                 .Join(_propertyLinksByDocument,
-                        pv => new { PropertyId = pv.PropertyLink.PropertyId, pv.PropertyLink.Filers },
-                        pl => new { PropertyId = pl.PropertyId, pl.Filers },
+                        pv => new {pv.PropertyLink.PropertyId, pv.PropertyLink.Filers },
+                        pl => new {pl.PropertyId, pl.Filers },
                         (pv, pl) => { pv.Id = 0; pv.RecordId = 0; pv.PropertyLinkId = pl.Id; pv.PropertyLink = null; return pv; }).ToList();
 
             CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
@@ -120,7 +124,6 @@ namespace BL.Logic.DocumentCore.Commands
                 var src = toCopy[dest];
                 _fStore.CopyFile(_context, src, fl);
             }
-
             return Document.Id;
         }
 

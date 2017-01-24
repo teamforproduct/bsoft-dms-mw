@@ -11,6 +11,8 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryContactCommand : BaseDictionaryContactCommand
     {
+        private AddAgentContact Model { get { return GetModel<AddAgentContact>(); } }
+
         public override object Execute()
         {
             try

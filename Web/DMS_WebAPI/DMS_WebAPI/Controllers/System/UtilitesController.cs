@@ -26,7 +26,7 @@ using BL.Logic.SystemCore.Interfaces;
 namespace DMS_WebAPI.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/v2/Utilities")]
+    [RoutePrefix(ApiPrefix.V2 + "Utilities")]
     public class UtilitiesController : ApiController
     {
         /// <summary>
@@ -64,6 +64,19 @@ namespace DMS_WebAPI.Controllers
             return SetDate(item);
         }
 
+
+        [HttpPost]
+        [Route("RefPermi")]
+        public IHttpActionResult RefPermi()
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+
+            tmpService.RefreshModuleFeature(ctx);
+
+            return new JsonResult(null, this);
+        }
+
         [HttpPost]
         [Route("SetDate")]
         public IHttpActionResult SetDate([FromBody]ModifyDate item)
@@ -99,7 +112,7 @@ namespace DMS_WebAPI.Controllers
         [Route("ClearUserContexts")]
         public IHttpActionResult ClearUserContexts()
         {
-            DmsResolver.Current.Get<UserContexts>().ClearCache();
+            DmsResolver.Current.Get<UserContexts>().Clear();
             return new JsonResult(null, this);
         }
 

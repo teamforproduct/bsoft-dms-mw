@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Controllers.Admins
     /// Этот функционал по умолчанию выключен для нового клиента, рассылка разрешена на все должности. 
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/AdminSubordinations")]
+    [RoutePrefix(ApiPrefix.V2 + "AdminSubordinations")]
     public class AdminSubordinationsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

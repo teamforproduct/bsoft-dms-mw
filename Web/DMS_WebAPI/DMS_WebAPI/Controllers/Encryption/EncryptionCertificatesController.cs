@@ -12,7 +12,7 @@ using BL.Model.EncryptionCore.IncomingModel;
 namespace DMS_WebAPI.Controllers.Encryption
 {
     [Authorize]
-    [RoutePrefix("api/v2/EncryptionCertificates")]
+    [RoutePrefix(ApiPrefix.V2 + "EncryptionCertificates")]
     public class EncryptionCertificatesController : ApiController
     {
         /// <summary>

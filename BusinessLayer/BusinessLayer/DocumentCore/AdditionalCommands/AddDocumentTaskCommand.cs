@@ -20,15 +20,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentTasks Model
+        private AddDocumentTasks Model
         {
             get
             {
-                if (!(_param is ModifyDocumentTasks))
+                if (!(_param is AddDocumentTasks))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentTasks)_param;
+                return (AddDocumentTasks)_param;
             }
         }
 
@@ -39,7 +39,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ModifyDocumentTaskPrepare(_context, Model);
+            _admin.VerifyAccess(_context, CommandType);
+            _document = _operationDb.ModifyDocumentTaskPrepare(_context, null, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -48,7 +49,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new RecordNotUnique();
             }
-            _admin.VerifyAccess(_context, CommandType);
             return true;
         }
 

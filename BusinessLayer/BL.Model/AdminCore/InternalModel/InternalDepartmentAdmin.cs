@@ -8,11 +8,16 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalDepartmentAdmin()
         { }
 
-        public InternalDepartmentAdmin(ModifyAdminDepartmentAdmin model)
+        public InternalDepartmentAdmin(AddAdminDepartmentAdmin model)
         {
             DepartmentId = model.DepartmentId;
             EmployeeId = model.EmployeeId;
         }
+
+        /// <summary>
+        /// Отдел
+        /// </summary>
+        public int Id { get; set; }
 
         /// <summary>
         /// Отдел
@@ -23,8 +28,6 @@ namespace BL.Model.AdminCore.InternalModel
         /// Сотрудник
         /// </summary>
         public int EmployeeId { get; set; }
-
-        public string EmployeeName { get; set; }
 
     }
 }

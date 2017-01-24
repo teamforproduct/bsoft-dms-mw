@@ -100,6 +100,18 @@ namespace BL.Database.Common
             return items;
         }
 
+        public static AdminEmployeeDepartments GetDbEmployeeDepartments(IContext context, InternalDepartmentAdmin item)
+        {
+            return item == null ? null : new AdminEmployeeDepartments
+            {
+                Id = item.Id,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+                EmployeeId = item.EmployeeId,
+                DepartmentId = item.DepartmentId,
+            };
+        }
+
         public static AdminSubordinations GetDbSubordination(IContext context, InternalAdminSubordination item)
         {
             return item == null ? null : new AdminSubordinations
@@ -124,7 +136,17 @@ namespace BL.Database.Common
 
             return items;
         }
-
+        public static AdminRolePermissions GetDbRolePermission(IContext context, InternalAdminRolePermission item)
+        {
+            return item == null ? null : new AdminRolePermissions
+            {
+                Id = item.Id,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+                RoleId = item.RoleId,
+                PermissionId = item.PermissionId,
+            };
+        }
 
         public static AdminRegistrationJournalPositions GetDbRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition item)
         {

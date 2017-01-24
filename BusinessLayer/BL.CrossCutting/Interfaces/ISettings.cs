@@ -1,6 +1,5 @@
 ﻿using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
-using System;
 
 namespace BL.CrossCutting.Interfaces
 {
@@ -54,6 +53,7 @@ namespace BL.CrossCutting.Interfaces
 
         string GetReportRegistrationCardOutcomingDocument(IContext ctx);
 
+        int GetClearOldPdfCopiesInDay(IContext ctx);
 
         int GetAutoplanTimeoutMinute(IContext ctx);
 

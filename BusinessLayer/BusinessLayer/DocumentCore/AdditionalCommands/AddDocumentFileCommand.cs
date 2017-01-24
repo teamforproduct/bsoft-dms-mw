@@ -4,12 +4,13 @@ using System.IO;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
+using BL.CrossCutting.Context;
+using BL.Logic.SystemServices.QueueWorker;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -17,11 +18,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
+        private readonly IQueueWorkerService _queueWorkerService;
 
-        public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
             _operationDb = operationDb;
             _fStore = fStore;
+            _queueWorkerService = queueWorkerService;
         }
 
         private AddDocumentFile Model
@@ -56,8 +59,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 }
                 return true;
             }
-            else
-                return true;
+            return true;
         }
 
         public override bool CanExecute()
@@ -108,55 +110,79 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var executorPositionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-            if (!executorPositionExecutorAgentId.HasValue)
+            var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
+            if (!executorPositionExecutor?.ExecutorAgentId.HasValue ?? true)
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
             var res = new List<int>();
-            var att = new InternalDocumentAttachedFile
+            try
             {
-                DocumentId = Model.DocumentId,
-                Date = DateTime.UtcNow,
-                PostedFileData = Model.PostedFileData,
-                Type = Model.Type,
-                IsMainVersion = Model.Type == EnumFileTypes.Additional || (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId == _context.CurrentPositionId) || _context.IsAdmin,
-                FileType = Model.FileType,
-                Name = Path.GetFileNameWithoutExtension(Model.FileName),
-                Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
-                Description = Model.Description,
-                IsWorkedOut = (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId) ? false : (bool?)null,
 
-                WasChangedExternal = false,
-                ExecutorPositionId = _context.CurrentPositionId,
-                ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId.Value
-            };
-            var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
-            if (ordInDoc == -1)
-            {
-                att.Version = 1;
-                att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
+                var att = new InternalDocumentAttachedFile
+                {
+                    DocumentId = Model.DocumentId,
+                    Date = DateTime.UtcNow,
+                    PostedFileData = Model.PostedFileData,
+                    Type = Model.Type,
+                    IsMainVersion =
+                        Model.Type == EnumFileTypes.Additional ||
+                        (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId == _context.CurrentPositionId) ||
+                        _context.IsAdmin,
+                    FileType = Model.FileType,
+                    Name = Path.GetFileNameWithoutExtension(Model.FileName),
+                    Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
+                    Description = Model.Description,
+                    IsWorkedOut =
+                        (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
+                            ? false
+                            : (bool?) null,
+
+                    WasChangedExternal = false,
+                    ExecutorPositionId = _context.CurrentPositionId,
+                    ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
+                    ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
+                };
+                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
+                if (ordInDoc == -1)
+                {
+                    att.Version = 1;
+                    att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
+                }
+                else
+                {
+                    att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
+                    att.OrderInDocument = ordInDoc;
+                }
+
+
+                _fStore.SaveFile(_context, att);
+                CommonDocumentUtilities.SetLastChange(_context, att);
+                if (_document.IsRegistered.HasValue)
+                {
+                    att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId,
+                        EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false,
+                        att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
+                }
+                res.Add(_operationDb.AddNewFileOrVersion(_context, att));
+                // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
+                // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
+                // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
+                //res.Add(new FrontDocumentAttachedFile(att));
+                var admContext = new AdminContext(_context);
+                _queueWorkerService.AddNewTask(admContext, () =>
+                {
+                    if (_fStore.CreatePdfFile(admContext, att))
+                    {
+                        _operationDb.UpdateFilePdfView(admContext, att);
+                    }
+                });
             }
-            else
+            catch (Exception ex)
             {
-                att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
-                att.OrderInDocument = ordInDoc;
+                _logger.Error(_context, ex, "Error on adding document file");
+                throw ex;
             }
-
-
-            _fStore.SaveFile(_context, att);
-            CommonDocumentUtilities.SetLastChange(_context, att);
-            if (_document.IsRegistered.HasValue)
-            {
-                att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId, EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false, att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
-            }
-            res.Add(_operationDb.AddNewFileOrVersion(_context, att));
-            // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
-            // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
-            // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
-            //res.Add(new FrontDocumentAttachedFile(att));
-
-
             return res;
         }
     }

@@ -46,7 +46,7 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("MainExecutorAgentId")]
         public virtual DictionaryAgents MainExecutorAgent { get; set; }
         [ForeignKey("PositionExecutorTypeId")]
-        public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
+        public virtual DictionaryPositionExecutorTypes ExecutorType { get; set; }
         [ForeignKey("SourcePositionId")]
         public virtual ICollection<AdminSubordinations> SourcePositionSubordinations { get; set; }
         [ForeignKey("TargetPositionId")]

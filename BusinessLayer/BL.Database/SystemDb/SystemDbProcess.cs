@@ -18,6 +18,8 @@ using System.Transactions;
 using BL.Model.Tree;
 using BL.Database.Common;
 using EntityFramework.Extensions;
+using BL.CrossCutting.Helpers;
+using BL.Database.Helper;
 
 namespace BL.Database.SystemDb
 {
@@ -29,39 +31,22 @@ namespace BL.Database.SystemDb
 
         public void InitializerDatabase(IContext ctx)
         {
-            using (var dbContext = new DmsContext(ctx))
-            {
-            }
+
         }
 
         #region [+] Logs ...
 
+
+
         public IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemLogsQuery(context, dbContext, filter);
 
                 qry = qry.OrderByDescending(x => x.LogDate);
 
-                if (paging != null)
-                {
-                    if (paging.IsOnlyCounter ?? true)
-                    {
-                        paging.TotalItemsCount = qry.Count();
-                    }
-
-                    if (paging.IsOnlyCounter ?? false)
-                    {
-                        return new List<FrontSystemLog>();
-                    }
-
-                    var skip = paging.PageSize * (paging.CurrentPage - 1);
-                    var take = paging.PageSize;
-                    qry = qry.Skip(() => skip).Take(() => take);
-
-                }
+                Paging.Set(ref qry, paging);
 
                 var res = qry.Select(x => new FrontSystemLog
                 {
@@ -179,7 +164,7 @@ namespace BL.Database.SystemDb
 
         public int AddLog(IContext ctx, LogInfo log)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var nlog = new SystemLogs
                 {
@@ -197,6 +182,7 @@ namespace BL.Database.SystemDb
                 };
                 dbContext.LogSet.Add(nlog);
                 dbContext.SaveChanges();
+                transaction.Complete();
                 return nlog.Id;
             }
         }
@@ -207,7 +193,8 @@ namespace BL.Database.SystemDb
 
         public int MergeSetting(IContext ctx, InternalSystemSetting model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            var res = 0;
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == model.Key);
                 if (cset == null)
@@ -227,49 +214,48 @@ namespace BL.Database.SystemDb
                     };
                     dbContext.SettingsSet.Add(nsett);
                     dbContext.SaveChanges();
-                    return nsett.Id;
+                    res = nsett.Id;
                 }
-
-                cset.Value = model.Value;
-
-                if (model.ValueType > 0)
+                else
                 {
-                    cset.ValueTypeId = (int)model.ValueType;
-                }
+                    cset.Value = model.Value;
 
-                cset.ExecutorAgentId = model.AgentId;
-                dbContext.SaveChanges();
-                return cset.Id;
+                    if (model.ValueType > 0)
+                    {
+                        cset.ValueTypeId = (int)model.ValueType;
+                    }
+
+                    cset.ExecutorAgentId = model.AgentId;
+                    dbContext.SaveChanges();
+                    res = cset.Id;
+                }
+                transaction.Complete();
+                return res;
             }
         }
 
         public string GetSettingValue(IContext ctx, FilterSystemSetting filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            var res = string.Empty;
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 if (filter.AgentId.HasValue)
                 {
-                    var res = dbContext.SettingsSet.Where(
+                    res = dbContext.SettingsSet.Where(
                             x =>
                                 ctx.CurrentClientId == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
-                    transaction.Complete();
-
-                    return res;
                 }
                 else
                 {
-                    var res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
+                    res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
                             .OrderBy(x => x.ExecutorAgentId)
                             .Select(x => x.Value)
                             .FirstOrDefault();
-                    transaction.Complete();
-
-                    return res;
                 }
-
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -281,10 +267,11 @@ namespace BL.Database.SystemDb
         /// <returns></returns>
         public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSettingsQuery(ctx, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Id);
 
                 var res = qry.Select(x => new FrontSystemSetting()
                 {
@@ -308,10 +295,11 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSettingsQuery(ctx, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Id);
 
                 var res = qry.Select(x => new InternalSystemSetting()
                 {
@@ -327,10 +315,13 @@ namespace BL.Database.SystemDb
             }
         }
 
-        private IQueryable<SystemSettings> GetWhereSettings(ref IQueryable<SystemSettings> qry, FilterSystemSetting filter)
+        public IQueryable<SystemSettings> GetSettingsQuery(IContext context, DmsContext dbContext, FilterSystemSetting filter)
         {
+            var qry = dbContext.SettingsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
             if (filter != null)
             {
+
                 if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<SystemSettings>();
@@ -353,16 +344,6 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(x => x.ExecutorAgentId == filter.AgentId.Value);
                 }
             }
-            return qry;
-        }
-
-        public IQueryable<SystemSettings> GetSettingsQuery(IContext context, DmsContext dbContext, FilterSystemSetting filter)
-        {
-            var qry = dbContext.SettingsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
-
-            qry = qry.OrderBy(x => x.Id);
-
-            qry = GetWhereSettings(ref qry, filter);
 
             return qry;
         }
@@ -371,72 +352,71 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
         {
+
+
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
+                var qry = dbContext.SystemUIElementsSet.AsQueryable();
 
-                using (var dbContext = new DmsContext(ctx))
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                if (filter.UIElementId?.Count > 0)
                 {
-                    var qry = dbContext.SystemUIElementsSet.AsQueryable();
-
-                    if (filter.UIElementId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<SystemUIElements>();
-                        filterContains = filter.UIElementId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.ActionId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<SystemUIElements>();
-                        filterContains = filter.ActionId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.ActionId == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.ObjectId?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<SystemUIElements>();
-                        filterContains = filter.ObjectId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (!string.IsNullOrEmpty(filter.Code))
-                    {
-                        qry = qry.Where(x => x.Code.Contains(filter.Code));
-                    }
-                    if (!string.IsNullOrEmpty(filter.ObjectCode))
-                    {
-                        qry = qry.Where(x => x.Action.Object.Code.Contains(filter.ObjectCode));
-                    }
-                    if (!string.IsNullOrEmpty(filter.ActionCode))
-                    {
-                        qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
-                    }
-                    qry = qry.OrderBy(x => x.Order);
-                    var res = qry.Select(x => new BaseSystemUIElement
-                    {
-                        Id = x.Id,
-                        ObjectCode = x.Action.Object.Code,
-                        ActionCode = x.Action.Code,
-                        Code = x.Code,
-                        TypeCode = x.TypeCode,
-                        Label = x.Label,
-                        Hint = x.Hint,
-                        ValueTypeCode = x.ValueType.Code,
-                        IsMandatory = x.IsMandatory,
-                        IsReadOnly = x.IsReadOnly,
-                        IsVisible = x.IsVisible,
-                        SelectAPI = x.SelectAPI,
-                        SelectFilter = x.SelectFilter,
-                        SelectFieldCode = x.SelectFieldCode,
-                        SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
-                        ValueFieldCode = x.ValueFieldCode,
-                        ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
-                        Format = x.Format
-                    }).ToList();
-
-                    return res;
+                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    filterContains = filter.UIElementId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
                 }
+                if (filter.ActionId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    filterContains = filter.ActionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ActionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ObjectId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    filterContains = filter.ObjectId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    qry = qry.Where(x => x.Code.Contains(filter.Code));
+                }
+                if (!string.IsNullOrEmpty(filter.ObjectCode))
+                {
+                    qry = qry.Where(x => x.Action.Object.Code.Contains(filter.ObjectCode));
+                }
+                if (!string.IsNullOrEmpty(filter.ActionCode))
+                {
+                    qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
+                }
+                qry = qry.OrderBy(x => x.Order);
+                var res = qry.Select(x => new BaseSystemUIElement
+                {
+                    Id = x.Id,
+                    ObjectCode = x.Action.Object.Code,
+                    ActionCode = x.Action.Code,
+                    Code = x.Code,
+                    TypeCode = x.TypeCode,
+                    Label = x.Label,
+                    Hint = x.Hint,
+                    ValueTypeCode = x.ValueType.Code,
+                    IsMandatory = x.IsMandatory,
+                    IsReadOnly = x.IsReadOnly,
+                    IsVisible = x.IsVisible,
+                    SelectAPI = x.SelectAPI,
+                    SelectFilter = x.SelectFilter,
+                    SelectFieldCode = x.SelectFieldCode,
+                    SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
+                    ValueFieldCode = x.ValueFieldCode,
+                    ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
+                    Format = x.Format
+                }).ToList();
+                transaction.Complete();
+                return res;
             }
+
         }
 
         #region [+] SystemObjects ...
@@ -452,8 +432,7 @@ namespace BL.Database.SystemDb
 
         public void DeleteSystemObjects(IContext context, FilterSystemObject filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemObjectsQuery(context, dbContext, filter);
 
@@ -465,15 +444,13 @@ namespace BL.Database.SystemDb
 
                     qry.Delete();
                 }
-
                 transaction.Complete();
             }
         }
 
         public void AddSystemObject(IContext context, SystemObjects item)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemObjects] ON");
 
@@ -493,18 +470,18 @@ namespace BL.Database.SystemDb
 
         public void UpdateSystemObject(IContext context, SystemObjects item)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.SystemObjectsSet.Attach(item);
                 dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemObjectsQuery(context, dbContext, filter);
 
@@ -524,7 +501,7 @@ namespace BL.Database.SystemDb
         //public IEnumerable<FrontSystemObject> GetSystemObjectsWithActions(IContext context, FilterSystemObject filterObject, FilterSystemAction filterAction)
         //{
         //    using (var dbContext = new DmsContext(context))
-        //    using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+        //    using (var transaction = Transactions.GetTransaction())
         //    {
         //        var qry = GetSystemObjectsQuery(context, dbContext, filterObject);
 
@@ -557,12 +534,9 @@ namespace BL.Database.SystemDb
         //}
         public IEnumerable<int> GetObjectsByActions(IContext context, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.SystemActionsSet.AsQueryable();
-
-                qry = GetWhereSystemActions(ref qry, filter);
+                var qry = GetSystemActionsQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => x.ObjectId).ToList();
                 transaction.Complete();
@@ -572,8 +546,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, int roleId, FilterSystemObject filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemObjectsQuery(context, dbContext, filter);
 
@@ -602,8 +575,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<TreeItem> GetSystemActionsForTree(IContext context, int roleId, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(context, dbContext, filter);
 
@@ -682,8 +654,7 @@ namespace BL.Database.SystemDb
 
         public void DeleteSystemActions(IContext context, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(context, dbContext, filter);
 
@@ -696,7 +667,7 @@ namespace BL.Database.SystemDb
 
                 qry.Delete();
 
-                transaction.Commit();
+                transaction.Complete();
 
             }
 
@@ -704,8 +675,7 @@ namespace BL.Database.SystemDb
 
         public void AddSystemAction(IContext context, SystemActions item)
         {
-            using (var dbContext = new DmsContext(context))
-            using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
 
@@ -729,18 +699,18 @@ namespace BL.Database.SystemDb
 
         public void UpdateSystemAction(IContext context, SystemActions item)
         {
-            using (var dbContext = new DmsContext(context))
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.SystemActionsSet.Attach(item);
                 dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public IEnumerable<FrontSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
@@ -764,8 +734,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
@@ -793,74 +762,203 @@ namespace BL.Database.SystemDb
         {
             var qry = dbContext.SystemActionsSet.AsQueryable();
 
-            qry = GetWhereSystemActions(ref qry, filter);
+            if (filter != null)
+            {
+
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<SystemActions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ObjectIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    filterContains = filter.ObjectIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ObjectId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Description))
+                {
+                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.IsGrantable.HasValue)
+                {
+                    qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
+                }
+
+                if (filter.IsGrantableByRecordId.HasValue)
+                {
+                    qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
+                }
+
+                if (filter.IsVisible.HasValue)
+                {
+                    qry = qry.Where(x => x.IsVisible == filter.IsVisible);
+                }
+            }
 
             return qry;
         }
 
-        private IQueryable<SystemActions> GetWhereSystemActions(ref IQueryable<SystemActions> qry, FilterSystemAction filter)
+        private IQueryable<SystemActions> GetWhereSystemActions(IQueryable<SystemActions> qry, FilterSystemAction filter)
         {
-            if (filter == null) return qry;
 
-            if (filter.IDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<SystemActions>();
-                filterContains = filter.IDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-            if (filter.NotContainsIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.True<SystemActions>();
-                filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                    (current, value) => current.And(e => e.Id != value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-            if (filter.ObjectIDs?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<SystemActions>();
-                filterContains = filter.ObjectIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.ObjectId == value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-
-            if (!string.IsNullOrEmpty(filter.Description))
-            {
-                var filterContains = PredicateBuilder.False<SystemActions>();
-                filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-
-            if (filter.IsGrantable.HasValue)
-            {
-                qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
-            }
-
-            if (filter.IsGrantableByRecordId.HasValue)
-            {
-                qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
-            }
-
-            if (filter.IsVisible.HasValue)
-            {
-                qry = qry.Where(x => x.IsVisible == filter.IsVisible);
-            }
 
             return qry;
         }
 
         #endregion
 
+        #region [+] Permissions
+        private IQueryable<SystemPermissions> GetPermissionsQuery(IContext context, DmsContext dbContext, FilterSystemPermissions filter)
+        {
+            var qry = dbContext.SystemPermissionsSet.AsQueryable();
+
+            if (filter != null)
+            {
+
+                // Список первичных ключей
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<SystemPermissions>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.ModuleIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.ModuleIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ModuleId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.FeatureIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.FeatureIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.FeatureId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.AccessTypeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+
+                    filterContains = filter.AccessTypeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AccessTypeId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
+                if (!string.IsNullOrEmpty(filter.Module))
+                {
+                    qry = qry.Where(x => x.Module.Code == filter.Module);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Feature))
+                {
+                    qry = qry.Where(x => x.Feature.Code == filter.Feature);
+                }
+
+                if (!string.IsNullOrEmpty(filter.AccessType))
+                {
+                    qry = qry.Where(x => x.AccessType.Code == filter.AccessType);
+                }
+
+
+            }
+
+            return qry;
+        }
+
+        public int GetPermissionId(IContext context, string module, string feture, string accessType)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture , AccessType = accessType } );
+
+                var item = qry.FirstOrDefault();
+
+                transaction.Complete();
+
+                if (item != null) return item.Id;
+                else return -1;
+            }
+        }
+
+        public IEnumerable<InternalPermissions> GetInternalPermissions(IContext ctx, FilterSystemPermissions filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPermissionsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new InternalPermissions
+                {
+                    Id = x.Id,
+
+                    AccessTypeId = (EnumAccessTypes)x.AccessTypeId,
+                    AccessTypeCode = x.AccessType.Code,
+                    AccessTypeName = x.AccessType.Name,
+                    AccessTypeOrder = x.AccessType.Order,
+
+                    ModuleId = x.ModuleId,
+                    ModuleCode = x.Module.Code,
+                    ModuleName = x.Module.Name,
+                    ModuleOrder = x.Module.Order,
+
+                    FeatureId = x.FeatureId,
+                    FeatureCode = x.Feature.Code,
+                    FeatureName = x.Feature.Name,
+                    FeatureOrder = x.Feature.Order,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+        #endregion
 
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemFormatsSet.AsQueryable();
 
@@ -880,8 +978,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext ctx, FilterSystemFormula filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
 
@@ -901,8 +998,7 @@ namespace BL.Database.SystemDb
         }
         public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemPatternsSet.AsQueryable();
 
@@ -921,8 +1017,7 @@ namespace BL.Database.SystemDb
         }
         public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemValueTypesSet.AsQueryable();
 
@@ -946,8 +1041,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry =
                     dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
@@ -1010,8 +1104,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontProperty> GetProperties(IContext ctx, FilterProperty filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertiesQuery(dbContext, ctx, filter);
 
@@ -1049,7 +1142,7 @@ namespace BL.Database.SystemDb
 
         public int AddProperty(IContext ctx, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new Properties
                 {
@@ -1075,13 +1168,14 @@ namespace BL.Database.SystemDb
 
                 dbContext.SaveChanges();
                 model.Id = item.Id;
+                transaction.Complete();
                 return item.Id;
             }
         }
 
         public void UpdateProperty(IContext ctx, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new Properties
                 {
@@ -1107,14 +1201,14 @@ namespace BL.Database.SystemDb
                 dbContext.Entry(item).State = EntityState.Modified;
 
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeleteProperty(IContext ctx, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-
                 var item =
                     dbContext.PropertiesSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Id == model.Id);
                 if (item != null)
@@ -1122,6 +1216,7 @@ namespace BL.Database.SystemDb
                     dbContext.PropertiesSet.Remove(item);
                     dbContext.SaveChanges();
                 }
+                transaction.Complete();
             }
         }
 
@@ -1129,8 +1224,7 @@ namespace BL.Database.SystemDb
 
         #region PropertyLinks
 
-        private IQueryable<PropertyLinks> GetPropertyLinksQuery(DmsContext dbContext, IContext ctx,
-            FilterPropertyLink filter)
+        private IQueryable<PropertyLinks> GetPropertyLinksQuery(DmsContext dbContext, IContext ctx, FilterPropertyLink filter)
         {
             var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -1160,8 +1254,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -1182,8 +1275,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -1205,7 +1297,7 @@ namespace BL.Database.SystemDb
 
         public int AddPropertyLink(IContext ctx, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new PropertyLinks
                 {
@@ -1221,13 +1313,14 @@ namespace BL.Database.SystemDb
 
                 dbContext.SaveChanges();
                 model.Id = item.Id;
+                transaction.Complete();
                 return item.Id;
             }
         }
 
         public void UpdatePropertyLink(IContext ctx, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new PropertyLinks
                 {
@@ -1245,22 +1338,21 @@ namespace BL.Database.SystemDb
                 entry.Property(p => p.LastChangeUserId).IsModified = true;
 
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void DeletePropertyLink(IContext ctx, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-
-                var item =
-                    dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId)
-                        .FirstOrDefault(x => x.Id == model.Id);
+                var item = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
                 if (item != null)
                 {
                     dbContext.PropertyLinksSet.Remove(item);
                     dbContext.SaveChanges();
                 }
+                transaction.Complete();
             }
         }
 
@@ -1268,11 +1360,9 @@ namespace BL.Database.SystemDb
 
         #region PropertyValues
 
-        public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext ctx,
-            FilterPropertyLink filter)
+        public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -1301,12 +1391,10 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
-                var res =
-                    dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
                                     && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
                                         || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
@@ -1338,7 +1426,7 @@ namespace BL.Database.SystemDb
 
         public void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 //TODO будет ли это работать?? 
                 var upd = new List<DbEntityEntry>();
@@ -1351,6 +1439,7 @@ namespace BL.Database.SystemDb
                     upd.Add(entry);
                 });
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -1360,11 +1449,9 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext ctx, FilterProperties filter)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry =
-                    dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
@@ -1395,60 +1482,27 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<int> GetSendListIdsForAutoPlan(IContext ctx, int? sendListId = null, int? documentId = null)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 if (sendListId.HasValue)
                     return new List<int> { sendListId.GetValueOrDefault() };
 
-                var qryPrepare = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                .Where(x => x.IsInitial && !x.CloseEventId.HasValue).AsQueryable();
+                var closedSendLists = dbContext.DocumentSendListsSet.Where(x => x.IsInitial && !x.CloseEventId.HasValue);
 
                 if (documentId.HasValue)
                 {
-                    qryPrepare = qryPrepare.Where(x => x.DocumentId == documentId);
+                    closedSendLists = closedSendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var qry = qryPrepare.GroupBy(x => x.DocumentId)
-                    .Select(x => new
-                    {
-                        DocId = x.Key,
-                        MinStage = x.Min(s => s.Stage)
-                    });
-
-                var sendListsSet = dbContext.DocumentSendListsSet
-                                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                    .Where(x => x.Document.IsLaunchPlan)
-                                    .AsQueryable();
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                    .Where(x => x.Document.IsLaunchPlan && !x.StartEventId.HasValue);
 
                 if (documentId.HasValue)
                 {
-                    sendListsSet = sendListsSet.Where(x => x.DocumentId == documentId);
+                    sendLists = sendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var qry2 = sendListsSet
-                    .Join(qry, s => s.DocumentId, q => q.DocId, (s, q) => new { sl = s, q })
-                    .Where(x => x.sl.Stage <= x.q.MinStage && !x.sl.StartEventId.HasValue)
-                    .OrderBy(x => x.sl.DocumentId)
-                    .ThenBy(
-                        x =>
-                            new
-                            {
-                                x.sl.Stage,
-                                SendTypeId = x.sl.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.sl.SendTypeId
-                            })
-                    .Select(x => x.sl.Id);
-
-                if (!documentId.HasValue)
-                {
-                    qry2 = qry2.Take(50);
-                }
-
-                var res = qry2.ToList();
-
-                var qry3 = sendListsSet
-                    .Where(x => !x.IsInitial && !x.StartEventId.HasValue
-                                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
+                var qry2 = sendLists.Where(x => !closedSendLists.Any(y => y.DocumentId == x.DocumentId && x.Stage > y.Stage))
                     .OrderBy(x => x.DocumentId)
                     .ThenBy(
                         x =>
@@ -1461,10 +1515,30 @@ namespace BL.Database.SystemDb
 
                 if (!documentId.HasValue)
                 {
-                    qry3 = qry3.Take(50);
+                    qry2 = qry2.Take(50);
                 }
 
-                res.AddRange(qry3.ToList());
+                var res = qry2.ToList();
+
+                //var qry3 = sendListsSet
+                //    .Where(x => !x.IsInitial && !x.StartEventId.HasValue
+                //                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
+                //    .OrderBy(x => x.DocumentId)
+                //    .ThenBy(
+                //        x =>
+                //            new
+                //            {
+                //                x.Stage,
+                //                SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId
+                //            })
+                //    .Select(x => x.Id);
+
+                //if (!documentId.HasValue)
+                //{
+                //    qry3 = qry3.Take(50);
+                //}
+
+                //res.AddRange(qry3.ToList());
 
                 transaction.Complete();
 
@@ -1474,8 +1548,7 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext ctx, int timeMinForClearTrashDocuments)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
                 var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
@@ -1495,12 +1568,11 @@ namespace BL.Database.SystemDb
 
         #endregion Filter Properties
 
-        #region Full text search
+        #region [+] Full text search ...
 
         public int GetEntityNumbers(IContext ctx, EnumObjects objType)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 int res = 0;
                 switch (objType)
@@ -1533,9 +1605,11 @@ namespace BL.Database.SystemDb
 
         public int GetCurrentMaxCasheId(IContext ctx)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                return dbContext.FullTextIndexCashSet.Any() ? dbContext.FullTextIndexCashSet.Max(x => x.Id) : 0;
+                var res = dbContext.FullTextIndexCashSet.Any() ? dbContext.FullTextIndexCashSet.Max(x => x.Id) : 0;
+                transaction.Complete();
+                return res;
             }
         }
 
@@ -1545,8 +1619,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -1559,7 +1632,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Name + " " + x.Description
+                    ObjectText = x.Name
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1569,7 +1642,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPerson.FullName + " " + x.Agent.AgentPerson.BirthDate + " " + x.Agent.AgentPerson.PassportDate + " " + x.Agent.AgentPerson.PassportNumber + " " + x.Agent.AgentPerson.PassportSerial + " " + x.Agent.AgentPerson.PassportText + " " + x.Agent.AgentPerson.TaxCode
+                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText + " " + x.Agent.AgentPeople.TaxCode
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1589,7 +1662,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.Description + " " + x.TaxCode + " " + x.BirthDate + " " + x.PassportNumber + " " + x.PassportSerial + " " + x.PassportText
+                    ObjectText = x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Description + " " + x.Agent.AgentPeople.TaxCode + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText
                 }).ToList());
 
                 res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1664,6 +1737,16 @@ namespace BL.Database.SystemDb
                 //}).ToList());
 
                 res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.DictionaryDocumentSubjects,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     DocumentId = 0,
                     ItemType = EnumObjects.DictionaryDocumentSubjects,
@@ -1753,6 +1836,16 @@ namespace BL.Database.SystemDb
                     ObjectText = x.Name + " " + x.Code
                 }).ToList());
 
+                res.AddRange(dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.CustomDictionaries,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name + " " + x.Code + " " + x.Description
+                }).ToList());
+
                 #endregion Dictionaries
 
                 #region DocumentTemplates
@@ -1764,7 +1857,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.FullName
+                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name
                 }).ToList());
 
                 res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1774,7 +1867,7 @@ namespace BL.Database.SystemDb
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + x.SourceAgent.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
                 }).ToList());
 
                 res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
@@ -1816,8 +1909,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
                 //Add deleted item to  process processing full text index
@@ -1840,8 +1932,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexOneDocumentReindexDbPrepare(IContext ctx, int selectBis)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -1972,8 +2063,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexDocumentsReindexDbPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int rowOffset)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
                 if (objType == EnumObjects.Documents)
@@ -2001,13 +2091,8 @@ namespace BL.Database.SystemDb
                                          + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name + " " +
                                          x.SenderNumber + " "
                         }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-
-                    transaction.Complete();
-
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentEvents)
+                else if (objType == EnumObjects.DocumentEvents)
                 {
                     res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2024,12 +2109,8 @@ namespace BL.Database.SystemDb
                         + x.SourceAgent.Name + " "
                         + x.TargetAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-
-                    transaction.Complete();
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentFiles)
+                else if (objType == EnumObjects.DocumentFiles)
                 {
                     res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2040,11 +2121,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Id,
                         ObjectText = x.Name + "." + x.Extension + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                    transaction.Complete();
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentSendLists)
+                else if (objType == EnumObjects.DocumentSendLists)
                 {
                     res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2060,11 +2138,8 @@ namespace BL.Database.SystemDb
                         + x.SourcePositionExecutorAgent.Name + " "
                         + x.TargetPositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                    transaction.Complete();
-                    return res;
                 }
-
-                if (objType == EnumObjects.DocumentSubscriptions)
+                else if (objType == EnumObjects.DocumentSubscriptions)
                 {
                     res.AddRange(dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
@@ -2077,8 +2152,6 @@ namespace BL.Database.SystemDb
                         //+ x.SubscriptionState.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
                         + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                    transaction.Complete();
-                    return res;
                 }
                 transaction.Complete();
             }
@@ -2089,8 +2162,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexDocumentsPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int selectBis)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -2211,8 +2283,7 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsPrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
 
@@ -2231,7 +2302,7 @@ namespace BL.Database.SystemDb
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
-                            ObjectText = x.agent.Name.Trim() + " " + x.agent.Description.Trim()
+                            ObjectText = x.agent.Name.Trim()
                         }).ToList());
                 }
 
@@ -2246,7 +2317,7 @@ namespace BL.Database.SystemDb
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
-                            ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPerson.FullName + " " + x.employee.Agent.AgentPerson.BirthDate + " " + x.employee.Agent.AgentPerson.PassportDate + " " + x.employee.Agent.AgentPerson.PassportNumber + " " + x.employee.Agent.AgentPerson.PassportSerial + " " + x.employee.Agent.AgentPerson.PassportText + " " + x.employee.Agent.AgentPerson.TaxCode
+                            ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPeople.FullName + " " + x.employee.Agent.AgentPeople.BirthDate + " " + x.employee.Agent.AgentPeople.PassportDate + " " + x.employee.Agent.AgentPeople.PassportNumber + " " + x.employee.Agent.AgentPeople.PassportSerial + " " + x.employee.Agent.AgentPeople.PassportText + " " + x.employee.Agent.AgentPeople.TaxCode
                         }).ToList());
                 }
 
@@ -2268,7 +2339,7 @@ namespace BL.Database.SystemDb
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentPersons))
                 {
-                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentPersons).Join(dbContext.DictionaryAgentPersonsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentPersons).Join(dbContext.DictionaryAgentPersonsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, person = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,
@@ -2276,8 +2347,8 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.agent.FullName.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.TaxCode.Trim() + " "
-                                     + x.agent.BirthDate + " " + x.agent.PassportNumber + " " + x.agent.PassportSerial.Trim() + " " + x.agent.PassportText.Trim()
+                        ObjectText = x.person.Agent.AgentPeople.FullName.Trim() + " " + x.person.Description.Trim() + " " + x.person.Agent.AgentPeople.TaxCode.Trim() + " "
+                                     + x.person.Agent.AgentPeople.BirthDate + " " + x.person.Agent.AgentPeople.PassportNumber + " " + x.person.Agent.AgentPeople.PassportSerial.Trim() + " " + x.person.Agent.AgentPeople.PassportText.Trim()
                     }).ToList());
                 }
 
@@ -2396,6 +2467,20 @@ namespace BL.Database.SystemDb
                     }).ToList());
                 }
 
+                if (objectTypesToProcess.Contains(EnumObjects.DictionaryTag))
+                {
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects).Join(dbContext.DictionaryTagsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    {
+                        Id = x.ind.Id,
+                        DocumentId = 0,
+                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        OperationType = (EnumOperationType)x.ind.OperationType,
+                        ClientId = ctx.CurrentClientId,
+                        ObjectId = x.id,
+                        ObjectText = x.doc.Name.Trim()
+                    }).ToList());
+                }
+
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryRegistrationJournals))
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryRegistrationJournals).Join(dbContext.DictionaryRegistrationJournalsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
@@ -2495,6 +2580,20 @@ namespace BL.Database.SystemDb
                     }).ToList());
                 }
 
+                if (objectTypesToProcess.Contains(EnumObjects.CustomDictionaries))
+                {
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.CustomDictionaries).Join(dbContext.CustomDictionariesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    {
+                        Id = x.ind.Id,
+                        DocumentId = 0,
+                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        OperationType = (EnumOperationType)x.ind.OperationType,
+                        ClientId = ctx.CurrentClientId,
+                        ObjectId = x.id,
+                        ObjectText = x.doc.Name + " " + x.doc.Code + " " + x.doc.Description
+                    }).ToList());
+                }
+
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositionExecutors))
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryPositionExecutors).Join(dbContext.DictionaryPositionExecutorsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
@@ -2523,7 +2622,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " /*+ x.doc.DocumentDirection.Name + " "*/ + x.doc.DocumentSubject.Name + " " /*+ x.doc.DocumentType.Name + " "*/ + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.FullName
+                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " /*+ x.doc.DocumentDirection.Name + " "*/ + x.doc.DocumentSubject.Name + " " /*+ x.doc.DocumentType.Name + " "*/ + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name
                     }).ToList());
                 }
 
@@ -2537,7 +2636,7 @@ namespace BL.Database.SystemDb
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " + x.doc.SourceAgent.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
+                        ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
                     }).ToList());
                 }
 
@@ -2582,14 +2681,14 @@ namespace BL.Database.SystemDb
                         ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
                     }).ToList());
                 }
-                var iDs = res.Select(s => s.Id);
-                var removedItems = dbContext.FullTextIndexCashSet.Where(x => !iDs.Contains(x.Id)).ToList();
+                //var iDs = res.Select(s => s.Id);
+                //var removedItems = dbContext.FullTextIndexCashSet.Where(x => iDs.Contains(x.Id)).ToList();
 
-                if (removedItems.Any())
-                {
-                    dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
-                    dbContext.SaveChanges();
-                }
+                //if (removedItems.Any())
+                //{
+                //    dbContext.FullTextIndexCashSet.RemoveRange(removedItems);
+                //    dbContext.SaveChanges();
+                //}
 
                 #endregion TemplateDocuments
                 transaction.Complete();
@@ -2599,24 +2698,26 @@ namespace BL.Database.SystemDb
 
         public void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds, bool deleteSimilarObject = false)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.FullTextIndexCashSet.RemoveRange(dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
         public void FullTextIndexDeleteCash(IContext ctx, int deleteBis)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.FullTextIndexCashSet.Where(x => x.Id <= deleteBis).Delete();
+                transaction.Complete();
             }
         }
 
         public void DeleteRelatedToDocumentRecords(IContext ctx, IEnumerable<int> docIds, int? deleteBis = null)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 ////TODO когда происходит реиндексация базы удалить все из кеша, что связано с переиндексированными документами
                 //var qry = dbContext.FullTextIndexCashSet.Where(x => docIds.Contains(x.)));
@@ -2624,6 +2725,7 @@ namespace BL.Database.SystemDb
                 //dbContext.FullTextIndexCashSet.RemoveRange(
 
                 //dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -2631,7 +2733,7 @@ namespace BL.Database.SystemDb
 
         public int AddSystemDate(IContext ctx, DateTime date)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = new SystemDate
                 {
@@ -2641,14 +2743,14 @@ namespace BL.Database.SystemDb
                 dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
+                transaction.Complete();
                 return item.Id;
             }
         }
 
         public DateTime GetSystemDate(IContext ctx)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemDateSet.ToList();
 
@@ -2661,6 +2763,59 @@ namespace BL.Database.SystemDb
 
                 return res;
             }
+        }
+
+        public void RefreshModuleFeature(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AdminRolePermissionsSet.Delete();
+
+                dbContext.SystemPermissionsSet.Delete();
+
+                dbContext.SystemFeaturesSet.Delete();
+
+                dbContext.SystemModulesSet.Delete();
+
+                dbContext.SystemAccessTypesSet.Delete();
+
+                DmsDbImportData.InitPermissions();
+
+                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
+                {
+                    dbContext.SystemAccessTypesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemModules())
+                {
+                    dbContext.SystemModulesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemFeatures())
+                {
+                    dbContext.SystemFeaturesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemPermissions())
+                {
+
+                    dbContext.SystemPermissionsSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                
+
+                transaction.Complete();
+
+            }
+
         }
 
     }

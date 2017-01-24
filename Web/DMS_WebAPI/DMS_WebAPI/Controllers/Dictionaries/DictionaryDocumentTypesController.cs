@@ -18,12 +18,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter">Параметры для фильтрации записей в словаре "Типы документов"</param>
         /// <returns>FrontDictionaryDocumentType</returns>
-        // GET: api/DictionaryDocumentTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDocumentTypes(ctx, filter);
+            var tmpDicts = tmpDictProc.GetDictionaryDocumentTypes(ctx, filter, null);
             return new JsonResult(tmpDicts, this);
         }
 
@@ -46,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryDocumentType</param>
         /// <returns>Возвращает добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryDocumentType model)
+        public IHttpActionResult Post([FromBody]AddDocumentType model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -59,7 +58,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model">ModifyDictionaryDocumentType</param>
         /// <returns>Возвращает измененную запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDocumentType model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentType model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

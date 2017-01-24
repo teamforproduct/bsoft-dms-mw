@@ -7,99 +7,75 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
-    public class InternalDictionaryAgentPerson : LastChangeInfo
+    public class InternalDictionaryAgentPerson : InternalDictionaryAgentPeople
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
         public InternalDictionaryAgentPerson()
         { }
-
-        public InternalDictionaryAgentPerson(ModifyDictionaryAgentPerson model)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        public InternalDictionaryAgentPerson(AddAgentPerson model)
+        {
+            SetInternalDictionaryAgentPerson(model);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        public InternalDictionaryAgentPerson(ModifyAgentPerson model)
         {
             Id = model.Id;
-            Name = model.Name;
-            FirstName = model.FirstName;
-            LastName = model.LastName;
-            MiddleName = model.MiddleName;
-            TaxCode = model.TaxCode;
-            IsMale = model.IsMale;
+            SetInternalDictionaryAgentPerson(model);
+        }
+
+        public InternalDictionaryAgentPerson(ModifyAgentPeoplePassport model)
+        {
+            Id = model.Id;
             PassportSerial = model.PassportSerial;
             PassportNumber = model.PassportNumber;
             PassportText = model.PassportText;
             PassportDate = model.PassportDate;
-            IsActive = model.IsActive;
-            BirthDate = model.BirthDate;
-            Description = model.Description;
         }
 
-        public InternalDictionaryAgentPerson(InternalDictionaryAgentEmployee model)
+        private void SetInternalDictionaryAgentPerson(AddAgentPerson model)
         {
-            Id = model.Id;
             Name = model.Name;
-            LastChangeDate = model.LastChangeDate;
-            LastChangeUserId = model.LastChangeUserId;
+
             FirstName = model.FirstName;
             LastName = model.LastName;
             MiddleName = model.MiddleName;
-            TaxCode = model.TaxCode;
-            IsMale = model.IsMale;
-            PassportSerial = model.PassportSerial;
-            PassportNumber = model.PassportNumber;
-            PassportText = model.PassportText;
-            PassportDate = model.PassportDate;
-            IsActive = model.IsActive;
+            
             BirthDate = model.BirthDate;
+            IsMale = model.IsMale;
+            
+            TaxCode = model.TaxCode;
+
+            Position = model.Position;
+            AgentCompanyId = model.AgentCompanyId;
+            IsActive = model.IsActive;
             Description = model.Description;
         }
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// Имя
-        /// </summary>
-        public string FirstName { get; set; }
-        /// <summary>
-        /// Фамилия
-        /// </summary>
-        public string LastName { get; set; }
-        /// <summary>
-        /// Отчество
-        /// </summary>
-        public string MiddleName { get; set; }
 
-        public string Name { get; set; }// { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
+
         /// <summary>
-        /// ИНН
+        /// Id компании, контактным лицом которой является физическое лицо
         /// </summary>
-        public string TaxCode { get; set; }
+        public int? AgentCompanyId { get; set; }
+
         /// <summary>
-        /// Пол (true - мужской)
+        /// Должность
         /// </summary>
-        public bool IsMale { get; set; }
-        /// <summary>
-        /// Серия паспорта
-        /// </summary>
-        public string PassportSerial { get; set; }
-        /// <summary>
-        /// Номер паспорта
-        /// </summary>
-        public int? PassportNumber { get; set; }
-        /// <summary>
-        /// Дата выдачи паспорта
-        /// </summary>
-        public DateTime? PassportDate { get; set; }
-        /// <summary>
-        /// Кем выдан паспорт
-        /// </summary>
-        public string PassportText { get; set; }
-        /// <summary>
-        /// Дата рождения
-        /// </summary>
-        public DateTime? BirthDate { get; set; }
+        public string Position { get; set; }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
+        
         /// <summary>
         /// Признак активности
         /// </summary>

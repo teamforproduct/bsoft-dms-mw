@@ -27,19 +27,30 @@
         // Изменить параметры направлен для исполнения (отв. исполнитель)
         SendForResponsibleExecutionChange = 215,
 
+        InfoSendForResponsibleExecutionReportingControler = 216,
+
+        InfoSendForExecutionReportingControler = 218,
+        InfoSendForExecutionReportingResponsibleExecutor = 219,
 
         // Формулировка задачи
         TaskFormulation = 601,
 
-
+        /// <summary>
+        /// Попросить о переносе сроков исполнения
+        /// </summary>
+        AskPostponeDueDate = 325,
+        /// <summary>
+        /// Отказать в переносе сроков исполнения
+        /// </summary>
+        CancelPostponeDueDate = 326,
         // Поручение выполнено
         MarkExecution = 320,
         // Результат принят
         AcceptResult = 321,
         // Результат отклонен
         RejectResult = 322,
-
-
+        // Поручение отменено
+        CancelExecution = 323,
         // Примечание
         AddNote = 600,
         // Работа возобновлена

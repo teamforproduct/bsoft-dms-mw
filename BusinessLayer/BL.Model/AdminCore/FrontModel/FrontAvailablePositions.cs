@@ -9,7 +9,7 @@ namespace BL.Model.AdminCore.FrontModel
     /// <summary>
     /// "Соответствие ролей и пользователя", описывает доступные пользователю роли, представление записи.
     /// </summary>
-    public class FrontAvailablePositions
+    public class FrontUserAssignments
     {
 
         /// <summary>
@@ -45,12 +45,21 @@ namespace BL.Model.AdminCore.FrontModel
         /// Имя сотрудника
         /// </summary>
         public string RolePositionExecutorAgentName { get; set; }
-
+        /// <summary>
+        /// ИД Тип исполнения
+        /// </summary>
+        public int RolePositionExecutorTypeId { get; set; }
         /// <summary>
         /// Тип исполнения
         /// </summary>
         public string RolePositionExecutorTypeName { get; set; }
-
+        /// <summary>
+        /// Признак, выбиралась ли позиция при последнем входе
+        /// </summary>
+        public bool IsLastChosen { get; set; }
+        /// <summary>
+        /// Количество непрочитанных событий
+        /// </summary>
         public int? NewEventsCount { get; set; }
 
     }

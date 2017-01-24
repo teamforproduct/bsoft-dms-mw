@@ -7,36 +7,17 @@ namespace BL.Model.DictionaryCore.InternalModel
     /// <summary>
     /// контрагент - сотрудник
     /// </summary>
-    public class InternalDictionaryAgentEmployee : LastChangeInfo
+    public class InternalDictionaryAgentEmployee : InternalDictionaryAgentPeople
     {
 
         public InternalDictionaryAgentEmployee()
         { }
 
-        public InternalDictionaryAgentEmployee(AddDictionaryAgentEmployee model)
+        public InternalDictionaryAgentEmployee(AddAgentEmployeeUser model)
         {
-            Id = model.Id;
-            Name = model.Name;
-            FirstName = model.FirstName;
-            LastName = model.LastName;
-            MiddleName = model.MiddleName;
-            TaxCode = model.TaxCode;
-            IsMale = model.IsMale;
-            PassportDate = model.PassportDate;
-            PassportNumber = model.PassportNumber;
-            PassportSerial = model.PassportSerial;
-            PassportText = model.PassportText;
-            Description = model.Description;
-            BirthDate = model.BirthDate;
-            IsActive = model.IsActive;
-
-
-            #region [+] Employee ...
-            PersonnelNumber = model.PersonnelNumber;
-            #endregion
+            SetInternalDictionaryAgentEmployee(model);
 
             #region [+] AgentUser ...
-            LanguageId = model.LanguageId;
             UserId = model.UserId;
             //Login = model.Login;
             //PasswordHash = model.PasswordHash;
@@ -46,76 +27,44 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         }
 
-        public InternalDictionaryAgentEmployee(ModifyDictionaryAgentEmployee model)
+        public InternalDictionaryAgentEmployee(AddAgentEmployee model)
+        {
+            SetInternalDictionaryAgentEmployee(model);
+        }
+
+        public InternalDictionaryAgentEmployee(ModifyAgentEmployee model)
         {
             Id = model.Id;
-            Name = model.Name;
-            FirstName = model.FirstName;
-            LastName = model.LastName;
-            MiddleName = model.MiddleName;
-            TaxCode = model.TaxCode;
-            IsMale = model.IsMale;
+            SetInternalDictionaryAgentEmployee(model);
+        }
+
+        public InternalDictionaryAgentEmployee(ModifyAgentPeoplePassport model)
+        {
+            Id = model.Id;
             PassportDate = model.PassportDate;
             PassportNumber = model.PassportNumber;
             PassportSerial = model.PassportSerial;
             PassportText = model.PassportText;
-            Description = model.Description;
-            BirthDate = model.BirthDate;
-            IsActive = model.IsActive;
-
-
-            #region [+] Employee ...
-            PersonnelNumber = model.PersonnelNumber;
-            #endregion
-
         }
 
-        #region [+] Person ...
-        public int Id { get; set; }
-        /// <summary>
-        /// Имя
-        /// </summary>
-        public string FirstName { get; set; }
-        /// <summary>
-        /// Фамилия
-        /// </summary>
-        public string LastName { get; set; }
-        /// <summary>
-        /// Отчество
-        /// </summary>
-        public string MiddleName { get; set; }
+        private void SetInternalDictionaryAgentEmployee(AddAgentEmployee model)
+        {
+            Name = model.Name;
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            MiddleName = model.MiddleName;
+            IsMale = model.IsMale;
+            BirthDate = model.BirthDate;
 
-        //pss добавить проверку на Empty
-        public string Name { get; set; }// { get { return LastName + " " + FirstName.Trim().Substring(1, 1) + "." + " " + MiddleName.Trim().Substring(1, 1) + "."; } }
+            LanguageId = model.LanguageId;
 
-        /// <summary>
-        /// ИНН
-        /// </summary>
-        public string TaxCode { get; set; }
-        /// <summary>
-        /// Пол (true - мужской)
-        /// </summary>
-        public bool IsMale { get; set; }
-        /// <summary>
-        /// Серия паспорта
-        /// </summary>
-        public string PassportSerial { get; set; }
-        /// <summary>
-        /// Номер паспорта
-        /// </summary>
-        public int? PassportNumber { get; set; }
-        /// <summary>
-        /// Дата выдачи паспорта
-        /// </summary>
-        public DateTime? PassportDate { get; set; }
-        /// <summary>
-        /// Кем выдан паспорт
-        /// </summary>
-        public string PassportText { get; set; }
-        /// <summary>
-        /// Дата рождения
-        /// </summary>
-        public DateTime? BirthDate { get; set; }
+            TaxCode = model.TaxCode;
+            PersonnelNumber = model.PersonnelNumber;
+
+            IsActive = model.IsActive;
+            Description = model.Description;
+        }
+
         /// <summary>
         /// Дополнительная информация
         /// </summary>
@@ -124,35 +73,31 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Признак активности
         /// </summary>
         public bool IsActive { get; set; }
-        #endregion
 
-        #region [+] Employee ...
+
         /// <summary>
         /// табельный номер
         /// </summary>
         public int PersonnelNumber { get; set; }
-        #endregion
 
         #region [+] AgentUser ...
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
-        public int? LanguageId { get; set; }
-        
+        public int LanguageId { get; set; }
+
         /// <summary>
         /// Связь с WEB - USER
         /// </summary>
-       public string UserId { get; set; }
-
-        
+        public string UserId { get; set; }
 
         /// <summary>
-        /// Основной имейл, на который высылается письмо с приглашением
+        /// Имейл, на который высылается письмо с приглашением
         /// </summary>
         public string Login { get; set; }
 
         /// <summary>
-        /// Основной номер мобильного телефона
+        /// Номер мобильного телефона
         /// </summary>
         public string Phone { get; set; }
 

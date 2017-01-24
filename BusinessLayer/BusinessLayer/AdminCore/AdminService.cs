@@ -29,6 +29,9 @@ using BL.Model.SystemCore;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
+using BL.CrossCutting.Helpers;
+using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.AdminCore
 {
@@ -100,9 +103,29 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetCurrentPositionsAccessLevel(context);
         }
 
-        public IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context)
+        /// <summary>
+        /// GetAvailablePositions вызывается каждые 36 секунд из фронта
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext context, List<int> PositionIDs = null)
         {
-            return _adminDb.GetAvailablePositions(context, context.CurrentAgentId);
+            var res = _adminDb.GetAvailablePositions(context, context.CurrentAgentId, PositionIDs);
+
+            // Если контекст полностью сформирован, тогда проверяю на вшивость
+            if (context.IsFormed)
+            {
+                // Решено тут синхронизировать context.CurrentPositionsIdList и генерировать исключения если AvailablePositions конфликтуют с CurrentPositionsIdList
+                if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.CurrentEmployee.Name);
+
+                // Проверяю содержатся ли выбранные должности в списке доступных
+                foreach (var positionId in context.CurrentPositionsIdList)
+                {
+                    if (!res.Any(x => x.RolePositionId == positionId)) throw new UserNotExecuteCheckPosition();
+                }
+            }
+
+            return res;
         }
 
         public IEnumerable<FrontSystemAction> GetUserActions(IContext ctx)
@@ -260,6 +283,34 @@ namespace BL.Logic.AdminCore
         //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
         //}
 
+        public IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
+        {
+            var newFilter = new FilterAdminRole();
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                //newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.AdminRoles, ftSearch.FullTextSearchString);
+                newFilter.Name = ftSearch.FullTextSearchString;
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+
+            return _adminDb.GetListRoles(context, newFilter, paging);
+        }
+
+        public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)
+        {
+            return _adminDb.GetListRoles(context, filter, paging);
+        }
+
+        public FrontAdminRole GetAdminRole(IContext context, int id)
+        {
+            return _adminDb.GetRoles(context, new FilterAdminRole {IDs = new List<int> { id } } ).FirstOrDefault();
+        }
+
         public IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter)
         {
             return _adminDb.GetRoles(context, filter);
@@ -269,7 +320,7 @@ namespace BL.Logic.AdminCore
         {
             int roleId = 0;
 
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 var roleType = new InternalAdminRoleType() { Code = code, Name = name };
                 CommonDocumentUtilities.SetLastChange(context, roleType);
@@ -310,11 +361,15 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] PositionRoles ...
-        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter)
+        public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter)
         {
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
 
+        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
+        {
+            return _adminDb.GetPositionRoles(context, filter);
+        }
         public FrontAdminPositionRole GetPositionRole(IContext context, int id)
         {
             return _adminDb.GetPositionRole(context, id);
@@ -351,13 +406,14 @@ namespace BL.Logic.AdminCore
 
             if (executors.Count() > 0)
             {
-                var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.Id).ToList() });
+                var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.AssignmentId).ToList() });
 
                 foreach (var executor in executors)
                 {
                     var e = new FrontDIPUserRolesExecutor()
                     {
-                        Id = executor.Id,
+                        Id = executor.AssignmentId,
+                        PositionId = executor.PositionId ?? -1,
                         Name = executor.PositionName,
                         StartDate = executor.StartDate,
                         EndDate = executor.EndDate,
@@ -397,7 +453,7 @@ namespace BL.Logic.AdminCore
             return flatTree;
         }
 
-        public void AddAllPositionRoleForUser(IContext context, ModifyDictionaryPositionExecutor positionExecutor)
+        public void AddAllPositionRoleForUser(IContext context, InternalDictionaryPositionExecutor positionExecutor)
         {
             var positionRoles = _adminDb.GetInternalPositionRoles(context, new FilterAdminPositionRole() { PositionIDs = new List<int> { positionExecutor.PositionId } });
 
@@ -423,7 +479,7 @@ namespace BL.Logic.AdminCore
         #endregion
 
         #region [+] DepartmentAdmin ...
-        public IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId)
+        public IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId)
         {
             return _adminDb.GetDepartmentAdmins(context, departmentId);
         }
@@ -473,7 +529,7 @@ namespace BL.Logic.AdminCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForDIPSubordinations(context, positionId, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForDIPSubordinations(context, positionId, new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter.IsActive
                 });
@@ -688,7 +744,7 @@ namespace BL.Logic.AdminCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForDIPRJournalPositions(context, positionId, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForDIPRJournalPositions(context, positionId, new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter.IsActive
                 });
@@ -823,6 +879,16 @@ namespace BL.Logic.AdminCore
             RegGr = rGr;
         }
         #endregion
+
+        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
+        {
+            return _adminDb.GetUserPermissions(context);
+        }
+
+        public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)
+        {
+            return _adminDb.GetRolePermissions(context, filter);
+        }
 
     }
 }

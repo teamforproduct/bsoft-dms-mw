@@ -12,49 +12,45 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAddressTypeCommand : BaseDictionaryCommand
     {
-       
-        protected ModifyDictionaryAddressType Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAddressType))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAddressType)_param;
-            }
-        }
+        private AddAddressType Model { get { return GetModel<AddAddressType>(); } }
 
         public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {
-            _adminService.VerifyAccess(_context, CommandType,false,true);
+            _adminService.VerifyAccess(_context, CommandType, false, true);
 
             Model.Code?.Trim();
             Model.Name?.Trim();
 
-            //if (_dictDb.ExistsAddressTypeSpecCode(_context, Model.Id)) throw new ();
 
-            var spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType
+
+            var filter = new FilterDictionaryAddressType
             {
                 CodeExact = Model.Code,
-                NotContainsIDs = new List<int> { Model.Id }
-            });
-            if (spr != null)
-            {
-                throw new DictionaryAddressTypeCodeNotUnique(Model.Code);
-            }
+            };
 
-            spr = _dictDb.GetInternalDictionaryAddressType(_context, new FilterDictionaryAddressType
+            if (TypeModelIs<ModifyAddressType>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyAddressType>().Id }; }
+
+            var spr = _dictDb.GetInternalDictionaryAddressType(_context, filter);
+
+            if (spr != null) throw new DictionaryAddressTypeCodeNotUnique(Model.Code);
+
+
+
+
+            filter = new FilterDictionaryAddressType
             {
                 NameExact = Model.Name,
-                NotContainsIDs = new List<int> { Model.Id }
-            });
-            if (spr != null)
-            {
-                throw new DictionaryAddressTypeNameNotUnique(Model.Name);
-            }
+            };
+
+            if (TypeModelIs<ModifyAddressType>())
+            { filter.NotContainsIDs = new List<int> { GetModel<ModifyAddressType>().Id }; }
+
+            spr = _dictDb.GetInternalDictionaryAddressType(_context, filter);
+
+            if (spr != null) throw new DictionaryAddressTypeNameNotUnique(Model.Name);
 
             return true;
         }

@@ -10,21 +10,22 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public EnumSendTypes SendType { get; set; }
-        public int? SourcePositionId { get; set; }
         public int? TargetPositionId { get; set; }
         public int? TargetAgentId { get; set; }
 
         public int? TaskId { get; set; }
         public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
-
-        public Nullable<DateTime> SelfDueDate { get; set; }
+        public string SelfDescription { get; set; }
         public int? SelfDueDay { get; set; }
-        public Nullable<DateTime> SelfAttentionDate { get; set; }
+        public int? SelfAttentionDay { get; set; }
 
         public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
+        public string TaskName { get; set; }
+        
         public int Stage { get; set; }
+        public EnumStageTypes? StageType { get; set; }
         public int? DueDay { get; set; }
         public EnumDocumentAccesses AccessLevel { get; set; }
 
@@ -32,31 +33,37 @@ namespace BL.Model.DocumentCore.InternalModel
         {
         }
 
-        public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendLists list)
+        public InternalTemplateDocumentSendList(AddTemplateDocumentSendLists model)
         {
-            this.Id =list.Id ?? -1;
-            this.DocumentId=list.DocumentId;
-            this.SendType = list.SendType;
-            this.SourcePositionId = list.SourcePositionId;
-            this.TargetPositionId = list.TargetPositionId;
-            this.TargetAgentId = list.TargetAgentId;
-            this.TaskId = list.TaskId;
-            this.IsWorkGroup = list.IsWorkGroup;
-            this.IsAddControl = list.IsAddControl;
-
-            this.SelfDueDate = list.SelfDueDate;
-            this.SelfDueDay = list.SelfDueDay;
-            this.SelfAttentionDate = list.SelfAttentionDate;
-
-            this.IsAvailableWithinTask = list.IsAvailableWithinTask;
-            this.Description= list.Description;
-            this.Stage = list.Stage;
-            this.DueDay=list.DueDay;
-            this.AccessLevel = list.AccessLevel;
-            this.LastChangeDate = list.LastChangeDate;
-            this.LastChangeUserId = list.LastChangeUserId;
+            SetInternalTemplateDocumentSendList(model);
         }
 
+        public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendLists model)
+        {
+            Id = model.Id;
+            SetInternalTemplateDocumentSendList(model);
+        }
+
+        private void SetInternalTemplateDocumentSendList(AddTemplateDocumentSendLists model)
+        {
+            DocumentId = model.DocumentId;
+            SendType = model.SendType;
+            StageType = model.StageType;
+            TargetPositionId = model.TargetPositionId;
+            TargetAgentId = model.TargetAgentId;
+            TaskId = model.TaskId;
+            IsWorkGroup = model.IsWorkGroup;
+            IsAddControl = model.IsAddControl;
+            SelfDescription = model.SelfDescription;
+            SelfDueDay = model.SelfDueDay;
+            SelfAttentionDay = model.SelfAttentionDay;
+
+            IsAvailableWithinTask = model.IsAvailableWithinTask;
+            Description = model.Description;
+            Stage = model.Stage;
+            DueDay = model.DueDay;
+            AccessLevel = model.AccessLevel;
+        }
 
     }
 }

@@ -2,40 +2,48 @@
 using System.Collections.Generic;
 using BL.Model.Enums;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontTemplateDocument
+    /// <summary>
+    /// Модель шаблона документа для фронта
+    /// </summary>
+    public class FrontTemplateDocument : ModifyTemplateDocument
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool IsHard { get; set; }
-        public bool IsForProject { get; set; }
-        public bool IsForDocument { get; set; }
-        public bool IsActive { get; set; }
-        public EnumDocumentDirections DocumentDirection { get; set; }
+        
+        /// <summary>
+        /// Название гаправления
+        /// </summary>
         public string DocumentDirectionName { get; set; }
-
-        public int DocumentTypeId { get; set; }
+        /// <summary>
+        /// Название типа документа
+        /// </summary>
         public string DocumentTypeName { get; set; }
-
-        public int? DocumentSubjectId { get; set; }
+        
+        /// <summary>
+        /// Название тематики документа
+        /// </summary>
         public string DocumentSubjectName { get; set; }
-        public string Description { get; set; }
-        public int? RegistrationJournalId { get; set; }
+
+        /// <summary>
+        /// Название журнала регистрации
+        /// </summary>
         public string RegistrationJournalName { get; set; }
-
-        public int? SenderAgentId { get; set; }
+        /// <summary>
+        /// Название Контрагента, от которого получен документ - только для входящих
+        /// </summary>
         public string SenderAgentName { get; set; }
-        public int? SenderAgentPersonId { get; set; }
+        
+        /// <summary>
+        /// Название Контактное лицо в организации
+        /// </summary>
         public string SenderAgentPersonName { get; set; }
-
-        public string Addressee { get; set; }
-
-        public virtual IEnumerable<FrontTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
-        public virtual IEnumerable<FrontTemplateDocumentSendList> SendLists { get; set; }
-
-        public IEnumerable<FrontPropertyValue> Properties { get; set; }
-
+        
+        /// <summary>
+        /// Есть ли документы, созданные по шаблону
+        /// </summary>
+        public bool? IsUsedInDocument { get; set; }
+        
     }
 }

@@ -9,6 +9,7 @@ using System;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.CrossCutting.DependencyInjection;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -37,6 +38,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             _actionRecords =
                 _document.Waits.Where(
                     x =>
@@ -97,7 +100,7 @@ namespace BL.Logic.DocumentCore.Commands
             //subscription.SubscriptionStates = EnumSubscriptionStates.No;
             //CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
 
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
                 if (sendList != null)

@@ -10,11 +10,11 @@ using BL.Logic.SystemServices.AutoPlan;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [RoutePrefix("api/v2/DocumentSendLists")]
+    [RoutePrefix(ApiPrefix.V2 + "DocumentSendLists")]
     public class DocumentSendListsController : ApiController
     {
         /// <summary>
-        /// Получение записи плана работы над документом
+        /// Получение записи плана работы над документом use V3
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Запись плана работы над документом</returns>
@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение записей плана работы над документом
+        /// Получение записей плана работы над документом use V3
         /// </summary>
         /// <param name="documentId"></param>
         /// <returns>Записи плана работы над документом</returns>
@@ -40,20 +40,23 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление записи плана работы над документом
+        /// Добавление записи плана работы над документом use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная запись плана работы над документом</returns>
-        public IHttpActionResult Post([FromBody]ModifyDocumentSendList model)
+        public IHttpActionResult Post([FromBody]AddDocumentSendList model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var newId = (int)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
-            return Get(newId);
+            var newId = docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, ctx, model);
+            if (newId == null)
+                return new JsonResult(true, this);
+            else
+                return Get((int)newId);
         }
 
         /// <summary>
-        /// Добавление плана работы над документом по стандартному списку
+        /// Добавление плана работы над документом по стандартному списку - don't use
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененные записи плана работы над документом</returns>
@@ -66,7 +69,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Изменение записи плана работы над документом
+        /// Изменение записи плана работы над документом use V3
         /// </summary>
         /// <param name="id">ИД записи плана работы над документом</param>
         /// <param name="model"></param>
@@ -74,14 +77,14 @@ namespace DMS_WebAPI.Controllers.Documents
         public IHttpActionResult Put(int id, [FromBody]ModifyDocumentSendList model)
         {
             model.Id = id;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             docProc.ExecuteAction(EnumDocumentActions.ModifyDocumentSendList, ctx, model);
             return Get(id);
         }
 
         /// <summary>
-        /// Удаление записи плана работы над документом
+        /// Удаление записи плана работы над документом use V3
         /// </summary>
         /// <param name="id">ИД записи плана работы над документом</param>
         /// <returns></returns>
@@ -94,7 +97,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Ручной запуск записи плана работы на исполнение
+        /// Ручной запуск записи плана работы на исполнение use V3
         /// </summary>
         /// <param name="id">ИД пункта плана</param>
         /// <returns></returns>
@@ -109,7 +112,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение списка доступных команд по документу
+        /// Получение списка доступных команд для работы с планами по документу use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns>Массив команд</returns>
@@ -122,6 +125,22 @@ namespace DMS_WebAPI.Controllers.Documents
             var actions = cmdService.GetDocumentSendListActions(ctx, id);
 
             return new JsonResult(actions, this);
+        }
+
+        /// <summary>
+        /// Возвращает список досылки для связанных документов use V3
+        /// </summary>
+        /// <param name="model">модель</param>
+        /// <returns>Массив команд</returns>
+        [Route("AdditinalLinkedDocumentSendLists")]
+        [HttpPost]
+        public IHttpActionResult AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+            var sendList = docProc.GetAdditinalLinkedDocumentSendLists(ctx, model);
+
+            return new JsonResult(sendList, this);
         }
 
     }

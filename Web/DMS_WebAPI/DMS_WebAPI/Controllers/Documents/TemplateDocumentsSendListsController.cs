@@ -8,6 +8,8 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Controllers.Documents
 {
@@ -21,6 +23,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение всех списков рассылок шаблона документов
         /// </summary>
         /// <returns>Список шаблонов документов</returns>
+        [ResponseType(typeof(List<FrontTemplateDocumentSendList>))]
         public IHttpActionResult Get([FromUri]FilterTemplateDocumentSendList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -34,6 +37,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="id">ИД списка рассылки</param>
         /// <returns>Шаблон документа</returns>
+        [ResponseType(typeof(FrontTemplateDocumentSendList))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

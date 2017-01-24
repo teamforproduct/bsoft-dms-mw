@@ -50,6 +50,11 @@ namespace BL.Database.SystemDb
         IEnumerable<TreeItem> GetSystemActionsForTree(IContext context, int roleId, FilterSystemAction filter);
         #endregion
 
+        #region [+] Permissions
+        IEnumerable<InternalPermissions> GetInternalPermissions(IContext ctx, FilterSystemPermissions filter);
+        int GetPermissionId(IContext context, string module, string feture, string accessType);
+        #endregion
+
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);
@@ -119,6 +124,8 @@ namespace BL.Database.SystemDb
 
         int AddSystemDate(IContext ctx, DateTime date);
         DateTime GetSystemDate(IContext ctx);
+
+        void RefreshModuleFeature(IContext context);
 
     }
 }

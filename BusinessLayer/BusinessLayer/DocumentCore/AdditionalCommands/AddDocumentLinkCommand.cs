@@ -3,11 +3,13 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.Common;
-
+using System.Linq;
+using BL.Model.DocumentCore.InternalModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-    public class AddDocumentLinkCommand: BaseDocumentCommand
+    public class AddDocumentLinkCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
@@ -24,23 +26,26 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddDocumentLink) _param;
+                return (AddDocumentLink)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.ExecutorPositionId != positionId
-                )
-            {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
-            }
+            //if (_document.ExecutorPositionId != positionId
+            //    )
+            //{
+            //    return false;
+            //}
 
             return true;
         }
 
         public override bool CanExecute()
         {
+            _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddDocumentLinkPrepare(_context, Model);
             if (_document?.Id == null || _document?.ParentDocumentId == null)
             {
@@ -50,8 +55,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new DocumentHasAlreadyHasLink();
             }
-            _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();
@@ -62,7 +66,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.AddLink);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _document.Id, EnumEventTypes.AddLink);
+            if (!newEvent.SourcePositionExecutorAgentId.HasValue)
+            {
+                throw new ExecutorAgentForPositionIsNotDefined();
+            }
+            _document.ExecutorPositionId = newEvent.SourcePositionId ?? (int)EnumSystemPositions.AdminPosition;
+            _document.ExecutorPositionExecutorAgentId = newEvent.SourcePositionExecutorAgentId.Value;
+            _document.ExecutorPositionExecutorTypeId = newEvent.SourcePositionExecutorTypeId;
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             _operationDb.AddDocumentLink(_context, _document);
             return null;
         }

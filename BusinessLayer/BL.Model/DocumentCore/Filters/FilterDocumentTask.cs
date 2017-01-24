@@ -19,5 +19,9 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
+        /// <summary>
+        /// ИД должности для рассчета ответственного исполнителя в рабочей группе
+        /// </summary>
+        public int? ResponsibleExecutorForPositionId { get; set; }
     }
 }

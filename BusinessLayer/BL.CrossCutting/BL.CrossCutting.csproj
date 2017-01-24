@@ -78,6 +78,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +91,7 @@
     <Compile Include="Helpers\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\Transactions.cs" />
     <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Interfaces\ISystemCommand.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

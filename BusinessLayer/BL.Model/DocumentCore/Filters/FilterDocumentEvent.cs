@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using BL.Model.SystemCore.Filters;
 using System;
 using System.Collections.Generic;
@@ -38,11 +39,13 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Дата "с" для отбора по дате событий документа
         /// </summary>
-        public DateTime? FromDate { get; set; }
+        public DateTime? FromDate { get { return _FromDate; } set { _FromDate = value.ToUTC(); } }
+        private DateTime? _FromDate;
         /// <summary>
         /// Дата "по" для отбора по дате событий документа
         /// </summary>
-        public DateTime? ToDate { get; set; }
+        public DateTime? ToDate { get { return _ToDate; } set { _ToDate = value.ToUTC(); } }
+        private DateTime? _ToDate;
         /// <summary>
         /// Массив ИД типов событий
         /// </summary>

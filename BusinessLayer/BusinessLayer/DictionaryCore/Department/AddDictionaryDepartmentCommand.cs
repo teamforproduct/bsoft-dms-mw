@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Helpers;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -12,18 +13,21 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryDepartmentCommand : BaseDictionaryDepartmentCommand
     {
+        private AddDepartment Model { get { return GetModel<AddDepartment>(); } }
 
         public override object Execute()
         {
             try
             {
-                var dds = CommonDictionaryUtilities.DepartmentModifyToInternal(_context, Model);
+                var model = new InternalDictionaryDepartment(Model);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                CommonDocumentUtilities.SetLastChange(_context, model);
+
+                using (var transaction = Transactions.GetTransaction())
                 {
-                    if (string.IsNullOrEmpty(dds.Code)) dds.Code = GetCode();
+                    if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
 
-                    var id = _dictDb.AddDepartment(_context, dds);
+                    var id = _dictDb.AddDepartment(_context, model);
 
                     var frontObj = _dictDb.GetDepartment(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } });
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);

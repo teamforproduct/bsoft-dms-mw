@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentPapers Model
+        private AddDocumentPapers Model
         {
             get
             {
-                if (!(_param is ModifyDocumentPapers))
+                if (!(_param is AddDocumentPapers))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentPapers)_param;
+                return (AddDocumentPapers)_param;
             }
         }
 
@@ -45,12 +45,12 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.ModifyDocumentPaperPrepare(_context, Model);
+            _document = _operationDb.ModifyDocumentPaperPrepare(_context, null, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (!Model.IsCopy && _document.ExecutorPositionId != Model.CurrentPositionId)
+            if (!Model.IsCopy && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
                 throw new CouldNotPerformOperationWithPaper();
             }

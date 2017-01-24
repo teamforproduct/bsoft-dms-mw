@@ -38,6 +38,10 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Название
+        /// </summary>
+        public string NameExectly { get; set; }
+        /// <summary>
         /// Отрывок краткого содержания
         /// </summary>
         public string Description { get; set; }

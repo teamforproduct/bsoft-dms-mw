@@ -51,6 +51,11 @@ namespace BL.Database.DBModel.Document
 
         [Column("ExecutorPositionExeAgentId")]
         public int ExecutorPositionExecutorAgentId { get; set; }
+        [Column("ExecutorPositionExeTypeId")]
+        public int? ExecutorPositionExecutorTypeId { get; set; }
+
+        public bool? IsPdfCreated { get; set; }
+        public DateTime? LastPdfAccessDate { get; set; }        
 
         public int LastChangeUserId { get; set; }
 
@@ -67,6 +72,8 @@ namespace BL.Database.DBModel.Document
 
         [ForeignKey("ExecutorPositionExecutorAgentId")]
         public virtual DictionaryAgents ExecutorPositionExecutorAgent { get; set; }
+        [ForeignKey("ExecutorPositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes ExecutorPositionExecutorType { get; set; }
 
         [ForeignKey("TypeId")]
         public virtual DictionaryFileTypes Type { get; set; }

@@ -13,6 +13,9 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.SystemCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
+using BL.Model.SystemCore;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
@@ -23,7 +26,7 @@ namespace BL.Logic.AdminCore.Interfaces
         object ExecuteAction(EnumAdminActions act, IContext context, object param);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
-        IEnumerable<FrontAvailablePositions> GetAvailablePositions(IContext context);
+        IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext context, List<int> PositionIDs = null);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetEmployeeForContext(IContext context, string userId);
@@ -43,7 +46,10 @@ namespace BL.Logic.AdminCore.Interfaces
         #region [+] Roles ...
         //FrontAdminRole GetAdminRole(IContext context, int id);
         int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions);
+        FrontAdminRole GetAdminRole(IContext context, int id);
+        IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter);
+        IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging);
         #endregion
 
         #region [+] RoleActions ...
@@ -51,8 +57,8 @@ namespace BL.Logic.AdminCore.Interfaces
         #endregion
 
         #region [+] PositionRoles ...
-        IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminRole filter);
-
+        IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter);
+        IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter);
         FrontAdminPositionRole GetPositionRole(IContext context, int id);
         #endregion
 
@@ -60,11 +66,11 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<FrontAdminUserRole> GetUserRoles(IContext context, FilterAdminUserRole filter);
         //IEnumerable<FrontAdminUserRole> GetUserRolesDIP(IContext context, FilterAdminRole filter);
         IEnumerable<ITreeItem> GetUserRolesDIP(IContext context, int userId, FilterDIPAdminUserRole filter);
-        void AddAllPositionRoleForUser(IContext context, ModifyDictionaryPositionExecutor positionExecutor);
+        void AddAllPositionRoleForUser(IContext context, InternalDictionaryPositionExecutor positionExecutor);
         #endregion
 
         #region [+] DepartmentAdmins ...
-        IEnumerable<FrontDictionaryAgentEmployee> GetDepartmentAdmins(IContext context, int departmentId);
+        IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId);
         #endregion
 
         #region [+] Subordinations ...
@@ -77,5 +83,8 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter);
         IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter);
         #endregion
+
+        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
+        IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter);
     }
 }

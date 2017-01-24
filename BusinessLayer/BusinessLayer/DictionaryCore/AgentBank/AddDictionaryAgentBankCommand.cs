@@ -14,6 +14,8 @@ namespace BL.Logic.DictionaryCore
 {
     public class AddDictionaryAgentBankCommand : BaseDictionaryAgentBankCommand
     {
+        private AddAgentBank Model { get { return GetModel<AddAgentBank>(); } }
+
         public override object Execute()
         {
             try

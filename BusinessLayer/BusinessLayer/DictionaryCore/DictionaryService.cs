@@ -17,8 +17,9 @@ using BL.Model.FullTextSearch;
 using BL.Model.Common;
 using BL.Model.Tree;
 using BL.Logic.TreeBuilder;
-using BL.CrossCutting.Extensions;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
+using BL.Model.DictionaryCore.FrontMainModel;
+using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -41,41 +42,19 @@ namespace BL.Logic.DictionaryCore
         }
 
         #region DictionaryAgents
-        public FrontDictionaryAgent GetDictionaryAgent(IContext context, int id)
+        public FrontDictionaryAgent GetAgent(IContext context, int id)
         {
-
-            return _dictDb.GetAgent(context, id);
+            return GetAgents(context, new FilterDictionaryAgent { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
 
-        public IEnumerable<FrontDictionaryAgent> GetDictionaryAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgent();
             if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents, filter.FullTextSearchString, ResolveSearchResultAgents);
 
-                // Этот блок повторяется. Может его лучше упроцедурить
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear = ResolveSearchResultAgents(context, ftRes);
-                var resWithRanges = ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    // Зачем перетирать ID???
-                    newFilter.IDs = new List<int>();
-
-                    // Здесь нужно наклыдвать параметры paging, чтобы вытягивать из базы только нужное количество строк paging.PageSize
-                    // 
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
-                }
-                else
-                {
-                    // Зачем здесь нырок в базу?????
-                    // Зачем перетирать ID???
-                    newFilter.IDs = new List<int> { -1 };
-                }
             }
             else
             {
@@ -83,6 +62,31 @@ namespace BL.Logic.DictionaryCore
             }
 
             return _dictDb.GetAgents(context, newFilter, paging);
+        }
+
+        private List<int> GetIDsForDictionaryFullTextSearch(IContext context, EnumObjects dictionaryType, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
+        {
+            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+            var ftRes = ftService.SearchDictionary(context, filter);
+            if (filterFunct == null)
+            {
+                ftRes = ftRes.Where(x => x.ObjectType == dictionaryType);
+            }
+            else
+            {
+                ftRes = filterFunct(context, ftRes);
+            }
+
+            var resWithRanges =
+                ftRes.GroupBy(x => x.ObjectId)
+                    .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
+                    .OrderByDescending(x => x.Rate);
+            if (resWithRanges.Any())
+            {
+
+                return resWithRanges.Select(x => x.DocId).ToList();
+            }
+            return new List<int> { -1 };
         }
 
         private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
@@ -153,96 +157,81 @@ namespace BL.Logic.DictionaryCore
 
         #endregion DictionaryAgents
 
-        #region DictionaryAgentPersons
-        public FrontDictionaryAgentPerson GetDictionaryAgentPerson(IContext context, int id)
+        #region DictionaryAgentPeople
+        public FrontAgentPeoplePassport GetAgentPeoplePassport(IContext context, int id)
         {
+            return _dictDb.GetAgentPeoplePassport(context, id);
+        }
+        #endregion
 
+        #region DictionaryAgentPersons
+        public FrontAgentPerson GetAgentPerson(IContext context, int id)
+        {
             return _dictDb.GetAgentPerson(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentPerson> GetDictionaryAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        public IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryAgentPerson();
 
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListAgentPersons(context, filter, paging);
+        }
+
+        public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging)
+        {
             var newFilter = new FilterDictionaryAgentPerson();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAgentPersons);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons, ftSearch.FullTextSearchString);
             }
             else
             {
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentPersons(context, newFilter, paging);
+            return _dictDb.GetMainAgentPersons(context, newFilter, paging);
         }
         #endregion DictionaryAgentPersons
 
         #region DicionaryAgentEmployees
 
-        public FrontDictionaryAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
+        public FrontAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
             return _dictDb.GetAgentEmployee(context, id);
         }
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryAgentEmployee();
+
+            filter.IsActive = true;
+
             return _dictDb.GetAgentEmployeeList(context, filter, paging);
         }
 
-        public IEnumerable<FrontDictionaryAgentEmployee> GetDictionaryAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryAgentEmployee();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
 
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
             }
             else
             {
                 newFilter = filter;
             }
 
-            return _dictDb.GetAgentEmployees(context, newFilter, paging);
+            return _dictDb.GetAgentEmployeesMain(context, newFilter, paging);
 
         }
 
-        public FrontDictionaryAgentUserPicture GetDictionaryAgentUserPicture(IContext context, int employeeId)
+        public FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId)
         {
             var userPicture = _dictDb.GetInternalAgentImage(context, employeeId);
 
@@ -251,7 +240,7 @@ namespace BL.Logic.DictionaryCore
             if (userPicture.Image != null)
                 fileContect = Convert.ToBase64String(userPicture.Image);
 
-            var uPic = new FrontDictionaryAgentUserPicture()
+            var uPic = new FrontFile()
             {
                 Id = userPicture.Id,
                 FileContent = fileContect
@@ -274,48 +263,32 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
-        public FrontDictionaryAgentAddress GetDictionaryAgentAddress(IContext context, int id)
+        public FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id)
         {
-            return _dictDb.GetAgentAddress(context, id);
+            return GetAgentAddresses(context, new FilterDictionaryAgentAddress { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAgentAddress> GetDictionaryAgentAddresses(IContext context, int agentId, FilterDictionaryAgentAddress filter)
+        public IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter)
         {
-            return _dictDb.GetAgentAddresses(context, agentId, filter);
+            return _dictDb.GetAgentAddresses(context, filter);
         }
         #endregion
 
         #region DictionaryAddressTypes
 
-        public FrontDictionaryAddressType GetDictionaryAddressType(IContext context, int id)
+        public FrontAddressType GetDictionaryAddressType(IContext context, int id)
         {
             return _dictDb.GetAddressTypes(context, new FilterDictionaryAddressType { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        public IEnumerable<FrontAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
             var newFilter = new FilterDictionaryAddressType();
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
 
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
             }
             else
             {
@@ -324,6 +297,15 @@ namespace BL.Logic.DictionaryCore
 
 
             return _dictDb.GetAddressTypes(context, newFilter);
+        }
+
+        public IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter)
+        {
+            if (filter == null) filter = new FilterDictionaryAddressType();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListAddressTypes(context, filter);
         }
 
 
@@ -341,38 +323,39 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryAgentAccounts
 
-        #region DictionaryAgentCompanies
-        public FrontDictionaryAgentCompany GetDictionaryAgentCompany(IContext context, int id)
-        {
+        #region [+] ContaktPersons
 
+        public IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter)
+        {
+            return _dictDb.GetAgentPersonsWithContacts(context, filter);
+        }
+
+        #endregion
+
+
+        #region DictionaryAgentCompanies
+        public FrontAgentCompany GetAgentCompany(IContext context, int id)
+        {
             return _dictDb.GetAgentCompany(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentCompany> GetDictionaryAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryAgentCompany();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetAgentCompanyList(context, filter, paging);
+        }
+
+        public IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryAgentCompany();
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, ftSearch.FullTextSearchString, ResolveSearchResultAgentCompanies);
 
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear = ResolveSearchResultAgentCompanies(context, ftRes);
-
-
-                var resWithRanges =
-                    ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
             }
             else
             {
@@ -426,35 +409,18 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentBanks
-        public FrontDictionaryAgentBank GetDictionaryAgentBank(IContext context, int id)
+        public FrontAgentBank GetAgentBank(IContext context, int id)
         {
-            return _dictDb.GetAgentBank(context, id);// new FilterDictionaryAgentBank {  IDs = new List<int> { id } }, null ).FirstOrDefault();
+            return _dictDb.GetAgentBank(context, id);
         }
 
-        public IEnumerable<FrontDictionaryAgentBank> GetDictionaryAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging)
         {
             var newFilter = new FilterDictionaryAgentBank();
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, ftSearch.FullTextSearchString, ResolveSearchResultAgentBanks);
 
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString);
-                var ftClear = ResolveSearchResultAgentBanks(context, ftRes);
-
-
-                var resWithRanges =
-                    ftClear.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId).Take(paging.PageSize * paging.CurrentPage));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
             }
             else
             {
@@ -507,21 +473,27 @@ namespace BL.Logic.DictionaryCore
 
         #endregion DictionaryAgentCompanies
 
-        #region DictionaryAgentBanks
+        #region DictionaryAgentUser
         public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
         {
-
             return _dictDb.GetAgentUser(context, id);
         }
-        #endregion DictionaryAgentBanks
 
-        #region DictionaryContacts
-        public FrontDictionaryContact GetDictionaryContact(IContext context, int id)
+        public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
         {
-            return _dictDb.GetContact(context, id);
+            _dictDb.SetAgentUserLastPositionChose(context, 
+                new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LastPositionChose = string.Join(",",positionsIdList) });
         }
 
-        public IEnumerable<FrontDictionaryContact> GetDictionaryContacts(IContext context, FilterDictionaryContact filter)
+        #endregion DictionaryAgentUser
+
+        #region DictionaryContacts
+        public FrontDictionaryAgentContact GetAgentContact(IContext context, int id)
+        {
+            return _dictDb.GetContacts(context, new FilterDictionaryContact { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryAgentContact> GetAgentContacts(IContext context, FilterDictionaryContact filter)
         {
             return _dictDb.GetContacts(context, filter);
         }
@@ -544,24 +516,8 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryContactType, filter.FullTextSearchString);
 
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryContactType);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
             }
             else
             {
@@ -569,6 +525,15 @@ namespace BL.Logic.DictionaryCore
             }
 
             return _dictDb.GetContactTypes(context, newFilter);
+        }
+
+        public IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter)
+        {
+            if (filter == null) filter = new FilterDictionaryContactType();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListContactTypes(context, filter);
         }
         #endregion
 
@@ -591,6 +556,48 @@ namespace BL.Logic.DictionaryCore
         public string GetDepartmentPrefix(IContext context, int parentId)
         {
             return _dictDb.GetDepartmentPrefix(context, parentId);
+        }
+
+        public IEnumerable<ListItemWithPath> GetDepartmentShortList(IContext context, FilterTree filter, UIPaging paging)
+        {
+            var tree = GetRegistrationJournalsTree(context, filter);
+
+            var list = new List<ListItemWithPath>();
+
+            GetDepartmentShortList(tree, list, string.Empty);
+
+            return list;
+
+        }
+
+        private void GetDepartmentShortList(IEnumerable<ITreeItem> tree, List<ListItemWithPath> list, string path)
+        {
+
+            foreach (var treeItem in tree)
+            {
+                var name = treeItem.Name.Trim();
+
+                if (treeItem.ObjectId == (int)EnumObjects.DictionaryDepartments)
+                {
+                    var tmp = new ListItemWithPath
+                    {
+                        Id = treeItem.Id,
+                        Name = name,
+                        Path = path
+                    };
+
+                    list.Add(tmp);
+
+                    // чтобы лишний раз не пытаться выполнить GetDepartmentShortList для листа
+                    continue;
+                }
+
+                if (treeItem is FrontDictionaryDepartmentTreeItem)
+                { name = (treeItem as FrontDictionaryDepartmentTreeItem).Code.Trim() + " " + name; }
+
+                GetDepartmentShortList(treeItem.Childs, list, path + (path == string.Empty ? string.Empty : " -> ") + name);
+
+            }
         }
 
         #endregion DictionaryDepartments
@@ -627,34 +634,31 @@ namespace BL.Logic.DictionaryCore
         // следить за списком полей необхдимых в каждом конкретном случае
         public FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id)
         {
-            return _dictDb.GetDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetDocumentTypes(context, new FilterDictionaryDocumentType { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter)
+        public IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryDocumentType();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListDocumentTypes(context, filter, paging);
+        }
+
+        public IEnumerable<FrontDictionaryDocumentType> GetDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
+        {
+            return _dictDb.GetDocumentTypes(context, filter, paging);
+        }
+
+        public IEnumerable<FrontDictionaryDocumentType> GetMainDictionaryDocumentTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryDocumentType filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryDocumentType();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryAddressType);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, ftSearch.FullTextSearchString);
             }
             else
             {
@@ -662,10 +666,9 @@ namespace BL.Logic.DictionaryCore
             }
 
 
-            return _dictDb.GetDocumentTypes(context, newFilter);
+            return _dictDb.GetDocumentTypes(context, newFilter, paging);
 
         }
-
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
@@ -718,14 +721,18 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetPositions(context, filter);
         }
 
-        public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging)
         {
-            return _dictDb.GetPositionList(context, filter);
+            if (filter == null) filter = new FilterDictionaryPosition();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetPositionList(context, filter, paging);
         }
 
-        public void SetPositionOrder(IContext context, int positionId, int order)
+        public void SetPositionOrder(IContext context, ModifyPositionOrder model)
         {
-            var position = _dictDb.GetPosition(context, positionId);
+            var position = _dictDb.GetPosition(context, model.PositionId);
 
             if (position == null) return;
 
@@ -735,22 +742,22 @@ namespace BL.Logic.DictionaryCore
                 new FilterDictionaryPosition
                 {
                     DepartmentIDs = new List<int> { position.DepartmentId },
-                    NotContainsIDs = new List<int> { positionId }
+                    NotContainsIDs = new List<int> { model.PositionId }
                 });
 
-            SortPositoin sp = new SortPositoin() { Id = positionId, NewOrder = order };
+            SortPositoin sp = new SortPositoin() { Id = model.PositionId, NewOrder = model.Order };
 
-            if (order > positions.Count)
+            if (model.Order > positions.Count)
             {
                 positions.Add(sp);
             }
-            else if (order <= 1)
+            else if (model.Order <= 1)
             {
                 positions.Insert(0, sp);
             }
             else
             {
-                positions.Insert(order - 1, sp);
+                positions.Insert(model.Order - 1, sp);
             }
 
             int i = 0;
@@ -830,25 +837,7 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(filter.FullTextSearchString))
             {
-
-                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                var ftRes = ftService.SearchDictionary(context, filter.FullTextSearchString)
-                    .Where(x => x.ObjectType == EnumObjects.DictionaryRegistrationJournals);
-
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ObjectId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Count() })
-                        .OrderByDescending(x => x.Rate);
-
-                if (resWithRanges.Any())
-                {
-                    newFilter.IDs = new List<int>();
-                    newFilter.IDs.AddRange(resWithRanges.Select(x => x.DocId));
-                }
-                else
-                {
-                    newFilter.IDs = new List<int> { -1 };
-                }
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryRegistrationJournals, filter.FullTextSearchString);
 
             }
             else
@@ -886,7 +875,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter?.IsActive
                 });
@@ -905,6 +894,48 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
+        public IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging)
+        {
+            var tree = GetRegistrationJournalsTree(context, filter);
+
+            var list = new List<ListItemWithPath>();
+
+            GetRegistrationJournalShortList(tree, list, string.Empty);
+
+            return list;
+
+        }
+
+        private void GetRegistrationJournalShortList(IEnumerable<ITreeItem> tree, List<ListItemWithPath> list, string path)
+        {
+
+            foreach (var treeItem in tree)
+            {
+
+                if (treeItem.ObjectId == (int)EnumObjects.DictionaryRegistrationJournals)
+                {
+                    var tmp = new ListItemWithPath
+                    {
+                        Id = treeItem.Id,
+                        Name = treeItem.Name,
+                        Path = path
+                    };
+
+                    list.Add(tmp);
+
+                    // чтобы лишний раз не пытаться выполнить GetRegistrationJournalShortList для листа
+                    continue;
+                }
+
+                var name = treeItem.Name;
+
+                if (treeItem is FrontDictionaryDepartmentTreeItem)
+                { name = (treeItem as FrontDictionaryDepartmentTreeItem).Code.Trim() + " " + name; }
+
+                GetRegistrationJournalShortList(treeItem.Childs, list, path + (path == string.Empty ? string.Empty : " -> ") + name);
+            }
+        }
+
         #endregion DictionaryRegistrationJournals
 
         // Компании
@@ -912,10 +943,10 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id)
         {
 
-            return _dictDb.GetAgentClientCompanies(context, new FilterDictionaryAgentClientCompany { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetAgentClientCompanies(context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentClientCompany filter)
+        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter)
         {
 
             return _dictDb.GetAgentClientCompanies(context, filter);
@@ -946,6 +977,18 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionarySendTypes
 
+        #region DictionaryStageTypes
+        public FrontDictionaryStageType GetDictionaryStageType(IContext context, int id)
+        {
+            return _dictDb.GetStageTypes(context, new FilterDictionaryStageType { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontDictionaryStageType> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter)
+        {
+            return _dictDb.GetStageTypes(context, filter);
+        }
+        #endregion DictionaryStageTypes
+
         #region DictionaryStandartSendListContents
         public FrontDictionaryStandartSendListContent GetDictionaryStandartSendListContent(IContext context, int id)
         {
@@ -963,13 +1006,43 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryStandartSendLists
         public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
         {
-            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
         {
-            return _dictDb.GetStandartSendLists(context, filter);
+            return _dictDb.GetStandartSendLists(context, filter, null);
         }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            var newFilter = new FilterDictionaryStandartSendList();
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryStandartSendLists, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            var sendLists = _dictDb.GetStandartSendLists(context, filter, paging);
+
+            var res = sendLists.GroupBy(x => new { x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
+                 .OrderBy(x => x.Key.PositionName)
+                 .Select(x => new FrontMainDictionaryStandartSendList()
+                 {
+                     Id = x.Key.PositionId ?? -1,
+                     Name = x.Key.PositionName,
+                     ExecutorName = x.Key.PositionExecutorName,
+                     ExecutorTypeSuffix = x.Key.PositionExecutorTypeSuffix,
+                     SendLists = x.OrderBy(y => y.Name).ToList()
+                 });
+
+
+            return res;
+        }
+
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
@@ -986,21 +1059,40 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-        public IEnumerable<FrontDictionaryTag> GetDictionaryTags(IContext context, FilterDictionaryTag filter)
+        public IEnumerable<FrontMainTag> GetMainTags(IContext context, FullTextSearch ftSearch, FilterDictionaryTag filter, UIPaging paging)
         {
-            return _dictDb.GetTags(context, filter);
+            var newFilter = new FilterDictionaryTag();
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryTag, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+
+            return _dictDb.GetMainTags(context, filter, paging);
         }
 
-        public FrontDictionaryTag GetDictionaryTag(IContext context, int id)
+        public IEnumerable<ListItem> GetTagList(IContext context, FilterDictionaryTag filter, UIPaging paging)
         {
-            return _dictDb.GetTags(context, new FilterDictionaryTag { IDs = new List<int> { id } }).FirstOrDefault();
+            if (filter == null) filter = new FilterDictionaryTag();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetTagList(context, filter, paging);
+        }
+
+        public FrontTag GetTag(IContext context, int id)
+        {
+            return _dictDb.GetTag(context, id);
         }
         #endregion DictionaryTags
 
         #region AdminAccessLevels
         public FrontAdminAccessLevel GetAdminAccessLevel(IContext context, int id)
         {
-            return _dictDb.GetAdminAccessLevel(context, id);
+            return _dictDb.GetAdminAccessLevels(context, new FilterAdminAccessLevel { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext context, FilterAdminAccessLevel filter)
@@ -1018,19 +1110,30 @@ namespace BL.Logic.DictionaryCore
 
         public FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id)
         {
-            return _dictDb.GetCustomDictionaryTypeWithCustomDictionaries(context, id);
+            return GetCustomDictionaryTypes(context, new FilterCustomDictionaryType { IDs = new List<int> { id } }).FirstOrDefault();
         }
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
-        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter)
+        public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging)
         {
-            return _dictDb.GetCustomDictionaries(context, filter);
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                if (filter == null) filter = new FilterCustomDictionary();
+                filter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.CustomDictionaries, ftSearch.FullTextSearchString);
+            }
+
+            return _dictDb.GetCustomDictionaries(context, filter, paging);
+        }
+
+        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging)
+        {
+            return _dictDb.GetCustomDictionaries(context, filter, paging);
         }
 
         public FrontCustomDictionary GetCustomDictionary(IContext context, int id)
         {
-            return _dictDb.GetCustomDictionaries(context, new FilterCustomDictionary { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetCustomDictionaries(context, new FilterCustomDictionary { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
         #endregion CustomDictionaries
 
@@ -1050,7 +1153,7 @@ namespace BL.Logic.DictionaryCore
         {
             for (int c = 1; c <= 10; c++)
             {
-                int compID = _dictDb.AddAgentClientCompany(context, new InternalDictionaryAgentClientCompany()
+                int compID = _dictDb.AddAgentOrg(context, new InternalDictionaryAgentOrg()
                 {
                     Name = string.Concat("Компания №", string.Format("{0:00}", c)),
                     FullName = string.Concat("Компания номер ", string.Format("{0:00}", c)),
@@ -1151,8 +1254,8 @@ namespace BL.Logic.DictionaryCore
             {
                 executors = _dictDb.GetPositionExecutorsForTree(context, new FilterDictionaryPositionExecutor()
                 {
-                    StartDate = DateTime.UtcNow.StartOfDay(),
-                    EndDate = DateTime.UtcNow.EndOfDay(),
+                    StartDate = DateTime.UtcNow,
+                    EndDate = DateTime.UtcNow,
                     IsActive = filter.IsActive
                 });
             }
@@ -1176,7 +1279,7 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentClientCompany()
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter.IsActive
                 });

@@ -15,12 +15,11 @@ using System.Diagnostics;
 namespace DMS_WebAPI.Controllers.Documents
 {
     [Authorize]
-    [DimanicAuthorize]
-    [RoutePrefix("api/v2/Documents")]
+    [RoutePrefix(ApiPrefix.V2 + "Documents")]
     public class DocumentsController : ApiController
     {
         /// <summary>
-        /// Получение списка документов
+        /// Получение списка документов - don't use!
         /// </summary>
         /// <param name="filter">модель фильтра документов</param>
         /// <param name="paging">paging</param>
@@ -46,7 +45,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
 
         /// <summary>
-        /// Получение списка документов
+        /// Получение списка документов - use V3
         /// </summary>
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
@@ -68,12 +67,12 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Получение документа по ИД
+        /// Получение документа по ИД - use V3
         /// </summary>
         /// <param name="id">ИД Документа</param>
         /// <param name="filter">Фильтр для получения документа по ИД</param>
         /// <returns>Документ</returns>
-        public IHttpActionResult Get(int id, [FromUri]FilterDocumentById filter = null)
+        public IHttpActionResult Get(int id)
         {
             //var timeM = new System.Diagnostics.Stopwatch();
             //var timeDB = new System.Diagnostics.Stopwatch();
@@ -85,7 +84,7 @@ namespace DMS_WebAPI.Controllers.Documents
 
             //timeDB.Start();
             //timeDB1.Start();
-            var doc = docProc.GetDocument(ctx, id, filter);
+            var doc = docProc.GetDocument(ctx, id);
             //timeDB1.Stop();
 
             //timeDB2.Start();
@@ -103,7 +102,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Добавление документа по шаблону
+        /// Добавление документа по шаблону - use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Добавленный документ</returns>
@@ -128,7 +127,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Модификация документа 
+        /// Модификация документа - use V3
         /// </summary>
         /// <param name="model">Модель для обновления документа</param>
         /// <returns>Обновленный документ</returns>
@@ -155,7 +154,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Удаление документа 
+        /// Удаление документа - use V3
         /// </summary>
         /// <param name="id">ИД документа</param>
         /// <returns></returns>

@@ -16,18 +16,25 @@ namespace BL.Model.DocumentCore.InternalModel
         {
         }
 
-        public InternalTemplateDocumentRestrictedSendList(ModifyTemplateDocumentRestrictedSendLists model)
+        public InternalTemplateDocumentRestrictedSendList(AddTemplateDocumentRestrictedSendLists model)
         {
-            this.Id = model.Id ?? -1;
-            this.DocumentId = model.DocumentId;
-            this.PositionId = model.PositionId;
-            this.AccessLevel = model.AccessLevel;
-            this.LastChangeDate = model.LastChangeDate;
-            this.LastChangeUserId = model.LastChangeUserId;
-
+            SetInternalTemplateDocumentRestrictedSendList(model);
         }
 
-       
+        public InternalTemplateDocumentRestrictedSendList(ModifyTemplateDocumentRestrictedSendLists model)
+        {
+            Id = model.Id;
+            SetInternalTemplateDocumentRestrictedSendList(model);
+        }
+
+        private void SetInternalTemplateDocumentRestrictedSendList(AddTemplateDocumentRestrictedSendLists model)
+        {
+            DocumentId = model.DocumentId;
+            PositionId = model.PositionId;
+            AccessLevel = model.AccessLevel;
+        }
+
+
     }
 
 

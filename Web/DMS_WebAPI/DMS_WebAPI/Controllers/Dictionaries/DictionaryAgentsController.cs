@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// соответствующую выбранному типу
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryAgents")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryAgents")]
     public class DictionaryAgentsController : ApiController
     {
         /// <summary>
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryAgents(ctx, filter,paging);
+            var tmpDicts = tmpDictProc.GetAgents(ctx, filter,paging);
             var res=new JsonResult(tmpDicts, this);
             res.Paging = paging;
             return res;
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryAgent(ctx, id);
+            var tmpDict = tmpDictProc.GetAgent(ctx, id);
             return new JsonResult(tmpDict, this);
         }
         /// <summary>
@@ -125,7 +125,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             var fileContent = Convert.ToBase64String(buffer);
 
             var tmpStore= DmsResolver.Current.Get<ITempStorageService>();
-            var imgageId = tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.AgentId, 0, fileContent);
+            var imgageId = tmpStore.AddToStore(EnumObjects.DictionaryAgents, model.Id, 0, fileContent);
             return new JsonResult(imgageId, this);
         }
 
@@ -141,7 +141,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         [HttpGet]
         [Route("GetImage")]
-        [ResponseType(typeof(List<FrontDictionaryAgentUserPicture>))]
+        [ResponseType(typeof(FrontFile))]
         public IHttpActionResult GetImage([FromUri] int AgentId)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -152,13 +152,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
 
         [HttpGet]
         [Route("GetImageOnEdit")]
-        [ResponseType(typeof(FrontDictionaryAgentUserPicture))]
+        [ResponseType(typeof(FrontFile))]
         public IHttpActionResult GetImageOnEdit([FromUri] int ImageId)
         {
             var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
             var img = tmpStore.GetStoreObject(ImageId) as string;
 
-            var res = new FrontDictionaryAgentUserPicture
+            var res = new FrontFile
             {
                 Id = 0,
                 FileContent = img

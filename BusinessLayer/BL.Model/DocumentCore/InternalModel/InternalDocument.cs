@@ -102,6 +102,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int TemplateDocumentId { get; set; }
         public int ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
+        public int? ExecutorPositionExecutorTypeId { get; set; }
         public DateTime CreateDate { get; set; }
         public bool? IsRegistered { get; set; }
         public int? RegistrationJournalId { get; set; }
@@ -138,13 +139,14 @@ namespace BL.Model.DocumentCore.InternalModel
         // public int NewEventCount { get; set; }
         // public int AttachedFilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
-        public int? NewLinkId { get; set; }
+
 
         public string Hash { get; set; }
         public string FullHash { get; set; }
         public string InternalSign { get; set; }
         public string CertificateSign { get; set; }
-        
+        public int? OldLinkId { get; set; }
+        public int? NewLinkId { get; set; }
         public InternalTemplateDocument TemplateDocument { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<InternalDocumentSendList> SendLists { get; set; }
@@ -153,7 +155,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalDocumentEvent> Events { get; set; }
         public IEnumerable<InternalDocumentAccess> Accesses { get; set; }
         public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
-        public IEnumerable<InternalDocument> LinkedDocuments { get; set; }
+        public IEnumerable<InternalDocumentLink> Links { get; set; }
+        public IEnumerable<InternalDocumentLink> OldLinks { get; set; }
+        public IEnumerable<int> OldLinkSet { get; set; }
+        public IEnumerable<int> NewLinkSet { get; set; }
         public IEnumerable<InternalDocumentWait> Waits { get; set; }
         public IEnumerable<InternalDocumentSubscription> Subscriptions { get; set; }
         public IEnumerable<InternalDocumentTask> Tasks { get; set; }

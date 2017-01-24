@@ -12,7 +12,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     public class ModifyTemplatePaperCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
-        private InternalTemplateDocument _document;
+        private new InternalTemplateDocument _document;
         private InternalTemplateDocumentPaper _paper;
 
         public ModifyTemplatePaperCommand(ITemplateDocumentsDbProcess operationDb)

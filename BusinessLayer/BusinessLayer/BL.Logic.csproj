@@ -67,18 +67,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.ReportSource.dll</HintPath>
-    </Reference>
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Thirdparty\Crystal Reports\CrystalDecisions.Shared.dll</HintPath>
-    </Reference>
     <Reference Include="LinqKit, Version=1.1.7.2, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\LinqKit.1.1.7.2\lib\net461\LinqKit.dll</HintPath>
       <Private>True</Private>
@@ -97,8 +85,6 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -111,10 +97,13 @@
     <Compile Include="AdminCore\DepartmentAdmin\AddDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\BaseDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\DeleteDepartmentAdminCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\BasePositionRoleCommand.cs" />
+    <Compile Include="AdminCore\PositionRole\SetPositionRoleCommand.cs" />
     <Compile Include="AdminCore\PositionRole\DuplicatePositionRolesCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\BaseRoleActionCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\SetRoleActionByObjectCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\BaseRolePermissionCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByAccessTypeCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleFeatureCommand.cs" />
+    <Compile Include="AdminCore\RolePermissions\SetRolePermissionCommand.cs" />
     <Compile Include="AdminCore\Role\BaseRoleCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\BaseRJournalPositionCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\DuplicateRJournalPositionCommand.cs" />
@@ -130,21 +119,11 @@
     <Compile Include="AdminCore\Subordination\SetSubordinationByDepartmentCommand.cs" />
     <Compile Include="AdminCore\Subordination\SetSubordinationCommand.cs" />
     <Compile Include="AdminCore\Subordination\BaseSubordinationCommand.cs" />
-    <Compile Include="AdminCore\UserRole\AddUserRoleCommand.cs" />
-    <Compile Include="AdminCore\UserRole\DeleteUserRolesByUserCommand.cs" />
-    <Compile Include="AdminCore\UserRole\DeleteUserRolesByPositionExecutorCommand.cs" />
-    <Compile Include="AdminCore\UserRole\DeleteUserRoleCommand.cs" />
-    <Compile Include="AdminCore\UserRole\BaseUserRoleCommand.cs" />
-    <Compile Include="AdminCore\UserRole\ModifyUserRoleCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\AddRoleActionCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\DeleteRoleActionCommand.cs" />
-    <Compile Include="AdminCore\RoleAction\ModifyRoleActionCommand.cs" />
     <Compile Include="AdminCore\Role\AddRoleCommand.cs" />
     <Compile Include="AdminCore\Role\DeleteRoleCommand.cs" />
     <Compile Include="AdminCore\Role\ModifyRoleCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\AddPositionRoleCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\DeletePositionRoleCommand.cs" />
-    <Compile Include="AdminCore\PositionRole\ModifyPositionRoleCommand.cs" />
+    <Compile Include="AdminCore\UserRole\SetUserRoleByAssignmentCommand.cs" />
+    <Compile Include="AdminCore\UserRole\SetUserRoleCommand.cs" />
     <Compile Include="AdminCore\Verify\VerifyAccessCommand.cs" />
     <Compile Include="ClientsCore\ClientService.cs" />
     <Compile Include="ClientsCore\Interfaces\IClientService.cs" />
@@ -181,9 +160,7 @@
     <Compile Include="DictionaryCore\AgentCompany\BaseDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentCompany\ModifyDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\BaseDictionaryContactCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\BaseDictionaryAgentUserCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserLanguageCommand.cs" />
-    <Compile Include="DictionaryCore\AgentUser\ModifyDictionaryAgentUserCommand.cs" />
+    <Compile Include="DictionaryCore\AgentPeople\ModifyDictionaryAgentEmployeePassportCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\AddDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\DeleteDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\BaseDictionaryAgentEmployeeCommand.cs" />
@@ -200,6 +177,7 @@
     <Compile Include="DictionaryCore\Agent\ModifyDictionaryAgentCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\AddDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\DeleteDictionaryContactTypeCommand.cs" />
+    <Compile Include="DictionaryCore\ContactType\BaseDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\ModifyDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\AddDictionaryContactCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\DeleteDictionaryContactCommand.cs" />
@@ -208,11 +186,14 @@
     <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\DeleteCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\AddCustomDictionaryTypeCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\BaseCustomDictionaryCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryCommand.cs" />
+    <Compile Include="DictionaryCore\CustomDictionary\BaseCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\Department\BaseDictionaryDepartmentCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
     <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
+    <Compile Include="DictionaryCore\DocumentType\BaseDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteDictionaryPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\BaseDictionaryPositionExecutorCommand.cs" />
@@ -230,6 +211,7 @@
     <Compile Include="DictionaryCore\Department\ModifyDictionaryDepartmentCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\AddDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\DeleteDictionaryRegistrationJournalCommand.cs" />
+    <Compile Include="DictionaryCore\RegistrationJournal\BaseDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\ModifyDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\AddDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentSubject\DeleteDictionaryDocumentSubjectCommand.cs" />
@@ -239,10 +221,13 @@
     <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListContentCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\DeleteDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\DeleteDictionaryStandartSendListContentCommand.cs" />
+    <Compile Include="DictionaryCore\StandartSendList\BaseDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\ModifyDictionaryStandartSendListCommand.cs" />
+    <Compile Include="DictionaryCore\StandartSendList\BaseDictionaryStandartSendListContentCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\ModifyDictionaryStandartSendListContentCommand.cs" />
     <Compile Include="DictionaryCore\Tag\AddDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\Tag\DeleteDictionaryTagCommand.cs" />
+    <Compile Include="DictionaryCore\Tag\BaseDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\Tag\ModifyDictionaryTagCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\AddDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\ModifyDictionaryDocumentTypeCommand.cs" />
@@ -251,8 +236,12 @@
     <Compile Include="DocumentCore\AdditionalCommands\RejectDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AcceptDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\RenameDocumentFileCommand.cs" />
+    <Compile Include="DocumentCore\Commands\AskPostponeDueDateDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\CancelPostponeDueDateDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\CopyTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\AddTemplatePaperCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\DeleteTemplatePaperCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateTaskCommand.cs" />
@@ -401,8 +390,10 @@
     <Compile Include="PropertyCore\PropertyService.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="SystemServices\QueueWorker\IQueueTask.cs" />
+    <Compile Include="SystemServices\QueueWorker\IQueueWorkerService.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
+    <Compile Include="SystemServices\QueueWorker\QueueWorkerService.cs" />
     <Compile Include="SystemServices\TempStorage\ITempStorageService.cs" />
     <Compile Include="SystemServices\TempStorage\TempStorageService.cs" />
     <Compile Include="TreeBuilder\Tree.cs" />

@@ -4,6 +4,8 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
 using BL.Model.Enums;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -31,7 +33,10 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (_document.IsRegistered.HasValue && _document.IsRegistered.Value
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
+            if (_document.IsRegistered.HasValue && _document.IsRegistered.Value 
+                && !_document.Subscriptions.Any(x=>x.SubscriptionStatesId == (int)EnumSubscriptionStates.Sign && x.SubscriptionStatesIsSuccess == true)
                 )
             {
                 return false;
@@ -53,6 +58,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DictionaryRecordWasNotFound();
             }
+            if (Model.IsRegistered && !_document.Subscriptions.Any(x => x.SubscriptionStatesId == (int)EnumSubscriptionStates.Sign && x.SubscriptionStatesIsSuccess == true))
+            {
+                throw new DocumentCouldNotBeRegisteredNoValidSign();
+            }
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new DocumentHasAlredyBeenRegistered();
@@ -62,7 +71,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var transaction = Transactions.GetTransaction())
             {
                 CommonDocumentUtilities.SetLastChange(_context, _document);
                 _document.IsRegistered = Model.IsRegistered;

@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Отделы всегда подчинены компаниям, могут подчиняться вышестоящим отделам.
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryDepartments")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryDepartments")]
     public class DictionaryDepartmentsController : ApiController
     {
         /// <summary>
@@ -69,7 +69,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model">ModifyDictionaryDictionaryDepartment</param>
         /// <returns>Возвращает добавленную запись</returns>
-        public IHttpActionResult Post([FromBody]ModifyDictionaryDepartment model)
+        public IHttpActionResult Post([FromBody]AddDepartment model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDict = DmsResolver.Current.Get<IDictionaryService>();
@@ -83,7 +83,7 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id">int</param>
         /// <param name="model">ModifyDictionaryDictionaryDepartment</param>
         /// <returns>Возвращает измененную запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryDepartment model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyDepartment model)
         {
             // Спецификация REST требует отдельного указания ID, несмотря на то, что параметр ID есть в ModifyDictionaryDictionaryDepartment
 

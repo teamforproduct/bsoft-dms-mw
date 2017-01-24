@@ -5,36 +5,13 @@ using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyCustomDictionaryCommand : BaseDictionaryCommand
+    public class ModifyCustomDictionaryCommand : BaseCustomDictionaryCommand
     {
-        private ModifyCustomDictionary Model
-        {
-            get
-            {
-                if (!(_param is ModifyCustomDictionary))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyCustomDictionary)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
-        public override bool CanExecute()
-        {
-            //pss А где _adminService.VerifyAccess(_context, CommandType, false);
-
-            DictionaryModelVerifying.VerifyCostomDictionary(_context, _dictDb, Model);
-            
-            return true;
-        }
+        private ModifyCustomDictionary Model { get { return GetModel<ModifyCustomDictionary>(); } }
 
         public override object Execute()
         {

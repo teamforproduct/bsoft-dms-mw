@@ -31,6 +31,7 @@ namespace BL.Database.Common
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
                     ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
+                    ExecutorPositionExecutorTypeId = document.ExecutorPositionExecutorTypeId,
                     LastChangeUserId = document.LastChangeUserId,
                     LastChangeDate = document.LastChangeDate,
                     SenderAgentId = document.SenderAgentId,
@@ -79,9 +80,11 @@ namespace BL.Database.Common
                     TargetAgentId = evt.TargetAgentId,
                     TargetPositionId = evt.TargetPositionId,
                     TargetPositionExecutorAgentId = evt.TargetPositionExecutorAgentId,
+                    TargetPositionExecutorTypeId = evt.TargetPositionExecutorTypeId,
                     SourceAgentId = evt.SourceAgentId,
                     SourcePositionId = evt.SourcePositionId,
                     SourcePositionExecutorAgentId = evt.SourcePositionExecutorAgentId,
+                    SourcePositionExecutorTypeId = evt.SourcePositionExecutorTypeId,
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
 
@@ -117,6 +120,7 @@ namespace BL.Database.Common
                     AgentId = task.AgentId,
                     PositionId = task.PositionId,
                     PositionExecutorAgentId = task.PositionExecutorAgentId,
+                    PositionExecutorTypeId = task.PositionExecutorTypeId,
                 };
         }
 
@@ -154,6 +158,7 @@ namespace BL.Database.Common
                     AttentionDate = wait.AttentionDate,
                     DocumentId = wait.DocumentId,
                     DueDate = wait.DueDate ?? DateTime.MaxValue,
+                    PlanDueDate = wait.PlanDueDate,
                     LastChangeDate = wait.LastChangeDate,
                     LastChangeUserId = wait.LastChangeUserId,
                     OffEventId = wait.OffEventId,
@@ -206,17 +211,18 @@ namespace BL.Database.Common
                 {
                     Id = sendList.Id,
                     DocumentId = sendList.DocumentId,
-                    Stage = sendList.Stage,
+                    Stage = sendList.Stage.Value,
                     SendTypeId = (int)sendList.SendType,
-
+                    StageTypeId = (int?)sendList.StageType,
                     TaskId = sendList.TaskId,
                     IsAvailableWithinTask = sendList.IsAvailableWithinTask,
                     IsWorkGroup = sendList.IsWorkGroup,
                     IsAddControl = sendList.IsAddControl,
+                    SelfDescription = sendList.SelfDescription,
                     SelfDueDate = sendList.SelfDueDate,
                     SelfDueDay = sendList.SelfDueDay,
                     SelfAttentionDate = sendList.SelfAttentionDate,
-
+                    SelfAttentionDay = sendList.SelfAttentionDay,
                     Description = sendList.Description,
                     AddDescription = sendList.AddDescription,
                     DueDate = sendList.DueDate,
@@ -229,9 +235,11 @@ namespace BL.Database.Common
                     SourceAgentId = sendList.SourceAgentId,
                     SourcePositionId = sendList.SourcePositionId,
                     SourcePositionExecutorAgentId = sendList.SourcePositionExecutorAgentId,
+                    SourcePositionExecutorTypeId = sendList.SourcePositionExecutorTypeId,
                     TargetAgentId = sendList.TargetAgentId,
                     TargetPositionId = sendList.TargetPositionId,
                     TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
+                    TargetPositionExecutorTypeId = sendList.TargetPositionExecutorTypeId,
                     LastChangeUserId = sendList.LastChangeUserId,
                     LastChangeDate = sendList.LastChangeDate
                 };
@@ -287,6 +295,9 @@ namespace BL.Database.Common
                  Date = docFile.Date,
                  ExecutorPositionId = docFile.ExecutorPositionId,
                  ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
+                 ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
+                 LastPdfAccessDate = docFile.LastPdfAccess,
+                 IsPdfCreated = docFile.PdfCreated,
              };
 
             return res;
@@ -376,7 +387,8 @@ namespace BL.Database.Common
                 LastChangeUserId = docFile.LastChangeUserId,
                 Name = docFile.Name,
                 Description = docFile.Description,
-
+                IsPdfCreated = docFile.PdfCreated,
+                LastPdfAccessDate = docFile.LastPdfAccess
             };
         }
 

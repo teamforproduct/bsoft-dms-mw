@@ -49,6 +49,10 @@ namespace BL.Logic.DictionaryCore
                     break;
                 #endregion DictionaryAgents
 
+                case EnumDictionaryActions.ModifyAgentPeoplePassport:
+                    cmd = DmsResolver.Current.Get<ModifyAgentPeoplePassportCommand>();
+                    break;
+
                 // Сотрудники
                 #region DictionaryAgentPersons
                 case EnumDictionaryActions.AddAgentPerson:
@@ -61,7 +65,6 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentPersonCommand>();
                     break;
                 #endregion DictionaryAgentPersons
-
                 case EnumDictionaryActions.ModifyAgentEmployee:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentEmployeeCommand>();
                     break;
@@ -71,9 +74,9 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteAgentEmployee:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAgentEmployeeLanguage:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
-                    break;
+                //case EnumDictionaryActions.ModifyAgentEmployeeLanguage:
+                    //cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
+                    //break;
                 case EnumDictionaryActions.ModifyAgentCompany:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCompanyCommand>();
                     break;
@@ -107,12 +110,27 @@ namespace BL.Logic.DictionaryCore
                 // Адреса
                 #region DictionaryAgentAddress
                 case EnumDictionaryActions.AddAgentAddress:
+                case EnumDictionaryActions.AddBankAddress:
+                case EnumDictionaryActions.AddCompanyAddress:
+                case EnumDictionaryActions.AddClientCompanyAddress:
+                case EnumDictionaryActions.AddEmployeeAddress:
+                case EnumDictionaryActions.AddPersonAddress:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentAddressCommand>();
                     break;
                 case EnumDictionaryActions.ModifyAgentAddress:
+                case EnumDictionaryActions.ModifyBankAddress:
+                case EnumDictionaryActions.ModifyCompanyAddress:
+                case EnumDictionaryActions.ModifyClientCompanyAddress:
+                case EnumDictionaryActions.ModifyEmployeeAddress:
+                case EnumDictionaryActions.ModifyPersonAddress:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentAddressCommand>();
                     break;
                 case EnumDictionaryActions.DeleteAgentAddress:
+                case EnumDictionaryActions.DeleteBankAddress:
+                case EnumDictionaryActions.DeleteCompanyAddress:
+                case EnumDictionaryActions.DeleteClientCompanyAddress:
+                case EnumDictionaryActions.DeleteEmployeeAddress:
+                case EnumDictionaryActions.DeletePersonAddress:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentAddressCommand>();
                     break;
                 #endregion DictionaryAgentAddress
@@ -133,12 +151,27 @@ namespace BL.Logic.DictionaryCore
                 // Контакты
                 #region DictionaryContacts
                 case EnumDictionaryActions.AddAgentContact:
+                case EnumDictionaryActions.AddBankContact:
+                case EnumDictionaryActions.AddCompanyContact:
+                case EnumDictionaryActions.AddClientCompanyContact:
+                case EnumDictionaryActions.AddEmployeeContact:
+                case EnumDictionaryActions.AddPersonContact:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactCommand>();
                     break;
                 case EnumDictionaryActions.ModifyAgentContact:
+                case EnumDictionaryActions.ModifyBankContact:
+                case EnumDictionaryActions.ModifyCompanyContact:
+                case EnumDictionaryActions.ModifyClientCompanyContact:
+                case EnumDictionaryActions.ModifyEmployeeContact:
+                case EnumDictionaryActions.ModifyPersonContact:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryContactCommand>();
                     break;
                 case EnumDictionaryActions.DeleteAgentContact:
+                case EnumDictionaryActions.DeleteBankContact:
+                case EnumDictionaryActions.DeleteCompanyContact:
+                case EnumDictionaryActions.DeleteClientCompanyContact:
+                case EnumDictionaryActions.DeleteEmployeeContact:
+                case EnumDictionaryActions.DeletePersonContact:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactCommand>();
                     break;
                 #endregion DictionaryContacts
@@ -221,7 +254,7 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryRegistrationJournalCommand>();
                     break;
                 #endregion DictionaryRegistrationJournals
-                   
+
                 // Структура предприятия
                 #region DictionaryDepartmentss
                 case EnumDictionaryActions.AddDepartment:

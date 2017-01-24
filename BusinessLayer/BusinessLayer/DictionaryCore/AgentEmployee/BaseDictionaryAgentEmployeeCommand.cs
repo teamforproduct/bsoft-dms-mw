@@ -11,29 +11,15 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentEmployeeCommand : BaseDictionaryCommand
     {
-        private ModifyDictionaryAgentEmployee Model
-        {
-            get
-            {
-                if (!(_param is ModifyDictionaryAgentEmployee))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyDictionaryAgentEmployee)_param;
-            }
-        }
+        private AddAgentEmployee Model { get { return GetModel<AddAgentEmployee>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
             Model.Name?.Trim();
-            Model.PassportSerial?.Trim();
             Model.TaxCode?.Trim();
 
             // вычисляю табельный номер. если не передан
@@ -43,8 +29,6 @@ namespace BL.Logic.DictionaryCore
             }
 
             // Обрезаю время для даты рождения и даты получения паспорта
-            if (Model.PassportDate.HasValue) Model.PassportDate = Model.PassportDate?.Date;
-
             if (Model.BirthDate.HasValue) Model.BirthDate = Model.BirthDate?.Date;
 
 
@@ -57,37 +41,31 @@ namespace BL.Logic.DictionaryCore
             //    throw new DictionaryAgentNameNotUnique(Model.Name);
             //}
 
-            if (_dictDb.ExistsAgentEmployees(_context, new FilterDictionaryAgentEmployee()
+            var filterEmployee = new FilterDictionaryAgentEmployee()
             {
                 PersonnelNumber = Model.PersonnelNumber,
-                NotContainsIDs = new List<int> { Model.Id }
-            }))
+            };
+
+            if (TypeModelIs<ModifyAgentEmployee>())
+            { filterEmployee.NotContainsIDs = new List<int> { GetModel<ModifyAgentEmployee>().Id }; }
+
+            if (_dictDb.ExistsAgentEmployees(_context, filterEmployee))
             {
                 throw new DictionaryAgentEmployeePersonnelNumberNotUnique(Model.PersonnelNumber);
-            }
-
-            // Если указаны необязательные паспортные данные, проверяю нет ли таких уже
-            if (!string.IsNullOrEmpty(Model.PassportSerial + Model.PassportNumber))
-            {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
-                {
-                    PassportSerialExact = Model.PassportSerial,
-                    PassportNumberExact = Model.PassportNumber,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
-                {
-                    throw new DictionaryAgentEmployeePassportNotUnique(Model.PassportSerial, Model.PassportNumber);
-                }
             }
 
             // Если указан необязательный ИНН, проверяю нет ли такого уже
             if (!string.IsNullOrEmpty(Model.TaxCode))
             {
-                if (_dictDb.ExistsAgentPersons(_context, new FilterDictionaryAgentPerson
+                var filterPerson = new FilterDictionaryAgentPerson
                 {
                     TaxCodeExact = Model.TaxCode,
-                    NotContainsIDs = new List<int> { Model.Id }
-                }))
+                };
+
+                if (TypeModelIs<ModifyAgentEmployee>())
+                { filterPerson.NotContainsIDs = new List<int> { GetModel<ModifyAgentEmployee>().Id }; }
+
+                if (_dictDb.ExistsAgentPersons(_context, filterPerson))
                 {
                     throw new DictionaryAgentEmployeeTaxCodeNotUnique(Model.TaxCode);
                 }

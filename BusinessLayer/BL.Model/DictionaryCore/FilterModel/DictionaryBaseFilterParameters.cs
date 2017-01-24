@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 using System.Dynamic;
 
 namespace BL.Model.DictionaryCore.FilterModel
@@ -6,22 +7,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Базовые фильтры для справочников
     /// </summary>
-    public class DictionaryBaseFilterParameters
+    public class DictionaryBaseFilterParameters : BaseFilter
     {
-        /// <summary>
-        /// Список ID
-        /// </summary>
-        public List<int> IDs { get; set; }
-
-        /// <summary>
-        /// Исключение записей по ID
-        /// </summary>
-        public List<int> NotContainsIDs { get; set; }
-
-        /// <summary>
-        /// Сужение по списку вышестоящих элементов
-        /// </summary>
-        public List<int> ParentIDs { get; set; }
+        
 
         /// <summary>
         /// Сужение по активности элементов
@@ -29,9 +17,13 @@ namespace BL.Model.DictionaryCore.FilterModel
         public bool? IsActive { get; set; }
 
         /// <summary>
-        /// Сужение по наименованию элементов
+        /// Сужение по наименованию (вхождение)
         /// </summary>
         public string Name { get; set; }
-    
+
+        /// <summary>
+        /// Сужение по наименованию (равенство)
+        /// </summary>
+        public string NameExact { get; set; }
     }
 }

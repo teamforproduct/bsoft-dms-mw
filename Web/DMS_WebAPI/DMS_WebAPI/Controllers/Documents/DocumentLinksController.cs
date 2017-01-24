@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Controllers.Documents
     public class DocumentLinksController : ApiController
     {
         /// <summary>
-        /// Список id связоных документов
+        /// Список id связоных документов use V3
         /// </summary>
         /// <param name="id">ID Документа</param>
         /// <returns>Cписок id связоных документов</returns>

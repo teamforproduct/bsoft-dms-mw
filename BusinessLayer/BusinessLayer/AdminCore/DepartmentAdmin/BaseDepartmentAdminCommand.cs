@@ -11,14 +11,7 @@ namespace BL.Logic.AdminCore
     public class BaseDepartmentAdminCommand : BaseAdminCommand
     {
 
-        protected ModifyAdminDepartmentAdmin Model
-        {
-            get
-            {
-                if (!(_param is ModifyAdminDepartmentAdmin)) throw new WrongParameterTypeError();
-                return (ModifyAdminDepartmentAdmin)_param;
-            }
-        }
+        
 
         public override bool CanBeDisplayed(int Id)
         {

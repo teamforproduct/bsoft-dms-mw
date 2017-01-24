@@ -12,9 +12,19 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryContactType()
         { }
 
-        public InternalDictionaryContactType(ModifyDictionaryContactType Model)
+        public InternalDictionaryContactType(AddContactType Model)
+        {
+            SetInternalDictionaryContactType(Model);
+        }
+
+        public InternalDictionaryContactType(ModifyContactType Model)
         {
             Id = Model.Id;
+            SetInternalDictionaryContactType(Model);
+        }
+
+        private void SetInternalDictionaryContactType(AddContactType Model)
+        {
             Name = Model.Name;
             InputMask = Model.InputMask;
             Code = Model.Code;

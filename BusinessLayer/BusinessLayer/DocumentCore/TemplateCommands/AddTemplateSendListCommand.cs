@@ -12,22 +12,21 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
 
-
         public AddTemplateSendListCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private ModifyTemplateDocumentSendLists Model
+        private AddTemplateDocumentSendLists Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentSendLists))
+                if (!(_param is AddTemplateDocumentSendLists))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentSendLists)_param;
+                return (AddTemplateDocumentSendLists)_param;
             }
         }
 
@@ -39,18 +38,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-
-
             return true;
         }
 
         public override object Execute()
         {
-            CommonDocumentUtilities.SetLastChange(_context, Model);
-            return _operationDb.AddOrUpdateTemplateSendList(_context, new InternalTemplateDocumentSendList(Model));
-
+            var model = new InternalTemplateDocumentSendList(Model);
+            CommonDocumentUtilities.SetLastChange(_context, model);
+            return _operationDb.AddOrUpdateTemplateSendList(_context, model);
         }
-
 
     }
 }

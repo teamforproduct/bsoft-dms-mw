@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
@@ -27,7 +28,7 @@ namespace BL.Logic.AdminCore
         {
             try
             {
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+                using (var transaction = Transactions.GetTransaction())
                 {
                     // Устанавливаю рассылку для должностей заданного отдела
                     SetRegistrationJournalPositionByDepartment(Model.DepartmentId);

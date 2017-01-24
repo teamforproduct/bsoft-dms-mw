@@ -68,6 +68,12 @@ namespace BL.Model.Exception
     }
     #endregion
 
+    public class DefaultLanguageIsNotSet : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DefaultLanguageIsNotSet@l##";
+        public DefaultLanguageIsNotSet() : base(_MESSAGE) { }
+        public DefaultLanguageIsNotSet(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
     /// <summary>
     /// Сообщение при ошибке регистрации нового клиента
     /// Имя клиента уже существует
@@ -110,6 +116,20 @@ namespace BL.Model.Exception
         public ClientIsNotFound(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class ServerIsNotFound : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ServerIsNotFound@l##";
+        public ServerIsNotFound() : base(_MESSAGE) { }
+        public ServerIsNotFound(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class ClientServerIsNotSet : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:ClientServerIsNotSet@l##";
+        public ClientServerIsNotSet(string clientName) : base(_MESSAGE) { }
+        public ClientServerIsNotSet(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
     /// <summary>
     /// Сообщение при ошибке регистрации нового клиента
     /// Имя пользователя уже существует
@@ -118,8 +138,37 @@ namespace BL.Model.Exception
     public class UserNameAlreadyExists : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserNameAlreadyExists@l##";
-        public UserNameAlreadyExists(string Login) : base(_MESSAGE) { Parameters = new List<string> { Login }; }
+        public UserNameAlreadyExists(string userName) : base(_MESSAGE) { Parameters = new List<string> { userName }; }
         public UserNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserCouldNotBeAdded : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserCouldNotBeAdded@l##";
+        public UserCouldNotBeAdded(string userName) : base(_MESSAGE) { Parameters = new List<string> { userName }; }
+        public UserCouldNotBeAdded(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserCouldNotBeDeleted : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserCouldNotBeDeleted@l##";
+        public UserCouldNotBeDeleted() : base(_MESSAGE) { }
+        public UserCouldNotBeDeleted(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class RoleNameAlreadyExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:RoleNameAlreadyExists@l##";
+        public RoleNameAlreadyExists(string roleName) : base(_MESSAGE) { Parameters = new List<string> { roleName }; }
+        public RoleNameAlreadyExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+
+    public class RoleCouldNotBeAdded : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:RoleCouldNotBeAdded@l##";
+        public RoleCouldNotBeAdded(string roleName) : base(_MESSAGE) { Parameters = new List<string> { roleName }; }
+        public RoleCouldNotBeAdded(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     /// <summary>
@@ -220,6 +269,9 @@ namespace BL.Model.Exception
         public ActionIsDenied(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    /// <summary>
+    /// UserContextUseOnly
+    /// </summary>
     public class UserAccessIsDenied : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserAccessIsDenied@l##";
@@ -237,7 +289,7 @@ namespace BL.Model.Exception
     public class UserIsDeactivated : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UserIsDeactivated@l##";
-        public UserIsDeactivated (string UserName) : base(_MESSAGE) { Parameters = new List<string> { UserName }; }
+        public UserIsDeactivated(string UserName) : base(_MESSAGE) { Parameters = new List<string> { UserName }; }
         public UserIsDeactivated(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
@@ -248,6 +300,69 @@ namespace BL.Model.Exception
         public UserNotExecuteAnyPosition(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
+    public class UserNotExecuteCheckPosition : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserNotExecuteCheckPosition@l##";
+        public UserNotExecuteCheckPosition() : base(_MESSAGE) { }
+        public UserNotExecuteCheckPosition(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserHasNoAccessToDocument : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserHasNoAccessToDocument@l##";
+        public UserHasNoAccessToDocument() : base(_MESSAGE) { }
+        public UserHasNoAccessToDocument(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserFileNotExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserFileNotExists@l##";
+        public UserFileNotExists() : base(_MESSAGE) { }
+        public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    //TODO PDF Change message to pdf file
+    public class UserPdfFileNotExists : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserPdfFileNotExists@l##";
+        public UserPdfFileNotExists() : base(_MESSAGE) { }
+        public UserPdfFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserIsNotDefined@l##";
+        public UserIsNotDefined() : base(_MESSAGE) { }
+        public UserIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserContextIsNotDefined : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserContextIsNotDefined@l##";
+        public UserContextIsNotDefined() : base(_MESSAGE) { }
+        public UserContextIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserUnauthorized : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserUnauthorized@l##";
+        public UserUnauthorized() : base(_MESSAGE) { }
+        public UserUnauthorized(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserMustChangePassword : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserMustChangePassword@l##";
+        public UserMustChangePassword() : base(_MESSAGE) { }
+        public UserMustChangePassword(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+
+    public class UserMustConfirmEmail : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:UserMustConfirmEmail@l##";
+        public UserMustConfirmEmail() : base(_MESSAGE) { }
+        public UserMustConfirmEmail(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
 
     public class DocumentHasAlreadyHasLink : DmsExceptions
     {
@@ -272,24 +387,14 @@ namespace BL.Model.Exception
         public DocumentCannotBeModifiedOrDeleted() : base(_MESSAGE) { }
         public DocumentCannotBeModifiedOrDeleted(System.Exception ex) : base(_MESSAGE, ex) { }
     }
-    public class UserHasNoAccessToDocument : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserHasNoAccessToDocument@l##";
-        public UserHasNoAccessToDocument() : base(_MESSAGE) { }
-        public UserHasNoAccessToDocument(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+
     public class CannotSaveFile : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CannotSaveFile@l##";
         public CannotSaveFile() : base(_MESSAGE) { }
         public CannotSaveFile(System.Exception ex) : base(_MESSAGE, ex) { }
     }
-    public class UserFileNotExists : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserFileNotExists@l##";
-        public UserFileNotExists() : base(_MESSAGE) { }
-        public UserFileNotExists(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+
     public class UnknownDocumentFile : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:UnknownDocumentFile@l##";
@@ -356,6 +461,12 @@ namespace BL.Model.Exception
         public DocumentCouldNotBeRegistered() : base(_MESSAGE) { }
         public DocumentCouldNotBeRegistered(System.Exception ex) : base(_MESSAGE, ex) { }
     }
+    public class DocumentCouldNotBeRegisteredNoValidSign : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:DocumentCouldNotBeRegisteredNoValidSign@l##";
+        public DocumentCouldNotBeRegisteredNoValidSign() : base(_MESSAGE) { }
+        public DocumentCouldNotBeRegisteredNoValidSign(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
     public class CouldNotChangeAttributeLaunchPlan : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:CouldNotChangeAttributeLaunchPlan@l##";
@@ -386,23 +497,13 @@ namespace BL.Model.Exception
         public PlanPointHasAlredyBeenLaunched() : base(_MESSAGE) { }
         public PlanPointHasAlredyBeenLaunched(System.Exception ex) : base(_MESSAGE, ex) { }
     }
-    public class UserPositionIsNotDefined : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserPositionIsNotDefined@l##";
-        public UserPositionIsNotDefined() : base(_MESSAGE) { }
-        public UserPositionIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+
+
     public class NeedInformationAboutCorrespondent : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:NeedInformationAboutCorrespondent@l##";
         public NeedInformationAboutCorrespondent() : base(_MESSAGE) { }
         public NeedInformationAboutCorrespondent(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
-    public class UserNameIsNotDefined : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserNameIsNotDefined@l##";
-        public UserNameIsNotDefined() : base(_MESSAGE) { }
-        public UserNameIsNotDefined(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     public class ResetPasswordCodeInvalid : DmsExceptions
@@ -419,12 +520,7 @@ namespace BL.Model.Exception
         public ResetPasswordFailed(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class UserUnauthorized : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:UserUnauthorized@l##";
-        public UserUnauthorized() : base(_MESSAGE) { }
-        public UserUnauthorized(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
+
     public class DocumentRestrictedSendListDuplication : DmsExceptions
     {
         private const string _MESSAGE = "##l@DmsExceptions:DocumentRestrictedSendListDuplication@l##";
@@ -479,6 +575,12 @@ namespace BL.Model.Exception
         private const string _MESSAGE = "##l@DmsExceptions:SubordinationHasBeenViolated@l##";
         public SubordinationHasBeenViolated() : base(_MESSAGE) { }
         public SubordinationHasBeenViolated(System.Exception ex) : base(_MESSAGE, ex) { }
+    }
+    public class SubordinationForDueDateHasBeenViolated : DmsExceptions
+    {
+        private const string _MESSAGE = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+        public SubordinationForDueDateHasBeenViolated() : base(_MESSAGE) { }
+        public SubordinationForDueDateHasBeenViolated(System.Exception ex) : base(_MESSAGE, ex) { }
     }
     public class DocumentSendListNotFoundInDocumentRestrictedSendList : DmsExceptions
     {
@@ -681,13 +783,13 @@ namespace BL.Model.Exception
     }
 
     /// <summary>
-    /// Ошибка возникает при попытке задублировать паспортные данные сотрудника
+    /// Ошибка возникает при попытке задублировать паспортные данные человека
     /// </summary>
-    public class DictionaryAgentEmployeePassportNotUnique : DmsExceptions
+    public class DictionaryAgentPeoplePassportNotUnique : DmsExceptions
     {
-        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentEmployeePassportNotUnique@l##";
-        public DictionaryAgentEmployeePassportNotUnique(string PassportSerial, int? PassportNumber) : base(_MESSAGE) { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
-        public DictionaryAgentEmployeePassportNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
+        private const string _MESSAGE = "##l@DmsExceptions:DictionaryAgentPeoplePassportNotUnique@l##";
+        public DictionaryAgentPeoplePassportNotUnique(string PassportSerial, int? PassportNumber) : base(_MESSAGE) { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
+        public DictionaryAgentPeoplePassportNotUnique(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
     /// <summary>
@@ -962,19 +1064,7 @@ namespace BL.Model.Exception
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(_MESSAGE, ex) { }
     }
 
-    public class ChangePasswordRequiredAgentUser : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:ChangePasswordRequiredAgentUser@l##";
-        public ChangePasswordRequiredAgentUser() : base(_MESSAGE) { }
-        public ChangePasswordRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
 
-    public class EmailConfirmRequiredAgentUser : DmsExceptions
-    {
-        private const string _MESSAGE = "##l@DmsExceptions:EmailConfirmRequiredAgentUser@l##";
-        public EmailConfirmRequiredAgentUser() : base(_MESSAGE) { }
-        public EmailConfirmRequiredAgentUser(System.Exception ex) : base(_MESSAGE, ex) { }
-    }
 
     //public class LockoutAgentUser : DmsExceptions
     //{

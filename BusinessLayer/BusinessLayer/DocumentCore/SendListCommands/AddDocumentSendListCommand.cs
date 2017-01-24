@@ -10,6 +10,8 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Transactions;
+using BL.Model.AdminCore;
+using System;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -24,20 +26,22 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentSendList Model
+        private AddDocumentSendList Model
         {
             get
             {
-                if (!(_param is ModifyDocumentSendList))
+                if (!(_param is AddDocumentSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentSendList)_param;
+                return (AddDocumentSendList)_param;
             }
         }
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (CommandType == EnumDocumentActions.CopyDocumentSendList)
             {
                 _actionRecords =
@@ -56,14 +60,13 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
-
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (Model.IsInitial && _document.ExecutorPositionId != Model.CurrentPositionId)
+            if (Model.IsInitial && _document.ExecutorPositionId != _context.CurrentPositionId)
             {
                 throw new CouldNotPerformOperation();
             }
@@ -89,23 +92,38 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            int res;
+            int? res;
+            if (Model.TargetPositionId.HasValue
+                && (Model.DueDate.HasValue || Model.DueDay.HasValue)
+                && (_sendList.SendType == EnumSendTypes.SendForSigning || _sendList.SendType == EnumSendTypes.SendForVisaing || _sendList.SendType == EnumSendTypes.SendForАgreement || _sendList.SendType == EnumSendTypes.SendForАpproval)
+                && !_admin.VerifySubordination(_context, new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Execution,
+                    TargetPosition = Model.TargetPositionId.Value,
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, _sendList, _document, true),
+                }))
+            {
+                if (_sendList.Stage.HasValue)
+                    _sendList.AddDescription = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+                else
+                    throw new SubordinationForDueDateHasBeenViolated();
+            }
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
-            //            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            //            using (var transaction = Transactions.GetTransaction())
             {
-                res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents).FirstOrDefault();
-                if (Model.IsLaunchItem ?? false)
+                res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents)?.FirstOrDefault();
+                if (!_sendList.Stage.HasValue)
                 {
-                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                    aplan.ManualRunAutoPlan(_context, res, _document.Id);
+                    var docProc = DmsResolver.Current.Get<IDocumentService>();
+                    docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
                 }
+                else if (Model.IsLaunchItem ?? false)
+                    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, res, _document.Id);
                 else
-                {
-                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-                    aplan.ManualRunAutoPlan(_context, null, _document.Id);
-                }
+                    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
+
                 //                transaction.Complete();
             }
             return res;

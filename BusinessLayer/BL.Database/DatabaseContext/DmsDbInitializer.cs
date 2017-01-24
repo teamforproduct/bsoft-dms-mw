@@ -15,6 +15,15 @@ namespace BL.Database.DatabaseContext
         {
             //context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
             //context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
+
+            // ModuleFeatures последовательность вызовов важна!11
+            DmsDbImportData.InitPermissions();
+            context.SystemAccessTypesSet.AddRange(DmsDbImportData.GetSystemAccessTypes());
+            context.SystemModulesSet.AddRange(DmsDbImportData.GetSystemModules());
+            context.SystemFeaturesSet.AddRange(DmsDbImportData.GetSystemFeatures());
+            context.SystemPermissionsSet.AddRange(DmsDbImportData.GetSystemPermissions());
+            // ModuleFeatures
+
             context.AdminAccessLevelsSet.AddRange(DmsDbImportData.GetAdminAccessLevels());
             context.SystemObjectsSet.AddRange(DmsDbImportData.GetSystemObjects());
             context.SystemActionsSet.AddRange(DmsDbImportData.GetSystemActions());
@@ -27,6 +36,7 @@ namespace BL.Database.DatabaseContext
             context.DictionaryImportanceEventTypesSet.AddRange(DmsDbImportData.GetDictionaryImportanceEventTypes());
             context.DictionaryResultTypesSet.AddRange(DmsDbImportData.GetDictionaryResultTypes());
             context.DictionarySendTypesSet.AddRange(DmsDbImportData.GetDictionarySendTypes());
+            context.DictionaryStageTypesSet.AddRange(DmsDbImportData.GetDictionaryStageTypes());
             context.DictionarySubordinationTypesSet.AddRange(DmsDbImportData.GetDictionarySubordinationTypes());
             context.DictionaryRegistrationJournalAccessTypesSet.AddRange(DmsDbImportData.GetDictionaryRegistrationJournalAccessTypes());
             context.DictionarySubscriptionStatesSet.AddRange(DmsDbImportData.GetDictionarySubscriptionStates());

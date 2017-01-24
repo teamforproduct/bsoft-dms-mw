@@ -127,6 +127,31 @@
         /// Удалить контакт
         /// </summary>
         DeleteAgentContact = 207009,
+
+
+        AddBankContact = 229001,
+        ModifyBankContact = 229005,
+        DeleteBankContact = 229009,
+
+        AddCompanyContact = 230001,
+        ModifyCompanyContact = 230005,
+        DeleteCompanyContact = 230009,
+
+        AddEmployeeContact = 231001,
+        ModifyEmployeeContact = 231005,
+        DeleteEmployeeContact = 231009,
+
+        AddClientCompanyContact = 232001,
+        ModifyClientCompanyContact = 232005,
+        DeleteClientCompanyContact = 232009,
+
+        AddPersonContact = 233001,
+        ModifyPersonContact = 233005,
+        DeletePersonContact = 233009,
+
+
+
+
         #endregion Contacts
 
         // Адреса
@@ -143,7 +168,31 @@
         /// удалить адрес
         /// </summary>
         DeleteAgentAddress = 208009,
+
+        AddBankAddress = 222001,
+        ModifyBankAddress = 222005,
+        DeleteBankAddress = 222009,
+
+        AddCompanyAddress = 223001,
+        ModifyCompanyAddress = 223005,
+        DeleteCompanyAddress = 223009,
+
+        AddEmployeeAddress = 224001,
+        ModifyEmployeeAddress = 224005,
+        DeleteEmployeeAddress = 224009,
+
+        AddClientCompanyAddress = 225001,
+        ModifyClientCompanyAddress = 225005,
+        DeleteClientCompanyAddress = 225009,
+
+        AddPersonAddress = 226001,
+        ModifyPersonAddress = 226005,
+        DeletePersonAddress = 226009,
+
         #endregion AgentAddress
+
+
+        ModifyAgentPeoplePassport = 234005,
 
         // Persons
         #region AgentPersons

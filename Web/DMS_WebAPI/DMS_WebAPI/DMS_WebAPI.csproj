@@ -223,6 +223,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentPaperController.cs" />
+    <Compile Include="ControllersV3\Documents\PaperListInfoController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentTagController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentWorkGroupController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentAccessController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentLinkController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentFileController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentTaskController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentSavedFilterController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentSignController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentWaitController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentEventController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentPlanController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentAccessListController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentInfoController.cs" />
+    <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
+    <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesContentsController.cs" />
+    <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
+    <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
+    <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
+    <Compile Include="ControllersV3\Roles\RolePositionsController.cs" />
+    <Compile Include="ControllersV3\Roles\RoleInfoController.cs" />
+    <Compile Include="ControllersV3\SendLists\SendListContentsController.cs" />
+    <Compile Include="ControllersV3\SendLists\SendListInfoController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -257,6 +282,63 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="ControllersV3\Auth\AuthInfoController.cs" />
+    <Compile Include="ControllersV3\Banks\BankAddressesController.cs" />
+    <Compile Include="ControllersV3\Banks\BankContactsController.cs" />
+    <Compile Include="ControllersV3\Banks\BankInfoController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactPersonsContactsController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactPersonsController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyAddressesController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyContactsController.cs" />
+    <Compile Include="ControllersV3\Companies\CompanyInfoController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateAccessListController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateFilesController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplatePlanController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplatePapersController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateTasksController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateInfoController.cs" />
+    <Compile Include="ControllersV3\Documents\TagsInfoController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeePassportController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeRolesController.cs" />
+    <Compile Include="ControllersV3\Journals\JournalPositionsController.cs" />
+    <Compile Include="ControllersV3\OrgDepartments\DepartmentPositionsController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
+    <Compile Include="ControllersV3\System\DevController.cs" />
+    <Compile Include="ControllersV3\Auditlog\AuditlogInfoController.cs" />
+    <Compile Include="ControllersV3\System\TempStorageController.cs" />
+    <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
+    <Compile Include="ControllersV3\System\AddressTypeInfoController.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentTypeInfoController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeAssignmentController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeContactsController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeInfoController.cs" />
+    <Compile Include="ControllersV3\Employees\EmployeeAddressesController.cs" />
+    <Compile Include="ControllersV3\Journals\JournalInfoController.cs" />
+    <Compile Include="ControllersV3\OrgDepartments\DepartmentInfoController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PositionExecutorsController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PositionSendRulesController.cs" />
+    <Compile Include="ControllersV3\OrgPositions\PositionInfoController.cs" />
+    <Compile Include="ControllersV3\Org\OrgAddressesController.cs" />
+    <Compile Include="ControllersV3\Org\OrgContactsController.cs" />
+    <Compile Include="ControllersV3\Org\OrgInfoController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonAddressesController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonContactsController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonInfoController.cs" />
+    <Compile Include="ControllersV3\System\SettingsInfoController.cs" />
+    <Compile Include="ControllersV3\System\SystemSettingsController.cs" />
+    <Compile Include="ControllersV3\User\UserSessionsController.cs" />
+    <Compile Include="ControllersV3\User\UserEncryptionCertificatesController.cs" />
+    <Compile Include="ControllersV3\User\UserAddressesController.cs" />
+    <Compile Include="ControllersV3\User\UserImageController.cs" />
+    <Compile Include="ControllersV3\User\UserPassportController.cs" />
+    <Compile Include="ControllersV3\User\UserInfoController.cs" />
+    <Compile Include="ControllersV3\User\UserContactsController.cs" />
+    <Compile Include="ControllersV3\User\UserAssignmentsController.cs" />
+    <Compile Include="ControllersV3\System\SystemToolsController.cs" />
+    <Compile Include="ControllersV3\System\SystemListsController.cs" />
+    <Compile Include="ControllersV3\Lists\ListsController.cs" />
     <Compile Include="Controllers\Admins\AdminDepartmentAdminController.cs" />
     <Compile Include="Controllers\Admins\AdminRegistrationJournalPositionsController.cs" />
     <Compile Include="Controllers\Admins\LanguagesController.cs" />
@@ -264,12 +346,12 @@
     <Compile Include="Controllers\Admins\AdminActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminUserRolesController.cs" />
     <Compile Include="Controllers\Admins\AdminRolesController.cs" />
-    <Compile Include="Controllers\Admins\AdminRoleActionsController.cs" />
     <Compile Include="Controllers\Admins\AdminPositionRolesController.cs" />
+    <Compile Include="ApiPrefix.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
+    <Compile Include="Controllers\Dictionaries\DictionaryStageTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryStaffListController.cs" />
     <Compile Include="Controllers\Dictionaries\CustomDictionaryTypesController.cs" />
-    <Compile Include="Controllers\Dictionaries\CustomDictionariesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAddressTypesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentAccountsController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryAgentAddressesController.cs" />
@@ -282,7 +364,7 @@
     <Compile Include="Controllers\Dictionaries\DictionaryAgentClientCompaniesController.cs" />
     <Compile Include="Controllers\Dictionaries\DictionaryTagsController.cs" />
     <Compile Include="Controllers\Documents\DocumentAccessesController.cs" />
-    <Compile Include="Controllers\Documents\DocumentWorkGroupController.cs" />
+    <Compile Include="Controllers\Documents\DocumentWorkGroupsController.cs" />
     <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
     <Compile Include="Controllers\Documents\DocumentLinksController.cs" />
     <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />
@@ -304,7 +386,7 @@
     <Compile Include="Controllers\System\SystemObjectsController.cs" />
     <Compile Include="Controllers\System\SystemLogsController.cs" />
     <Compile Include="Controllers\System\SystemActionsController.cs" />
-    <Compile Include="Controllers\System\SystemSettingsController.cs" />
+    <Compile Include="Controllers\System\SystemSettingsOldController.cs" />
     <Compile Include="Controllers\System\UtilitesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
     <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
@@ -386,6 +468,10 @@
     <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.Designer.cs">
       <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612071529206_Users_LastChangeDate.cs" />
+    <Compile Include="Migrations\201612071529206_Users_LastChangeDate.Designer.cs">
+      <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -408,6 +494,7 @@
     <Compile Include="Utilities\SystemInfo.cs" />
     <Compile Include="Utilities\UserContextsWorkerService.cs" />
     <Compile Include="Utilities\UserContexts.cs" />
+    <Compile Include="Utilities\WebAPIService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\CryptoExts\x64\CryptoExts.dll" />
@@ -437,6 +524,12 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="gsdll32.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="gsdll64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="packages.config" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
     <Content Include="Areas\HelpPage\Views\Shared\_Layout.cshtml" />
@@ -473,6 +566,7 @@
     <Content Include="App_Data\LanguageValues\messages_pl_PL.properties" />
     <Content Include="App_Data\LanguageValues\messages_ru_RU.properties" />
     <Content Include="App_Data\LanguageValues\messages_uk_UA.properties" />
+    <Content Include="Areas\HelpPage\Views\Help\IndexV3.cshtml" />
     <None Include="Properties\PublishProfiles\DEV_IRF_DMS.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\PROD_IRF_DMS.pubxml" />
@@ -552,6 +646,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611292202410_AddFileNameToLanguages2.resx">
       <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612071529206_Users_LastChangeDate.resx">
+      <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

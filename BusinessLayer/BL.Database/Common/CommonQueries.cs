@@ -34,15 +34,17 @@ using System.IO;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Reports.FrontModel;
 using System.Data.Entity.Core.Objects;
+using System.Globalization;
 using System.Threading.Tasks;
 using BL.Database.DBModel.Admin;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Common
 {
     internal static class CommonQueries
     {
         #region Documents
-        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool isVerifyExecutorPosition = false, bool isVerifyAccessLevel = true)
+        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool? isVerifyExecutorPosition = null, bool isVerifyAccessLevel = true, bool isVerifyIsInWork = false)
         {
             var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
@@ -53,18 +55,25 @@ namespace BL.Database.Common
                     filterContains = isVerifyAccessLevel
                         ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                         : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    if (isVerifyIsInWork)
+                        filterContains = filterContains.And(x => x.IsInWork == true).Expand();
+                    if (isVerifyExecutorPosition.HasValue && isVerifyExecutorPosition.Value)
+                        filterContains = filterContains.And(x => x.PositionId == x.Document.ExecutorPositionId).Expand();
+                    if (isVerifyExecutorPosition.HasValue && !isVerifyExecutorPosition.Value)
+                        filterContains = filterContains.And(x => x.PositionId == ctx.CurrentPositionId).Expand();
                     qry = qry.Where(x => x.Accesses.AsQueryable().Where(filterContains).Any());
                 }
                 else
                     qry = qry.Where(x => userAccesses.Select(a => a.DocumentId).Contains(x.Id));
 
-                if (isVerifyExecutorPosition)
-                {
-                    var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
-                    qry = qry.Where(filterExecutorPositionContains);
-                }
-                else
+                //if (isVerifyExecutorPosition)
+                //{
+                //    var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                //    filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
+                //    qry = qry.Where(filterExecutorPositionContains);
+                //}
+                //else 
+                if (!isVerifyExecutorPosition.HasValue && userAccesses == null)  //доступ к журналам проверяем, если нет ограничений на Accesses
                 {
                     var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
                     filterPositionsIdList = ctx.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -81,7 +90,7 @@ namespace BL.Database.Common
                         var qry1 = dbContext.DocumentsSet.AsQueryable();
                         qry = qry1.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
                     }
-                }                
+                }
             }
             return qry;
 
@@ -906,11 +915,8 @@ namespace BL.Database.Common
                     Task = x.Task.Task,
                     Description = x.Description,
                     AddDescription = x.AddDescription,
-
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name +
-                                                      (x.SourcePosition.PositionExecutorTypeId.HasValue ? $"({x.SourcePosition.PositionExecutorType.Name})" : ""),
-                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name +
-                                                      (x.TargetPosition.PositionExecutorTypeId.HasValue ? $"({x.TargetPosition.PositionExecutorType.Name})" : ""))
+                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : null),
+                    TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null))
                                                       ?? x.TargetAgent.Name,
                     DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                     RegistrationNumber = x.Document.RegistrationNumber,
@@ -950,7 +956,6 @@ namespace BL.Database.Common
                 Task = x.Task,
                 Description = x.Description,
                 AddDescription = x.AddDescription,
-
                 SourcePositionExecutorAgentName = x.SourcePositionExecutorAgentName,
                 TargetPositionExecutorAgentName = x.TargetPositionExecutorAgentName,
                 DocumentDate = x.DocumentDate,
@@ -1110,11 +1115,11 @@ namespace BL.Database.Common
 
         public static IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, DmsContext dbContext, FilterBase filter, UIPaging paging = null)
         {
-            var qry = CommonQueries.GetDocumentFileQuery(ctx, dbContext, filter?.File);
+            var qry = GetDocumentFileQuery(ctx, dbContext, filter?.File);
 
             if (filter?.Document != null)
             {
-                var documentIds = CommonQueries.GetDocumentQuery(ctx, dbContext, filter?.Document, true)
+                var documentIds = GetDocumentQuery(ctx, dbContext, filter.Document, true)
                                     .Select(x => x.Id);
 
                 qry = qry.Where(x => documentIds.Contains(x.DocumentId));
@@ -1122,7 +1127,7 @@ namespace BL.Database.Common
 
             if (filter?.Event != null)
             {
-                var eventsDocumentIds = CommonQueries.GetDocumentEventQuery(ctx, dbContext, filter?.Event)
+                var eventsDocumentIds = GetDocumentEventQuery(ctx, dbContext, filter?.Event)
                                             .Select(x => x.DocumentId);
 
                 qry = qry.Where(x => eventsDocumentIds.Contains(x.DocumentId));
@@ -1130,7 +1135,7 @@ namespace BL.Database.Common
 
             if (filter?.Wait != null)
             {
-                var waitsDocumentIds = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, filter?.Wait)
+                var waitsDocumentIds = GetDocumentWaitQuery(ctx, dbContext, filter?.Wait)
                                             .Select(x => x.DocumentId);
 
                 qry = qry.Where(x => waitsDocumentIds.Contains(x.DocumentId));
@@ -1193,7 +1198,7 @@ namespace BL.Database.Common
                                 Version = file.Version,
                                 WasChangedExternal = false,
                                 ExecutorPositionName = file.ExecutorPosition.Name,
-                                ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name,
+                                ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
 
                                 DocumentDate = (file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
                                 RegistrationNumber = file.Document.RegistrationNumber,
@@ -1372,7 +1377,7 @@ namespace BL.Database.Common
                         filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value && e.OnEvent.SourcePositionId != value).Expand());
 
-                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution))
+                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecutionChange || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange))
                                 .Where(filterContains);
                     }
 
@@ -1417,7 +1422,7 @@ namespace BL.Database.Common
                         filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId != value && e.OnEvent.SourcePositionId == value).Expand());
 
-                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution))
+                        qry = qry.Where(x => !x.OffEventId.HasValue && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForExecutionChange || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange))
                                 .Where(filterContains);
                     }
 
@@ -1530,14 +1535,18 @@ namespace BL.Database.Common
                 var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
                 filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
                     (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
-
-                var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
-                filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
-
-
-                res.Add(qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains));
-                res.Add(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+                if (filter?.IsMyControl ?? false)
+                {
+                    res.Add(qry.Where(filterOnEventPositionsContains));
+                }
+                else
+                {
+                    var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                    filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    res.Add(qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains));
+                    res.Add(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+                }
             }
             else
             {
@@ -1585,8 +1594,8 @@ namespace BL.Database.Common
                         IsClosed = y.OffEventId.HasValue,
                         IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
                         DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
-                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name : null,
-                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name : null,
+                        SourcePositionExecutorAgentName = isDetail ? y.OnEvent.SourcePositionExecutorAgent.Name + (y.OnEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.OnEvent.SourcePositionExecutorType.Suffix + ")" : null) : null,
+                        TargetPositionExecutorAgentName = isDetail ? y.OnEvent.TargetPositionExecutorAgent.Name + (y.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.OnEvent.TargetPositionExecutorType.Suffix + ")" : null) : null,
                     })
                     .Select(y => new { Group = y.Key, RecordCount = y.Count() }).ToList()
                                         ).ToList();
@@ -1673,6 +1682,7 @@ namespace BL.Database.Common
                     OffEventId = x.OffEventId,
                     ResultTypeId = x.ResultTypeId,
                     ResultTypeName = x.ResultType.Name,
+                    PlanDueDate = x.PlanDueDate,
                     DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                     AttentionDate = x.AttentionDate,
                     TargetDescription = x.TargetDescription,
@@ -1698,17 +1708,22 @@ namespace BL.Database.Common
                         EventType = x.OnEvent.EventTypeId,
                         EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
                         Date = x.OnEvent.Date,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name,
+                        TargetPositionId = x.OnEvent.TargetPositionId,
+                        SourcePositionId = x.OnEvent.SourcePositionId,
+                        SourcePositionExecutorAgentId = x.OnEvent.SourcePositionExecutorAgentId,
+                        TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
+                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name + (x.OnEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.OnEvent.SourcePositionExecutorType.Suffix + ")" : (string)null),
+                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name + (x.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OnEvent.TargetPositionExecutorType.Suffix + ")" : (string)null),
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
                         ReadDate = x.OnEvent.ReadDate,
+                        SourceAgentId = x.OnEvent.SourceAgentId,
                         SourceAgentName = x.OnEvent.SourceAgent.Name,
 
                         SourcePositionName = x.OnEvent.SourcePosition.Name,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.OnEvent.SourcePosition.ExecutorAgent.Name + (x.OnEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.OnEvent.SourcePosition.ExecutorType.Suffix + ")" : (string)null),
+                        TargetPositionExecutorNowAgentName = x.OnEvent.TargetPosition.ExecutorAgent.Name + (x.OnEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.OnEvent.TargetPosition.ExecutorType.Suffix + ")" : (string)null),
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
@@ -1725,11 +1740,16 @@ namespace BL.Database.Common
                         EventType = x.OffEvent.EventTypeId,
                         EventTypeName = x.OffEvent.EventType.Name,
                         Date = x.OffEvent.Date,
-                        SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name,
-                        TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name,
+                        TargetPositionId = x.OffEvent.TargetPositionId,
+                        SourcePositionId = x.OffEvent.SourcePositionId,
+                        SourcePositionExecutorAgentId = x.OffEvent.SourcePositionExecutorAgentId,
+                        TargetPositionExecutorAgentId = x.OffEvent.TargetPositionExecutorAgentId,
+                        SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name + (x.OffEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.OffEvent.SourcePositionExecutorType.Suffix + ")" : (string)null),
+                        TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name + (x.OffEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OffEvent.TargetPositionExecutorType.Suffix + ")" : (string)null),
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
                         ReadDate = x.OnEvent.ReadDate,
+                        SourceAgentId = x.OffEvent.SourceAgentId,
                         SourceAgentName = x.OffEvent.SourceAgent.Name,
 
                         //SourcePositionName = null,
@@ -1740,8 +1760,8 @@ namespace BL.Database.Common
                         //TargetPositionExecutorAgentPhoneNumber = null,
                         SourcePositionName = x.OffEvent.SourcePosition.Name,
                         TargetPositionName = x.OffEvent.TargetPosition.Name,
-                        SourcePositionExecutorNowAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name,
+                        SourcePositionExecutorNowAgentName = x.OffEvent.SourcePosition.ExecutorAgent.Name + (x.OffEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.OffEvent.SourcePosition.ExecutorType.Suffix + ")" : (string)null),
+                        TargetPositionExecutorNowAgentName = x.OffEvent.TargetPosition.ExecutorAgent.Name + (x.OffEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.OffEvent.TargetPosition.ExecutorType.Suffix + ")" : (string)null),
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
@@ -1793,14 +1813,18 @@ namespace BL.Database.Common
             return docAccesses.Where(x => !accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
 
-        public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx)
+        public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(DmsContext dbContext, int documentId, IContext ctx, bool isVerifyAccessLevel = false)
         {
             var qry = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId);
             if (ctx != null && !ctx.IsAdmin)
             {
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
-                filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                filterContains = isVerifyAccessLevel
+                    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
+                    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                //filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
+                //    (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 qry = qry.Where(filterContains);
             }
@@ -1940,10 +1964,10 @@ namespace BL.Database.Common
                 PositionExecutorAgentId = x.PositionExecutorAgentId,
                 AgentId = x.AgentId,
 
-                PositionExecutorAgentName = x.PositionExecutorAgent.Name,
+                PositionExecutorAgentName = x.PositionExecutorAgent.Name + (x.PositionExecutorType.Suffix != null ? " (" + x.PositionExecutorType.Suffix + ")" : null),
                 AgentName = x.Agent.Name,
                 PositionName = x.Position.Name,
-                PositionExecutorNowAgentName = x.Position.ExecutorAgent.Name,
+                PositionExecutorNowAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
                 PositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
                 //FactResponsibleExecutorPositionName = x.SendListDb.TargetPosition.Name,
@@ -1953,33 +1977,73 @@ namespace BL.Database.Common
                 //PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
             }).ToList();
 
-            {
-                var filterContains = PredicateBuilder.False<DocumentSendLists>();
-                filterContains = tasks.Select(x => x.Id).Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.TaskId == value).Expand());
+            var eventFilterContains = PredicateBuilder.False<DocumentEvents>();
+            eventFilterContains = tasks.Select(x => x.Id).Aggregate(eventFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
-                var sendLists = dbContext.DocumentSendListsSet.Where(filterContains)
-                                    .Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
-                                    .Select(x => new
-                                    {
-                                        TaskId = x.TaskId,
-                                        ResponsibleExecutorPositionName = x.TargetPosition.Name,
-                                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name,
-                                        IsFactExecutor = x.StartEventId.HasValue,
-                                    }).ToList();
-
-                tasks.ForEach(x =>
-                {
-                    var sendList = sendLists.FirstOrDefault(y => y.TaskId == x.Id);
-                    if (sendList != null)
+            var taskFactRespEx = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
+                    .Where(x=>x.OnWait.Any(y=>!y.OffEventId.HasValue))
+                    .Select(x => new FrontDocumentTask
                     {
-                        x.IsFactExecutor = sendList.IsFactExecutor;
-                        x.ResponsibleExecutorPositionName = sendList.ResponsibleExecutorPositionName;
-                        x.ResponsibleExecutorPositionExecutorAgentName = sendList.ResponsibleExecutorPositionExecutorAgentName;
-                    }
-                });
+                        Id = x.TaskId.Value,
+                        IsFactExecutor = true,
+                        ExecutorSendType = EnumSendTypes.SendForResponsibleExecution,
+                        ExecutorType = "##l@TaskExecutor:ResponsibleExecutor@l##",
+                        ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                        ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                    }).ToList();
 
-            }
+            var taskFactContr = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForControl)
+                .Select(x => new FrontDocumentTask
+                {
+                    Id = x.TaskId.Value,
+                    IsFactExecutor = true,
+                    ExecutorSendType = EnumSendTypes.SendForControl,
+                    ExecutorType = "##l@TaskExecutor:Controler@l##",
+                    ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                    ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                }).ToList();
+
+
+            var sendListFilterContains = PredicateBuilder.False<DocumentSendLists>();
+            sendListFilterContains = tasks.Select(x => x.Id).Aggregate(sendListFilterContains,  (current, value) => current.Or(e => e.TaskId == value).Expand());
+
+            var taskPlanRespEx = dbContext.DocumentSendListsSet.Where(sendListFilterContains).Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
+                                .Select(x => new FrontDocumentTask
+                                {
+                                    Id = x.TaskId.Value,
+                                    IsFactExecutor = false,
+                                    ExecutorSendType = EnumSendTypes.SendForResponsibleExecution,
+                                    ExecutorType = "##l@TaskExecutor:ResponsibleExecutor@l##",
+                                    ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                                    ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                                }).ToList();
+
+            var taskPlanContr = dbContext.DocumentSendListsSet.Where(sendListFilterContains).Where(x => x.SendTypeId == (int)EnumSendTypes.SendForControl)
+                .Select(x => new FrontDocumentTask
+                {
+                    Id = x.TaskId.Value,
+                    IsFactExecutor = false,
+                    ExecutorSendType = EnumSendTypes.SendForControl,
+                    ExecutorType = "##l@TaskExecutor:Controler@l##",
+                    ResponsibleExecutorPositionName = x.TargetPosition.Name,
+                    ResponsibleExecutorPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                }).ToList();
+
+            tasks.ForEach(x =>
+            {
+                FrontDocumentTask taskExecutor = taskFactRespEx.OrderByDescending(y=>y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskFactContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanRespEx.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor == null) taskExecutor = taskPlanContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
+                if (taskExecutor != null)
+                {
+                    x.IsFactExecutor = taskExecutor.IsFactExecutor;
+                    x.ExecutorSendType = taskExecutor.ExecutorSendType;
+                    x.ExecutorType = taskExecutor.ExecutorType;
+                    x.ResponsibleExecutorPositionName = taskExecutor.ResponsibleExecutorPositionName;
+                    x.ResponsibleExecutorPositionExecutorAgentName = taskExecutor.ResponsibleExecutorPositionExecutorAgentName;
+                }
+            });
 
             tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
@@ -2089,22 +2153,24 @@ namespace BL.Database.Common
                         DocumentId = x.SendEvent.DocumentId,
                         EventType = x.SendEvent.EventTypeId,
                         EventTypeName = x.SendEvent.EventType.Name,
-                        TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name,
                         DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
-
                         Date = x.SendEvent.Date,
-                        SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name,
+                        SourcePositionExecutorAgentId = x.SendEvent.SourcePositionExecutorAgentId,
+                        TargetPositionExecutorAgentId = x.SendEvent.TargetPositionExecutorAgentId,
+                        SourcePositionExecutorAgentName = x.SendEvent.SourcePositionExecutorAgent.Name + (x.SendEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.SendEvent.SourcePositionExecutorType.Suffix + ")" : null),
+                        TargetPositionExecutorAgentName = x.SendEvent.TargetPositionExecutorAgent.Name + (x.SendEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.SendEvent.TargetPositionExecutorType.Suffix + ")" : null),
                         Description = x.SendEvent.Description,
                         AddDescription = x.SendEvent.AddDescription,
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
                         ReadDate = x.SendEvent.ReadDate,
+                        SourceAgentId = x.SendEvent.SourceAgentId,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
                         SourcePositionName = x.SendEvent.SourcePosition.Name,
-                        SourcePositionId = x.DoneEvent.SourcePositionId,
+                        SourcePositionId = x.SendEvent.SourcePositionId,
                         TargetPositionName = x.SendEvent.TargetPosition.Name,
-                        TargetPositionId = x.DoneEvent.TargetPositionId,
-                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name,
+                        TargetPositionId = x.SendEvent.TargetPositionId,
+                        SourcePositionExecutorNowAgentName = x.SendEvent.SourcePosition.ExecutorAgent.Name + (x.SendEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SendEvent.SourcePosition.ExecutorType.Suffix + ")" : null),
+                        TargetPositionExecutorNowAgentName = x.SendEvent.TargetPosition.ExecutorAgent.Name + (x.SendEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.SendEvent.TargetPosition.ExecutorType.Suffix + ")" : null),
                         SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
 
@@ -2117,24 +2183,26 @@ namespace BL.Database.Common
                         DocumentId = x.DoneEvent.DocumentId,
                         EventType = x.DoneEvent.EventTypeId,
                         EventTypeName = x.DoneEvent.EventType.Name,
-                        TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name,
                         DueDate = null,
                         Date = x.DoneEvent.Date,
-                        SourcePositionExecutorAgentName = null,
+                        SourcePositionExecutorAgentId = x.DoneEvent.SourcePositionExecutorAgentId,
+                        TargetPositionExecutorAgentId = x.DoneEvent.TargetPositionExecutorAgentId,
+                        SourcePositionExecutorAgentName = x.DoneEvent.SourcePositionExecutorAgent.Name + (x.DoneEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.DoneEvent.SourcePositionExecutorType.Suffix + ")" : null),
+                        TargetPositionExecutorAgentName = x.DoneEvent.TargetPositionExecutorAgent.Name + (x.DoneEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.DoneEvent.TargetPositionExecutorType.Suffix + ")" : null),
                         Description = x.DoneEvent.Description,
                         AddDescription = x.DoneEvent.AddDescription,
 
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
                         ReadDate = x.SendEvent.ReadDate,
-                        SourceAgentName = x.SendEvent.SourceAgent.Name,
+                        SourceAgentId = x.DoneEvent.SourceAgentId,
+                        SourceAgentName = x.DoneEvent.SourceAgent.Name,
                         //TODO Фронт очен хочет поля SourcePositionId, TargetPositionId
                         SourcePositionName = null,
                         SourcePositionId = x.DoneEvent.SourcePositionId,
                         TargetPositionName = null,
                         TargetPositionId = x.DoneEvent.TargetPositionId,
-
-                        SourcePositionExecutorNowAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name,
-                        TargetPositionExecutorNowAgentName = null,
+                        SourcePositionExecutorNowAgentName = x.DoneEvent.SourcePosition.ExecutorAgent.Name + (x.DoneEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.DoneEvent.SourcePosition.ExecutorType.Suffix + ")" : null),
+                        TargetPositionExecutorNowAgentName = x.DoneEvent.TargetPosition.ExecutorAgent.Name + (x.DoneEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.DoneEvent.TargetPosition.ExecutorType.Suffix + ")" : null),
                         SourcePositionExecutorAgentPhoneNumber = null,
                         TargetPositionExecutorAgentPhoneNumber = null,
                     },
@@ -2145,7 +2213,7 @@ namespace BL.Database.Common
                 CertificatePositionId = x.CertificatePositionId,
                 CertificatePositionExecutorAgentId = x.CertificatePositionExecutorAgentId,
                 CertificatePositionName = x.CertificatePosition.Name,
-                CertificatePositionExecutorAgentName = x.CertificatePositionExecutorAgent.Name,
+                CertificatePositionExecutorAgentName = x.CertificatePositionExecutorAgent.Name + (x.CertificatePositionExecutorType.Suffix != null ? " (" + x.CertificatePositionExecutorType.Suffix + ")" : null),
                 CertificateSignCreateDate = x.CertificateSignCreateDate,
 
 
@@ -2486,7 +2554,7 @@ namespace BL.Database.Common
                 DepartmentId = x.Position.DepartmentId,
                 ExecutorAgentId = x.Position.ExecutorAgentId,
                 DepartmentName = x.Position.Department.Name,
-                ExecutorAgentName = x.Position.ExecutorAgent.Name,
+                ExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
                 PositionPhone = "Здесь нужно отображать основной номер или все контакты"// x.Position.ExecutorAgent.AgentContacts.Where(y => y.IsActive).Where(y => y.ContactType.SpecCode == EnumContactTypes.MainPhone.ToString()).ToString()
             }).Distinct().ToList();
 
@@ -2514,25 +2582,56 @@ namespace BL.Database.Common
                             DocumentDate = y.RegistrationDate ?? y.CreateDate,
                             IsRegistered = y.IsRegistered,
                             Description = y.Description,
-                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name,
+                            ExecutorPositionId = y.ExecutorPositionId,
                             ExecutorPositionName = y.ExecutorPosition.Name,
-                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate).
-                                Select(z => new FrontDocumentLink
-                                {
-                                    Id = z.Id,
-                                    LinkTypeName = z.LinkType.Name,
-                                    RegistrationNumber = z.ParentDocument.RegistrationNumber,
-                                    RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
-                                    RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
-                                    RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
-                                    DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
-                                })
+                            ExecutorPositionExecutorAgentId = y.ExecutorPositionExecutorAgentId,
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.ExecutorPositionExecutorType.Suffix != null ? " (" + y.ExecutorPositionExecutorType.Suffix + ")" : null),
+                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate)
+                                    .Select(z => new FrontDocumentLink
+                                    {
+                                        Id = z.Id,
+                                        DocumentId = z.DocumentId,
+                                        ParentDocumentId = z.ParentDocumentId,
+                                        LinkTypeName = z.LinkType.Name,
+                                        IsParent = true,
+                                        RegistrationNumber = z.ParentDocument.RegistrationNumber,
+                                        RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
+                                        RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
+                                        RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
+                                        DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
+                                        ExecutorPositionId = z.ExecutorPositionId,
+                                        ExecutorPositionName = z.ExecutorPosition.Name,
+                                        ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
+                                        ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    }).Concat
+                                    (y.LinksParentDocuments.OrderBy(z => z.LastChangeDate)
+                                    .Select(z => new FrontDocumentLink
+                                    {
+                                        Id = z.Id,
+                                        DocumentId = z.DocumentId,
+                                        ParentDocumentId = z.ParentDocumentId,
+                                        LinkTypeName = z.LinkType.Name,
+                                        IsParent = false,
+                                        RegistrationNumber = z.Document.RegistrationNumber,
+                                        RegistrationNumberPrefix = z.Document.RegistrationNumberPrefix,
+                                        RegistrationNumberSuffix = z.Document.RegistrationNumberSuffix,
+                                        RegistrationFullNumber = "#" + z.Document.Id.ToString(),
+                                        DocumentDate = (z.Document.RegistrationDate ?? z.Document.CreateDate),
+                                        ExecutorPositionId = z.ExecutorPositionId,
+                                        ExecutorPositionName = z.ExecutorPosition.Name,
+                                        ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
+                                        ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    })),
                         }).ToList();
             items.ForEach(x =>
             {
                 CommonQueries.ChangeRegistrationFullNumber(x);
                 var links = x.Links.ToList();
-                links.ForEach(y => CommonQueries.ChangeRegistrationFullNumber(y));
+                links.ForEach(y =>
+                {
+                    CommonQueries.ChangeRegistrationFullNumber(y);
+                    y.CanDelete = context.CurrentPositionsIdList.Contains(y.ExecutorPositionId ?? (int)EnumSystemPositions.AdminPosition);
+                });
                 x.Links = links;
                 x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, context, new FilterDictionaryPosition { DocumentIDs = new List<int> { x.Id } });
                 //TODO x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
@@ -2582,7 +2681,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentSendList> GetDocumentSendList(DmsContext dbContext, IContext context, FilterDocumentSendList filter)
         {
             var sendListDb = GetDocumentSendListQuery(dbContext, context, filter);
-            
+
             var res = sendListDb.Select(y => new FrontDocumentSendList
             {
                 Id = y.Id,
@@ -2591,19 +2690,24 @@ namespace BL.Database.Common
                 SendType = (EnumSendTypes)y.SendTypeId,
                 SendTypeName = y.SendType.Name,
                 SendTypeCode = y.SendType.Code,
+                StageType = (EnumStageTypes?)y.StageTypeId,
+                StageTypeName = y.StageType.Name,
+                StageTypeCode = y.StageType.Code,
                 SendTypeIsImportant = y.SendType.IsImportant,
-                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name +
-                                                (y.SourcePosition.PositionExecutorTypeId.HasValue ? $"({y.SourcePosition.PositionExecutorType.Name})" : ""),
-                TargetPositionExecutorAgentName = ( y.TargetPosition.ExecutorAgent.Name +
-                                                (y.TargetPosition.PositionExecutorTypeId.HasValue ? $"({y.TargetPosition.PositionExecutorType.Name})" : ""))
+                SourcePositionExecutorAgentId = y.SourcePosition.ExecutorAgentId,
+                TargetPositionExecutorAgentId = y.TargetPosition.ExecutorAgentId,
+                SourcePositionExecutorAgentName = y.SourcePosition.ExecutorAgent.Name + (y.SourcePosition.ExecutorType.Suffix != null ? " (" + y.SourcePosition.ExecutorType.Suffix + ")" : (string)null),
+                TargetPositionExecutorAgentName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : (string)null))
                                                 ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
                 IsAvailableWithinTask = y.IsAvailableWithinTask,
                 IsWorkGroup = y.IsWorkGroup,
                 IsAddControl = y.IsAddControl,
+                SelfDescription = y.SelfDescription,
                 SelfDueDate = y.SelfDueDate,
                 SelfDueDay = y.SelfDueDay,
                 SelfAttentionDate = y.SelfAttentionDate,
+                SelfAttentionDay = y.SelfAttentionDay,
                 Description = y.Description,
                 AddDescription = y.AddDescription,
                 DueDate = y.DueDate,
@@ -2622,8 +2726,8 @@ namespace BL.Database.Common
 
                 SourcePositionName = y.SourcePosition.Name,
                 TargetPositionName = y.TargetPosition.Name,
-                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name,
-                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name,
+                SourcePositionExecutorNowAgentName = y.SourcePosition.ExecutorAgent.Name + (y.SourcePosition.ExecutorType.Suffix != null ? " (" + y.SourcePosition.ExecutorType.Suffix + ")" : (string)null),
+                TargetPositionExecutorNowAgentName = y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : (string)null),
                 SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
@@ -2636,8 +2740,11 @@ namespace BL.Database.Common
                                             EventType = y.StartEvent.EventTypeId,
                                             EventTypeName = y.StartEvent.EventType.Name,
                                             Date = y.StartEvent.Date,
-                                            SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name,
-                                            TargetPositionExecutorAgentName = y.StartEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
+                                            SourcePositionExecutorAgentId = null,
+                                            TargetPositionExecutorAgentId = null,
+                                            SourcePositionExecutorAgentName = y.StartEvent.SourcePositionExecutorAgent.Name + (y.StartEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.StartEvent.SourcePositionExecutorType.Suffix + ")" : null),
+                                            TargetPositionExecutorAgentName = (y.StartEvent.TargetPositionExecutorAgent.Name + (y.StartEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.StartEvent.TargetPositionExecutorType.Suffix + ")" : null))
+                                                                                ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.StartEvent.Description,
                                             AddDescription = y.StartEvent.AddDescription,
                                             DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
@@ -2650,8 +2757,11 @@ namespace BL.Database.Common
                                             EventType = y.CloseEvent.EventTypeId,
                                             EventTypeName = y.CloseEvent.EventType.Name,
                                             Date = y.CloseEvent.Date,
-                                            SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name,
-                                            TargetPositionExecutorAgentName = y.CloseEvent.TargetPositionExecutorAgent.Name ?? y.StartEvent.TargetAgent.Name,
+                                            SourcePositionExecutorAgentId = y.CloseEvent.SourcePositionExecutorAgentId,
+                                            TargetPositionExecutorAgentId = y.CloseEvent.TargetPositionExecutorAgentId,
+                                            SourcePositionExecutorAgentName = y.CloseEvent.SourcePositionExecutorAgent.Name + (y.CloseEvent.SourcePositionExecutorType.Suffix != null ? " (" + y.CloseEvent.SourcePositionExecutorType.Suffix + ")" : null),
+                                            TargetPositionExecutorAgentName = (y.CloseEvent.TargetPositionExecutorAgent.Name + (y.CloseEvent.TargetPositionExecutorType.Suffix != null ? " (" + y.CloseEvent.TargetPositionExecutorType.Suffix + ")" : null))
+                                                                                ?? y.StartEvent.TargetAgent.Name,
                                             Description = y.CloseEvent.Description,
                                             AddDescription = y.CloseEvent.AddDescription,
                                             DueDate = null,
@@ -2690,6 +2800,7 @@ namespace BL.Database.Common
                 TargetAgentId = y.TargetAgentId,
                 TargetPositionId = y.TargetPositionId,
                 SendType = (EnumSendTypes)y.SendTypeId,
+                StageType = (EnumStageTypes?)y.StageTypeId,
                 Description = y.Description,
                 DueDate = y.DueDate,
                 DueDay = y.DueDay,
@@ -2728,8 +2839,7 @@ namespace BL.Database.Common
                 DocumentId = y.DocumentId,
                 PositionId = y.PositionId,
                 PositionName = y.Position.Name,
-                PositionExecutorAgentName = y.Position.ExecutorAgent.Name,
-                PositionExecutorAgentPhoneNumber = "(888)888-88-88",
+                PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
                 AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
                 DepartmentName = y.Position.Department.Name,
@@ -2859,9 +2969,9 @@ namespace BL.Database.Common
                 //DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
 
                 OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
-                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name,
+                OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name + (x.LastPaperEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.LastPaperEvent.TargetPositionExecutorType.Suffix + ")" : null),
                 OwnerPositionName = x.LastPaperEvent.TargetPosition.Name,
-                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name,
+                OwnerPositionExecutorNowAgentName = x.LastPaperEvent.TargetPosition.ExecutorAgent.Name + (x.LastPaperEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.LastPaperEvent.TargetPosition.ExecutorType.Suffix + ")" : null),
                 OwnerPositionExecutorAgentPhoneNumber = "(888)888-88-88",
                 PaperPlanDate = x.LastPaperEvent.PaperPlanDate,
                 PaperSendDate = x.LastPaperEvent.PaperSendDate,
@@ -2877,7 +2987,7 @@ namespace BL.Database.Common
         #endregion
 
         #region PaperLists
-        public static IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(DmsContext dbContext, IContext ctx, FilterDocumentPaperList filter)
+        public static IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(DmsContext dbContext, IContext ctx, FilterDocumentPaperList filter, UIPaging paging)
         {
             var itemsDb = dbContext.DocumentPaperListsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -2892,7 +3002,30 @@ namespace BL.Database.Common
                     itemsDb = itemsDb.Where(filterContains);
                 }
             }
+            itemsDb = itemsDb.OrderByDescending(x => x.LastChangeDate);
 
+            if (paging != null)
+            {
+                if (paging.IsOnlyCounter ?? true)
+                {
+                    paging.TotalItemsCount = itemsDb.Count();
+                }
+
+                if (paging.IsOnlyCounter ?? false)
+                {
+                    return new List<FrontDocumentPaperList>();
+                }
+
+
+                if (!paging.IsAll)
+                {
+                    var skip = paging.PageSize * (paging.CurrentPage - 1);
+                    var take = paging.PageSize;
+
+                    itemsDb = itemsDb
+                        .Skip(() => skip).Take(() => take);
+                }
+            }
             var itemsRes = itemsDb.Select(x => x);
 
             var items = itemsRes.Select(x => new FrontDocumentPaperList
@@ -3029,6 +3162,7 @@ namespace BL.Database.Common
                     {
                         if (isUseCertificateSign && (newSubscription?.CertificateId).HasValue)
                         {
+                            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash GetDocumentCertificateSign ", @"C:\sign.log");
                             document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, newSubscription.CertificateId.Value, newSubscription.CertificatePassword);
                         }
                         else
@@ -3121,6 +3255,8 @@ namespace BL.Database.Common
                     }
                 }
                 document.Subscriptions = subscriptions;
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash CertificateSignPdfFileIdentity ", @"C:\sign.log");
+
                 document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword);
             }
 
@@ -3128,6 +3264,7 @@ namespace BL.Database.Common
             {
                 throw new DocumentFileWasChangedExternally();
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash end ", @"C:\sign.log");
 
             return document;
         }
@@ -3228,6 +3365,7 @@ namespace BL.Database.Common
                     CertificateId = x.CertificateId,
                     CertificatePositionId = x.CertificatePositionId,
                     CertificatePositionExecutorAgentId = x.CertificatePositionExecutorAgentId,
+                    CertificatePositionExecutorTypeId = x.CertificatePositionExecutorTypeId,
                     CertificateSign = x.CertificateSign,
                     InternalSign = x.InternalSign,
                     Description = x.Description
@@ -3271,6 +3409,7 @@ namespace BL.Database.Common
                     stringDocument.Append(docSendList.TargetPositionId);
                     stringDocument.Append(docSendList.TargetAgentId);
                     stringDocument.Append(docSendList.SendType);
+                    stringDocument.Append(docSendList.StageType);
                     stringDocument.Append(docSendList.Description);
                     stringDocument.Append(docSendList.DueDate);
                     stringDocument.Append(docSendList.DueDay);
@@ -3309,7 +3448,9 @@ namespace BL.Database.Common
 
         public static FrontReport GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc)
         {
+            //TODO PDF Can we reuse pdf?? 
             var fileStore = DmsResolver.Current.Get<IFileStore>();
+            // такое не делают на уровне БД! Это должно происходит на уровне логики! SZ
             var pdf = DmsResolver.Current.Get<DmsReport>().ReportExportToStream(doc, fileStore.GetFullTemplateReportFilePath(ctx, EnumReportTypes.DocumentForDigitalSignature));
 
             using (PdfReader reader = new PdfReader(pdf.FileContent))
@@ -3342,11 +3483,16 @@ namespace BL.Database.Common
 
         public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword)
         {
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf begin ", @"C:\sign.log");
+
             var fileStore = DmsResolver.Current.Get<IFileStore>();
             var pdf = GetDocumentCertificateSignPdf(dbContext, ctx, doc);
 
             if (certificateId.HasValue)
-                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
+            {
+                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>()
+                    .GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
+            }
 
             var positionId = (int)EnumSystemPositions.AdminPosition;
             try
@@ -3381,14 +3527,20 @@ namespace BL.Database.Common
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
 
             var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
+
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\sign.log");
+
             if (ordInDoc == -1)
             {
                 att.Version = 1;
                 att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetNextFileOrderNumber ", @"C:\sign.log");
             }
             else
             {
                 att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetFileNextVersion ", @"C:\sign.log");
+
                 att.OrderInDocument = ordInDoc;
             }
 
@@ -3396,8 +3548,10 @@ namespace BL.Database.Common
             att.LastChangeUserId = ctx.CurrentAgentId;
 
             fileStore.SaveFile(ctx, att);
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf SaveFile ", @"C:\sign.log");
 
             operationDb.AddNewFileOrVersion(ctx, att);
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\sign.log");
 
             return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
         }
@@ -3447,7 +3601,7 @@ namespace BL.Database.Common
                     DepartmentId = x.DepartmentId,
                     ExecutorAgentId = x.ExecutorAgentId,
                     DepartmentName = x.Department.Name,
-                    ExecutorAgentName = x.ExecutorAgent.Name,
+                    ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                 }).ToList();
         }
 
@@ -3491,7 +3645,7 @@ namespace BL.Database.Common
         public static void ModifyDocumentTaskAccesses(DmsContext dbContext, IContext ctx, int documentId)
         {
             var qry1 = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                .Where(x => x.DocumentId == documentId && x.IsAvailableWithinTask && x.TaskId.HasValue)
+                .Where(x => x.DocumentId == documentId /*&& x.IsAvailableWithinTask*/ && x.TaskId.HasValue)
                 .GroupBy(x => new { x.TaskId, x.SourcePositionId, x.TargetPositionId })
                 .Select(x => new { x.Key.TaskId, x.Key.SourcePositionId, x.Key.TargetPositionId }).ToList();
             var qry2 = qry1.GroupBy(x => new { x.TaskId, x.SourcePositionId }).Where(x => x.Key.SourcePositionId.HasValue)

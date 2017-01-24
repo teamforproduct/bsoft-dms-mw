@@ -109,7 +109,7 @@ namespace BL.Logic.ClientCore
             return items;
         }
 
-        public void AddNewClient(IContext context, AddClientContent client)
+        public void AddNewClient(IContext context, AddClientSaaS client)
         {
             
             //GetSystemSettings
@@ -156,7 +156,7 @@ namespace BL.Logic.ClientCore
                 Login = client.Email,
                 //PasswordHash = client.PasswordHash,
                 IsActive = true,
-                LanguageId = client.LanguageId
+                //LanguageId = client.LanguageId
             });
 
             _DictDb.AddContact(context, new InternalDictionaryContact() { AgentId = agentUser, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });
@@ -167,7 +167,7 @@ namespace BL.Logic.ClientCore
 
             #region [+] Agent-Company ....
             // Pss Локализация для названия компании
-            var company = new InternalDictionaryAgentClientCompany()
+            var company = new InternalDictionaryAgentOrg()
             {
                 Name = "Наша компания",
                 FullName = "Наша компания"
@@ -175,7 +175,7 @@ namespace BL.Logic.ClientCore
 
             CommonDocumentUtilities.SetLastChange(context, company);
 
-            var companyId = _DictDb.AddAgentClientCompany(context, company);
+            var companyId = _DictDb.AddAgentOrg(context, company);
 
 
 
@@ -273,6 +273,7 @@ namespace BL.Logic.ClientCore
             var items = new List<InternalAdminRoleAction>();
 
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddLinkedDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CopyDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteDocument });
@@ -355,8 +356,11 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForControl });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForResponsibleExecution });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.SendForExecution });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AskPostponeDueDate });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CancelPostponeDueDate });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.MarkExecution });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AcceptResult });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CancelExecution });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.RejectResult });
 
             return items;
@@ -438,6 +442,7 @@ namespace BL.Logic.ClientCore
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.ModifyExecutor });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDictionaryActions.DeleteExecutor });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocument });
+            items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.CopyTemplateDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.ModifyTemplateDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.DeleteTemplateDocument });
             items.Add(new InternalAdminRoleAction() { ActionId = (int)EnumDocumentActions.AddTemplateDocumentSendList });

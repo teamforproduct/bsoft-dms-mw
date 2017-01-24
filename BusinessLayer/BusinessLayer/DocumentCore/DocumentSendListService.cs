@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore
 
             if (isLastStage)
             {
-                int lastStage = sendLists.Count > 0 ? sendLists.Max(x => x.Stage) + 1 : 0;
+                int lastStage = sendLists.Count > 0 ? sendLists.Max(x => x.Stage??0) + 1 : 0;
                 sendLists.Add(new FrontDocumentSendList { Id = 0, Stage = lastStage });
             }
 
@@ -60,7 +60,27 @@ namespace BL.Logic.DocumentCore
         {
             return _documentDb.GetSendLists(context, documentId).ToList();
         }
-
+        public IEnumerable<FrontDocument> GetAdditinalLinkedDocumentSendLists(IContext context, AdditinalLinkedDocumentSendList model)
+        {
+            var data = _documentDb.GetAdditinalLinkedDocumentSendListsPrepare(context, model);
+            var sendListQry = data.Documents.Select(x => x.Id).Join(data.Positions, x => true, y => true, (x, y) => new { DocumentId = x, Position = y })
+                .Where(x => !data.Accesses.Any(z => z.DocumentId == x.DocumentId && z.PositionId == x.Position.Id));
+             var sendList = sendListQry.Select(x => new FrontDocumentSendList
+                {
+                    DocumentId = x.DocumentId,
+                    SendType = EnumSendTypes.SendForInformation,
+                    SendTypeCode = EnumSendTypes.SendForInformation.ToString(),
+                    SendTypeName = data.SendTypeName,
+                    TargetPositionId = x.Position.Id,
+                    TargetPositionName = x.Position.Name,
+                    TargetPositionExecutorAgentId = x.Position.ExecutorAgentId,
+                    TargetPositionExecutorAgentName = x.Position.ExecutorAgentName,
+                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                }).ToList();
+            data.Documents.ToList().ForEach(x=>x.SendLists = sendList.Where(y=>y.DocumentId == x.Id).ToList());
+            var res = data.Documents.Where(x => x.SendLists.Any()).ToList();
+            return res;
+        }
         #endregion DocumentSendLists         
     }
 }

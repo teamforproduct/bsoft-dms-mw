@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.EncryptionCore.IncomingModel
 {
@@ -12,7 +13,7 @@ namespace BL.Model.EncryptionCore.IncomingModel
         /// ИД Документа
         /// </summary>
         [XmlIgnore]
-        [IgnoreDataMember]
+        [Required]
         public int Id { get; set; }
         /// <summary>
         /// Название сертификата

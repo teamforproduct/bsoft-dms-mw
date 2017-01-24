@@ -231,5 +231,11 @@ namespace BL.Logic.SystemCore
             return _systemDb.GetSystemDate(ctx);
         }
 
+        public void RefreshModuleFeature(IContext context)
+        {
+            _systemDb.RefreshModuleFeature(context);
+
+        }
+
     }
 }

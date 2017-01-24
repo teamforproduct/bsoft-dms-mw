@@ -19,14 +19,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     /// Действия связанные с пользовательской настройкой системы
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryStaffList")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryStaffList")]
     public class DictionaryStaffListController : ApiController
     {
         /// <summary>
         /// Возвращает штатное расписание. Компании -> Отделы -> Должности -> Исполнители
         /// </summary>
         /// <param name="filter">Фильтрация элементов по названию</param>
-        /// <param name="startWith">Определяет с какого элемента построить дерево</param>
         /// <returns></returns>
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)

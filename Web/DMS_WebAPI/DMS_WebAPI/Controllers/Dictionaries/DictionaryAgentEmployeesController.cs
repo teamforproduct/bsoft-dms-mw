@@ -14,13 +14,15 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using System.Web;
 using BL.Logic.SystemServices.TempStorage;
+using BL.Model.DictionaryCore.FrontMainModel;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {/// <summary>
  /// Контрагент - сотрудник
  /// </summary>
     [Authorize]
-    [RoutePrefix("api/v2/DictionaryAgentEmployees")]
+    [RoutePrefix(ApiPrefix.V2 + "DictionaryAgentEmployees")]
     public class DictionaryAgentEmployeesController : ApiController
     {
         /// <summary>
@@ -28,12 +30,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
-        [ResponseType(typeof(List<FrontDictionaryAgentEmployee>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        [HttpGet]
+        [ResponseType(typeof(List<FrontMainAgentEmployee>))]
+        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAgentEmployees(ctx, filter, paging);
+            var tmpItems = tmpService.GetMainAgentEmployees(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             return res;
@@ -58,11 +61,11 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         }
 
         /// <summary>
-        /// Запись справочника сотрудников
+        /// Возвращает реквизиты сотрудника
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [ResponseType(typeof(FrontDictionaryAgentEmployee))]
+        [ResponseType(typeof(FrontAgentEmployee))]
         public IHttpActionResult Get(int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -76,28 +79,29 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]AddDictionaryAgentEmployee model)
+        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
-            var dbWebProc = new WebAPIDbProcess();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webSeevice = new WebAPIService();
 
-            var tmpItem = dbWebProc.AddUserEmployee(model);
+            var tmpItem = webSeevice.AddUserEmployee(ctx, model);
 
             return Get(tmpItem);
         }
 
-        /// <summary>
-        /// сделать физлицо сотрудником
-        /// </summary>
-        /// <param name="AgentPersonId">ИД агента</param>
-        /// <param name="model">параметры сотрудника</param>
-        /// <returns>добавленную запись</returns>
-        public IHttpActionResult PostToExistingAgent(int AgentPersonId, [FromBody]ModifyDictionaryAgentEmployee model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            model.Id = AgentPersonId;
-            return Get((int)tmpItem.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model));
-        }
+        ///// <summary>
+        ///// сделать физлицо сотрудником
+        ///// </summary>
+        ///// <param name="AgentPersonId">ИД агента</param>
+        ///// <param name="model">параметры сотрудника</param>
+        ///// <returns>добавленную запись</returns>
+        //public IHttpActionResult PostToExistingAgent(int AgentPersonId, [FromBody]ModifyDictionaryAgentEmployee model)
+        //{
+        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+        //    model.Id = AgentPersonId;
+        //    return Get((int)tmpItem.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, ctx, model));
+        //}
 
         /// <summary>
         /// Изменение сотрудника
@@ -105,23 +109,13 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDictionaryAgentEmployee model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyAgentEmployee model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            var webSeevice = new WebAPIService();
+            webSeevice.UpdateUserEmployee(ctx, model);
 
-            if (model.ImageId.HasValue)
-            {
-                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
-                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
-                if (avaFile is string)
-                {
-                    model.PostedFileData = avaFile as string;
-                }
-            }
-
-            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, ctx, model);
             return Get(model.Id);
         }
 
@@ -133,10 +127,10 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         public IHttpActionResult Delete([FromUri] int id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-
-            tmpItem.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, ctx, id);
-            FrontDictionaryAgentPerson tmp = new FrontDictionaryAgentPerson();
+            var webSeevice = new WebAPIService();
+            webSeevice.DeleteUserEmployee(ctx, id);
+            
+            FrontMainAgentPerson tmp = new FrontMainAgentPerson();
             tmp.Id = id;
 
             return new JsonResult(tmp, this);
@@ -161,21 +155,5 @@ namespace DMS_WebAPI.Controllers.Dictionaries
             return new JsonResult(null, this);
         }
 
-        /// <summary>
-        /// Устанавливает настройки для пользователя
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("SetSettings")]
-        public IHttpActionResult SetSettings(int id, ModifyDictionaryAgentUserSettings model)
-        {
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-//            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployeeLanguage, ctx, new ModifyDictionaryAgentUser { Id = id, LanguageId = languageId });
-
-            return new JsonResult(null, this);
-        }
     }
 }

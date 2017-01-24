@@ -20,6 +20,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Transactions;
+using BL.CrossCutting.Helpers;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Database.Encryption
 {
@@ -30,9 +32,11 @@ namespace BL.Database.Encryption
         private string _ZipCerPasswordFileName { get; } = "password.txt";
 
         private const string _RSAKeyXml = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent><P>twV17e14On7eLeKl46JRJnnXrvZp4tHj68iNFk/S8tK/uKj3b9xeTTqxI6S31xQ3mN26X54egttXNjQ7V9OUaQ==</P><Q>9kpHMG4hxQ3/q1FyPlLgNV1XPDyeGoNF1QQDZ7Te8xfWvPW1ildAYsCEJ91tZMstgJR7oojYPy7VTNDn8bndoQ==</Q><DP>SLy017Bu/eB58IaJI2TZF4+I9pIcFvcPvB9iYyGqVrMHWx5b6GsOV2ciC2ZlYec5CVnlviabPapqiLJNe2QtMQ==</DP><DQ>R++uF2Ezj+Dk2l8xpS6DulKHFlsGOuw4y10euX3E2PAPkqWZ3sxZS/67GwG74ALQSYwVCIY700iUmJk0BhCpwQ==</DQ><InverseQ>oN5Vlg5M68jAeeZRiduiyMBw/T+oZQ5zaxMlvqIhgF603xRjHTzcNaHZB9Kvn0YBnfcRx6F1PfSkJJl4rWAaDw==</InverseQ><D>AIZ3BBwquy82vlAsfNhS8frTOZWoh6d0C0f/T8EMzxiKMwm/LvXcRv/p2oXRyUnXtsVkb5iROQVCCqVOlWe6rbvUMU8P554u4t9g0y1oLJUQDbYmRBo6z0I31OTRNBb7nCI6/l01Vyq6Ju225EdOEL8EVNd/wkQXoYRbm7Mun4E=</D></RSAKeyValue>";
+        private ILogger _logger;
 
         public EncryptionDbProcess()
         {
+            _logger = DmsResolver.Current.Get<ILogger>();
         }
 
         private string GetTempPath()
@@ -45,8 +49,7 @@ namespace BL.Database.Encryption
         #region Certificates
         public IEnumerable<FrontEncryptionCertificate> GetCertificates(IContext ctx, FilterEncryptionCertificate filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
 
@@ -93,15 +96,14 @@ namespace BL.Database.Encryption
                 });
 
                 var res = qryFE.ToList();
-
+                transaction.Complete();
                 return res;
             }
         }
 
         private InternalEncryptionCertificate GetCertificate(IContext ctx, int certificateId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { certificateId } });
 
@@ -123,7 +125,7 @@ namespace BL.Database.Encryption
 
                 if (item == null)
                     throw new EncryptionCertificateWasNotFound();
-
+                transaction.Complete();
                 return item;
             }
         }
@@ -134,21 +136,20 @@ namespace BL.Database.Encryption
 
             ZipCertificate(item);
 
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbEncryptionCertificate(item);
 
                 dbContext.EncryptionCertificatesSet.Add(itemDb);
                 dbContext.SaveChanges();
-
+                transaction.Complete();
                 item.Id = itemDb.Id;
             }
         }
 
         public InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId)
         {
-            using (var dbContext = new DmsContext(ctx))
-            using (var transaction = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var filter = new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } };
                 if (ctx.IsAdmin && agentId.HasValue) filter.AgentId = new List<int> { agentId.Value };
@@ -158,14 +159,14 @@ namespace BL.Database.Encryption
                 {
                     Id = x.Id,
                 }).FirstOrDefault();
-
+                transaction.Complete();
                 return item;
             }
         }
 
         public void ModifyCertificate(IContext ctx, InternalEncryptionCertificate item)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = new EncryptionCertificates
                 {
@@ -183,18 +184,19 @@ namespace BL.Database.Encryption
                 entry.Property(x => x.LastChangeDate).IsModified = true;
 
                 dbContext.SaveChanges();
-
+                transaction.Complete();
             }
         }
 
         public void DeleteCertificate(IContext ctx, int itemId)
         {
-            using (var dbContext = new DmsContext(ctx))
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
 
                 dbContext.EncryptionCertificatesSet.RemoveRange(qry);
                 dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
         #endregion
@@ -282,16 +284,22 @@ namespace BL.Database.Encryption
 
         private void ReadDetailsAboutCertificate(InternalEncryptionCertificate item)
         {
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate begin " + item.Certificate.Count().ToString(), @"C:\sign.log");
+
             var file = Path.Combine(GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid() + ".tmp");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate " + file, @"C:\sign.log");
             try
             {
                 //Если в X509Certificate2 передавать byte[] он все ровно его сохранит на диск и не факт что удалит
                 using (FileStream fs = File.Create(file))
                 {
                     fs.Write(item.Certificate, 0, item.Certificate.Length);
+                    fs.Flush();
                 }
-
+                FileLogger.AppendTextToFile("File on disc "+File.Exists(file), @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate FileStream Write ", @"C:\sign.log");
                 var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\sign.log");
 
                 item.Thumbprint = certificate.Thumbprint;
                 item.NotBefore = certificate.NotBefore;
@@ -299,6 +307,15 @@ namespace BL.Database.Encryption
             }
             catch (CryptographicException e)
             {
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate1 " + e.Message, @"C:\sign.log", e);
+
+                throw e;
+
+            }
+            catch (Exception e)
+            {
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate2 " + e.Message, @"C:\sign.log", e);
+
                 throw e;
             }
             finally
@@ -309,6 +326,8 @@ namespace BL.Database.Encryption
 
         private void AddCertificateInWindowsCertificateStores(InternalEncryptionCertificate item)
         {
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + "AddCertificateInWindowsCertificateStores begin", @"C:\sign.log");
+
             var file = Path.Combine(GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid() + ".tmp");
             try
             {
@@ -327,10 +346,16 @@ namespace BL.Database.Encryption
             {
                 throw e;
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
             finally
             {
                 File.Delete(file);
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() +" AddCertificateInWindowsCertificateStores end ", @"C:\sign.log");
+
         }
 
         #region Convert
@@ -485,6 +510,8 @@ namespace BL.Database.Encryption
 
         private void InitJVM()
         {
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " InitJVM begin ", @"C:\sign.log");
+
             string installDir = string.Empty;
             if (IntPtr.Size == 4)
             {
@@ -506,6 +533,7 @@ namespace BL.Database.Encryption
                 {
                     IntPtr cnstring = GetCNString();
                     string[] certs = StringFromNativeUtf8(cnstring).Split('|');
+                    FileLogger.AppendTextToFile(DateTime.Now.ToString() + " СЕРТИФИКАТЫ " + StringFromNativeUtf8(cnstring), @"C:\sign.log");
 
                     SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)
                 }
@@ -524,7 +552,7 @@ namespace BL.Database.Encryption
                 }
                 catch (Exception ex2)
                 {
-
+                    throw ex2;
                 }
             }
         }
@@ -537,6 +565,8 @@ namespace BL.Database.Encryption
 
         public string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign)
         {
+            //return dataToSign;
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign begin ", @"C:\sign.log");
             var res = string.Empty;
 
             try
@@ -595,15 +625,18 @@ namespace BL.Database.Encryption
             {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-
+                throw ex;
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign end ", @"C:\sign.log");
             return res;
         }
 
         public bool VerifyCertificateSign(IContext ctx, string dataToSign, string sign)
         {
+            //return true;
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign begin ", @"C:\sign.log");
             var res = false;
             try
             {
@@ -622,13 +655,16 @@ namespace BL.Database.Encryption
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign end ", @"C:\sign.log");
             return res;
         }
 
         public byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf)
         {
+            //return pdf;
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf begin ", @"C:\sign.log");
             byte[] res = null;
 
             try
@@ -637,7 +673,11 @@ namespace BL.Database.Encryption
                 certificate.Password = certificatePassword;
 
                 UnZipCertificate(certificate);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf UnZipCertificate ", @"C:\sign.log");
+
                 ReadDetailsAboutCertificate(certificate);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf ReadDetailsAboutCertificate ", @"C:\sign.log");
+
                 AddCertificateInWindowsCertificateStores(certificate);
 
                 if ((certificate.NotBefore.HasValue && certificate.NotBefore > DateTime.UtcNow)
@@ -700,19 +740,23 @@ namespace BL.Database.Encryption
             }
             catch (Exception ex)
             {
-
+                throw ex;
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf end ", @"C:\sign.log");
+
             return res;
         }
 
         public bool VerifyCertificateSignPdf(byte[] pdf)
         {
+            //return true;
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSignPdf begin ", @"C:\sign.log");
             int res = -1;
 
             try
             {
                 InitJVM();
-                var file = Path.Combine(GetTempPath(), "DMS-SIGN-"+ Guid.NewGuid() + ".pdf");
+                var file = Path.Combine(GetTempPath(), "DMS-SIGN-" + Guid.NewGuid() + ".pdf");
                 try
                 {
                     File.WriteAllBytes(file, pdf);
@@ -734,6 +778,10 @@ namespace BL.Database.Encryption
                 {
                     throw e;
                 }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 finally
                 {
                     File.Delete(file);
@@ -743,6 +791,7 @@ namespace BL.Database.Encryption
             {
 
             }
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSignPdf end ", @"C:\sign.log");
             return res == 0;
         }
         #endregion

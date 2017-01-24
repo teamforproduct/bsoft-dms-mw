@@ -13,6 +13,8 @@ namespace BL.Logic.DictionaryCore
 {
     public class ModifyDictionaryAgentPersonCommand : BaseDictionaryAgentPersonCommand
     {
+        private ModifyAgentPerson Model { get { return GetModel<ModifyAgentPerson>(); } }
+
         public override object Execute()
         {
             try
@@ -20,8 +22,6 @@ namespace BL.Logic.DictionaryCore
                 var newPerson = new InternalDictionaryAgentPerson(Model);
                 CommonDocumentUtilities.SetLastChange(_context, newPerson);
                 _dictDb.UpdateAgentPerson(_context, newPerson);
-
-
             }
             catch (DictionaryRecordWasNotFound)
             {
