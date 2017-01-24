@@ -487,6 +487,7 @@ namespace BL.Database.Documents
                     DueDay = x.DueDay,
                     SelfDueDay = x.SelfDueDay,
                     SelfAttentionDay = x.SelfAttentionDay,
+                    SelfDescription = x.SelfDescription,
                     AccessLevelId = x.AccessLevelId,
                     TargetPositionId = x.TargetPositionId,
                     TargetPositionName = x.TargetPosition.Name,
@@ -536,6 +537,7 @@ namespace BL.Database.Documents
                             IsAddControl = x.IsAddControl,
                             SelfDueDay = x.SelfDueDay,
                             SelfAttentionDay = x.SelfAttentionDay,
+                            SelfDescription = x.SelfDescription,
                             IsAvailableWithinTask = x.IsAvailableWithinTask
                         }).FirstOrDefault();
                 transaction.Complete();

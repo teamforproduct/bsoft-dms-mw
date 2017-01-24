@@ -162,7 +162,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="Id">ИД пункта плана</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         [Route(Features.Plan+ "/LaunchItem")]
         public IHttpActionResult LaunchItem([FromBody]int Id)
         {

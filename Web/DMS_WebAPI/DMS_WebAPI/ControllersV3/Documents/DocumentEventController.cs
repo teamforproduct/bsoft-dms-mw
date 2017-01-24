@@ -143,7 +143,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Добавляет примечание
+        /// Направляет документ
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
