@@ -24,6 +24,8 @@ namespace BL.Database.DatabaseContext
 
         private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
         private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
+        private static int GetFeatureId(string module, string feature) => GetConcatId(Modules.GetId(module), Features.GetId(feature));
+        private static int GetPermissionId(string module, string feature, EnumAccessTypes type) => GetConcatId(Modules.GetId(module), Features.GetId(feature), type.GetHashCode());
 
         public static List<SystemModules> GetSystemModules() => systemModules;
         public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
@@ -39,31 +41,22 @@ namespace BL.Database.DatabaseContext
                 systemModules.Add(m);
             }
 
-
-            //var f = systemFeatures.Where(x => x.Code == feature).FirstOrDefault();
-
-            //if (f == null)
-            //{
-            var f = new SystemFeatures { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature)), ModuleId = Modules.GetId(module), Code = feature, Name = GetLabel(module, feature), Order = order };
+            var f = new SystemFeatures { Id = GetFeatureId(module, feature), ModuleId = Modules.GetId(module), Code = feature, Name = GetLabel(module, feature), Order = order };
             systemFeatures.Add(f);
-            //}
-
-            var permissionIdstr = m.Id.ToString() + f.Id.ToString();
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f
+                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.R), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); 
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f
+                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.C), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); 
 
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f 
+                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.U), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); 
 
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f 
+                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.D), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id});     
 
         }
-
 
 
         public static void InitPermissions()
@@ -76,8 +69,7 @@ namespace BL.Database.DatabaseContext
             AddPermission(110, Modules.Org, Features.Addresses);
             AddPermission(120, Modules.Org, Features.Contacts);
             AddPermission(200, Modules.Department, Features.Info);
-            AddPermission(210, Modules.Department, Features.Positions, c: false, u: false, d: false);
-            AddPermission(220, Modules.Department, Features.Admins, u: false);
+            AddPermission(210, Modules.Department, Features.Admins, u: false);
             AddPermission(300, Modules.Position, Features.Info);
             AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false);
             AddPermission(320, Modules.Position, Features.Executors);
@@ -295,6 +287,8 @@ namespace BL.Database.DatabaseContext
         public static List<SystemActions> GetSystemActions()
         {
             var items = new List<SystemActions>();
+
+            // TODO добавить свзь с пермиссией. функуция GetPermissionId
 
             items.Add(GetSysAct(EnumDocumentActions.ViewDocument, EnumObjects.Documents, category: "Документ", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, category: "Документ"));
