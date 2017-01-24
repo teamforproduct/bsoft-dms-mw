@@ -2773,35 +2773,44 @@ namespace BL.Database.SystemDb
 
                 dbContext.SystemPermissionsSet.Delete();
 
-                dbContext.SystemModulesSet.Delete();
-
                 dbContext.SystemFeaturesSet.Delete();
 
+                dbContext.SystemModulesSet.Delete();
+
+                dbContext.SystemAccessTypesSet.Delete();
+
                 DmsDbImportData.InitPermissions();
+
+                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
+                {
+                    dbContext.SystemAccessTypesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
 
                 foreach (var item in DmsDbImportData.GetSystemModules())
                 {
                     dbContext.SystemModulesSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
-                    //dbContext.SaveChanges();
+                    dbContext.SaveChanges();
                 }
 
                 foreach (var item in DmsDbImportData.GetSystemFeatures())
                 {
                     dbContext.SystemFeaturesSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
                 }
 
                 foreach (var item in DmsDbImportData.GetSystemPermissions())
                 {
-                    item.ModuleId = item.Module.Id;
-                    item.FeatureId = item.Feature.Id;
 
                     dbContext.SystemPermissionsSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
                 }
 
-                dbContext.SaveChanges();
+                
 
                 transaction.Complete();
 

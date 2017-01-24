@@ -7,13 +7,13 @@ namespace BL.Database.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class NotPrimarykey : IMigrationMetadata
+    public sealed partial class AddNewPermissions : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(NotPrimarykey));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddNewPermissions));
         
         string IMigrationMetadata.Id
         {
-            get { return "201701241051051_NotPrimarykey"; }
+            get { return "201701241308237_AddNewPermissions"; }
         }
         
         string IMigrationMetadata.Source

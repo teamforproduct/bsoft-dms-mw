@@ -5,6 +5,7 @@ namespace BL.Database.DBModel.System
 {
     public partial class SystemAccessTypes
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [MaxLength(400)]
