@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public IHttpActionResult Post([FromBody]AddTemplateAttachedFile model)
+        public IHttpActionResult Post([FromUri]AddTemplateAttachedFile model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
