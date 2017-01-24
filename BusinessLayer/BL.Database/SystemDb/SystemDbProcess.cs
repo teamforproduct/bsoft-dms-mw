@@ -1836,6 +1836,16 @@ namespace BL.Database.SystemDb
                     ObjectText = x.Name + " " + x.Code
                 }).ToList());
 
+                res.AddRange(dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    DocumentId = 0,
+                    ItemType = EnumObjects.CustomDictionaries,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name + " " + x.Code
+                }).ToList());
+
                 #endregion Dictionaries
 
                 #region DocumentTemplates
@@ -2559,6 +2569,20 @@ namespace BL.Database.SystemDb
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositionExecutorTypes))
                 {
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryPositionExecutorTypes).Join(dbContext.DictionaryPositionExecutorTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
+                    {
+                        Id = x.ind.Id,
+                        DocumentId = 0,
+                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        OperationType = (EnumOperationType)x.ind.OperationType,
+                        ClientId = ctx.CurrentClientId,
+                        ObjectId = x.id,
+                        ObjectText = x.doc.Name + " " + x.doc.Code
+                    }).ToList());
+                }
+
+                if (objectTypesToProcess.Contains(EnumObjects.CustomDictionaries))
+                {
+                    res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.CustomDictionaries).Join(dbContext.CustomDictionariesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
                         DocumentId = 0,

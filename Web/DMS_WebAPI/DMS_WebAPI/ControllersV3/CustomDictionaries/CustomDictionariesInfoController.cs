@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteCustomDictionary, Id);
+            Action.Execute(EnumDictionaryActions.DeleteCustomDictionaryType, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
