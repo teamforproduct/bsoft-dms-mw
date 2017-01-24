@@ -33,12 +33,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Признак "В рамках рабочей группы"
         /// </summary>
-        [Required]
         public bool IsWorkGroup { get; set; }
         /// <summary>
         /// Добавлять самоконтроль для отправителя
         /// </summary>
-        [Required]
         public bool IsAddControl { get; set; }
         /// <summary>
         /// Комментарий к самоконтролю
@@ -55,7 +53,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>
-        [Required]
         public bool IsAvailableWithinTask { get; set; }
         /// <summary>
         /// Комментарий

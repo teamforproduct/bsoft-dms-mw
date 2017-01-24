@@ -20,12 +20,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Признак того, что шаблон может использоваться для создания проектов
         /// </summary>
-        [Required]
         public bool IsForProject { get; set; }
         /// <summary>
         /// Признак того, что шаблон может использоваться для создания документов
         /// </summary>
-        [Required]
         public bool IsForDocument { get; set; }
 
         /// <summary>

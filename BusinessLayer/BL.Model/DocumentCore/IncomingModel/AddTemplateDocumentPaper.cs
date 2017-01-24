@@ -20,17 +20,14 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Признак является ли бумажный носитель основным документом (или приложением)
         /// </summary>
-        [Required]
         public bool IsMain { get; set; }
         /// <summary>
         /// Признак является ли бумажный носитель оригиналом (или заверенной копией)
         /// </summary>
-        [Required]
         public bool IsOriginal { get; set; }
         /// <summary>
         /// Признак является ли бумажный носитель копией
         /// </summary>
-        [Required]
         public bool IsCopy { get; set; }
         /// <summary>
         /// Количество страниц в бумажном носителе
