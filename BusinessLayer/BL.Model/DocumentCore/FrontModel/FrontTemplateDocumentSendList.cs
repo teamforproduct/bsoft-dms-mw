@@ -81,7 +81,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public int? AccessLevelId { get; set; }
+        public int? AccessLevel { get; set; }
         /// <summary>
         /// Название уровня доступа
         /// </summary>
