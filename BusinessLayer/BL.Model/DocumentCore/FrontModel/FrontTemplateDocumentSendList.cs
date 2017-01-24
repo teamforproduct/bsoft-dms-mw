@@ -1,8 +1,4 @@
-﻿using System;
-using BL.Model.Enums;
-using BL.Model.Extensions;
-
-namespace BL.Model.DocumentCore.FrontModel
+﻿namespace BL.Model.DocumentCore.FrontModel
 {
     public class FrontTemplateDocumentSendList
     {
