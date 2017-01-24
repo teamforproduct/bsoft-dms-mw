@@ -546,6 +546,14 @@
     <Compile Include="Migrations\201701230801499_LastPositionChose.Designer.cs">
       <DependentUpon>201701230801499_LastPositionChose.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701241051051_NotPrimarykey.cs" />
+    <Compile Include="Migrations\201701241051051_NotPrimarykey.Designer.cs">
+      <DependentUpon>201701241051051_NotPrimarykey.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701241052167_SysAction+Perm.cs" />
+    <Compile Include="Migrations\201701241052167_SysAction+Perm.Designer.cs">
+      <DependentUpon>201701241052167_SysAction+Perm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -817,6 +825,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701230801499_LastPositionChose.resx">
       <DependentUpon>201701230801499_LastPositionChose.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701241051051_NotPrimarykey.resx">
+      <DependentUpon>201701241051051_NotPrimarykey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701241052167_SysAction+Perm.resx">
+      <DependentUpon>201701241052167_SysAction+Perm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

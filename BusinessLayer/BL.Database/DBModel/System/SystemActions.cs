@@ -17,8 +17,9 @@ namespace BL.Database.DBModel.System
         }
 
         public int Id { get; set; }
+        public Nullable<int> PermissionId { get; set; }
+
         [Index("IX_ObjectCode", 1, IsUnique = true)]
-        public int PermissionId { get; set; }
         public int ObjectId { get; set; }
         [MaxLength(400)]
         [Index("IX_ObjectCode", 2, IsUnique = true)]

@@ -28,9 +28,9 @@
         public const string Passport = "Passport";
         public const string Permissions = "Permissions";
         public const string Persons = "Persons";
+        public const string Plan = "Plan";
         public const string Positions = "Positions";
         public const string Roles = "Roles";
-        public const string SendLists = "SendLists";
         public const string SendRules = "SendRules";
         public const string Sessions = "Sessions";
         public const string Settings = "Settings";
@@ -102,9 +102,9 @@
                 case Passport:              res = 1230; break;
                 case Permissions:           res = 1240; break;
                 case Persons:               res = 1250; break;
-                case Positions:             res = 1260; break;
-                case Roles:                 res = 1270; break;
-                case SendLists:             res = 1280; break;
+                case Plan:                  res = 1260; break;
+                case Positions:             res = 1270; break;
+                case Roles:                 res = 1280; break;
                 case SendRules:             res = 1290; break;
                 case Sessions:              res = 1300; break;
                 case Settings:              res = 1310; break;
@@ -129,7 +129,18 @@
                 case SendTypes:             res = 1500; break;
                 case SubordinationTypes:    res = 1510; break;
                 case ValueTypes:            res = 1520; break;
-                
+
+                case Events:                res = 1530; break;
+                case Accesses:              res = 1540; break;
+                case DocumentAccesses:      res = 1550; break;
+                case Links:                 res = 1560; break;
+                case SavedFilters:          res = 1570; break;
+                case Signs:                 res = 1580; break;
+                case Waits:                 res = 1590; break;
+                case WorkGroups:            res = 1600; break;
+                case Favourite:             res = 1610; break;
+
+
                 default: throw new System.Exception();
             }
 

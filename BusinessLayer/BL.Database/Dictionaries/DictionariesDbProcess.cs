@@ -6476,7 +6476,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var item = dbContext.CustomDictionaryTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.CustomDictionariesSet.RemoveRange(item.CustomDictionaries);
+                dbContext.CustomDictionariesSet.Where(x => x.DictionaryTypeId == item.Id).Delete();//.RemoveRange(item.CustomDictionaries);
                 dbContext.CustomDictionaryTypesSet.Remove(item);
                 dbContext.SaveChanges();
                 transaction.Complete();
@@ -6624,6 +6624,8 @@ namespace BL.Database.Dictionaries
                 dbContext.CustomDictionariesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.CustomDictionaries, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -6643,6 +6645,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.CustomDictionaries, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -6654,6 +6657,7 @@ namespace BL.Database.Dictionaries
                 var item = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.CustomDictionariesSet.Remove(item);
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.CustomDictionaries, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }

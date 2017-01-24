@@ -51,16 +51,16 @@ namespace BL.Database.DatabaseContext
             var permissionIdstr = m.Id.ToString() + f.Id.ToString();
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id, Module = m, Feature = f }); // , Module = m, Feature = f
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.R.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id, Module = m, Feature = f }); // , Module = m, Feature = f
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.C.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f
 
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id, Module = m, Feature = f }); // , Module = m, Feature = f 
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.U.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f 
 
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id, Module = m, Feature = f }); // , Module = m, Feature = f 
+                systemPermissions.Add(new SystemPermissions { Id = GetConcatId(Modules.GetId(module), Features.GetId(feature), EnumAccessTypes.D.GetHashCode()), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id}); // , Module = m, Feature = f 
 
         }
 
@@ -91,7 +91,7 @@ namespace BL.Database.DatabaseContext
             AddPermission(510, Modules.Templates, Features.Tasks);
             AddPermission(520, Modules.Templates, Features.Files);
             AddPermission(530, Modules.Templates, Features.Papers);
-            AddPermission(540, Modules.Templates, Features.SendLists);
+            AddPermission(540, Modules.Templates, Features.Plan);
             AddPermission(550, Modules.Templates, Features.SignLists);
             AddPermission(560, Modules.Templates, Features.AccessList);
 
@@ -141,6 +141,7 @@ namespace BL.Database.DatabaseContext
             AddPermission(1630, Modules.CustomDictionaries, Features.Contents);
 
             AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false);
+
 
         }
 

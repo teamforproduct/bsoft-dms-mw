@@ -16,6 +16,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Код значения словаря
         /// </summary>
+        [Required]
         public string Code { get; set; }
         /// <summary>
         /// Наименование

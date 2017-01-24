@@ -28,7 +28,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Document)]
-    public class DocumentSendListController : ApiController
+    public class DocumentPlanController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/"+Features.SendLists)]
+        [Route("{Id:int}/"+Features.Plan)]
         [ResponseType(typeof(List<FrontDocumentSendList>))]
         public IHttpActionResult GetByDocumentId(int Id)
         {
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД пункта плана</param>
         /// <returns>запись пункта плана</returns>
         [HttpGet]
-        [Route(Features.SendLists + "/{Id:int}")]
+        [Route(Features.Plan + "/{Id:int}")]
         [ResponseType(typeof(FrontDocumentSendList))]
         public IHttpActionResult GetById(int Id)
         {
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.SendLists)]
+        [Route(Features.Plan)]
         public IHttpActionResult Post([FromBody]AddDocumentSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model">Модель для обновления пункта плана</param>
         /// <returns>Обновленный пункт плана</returns>
         [HttpPut]
-        [Route(Features.SendLists)]
+        [Route(Features.Plan)]
         public IHttpActionResult Put([FromBody]ModifyDocumentSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД пункта пдана</param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.SendLists + "/{Id:int}")]
+        [Route(Features.Plan + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -125,7 +125,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/" + Features.SendLists+ "/Actions")]
+        [Route("{Id:int}/" + Features.Plan+ "/Actions")]
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public IHttpActionResult Actions([FromUri]int Id)
         {
@@ -144,7 +144,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.SendLists + "/AdditinalLinkedDocumentSendLists")]
+        [Route(Features.Plan + "/AdditinalLinkedDocumentSendLists")]
         [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
         {
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД пункта плана</param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.SendLists+ "/LaunchItem")]
+        [Route(Features.Plan+ "/LaunchItem")]
         public IHttpActionResult LaunchItem([FromBody]int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
