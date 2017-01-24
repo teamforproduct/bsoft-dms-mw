@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.System
 {
-    public partial class SystemFeatures2
+    public partial class SystemFeatures
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
@@ -21,6 +21,6 @@ namespace BL.Database.DBModel.System
         public int Order { get; set; }
 
         [ForeignKey("ModuleId")]
-        public virtual SystemModules2 Module { get; set; }
+        public virtual SystemModules Module { get; set; }
     }
 }
