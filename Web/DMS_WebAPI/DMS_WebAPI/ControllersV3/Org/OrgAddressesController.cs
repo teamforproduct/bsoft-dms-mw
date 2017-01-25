@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Org
     /// Адреса организации (клиентских компаний)
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Org)]
     public class OrgAddressesController : ApiController
     {

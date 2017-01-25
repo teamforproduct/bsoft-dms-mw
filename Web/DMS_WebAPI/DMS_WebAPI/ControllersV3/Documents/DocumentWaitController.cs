@@ -25,6 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Контроль.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentWaitController : ApiController
     {

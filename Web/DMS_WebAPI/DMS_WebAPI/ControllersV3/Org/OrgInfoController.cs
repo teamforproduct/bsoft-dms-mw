@@ -25,6 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Org
     /// Организация - рутовый элемент в иерархии штатного расписания
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Org)]
     public class OrgInfoController : ApiController
     {

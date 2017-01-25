@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы
     /// </summary>
     [Authorize]
-//    [DimanicAuthorizeAttribute]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentInfoController : ApiController
     {
@@ -38,6 +38,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
         [HttpPost]
+        [DimanicAuthorize("R")]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)

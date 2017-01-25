@@ -1,28 +1,20 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
+using BL.Model.Exception;
+using BL.Model.SystemCore;
+using BL.Model.Users;
+using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
-
-using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
-using System.Diagnostics;
-using BL.Model.FullTextSearch;
-using System.Threading.Tasks;
-using DMS_WebAPI.Models;
-using BL.Model.Exception;
-using BL.Model.Users;
-using BL.Logic.AdminCore.Interfaces;
 using Microsoft.AspNet.Identity.Owin;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Auth
 {
@@ -30,6 +22,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
     /// Управление авторизацией сотрудников-пользователей
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Auth)]
     public class AuthInfoController : ApiController
     {

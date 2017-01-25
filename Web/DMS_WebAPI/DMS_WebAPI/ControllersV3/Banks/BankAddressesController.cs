@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
     /// Адреса банка
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
     public class BankAddressesController : ApiController
     {

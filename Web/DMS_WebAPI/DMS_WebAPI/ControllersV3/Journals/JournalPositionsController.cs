@@ -27,6 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
     /// Управление доступом должностей к журналам регистрации документов
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Journal)]
     public class JournalPositionsController : ApiController
     {

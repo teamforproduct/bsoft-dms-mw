@@ -16,6 +16,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
     /// Сотрудники, которым назначена роль
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RoleEmployeesController : ApiController
     {

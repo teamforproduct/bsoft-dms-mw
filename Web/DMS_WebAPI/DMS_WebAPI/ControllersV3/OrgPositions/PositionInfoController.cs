@@ -26,6 +26,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// Значимость должносьти в отделе задается параметром Order
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionInfoController : ApiController
     {

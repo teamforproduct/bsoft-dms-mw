@@ -16,9 +16,11 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Адреса пользователя-сотрудника
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAddressesController : ApiController
     {

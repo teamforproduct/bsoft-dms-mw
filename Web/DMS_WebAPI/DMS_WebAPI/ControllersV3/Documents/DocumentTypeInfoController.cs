@@ -20,6 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Типы документов
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.DocumentType)]
     public class DocumentTypeInfoController : ApiController
     {

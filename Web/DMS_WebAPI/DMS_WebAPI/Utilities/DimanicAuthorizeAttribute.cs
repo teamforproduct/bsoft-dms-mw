@@ -8,7 +8,9 @@ using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
-
+using BL.Logic.AdminCore.Interfaces;
+using System.Linq;
+using BL.Model.Exception;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -87,14 +89,24 @@ namespace DMS_WebAPI.Utilities
                 return continuation();
             }
 
-            return Task.FromResult<HttpResponseMessage>(actionContext.Request.CreateResponse(HttpStatusCode.NotAcceptable));
+            throw new AccessIsDenied();//pss так ничего не возвращается на фронт Task.FromResult<HttpResponseMessage>(actionContext.Request.CreateResponse(HttpStatusCode.NotAcceptable));
         }
 
 
         private bool CheckRight(string module, string feature, EnumAccessTypes right)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return true;
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            // это не оптимально
+            var tmpItems = tmpService.GetUserPermissions(ctx);
+
+            // может сравнение без учета регистра
+            var res = tmpItems.Any(x =>
+            module.Equals(x.Module, StringComparison.OrdinalIgnoreCase)
+            && feature.Equals(x.Feature, StringComparison.OrdinalIgnoreCase)
+            && x.AccessType == right.ToString());
+
+            return res;
         }
 
     }

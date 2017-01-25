@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Контакты сотрудника
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeContactsController : ApiController
     {

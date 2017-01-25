@@ -29,6 +29,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// При изменнии ролей для должности возникает задача синхронизации шаблона и экземпляров
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionRolesController : ApiController
     {

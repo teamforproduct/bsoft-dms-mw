@@ -1,28 +1,12 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Logic.SystemCore.Interfaces;
-using BL.Logic.SystemServices.FullTextSearch;
-using BL.Model.AdminCore;
-using BL.Model.AdminCore.FilterModel;
-using BL.Model.AdminCore.FrontModel;
-using BL.Model.AdminCore.InternalModel;
 using BL.Model.Common;
-using BL.Model.Database;
-using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.Enums;
 using BL.Model.SystemCore;
-using BL.Model.SystemCore.Filters;
-using BL.Model.SystemCore.FrontModel;
-using BL.Model.Users;
-using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -30,9 +14,11 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
+    /// !!! Доступ не ограничен
     /// Аватарка пользователя
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserImageController : ApiController
     {
@@ -40,6 +26,7 @@ namespace DMS_WebAPI.ControllersV3.User
 
 
         /// <summary>
+        /// !!! Доступ не ограничен.
         /// Возвращает аватарку
         /// </summary>
         /// <returns></returns>

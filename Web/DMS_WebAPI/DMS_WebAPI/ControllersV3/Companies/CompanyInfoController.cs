@@ -24,6 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
     /// Юридические лица
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyInfoController : ApiController
     {

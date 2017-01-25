@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Типы адресов
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.AddressType)]
     public class AddressTypeInfoController : ApiController
     {

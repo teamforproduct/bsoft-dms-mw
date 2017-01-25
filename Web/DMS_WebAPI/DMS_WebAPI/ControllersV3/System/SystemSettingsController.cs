@@ -9,9 +9,11 @@ using System.Web.Http;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Системные настройки
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class SystemSettingsController : ApiController
     {

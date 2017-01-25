@@ -24,6 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
     /// Банки
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
     public class BankInfoController : ApiController
     {

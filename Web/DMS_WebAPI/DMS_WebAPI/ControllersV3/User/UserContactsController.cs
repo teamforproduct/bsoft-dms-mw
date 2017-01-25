@@ -27,9 +27,11 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Контакты пользователя-сотрудника
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserContactsController : ApiController
     {

@@ -21,7 +21,8 @@ namespace DMS_WebAPI.ControllersV3.System
     /// <summary>
     /// Для разработки
     /// </summary>
-    //[Authorize]
+    //![Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class DevController : ApiController
     {

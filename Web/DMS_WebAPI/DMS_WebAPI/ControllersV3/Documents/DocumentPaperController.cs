@@ -27,6 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Бумажные носители.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPaperController : ApiController
     {

@@ -28,11 +28,13 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Назначения пользователя-сотрудника
     /// Пользователь-сотрудник может работать в системе если назначен хотя бы на одну должность в текущем интервале времени
     /// Пользователь-сотрудник может одновременно занимать должность и исполнять обязанноти другой должности или реферировать
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAssignmentsController : ApiController
     {

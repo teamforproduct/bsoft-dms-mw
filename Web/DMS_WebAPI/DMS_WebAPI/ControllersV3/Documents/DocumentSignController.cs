@@ -25,6 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Подписи.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentSignController : ApiController
     {

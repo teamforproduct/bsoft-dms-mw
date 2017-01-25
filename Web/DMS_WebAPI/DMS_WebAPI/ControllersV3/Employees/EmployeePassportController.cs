@@ -23,6 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Паспортные данные сотрудника
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeePassportController : ApiController
     {

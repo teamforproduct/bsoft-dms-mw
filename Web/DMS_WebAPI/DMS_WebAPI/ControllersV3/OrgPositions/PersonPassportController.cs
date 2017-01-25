@@ -16,6 +16,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
     /// Паспортные данные физ. лица
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Person)]
     public class PersonPassportController : ApiController
     {

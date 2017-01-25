@@ -17,6 +17,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// Аудит подключений
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Auditlog)]
     public class AuditlogInfoController : ApiController
     {
