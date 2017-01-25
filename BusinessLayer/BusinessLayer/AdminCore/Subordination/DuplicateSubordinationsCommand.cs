@@ -30,6 +30,7 @@ namespace BL.Logic.AdminCore
                     _adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination() { SourcePositionId = Model.TargetPositionId });
                 }
 
+                // Для копирования беру только те должности на которые может выполнять рассылку
                 // выгребаю все настройки для Model.SourcePosition
                 var items = _adminDb.GetSubordinations(_context, new FilterAdminSubordination() { SourcePositionIDs = new List<int> { Model.SourcePositionId } });
 
@@ -41,7 +42,8 @@ namespace BL.Logic.AdminCore
                     {
                         SourcePositionId = Model.TargetPositionId,
                         TargetPositionId = item.TargetPositionId,
-                        SubordinationTypeId = item.SubordinationTypeId
+                        SubordinationTypeId = item.SubordinationTypeId,
+                        IsChecked = true,
                     };
 
                     SetSubordination(model);
