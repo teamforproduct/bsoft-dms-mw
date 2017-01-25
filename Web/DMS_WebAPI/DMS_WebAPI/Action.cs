@@ -2,6 +2,7 @@
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Enums;
@@ -58,7 +59,7 @@ namespace DMS_WebAPI
         public static int Execute(EnumDocumentActions action, object model, int? сurrentPositionId = null)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(сurrentPositionId);
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpService = DmsResolver.Current.Get<IDocumentService>();
             var res = tmpService.ExecuteAction(action, ctx, model);
 
             if (res is int) return (int)res;
