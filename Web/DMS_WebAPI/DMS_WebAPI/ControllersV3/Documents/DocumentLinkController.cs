@@ -43,8 +43,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            var items = docProc.GetRestrictedSendLists(ctx, Id);
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var items = docProc.GetLinkedDocumentIds(ctx, Id);
             var res = new JsonResult(items, this);
             res.SpentTime = stopWatch;
             return res;
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             Action.Execute(EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
-            return res;
+            return GetIdsByDocumentId(model.DocumentId);
         }
 
         /// <summary>

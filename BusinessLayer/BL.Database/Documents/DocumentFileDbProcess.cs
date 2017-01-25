@@ -74,7 +74,7 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             PdfCreated = x.IsPdfCreated??false,
-                            LastPdfAccess = x.LastPdfAccessDate??DateTime.MinValue
+                            LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue
                         }).FirstOrDefault();
             }
         }
