@@ -457,6 +457,10 @@ namespace BL.Database.Documents
                     {
                         qry = qry.Where(x => x.SendTypeId == (int)filter.SendType);
                     }
+                    if (filter.StageType.HasValue)
+                    {
+                        qry = qry.Where(x => x.StageTypeId == (int)filter.StageType);
+                    }
                     if (filter.TargetPositionId.HasValue)
                     {
                         qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);

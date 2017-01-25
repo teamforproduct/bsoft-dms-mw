@@ -18,6 +18,7 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public int? TemplateId { get; set; }
         public EnumSendTypes? SendType { get; set; }
+        public EnumStageTypes? StageType { get; set; }
         public int? TargetPositionId { get; set; }
         public int? Stage { get; set; }
         public string Task { get; set; }
