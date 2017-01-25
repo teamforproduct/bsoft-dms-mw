@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы
     /// </summary>
     [Authorize]
-    [DimanicAuthorizeAttribute]
+//    [DimanicAuthorizeAttribute]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentInfoController : ApiController
     {

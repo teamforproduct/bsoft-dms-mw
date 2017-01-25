@@ -11,6 +11,7 @@ using BL.Model.Common;
 using BL.Model.SystemCore;
 using System.Diagnostics;
 using BL.Model.Tree;
+using BL.CrossCutting.Interfaces;
 
 namespace DMS_WebAPI.ControllersV3.Lists
 {
@@ -232,6 +233,29 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var tmpItems = tmpService.GetTagList(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает массив ИД юзеров, которые онлайн
+        /// </summary>
+        /// <param name="ftSearch">модель фильтров сессий</param>
+        /// <param name="filter">модель фильтров сессий</param>
+        /// <param name="paging">параметры пейджинга</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.OnlineUsers)]
+        [ResponseType(typeof(List<int>))]
+        public IHttpActionResult GetOnlineUsers()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            var ctx = ctxs.Get();
+            var sesions = ctxs.GetContextListQuery();
+            var tmpService = DmsResolver.Current.Get<ILogger>();
+            var tmpItems = tmpService.GetOnlineUsers(ctx, sesions);
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }

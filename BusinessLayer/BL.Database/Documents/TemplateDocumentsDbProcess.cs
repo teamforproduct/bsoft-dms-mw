@@ -957,7 +957,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, AddTemplateDocumentPaper model)
+        public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext context, int? id,  AddTemplateDocumentPaper model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -968,9 +968,10 @@ namespace BL.Database.Documents
                         Id = x.Id,
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                if (model is ModifyTemplateDocumentPaper) 
+                if (id.HasValue) 
                 {
-                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => (x.Id == (model as ModifyTemplateDocumentPaper).Id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
+                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId)
+                        .Where(x => (x.Id == id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
                         .Select(x => new InternalTemplateDocumentPaper
                         {
                             Id = x.Id,

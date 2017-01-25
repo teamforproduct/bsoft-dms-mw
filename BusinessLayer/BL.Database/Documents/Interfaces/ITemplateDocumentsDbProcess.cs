@@ -47,7 +47,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
         FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext ctx, int id);
         IEnumerable<int> AddTemplateDocumentPapers(IContext context, IEnumerable<InternalTemplateDocumentPaper> papers);
-        InternalTemplateDocument ModifyTemplatePaperPrepare(IContext ctx, AddTemplateDocumentPaper Paper);
+        InternalTemplateDocument ModifyTemplatePaperPrepare(IContext ctx, int? id, AddTemplateDocumentPaper Paper);
         void ModifyTemplatePaper(IContext context, InternalTemplateDocumentPaper item);
         void DeleteTemplatePaper(IContext ctx, int id);
         #endregion TemplateDocumentPapers

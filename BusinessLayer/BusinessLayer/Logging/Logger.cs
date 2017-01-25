@@ -27,6 +27,14 @@ namespace BL.Logic.Logging
 
         }
 
+        public IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions)
+        {
+
+            List<int> res = sessions.Where(x => x.AgentId.HasValue && x.LastUsage > DateTime.UtcNow.AddMinutes(-1)).Select(x=>x.AgentId.Value).Distinct().ToList();
+            return res;
+        }
+
+
         public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, IQueryable<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging)
         {
             List<FrontSystemSession> res;

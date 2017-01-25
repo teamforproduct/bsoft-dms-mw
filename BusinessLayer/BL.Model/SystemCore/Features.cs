@@ -68,7 +68,8 @@
         public const string Waits = "Waits";
         public const string WorkGroups = "WorkGroups";
         public const string Favourite = "Favourite";
-        
+
+        public const string OnlineUsers = "OnlineUsers";
 
         public static int GetId(string Name)
         {
@@ -140,6 +141,8 @@
                 case WorkGroups:            res = 1600; break;
                 case Favourite:             res = 1610; break;
 
+                case OnlineUsers:           res = 1620; break;
+                    
 
                 default: throw new System.Exception();
             }

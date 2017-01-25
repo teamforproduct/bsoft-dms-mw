@@ -11,6 +11,8 @@ namespace BL.CrossCutting.Interfaces
     public interface ILogger
     {
         IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, IQueryable<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging);
+        IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions);
+
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         int? Trace(IContext ctx, string message, params object[] args);
         int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null);
