@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. События.
     /// </summary>
     [Authorize]
-//    [DimanicAuthorizeAttribute]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentEventController : ApiController
     {
@@ -33,6 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
         [HttpPost]
+        [DimanicAuthorize("R")]
         [Route(Features.Events)]
         [ResponseType(typeof(List<FrontDocumentEvent>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)

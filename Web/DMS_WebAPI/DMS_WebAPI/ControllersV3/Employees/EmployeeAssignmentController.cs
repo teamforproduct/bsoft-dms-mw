@@ -22,6 +22,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Назначения сотрудника на должности
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeAssignmentsController : ApiController
     {

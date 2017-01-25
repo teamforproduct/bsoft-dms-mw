@@ -16,11 +16,13 @@ using BL.CrossCutting.Interfaces;
 namespace DMS_WebAPI.ControllersV3.Lists
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Списки Id, Name. Для вызова апи требуется авторизация (доступ для авторизованных пользователей не ограничивается).
     /// Подразумевается использование этих апи в выпадающих списках при корректировках ссылочных полей сущности.
     /// В списках отображаются только активные элементы справочников.
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.List)]
     public class ListsController : ApiController
     {

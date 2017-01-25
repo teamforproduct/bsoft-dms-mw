@@ -20,6 +20,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     /// Шаблоны документов. Файлы.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateFilesController : ApiController
     {

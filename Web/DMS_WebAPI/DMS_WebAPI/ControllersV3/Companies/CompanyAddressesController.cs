@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
     /// Адреса юридического лица
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyAddressesController : ApiController
     {

@@ -28,6 +28,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Сохраненные фильтры документов.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.PaperList)]
     public class PaperListInfoController : ApiController
     {

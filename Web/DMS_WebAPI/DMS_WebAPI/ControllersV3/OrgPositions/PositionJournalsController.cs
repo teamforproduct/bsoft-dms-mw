@@ -29,6 +29,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// По умолчанию должность может просматривать и регистрировать документы во всех журналах своего отдела 
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionJournalsController : ApiController
     {

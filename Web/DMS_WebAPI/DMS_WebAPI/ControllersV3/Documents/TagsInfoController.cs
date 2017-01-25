@@ -20,6 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Теги
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Tags)]
     public class TagsInfoController : ApiController
     {

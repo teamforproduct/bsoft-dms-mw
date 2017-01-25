@@ -20,6 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
     /// Элементы пользовательского справочника
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.CustomDictionaries)]
     public class CustomDictionariesContentsController : ApiController
     {

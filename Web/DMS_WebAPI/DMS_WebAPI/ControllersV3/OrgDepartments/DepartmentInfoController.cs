@@ -24,6 +24,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     /// Отдел всегда подчинен организации, может подчиняться вышестоящему отделу.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentInfoController : ApiController
     {

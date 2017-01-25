@@ -22,6 +22,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     /// Локальные администраторы (админы при отделах)
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentAdminsController : ApiController
     {

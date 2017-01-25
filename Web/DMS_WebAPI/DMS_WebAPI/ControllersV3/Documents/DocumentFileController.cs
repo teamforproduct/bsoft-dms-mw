@@ -1,17 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Common;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -27,6 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Файлы.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentFileController : ApiController
     {
@@ -38,6 +32,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
         [HttpPost]
+        [DimanicAuthorize("R")]
         [Route(Features.Files)]
         [ResponseType(typeof(List<FrontDocumentAttachedFile>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)

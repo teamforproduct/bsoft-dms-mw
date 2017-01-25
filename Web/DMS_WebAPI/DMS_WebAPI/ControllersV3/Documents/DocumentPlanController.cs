@@ -20,6 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Планы.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPlanController : ApiController
     {

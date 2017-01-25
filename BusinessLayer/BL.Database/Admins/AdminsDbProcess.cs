@@ -1837,6 +1837,8 @@ namespace BL.Database.Admins
 
                 var now = DateTime.UtcNow;
 
+                // в основе доступов лежат актуальные назначения (IsActive, StartDate, EndDate) суженные до должностей, за которые сотрудник работает в данный момент
+
                 qry = qry.Where(x => x.Roles.Any(y => y.Role.UserRoles.Any(
                     z => z.PositionExecutor.AgentId == context.CurrentAgentId
                     && z.PositionExecutor.IsActive

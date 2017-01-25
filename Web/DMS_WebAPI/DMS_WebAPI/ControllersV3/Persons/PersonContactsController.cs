@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
     /// Контакты физического лица
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Person)]
     public class PersonContactsController : ApiController
     {

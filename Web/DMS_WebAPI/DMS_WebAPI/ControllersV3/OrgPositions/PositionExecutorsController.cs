@@ -22,6 +22,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// Исполнители назначаются на определенный срок.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionExecutorsController : ApiController
     {

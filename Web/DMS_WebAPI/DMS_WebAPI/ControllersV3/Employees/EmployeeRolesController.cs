@@ -29,6 +29,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     /// Например, референт директора может не иметь права подписания и т.д. 
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeRolesController : ApiController
     {

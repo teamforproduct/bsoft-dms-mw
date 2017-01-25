@@ -19,10 +19,12 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Временное хранилище файлов.
     /// Файлы, прикрепленные к объекту, сразу загружаются во временное файловое хранилище. При записи объекта с фронта отправляются Id файлов, которые из временного хранилища записываются вместе с объектом.   
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class TempFileStorageController : ApiController
     {

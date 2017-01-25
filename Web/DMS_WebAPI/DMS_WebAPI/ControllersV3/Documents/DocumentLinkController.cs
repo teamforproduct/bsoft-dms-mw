@@ -25,6 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Связи.
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentLinkController : ApiController
     {

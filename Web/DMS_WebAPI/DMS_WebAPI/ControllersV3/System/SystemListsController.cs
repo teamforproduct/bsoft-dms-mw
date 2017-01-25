@@ -19,9 +19,11 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
+    /// !!! Доступ не ограничен.
     /// Системные справочники и типы. Для вызова апи требуется авторизация (доступ для авторизованных пользователей не ограничивается) 
     /// </summary>
     [Authorize]
+    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class SystemListsController : ApiController
     {

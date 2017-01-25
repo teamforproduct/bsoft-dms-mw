@@ -24,6 +24,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
     /// Списки рассылки
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.SendList)]
     public class SendListInfoController : ApiController
     {

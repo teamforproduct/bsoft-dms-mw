@@ -30,6 +30,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     /// Этот функционал по умолчанию выключен для нового клиента, рассылка по-умолчанию устанавливается на все должности. 
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionSendRulesController : ApiController
     {

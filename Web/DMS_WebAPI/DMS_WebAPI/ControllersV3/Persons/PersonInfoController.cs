@@ -24,6 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
     /// Физические лица
     /// </summary>
     [Authorize]
+    [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Person)]
     public class PersonInfoController : ApiController
     {
