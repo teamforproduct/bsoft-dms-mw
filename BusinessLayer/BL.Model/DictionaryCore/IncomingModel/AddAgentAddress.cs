@@ -1,24 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    /// <summary>
-    /// адреса контрагентов
-    /// </summary>
-    public class AddAgentAddress
+    public class AddAgentAddress : BaseAgentAddress
     {
+
+        public AddAgentAddress() { }
+
+        public AddAgentAddress(BaseAgentAddress model)
+        {
+            AddressTypeId = model.AddressTypeId;
+            PostCode = model.PostCode;
+            Address = model.Address;
+            IsActive = model.IsActive;
+            Description = model.Description;
+        }
         /// <summary>
         /// Агент (сотрудник, юр.лицо, банк, физ.лицо)
         /// </summary>
         [Required]
         public int AgentId { get; set; }
-
+    }
+    /// <summary>
+    /// адреса контрагентов
+    /// </summary>
+    public class BaseAgentAddress
+    {
         /// <summary>
         /// ссылка на тип адреса
         /// </summary>

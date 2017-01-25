@@ -23,6 +23,31 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     public class ModifyAgentAddress : AddAgentAddress
     {
+        public ModifyAgentAddress() { }
+
+        public ModifyAgentAddress(ModifyUserAddress model)
+        {
+            Id = model.Id;
+            AddressTypeId = model.AddressTypeId;
+            PostCode = model.PostCode;
+            Address = model.Address;
+            IsActive = model.IsActive;
+            Description = model.Description;
+        }
+
+        /// <summary>
+        /// ИД 
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+
+    }
+
+    /// <summary>
+    /// адреса контрагентов
+    /// </summary>
+    public class ModifyUserAddress : BaseAgentAddress
+    {
         /// <summary>
         /// ИД 
         /// </summary>
@@ -35,6 +60,31 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// адреса контрагентов
     /// </summary>
     public class ModifyAgentContact : AddAgentContact
+    {
+        public ModifyAgentContact() { }
+
+        public ModifyAgentContact(ModifyUserContact model)
+        {
+            Id = model.Id;
+            ContactTypeId = model.ContactTypeId;
+            Value = model.Value;
+            IsActive = model.IsActive;
+            IsConfirmed = model.IsConfirmed;
+            Description = model.Description;
+        }
+
+        /// <summary>
+        /// ИД 
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+
+    }
+
+    /// <summary>
+    /// адреса контрагентов
+    /// </summary>
+    public class ModifyUserContact : BaseAgentContact
     {
         /// <summary>
         /// ИД 

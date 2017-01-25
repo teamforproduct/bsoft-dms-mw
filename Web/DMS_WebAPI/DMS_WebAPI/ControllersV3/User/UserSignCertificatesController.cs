@@ -86,8 +86,10 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Post([FromBody]AddEncryptionCertificate model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
+            model.AgentId = ctx.CurrentAgentId;
             var tmpItem = Action.Execute(EnumEncryptionActions.AddEncryptionCertificate, model);
             return Get(tmpItem);
         }

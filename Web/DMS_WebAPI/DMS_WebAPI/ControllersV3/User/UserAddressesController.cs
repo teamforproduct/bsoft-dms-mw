@@ -76,10 +76,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Addresses)]
-        public IHttpActionResult Post([FromBody]AddAgentAddress model)
+        public IHttpActionResult Post([FromBody]BaseAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var address = new AddAgentAddress(model);
+            address.AgentId = ctx.CurrentAgentId;
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, address);
             return Get(tmpItem);
         }
 
@@ -90,10 +93,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Addresses)]
-        public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
+        public IHttpActionResult Put([FromBody]ModifyUserAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var address = new ModifyAgentAddress(model);
+            address.AgentId = ctx.CurrentAgentId;
+            Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, address);
             return Get(model.Id);
         }
 
