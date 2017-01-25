@@ -301,7 +301,6 @@
     <Compile Include="ControllersV3\Employees\EmployeePassportController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeRolesController.cs" />
     <Compile Include="ControllersV3\Journals\JournalPositionsController.cs" />
-    <Compile Include="ControllersV3\OrgDepartments\DepartmentPositionsController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />

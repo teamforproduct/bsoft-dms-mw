@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Бумажные носители.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.Document)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPaperController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

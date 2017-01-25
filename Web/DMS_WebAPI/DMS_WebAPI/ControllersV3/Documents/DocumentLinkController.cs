@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Связи.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.Document)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentLinkController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

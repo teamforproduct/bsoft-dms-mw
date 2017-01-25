@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Планы.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.Document)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPlanController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
