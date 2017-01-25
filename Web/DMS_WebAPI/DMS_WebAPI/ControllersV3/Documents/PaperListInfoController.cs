@@ -141,6 +141,70 @@ namespace DMS_WebAPI.ControllersV3.Documents
             res.SpentTime = stopWatch;
             return res;
         }
-        
+
+        /// <summary>
+        /// Отменяет планирование движения бумажного носителя
+        /// </summary>
+        /// <param name="Id">ИД реестра БН</param>
+        /// <returns></returns>
+        [Route(Features.Info + "/CancelPlanDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperListId = Id });
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отмечает передачу бумажного носителя
+        /// </summary>
+        /// <param name="Id">ИД реестра БН</param>
+        /// <returns></returns>
+        [Route(Features.Info + "/SendDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult SendDocumentPaperEvent([FromBody]int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperListId = Id });
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        ///  Отменяет передачу бумажного носителя
+        /// </summary>
+        /// <param name="Id">ИД реестра БН</param>
+        /// <returns></returns>
+        [Route(Features.Info + "/CancelSendDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperListId = Id });
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Отмечает прием бумажного носителя
+        /// </summary>
+        /// <param name="Id">ИД реестра БН</param>
+        /// <returns></returns>
+        [Route(Features.Info + "/RecieveDocumentPaperEvent")]
+        [HttpPut]
+        public IHttpActionResult RecieveDocumentPaperEvent([FromBody]int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperListId = Id });
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
     }
 }
