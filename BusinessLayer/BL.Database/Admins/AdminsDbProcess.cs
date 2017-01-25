@@ -1839,6 +1839,7 @@ namespace BL.Database.Admins
 
                 qry = qry.Where(x => x.Roles.Any(y => y.Role.UserRoles.Any(
                     z => z.PositionExecutor.AgentId == context.CurrentAgentId
+                    && z.PositionExecutor.IsActive
                     && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
                     && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
 
