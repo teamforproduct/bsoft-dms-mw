@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, model);
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddExecutor, model);
             return Get(tmpItem);
         }
 
@@ -123,7 +123,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, model);
+            Action.Execute(EnumDictionaryActions.ModifyExecutor, model);
             return Get(model.Id);
         }
 
@@ -137,7 +137,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteEmployeeAddress, Id);
+            Action.Execute(EnumDictionaryActions.DeleteExecutor, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
