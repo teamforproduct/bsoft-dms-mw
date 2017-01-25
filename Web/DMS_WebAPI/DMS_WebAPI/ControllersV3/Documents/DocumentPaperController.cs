@@ -190,14 +190,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Отменяет планирование движения бумажного носителя
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
         [Route(Features.Papers + "/CancelPlanDocumentPaperEvent")]
         [HttpPut]
-        public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]PaperList model)
+        public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]List<int> model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, model);
+            Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
@@ -206,14 +206,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Отмечает передачу бумажного носителя
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
         [Route(Features.Papers + "/SendDocumentPaperEvent")]
         [HttpPut]
-        public IHttpActionResult SendDocumentPaperEvent([FromBody]PaperList model)
+        public IHttpActionResult SendDocumentPaperEvent([FromBody]List<int> model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, model);
+            Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
@@ -222,14 +222,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         ///  Отменяет передачу бумажного носителя
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
         [Route(Features.Papers + "/CancelSendDocumentPaperEvent")]
         [HttpPut]
-        public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]PaperList model)
+        public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]List<int> model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, model);
+            Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
@@ -238,14 +238,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Отмечает прием бумажного носителя
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
         [Route(Features.Papers + "/RecieveDocumentPaperEvent")]
         [HttpPut]
-        public IHttpActionResult RecieveDocumentPaperEvent([FromBody]PaperList model)
+        public IHttpActionResult RecieveDocumentPaperEvent([FromBody]List<int> model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, model);
+            Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;

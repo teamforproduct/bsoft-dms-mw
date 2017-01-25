@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "RejectSigning")]
+        [Route(Features.Signs + "/RejectSigning")]
         [HttpPut]
         public IHttpActionResult RejectSigning(SendEventMessage model)
         {
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "RejectVisaing")]
+        [Route(Features.Signs + "/RejectVisaing")]
         [HttpPut]
         public IHttpActionResult RejectVisaing(SendEventMessage model)
         {
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "RejectАgreement")]
+        [Route(Features.Signs + "/RejectАgreement")]
         [HttpPut]
         public IHttpActionResult RejectАgreement(SendEventMessage model)
         {
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "RejectАpproval")]
+        [Route(Features.Signs + "/RejectАpproval")]
         [HttpPut]
         public IHttpActionResult RejectАpproval(SendEventMessage model)
         {
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "WithdrawSigning")]
+        [Route(Features.Signs + "/WithdrawSigning")]
         [HttpPut]
         public IHttpActionResult WithdrawSigning(SendEventMessage model)
         {
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         ///  </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "WithdrawVisaing")]
+        [Route(Features.Signs + "/WithdrawVisaing")]
         [HttpPut]
         public IHttpActionResult WithdrawVisaing(SendEventMessage model)
         {
@@ -147,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "WithdrawАgreement")]
+        [Route(Features.Signs + "/WithdrawАgreement")]
         [HttpPut]
         public IHttpActionResult WithdrawАgreement(SendEventMessage model)
         {
@@ -162,7 +162,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "WithdrawАpproval")]
+        [Route(Features.Signs + "/WithdrawАpproval")]
         [HttpPut]
         public IHttpActionResult WithdrawАpproval(SendEventMessage model)
         {
@@ -178,7 +178,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "AffixSigning")]
+        [Route(Features.Signs + "/AffixSigning")]
         [HttpPut]
         public IHttpActionResult AffixSigning(AffixSigning model)
         {
@@ -193,7 +193,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         ///  </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "AffixVisaing")]
+        [Route(Features.Signs + "/AffixVisaing")]
         [HttpPut]
         public IHttpActionResult AffixVisaing(AffixSigning model)
         {
@@ -208,7 +208,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "AffixАgreement")]
+        [Route(Features.Signs + "/AffixАgreement")]
         [HttpPut]
         public IHttpActionResult AffixАgreement(AffixSigning model)
         {
@@ -223,7 +223,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "AffixАpproval")]
+        [Route(Features.Signs + "/AffixАpproval")]
         [HttpPut]
         public IHttpActionResult AffixАpproval(AffixSigning model)
         {

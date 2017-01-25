@@ -3,7 +3,7 @@
 namespace BL.Model.DocumentCore.Actions
 {
     /// <summary>
-    /// Модель создания копий бумажных носителей
+    /// Модель планирования перемещения БН
     /// </summary>
     public class PlanMovementPaper: PaperEvent
     {
