@@ -28,7 +28,7 @@ namespace BL.Model.SystemCore
         public const string Tools = "Tools";
 
 
-        public const string Document = "Document";
+        public const string Documents = "Documents";
         public const string PaperList = "PaperList";
 
         public static int GetId(string Name)
@@ -61,7 +61,7 @@ namespace BL.Model.SystemCore
                 case CustomDictionaries:    res = 310; break;
                 case Tools:                 res = 320; break;
 
-                case Document:              res = 330; break;
+                case Documents:              res = 330; break;
                 case PaperList:             res = 340; break;
 
                 default: throw new System.Exception();

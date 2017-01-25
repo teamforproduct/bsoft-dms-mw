@@ -36,19 +36,19 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// </summary>
         /// <param name="filter">"</param>
         /// <returns></returns>
-        //[HttpGet]
-        //[Route(Features.Info)]
-        //[ResponseType(typeof(List<FrontDictionaryPosition>))]
-        //public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-        //    var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
-        //    var res = new JsonResult(tmpItems, this);
-        //    res.SpentTime = stopWatch;
-        //    return res;
-        //}
+        [HttpGet]
+        [Route(Features.Info)]
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
         /// <summary>
         /// Возвращает должность по Id

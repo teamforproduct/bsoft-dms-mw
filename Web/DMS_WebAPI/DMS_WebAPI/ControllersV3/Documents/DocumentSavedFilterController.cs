@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     /// Документы. Сохраненные фильтры документов.
     /// </summary>
     [Authorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.Document)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentSavedFilterController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();

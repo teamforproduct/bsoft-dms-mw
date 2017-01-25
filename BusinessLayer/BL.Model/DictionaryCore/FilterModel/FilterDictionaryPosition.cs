@@ -20,12 +20,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> DepartmentIDs { get; set; }
 
         /// <summary>
-        /// по вышестоящей должности
-        /// </summary>
-        [IgnoreDataMember]
-        public List<int> DarentIDs { get; set; }
-
-        /// <summary>
         /// Массив ИД документов для поиска корреспондентов в событиях
         /// </summary>
         public List<int> DocumentIDs { get; set; }
