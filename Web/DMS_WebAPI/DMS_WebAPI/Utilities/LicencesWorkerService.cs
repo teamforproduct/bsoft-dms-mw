@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Utilities
                     userContext.VerifyLicence(client.Id, dbs);
                 }
 
-                DmsResolver.Current.Get<UserContexts>().RemoveByTimeout();
+//                DmsResolver.Current.Get<UserContexts>().RemoveByTimeout();
             }
             catch (Exception ex)
             {

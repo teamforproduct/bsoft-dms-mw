@@ -376,6 +376,15 @@ namespace DMS_WebAPI.Utilities
         }
 
         /// <summary>
+        /// Делает отметки в логе о последнем использовании контекста
+        /// </summary>
+        public void SaveLogContextsLastUsage()
+        {
+            var list = _casheContexts.Where(x => x.Value.StoreObject is IContext).Select(x => (x.Value as IContext).LoginLogId);
+            //DmsResolver.Current.Get<ILogger>().UpdateLogDate1()
+        }
+
+        /// <summary>
         /// Удаляет неиспользуемые пользовательские контексты
         /// </summary>
         public void RemoveByTimeout()

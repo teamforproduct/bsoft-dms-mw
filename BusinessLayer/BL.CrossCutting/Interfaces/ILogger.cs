@@ -21,5 +21,6 @@ namespace BL.CrossCutting.Interfaces
         int? Error(IContext ctx, Exception exception, string message = null, params object[] args);
         int? Fatal(IContext ctx, string message, params object[] args);
         int? Fatal(IContext ctx, Exception exception, string message = null, params object[] args);
+        void UpdateLogDate1(IContext ctx, List<int> ids, DateTime datetime);
     }
 }

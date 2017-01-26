@@ -19,6 +19,7 @@ namespace BL.Database.SystemDb
         #region Logging
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         int AddLog(IContext ctx, LogInfo log);
+        void UpdateLogDate1(IContext ctx, List<int> ids, DateTime datetime);
         #endregion
 
         #region Settings

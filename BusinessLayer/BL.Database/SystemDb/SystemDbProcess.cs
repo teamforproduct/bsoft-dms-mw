@@ -187,6 +187,19 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public void UpdateLogDate1(IContext context, List<int> ids, DateTime datetime)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.LogSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+                var filterContains = PredicateBuilder.False<SystemLogs>();
+                filterContains = ids.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+                qry = qry.Where(filterContains);
+                qry.Update(x => new SystemLogs { LogDate1 = datetime });
+            }
+        }
+
         #endregion
 
         #region [+] Settings ...

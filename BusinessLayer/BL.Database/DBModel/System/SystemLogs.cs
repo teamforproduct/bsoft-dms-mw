@@ -25,7 +25,7 @@ namespace BL.Database.DBModel.System
         public Nullable<int> RecordId { get; set; }
         [Index("IX_LogDate", 1)]
         public DateTime LogDate { get; set; }
-        public DateTime LogDate1 { get; set; }
+        public DateTime? LogDate1 { get; set; }
 
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }

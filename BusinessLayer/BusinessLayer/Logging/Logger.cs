@@ -27,6 +27,11 @@ namespace BL.Logic.Logging
 
         }
 
+        public void UpdateLogDate1(IContext ctx, List<int> ids, DateTime datetime)
+        {
+            _systemDb.UpdateLogDate1(ctx, ids, datetime);
+        }
+
         public IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions)
         {
 
