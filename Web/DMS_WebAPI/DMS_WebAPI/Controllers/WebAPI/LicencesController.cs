@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         [ResponseType(typeof(FrontSystemLicencesInfo))]
         public IHttpActionResult VerifyLicences()
         {
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
             var res = new FrontSystemLicencesInfo
             {
                 MessageLevelTypes = EnumMessageLevelTypes.Red,
