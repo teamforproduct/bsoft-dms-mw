@@ -8,7 +8,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int? PositionId { get; set; }
-        public int AccessLevelId { get; set; }
+        public int AccessLevel { get; set; }
         public string PositionName { get; set; }
         public string PositionExecutorAgentName { get; set; }
         public string AccessLevelName { get; set; }

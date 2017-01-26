@@ -647,7 +647,7 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     PositionId = x.Position.Id,
-                    AccessLevelId = x.AccessLevelId,
+                    AccessLevel = x.AccessLevelId,
                     PositionName = x.Position.Name,
                     PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     AccessLevelName = x.AccessLevel.Name,
