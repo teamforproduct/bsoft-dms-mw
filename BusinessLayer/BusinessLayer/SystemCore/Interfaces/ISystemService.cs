@@ -10,6 +10,8 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
 using System;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Database.DBModel.System;
+using BL.Model.Users;
 
 namespace BL.Logic.SystemCore.Interfaces
 {
@@ -18,6 +20,14 @@ namespace BL.Logic.SystemCore.Interfaces
         object ExecuteAction(EnumSystemActions act, IContext context, object param);
 
         void InitializerDatabase(IContext ctx);
+
+        IEnumerable<FrontSystemAction> GetImportSystemActions();
+        IEnumerable<FrontSystemObject> GetImportSystemObjects();
+        IEnumerable<FrontSystemModules> GetImportSystemModules();
+        IEnumerable<FrontSystemFeatures> GetImportSystemFeatures();
+
+
+
         IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter);
         IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext context, FilterSystemFormula filter);
         IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext context, FilterSystemPattern filter);

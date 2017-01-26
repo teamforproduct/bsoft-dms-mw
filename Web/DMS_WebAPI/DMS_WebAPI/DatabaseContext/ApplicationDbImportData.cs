@@ -1,4 +1,6 @@
-﻿using BL.Model.Enums;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemCore.Interfaces;
+using BL.Model.Enums;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Utilities;
 using System;
@@ -53,7 +55,22 @@ namespace DMS_WebAPI.Models
 
         public static void CheckLanguages()
         {
-            var f = GetLabelsFromEnums();
+            //var  = GetLabelsFromEnums();
+
+            var f = new List<string>();
+
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+
+            // Действия
+            f.AddRange(tmpService.GetImportSystemActions().Select(x=>x.Description));
+
+            // Модули
+            f.AddRange(tmpService.GetImportSystemModules().Select(x => x.Name));
+
+            // Фичи
+            f.AddRange(tmpService.GetImportSystemFeatures().Select(x => x.Name));
+
+            // Исключения
             f.AddRange(GetLabelsFromExceptions());
 
             var languages = new Languages();

@@ -14,6 +14,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Tree;
+using BL.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,10 +104,54 @@ namespace BL.Logic.SystemCore
             return _systemDb.GetSystemObjects(context, filter);
         }
 
+        public IEnumerable<FrontSystemAction> GetImportSystemActions()
+        {
+            return DmsDbImportData.GetSystemActions().Select(x => new FrontSystemAction
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Description = x.Description,
+            }).ToList(); 
+        }
+
+        public IEnumerable<FrontSystemObject> GetImportSystemObjects()
+        {
+            return DmsDbImportData.GetSystemObjects().Select(x => new FrontSystemObject {
+                Id = x.Id,
+                Code = x.Code,
+                Description = x.Description,
+            }).ToList();
+        }
+
+        public IEnumerable<FrontSystemModules> GetImportSystemModules()
+        {
+            DmsDbImportData.InitPermissions();
+            return DmsDbImportData.GetSystemModules().Select(x => new FrontSystemModules
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Name = x.Name,
+                Order = x.Order
+            } ).ToList();
+        }
+
+        public IEnumerable<FrontSystemFeatures> GetImportSystemFeatures()
+        {
+            DmsDbImportData.InitPermissions();
+            return DmsDbImportData.GetSystemFeatures().Select(x => new FrontSystemFeatures
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Name = x.Name,
+                Order = x.Order
+            }).ToList();
+        }
+
         public FrontSystemAction GetSystemAction(IContext context, int id)
         {
             return _systemDb.GetSystemActions(context, new FilterSystemAction { IDs = new List<int> { id } }).FirstOrDefault();
         }
+
 
         public IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter)
         {
@@ -173,6 +218,8 @@ namespace BL.Logic.SystemCore
                 }
             }
         }
+
+        
 
         private bool EqualsAction(InternalSystemAction intAction, SystemActions dbAction)
         {
