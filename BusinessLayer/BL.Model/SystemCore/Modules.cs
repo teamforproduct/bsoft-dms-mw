@@ -26,6 +26,7 @@ namespace BL.Model.SystemCore
         public const string Settings = "Settings";
         public const string CustomDictionaries = "CustomDictionaries";
         public const string Tools = "Tools";
+        public const string Dev = "Dev";
 
 
         public const string Documents = "Documents";

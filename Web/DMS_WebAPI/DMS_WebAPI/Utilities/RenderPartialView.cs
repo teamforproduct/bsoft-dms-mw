@@ -1,5 +1,4 @@
-﻿using BL.Model.Enums;
-using DMS_WebAPI.Controllers.System;
+﻿using DMS_WebAPI.ControllersV3.Utilities;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;

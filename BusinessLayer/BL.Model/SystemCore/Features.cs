@@ -3,6 +3,7 @@
     public static class Features
     {   
         public const string AccessList = "AccessList";
+        public const string Accounts = "Accounts";
         public const string Addresses = "Addresses";
         public const string AddressTypes = "AddressTypes";
         public const string Admins = "Admins";
@@ -56,6 +57,7 @@
         public const string ResultTypes = "ResultTypes";
         public const string SendTypes = "SendTypes";
         public const string SubordinationTypes = "SubordinationTypes";
+        public const string StageTypes = "StageTypes";
         public const string ValueTypes = "ValueTypes";
 
 

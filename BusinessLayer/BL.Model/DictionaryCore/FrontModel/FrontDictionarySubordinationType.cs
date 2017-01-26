@@ -21,14 +21,5 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Наименование
         /// </summary>
         public string Name { get; set; }
-        /// <summary>
-        /// Пользователь
-        /// </summary>
-        public int LastChangeUserId { get; set; }
-        /// <summary>
-        /// Дата изменения
-        /// </summary>
-        public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate = value.ToUTC(); } }
-        private DateTime _LastChangeDate;
     }
 }

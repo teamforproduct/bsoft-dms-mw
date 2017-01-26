@@ -5,6 +5,7 @@ using BL.Logic.SystemCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.SystemCore;
@@ -267,6 +268,23 @@ namespace DMS_WebAPI.ControllersV3.System
         }
 
 
+
+        /// <summary>
+        /// Тип этапа для разделения плана на подписи и рассылку
+        /// </summary>
+        /// <param name="filter">Filter parms</param>
+        /// <returns>FrontAdminPositions</returns>
+        [HttpGet]
+        [Route(Features.StageTypes)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult Get([FromUri] FilterDictionaryStageType filter)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpDicts = tmpDictProc.GetDictionaryStageTypes(ctx, filter);
+            return new JsonResult(tmpDicts, this);
+        }
+
         /// <summary>
         /// Типы рассылки (для сведения, для исполнения)
         /// </summary>
@@ -274,7 +292,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns>FrontAdminPositions</returns>
         [HttpGet]
         [Route(Features.SubordinationTypes)]
-        [ResponseType(typeof(List<FrontDictionarySubordinationType>))]
+        [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

@@ -14,12 +14,12 @@ namespace BL.Logic.AdminCore
 {
     public class SetSubordinationByCompanyCommand : BaseSubordinationCommand
     {
-        private ModifyAdminSubordinationByCompany Model
+        private SetAdminSubordinationByCompany Model
         {
             get
             {
-                if (!(_param is ModifyAdminSubordinationByCompany)) throw new WrongParameterTypeError();
-                return (ModifyAdminSubordinationByCompany)_param;
+                if (!(_param is SetAdminSubordinationByCompany)) throw new WrongParameterTypeError();
+                return (SetAdminSubordinationByCompany)_param;
             }
         }
 
@@ -49,7 +49,7 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        private void SetSubordination(ModifyAdminSubordination model)
+        private void SetSubordination(SetAdminSubordination model)
         {
             _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
         }
@@ -62,7 +62,7 @@ namespace BL.Logic.AdminCore
             {
                 foreach (var position in positions)
                 {
-                    SetSubordination(new ModifyAdminSubordination()
+                    SetSubordination(new SetAdminSubordination()
                     {
                         IsChecked = Model.IsChecked,
                         SourcePositionId = Model.SourcePositionId,

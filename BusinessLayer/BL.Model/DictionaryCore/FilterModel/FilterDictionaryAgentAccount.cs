@@ -25,7 +25,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// банк
         /// </summary>
-        public int? AgentId { get; set; }
+        public List<int> AgentIDs { get; set; }
        
     }
 }

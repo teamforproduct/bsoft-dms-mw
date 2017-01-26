@@ -1,25 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
+﻿using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
-using BL.Model.SystemCore;
+using BL.Database.Helper;
 using BL.Model.Enums;
-using BL.Model.SystemCore.InternalModel;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-using System.Data.Entity;
-using BL.Model.FullTextSearch;
-using System;
-using LinqKit;
-using System.Transactions;
+using BL.Model.SystemCore.InternalModel;
 using BL.Model.Tree;
-using BL.Database.Common;
 using EntityFramework.Extensions;
-using BL.CrossCutting.Helpers;
-using BL.Database.Helper;
+using LinqKit;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 
 namespace BL.Database.SystemDb
 {

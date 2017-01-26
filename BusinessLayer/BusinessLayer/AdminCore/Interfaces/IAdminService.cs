@@ -1,21 +1,18 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
+using BL.Model.AdminCore.InternalModel;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
+using BL.Model.SystemCore.FrontModel;
+using BL.Model.Tree;
 using BL.Model.Users;
 using System.Collections.Generic;
-using BL.Model.Tree;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.AdminCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.AdminCore.InternalModel;
-using BL.Model.SystemCore.FrontModel;
-using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.SystemCore;
-using BL.Model.FullTextSearch;
 
 namespace BL.Logic.AdminCore.Interfaces
 {
