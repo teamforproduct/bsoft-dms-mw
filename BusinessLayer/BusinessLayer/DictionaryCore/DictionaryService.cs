@@ -848,7 +848,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetRegistrationJournals(context, newFilter);
         }
 
-        public IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter)
+        public IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
@@ -858,10 +858,9 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 3 || levelCount == 0)
             {
-                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, new FilterDictionaryRegistrationJournal()
-                {
-                    IsActive = filter?.IsActive
-                });
+                var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
+
+                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
             }
 
             if (levelCount >= 2 || levelCount == 0)
@@ -894,9 +893,9 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        public IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging)
+        public IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal, UIPaging paging)
         {
-            var tree = GetRegistrationJournalsTree(context, filter);
+            var tree = GetRegistrationJournalsTree(context, filter, filterJoirnal);
 
             var list = new List<ListItemWithPath>();
 
@@ -978,12 +977,8 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionarySendTypes
 
         #region DictionaryStageTypes
-        public FrontDictionaryStageType GetDictionaryStageType(IContext context, int id)
-        {
-            return _dictDb.GetStageTypes(context, new FilterDictionaryStageType { IDs = new List<int> { id } }).FirstOrDefault();
-        }
 
-        public IEnumerable<FrontDictionaryStageType> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter)
+        public IEnumerable<ListItem> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter)
         {
             return _dictDb.GetStageTypes(context, filter);
         }
@@ -1046,12 +1041,7 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        public FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id)
-        {
-            return _dictDb.GetSubordinationTypes(context, new FilterDictionarySubordinationType { IDs = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
+        public IEnumerable<ListItem> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
 
             return _dictDb.GetSubordinationTypes(context, filter);

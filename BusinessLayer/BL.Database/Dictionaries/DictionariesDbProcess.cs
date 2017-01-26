@@ -2633,9 +2633,13 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.AgentId.HasValue)
+                if (filter.AgentIDs?.Count > 0)
                 {
-                    qry = qry.Where(x => x.AgentId == filter.AgentId);
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    filterContains = filter.AgentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AgentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (!string.IsNullOrEmpty(filter.Name))
@@ -3553,8 +3557,6 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
                 }).ToList();
 
                 transaction.Complete();
@@ -5732,7 +5734,7 @@ namespace BL.Database.Dictionaries
         #endregion DictionarySendTypes
 
         #region [+] DictionaryStageTypes ...
-        public IEnumerable<FrontDictionaryStageType> GetStageTypes(IContext context, FilterDictionaryStageType filter)
+        public IEnumerable<ListItem> GetStageTypes(IContext context, FilterDictionaryStageType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -5768,13 +5770,11 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
                 qry = qry.OrderBy(x => x.Code);
-                var res = qry.Select(x => new FrontDictionaryStageType
+                var res = qry.Select(x => new ListItem
                 {
                     Id = x.Id,
-                    Code = x.Code,
+                    //Code = x.Code,
                     Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                 }).ToList();
 
                 transaction.Complete();
@@ -6088,7 +6088,7 @@ namespace BL.Database.Dictionaries
 
         #region [+] DictionarySubordinationTypes ...
 
-        public IEnumerable<FrontDictionarySubordinationType> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
+        public IEnumerable<ListItem> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -6124,13 +6124,11 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                var res = qry.Select(x => new FrontDictionarySubordinationType
+                var res = qry.Select(x => new ListItem
                 {
                     Id = x.Id,
-                    Code = x.Code,
+                    //Code = x.Code,
                     Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                 }).ToList();
 
                 transaction.Complete();

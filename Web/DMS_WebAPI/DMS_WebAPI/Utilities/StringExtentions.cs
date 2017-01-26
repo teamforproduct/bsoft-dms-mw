@@ -1,7 +1,4 @@
-﻿using BL.Model.Enums;
-using DMS_WebAPI.Controllers.System;
-using OracleInternal.Secure.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,8 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
 using System.Xml;
 
 namespace DMS_WebAPI.Utilities

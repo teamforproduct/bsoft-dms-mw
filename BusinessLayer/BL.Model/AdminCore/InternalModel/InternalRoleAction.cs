@@ -1,6 +1,4 @@
 ﻿using BL.Model.Common;
-using BL.Model.AdminCore.IncomingModel;
-using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.InternalModel
 {
@@ -8,14 +6,6 @@ namespace BL.Model.AdminCore.InternalModel
     {
         public InternalAdminRoleAction()
         { }
-
-        public InternalAdminRoleAction(ModifyAdminRoleAction model)
-        {
-            Id = model.Id;
-            RoleId = model.RoleId;
-            ActionId = model.ActionId;
-            RecordId = model.RecordId;
-        }
 
         /// <summary>
         /// ID

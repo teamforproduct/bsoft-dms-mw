@@ -61,8 +61,8 @@ namespace DMS_WebAPI.Controllers.WebAPI
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var res = new FrontSystemLicencesInfo
             {
-                MessageLevelTypes = EnumMessageLevelTypes.Yellow,
-                MessageLevelTypesName = EnumMessageLevelTypes.Yellow.ToString(),
+                MessageLevelTypes = EnumMessageLevelTypes.Red,
+                MessageLevelTypesName = EnumMessageLevelTypes.Red.ToString(),
                 Message = "TODO: сообщение будет, когда будем подключать разные лицензии на фронте", //TODO 
             };
             return new JsonResult(res, this);

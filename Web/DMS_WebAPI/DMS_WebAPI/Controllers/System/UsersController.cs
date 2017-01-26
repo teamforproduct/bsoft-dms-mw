@@ -227,87 +227,6 @@ namespace DMS_WebAPI.Controllers
         //    return new JsonResult(null, this);
         //}
 
-        /// <summary>
-        /// Изменение пароля
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("ChangePasswordAgentUser")]
-        [HttpPost]
-        public async Task<IHttpActionResult> ChangePasswordAgentUser(ChangePasswordAgentUser model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState, false, this);
-            }
-
-            var webService = new WebAPIService();
-            await webService.ChangePasswordAgentUserAsync(model);
-
-
-            return new JsonResult(null, this);
-        }
-
-        /// <summary>
-        /// Блокировка пользователя
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("ChangeLockoutAgentUser")]
-        [HttpPut]
-        public async Task<IHttpActionResult> ChangeLockoutAgentUser(ChangeLockoutAgentUser model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState, false, this);
-            }
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = new WebAPIService();
-            await webService.ChangeLockoutAgentUserAsync(ctx, model);
-
-            return new JsonResult(null, this);
-        }
-
-        /// <summary>
-        /// Убиение всех активных сессий пользователя
-        /// </summary>
-        /// <param name="agentId"></param>
-        /// <returns></returns>
-        [Route("KillSessionsAgentUser")]
-        [HttpPut]
-        public IHttpActionResult KillSessionsAgentUser(int agentId)
-        {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-            var ctx = userContexts.Get();
-
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, agentId);
-
-            userContexts.RemoveByAgentId(agentId);
-
-            return new JsonResult(null, this);
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("ChangeLoginAgentUser")]
-        [HttpPost]
-        public async Task<IHttpActionResult> ChangeLoginAgentUser(ChangeLoginAgentUser model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState, false, this);
-            }
-
-            var webService = new WebAPIService();
-            webService.ChangeLoginAgentUser(model);
-
-            return new JsonResult(null, this);
-        }
 
         [Route("ConfirmEmailAgentUser")]
         [HttpGet]
@@ -323,25 +242,6 @@ namespace DMS_WebAPI.Controllers
             return new JsonResult(null, this);
         }
 
-        /// <summary>
-        /// Возвращает список действий, которые может выполнять текущий пользователь.
-        /// Список действий зависит от назначений пользователя на должности и может изменяться с течением времени.
-        /// Список действий зависит от выбранных пользователейм должностей из списка доступных.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("GetActions")]
-        [ResponseType(typeof(List<FrontSystemAction>))]
-        public async Task<IHttpActionResult> GetActions()
-        {
-            //if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetUserActions(ctx);
-            var res = new JsonResult(tmpItems, this);
-            //res.SpentTime = stopWatch;
-            return res;
-        }
 
         /// <summary>
         ///
@@ -455,44 +355,5 @@ namespace DMS_WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// Изменение пароля
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route("SetMustChangePassword")]
-        [HttpPost]
-        public async Task<IHttpActionResult> SetMustChangePasswordAgentUser(MustChangePasswordAgentUser model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState, false, this);
-            }
-
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
-
-            var ctx = mngContext.Get();
-
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.MustChangePassword, ctx, model.Id);
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
-                throw new UserIsNotDefined();
-
-            user.IsChangePasswordRequired = model.MustChangePassword;//true;
-
-            var result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-                //return GetErrorResult(result);
-            }
-            return new JsonResult(null, this);
-        }
     }
 }

@@ -37,18 +37,19 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Возвращает список реестров БН
         /// </summary>
+        /// <param name="ftSearch">Фильтр</param>
         /// <param name="filter">Фильтр</param>
         /// <param name="paging">Пейджинг</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDocumentPaperList>))]
-        public IHttpActionResult Get([FromUri] FilterDocumentPaperList filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDocumentPaperList filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentPaperLists(ctx, filter, paging);
+            var items = docProc.GetMainDocumentPaperLists(ctx, ftSearch, filter, paging);
             var res = new JsonResult(items, this);
             res.SpentTime = stopWatch;
             return res;

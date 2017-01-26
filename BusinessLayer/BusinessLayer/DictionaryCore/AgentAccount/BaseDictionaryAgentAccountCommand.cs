@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore
 
             var spr = _dictDb.GetAgentAccounts(_context, new FilterDictionaryAgentAccount
             {
-                AgentId = Model.AgentId,
+                AgentIDs = new List<int> { Model.AgentId },
                 AccountNumber = Model.AccountNumber,
                 NotContainsIDs = new List<int> { Model.Id }
             });
@@ -54,7 +54,7 @@ namespace BL.Logic.DictionaryCore
 
         private void SetMainAgentAccount()
         {
-            var accounts = _dictDb.GetInternalAgentAccounts(_context, new FilterDictionaryAgentAccount() { AgentId = Model.AgentId });
+            var accounts = _dictDb.GetInternalAgentAccounts(_context, new FilterDictionaryAgentAccount() { AgentIDs = new List<int> { Model.AgentId } });
 
             foreach (InternalDictionaryAgentAccount account in accounts)
             {

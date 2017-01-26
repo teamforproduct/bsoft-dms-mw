@@ -4,40 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
     /// <summary>
-    /// "Соответствие действий и роли", добавления/редактирования записи.
+    /// "Настройка правил рассылки между должностями (для исполнения, для сведения)", добавления/редактирования записи.
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyAdminRoleAction
+    public class SetAdminSubordinations
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
 
         /// <summary>
-        /// Роль
+        /// Руководитель
         /// </summary>
         [Required]
-        public int RoleId { get; set; }
+        public int PositionId { get; set; }
 
         /// <summary>
-        /// Действие
+        /// Тип рассылки (для исполнения, для сведения)
         /// </summary>
         [Required]
-        public int ActionId { get; set; }
+        public EnumSubordinationTypes SubordinationTypeId { get; set; }
 
         /// <summary>
-        /// RecordId
+        /// Установить галочку
         /// </summary>
-        public int? RecordId { get; set; }
+        [Required]
+        public bool IsChecked { get; set; }
+
 
     }
 }

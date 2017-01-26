@@ -159,17 +159,18 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// Журналы
         /// </summary>
         /// <param name="filter"></param>
+        /// <param name="filterJoirnal"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Journals)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterTree filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetList([FromUri] FilterTree filter, [FromUri]  FilterDictionaryRegistrationJournal filterJoirnal, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournalShortList(ctx, filter, paging);
+            var tmpItems = tmpService.GetRegistrationJournalShortList(ctx, filter, filterJoirnal, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -242,9 +243,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Возвращает массив ИД юзеров, которые онлайн
         /// </summary>
-        /// <param name="ftSearch">модель фильтров сессий</param>
-        /// <param name="filter">модель фильтров сессий</param>
-        /// <param name="paging">параметры пейджинга</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.OnlineUsers)]
