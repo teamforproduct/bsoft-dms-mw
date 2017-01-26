@@ -359,6 +359,7 @@
     <Compile Include="Controllers\Documents\TemplateDocumentsPapersController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
+    <Compile Include="Controllers\EncriptionSign\EncryptionCertificatesController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
@@ -389,7 +390,6 @@
     <Compile Include="Controllers\WebAPI\ClientsController.cs" />
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
-
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />
