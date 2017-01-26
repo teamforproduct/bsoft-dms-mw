@@ -18,7 +18,7 @@ using BL.Model.SystemCore;
 using System.Reflection;
 using BL.Logic.SystemCore.Interfaces;
 
-namespace DMS_WebAPI.ControllersV3.System
+namespace DMS_WebAPI.ControllersV3.Utilities
 {
     /// <summary>
     /// Для разработки
@@ -33,7 +33,6 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <summary>
         /// Возвращает Hello, world!
         /// </summary>
-        /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("Test")]

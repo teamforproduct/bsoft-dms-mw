@@ -18,7 +18,7 @@ using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
 using BL.Model.FullTextSearch;
 
-namespace DMS_WebAPI.ControllersV3.Companies
+namespace DMS_WebAPI.ControllersV3.Licences
 {
     /// <summary>
     /// Юридические лица

@@ -224,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\Auth\AuthRestoreController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentFavouriteController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyAccountsController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentPaperController.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="ControllersV3\Documents\DocumentInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesContentsController.cs" />
+    <Compile Include="ControllersV3\Licences\LicencesCheckController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
     <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
@@ -306,7 +308,7 @@
     <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
-    <Compile Include="ControllersV3\System\DevController.cs" />
+    <Compile Include="ControllersV3\Utilities\DevController.cs" />
     <Compile Include="ControllersV3\Auditlog\AuditlogInfoController.cs" />
     <Compile Include="ControllersV3\System\TempStorageController.cs" />
     <Compile Include="ControllersV3\System\ContactTypeInfoController.cs" />
@@ -359,6 +361,7 @@
     <Compile Include="Controllers\Documents\TemplateDocumentsPapersController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
+    <Compile Include="Controllers\EncriptionSign\EncryptionCertificatesController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
@@ -389,7 +392,6 @@
     <Compile Include="Controllers\WebAPI\ClientsController.cs" />
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
-
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminLanguageValues.cs" />

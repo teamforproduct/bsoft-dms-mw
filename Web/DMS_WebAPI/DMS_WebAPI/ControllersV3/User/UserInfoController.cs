@@ -4,11 +4,19 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.SystemCore;
 using BL.Model.Users;
+using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Cookies;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,6 +31,32 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserInfoController : ApiController
     {
+
+        private const string LocalLoginProvider = "Local";
+        private ApplicationUserManager _userManager;
+
+        public UserInfoController()
+        {
+        }
+
+        public UserInfoController(ApplicationUserManager userManager, ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+        {
+            UserManager = userManager;
+            AccessTokenFormat = accessTokenFormat;
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+        public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
         Stopwatch stopWatch = new Stopwatch();
 
 
@@ -91,17 +125,93 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <summary>
         /// Устанавливает новый пароль
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("SetPassword")]
+        public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+            }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Изменяет текущий пароль
+        /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ChangePassword)]
-        public IHttpActionResult ChangePassword([FromBody]ChangePassword model)
+        public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordBindingModel model)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+            {
+                return new JsonResult(ModelState, false, this);
+            }
+
+            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
+                model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+            }
+
+            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
+
+            user.IsChangePasswordRequired = false;
+
+            result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+            }
+
+            var user_context = DmsResolver.Current.Get<UserContexts>();
+            user_context.UpdateChangePasswordRequired(user.Id, false);
+
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Выход
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Logout")]
+        public IHttpActionResult Logout()
+        {
+            DmsResolver.Current.Get<UserContexts>().Remove();
+
+            Request.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+
+            return new JsonResult(null, this);
         }
 
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && _userManager != null)
+            {
+                _userManager.Dispose();
+                _userManager = null;
+            }
+
+            base.Dispose(disposing);
+        }
 
     }
 }

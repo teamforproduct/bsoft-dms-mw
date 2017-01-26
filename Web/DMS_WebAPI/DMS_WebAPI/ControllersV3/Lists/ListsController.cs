@@ -251,7 +251,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
+            var ctx = ctxs.Get(keepAlive: false);
             var sesions = ctxs.GetContextListQuery();
             var tmpService = DmsResolver.Current.Get<ILogger>();
             var tmpItems = tmpService.GetOnlineUsers(ctx, sesions);

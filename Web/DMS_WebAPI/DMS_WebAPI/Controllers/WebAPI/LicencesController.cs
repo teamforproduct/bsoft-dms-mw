@@ -58,12 +58,12 @@ namespace DMS_WebAPI.Controllers.WebAPI
         [ResponseType(typeof(FrontSystemLicencesInfo))]
         public IHttpActionResult VerifyLicences()
         {
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
             var res = new FrontSystemLicencesInfo
             {
                 MessageLevelTypes = EnumMessageLevelTypes.Red,
                 MessageLevelTypesName = EnumMessageLevelTypes.Red.ToString(),
-                Message = "TODO: сообщение будет, когда будем подключать разные лицензии на фронте", //TODO 
+                Message = "Ваша лицензия на V2 заканчивается. Пожалуйста, перейдите на V3", //TODO 
             };
             return new JsonResult(res, this);
         }
