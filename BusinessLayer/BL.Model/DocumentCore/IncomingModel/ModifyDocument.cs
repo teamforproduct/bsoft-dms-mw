@@ -18,8 +18,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// ИД Документа
         /// </summary>
         //TODO Required!!!!!!!!!!!!!!!!!!
-        [XmlIgnore]
-        [IgnoreDataMember]
         public int Id { get; set; }
         /// <summary>
         /// ИД Тематики документа

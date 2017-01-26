@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="paging">Пейджинг</param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Papers)]
+        [Route(Features.Papers + "/Main")]
         [ResponseType(typeof(List<FrontDocumentPaper>))]
         public IHttpActionResult Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {
@@ -145,7 +145,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Papers + "/MarkOwnerDocumentPaper")]
+        [Route(Features.Papers + "/MarkOwner")]
         [HttpPut]
         public IHttpActionResult MarkOwnerDocumentPaper([FromBody]MarkOwnerDocumentPaper model)
         {
@@ -161,7 +161,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Papers + "/MarkСorruptionDocumentPaper")]
+        [Route(Features.Papers + "/MarkСorruption")]
         [HttpPut]
         public IHttpActionResult MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
         {
@@ -177,7 +177,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Papers + "/PlanDocumentPaperEvent")]
+        [Route(Features.Papers + "/Plan")]
         [HttpPut]
         public IHttpActionResult PlanDocumentPaperEvent([FromBody]List<PlanMovementPaper> model)
         {
@@ -193,7 +193,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
-        [Route(Features.Papers + "/CancelPlanDocumentPaperEvent")]
+        [Route(Features.Papers + "/CancelPlan")]
         [HttpPut]
         public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]List<int> model)
         {
@@ -209,7 +209,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
-        [Route(Features.Papers + "/SendDocumentPaperEvent")]
+        [Route(Features.Papers + "/Send")]
         [HttpPut]
         public IHttpActionResult SendDocumentPaperEvent([FromBody]List<int> model)
         {
@@ -225,7 +225,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
-        [Route(Features.Papers + "/CancelSendDocumentPaperEvent")]
+        [Route(Features.Papers + "/CancelSend")]
         [HttpPut]
         public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]List<int> model)
         {
@@ -241,7 +241,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model">массив ИД БН</param>
         /// <returns></returns>
-        [Route(Features.Papers + "/RecieveDocumentPaperEvent")]
+        [Route(Features.Papers + "/Recieve")]
         [HttpPut]
         public IHttpActionResult RecieveDocumentPaperEvent([FromBody]List<int> model)
         {

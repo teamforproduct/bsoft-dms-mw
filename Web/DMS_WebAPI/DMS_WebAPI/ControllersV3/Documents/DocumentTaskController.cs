@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="paging">Пейджинг</param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Tasks)]
+        [Route(Features.Tasks + "/Main")]
         [ResponseType(typeof(List<FrontDocumentTask>))]
         public IHttpActionResult Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {

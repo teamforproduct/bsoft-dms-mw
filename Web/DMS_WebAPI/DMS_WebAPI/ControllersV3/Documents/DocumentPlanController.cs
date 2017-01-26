@@ -138,7 +138,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Plan + "/AdditinalLinkedDocumentSendLists")]
+        [Route(Features.Plan + "/AdditinalLinkedDocument")]
         [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
         {
@@ -154,20 +154,52 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Принудительно запускает пункт плана на исполнение
         /// </summary>
-        /// <param name="Id">ИД пункта плана</param>
+        /// <param name="model">ИД пункта плана</param>
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Plan+ "/LaunchItem")]
-        public IHttpActionResult LaunchItem([FromBody]int Id)
+        public IHttpActionResult LaunchItem([FromBody]Item model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(ctx, Id, null);
+            aplan.ManualRunAutoPlan(ctx, model.Id, null);
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
         }
-        
+
+        /// <summary>
+        /// Запускает автоматическую отработку плана
+        /// </summary>
+        /// <param name="model">ИД документа</param>
+        /// <returns></returns>
+        [Route(Features.Plan + "/LaunchPlan")]
+        [HttpPut]
+        public IHttpActionResult LaunchPlan([FromBody]Item model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.LaunchPlan, model.Id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Останавливет автоматическую отработку плана
+        /// </summary>
+        /// <param name="model">ИД документа</param>
+        /// <returns></returns>
+        [Route(Features.Plan + "/StopPlan")]
+        [HttpPut]
+        public IHttpActionResult StopPlan([FromBody]Item model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.StopPlan, model.Id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
     }
 }

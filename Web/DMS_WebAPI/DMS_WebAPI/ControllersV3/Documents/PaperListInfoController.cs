@@ -148,7 +148,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="Id">ИД реестра БН</param>
         /// <returns></returns>
-        [Route(Features.Info + "/CancelPlanDocumentPaperEvent")]
+        [Route(Features.Info + "/CancelPlan")]
         [HttpPut]
         public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]int Id)
         {
@@ -164,7 +164,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="Id">ИД реестра БН</param>
         /// <returns></returns>
-        [Route(Features.Info + "/SendDocumentPaperEvent")]
+        [Route(Features.Info + "/Send")]
         [HttpPut]
         public IHttpActionResult SendDocumentPaperEvent([FromBody]int Id)
         {
@@ -180,7 +180,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="Id">ИД реестра БН</param>
         /// <returns></returns>
-        [Route(Features.Info + "/CancelSendDocumentPaperEvent")]
+        [Route(Features.Info + "/CancelSend")]
         [HttpPut]
         public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]int Id)
         {
@@ -196,7 +196,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="Id">ИД реестра БН</param>
         /// <returns></returns>
-        [Route(Features.Info + "/RecieveDocumentPaperEvent")]
+        [Route(Features.Info + "/Recieve")]
         [HttpPut]
         public IHttpActionResult RecieveDocumentPaperEvent([FromBody]int Id)
         {

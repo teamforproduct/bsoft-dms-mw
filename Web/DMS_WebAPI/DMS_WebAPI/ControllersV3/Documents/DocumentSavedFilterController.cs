@@ -34,19 +34,36 @@ namespace DMS_WebAPI.ControllersV3.Documents
         Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
-        /// Возвращает список сохраненных фильтров документов
+        /// Возвращает список всех сохраненных фильтров документов
         /// </summary>
-        /// <param name="filter">Фильтр</param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.SavedFilters)]
+        [Route(Features.SavedFilters + "/All")]
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
-        public IHttpActionResult Get([FromUri] FilterDocumentSavedFilter filter)
+        public IHttpActionResult Get()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var items = docProc.GetSavedFilters(ctx, filter);
+            var items = docProc.GetSavedFilters(ctx, new FilterDocumentSavedFilter { IsOnlyCurrentUser = false });
+            var res = new JsonResult(items, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает список сохраненных фильтров документов для текущего пользователя
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.SavedFilters+"/CurrentUser")]
+        [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
+        public IHttpActionResult GetOnlyCurrentUser()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
+            var items = docProc.GetSavedFilters(ctx, new FilterDocumentSavedFilter { IsOnlyCurrentUser = true});
             var res = new JsonResult(items, this);
             res.SpentTime = stopWatch;
             return res;

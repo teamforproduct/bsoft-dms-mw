@@ -223,7 +223,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
         [Route(Features.Info + "/Register")]
-        [HttpPost]
+        [HttpPut]
         public IHttpActionResult RegisterDocument(RegisterDocument model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -239,7 +239,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns>Обновленный документ</returns>
         [Route(Features.Info + "/GetNextRegisterDocumentNumber")]
-        [HttpPost]
+        [HttpGet]
         [ResponseType(typeof(FrontRegistrationFullNumber))]
         public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocument model)
         {
@@ -303,37 +303,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return res;
         }
 
-        /// <summary>
-        /// Запускает автоматическую отработку плана
-        /// </summary>
-        /// <param name="Id">ИД документа</param>
-        /// <returns></returns>
-        [Route(Features.Info + "/LaunchPlan")]
-        [HttpPut]
-        public IHttpActionResult LaunchPlan([FromBody]int Id)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.LaunchPlan, Id);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
 
-        /// <summary>
-        /// Останавливет автоматическую отработку плана
-        /// </summary>
-        /// <param name="Id">ИД документа</param>
-        /// <returns></returns>
-        [Route(Features.Info + "/StopPlan")]
-        [HttpPut]
-        public IHttpActionResult StopPlan([FromBody]int Id)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.StopPlan, Id);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
 
 
 
@@ -353,36 +323,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return res;
         }
 
-        /// <summary>
-        /// Добавляет в Избранное
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route(Features.Favourite)]
-        [HttpPost]
-        public IHttpActionResult AddFavourite(ChangeFavourites model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AddFavourite, model, model.CurrentPositionId);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
 
-        /// <summary>
-        /// Удаляет из Избранного
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [Route(Features.Favourite)]
-        [HttpDelete]
-        public IHttpActionResult DeleteFavourite(ChangeFavourites model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteFavourite, model, model.CurrentPositionId);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
     }
 }

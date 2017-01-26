@@ -34,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [DimanicAuthorize("R")]
-        [Route(Features.Events)]
+        [Route(Features.Events + "/Main")]
         [ResponseType(typeof(List<FrontDocumentEvent>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Events + "/MarkDocumentEventAsRead")]
+        [Route(Features.Events + "/MarkAsRead")]
         public IHttpActionResult MarkDocumentEventAsRead([FromBody]MarkDocumentEventAsRead model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

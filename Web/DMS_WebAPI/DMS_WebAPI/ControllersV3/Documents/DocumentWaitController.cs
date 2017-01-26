@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model">Входящая модель</param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Waits)]
+        [Route(Features.Waits + "/Main")]
         [ResponseType(typeof(List<FrontDocumentWait>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         [Route(Features.Waits + "/AskPostponeDueDate")]
         public IHttpActionResult AskPostponeDueDate([FromBody]AskPostponeDueDate model)
         {
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         [Route(Features.Waits + "/MarkExecution")]
         public IHttpActionResult MarkExecution([FromBody]SendEventMessage model)
         {

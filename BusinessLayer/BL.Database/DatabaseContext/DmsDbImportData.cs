@@ -145,7 +145,7 @@ namespace BL.Database.DatabaseContext
             AddPermission(2060, Modules.Documents, Features.Plan);
             AddPermission(2070, Modules.Documents, Features.Tags, u: false, d: false);
             AddPermission(2080, Modules.Documents, Features.Links, u: false);
-
+            AddPermission(2090, Modules.Documents, Features.Favourite, r: false, c: false, d: false);
 
             AddPermission(2110, Modules.Documents, Features.Events, d: false);
             AddPermission(2120, Modules.Documents, Features.Waits, d: false);
@@ -317,8 +317,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Отчеты"));
             items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.C), category: "Дополнительно", isGrantable: false));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.D), category: "Дополнительно", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
             items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
             items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
             items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: "Администратор", isVisibleInMenu: false));

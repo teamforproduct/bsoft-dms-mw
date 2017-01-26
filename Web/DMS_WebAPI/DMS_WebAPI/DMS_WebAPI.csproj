@@ -224,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="ControllersV3\Documents\DocumentFavouriteController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentPaperController.cs" />
     <Compile Include="ControllersV3\Documents\PaperListInfoController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentTagController.cs" />

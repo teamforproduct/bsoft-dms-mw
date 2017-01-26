@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [DimanicAuthorize("R")]
-        [Route(Features.Files)]
+        [Route(Features.Files + "/Main")]
         [ResponseType(typeof(List<FrontDocumentAttachedFile>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Files + "/RenameFile")]
+        [Route(Features.Files + "/Rename")]
         public IHttpActionResult RenameFile([FromBody]ModifyDocumentFile model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
