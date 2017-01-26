@@ -366,7 +366,8 @@ namespace DMS_WebAPI.Utilities
             if (!Contains(token)) return null;
 
             var ctx = GetInternal(token);
-
+            var logger = DmsResolver.Current.Get<ILogger>();
+            logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, _casheContexts[token].LastUsage);
             // удаляю пользовательский контекст из коллекции
             _casheContexts.Remove(token);
 
