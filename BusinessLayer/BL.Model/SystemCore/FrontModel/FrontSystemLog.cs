@@ -23,6 +23,9 @@ namespace BL.Model.SystemCore.FrontModel
         public DateTime LogDate { get { return _LogDate; } set { _LogDate = value.ToUTC(); } }
         private DateTime _LogDate;
 
+        public DateTime? LogDate1 { get { return _LogDate1; } set { _LogDate1 = value.ToUTC(); } }
+        private DateTime? _LogDate1;
+
         public int? ObjectId { get; set; }
         public string ObjectName { get; set; }
         public int? ActionId { get; set; }

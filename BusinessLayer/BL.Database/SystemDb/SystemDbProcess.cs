@@ -59,6 +59,7 @@ namespace BL.Database.SystemDb
                     ExecutorAgentId = x.ExecutorAgentId,
                     ExecutorAgent = x.Agent.Name,
                     LogDate = x.LogDate,
+                    LogDate1 = x.LogDate1,
                     ObjectId = x.ObjectId,
                     ObjectName = x.Object.Description,
                     ActionId = x.ActionId,
@@ -170,6 +171,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,
                     ExecutorAgentId = log.AgentId,
                     LogDate = log.Date,
+                    LogDate1 = log.Date1,
                     LogLevel = (int)log.LogType,
                     LogException = log.LogException,
                     LogTrace = log.LogTrace,
@@ -186,16 +188,12 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void UpdateLogDate1(IContext context, List<int> ids, DateTime datetime)
+        public void UpdateLogDate1(IContext context, int id, DateTime datetime)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.LogSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
-                var filterContains = PredicateBuilder.False<SystemLogs>();
-                filterContains = ids.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
-                qry = qry.Where(filterContains);
-                qry.Update(x => new SystemLogs { LogDate1 = datetime });
+                dbContext.LogSet.Where(x => x.Id == id).Update(x => new SystemLogs { LogDate1 = datetime });
+                transaction.Complete();
             }
         }
 

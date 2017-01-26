@@ -27,9 +27,9 @@ namespace BL.Logic.Logging
 
         }
 
-        public void UpdateLogDate1(IContext ctx, List<int> ids, DateTime datetime)
+        public void UpdateLogDate1(IContext ctx, int id, DateTime datetime)
         {
-            _systemDb.UpdateLogDate1(ctx, ids, datetime);
+            _systemDb.UpdateLogDate1(ctx, id, datetime);
         }
 
         public IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions)
@@ -112,6 +112,7 @@ namespace BL.Logic.Logging
                     }, paging).Select(x => new FrontSystemSession
                     {
                         CreateDate = x.LogDate,
+                        LastUsage = x.LogDate1,
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
                         AgentId = x.ExecutorAgentId,
@@ -185,6 +186,10 @@ namespace BL.Logic.Logging
             if ((int)info.LogType >= loggerLevel)
             {
                 info.Date = DateTime.UtcNow;
+                if (info.IsCopyDate1 && !info.Date1.HasValue)
+                {
+                    info.Date1 = info.Date;
+                }
                 info.AgentId = ctx.CurrentAgentId;
                 var id = _systemDb.AddLog(ctx, info);
                 return id;
@@ -202,7 +207,7 @@ namespace BL.Logic.Logging
             });
         }
 
-        public int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null)
+        public int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, bool isCopyDate1 = false)
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
@@ -215,6 +220,7 @@ namespace BL.Logic.Logging
                 RecordId = recordId,
                 LogObject = frontObjJson,
                 LogTrace = (logObject != null ? logObject.GetType().ToString() : null),
+                IsCopyDate1 = isCopyDate1,
             });
         }
 

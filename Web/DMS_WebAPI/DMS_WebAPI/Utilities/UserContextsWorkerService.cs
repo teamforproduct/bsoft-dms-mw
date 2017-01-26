@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 var contexts = DmsResolver.Current.Get<UserContexts>();
-                contexts.RemoveByTimeout();
+                contexts.SaveLogContextsLastUsage();
                 contexts.RemoveByTimeout();
             }
             catch (Exception ex)

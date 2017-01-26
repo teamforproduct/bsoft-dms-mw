@@ -380,8 +380,14 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         public void SaveLogContextsLastUsage()
         {
-            var list = _casheContexts.Where(x => x.Value.StoreObject is IContext).Select(x => (x.Value as IContext).LoginLogId);
-            //DmsResolver.Current.Get<ILogger>().UpdateLogDate1()
+            var logger = DmsResolver.Current.Get<ILogger>();
+            _casheContexts.Where(x => (x.Value.StoreObject is IContext) && ((IContext)x.Value.StoreObject).LoginLogId.HasValue).ToList()
+            .ForEach(x => 
+                {
+                    var ctx = (x.Value.StoreObject as IContext);
+                    logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, x.Value.LastUsage);
+                });
+            
         }
 
         /// <summary>

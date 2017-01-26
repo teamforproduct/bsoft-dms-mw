@@ -171,7 +171,7 @@ namespace DMS_WebAPI.Providers
                 string message = GetBrowswerInfo();
                 
                 var logger = DmsResolver.Current.Get<ILogger>();
-                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login);
+                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1 : true);
 
                 // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, loginLogId, message);

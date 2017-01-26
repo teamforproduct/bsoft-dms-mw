@@ -15,12 +15,12 @@ namespace BL.CrossCutting.Interfaces
 
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         int? Trace(IContext ctx, string message, params object[] args);
-        int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null);
+        int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, bool isCopyDate1 = false);
         int? Warning(IContext ctx, string message, params object[] args);
         int? Error(IContext ctx, string message, params object[] args);
         int? Error(IContext ctx, Exception exception, string message = null, params object[] args);
         int? Fatal(IContext ctx, string message, params object[] args);
         int? Fatal(IContext ctx, Exception exception, string message = null, params object[] args);
-        void UpdateLogDate1(IContext ctx, List<int> ids, DateTime datetime);
+        void UpdateLogDate1(IContext ctx, int id, DateTime datetime);
     }
 }
