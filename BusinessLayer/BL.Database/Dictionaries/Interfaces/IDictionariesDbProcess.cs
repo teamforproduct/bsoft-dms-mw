@@ -275,7 +275,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionarySendTypes
 
         #region DictionaryStageTypes
-        IEnumerable<FrontDictionaryStageType> GetStageTypes(IContext context, FilterDictionaryStageType filter);
+        IEnumerable<ListItem> GetStageTypes(IContext context, FilterDictionaryStageType filter);
         #endregion DictionaryStageTypes
 
         #region DictionaryStandartSendListContents
@@ -293,7 +293,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        IEnumerable<FrontDictionarySubordinationType> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
+        IEnumerable<ListItem> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
 
         #endregion DictionarySubordinationTypes
 

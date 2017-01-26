@@ -43,22 +43,5 @@ namespace DMS_WebAPI.Controllers.WebAPI
             return new JsonResult(item, this);
         }
 
-        /// <summary>
-        /// Реиндексация полнотекстового поиска для сервера клиента
-        /// </summary>
-        /// <returns>сервер</returns>
-        [Route("FullTextReindex")]
-        [HttpPost]
-        public IHttpActionResult FullTextReindex(int id)
-        {
-            var dbProc = new WebAPIDbProcess();
-            var clientServer = dbProc.GetClientServer(id);
-            DatabaseModel srv = dbProc.GetServer(clientServer.ServerId);
-            srv.ClientId = clientServer.ClientId;
-            var ctx = new AdminContext(srv);
-            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            ftService.ReindexDatabase(ctx);
-            return new JsonResult(new FrontAdminServer { Id = id }, this);
-        }
     }
 }

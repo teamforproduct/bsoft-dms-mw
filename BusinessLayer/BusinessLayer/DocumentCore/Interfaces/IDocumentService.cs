@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DocumentCore.Interfaces
 {
@@ -38,6 +39,8 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocumentPaperList GetDocumentPaperList(IContext context, int itemId);
 
         IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter, UIPaging paging);
+
+        IEnumerable<FrontDocumentPaperList> GetMainDocumentPaperLists(IContext context, FullTextSearch ftSearch, FilterDocumentPaperList filter, UIPaging paging);
 
         #endregion DocumentPaperLists        
 

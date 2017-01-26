@@ -38,7 +38,7 @@ namespace BL.Logic.AdminCore
                 foreach (var item in items)
                 {
                     // подменил SourcePosition
-                    var model = new ModifyAdminSubordination()
+                    var model = new SetAdminSubordination()
                     {
                         SourcePositionId = Model.TargetPositionId,
                         TargetPositionId = item.TargetPositionId,
@@ -59,7 +59,7 @@ namespace BL.Logic.AdminCore
 
         }
 
-        private void SetSubordination(ModifyAdminSubordination model)
+        private void SetSubordination(SetAdminSubordination model)
         {
             _adminService.ExecuteAction(EnumAdminActions.SetSubordination, _context, model);
         }

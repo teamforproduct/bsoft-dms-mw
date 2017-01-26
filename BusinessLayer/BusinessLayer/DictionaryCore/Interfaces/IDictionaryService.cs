@@ -186,8 +186,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id);
 
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter);
-        IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, UIPaging paging);
+        IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null);
+        IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal, UIPaging paging);
         #endregion DictionaryRegistrationJournals
 
         // Компании
@@ -211,9 +211,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionarySendTypes
 
         #region DictionaryStageTypes
-        FrontDictionaryStageType GetDictionaryStageType(IContext context, int id);
-
-        IEnumerable<FrontDictionaryStageType> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter);
+        IEnumerable<ListItem> GetDictionaryStageTypes(IContext context, FilterDictionaryStageType filter);
         #endregion DictionarySendTypes
 
         #region DictionaryStandartSendListContents
@@ -230,9 +228,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
-        FrontDictionarySubordinationType GetDictionarySubordinationType(IContext context, int id);
-
-        IEnumerable<FrontDictionarySubordinationType> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
+        IEnumerable<ListItem> GetDictionarySubordinationTypes(IContext context, FilterDictionarySubordinationType filter);
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags

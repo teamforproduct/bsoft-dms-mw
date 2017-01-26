@@ -20,6 +20,7 @@ using System.Transactions;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DocumentCore
 {
@@ -204,6 +205,21 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter, UIPaging paging)
         {
             return _documentDb.GetDocumentPaperLists(context, filter, paging).ToList();
+        }
+
+        public IEnumerable<FrontDocumentPaperList> GetMainDocumentPaperLists(IContext context, FullTextSearch ftSearch, FilterDocumentPaperList filter, UIPaging paging)
+        {
+            var newFilter = new FilterDocumentPaperList();
+
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                //newFilter.PaperListId = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
+            }
+            else
+            {
+                newFilter = filter;
+            }
+            return _documentDb.GetDocumentPaperLists(context, newFilter, paging).ToList();
         }
 
         #endregion DocumentPaperLists        

@@ -6,7 +6,7 @@ namespace BL.Model.AdminCore.FrontModel
     /// <summary>
     /// "Настройка правил рассылки между должностями (для исполнения, для сведения)", представление записи.
     /// </summary>
-    public class FrontAdminSubordination : ModifyAdminSubordination
+    public class FrontAdminSubordination : SetAdminSubordination
     {
         /// <summary>
         /// ID

@@ -44,11 +44,11 @@ namespace BL.Logic.DictionaryCore
 
                     // рассылка для исполнения на всех
                     if (GetSubordinationsSendAllForExecution())
-                    { SetAllSubordinations(new ModifyAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Execution }); }
+                    { SetAllSubordinations(new SetAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Execution }); }
 
                     // рассылка для сведения на всех
                     if (GetSubordinationsSendAllForInforming())
-                    { SetAllSubordinations(new ModifyAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
+                    { SetAllSubordinations(new SetAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
 
                     var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
@@ -75,7 +75,7 @@ namespace BL.Logic.DictionaryCore
             _adminService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, _context, model);
         }
 
-        private void SetAllSubordinations(ModifyAdminSubordinations model)
+        private void SetAllSubordinations(SetAdminSubordinations model)
         {
             _adminService.ExecuteAction(EnumAdminActions.SetAllSubordination, _context, model);
         }
