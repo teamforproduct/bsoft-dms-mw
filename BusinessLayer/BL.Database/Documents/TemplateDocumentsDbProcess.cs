@@ -649,6 +649,7 @@ namespace BL.Database.Documents
                     PositionId = x.Position.Id,
                     AccessLevelId = x.AccessLevelId,
                     PositionName = x.Position.Name,
+                    PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
                 transaction.Complete();
@@ -668,6 +669,7 @@ namespace BL.Database.Documents
                             PositionId = x.Position.Id,
                             //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
                             PositionName = x.Position.Name,
+                            PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                             AccessLevelName = x.AccessLevel.Name,
                         }).FirstOrDefault();
                 transaction.Complete();

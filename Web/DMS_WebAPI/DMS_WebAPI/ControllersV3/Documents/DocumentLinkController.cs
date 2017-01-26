@@ -54,9 +54,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// Добавляет связи между документами
         /// </summary>
         /// <param name="model"></param>
-        /// <returns></returns>
+        /// <returns>массив ИД связанных доков</returns>
         [HttpPost]
         [Route(Features.Links)]
+        [ResponseType(typeof(List<int>))]
         public IHttpActionResult Post([FromBody]AddDocumentLink model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
