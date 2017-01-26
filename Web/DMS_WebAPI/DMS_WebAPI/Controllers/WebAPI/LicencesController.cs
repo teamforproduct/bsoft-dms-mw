@@ -63,7 +63,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
             {
                 MessageLevelTypes = EnumMessageLevelTypes.Red,
                 MessageLevelTypesName = EnumMessageLevelTypes.Red.ToString(),
-                Message = "TODO: сообщение будет, когда будем подключать разные лицензии на фронте", //TODO 
+                Message = "Ваша лицензия на V2 заканчивается. Пожалуйста, купите V3", //TODO 
             };
             return new JsonResult(res, this);
         }

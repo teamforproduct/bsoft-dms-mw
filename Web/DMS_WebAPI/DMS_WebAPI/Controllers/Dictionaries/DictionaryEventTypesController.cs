@@ -4,6 +4,8 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 using BL.CrossCutting.DependencyInjection;
+using System.Collections.Generic;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {
@@ -13,19 +15,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionaryEventTypes
         public IHttpActionResult Get([FromUri] FilterDictionaryEventType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryEventTypes(ctx, filter);
+            var tmpDicts = new List<FrontDictionaryEventType>();
             return new JsonResult(tmpDicts, this);
         }
 
-        // GET: api/DictionaryEventTypes/5
-        public IHttpActionResult Get(int id)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryEventType(ctx, id);
-            return new JsonResult(tmpDict, this);
-        }
     }
 }

@@ -21,24 +21,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         // GET: api/DictionarySendTypes
         public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionarySendTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            return new JsonResult(null, this);
         }
 
-        /// <summary>
-        /// Получение типа рассылки по ИД
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        // GET: api/DictionarySendTypes/5
-        public IHttpActionResult Get(int id)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionarySendType(ctx, id);
-            return new JsonResult(tmpDict, this);
-        }
     }
 }

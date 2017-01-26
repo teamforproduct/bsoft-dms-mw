@@ -28,24 +28,8 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         [ResponseType(typeof(List<FrontDictionaryDocumentDirection>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentDirection filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDocumentDirections(ctx, filter);
+            var tmpDicts = new List<FrontDictionaryDocumentDirection>();
             return new JsonResult(tmpDicts, this);
-        }
-
-        /// <summary>
-        /// Направление документа
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [ResponseType(typeof(FrontDictionaryDocumentDirection))]
-        public IHttpActionResult Get(int id)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDict = tmpDictProc.GetDictionaryDocumentDirection(ctx, id);
-            return new JsonResult(tmpDict, this);
         }
     }
 }
