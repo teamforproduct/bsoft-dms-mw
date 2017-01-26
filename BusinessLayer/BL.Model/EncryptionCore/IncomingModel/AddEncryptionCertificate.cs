@@ -37,6 +37,7 @@ namespace BL.Model.EncryptionCore.IncomingModel
         /// <summary>
         /// ID Агента. Используется только админом
         /// </summary>
+        [IgnoreDataMember]
         public int? AgentId { get; set; }
 
         /// <summary>

@@ -1,22 +1,11 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Logic.SystemCore.Interfaces;
-using BL.Logic.SystemServices.FullTextSearch;
-using BL.Model.AdminCore;
-using BL.Model.AdminCore.FilterModel;
-using BL.Model.AdminCore.InternalModel;
 using BL.Model.Common;
-using BL.Model.Database;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
-using BL.Model.SystemCore.Filters;
-using BL.Model.SystemCore.FrontModel;
-using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
@@ -66,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Contacts+ "/{Id:int}")]
+        [Route(Features.Contacts + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
@@ -86,10 +75,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Contacts)]
-        public IHttpActionResult Post([FromBody]AddAgentContact model)
+        public IHttpActionResult Post([FromBody]BaseAgentContact model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeContact, model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var contact = new AddAgentContact(model);
+            contact.AgentId = ctx.CurrentAgentId;
+            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeContact, contact);
             return Get(tmpItem);
         }
 
@@ -100,10 +92,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Contacts)]
-        public IHttpActionResult Put([FromBody]ModifyAgentContact model)
+        public IHttpActionResult Put([FromBody]ModifyUserContact model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyEmployeeContact, model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var contact = new ModifyAgentContact(model);
+            contact.AgentId = ctx.CurrentAgentId;
+            Action.Execute(EnumDictionaryActions.ModifyEmployeeContact, contact);
             return Get(model.Id);
         }
 
@@ -113,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Contacts+ "/{Id:int}")]
+        [Route(Features.Contacts + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

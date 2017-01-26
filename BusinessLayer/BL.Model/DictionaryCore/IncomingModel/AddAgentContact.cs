@@ -9,29 +9,43 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
-    /// <summary>
-    /// Контакт агента
-    /// </summary>
-    public class AddAgentContact
+    public class AddAgentContact: BaseAgentContact
     {
+        public AddAgentContact() { }
+
+        public AddAgentContact(BaseAgentContact model)
+        {
+            ContactTypeId = model.ContactTypeId;
+            Value = model.Value;
+            IsActive = model.IsActive;
+            IsConfirmed = model.IsConfirmed;
+            Description = model.Description;
+        }
+
         /// <summary>
         /// Агент (сотрудник, юр.лицо, банк, физ.лицо, компания)
         /// </summary>
         [Required]
         public int AgentId { get; set; }
-        
+    }
+
+    /// <summary>
+    /// Контакт агента
+    /// </summary>
+    public class BaseAgentContact
+    {
         /// <summary>
         /// Тип контакта
         /// </summary>
         [Required]
         public int ContactTypeId { get; set; }
-        
+
         /// <summary>
         /// Контакты
         /// </summary>
         [Required]
         public string Value { get; set; }
-        
+
         /// <summary>
         /// Признак активности
         /// </summary>
@@ -42,7 +56,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Признак активности
         /// </summary>
         public bool IsConfirmed { get; set; }
-        
+
         /// <summary>
         /// Дополнительная информация. Сюда будут записывать контакт, если маска не пропустит :)
         /// </summary>

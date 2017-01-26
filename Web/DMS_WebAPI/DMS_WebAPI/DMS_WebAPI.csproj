@@ -328,7 +328,7 @@
     <Compile Include="ControllersV3\System\SettingsInfoController.cs" />
     <Compile Include="ControllersV3\System\SystemSettingsController.cs" />
     <Compile Include="ControllersV3\User\UserSessionsController.cs" />
-    <Compile Include="ControllersV3\User\UserEncryptionCertificatesController.cs" />
+    <Compile Include="ControllersV3\User\UserSignCertificatesController.cs" />
     <Compile Include="ControllersV3\User\UserAddressesController.cs" />
     <Compile Include="ControllersV3\User\UserImageController.cs" />
     <Compile Include="ControllersV3\User\UserPassportController.cs" />
