@@ -318,6 +318,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Отчеты"));
             items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
+
             items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
             items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
             items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: "Администратор", isVisibleInMenu: false));
