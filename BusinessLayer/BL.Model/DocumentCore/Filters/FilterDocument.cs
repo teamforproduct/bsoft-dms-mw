@@ -19,6 +19,12 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> DocumentId { get; set; }
 
+
+        /// <summary>
+        /// Массив ИД документов исключения
+        /// </summary>
+        public List<int> NotContainsDocumentId { get; set; }
+
         /// <summary>
         /// Отобрать по связанным документам
         /// Работает только если в DocumentId передан один ID
@@ -87,6 +93,10 @@ namespace BL.Model.DocumentCore.Filters
         /// Массив ИД ответственного по документу
         /// </summary>
         public List<int> ExecutorPositionId { get; set; }
+        /// <summary>
+        /// Массив ИД позиций, которые имеют доступ к документу
+        /// </summary>
+        public List<int> AccessPositionId { get; set; }
         /// <summary>
         /// Массив ИД ответственного по документу
         /// </summary>

@@ -122,6 +122,14 @@ namespace BL.Database.Common
 
                     acc = acc.Where(filterContains);
                 }
+                if (filter.AccessPositionId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
+                    filterContains = filter.AccessPositionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    acc = acc.Where(filterContains);
+                }
             }
             #endregion Filter access
 
@@ -146,6 +154,16 @@ namespace BL.Database.Common
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsDocumentId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DBModel.Document.Documents>();
+                    filterContains = filter.NotContainsDocumentId.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -232,15 +250,6 @@ namespace BL.Database.Common
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterContains = filter.DocumentTypeId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TemplateDocument.DocumentTypeId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.DocumentId?.Count() > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterContains = filter.DocumentId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }

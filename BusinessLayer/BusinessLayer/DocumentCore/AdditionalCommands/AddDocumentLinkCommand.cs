@@ -45,6 +45,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
+            if (Model.DocumentId == Model.ParentDocumentId)
+            {
+                throw new CouldNotPerformOperation();
+            }
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddDocumentLinkPrepare(_context, Model);
             if (_document?.Id == null || _document?.ParentDocumentId == null)
