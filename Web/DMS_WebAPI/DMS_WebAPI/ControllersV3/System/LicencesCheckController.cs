@@ -14,7 +14,7 @@ using System.Diagnostics;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.FrontModel;
 
-namespace DMS_WebAPI.ControllersV3.Licences
+namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
     /// Проверка лицензии

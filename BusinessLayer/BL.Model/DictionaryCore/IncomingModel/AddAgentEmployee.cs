@@ -31,6 +31,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>
+        [Required]
         public int LanguageId { get; set; }
 
         /// <summary>

@@ -47,17 +47,5 @@ namespace DMS_WebAPI.Controllers.Admins
             return new JsonResult(true, this);
         }
 
-        /// <summary>
-        /// Удаляет роль для должности
-        /// </summary>
-        /// <returns>FrontAdminPositionRole</returns> 
-        //public IHttpActionResult Delete([FromUri] int positionId, [FromUri] int roleId)
-        //{
-        //    var cxt = DmsResolver.Current.Get<UserContext>().Get();
-        //    var tmpService = DmsResolver.Current.Get<IAdminService>();
-        //    tmpService.ExecuteAction(EnumAdminActions.DeletePositionRole, cxt, new ModifyAdminPositionRole() { PositionId = positionId, RoleId = roleId });
-        //    FrontAdminPositionRole tmpItem = new FrontAdminPositionRole() { PositionId = positionId, RoleId = roleId };
-        //    return new JsonResult(tmpItem, this);
-        //}
     }
 }
