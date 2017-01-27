@@ -1845,7 +1845,7 @@ namespace BL.Database.Admins
                     && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
                     && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
 
-                qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.AccessType.Order);
+                qry = qry.OrderBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
 
                 var res = qry.Select(x => new FrontPermission
                 {
