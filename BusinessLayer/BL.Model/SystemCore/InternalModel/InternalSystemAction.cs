@@ -17,6 +17,7 @@ namespace BL.Model.SystemCore.InternalModel
         public bool IsVisibleInMenu { get; set; }
         public int? GrantId { get; set; }
         public string Category { get; set; }
+        public int? PermissionId { get; set; }
         public IEnumerable<InternalActionRecord> ActionRecords { get; set; }
         
     }

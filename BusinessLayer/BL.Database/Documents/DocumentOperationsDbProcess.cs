@@ -148,7 +148,7 @@ namespace BL.Database.Documents
 
                     if (positionAccesses.Any())
                     {
-                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.PositionWithActions = CommonQueries.GetBlankPositionWithActions(context, dbContext, positionAccesses);
                         res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions }, positionAccesses);
 
                     }
@@ -203,7 +203,7 @@ namespace BL.Database.Documents
 
                     if (positionAccesses.Any())
                     {
-                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.PositionWithActions = CommonQueries.GetBlankPositionWithActions(context, dbContext, positionAccesses);
                         res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.DocumentSendLists, EnumObjects.DocumentSendListStages }, positionAccesses);
                     }
                 }
@@ -270,7 +270,7 @@ namespace BL.Database.Documents
                     var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
                     if (positionAccesses.Any())
                     {
-                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.PositionWithActions = CommonQueries.GetBlankPositionWithActions(context, dbContext, positionAccesses);
                         res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.DocumentFiles }, positionAccesses);
                     }
                 }
@@ -331,7 +331,7 @@ namespace BL.Database.Documents
                     var positionAccesses = res.Document?.Accesses.Select(y => y.PositionId).ToList();
                     if (positionAccesses.Any())
                     {
-                        res.PositionWithActions = CommonQueries.GetPositionWithActions(context, dbContext, positionAccesses);
+                        res.PositionWithActions = CommonQueries.GetBlankPositionWithActions(context, dbContext, positionAccesses);
                         res.ActionsList = CommonQueries.GetActionsListForCurrentPositionsList(context, dbContext, new List<EnumObjects> { EnumObjects.DocumentPapers, EnumObjects.DocumentPaperEvents }, positionAccesses);
                     }
                 }

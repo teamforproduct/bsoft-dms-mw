@@ -73,7 +73,15 @@ namespace BL.Database.Admins
                     IsGrantableByRecordId = x.IsGrantableByRecordId,
                     IsVisible = x.IsVisible,
                     IsVisibleInMenu = x.IsVisibleInMenu,
+                    PermissionId = x.PermissionId,
                     ObjectId = (EnumObjects)x.ObjectId,
+                }).ToList();
+
+                res.RolePermissions = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRolePermission
+                {
+                    Id = x.Id,
+                    RoleId = x.RoleId,
+                    PermissionId = x.PermissionId
                 }).ToList();
 
                 res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRoleAction
@@ -1839,7 +1847,7 @@ namespace BL.Database.Admins
 
                 // в основе доступов лежат актуальные назначения (IsActive, StartDate, EndDate) суженные до должностей, за которые сотрудник работает в данный момент
 
-                qry = qry.Where(x => x.Roles.Any(y => y.Role.UserRoles.Any(
+                qry = qry.Where(x => x.RolePermissions.Any(y => y.Role.UserRoles.Any(
                     z => z.PositionExecutor.AgentId == context.CurrentAgentId
                     && z.PositionExecutor.IsActive
                     && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
@@ -1931,7 +1939,7 @@ namespace BL.Database.Admins
 
                 if (filter.IsChecked)
                 {
-                    qry = qry.Where(x => x.Roles.Any(y => y.RoleId == filter.RoleId));
+                    qry = qry.Where(x => x.RolePermissions.Any(y => y.RoleId == filter.RoleId));
                 }
 
                 qry = qry.OrderBy(x => x.Module.Order).ThenBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
@@ -1955,7 +1963,7 @@ namespace BL.Database.Admins
                     FeatureName = x.Feature.Name,
                     FeatureOrder = x.Feature.Order,
 
-                    IsChecked = x.Roles.Any(y => y.RoleId == filter.RoleId),
+                    IsChecked = x.RolePermissions.Any(y => y.RoleId == filter.RoleId),
                 }).ToList();
 
                 transaction.Complete();

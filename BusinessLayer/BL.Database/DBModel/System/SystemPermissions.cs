@@ -31,7 +31,7 @@ namespace BL.Database.DBModel.System
         public virtual SystemAccessTypes AccessType { get; set; }
 
         [ForeignKey("PermissionId")]
-        public virtual ICollection<AdminRolePermissions> Roles { get; set; }
+        public virtual ICollection<AdminRolePermissions> RolePermissions { get; set; }
 
     }
 }

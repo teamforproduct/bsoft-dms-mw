@@ -34,6 +34,7 @@ namespace BL.Database.DBModel.Admin
 
         public virtual ICollection<AdminUserRoles> UserRoles { get; set; }
         public virtual ICollection<AdminRoleActions> RoleActions { get; set; }
+        public virtual ICollection<AdminRolePermissions> RolePermissions { get; set; }
 
         public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
     }

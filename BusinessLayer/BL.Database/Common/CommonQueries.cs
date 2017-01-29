@@ -3590,7 +3590,7 @@ namespace BL.Database.Common
         #endregion
 
         #region Actions
-        public static List<InternalDictionaryPositionWithActions> GetPositionWithActions(IContext ctx, DmsContext dbContext, List<int> positionAccesses)
+        public static List<InternalDictionaryPositionWithActions> GetBlankPositionWithActions(IContext ctx, DmsContext dbContext, List<int> positionAccesses)
         {
             var filterCurrentPositionsContains = PredicateBuilder.False<DictionaryPositions>();
             filterCurrentPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterCurrentPositionsContains,
@@ -3629,11 +3629,12 @@ namespace BL.Database.Common
                         .Where(filterObjectsContains)
                         .Where(x => x.IsVisibleInMenu &&
                                     (!x.IsGrantable ||
-                                        x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                        //x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                        x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
                         );
 
-                    var actLst = qry.Select(a => new InternalSystemActionForDocument
+                    var qryActLst = qry.Select(a => new InternalSystemActionForDocument
                     {
                         DocumentAction = (EnumDocumentActions)a.Id,
                         Object = (EnumObjects)a.ObjectId,
@@ -3642,7 +3643,8 @@ namespace BL.Database.Common
                         API = a.API,
                         Description = a.Description,
                         Category = a.Category
-                    }).ToList();
+                    });
+                    var actLst = qryActLst.ToList();
                     res.Add(posId, actLst);
                 }
             }

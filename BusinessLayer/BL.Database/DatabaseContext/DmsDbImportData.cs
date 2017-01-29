@@ -318,11 +318,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Отчеты"));
             items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно"));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно"));
 
-            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
-            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно"));
+            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно"));
             items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: "Администратор", isVisibleInMenu: false));
 
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
@@ -350,11 +350,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AcceptMainVersionDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
 
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.D)));
 
             items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Информирование", isGrantable: false));
-            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Информирование", isGrantable: false));
+            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Информирование"));
+            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Информирование"));
 
             items.Add(GetSysAct(EnumDocumentActions.ControlOn, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.ControlChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
@@ -687,44 +687,44 @@ namespace BL.Database.DatabaseContext
         }
 
 
-        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("AdminActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("EncryptionActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("PropertyActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("DictionaryActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("DocumentActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
-        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, int permissionId = -1, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
         {
             string description = GetLabel("SystemActions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
         }
 
         private static SystemActions GetSystemAction(int id, string code, EnumObjects objId, string description,
-            int permissionId, string category = null,
+            int? permissionId, string category = null,
             bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
 
         {

@@ -73,11 +73,11 @@ namespace DMS_WebAPI
             clearTrashDocumentsService.Initialize(dbs);
 #endif
 
-//#if !DEBUG
+#if !DEBUG
             // Очистка устаревших пользовательских контекстов
             var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
             userContextService.Initialize();
-//#endif
+#endif
 
 #if !DEBUG
             // Проверка лицензии
