@@ -25,6 +25,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> DepartmentIDs { get; set; }
 
         /// <summary>
+        /// Список компаний
+        /// </summary>
+        public List<int> CompanyIDs { get; set; }
+
+        /// <summary>
         /// Список должностей
         /// </summary>
         public List<int> DepartmentByPositionIDs { get; set; }

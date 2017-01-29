@@ -886,9 +886,12 @@ namespace BL.Logic.DictionaryCore
             if (journals != null) flatList.AddRange(journals);
             if (departments != null) flatList.AddRange(departments);
 
-            var res = Tree.Get(flatList, filter);
+            if (filter == null) filter = new FilterTree();
 
-            //AddCodePathDepartment(res);
+            // Удаляю ветви которые не заканчиваются журналами 
+            //filter.RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryRegistrationJournals };
+
+            var res = Tree.Get(flatList, filter);
 
             return res;
         }

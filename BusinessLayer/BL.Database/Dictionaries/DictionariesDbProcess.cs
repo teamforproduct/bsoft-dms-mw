@@ -5568,6 +5568,15 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.CompanyIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    filterContains = filter.CompanyIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Department.CompanyId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 // журналы отдела в котором работает должность
                 if (filter.DepartmentByPositionIDs?.Count > 0)
                 {
