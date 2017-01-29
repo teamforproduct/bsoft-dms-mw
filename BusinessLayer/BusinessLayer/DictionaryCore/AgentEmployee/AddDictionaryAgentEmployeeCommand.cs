@@ -1,15 +1,8 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
+﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using System.Collections.Generic;
-using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
-using System.Linq;
 using BL.Model.Enums;
-using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -51,6 +44,8 @@ namespace BL.Logic.DictionaryCore
                     CommonDocumentUtilities.SetLastChange(_context, contact);
                     _dictDb.AddContact(_context, contact);
                 }
+
+                transaction.Complete();
 
                 return agent;
             }

@@ -691,10 +691,10 @@ namespace BL.Database.SystemDb
 
                 dbContext.Database.ExecuteSqlCommand(
                 String.Format(@"INSERT INTO[DMS].[SystemActions]
-                (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category) 
+                (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
                 VALUES
-                ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10})",
-                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null")
+                ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
+                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null": item.PermissionId.ToString())
                 );
 
                 //dbContext.SystemActionsSet.Add(item);

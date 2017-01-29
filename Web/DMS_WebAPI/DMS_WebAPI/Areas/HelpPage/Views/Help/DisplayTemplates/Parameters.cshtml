@@ -18,18 +18,9 @@
       </thead>
       <tbody>
         @foreach (ParameterDescription parameter in Model
-            .OrderBy(x => x.Name
-            .Replace("FullTextSearchString", "AAA")
-            .Replace("NotContainsIDs", "AAC")
-            .Replace("IDs", "AAB")
-            .Replace("Id", "AAB")
-            .Replace("CurrentPage", "ZZA")
-            .Replace("PageSize", "ZZB")
-            .Replace("IsAll", "ZZC")
-            .Replace("IsOnlyCounter", "ZZD")
-            .Replace("Sort", "ZZE")
-            
-            ))
+            .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
+            .ThenBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name))
+            )
         {
           ModelDescription modelDescription = parameter.TypeDescription;
             <tr>

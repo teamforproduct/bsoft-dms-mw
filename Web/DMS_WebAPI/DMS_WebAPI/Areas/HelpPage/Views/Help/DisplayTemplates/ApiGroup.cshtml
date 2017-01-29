@@ -42,7 +42,9 @@
 
               if (apiModel.RequestBodyParameters != null)
               {
-                foreach (var item in apiModel.RequestBodyParameters.OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1))
+                foreach (var item in apiModel.RequestBodyParameters
+                        .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
+                        .ThenBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
                 {
                   var itemName = item.Name;
                   if (item.Annotations.Any(x => x.Documentation == "Required"))

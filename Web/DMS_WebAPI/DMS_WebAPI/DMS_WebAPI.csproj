@@ -224,6 +224,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="Areas\HelpPage\App_Start\Helper.cs" />
     <Compile Include="ControllersV3\Auth\AuthRestoreController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentFavouriteController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyAccountsController.cs" />
@@ -244,7 +245,7 @@
     <Compile Include="ControllersV3\Documents\DocumentInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesContentsController.cs" />
-    <Compile Include="ControllersV3\Licences\LicencesCheckController.cs" />
+    <Compile Include="ControllersV3\System\LicencesCheckController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
     <Compile Include="ControllersV3\Roles\RoleEmployeesController.cs" />
