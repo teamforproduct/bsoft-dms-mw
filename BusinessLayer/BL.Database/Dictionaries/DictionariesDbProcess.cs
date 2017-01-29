@@ -5628,44 +5628,47 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryResultTypesSet.AsQueryable();
 
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    // Список первичных ключей
+                    if (filter.IDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
-                else
-                {
-                    qry = qry.Where(x => x.Id >= 0);
-                }
+                        qry = qry.Where(filterContains);
+                    }
+                    else
+                    {
+                        qry = qry.Where(x => x.Id >= 0);
+                    }
 
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionaryResultTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
+                    // Исключение списка первичных ключей
+                    if (filter.NotContainsIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.True<DictionaryResultTypes>();
+                        filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                            (current, value) => current.And(e => e.Id != value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                        qry = qry.Where(filterContains);
+                    }
 
-                // Тоько активные/неактивные
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
-                }
+                    // Тоько активные/неактивные
+                    if (filter.IsActive != null)
+                    {
+                        qry = qry.Where(x => filter.IsActive == x.IsActive);
+                    }
 
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    // Поиск по наименованию
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
+                        qry = qry.Where(filterContains);
+                    }
                 }
 
                 var res = qry.Select(x => new FrontDictionaryResultType
@@ -5680,6 +5683,8 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
+
+
         #endregion DictionaryResultTypes
 
         #region [+] DictionarySendTypes ...
