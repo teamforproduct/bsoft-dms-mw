@@ -183,7 +183,7 @@ namespace DMS_WebAPI.Providers
                 {
                     UserId = user.Id,
                     Fingerprint = GetFingerprintFromBody(context.Request.Body),
-                    Name = token.Substring(1, 6),
+                    Name = context.AccessToken.Substring(1, 6),
                     IsActive = true
                 });
 
