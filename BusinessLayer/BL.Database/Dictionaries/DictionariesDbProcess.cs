@@ -4320,6 +4320,15 @@ namespace BL.Database.Dictionaries
                 //dbContext.DictionaryStandartSendListContentsSet.Where(filterStandartSendListContents).Delete();
                 //#endregion
 
+                // Удаляю настройку журналов
+                #region [+] AdminSubordinations ...
+                var filterJournals = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                filterJournals = list.Aggregate(filterJournals,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                dbContext.AdminRegistrationJournalPositionsSet.Where(filterJournals).Delete();
+                #endregion
+
                 // Удаляю руководителей подразделений
                 #region [+] DictionaryDepartments ...
                 var filterDepartments = PredicateBuilder.False<DictionaryDepartments>();
@@ -4940,7 +4949,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                // DMS-367 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorType.Id);
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
