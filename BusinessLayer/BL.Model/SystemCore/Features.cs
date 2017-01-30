@@ -22,6 +22,7 @@
         public const string Employees = "Employees";
         public const string Executors = "Executors";
         public const string Files = "Files";
+        public const string Fingerprints = "Fingerprints";
         public const string Image = "Image";
         public const string Info = "Info";
         public const string Journals = "Journals";

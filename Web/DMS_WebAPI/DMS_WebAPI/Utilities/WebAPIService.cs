@@ -860,13 +860,18 @@ namespace DMS_WebAPI.Utilities
             }
 
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
-            var userAgent = HttpContext.Current.Request.UserAgent;
 
             model.Browser = bc.Browser;
             model.Platform = bc.Platform;
 
             var dbWeb = new WebAPIDbProcess();
             return dbWeb.AddUserFingerprint(model);
+        }
+
+        public void UpdateUserFingerprint(ModifyAspNetUserFingerprint model)
+        {
+            var dbWeb = new WebAPIDbProcess();
+            dbWeb.UpdateUserFingerprint(model);
         }
 
         public void DeleteUserFingerprint(int id)

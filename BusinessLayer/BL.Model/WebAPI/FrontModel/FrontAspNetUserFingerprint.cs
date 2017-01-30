@@ -2,7 +2,7 @@
 
 namespace BL.Model.WebAPI.FrontModel
 {
-    public class FrontAspNetUserFingerprint  : ModifyAspNetUserFingerPrint
+    public class FrontAspNetUserFingerprint  : ModifyAspNetUserFingerprint
     {
        
     }

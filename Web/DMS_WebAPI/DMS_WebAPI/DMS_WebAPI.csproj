@@ -311,6 +311,7 @@
     <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
+    <Compile Include="ControllersV3\User\UserFingerprintsController.cs" />
     <Compile Include="ControllersV3\Utilities\DevController.cs" />
     <Compile Include="ControllersV3\Auditlog\AuditlogInfoController.cs" />
     <Compile Include="ControllersV3\System\TempStorageController.cs" />

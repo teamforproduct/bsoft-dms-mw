@@ -2,7 +2,7 @@
 
 namespace BL.Model.WebAPI.IncomingModel
 {
-    public class ModifyAspNetUserFingerPrint : AddAspNetUserFingerprint
+    public class ModifyAspNetUserFingerprint : AddAspNetUserFingerprint
     {
         [Required]
         public int Id { get; set; }

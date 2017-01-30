@@ -1420,6 +1420,30 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void UpdateUserFingerprint(ModifyAspNetUserFingerprint model)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = new AspNetUserFingerprints
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    IsActive = model.IsActive,
+                    LastChangeDate = DateTime.UtcNow,
+
+                };
+                dbContext.AspNetUserFingerprintsSet.Attach(item);
+
+                var entry = dbContext.Entry(item);
+                entry.Property(p => p.Name).IsModified = true;
+                entry.Property(p => p.IsActive).IsModified = true;
+                entry.Property(p => p.LastChangeDate).IsModified = true;
+
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
         public void DeleteUserFingerprint(int id)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
