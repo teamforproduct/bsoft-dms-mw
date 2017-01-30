@@ -84,6 +84,7 @@
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminPositionRoleDIP.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterPermissionsAccess.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissionsDIP.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissions.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />

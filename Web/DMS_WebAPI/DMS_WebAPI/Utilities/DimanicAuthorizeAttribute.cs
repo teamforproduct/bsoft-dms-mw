@@ -11,6 +11,8 @@ using BL.Model.Enums;
 using BL.Logic.AdminCore.Interfaces;
 using System.Linq;
 using BL.Model.Exception;
+using BL.Database.DatabaseContext;
+using System.Collections.Generic;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -97,14 +99,16 @@ namespace DMS_WebAPI.Utilities
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var permissionId = DmsDbImportData.GetPermissionId(module, feature, right);
+            var res = tmpService.ExistsPermissionsAccess(ctx, tmpService.GetFilterPermissionsAccessByContext(ctx, false, new List<int> { permissionId }, null));
             // это не оптимально
-            var tmpItems = tmpService.GetUserPermissions(ctx);
+            //var tmpItems = tmpService.GetUserPermissions(ctx);
 
-            // может сравнение без учета регистра
-            var res = tmpItems.Any(x =>
-            module.Equals(x.Module, StringComparison.OrdinalIgnoreCase)
-            && feature.Equals(x.Feature, StringComparison.OrdinalIgnoreCase)
-            && x.AccessType == right.ToString());
+            //// может сравнение без учета регистра
+            //var res = tmpItems.Any(x =>
+            //module.Equals(x.Module, StringComparison.OrdinalIgnoreCase)
+            //&& feature.Equals(x.Feature, StringComparison.OrdinalIgnoreCase)
+            //&& x.AccessType == right.ToString());
 
             return res;
         }

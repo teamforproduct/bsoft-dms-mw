@@ -26,6 +26,7 @@ using BL.Model.Common;
 using BL.Model.SystemCore;
 using BL.Database.Helper;
 using BL.Database.DBModel.System;
+using System.Linq.Expressions;
 
 namespace BL.Database.Admins
 {
@@ -1837,21 +1838,85 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
+        private IQueryable<SystemPermissions> GetPermissionsAccessQuery(IContext context, DmsContext dbContext, FilterPermissionsAccess filter)
+        {
+            if (filter == null)
+                return null;
+            Expression<Func<AdminRolePermissions, bool>> filterRoles = PredicateBuilder.False<AdminRolePermissions>();
+            if (filter.RoleIDs?.Count() > 0)
+            {
+                filterRoles = filter.RoleIDs.Aggregate(filterRoles, 
+                    (current, value) => current.Or(e => e.RoleId == value).Expand());
+            }
+            else
+            {
+                filterRoles = PredicateBuilder.True<AdminRolePermissions>();
+            }
+
+                Expression<Func<AdminUserRoles, bool>> filterPositions = PredicateBuilder.False<AdminUserRoles>();
+            if (filter.PositionsIdList == null)
+            {
+                filterPositions = PredicateBuilder.True<AdminUserRoles>();
+            }
+            else if (!filter.PositionsIdList.Any())
+            {
+                filterPositions = PredicateBuilder.False<AdminUserRoles>();
+            }
+            else
+            {
+                filterPositions = filter.PositionsIdList.Aggregate(filterPositions,
+                    (current, value) => current.Or(e => e.PositionExecutor.PositionId == value).Expand());
+            }
+            var now = DateTime.UtcNow;
+            var qry = dbContext.SystemPermissionsSet.Where(x => x.RolePermissions.AsQueryable()
+                .Where(filterRoles)
+                .Any(y => y.Role.UserRoles.AsQueryable()
+                            .Where(z => z.PositionExecutor.AgentId == filter.UserId
+                            && z.PositionExecutor.IsActive
+                            && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate)
+                            .Where(filterPositions)
+                            .Any()));
+            if (filter.PermissionIDs?.Count() > 0)
+            {
+                var filterContains = PredicateBuilder.False<SystemPermissions>();
+                filterContains = filter.PermissionIDs.Aggregate(filterContains,
+                    (current, value) => current.Or(e => e.Id == value).Expand());
+                qry = qry.Where(filterContains);
+            }
+            if (filter.ActionId.HasValue)
+            {
+                qry = qry.Where(x => x.Actions.Any(z => z.Id == filter.ActionId.Value));
+            }
+            return qry;
+        }
+
+        public bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.SystemPermissionsSet.AsQueryable();
+                var qry = GetPermissionsAccessQuery(context, dbContext, filter);
 
-                var now = DateTime.UtcNow;
+                var res = qry.Any();
 
-                // в основе доступов лежат актуальные назначения (IsActive, StartDate, EndDate) суженные до должностей, за которые сотрудник работает в данный момент
+                transaction.Complete();
 
-                qry = qry.Where(x => x.RolePermissions.Any(y => y.Role.UserRoles.Any(
-                    z => z.PositionExecutor.AgentId == context.CurrentAgentId
-                    && z.PositionExecutor.IsActive
-                    && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
-                    && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontPermission> GetUserPermissionsAccess(IContext context, FilterPermissionsAccess filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPermissionsAccessQuery(context, dbContext, filter);
+                //var qry = dbContext.SystemPermissionsSet.AsQueryable();
+                //var now = DateTime.UtcNow;
+                //// в основе доступов лежат актуальные назначения (IsActive, StartDate, EndDate) суженные до должностей, за которые сотрудник работает в данный момент
+                //qry = qry.Where(x => x.RolePermissions.Any(y => y.Role.UserRoles.Any(
+                //    z => z.PositionExecutor.AgentId == context.CurrentAgentId
+                //    && z.PositionExecutor.IsActive
+                //    && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
+                //    && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
 
                 qry = qry.OrderBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
 

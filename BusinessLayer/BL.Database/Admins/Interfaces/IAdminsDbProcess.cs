@@ -124,7 +124,8 @@ namespace BL.Database.Admins.Interfaces
         void DeleteRolePermission(IContext context, InternalAdminRolePermission model);
 
         bool ExistsRolePermissions(IContext context, FilterAdminRolePermissions filter);
-        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
+        IEnumerable<FrontPermission> GetUserPermissionsAccess(IContext context, FilterPermissionsAccess filter);
+        bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter);
 
         IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter);
 

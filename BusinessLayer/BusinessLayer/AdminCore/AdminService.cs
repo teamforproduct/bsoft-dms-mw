@@ -194,23 +194,26 @@ namespace BL.Logic.AdminCore
                 }
 
                 var actionId = model.DocumentActionId;
+                if (!data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
+                    return true; //если экшина в таблице нет или на него не назначен пермишен, то разрешаем
 
-                while (!res && actionId.HasValue)
+                while (!res && actionId.HasValue && data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
                 {
-                    var qry = data.ActionAccess
-                        .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
-                        .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
-                    //var t = qry.Where(x => x.Act.Id == actionId.Value
-                    //                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
-                    //                        //&& x.Role.PositionId == 5516
-                    //                        ).ToList();
-                    // test it really good!
-                    res = qry.Any(x => x.Act.Id == actionId.Value
-                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
-                        && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                        && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
-                        );
-                    res = true;
+                    //var qry = data.ActionAccess
+                    //    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
+                    //    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
+                    ////var t = qry.Where(x => x.Act.Id == actionId.Value
+                    ////                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                    ////                        //&& x.Role.PositionId == 5516
+                    ////                        ).ToList();
+                    //// test it really good!
+                    //res = qry.Any(x => x.Act.Id == actionId.Value
+                    //    && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                    //    && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
+                    //    && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
+                    //    );
+                    var filter = GetFilterPermissionsAccessByContext(context, model.PositionId.HasValue, null, actionId.Value);
+                    res = _adminDb.ExistsPermissionsAccess(context, filter);
                     if (!res)
                     {
                         actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
@@ -309,7 +312,7 @@ namespace BL.Logic.AdminCore
 
         public FrontAdminRole GetAdminRole(IContext context, int id)
         {
-            return _adminDb.GetRoles(context, new FilterAdminRole {IDs = new List<int> { id } } ).FirstOrDefault();
+            return _adminDb.GetRoles(context, new FilterAdminRole { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter)
@@ -883,7 +886,8 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
         {
-            return _adminDb.GetUserPermissions(context);
+            
+            return _adminDb.GetUserPermissionsAccess(context, GetFilterPermissionsAccessByContext(context, false));
         }
 
         public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)
@@ -891,5 +895,26 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetRolePermissions(context, filter);
         }
 
+        public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null)
+        {
+            var res = new FilterPermissionsAccess();
+            res.UserId = context.CurrentAgentId;
+            if (isPositionFromContext)
+            {
+                res.PositionsIdList = new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList();
+            }
+            else
+            {
+                res.PositionsIdList = context.CurrentPositionsIdList;
+            }
+            res.ActionId = actionId;
+            res.PermissionIDs = permissionIDs;
+            return res;
+        }
+
+        public bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter)
+        {
+            return _adminDb.ExistsPermissionsAccess(context, filter);
+        }
     }
 }

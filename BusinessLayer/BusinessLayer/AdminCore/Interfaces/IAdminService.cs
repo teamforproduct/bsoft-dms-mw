@@ -83,5 +83,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         IEnumerable<FrontPermission> GetUserPermissions(IContext context);
         IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter);
+        FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext = true, List<int> permissionIDs = null, int? actionId = null);
+        bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter);
     }
 }
