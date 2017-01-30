@@ -1470,6 +1470,8 @@ namespace DMS_WebAPI.Utilities
             {
                 var qry = dbContext.SystemControlQuestionsSet.AsQueryable();
 
+                qry = qry.OrderBy(x => x.Id);
+
                 var items = qry.Select(x => new ListItem
                 {
                     Id = x.Id,
