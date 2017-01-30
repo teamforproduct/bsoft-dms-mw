@@ -5,8 +5,11 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -84,8 +87,10 @@ namespace DMS_WebAPI.ControllersV3.User
             userContexts.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
             //context.CurrentPositionsIdList = positionsIdList;
             //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
+
             return new JsonResult(null, this);
         }
+
 
     }
 }

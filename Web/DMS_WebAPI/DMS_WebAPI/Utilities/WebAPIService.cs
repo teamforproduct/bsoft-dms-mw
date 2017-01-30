@@ -829,17 +829,18 @@ namespace DMS_WebAPI.Utilities
 
         public int MergeUserFingerprint(AddAspNetUserFingerprint model)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-            var userContext = userContexts.Get();
-
-            var user = GetUser(userContext, userContext.CurrentAgentId);
+            if (string.IsNullOrEmpty(model.UserId))
+            {
+                var userContext = DmsResolver.Current.Get<UserContexts>().Get();
+                var user = GetUser(userContext, userContext.CurrentAgentId);
+                model.UserId = user.Id;
+            }
 
             var dbWeb = new WebAPIDbProcess();
 
             var fp = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint
             {
-                UserIDs = new List<string> { user.Id },
+                UserIDs = new List<string> { model.UserId },
                 FingerprintExact = model.Fingerprint
             }).FirstOrDefault();
 
@@ -851,18 +852,18 @@ namespace DMS_WebAPI.Utilities
         public int AddUserFingerprint(AddAspNetUserFingerprint model)
         {
 
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-            var userContext = userContexts.Get();
-
-            var user = GetUser(userContext, userContext.CurrentAgentId);
+            if (string.IsNullOrEmpty(model.UserId))
+            {
+                var userContext = DmsResolver.Current.Get<UserContexts>().Get();
+                var user = GetUser(userContext, userContext.CurrentAgentId);
+                model.UserId = user.Id;
+            }
 
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
             var userAgent = HttpContext.Current.Request.UserAgent;
 
             model.Browser = bc.Browser;
             model.Platform = bc.Platform;
-            model.UserId = user.Id;
 
             var dbWeb = new WebAPIDbProcess();
             return dbWeb.AddUserFingerprint(model);

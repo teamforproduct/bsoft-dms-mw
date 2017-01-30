@@ -75,11 +75,8 @@ namespace DMS_WebAPI.Providers
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
             var webService = new WebAPIService();
-            
+
             ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
-
-            webService.MergeUserFingerprint(new BL.Model.WebAPI.IncomingModel.AddAspNetUserFingerprint { Fingerprint = GetFingerprintFromBody(context.Request.Body), IsActive = true });
-
 
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
@@ -144,7 +141,7 @@ namespace DMS_WebAPI.Providers
                 var userId = context.Identity.GetUserId();
 
                 var dbWeb = new WebAPIDbProcess();
-                var webService = new WebAPIService();
+
 
                 // Предполагаю, что один пользователь всегда привязан только к одному клиенту 
                 var client = dbWeb.GetClientByUser(userId);
@@ -172,16 +169,22 @@ namespace DMS_WebAPI.Providers
 
                 // Получаю информацию о браузере
                 string message = GetBrowswerInfo();
-                
+
                 var logger = DmsResolver.Current.Get<ILogger>();
-                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1 : true);
+                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1: true);
 
                 // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, loginLogId, message);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
-                
+                var webService = new WebAPIService();
+                webService.MergeUserFingerprint(new BL.Model.WebAPI.IncomingModel.AddAspNetUserFingerprint
+                {
+                    UserId = user.Id,
+                    Fingerprint = GetFingerprintFromBody(context.Request.Body),
+                    IsActive = true
+                });
 
             }
 
