@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Addresses + "/{Id:int}")]
+        [Route(Features.Accounts + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAccount))]
         public IHttpActionResult Get(int Id)
         {
@@ -73,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Addresses)]
+        [Route(Features.Accounts)]
         public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Addresses)]
+        [Route(Features.Accounts)]
         public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Addresses + "/{Id:int}")]
+        [Route(Features.Accounts + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
