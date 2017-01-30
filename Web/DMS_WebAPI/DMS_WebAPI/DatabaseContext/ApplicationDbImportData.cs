@@ -38,7 +38,22 @@ namespace DMS_WebAPI.Models
 
         private static string GetLabel(string group, string itemName) => "##l@" + group.Trim() + ":" + itemName.Trim() + "@l##";
 
+        public static List<SystemControlQuestions> GetSystemControlQuestions()
+        {
+            var items = new List<SystemControlQuestions>();
 
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteMusician, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteMusician.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.StreetWhereGrewUp, Name = GetLabel("ControlQuestions", EnumControlQuestion.StreetWhereGrewUp.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteHero, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteHero.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.GrandmaBirthday, Name = GetLabel("ControlQuestions", EnumControlQuestion.GrandmaBirthday.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.ParentsIndex, Name = GetLabel("ControlQuestions", EnumControlQuestion.ParentsIndex.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FirstCar, Name = GetLabel("ControlQuestions", EnumControlQuestion.FirstCar.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteTeacher, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteTeacher.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteBook, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteBook.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteGame, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteGame.ToString()) });
+
+            return items;
+        }
 
         public static List<AspNetLicences> GetAspNetLicences()
         {
@@ -62,7 +77,7 @@ namespace DMS_WebAPI.Models
             var tmpService = DmsResolver.Current.Get<ISystemService>();
 
             // Действия
-            f.AddRange(tmpService.GetImportSystemActions().Select(x=>x.Description));
+            f.AddRange(tmpService.GetImportSystemActions().Select(x => x.Description));
 
             // Модули
             f.AddRange(tmpService.GetImportSystemModules().Select(x => x.Name));

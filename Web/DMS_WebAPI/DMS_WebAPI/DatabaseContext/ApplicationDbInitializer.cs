@@ -11,6 +11,8 @@ namespace DMS_WebAPI.Models
         {
             context.AspNetLicencesSet.AddRange(ApplicationDbImportData.GetAspNetLicences());
 
+            context.SystemControlQuestionsSet.AddRange(ApplicationDbImportData.GetSystemControlQuestions());
+
             context.AdminLanguagesSet.AddRange(ApplicationDbImportData.GetAdminLanguages());
 
             //context.AdminLanguageValuesSet.AddRange(ApplicationDbImportData.GetAdminLanguageValues());

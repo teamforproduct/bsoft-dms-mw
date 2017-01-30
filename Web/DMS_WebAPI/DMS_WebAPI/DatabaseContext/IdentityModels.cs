@@ -6,6 +6,7 @@ using System.Data.Entity;
 using DMS_WebAPI.DBModel;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.Models
 {
@@ -21,14 +22,26 @@ namespace DMS_WebAPI.Models
         }
 
         public virtual ICollection<AspNetUserServers> UserServers { get; set; }
+        public virtual ICollection<AspNetUserFingerprints> UserFingerprints { get; set; }
 
         public bool IsChangePasswordRequired { get; set; }
         public bool IsEmailConfirmRequired { get; set; }
         public bool IsLockout { get; set; }
 
+        public bool IsFingerprintEnabled { get; set; }
+
+        public int? ControlQuestionId { get; set; }
+
+        public string ControlAnswer { get; set; }
+
+
+
         public DateTime CreateDate { get; set; }
 
         public DateTime LastChangeDate { get; set; }
+
+        [ForeignKey("ControlQuestionId")]
+        public virtual SystemControlQuestions ControlQuestion { get; set; }
 
     }
 
@@ -85,11 +98,16 @@ namespace DMS_WebAPI.Models
         public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
         //public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
         public virtual DbSet<AdminServers> AdminServersSet { get; set; }
+
+
         public virtual DbSet<AspNetClients> AspNetClientsSet { get; set; }
         public virtual DbSet<AspNetClientLicences> AspNetClientLicencesSet { get; set; }
         public virtual DbSet<AspNetClientServers> AspNetClientServersSet { get; set; }
         public virtual DbSet<AspNetUserServers> AspNetUserServersSet { get; set; }
         public virtual DbSet<AspNetUserClients> AspNetUserClientsSet { get; set; }
+        public virtual DbSet<AspNetUserFingerprints> AspNetUserFingerprintsSet { get; set; }
         public virtual DbSet<AspNetLicences> AspNetLicencesSet { get; set; }
+
+        public virtual DbSet<SystemControlQuestions> SystemControlQuestionsSet { get; set; }
     }
 }

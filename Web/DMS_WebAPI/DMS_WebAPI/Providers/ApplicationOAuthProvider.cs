@@ -78,6 +78,8 @@ namespace DMS_WebAPI.Providers
             
             ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
+            webService.MergeUserFingerprint(new BL.Model.WebAPI.IncomingModel.AddAspNetUserFingerprint { Fingerprint = GetFingerprintFromBody(context.Request.Body), IsActive = true });
+
 
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
@@ -141,14 +143,15 @@ namespace DMS_WebAPI.Providers
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
-                var webProc = new WebAPIDbProcess();
+                var dbWeb = new WebAPIDbProcess();
+                var webService = new WebAPIService();
 
                 // Предполагаю, что один пользователь всегда привязан только к одному клиенту 
-                var client = webProc.GetClientByUser(userId);
+                var client = dbWeb.GetClientByUser(userId);
                 if (client == null) throw new ClientIsNotFound();
 
                 // Предполагаю, что один пользователь всегда привязан только к одному серверу 
-                var server = webProc.GetServerByUser(userId, new BL.Model.WebAPI.IncomingModel.SetUserServer { ClientId = client.Id, ServerId = -1 });
+                var server = dbWeb.GetServerByUser(userId, new BL.Model.WebAPI.IncomingModel.SetUserServer { ClientId = client.Id, ServerId = -1 });
                 if (server == null) throw new DatabaseIsNotFound();
 
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
@@ -177,6 +180,9 @@ namespace DMS_WebAPI.Providers
                 userContexts.Set(token, loginLogId, message);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
+
+                
+
             }
 
             return Task.FromResult<object>(null);
@@ -250,6 +256,27 @@ namespace DMS_WebAPI.Providers
             catch (Exception ex) { }
 
             return clientCode;
+        }
+
+        private static string GetFingerprintFromBody(Stream Body)
+        {
+            var fingerprint = string.Empty;
+
+            try
+            {
+                Body.Position = 0;
+                var body = new StreamReader(Body);
+                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
+                var bodyStr = body.ReadToEnd();
+
+                var dic = HttpUtility.ParseQueryString(bodyStr);
+
+                fingerprint = dic["fingerprint"] ?? string.Empty;
+
+            }
+            catch (Exception ex) { }
+
+            return fingerprint;
         }
 
 

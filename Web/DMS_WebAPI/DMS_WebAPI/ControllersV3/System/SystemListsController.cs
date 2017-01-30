@@ -40,9 +40,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterSystemAction filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemActions(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemActions(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -75,9 +75,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryPositionExecutorTypes(cxt, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryPositionExecutorTypes(cxt, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -92,9 +92,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryDocumentDirection filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryDocumentDirections(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryDocumentDirections(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -109,9 +109,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryEventType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryEventTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryEventTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -126,9 +126,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterSystemFormat filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemFormats(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemFormats(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -143,9 +143,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterSystemFormula filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemFormulas(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemFormulas(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -160,9 +160,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryImportanceEventType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryImportanceEventTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryImportanceEventTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -194,9 +194,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryLinkType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryLinkTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryLinkTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -211,9 +211,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterSystemObject filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemObjects(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemObjects(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -228,9 +228,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterSystemPattern filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemPatterns(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemPatterns(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -245,9 +245,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryResultType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryResultTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryResultTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -262,9 +262,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionarySendTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionarySendTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -280,9 +280,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionaryStageType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionaryStageTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionaryStageTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
         /// <summary>
@@ -296,9 +296,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpDictProc = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpDicts = tmpDictProc.GetDictionarySubordinationTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetDictionarySubordinationTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -313,9 +313,9 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Get([FromUri] FilterSystemValueType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpSysProc = DmsResolver.Current.Get<ISystemService>();
-            var tmpDicts = tmpSysProc.GetSystemValueTypes(ctx, filter);
-            return new JsonResult(tmpDicts, this);
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            var tmpItems = tmpService.GetSystemValueTypes(ctx, filter);
+            return new JsonResult(tmpItems, this);
         }
 
     }

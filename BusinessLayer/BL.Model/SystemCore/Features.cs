@@ -16,6 +16,7 @@
         public const string Contacts = "Contacts";
         public const string ContactTypes = "ContactTypes";
         public const string Contents = "Contents";
+        public const string ControlQuestions = "ControlQuestions";
         public const string Departments = "Departments";
         public const string DocumentTypes = "DocumentTypes";
         public const string Employees = "Employees";

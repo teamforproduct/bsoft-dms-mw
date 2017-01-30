@@ -12,6 +12,7 @@ using System;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.System;
 using BL.Model.Users;
+using BL.Model.Common;
 
 namespace BL.Logic.SystemCore.Interfaces
 {

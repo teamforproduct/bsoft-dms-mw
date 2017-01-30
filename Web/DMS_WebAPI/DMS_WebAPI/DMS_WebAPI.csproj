@@ -225,6 +225,7 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="Areas\HelpPage\App_Start\Helper.cs" />
+    <Compile Include="ControllersV3\Auth\AuthControlQuestionController.cs" />
     <Compile Include="ControllersV3\Auth\AuthRestoreController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentFavouriteController.cs" />
     <Compile Include="ControllersV3\Companies\CompanyAccountsController.cs" />
@@ -395,14 +396,15 @@
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
+    <Compile Include="DBModel\SystemControlQuestions.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
-    <Compile Include="DBModel\AdminLanguageValues.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
     <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetClientLicences.cs" />
     <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
     <Compile Include="DBModel\AspNetUserClients.cs" />
+    <Compile Include="DBModel\AspNetUserFingerprints.cs" />
     <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
@@ -435,6 +437,10 @@
     <Compile Include="Migrations\201612071529206_Users_LastChangeDate.cs" />
     <Compile Include="Migrations\201612071529206_Users_LastChangeDate.Designer.cs">
       <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701302106109_Fingerprint.cs" />
+    <Compile Include="Migrations\201701302106109_Fingerprint.Designer.cs">
+      <DependentUpon>201701302106109_Fingerprint.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -617,6 +623,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612071529206_Users_LastChangeDate.resx">
       <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701302106109_Fingerprint.resx">
+      <DependentUpon>201701302106109_Fingerprint.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

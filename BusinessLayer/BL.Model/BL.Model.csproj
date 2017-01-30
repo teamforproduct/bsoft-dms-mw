@@ -143,6 +143,7 @@
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionary.cs" />
+    <Compile Include="Enums\EnumControlQuestion.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemFetures.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemModules.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
@@ -598,6 +599,7 @@
     <Compile Include="WebAPI\Filters\FilterAspNetClientLicences.cs" />
     <Compile Include="WebAPI\Filters\FilterAdminServers.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetUserClients.cs" />
+    <Compile Include="WebAPI\Filters\FilterAspNetUserFingerprint.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetUserServers.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAdminServer.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAdminServerByUser.cs" />
@@ -606,11 +608,14 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetClientLicence.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetLicence.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserClient.cs" />
+    <Compile Include="WebAPI\FrontModel\FrontAspNetUserFingerprint.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserServer.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetClient.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClient.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUser.cs" />
     <Compile Include="WebAPI\IncomingModel\AddFirstAdminClient.cs" />
+    <Compile Include="WebAPI\IncomingModel\AddAspNetUserFingerprint.cs" />
+    <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserFingerPrint.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientLicenceKey.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientLicence.cs" />

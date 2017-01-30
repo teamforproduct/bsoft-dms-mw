@@ -9,6 +9,7 @@ using BL.Logic.SystemServices.MailWorker;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
+using BL.Model.Common;
 using BL.Model.Database;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
@@ -17,6 +18,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
 using BL.Model.WebAPI.Filters;
+using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
@@ -157,23 +159,23 @@ namespace DMS_WebAPI.Utilities
 
             return new FrontAgentEmployeeUser()
             {
-               Id = employee.Id,
-               Name = employee.Name,
-               FirstName = employee.FirstName,
-               LastName = employee.LastName,
-               MiddleName = employee.MiddleName,
-               FullName = employee.FullName,
-               IsMale = employee.IsMale,
-               LanguageId = employee.LanguageId,
-               LanguageCode = employee.LanguageCode,
-               LanguageName = employee.LanguageName,
+                Id = employee.Id,
+                Name = employee.Name,
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                MiddleName = employee.MiddleName,
+                FullName = employee.FullName,
+                IsMale = employee.IsMale,
+                LanguageId = employee.LanguageId,
+                LanguageCode = employee.LanguageCode,
+                LanguageName = employee.LanguageName,
 
-               Login = user.Email,
-               TaxCode = employee.TaxCode,
-               PersonnelNumber = employee.PersonnelNumber,
-               BirthDate = employee.BirthDate,
-               Description = employee.Description,
-               IsActive = employee.IsActive,
+                Login = user.Email,
+                TaxCode = employee.TaxCode,
+                PersonnelNumber = employee.PersonnelNumber,
+                BirthDate = employee.BirthDate,
+                Description = employee.Description,
+                IsActive = employee.IsActive,
             };
         }
 
@@ -347,7 +349,7 @@ namespace DMS_WebAPI.Utilities
             {
                 ClientCode = dbWeb.GetClientCode(model.ClientId),
                 Email = model.Email,
-                FirstEntry="true"
+                FirstEntry = "true"
             }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return userId;
@@ -686,7 +688,7 @@ namespace DMS_WebAPI.Utilities
 
             query.Add("UserId", user.Id);
             query.Add("Code", passwordResetToken);
-            
+
 
             var builder = new UriBuilder(baseUrl);
             builder.Query = query.ToString();
@@ -817,6 +819,67 @@ namespace DMS_WebAPI.Utilities
         }
 
         #endregion
+
+
+        public IEnumerable<FrontAspNetUserFingerprint> GetUserFingerprints(FilterAspNetUserFingerprint filter)
+        {
+            var dbWeb = new WebAPIDbProcess();
+            return dbWeb.GetUserFingerprints(filter);
+        }
+
+        public int MergeUserFingerprint(AddAspNetUserFingerprint model)
+        {
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+
+            var userContext = userContexts.Get();
+
+            var user = GetUser(userContext, userContext.CurrentAgentId);
+
+            var dbWeb = new WebAPIDbProcess();
+
+            var fp = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint
+            {
+                UserIDs = new List<string> { user.Id },
+                FingerprintExact = model.Fingerprint
+            }).FirstOrDefault();
+
+            if (fp == null) return AddUserFingerprint(model);
+            else return fp.Id;
+
+        }
+
+        public int AddUserFingerprint(AddAspNetUserFingerprint model)
+        {
+
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+
+            var userContext = userContexts.Get();
+
+            var user = GetUser(userContext, userContext.CurrentAgentId);
+
+            HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
+            var userAgent = HttpContext.Current.Request.UserAgent;
+
+            model.Browser = bc.Browser;
+            model.Platform = bc.Platform;
+            model.UserId = user.Id;
+
+            var dbWeb = new WebAPIDbProcess();
+            return dbWeb.AddUserFingerprint(model);
+        }
+
+        public void DeleteUserFingerprint(int id)
+        {
+            var dbWeb = new WebAPIDbProcess();
+            dbWeb.DeleteUserFingerprint(id);
+        }
+
+
+        public IEnumerable<ListItem> GetControlQuestions()
+        {
+            var dbWeb = new WebAPIDbProcess();
+            return dbWeb.GetControlQuestions();
+        }
 
     }
 }

@@ -2,11 +2,13 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
+using BL.Model.Common;
 using BL.Model.Database;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -1321,6 +1323,143 @@ namespace DMS_WebAPI.Utilities
 
         #endregion UserServers
 
+        #region UserFingerprint
+
+        private IQueryable<AspNetUserFingerprints> GetUserFingerprintQuery(ApplicationDbContext dbContext, FilterAspNetUserFingerprint filter)
+        {
+            var qry = dbContext.AspNetUserFingerprintsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.UserIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AspNetUserFingerprints>();
+                    filterContains = filter.UserIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.BrowserExact))
+                {
+                    qry = qry.Where(x => filter.BrowserExact.Equals(x.Browser, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(filter.PlatformExact))
+                {
+                    qry = qry.Where(x => filter.PlatformExact.Equals(x.Platform, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(filter.FingerprintExact))
+                {
+                    qry = qry.Where(x => filter.FingerprintExact.Equals(x.Fingerprint, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (filter.IsActive.HasValue)
+                {
+                    qry = qry.Where(x => x.IsActive);
+                }
+
+            }
+
+            return qry;
+        }
+        public IEnumerable<FrontAspNetUserFingerprint> GetUserFingerprints(FilterAspNetUserFingerprint filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserFingerprintQuery(dbContext, filter);
+
+                var items = qry.Select(x => new FrontAspNetUserFingerprint
+                {
+                    Id = x.Id,
+                    Fingerprint = x.Fingerprint,
+                    Name = x.Name,
+                    Browser = x.Browser,
+                    Platform = x.Platform,
+                    IsActive = x.IsActive,
+
+                }).ToList();
+                transaction.Complete();
+                return items;
+            }
+        }
+
+        public bool ExistsUserFingerprints(FilterAspNetUserFingerprint filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserFingerprintQuery(dbContext, filter);
+
+                var res = qry.Any();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public int AddUserFingerprint(AddAspNetUserFingerprint model)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = new AspNetUserFingerprints
+                {
+                    UserId = model.UserId,
+                    Browser = model.Browser,
+                    Platform = model.Platform,
+                    Fingerprint = model.Fingerprint,
+                    IsActive = model.IsActive,
+                    LastChangeDate = DateTime.UtcNow,
+                    Name = model.Name,
+                };
+                dbContext.AspNetUserFingerprintsSet.Add(item);
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+                return item.Id;
+            }
+        }
+
+        public void DeleteUserFingerprint(int id)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = new AspNetUserFingerprints
+                {
+                    Id = id
+                };
+                dbContext.AspNetUserFingerprintsSet.Attach(item);
+
+                dbContext.Entry(item).State = EntityState.Deleted;
+
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+
+        #endregion
+
+        public IEnumerable<ListItem> GetControlQuestions()
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemControlQuestionsSet.AsQueryable();
+
+                var items = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+
+                }).ToList();
+                transaction.Complete();
+
+                var tmpService = DmsResolver.Current.Get<ILanguages>();
+                items.ForEach(x => x.Name = tmpService.GetTranslation(x.Name));
+
+                return items;
+            }
+        }
 
     }
 }
