@@ -144,6 +144,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionary.cs" />
     <Compile Include="Enums\EnumControlQuestion.cs" />
+    <Compile Include="Enums\EnumGroupCountType.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemFetures.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemModules.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />

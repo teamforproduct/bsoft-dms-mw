@@ -33,15 +33,11 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string SourceAgentName { get; set; }
         public string SourcePositionExecutorAgentName { get; set; }
-        public string SourcePositionExecutorNowAgentName { get; set; }
         public string SourcePositionName { get; set; }
-        public string SourcePositionExecutorAgentPhoneNumber { get; set; }
 
         public string TargetAgentName { get; set; }
         public string TargetPositionExecutorAgentName { get; set; }
         public string TargetPositionName { get; set; }
-        public string TargetPositionExecutorNowAgentName { get; set; }
-        public string TargetPositionExecutorAgentPhoneNumber { get; set; }
 
     }
 }

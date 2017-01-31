@@ -73,11 +73,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         public int? MaxSubordinationTypeId { get; set; }
 
         /// <summary>
-        /// Для отображения контактов в рабочей группе
+        /// Количество документов, к которым должность имеет доступ
         /// </summary>
-        public string PositionPhone { get; set; }
-
-        
+        public int? DocCount { get; set; }
 
 
 

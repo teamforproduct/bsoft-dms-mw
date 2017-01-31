@@ -21,6 +21,7 @@ namespace BL.Database.DBModel.Dictionary
             this.Tags = new HashSet<DictionaryTags>();
             this.PositionRoles = new HashSet<AdminPositionRoles>();
             this.PositionExecutors = new HashSet<DictionaryPositionExecutors>();
+            this.DocumentAccesses = new HashSet<DocumentAccesses>();
         }
         public int Id { get; set; }
         public Nullable<int> ParentId { get; set; }
@@ -57,14 +58,15 @@ namespace BL.Database.DBModel.Dictionary
         [ForeignKey("ChiefPositionId")]
         public virtual ICollection<DictionaryDepartments> ChiefDepartments { get; set; }
         public virtual ICollection<DictionaryStandartSendLists> StandartSendLists { get; set; }
-//        public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
+        //        public virtual ICollection<DocumentSavedFilters> DocumentSavedFilters { get; set; }
+        [ForeignKey("PositionId")]
         public virtual ICollection<DictionaryTags> Tags { get; set; }
         public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }
+        [ForeignKey("PositionId")]
         public virtual ICollection<DictionaryPositionExecutors> PositionExecutors { get; set; }
-
         [ForeignKey("PositionId")]
         public virtual ICollection<AdminRegistrationJournalPositions> PositionRegistrationJournals { get; set; }
-
-
+        [ForeignKey("PositionId")]
+        public virtual ICollection<DocumentAccesses> DocumentAccesses { get; set; }
     }
 }

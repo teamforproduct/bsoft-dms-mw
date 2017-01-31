@@ -22,9 +22,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string OwnerAgentName { get; set; }
         public string OwnerPositionExecutorAgentName { get; set; }
         public string OwnerPositionName { get; set; }
-        public string OwnerPositionExecutorNowAgentName { get; set; }
-        public string OwnerPositionExecutorAgentPhoneNumber { get; set; }
-
         public DateTime? PaperPlanDate { get { return _PaperPlanDate; } set { _PaperPlanDate = value.ToUTC(); } }
         private DateTime? _PaperPlanDate;
 

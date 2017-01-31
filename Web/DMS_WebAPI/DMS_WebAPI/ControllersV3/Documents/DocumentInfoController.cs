@@ -2,6 +2,7 @@
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -47,12 +49,51 @@ namespace DMS_WebAPI.ControllersV3.Documents
             if (model == null) model = new IncomingBase();
             if (model.Filter == null) model.Filter = new FilterBase();
             if (model.Paging == null) model.Paging = new UIPaging();
-
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetDocuments(ctx, model.Filter, model.Paging);
             var res = new JsonResult(items, this);
             res.Paging = model.Paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает список тегов с количеством документов по фильтру
+        /// </summary>
+        /// <param name="model">Входящая модель</param>
+        /// <returns></returns>
+        [HttpPost]
+        [DimanicAuthorize("R")]
+        [Route(Features.Info + "/GroupCountTags")]
+        [ResponseType(typeof(List<FrontDocumentTag>))]
+        public IHttpActionResult PostGetGroupCountTags([FromBody]FilterBase model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var items = docProc.GetDocuments(ctx, model ?? new FilterBase(), new UIPaging(), EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
+            var res = new JsonResult(items, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает список должностей с количеством документов по фильтру
+        /// </summary>
+        /// <param name="model">Входящая модель</param>
+        /// <returns></returns>
+        [HttpPost]
+        [DimanicAuthorize("R")]
+        [Route(Features.Info + "/GroupCountPositions")]
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
+        public IHttpActionResult PostGetGroupCountPositions([FromBody]FilterBase model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var items = docProc.GetDocuments(ctx, model?? new FilterBase(), new UIPaging(), EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
+            var res = new JsonResult(items, this);
             res.SpentTime = stopWatch;
             return res;
         }

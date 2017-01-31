@@ -132,9 +132,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string ExecutorPositionName { get; set; }
         public int? ExecutorPositionExecutorAgentId { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
-        public string ExecutorPositionExecutorNowAgentName { get; set; }
-        public string ExecutorPositionAgentPhoneNumber { get; set; }
-
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }
         public string AccessLevelName { get; set; }

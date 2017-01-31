@@ -19,9 +19,7 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public string AgentName { get; set; }
         public string PositionExecutorAgentName { get; set; }
-        public string PositionExecutorNowAgentName { get; set; }
         public string PositionName { get; set; }
-        public string PositionExecutorAgentPhoneNumber { get; set; }
 
         public bool IsFactExecutor { get; set; }
         /// <summary>

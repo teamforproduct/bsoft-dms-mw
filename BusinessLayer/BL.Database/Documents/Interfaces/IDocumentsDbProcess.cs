@@ -7,6 +7,7 @@ using BL.Model.SystemCore;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Reports.FrontModel;
+using BL.Model.Enums;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -18,7 +19,7 @@ namespace BL.Database.Documents.Interfaces
 
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
         int GetDocumentIdBySendListId(IContext ctx, int id);
-        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
+        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging, EnumGroupCountType? groupCountType = null);
         FrontDocument GetDocument(IContext ctx, int documentId);
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);

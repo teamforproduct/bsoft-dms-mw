@@ -906,10 +906,6 @@ namespace BL.Database.Documents
                         TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
                         SourcePositionName = x.SourcePosition.Name,
                         TargetPositionName = x.TargetPosition.Name,
-                        SourcePositionExecutorNowAgentName = x.SourcePosition.ExecutorAgent.Name + (x.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SourcePosition.ExecutorType.Suffix + ")" : null),
-                        TargetPositionExecutorNowAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
-                        SourcePositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
-                        TargetPositionExecutorAgentPhoneNumber = "(888)888-88-88", //TODO 
                         IsAvailableWithinTask = x.IsAvailableWithinTask,
                         PaperPlanAgentName = x.PaperPlanAgent.Name,
                         PaperSendAgentName = x.PaperSendAgent.Name,

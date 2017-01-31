@@ -7,6 +7,11 @@ namespace BL.Database.DBModel.System
 {
     public partial class SystemPermissions
     {
+        public SystemPermissions()
+        {
+            this.RolePermissions = new HashSet<AdminRolePermissions>();
+            this.Actions = new HashSet<SystemActions>();
+        }
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 

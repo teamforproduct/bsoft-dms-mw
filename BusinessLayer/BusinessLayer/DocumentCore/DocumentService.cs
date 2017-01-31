@@ -48,7 +48,7 @@ namespace BL.Logic.DocumentCore
             _documentDb.GetCountDocuments(ctx, licence);
         }
 
-        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging)
+        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging, EnumGroupCountType? groupCountType = null)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore
                         filter.Document.FullTextSearchDocumentId = new List<int>();
                     }
                 }
-                return _documentDb.GetDocuments(ctx, filter, paging);
+                return _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
             }
             catch (Exception ex)
             {

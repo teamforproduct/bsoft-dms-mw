@@ -15,7 +15,7 @@ namespace BL.Logic.DocumentCore.Interfaces
     public interface IDocumentService
     {
         void GetCountDocuments(IContext ctx, LicenceInfo licence);
-        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging);
+        IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging, EnumGroupCountType? groupCountType = null);
         FrontDocument GetDocument(IContext ctx, int documentId);
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
