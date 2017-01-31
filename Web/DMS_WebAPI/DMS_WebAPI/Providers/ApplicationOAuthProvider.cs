@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Model.Enums;
+using BL.Model.Exception;
+using DMS_WebAPI.Models;
+using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using DMS_WebAPI.Models;
-using DMS_WebAPI.Utilities;
-using BL.Logic.DependencyInjection;
-using BL.Model.Exception;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
-using Newtonsoft.Json;
-using BL.Logic.AdminCore.Interfaces;
-using System.Web.Http;
-using System.Net;
-using BL.CrossCutting.Interfaces;
-using BL.Model.Enums;
 
 namespace DMS_WebAPI.Providers
 {
@@ -102,7 +96,7 @@ namespace DMS_WebAPI.Providers
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                    throw new UserNameOrPasswordIsIncorrect();
+                        throw new UserNameOrPasswordIsIncorrect();
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
@@ -120,7 +114,11 @@ namespace DMS_WebAPI.Providers
                 {
                     if (string.IsNullOrEmpty(fingerprint)) throw new FingerprintRequired();
 
-                    if (!webService.ExistsUserFingerprints(new BL.Model.WebAPI.Filters.FilterAspNetUserFingerprint { FingerprintExact = fingerprint })) throw new UserFingerprintIsIncorrect();
+                    if (!webService.ExistsUserFingerprints(new BL.Model.WebAPI.Filters.FilterAspNetUserFingerprint
+                    {
+                        FingerprintExact = fingerprint,
+                        IsActive = true,
+                    })) throw new UserFingerprintIsIncorrect();
                 }
             }
 
