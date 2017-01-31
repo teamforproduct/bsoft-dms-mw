@@ -633,6 +633,21 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public async void ChangeFingerprintEnabled(bool parm)
+        {
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            var userContext = userContexts.Get();
+            var user = GetUser(userContext, userContext.CurrentAgentId);
+
+            user.IsFingerprintEnabled = parm;
+            user.LastChangeDate = DateTime.UtcNow;
+
+            var result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded) throw new DatabaseError();
+
+        }
+
         public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
         {
             if (query == null) query = new NameValueCollection();
@@ -825,6 +840,12 @@ namespace DMS_WebAPI.Utilities
         {
             var dbWeb = new WebAPIDbProcess();
             return dbWeb.GetUserFingerprints(filter);
+        }
+
+        public bool ExistsUserFingerprints(FilterAspNetUserFingerprint filter)
+        {
+            var dbWeb = new WebAPIDbProcess();
+            return dbWeb.ExistsUserFingerprints(filter);
         }
 
         public int MergeUserFingerprint(AddAspNetUserFingerprint model)

@@ -88,8 +88,41 @@ namespace DMS_WebAPI.Providers
 
             if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
 
-            // 
+            // Проверка подтверждения адреса
             if (!user.EmailConfirmed && user.IsEmailConfirmRequired) throw new UserMustConfirmEmail();
+
+            // Проверка Fingerprint: Если пользователь включил Fingerprint
+            if (user.IsFingerprintEnabled)
+            {
+                var answer = GetControlAnswerFromBody(context.Request.Body);
+                var rememberFingerprint = GetRememberFingerprintFromBody(context.Request.Body);
+                var fingerprint = GetFingerprintFromBody(context.Request.Body);
+
+                if (!string.IsNullOrEmpty(answer))  // переданы расширенные параметры получения токена с ответом на секретный вопрос
+                {
+                    // Проверка ответа на секретный вопрос
+                    if (!(user.ControlAnswer == answer))
+                    throw new UserNameOrPasswordIsIncorrect();
+
+                    // Добавление текущего отпечатка в доверенные
+                    if (rememberFingerprint)
+                    {
+                        webService.AddUserFingerprint(new BL.Model.WebAPI.IncomingModel.AddAspNetUserFingerprint
+                        {
+                            UserId = user.Id,
+                            Fingerprint = fingerprint,
+                            Name = "Autosave_" + DateTime.UtcNow.ToString("HHmmss"),
+                            IsActive = true
+                        });
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(fingerprint)) throw new FingerprintRequired();
+
+                    if (!webService.ExistsUserFingerprints(new BL.Model.WebAPI.Filters.FilterAspNetUserFingerprint { FingerprintExact = fingerprint })) throw new UserFingerprintIsIncorrect();
+                }
+            }
 
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
@@ -178,15 +211,6 @@ namespace DMS_WebAPI.Providers
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
-                var webService = new WebAPIService();
-                webService.MergeUserFingerprint(new BL.Model.WebAPI.IncomingModel.AddAspNetUserFingerprint
-                {
-                    UserId = user.Id,
-                    Fingerprint = GetFingerprintFromBody(context.Request.Body),
-                    Name = context.AccessToken.Substring(1, 6),
-                    IsActive = true
-                });
-
             }
 
             return Task.FromResult<object>(null);
@@ -241,30 +265,30 @@ namespace DMS_WebAPI.Providers
 
         private static string GetClientCodeFromBody(Stream Body)
         {
-            var clientCode = string.Empty;
-
-            try
-            {
-                // Из боди POST-запроса извлекаю ClientCode - доменное имя 3 уровня клиента
-                Body.Position = 0;
-                var body = new StreamReader(Body);
-                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
-                var bodyStr = body.ReadToEnd();
-
-                var dic = HttpUtility.ParseQueryString(bodyStr);
-
-                // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
-                clientCode = dic["client_id"] ?? string.Empty; //ClientCode
-
-            }
-            catch (Exception ex) { }
-
-            return clientCode;
+            // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
+            return GetFromBody(Body, "client_id"); ;
         }
 
         private static string GetFingerprintFromBody(Stream Body)
         {
-            var fingerprint = string.Empty;
+            return GetFromBody(Body, "fingerprint");
+        }
+
+        private static string GetControlAnswerFromBody(Stream Body)
+        {
+            var res = GetFromBody(Body, "answer");
+            if (!string.IsNullOrEmpty(res)) res = res.Trim();
+            return res;
+        }
+
+        private static bool GetRememberFingerprintFromBody(Stream Body)
+        {
+            try { return bool.Parse(GetFromBody(Body, "remember_fingerprint")); } catch (Exception ex) { return false; }
+        }
+
+        private static string GetFromBody(Stream Body, string key)
+        {
+            var value = string.Empty;
 
             try
             {
@@ -275,12 +299,12 @@ namespace DMS_WebAPI.Providers
 
                 var dic = HttpUtility.ParseQueryString(bodyStr);
 
-                fingerprint = dic["fingerprint"] ?? string.Empty;
+                value = dic[key] ?? string.Empty;
 
             }
             catch (Exception ex) { }
 
-            return fingerprint;
+            return value;
         }
 
 
