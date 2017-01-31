@@ -126,5 +126,45 @@ namespace DMS_WebAPI.ControllersV3.User
             return res;
 
         }
+
+
+        /// <summary>
+        /// Возвращает параметр из профиля "Использовать безопасный вход"
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Fingerprints + "/Enabled")]
+        [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
+        public IHttpActionResult GetEnabled()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+
+            var webService = new WebAPIService();
+            var user = webService.GetUser(ctx, ctx.CurrentAgentId);
+            var res = new JsonResult(user.IsFingerprintEnabled, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Устанавливает "Использовать безопасный вход"
+        /// </summary>
+        /// <param name="model">параметры фильтрации</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Fingerprints + "/Enabled")]
+        public IHttpActionResult SetEnabled([FromBody]ModifyAspNetUserFingerprintEnabled model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+
+            var webService = new WebAPIService();
+            var user = webService.GetUser(ctx, ctx.CurrentAgentId);
+            webService.ChangeFingerprintEnabled(model.Enabled);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
     }
 }

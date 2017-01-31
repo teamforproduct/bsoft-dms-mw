@@ -610,12 +610,16 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetLicence.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserClient.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserFingerprint.cs" />
+    <Compile Include="WebAPI\FrontModel\FrontAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserServer.cs" />
+    <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserControlQuestion.cs" />
+    <Compile Include="WebAPI\IncomingModel\UserAuth.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetClient.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClient.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUser.cs" />
     <Compile Include="WebAPI\IncomingModel\AddFirstAdminClient.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetUserFingerprint.cs" />
+    <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserFingerprintEnabled.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserFingerPrint.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientLicenceKey.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetClientServer.cs" />
