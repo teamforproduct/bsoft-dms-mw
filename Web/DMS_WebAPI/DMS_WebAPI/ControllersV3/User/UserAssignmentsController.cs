@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Assignments()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
+            var context = DmsResolver.Current.Get<UserContexts>().Get();// (keepAlive: false);
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositions(context);
             var res = new JsonResult(tmpItems, this);

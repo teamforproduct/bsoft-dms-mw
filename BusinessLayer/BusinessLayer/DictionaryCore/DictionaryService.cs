@@ -1249,7 +1249,7 @@ namespace BL.Logic.DictionaryCore
                 {
                     StartDate = DateTime.UtcNow,
                     EndDate = DateTime.UtcNow,
-                    IsActive = filter.IsActive
+                    IsActive = filter?.IsActive
                 });
             }
 
@@ -1257,7 +1257,7 @@ namespace BL.Logic.DictionaryCore
             {
                 positions = _dictDb.GetPositionsForStaffList(context, new FilterDictionaryPosition()
                 {
-                    IsActive = filter.IsActive
+                    IsActive = filter?.IsActive
                 });
             }
 
@@ -1265,7 +1265,7 @@ namespace BL.Logic.DictionaryCore
             {
                 departments = _dictDb.GetDepartmentsForStaffList(context, new FilterDictionaryDepartment()
                 {
-                    IsActive = filter.IsActive,
+                    IsActive = filter?.IsActive,
                     IDs = filter.DepartmentIDs
                 });
             }
@@ -1274,7 +1274,7 @@ namespace BL.Logic.DictionaryCore
             {
                 companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
                 {
-                    IsActive = filter.IsActive
+                    IsActive = filter?.IsActive
                 });
             }
 
