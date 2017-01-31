@@ -1266,7 +1266,7 @@ namespace BL.Logic.DictionaryCore
                 departments = _dictDb.GetDepartmentsForStaffList(context, new FilterDictionaryDepartment()
                 {
                     IsActive = filter?.IsActive,
-                    IDs = filter.DepartmentIDs
+                    IDs = filter?.DepartmentIDs
                 });
             }
 
