@@ -17,16 +17,17 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
         private ISystemDbProcess _sysDb;
         private ICommandService _cmdService;
         private readonly IDocumentFileDbProcess _docFileDb;
+        private readonly IDocumentOperationsDbProcess _docOperDb;        
         private readonly IFileStore _fileStore;
 
-        public ClearTrashDocumentsService(ISettings settings, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settings, logger)
+        public ClearTrashDocumentsService(IDocumentOperationsDbProcess docOperDb, ISettings settings, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settings, logger)
         {
             _sysDb = sysDb;
             _cmdService = cmdService;
             _docFileDb = docFileDb;
+            _docOperDb = docOperDb;
             _fileStore = fileStore;
-            _timers = new Dictionary<ClearTrashDocumentsSettings, Timer>();
-            
+            _timers = new Dictionary<ClearTrashDocumentsSettings, Timer>();            
         }
 
         protected override void InitializeServers()
@@ -70,9 +71,11 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
             var tmr = GetTimer(md);
             var ctx = GetAdminContext(md.DatabaseKey);
-            
-            // Clear trash documents.
+
+
             if (ctx == null) return;
+            _docOperDb.MarkDocumentEventAsReadAuto(ctx);
+             // Clear trash documents.
             try
             {
                 var ids = _sysDb.GetDocumentIdsForClearTrashDocuments(ctx,md.TimeForClearTrashDocuments);

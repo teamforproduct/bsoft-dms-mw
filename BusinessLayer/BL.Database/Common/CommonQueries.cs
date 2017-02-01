@@ -514,7 +514,7 @@ namespace BL.Database.Common
 
             if (filter.ReadDate?.HasValue == true)
             {
-                qry = qry.Where(x => x.ReadDate.HasValue && x.ReadDate >= filter.ReadDate.DateBeg && x.ReadDate <= filter.ReadDate.DateEnd);
+                qry = qry.Where(x => x.ReadAgentId.HasValue && x.ReadDate.HasValue && x.ReadDate >= filter.ReadDate.DateBeg && x.ReadDate <= filter.ReadDate.DateEnd);
             }
 
             if (filter.SourcePositionIDs?.Count() > 0)
@@ -611,10 +611,10 @@ namespace BL.Database.Common
                     {
                         qry = qry.Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
                     }
-                    else
-                    {
-                        qry = qry.Where(x => x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
-                    }
+                    //else
+                    //{
+                    //    qry = qry.Where(x => x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
+                    //}
                 }
                 if (filter.IsSingleSubject.HasValue)
                 {
@@ -849,7 +849,7 @@ namespace BL.Database.Common
 
                     paging.Counters = new UICounters
                     {
-                        Counter1 = qrys.Sum(qry => qry.Where(filterContains).Count(x => !x.ReadDate.HasValue && !(x.TargetPositionId == x.SourcePositionId))),
+                        Counter1 = qrys.Sum(qry => qry.Where(filterContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)),
                         Counter3 = qrys.Sum(qry => qry.Count()),
                     };
 
@@ -938,7 +938,7 @@ namespace BL.Database.Common
                     //For IsRead
                     TargetPositionId = x.TargetPositionId,
                     SourcePositionId = x.SourcePositionId,
-                    ReadDate = x.ReadDate,
+                    ReadDate = x.ReadAgentId.HasValue ? x.ReadDate : null,
 
                     PaperId = (int?)x.Paper.Id,
                     PaperName = x.Paper.Name,
@@ -1725,7 +1725,7 @@ namespace BL.Database.Common
                         TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name + (x.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OnEvent.TargetPositionExecutorType.Suffix + ")" : (string)null),
 
                         ReadAgentName = x.OnEvent.ReadAgent.Name,
-                        ReadDate = x.OnEvent.ReadDate,
+                        ReadDate = x.OnEvent.ReadAgentId.HasValue ? x.OnEvent.ReadDate : null,
                         SourceAgentId = x.OnEvent.SourceAgentId,
                         SourceAgentName = x.OnEvent.SourceAgent.Name,
 
@@ -1751,8 +1751,8 @@ namespace BL.Database.Common
                         SourcePositionExecutorAgentName = x.OffEvent.SourcePositionExecutorAgent.Name + (x.OffEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.OffEvent.SourcePositionExecutorType.Suffix + ")" : (string)null),
                         TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name + (x.OffEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OffEvent.TargetPositionExecutorType.Suffix + ")" : (string)null),
 
-                        ReadAgentName = x.OnEvent.ReadAgent.Name,
-                        ReadDate = x.OnEvent.ReadDate,
+                        ReadAgentName = x.OffEvent.ReadAgent.Name,
+                        ReadDate = x.OffEvent.ReadAgentId.HasValue ? x.OffEvent.ReadDate : null,
                         SourceAgentId = x.OffEvent.SourceAgentId,
                         SourceAgentName = x.OffEvent.SourceAgent.Name,
 
@@ -2155,7 +2155,7 @@ namespace BL.Database.Common
                         Description = x.SendEvent.Description,
                         AddDescription = x.SendEvent.AddDescription,
                         ReadAgentName = x.SendEvent.ReadAgent.Name,
-                        ReadDate = x.SendEvent.ReadDate,
+                        ReadDate = x.SendEvent.ReadAgentId.HasValue ? x.SendEvent.ReadDate : null,
                         SourceAgentId = x.SendEvent.SourceAgentId,
                         SourceAgentName = x.SendEvent.SourceAgent.Name,
                         SourcePositionName = x.SendEvent.SourcePosition.Name,
@@ -2180,8 +2180,8 @@ namespace BL.Database.Common
                         Description = x.DoneEvent.Description,
                         AddDescription = x.DoneEvent.AddDescription,
 
-                        ReadAgentName = x.SendEvent.ReadAgent.Name,
-                        ReadDate = x.SendEvent.ReadDate,
+                        ReadAgentName = x.DoneEvent.ReadAgent.Name,
+                        ReadDate = x.DoneEvent.ReadAgentId.HasValue ? x.DoneEvent.ReadDate : null,
                         SourceAgentId = x.DoneEvent.SourceAgentId,
                         SourceAgentName = x.DoneEvent.SourceAgent.Name,
                         //TODO Фронт очен хочет поля SourcePositionId, TargetPositionId

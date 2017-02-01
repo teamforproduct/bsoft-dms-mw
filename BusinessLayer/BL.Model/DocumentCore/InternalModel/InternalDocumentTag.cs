@@ -15,5 +15,6 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Список ИД тегов
         /// </summary>
         public List<int> Tags { get; set; }
+        public int TagId { get; set; }
     }
 }

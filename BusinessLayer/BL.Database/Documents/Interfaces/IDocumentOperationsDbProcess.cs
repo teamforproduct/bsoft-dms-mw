@@ -30,7 +30,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging);
         IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model);
         void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList);
-
+        void MarkDocumentEventAsReadAuto(IContext ctx);
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);

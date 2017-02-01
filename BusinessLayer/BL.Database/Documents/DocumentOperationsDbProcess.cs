@@ -895,7 +895,7 @@ namespace BL.Database.Documents
                         DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
                         ReadAgentId = x.ReadAgentId,
                         ReadAgentName = x.ReadAgent.Name,
-                        ReadDate = x.ReadDate,
+                        ReadDate = x.ReadAgentId.HasValue ? x.ReadDate: null,
                         SourceAgentId = x.SourceAgentId,
                         SourceAgentName = x.SourceAgent.Name,
                         TargetAgentId = x.TargetAgentId,
@@ -1005,6 +1005,17 @@ namespace BL.Database.Documents
                     entry.Property(x => x.ReadDate).IsModified = true;
                 }
                 dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        public void MarkDocumentEventAsReadAuto(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.DocumentEventsSet.Where(x => !x.ReadDate.HasValue && (!x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId))
+                    .Update(x=>new DocumentEvents { ReadDate = x.CreateDate});
+                //dbContext.SaveChanges();
                 transaction.Complete();
             }
         }

@@ -5603,19 +5603,19 @@ namespace BL.Database.Dictionaries
                 // Условие по IsIncoming
                 if (filter.IsIncoming != null)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Incoming).ToString()));
                 }
 
                 // Условие по IsOutcoming
                 if (filter.IsOutcoming != null)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Outcoming).ToString()));
                 }
 
                 // Условие по IsInternal
                 if (filter.IsInternal != null)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Internal).ToString()));
                 }
 
                 if (filter.PositionIdsAccessForRegistration?.Count > 0)
