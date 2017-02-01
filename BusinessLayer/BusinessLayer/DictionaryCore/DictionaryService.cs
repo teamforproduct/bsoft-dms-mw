@@ -258,7 +258,7 @@ namespace BL.Logic.DictionaryCore
 
                 newFilter.IDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees).Select(x => x.ObjectId).ToList();
                 newFilter.AddressIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(x => x.ObjectId).ToList();
-                newFilter.ContactIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(x => x.ObjectId).ToList();
+                newFilter.ContactIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(x => x.ObjectId).ToList();
                 newFilter.PositionIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryPositions).Select(x => x.ObjectId).ToList();
             }
             else
