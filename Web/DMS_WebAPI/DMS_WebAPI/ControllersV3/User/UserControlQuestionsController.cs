@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var user = webService.GetUser(ctx, ctx.CurrentAgentId);
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
-                Question = user.ControlQuestion.Name,
+                Question = user.ControlQuestion?.Name,
                 Answer = user.ControlAnswer
             }, this);
             res.SpentTime = stopWatch;

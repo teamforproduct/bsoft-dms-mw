@@ -16,7 +16,7 @@ namespace BL.Model.WebAPI.IncomingModel
         public string Browser { get; set; }
         [IgnoreDataMember]
         public string Platform { get; set; }
-        [Required]
+        [IgnoreDataMember]
         public bool IsActive { get; set; }
     }
 }

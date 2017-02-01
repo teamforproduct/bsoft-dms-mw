@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Departments)]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<ListItemWithPath>))]
         public IHttpActionResult GetListDepartments([FromUri] FilterTree filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

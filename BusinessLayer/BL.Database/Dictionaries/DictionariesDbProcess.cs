@@ -5329,13 +5329,13 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
-                dbContext.DictionaryRegistrationJournalsSet.Add(drj);
+                var dbModel = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
+                dbContext.DictionaryRegistrationJournalsSet.Add(dbModel);
                 dbContext.SaveChanges();
-                regJournal.Id = drj.Id;
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
+                regJournal.Id = dbModel.Id;
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
                 transaction.Complete();
-                return drj.Id;
+                return dbModel.Id;
             }
         }
 
@@ -5343,12 +5343,12 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
-                dbContext.DictionaryRegistrationJournalsSet.Attach(drj);
-                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                var dbModel = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
+                dbContext.DictionaryRegistrationJournalsSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -5384,9 +5384,9 @@ namespace BL.Database.Dictionaries
                     NumerationPrefixFormula = x.NumerationPrefixFormula,
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
-                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
-                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
-                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
+                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.GetHashCode().ToString()),
+                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.GetHashCode().ToString()),
+                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.GetHashCode().ToString()),
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).ToList();
@@ -5416,9 +5416,9 @@ namespace BL.Database.Dictionaries
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
                     NumerationPrefixFormula = x.NumerationPrefixFormula,
-                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
-                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
-                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
+                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.GetHashCode().ToString()),
+                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.GetHashCode().ToString()),
+                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.GetHashCode().ToString()),
                     DepartmentName = x.Department.Name
                 }).ToList();
 
@@ -5603,19 +5603,19 @@ namespace BL.Database.Dictionaries
                 // Условие по IsIncoming
                 if (filter.IsIncoming != null)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.GetHashCode().ToString()));
                 }
 
                 // Условие по IsOutcoming
                 if (filter.IsOutcoming != null)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.GetHashCode().ToString()));
                 }
 
                 // Условие по IsInternal
                 if (filter.IsInternal != null)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(EnumDocumentDirections.Internal.GetHashCode().ToString()));
                 }
 
                 if (filter.PositionIdsAccessForRegistration?.Count > 0)
