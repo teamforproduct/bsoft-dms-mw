@@ -14,6 +14,7 @@ using BL.Model.Common;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
+using System.Threading.Tasks;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -57,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ControlQuestion)]
-        public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
