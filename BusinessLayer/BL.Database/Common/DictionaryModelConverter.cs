@@ -58,9 +58,9 @@ namespace BL.Database.Common
                 DepartmentId = item.DepartmentId,
                 Index = item.Index,
                 DirectionCodes =
-                    (item.IsIncoming ? EnumDocumentDirections.Incoming.ToString() : "") +
-                    (item.IsOutcoming ? EnumDocumentDirections.Outcoming.ToString() : "") +
-                    (item.IsInternal ? EnumDocumentDirections.Internal.ToString() : ""),
+                    (item.IsIncoming ? EnumDocumentDirections.Incoming.GetHashCode().ToString() : "") +
+                    (item.IsOutcoming ? EnumDocumentDirections.Outcoming.GetHashCode().ToString() : "") +
+                    (item.IsInternal ? EnumDocumentDirections.Internal.GetHashCode().ToString() : ""),
                 PrefixFormula = item.PrefixFormula,
                 NumerationPrefixFormula = item.NumerationPrefixFormula,
                 SuffixFormula = item.SuffixFormula,

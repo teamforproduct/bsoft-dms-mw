@@ -1408,7 +1408,7 @@ namespace DMS_WebAPI.Utilities
                     Browser = model.Browser,
                     Platform = model.Platform,
                     Fingerprint = model.Fingerprint,
-                    IsActive = model.IsActive,
+                    IsActive = true,// model.IsActive,
                     LastChangeDate = DateTime.UtcNow,
                     Name = model.Name,
                 };
@@ -1428,7 +1428,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     Id = model.Id,
                     Name = model.Name,
-                    IsActive = model.IsActive,
+                    IsActive = true,//model.IsActive,
                     LastChangeDate = DateTime.UtcNow,
 
                 };
