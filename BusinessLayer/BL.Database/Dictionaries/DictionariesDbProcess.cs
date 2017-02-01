@@ -1985,6 +1985,17 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+
+                // Только компании в который есть отделы
+                if (filter.DepartmentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    filterContains = filter.DepartmentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Departments.AsQueryable().Any(filterContains));
+                }
+
                 // Тоько активные/неактивные
                 if (filter.IsActive != null)
                 {
@@ -3347,6 +3358,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(context, dbContext, filter);
 
+                // только отделы с журналами
+                qry = qry.Where(x => x.RegistrationJournals.Any());
+
                 qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
@@ -3363,7 +3377,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsList = true,// !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -5398,13 +5412,15 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Name);
+
+                if(Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
 
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
@@ -5427,6 +5443,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        // Использовался для дерева журналов, как конечне элементы
         public IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -6387,7 +6404,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAccessLevelsQuery(ctx, dbContext , filter);
+                var qry = GetAccessLevelsQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAdminAccessLevel
                 {

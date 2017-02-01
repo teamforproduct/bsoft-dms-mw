@@ -185,7 +185,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryRegistrationJournals
         FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id);
 
-        IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging);
         IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null);
         IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal, UIPaging paging);
         #endregion DictionaryRegistrationJournals

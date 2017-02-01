@@ -176,7 +176,7 @@
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentEmployee.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContact.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryContactType.cs" />
-    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentOrg.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminSubordinationTree.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStageType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStaffList.cs" />
