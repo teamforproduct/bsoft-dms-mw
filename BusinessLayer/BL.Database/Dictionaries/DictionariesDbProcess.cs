@@ -1079,6 +1079,43 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
+
+                // Сотрудники, у которых адреса в переданном списке Id
+                if (filter.AddressIDs?.Count > 0)
+                {
+                    // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = filter.AddressIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Agent.AgentAddresses.AsQueryable().Any(filterContains));
+                    //qry = qry.Where(x => filter.AddressIDs.Contains(x.Agent.AgentAddresses. Id));
+                }
+
+                // Сотрудники, у которых контакты в переданном списке Id
+                if (filter.ContactIDs?.Count > 0)
+                {
+                    // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
+                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    filterContains = filter.ContactIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Agent.AgentContacts.AsQueryable().Any(filterContains));
+                    //qry = qry.Where(x => filter.AddressIDs.Contains(x.Agent.AgentAddresses. Id));
+                }
+
+                // Сотрудники, у которых должности в переданном списке Id
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
+                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    qry = qry.Where(x => x.PositionExecutors.AsQueryable().Any(filterContains));
+                    //qry = qry.Where(x => filter.AddressIDs.Contains(x.Agent.AgentAddresses. Id));
+                }
+
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
@@ -5420,7 +5457,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Name);
 
-                if(Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
 
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {

@@ -54,12 +54,12 @@ namespace DMS_WebAPI
             //mailService.Initialize(dbs);
 
 
-#if !DEBUG
+//#if !DEBUG
             //TODO
             // Полнотекстовый поиск
             var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
             indexService.Initialize(dbs);
-#endif
+//#endif
 
 
 #if !DEBUG
