@@ -858,6 +858,12 @@ namespace DMS_WebAPI.Utilities
             return dbWeb.GetUserFingerprints(filter);
         }
 
+        public FrontAspNetUserFingerprint GetUserFingerprint(int id)
+        {
+            var dbWeb = new WebAPIDbProcess();
+            return dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
         public bool ExistsUserFingerprints(FilterAspNetUserFingerprint filter)
         {
             var dbWeb = new WebAPIDbProcess();

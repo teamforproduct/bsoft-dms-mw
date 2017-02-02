@@ -1,9 +1,10 @@
-﻿using BL.Model.Enums;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System.Collections.Generic;
 
 namespace BL.Model.WebAPI.Filters
 {
-    public class FilterAspNetUserFingerprint
+    public class FilterAspNetUserFingerprint : BaseFilter
     {
         public List<string> UserIDs { get; set; }
         public string NameExact { get; set; }

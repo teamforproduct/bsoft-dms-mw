@@ -60,13 +60,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Fingerprints + "/{Id:int}")]
-        [ResponseType(typeof(FrontDictionaryAgentAddress))]
+        [ResponseType(typeof(FrontAspNetUserFingerprint))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
+            var webService = new WebAPIService();
+            var tmpItem = webService.GetUserFingerprint(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

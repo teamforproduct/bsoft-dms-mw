@@ -1331,6 +1331,25 @@ namespace DMS_WebAPI.Utilities
 
             if (filter != null)
             {
+
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AspNetUserFingerprints>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AspNetUserFingerprints>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 if (filter.UserIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AspNetUserFingerprints>();
