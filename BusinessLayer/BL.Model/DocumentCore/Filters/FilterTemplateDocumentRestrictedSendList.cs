@@ -4,18 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BL.Model.Enums;
+using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     /// Фильтр ограничительных списков рассылки в шаблонах
     /// </summary>
-    public class FilterTemplateDocumentRestrictedSendList
+    public class FilterTemplateDocumentRestrictedSendList: BaseFilter
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public List<int> IDs { get; set; }
         /// <summary>
         /// Ссылка на шаблон
         /// </summary>

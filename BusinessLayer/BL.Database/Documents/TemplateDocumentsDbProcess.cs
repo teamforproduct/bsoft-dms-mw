@@ -612,37 +612,52 @@ namespace BL.Database.Documents
 
         #region TemplateDocumentRestrictedSendList
 
+
+        private IQueryable<TemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendListsQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocumentRestrictedSendList filter)
+        {
+            var qry = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocumentRestrictedSendLists>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<TemplateDocumentRestrictedSendLists>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.TemplateId.HasValue)
+                {
+                    qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
+                }
+
+                if (filter.PositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.PositionId == filter.PositionId);
+                }
+
+                if (filter.AccessLevel.HasValue)
+                {
+                    qry = qry.Where(x => x.AccessLevelId == (int)filter.AccessLevel);
+                }
+            }
+            return qry;
+        }
+
+
         public IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
-
-                if (filter != null)
-                {
-                    if (filter.IDs?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocumentRestrictedSendLists>();
-                        filterContains = filter.IDs.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.TemplateId.HasValue)
-                    {
-                        qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
-                    }
-
-                    if (filter.PositionId.HasValue)
-                    {
-                        qry = qry.Where(x => x.PositionId == filter.PositionId);
-                    }
-
-                    if (filter.AccessLevel.HasValue)
-                    {
-                        qry = qry.Where(x => x.AccessLevelId == (int)filter.AccessLevel);
-                    }
-                }
+                var qry = GetTemplateDocumentRestrictedSendListsQuery(ctx, dbContext, filter);
                 var res = qry.Select(x => new FrontTemplateDocumentRestrictedSendList
                 {
                     Id = x.Id,
@@ -653,6 +668,17 @@ namespace BL.Database.Documents
                     PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     AccessLevelName = x.AccessLevel.Name,
                 }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public bool ExistsTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentRestrictedSendListsQuery(ctx, dbContext, filter);
+                var res = qry.Any();
                 transaction.Complete();
                 return res;
             }
@@ -858,27 +884,47 @@ namespace BL.Database.Documents
 
         #region TemplateDocumentPapers
 
+        private IQueryable<TemplateDocumentPapers> GetTemplateDocumentPapersQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocumentPaper filter)
+        {
+            var qry = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocumentPapers>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<TemplateDocumentPapers>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.TemplateId.HasValue)
+                {
+                    qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
+                }
+            }
+            return qry;
+        }
+        public bool ExistsTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentPapersQuery(ctx, dbContext, filter);
+                var res = qry.Any();
+                transaction.Complete();
+                return res;
+            }
+        }
         public IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
-
-                if (filter != null)
-                {
-                    if (filter.IDs?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocumentPapers>();
-                        filterContains = filter.IDs.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.TemplateId.HasValue)
-                    {
-                        qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
-                    }
-                }
+                var qry = GetTemplateDocumentPapersQuery(ctx, dbContext, filter);
                 var res = qry.Select(x => new FrontTemplateDocumentPaper
                 {
                     Id = x.Id,
@@ -982,7 +1028,7 @@ namespace BL.Database.Documents
                 }
                 else // if (model.Id == 0)
                 {
-                    doc.MaxPaperOrderNumber = dbContext.DocumentPapersSet
+                    doc.MaxPaperOrderNumber = dbContext.TemplateDocumentPapersSet
                         .Where(
                             x =>
                                 x.DocumentId == model.DocumentId && x.Name == model.Name && x.IsMain == model.IsMain &&
@@ -1008,30 +1054,60 @@ namespace BL.Database.Documents
 
         #region TemplateDocumentAttachedFiles
 
+        public IQueryable<TemplateDocumentFiles> GetTemplateAttachedFilesQuery(IContext ctx, DmsContext dbContext, FilterTemplateAttachedFile filter)
+        {
+            var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocumentFiles>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.TemplateId.HasValue)
+                {
+                    qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
+                }
+                if (!string.IsNullOrEmpty(filter.Name))
+                {
+                    qry = qry.Where(x => x.Name.Contains(filter.Name));
+                }
+                if (!string.IsNullOrEmpty(filter.Extention))
+                {
+                    qry = qry.Where(x => x.Extention.Contains(filter.Extention));
+                }
+
+                if (!string.IsNullOrEmpty(filter.NameExactly))
+                {
+                    qry = qry.Where(x => x.Name == filter.NameExactly);
+                }
+                if (!string.IsNullOrEmpty(filter.ExtentionExactly))
+                {
+                    qry = qry.Where(x => x.Extention == filter.ExtentionExactly);
+                }
+            }
+            return qry;
+        }
+
+        public bool ExistsTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateAttachedFilesQuery(ctx, dbContext, filter);
+                var res = qry.Any();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
-                if (filter != null)
-                {
-                    if (filter.IDs?.Count > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<TemplateDocumentFiles>();
-                        filterContains = filter.IDs.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Id == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-                    if (filter.TemplateId.HasValue)
-                    {
-                        qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
-                    }
-                    if (!string.IsNullOrEmpty(filter.Name))
-                    {
-                        qry = qry.Where(x => x.Name.Contains(filter.Name));
-                    }
-                }
+                var qry = GetTemplateAttachedFilesQuery(ctx, dbContext, filter);
                 var res = qry.Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                         (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontTemplateAttachedFile

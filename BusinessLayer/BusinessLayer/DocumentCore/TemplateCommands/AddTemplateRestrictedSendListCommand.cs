@@ -2,6 +2,7 @@
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
@@ -39,8 +40,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
-
-
+            if (_operationDb.ExistsTemplateDocumentRestrictedSendLists(_context, new FilterTemplateDocumentRestrictedSendList {TemplateId = Model.DocumentId,PositionId = Model.PositionId }))
+            {
+                throw new RecordNotUnique();
+            }
             return true;
         }
 

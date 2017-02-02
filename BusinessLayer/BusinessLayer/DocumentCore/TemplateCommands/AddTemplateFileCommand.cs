@@ -7,6 +7,7 @@ using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
@@ -47,6 +48,11 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             if (!_operationDb.CanAddTemplateAttachedFile(_context, Model))
             {
                 throw new CouldNotModifyTemplateDocument();
+            }
+            if (_operationDb.ExistsTemplateAttachedFiles(_context, new FilterTemplateAttachedFile
+                { TemplateId = Model.DocumentId, NameExactly = Path.GetFileNameWithoutExtension(Model.FileName), ExtentionExactly = Path.GetExtension(Model.FileName ?? "").Replace(".", "") }))
+            {
+                throw new RecordNotUnique();
             }
             return true;
 

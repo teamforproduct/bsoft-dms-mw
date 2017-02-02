@@ -49,7 +49,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// Дни для определения даты постоянного внимания для самоконтроля
         /// </summary>
-        public int SelfAttentionDay { get; set; }
+        public int? SelfAttentionDay { get; set; }
         /// <summary>
         /// Событие доступно в рамках задачи
         /// </summary>

@@ -874,6 +874,37 @@ namespace BL.Logic.Common
             };
         }
 
+        public static void CorrectModel(IContext context,  AddTemplateDocumentSendLists model)
+        {
+            if (model.SendType == EnumSendTypes.SendForInformation || model.SendType == EnumSendTypes.SendForConsideration)
+            {
+                model.DueDay = null;
+            }
+            if (!model.IsAddControl)
+            {
+                model.SelfAttentionDay = null;
+                model.SelfDueDay = null;
+                model.SelfDescription = null;
+            }
+            if (model.TaskId == null)
+            {
+                model.IsAvailableWithinTask = false;
+            }
+            if (model.SendType != EnumSendTypes.SendForExecution || model.TaskId == null)
+            {
+                model.IsWorkGroup = false;
+            }
+            if (model.SendType == EnumSendTypes.SendForInformationExternal)
+            {
+                model.TargetPositionId = null;
+            }
+            else
+            {
+                model.TargetAgentId = null;
+            }
+
+        }
+
         public static InternalDictionaryPositionExecutorForDocument GetExecutorAgentIdByPositionId(IContext context, int? positionId)
         {
             if (positionId.HasValue)

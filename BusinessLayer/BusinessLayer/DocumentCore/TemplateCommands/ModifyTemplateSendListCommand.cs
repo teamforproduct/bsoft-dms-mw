@@ -44,6 +44,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
+            CommonDocumentUtilities.CorrectModel(_context,Model);
             _sendList = new InternalTemplateDocumentSendList(Model);
             CommonDocumentUtilities.SetLastChange(_context, _sendList);
             return _operationDb.AddOrUpdateTemplateSendList(_context, _sendList);

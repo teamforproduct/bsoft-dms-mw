@@ -38,6 +38,7 @@ namespace BL.Database.Documents.Interfaces
 
         #region TemplateDocumentRestrictedSendList
         IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter);
+        bool ExistsTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter);
         FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext ctx, int id);
         int AddOrUpdateTemplateRestrictedSendList(IContext ctx, InternalTemplateDocumentRestrictedSendList template);
         void DeleteTemplateRestrictedSendList(IContext ctx, int id);
@@ -45,6 +46,7 @@ namespace BL.Database.Documents.Interfaces
 
         #region TemplateDocumentPapers
         IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
+        bool ExistsTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
         FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext ctx, int id);
         IEnumerable<int> AddTemplateDocumentPapers(IContext context, IEnumerable<InternalTemplateDocumentPaper> papers);
         InternalTemplateDocument ModifyTemplatePaperPrepare(IContext ctx, int? id, AddTemplateDocumentPaper Paper);
@@ -62,6 +64,8 @@ namespace BL.Database.Documents.Interfaces
 
         #region TemplateAttachedFiles
         IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
+        bool ExistsTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
+
         FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
         int GetNextFileOrderNumber(IContext ctx, int templateId);
         int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile);
