@@ -54,7 +54,7 @@ namespace BL.Logic.AdminCore
 
         private void SetRegistrationJournalPositionByDepartment(int departmentId)
         {
-            var journals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal() { DepartmentIDs = new List<int> { departmentId } });
+            var journals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal() { DepartmentIDs = new List<int> { departmentId } }, null);
 
             if (journals.Count() > 0)
             {

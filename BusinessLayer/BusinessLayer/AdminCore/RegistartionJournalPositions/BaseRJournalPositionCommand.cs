@@ -45,7 +45,7 @@ namespace BL.Logic.AdminCore
 
                         // все журналы
                         var allJournals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal()
-                        { IsActive = true });
+                        { IsActive = true }, null);
 
                         var newJournals = new List<InternalRegistrationJournalPosition>();
 
@@ -127,7 +127,7 @@ namespace BL.Logic.AdminCore
 
                     // все журналы отдела, к кот относится должность
                     var allJournals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal()
-                    { IsActive = true, DepartmentByPositionIDs = new List<int> { positionId } });
+                    { IsActive = true, DepartmentByPositionIDs = new List<int> { positionId } }, null);
 
                     var newJournals = new List<InternalRegistrationJournalPosition>();
 

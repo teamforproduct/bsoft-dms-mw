@@ -65,5 +65,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сотрудники, которым назначены указанные роли
         /// </summary>
         public List<int> RoleIDs { get; set; }
+
+        public List<int> AddressIDs { get; set; }
+
+        public List<int> ContactIDs { get; set; }
+
+        public List<int> PositionIDs { get; set; }
     }
 }

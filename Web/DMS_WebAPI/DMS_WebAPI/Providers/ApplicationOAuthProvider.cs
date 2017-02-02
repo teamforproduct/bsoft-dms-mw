@@ -116,6 +116,7 @@ namespace DMS_WebAPI.Providers
 
                     if (!webService.ExistsUserFingerprints(new BL.Model.WebAPI.Filters.FilterAspNetUserFingerprint
                     {
+                        UserIDs = new List<string> { user.Id },
                         FingerprintExact = fingerprint,
                         IsActive = true,
                     })) throw new UserFingerprintIsIncorrect();

@@ -20,6 +20,7 @@ using BL.Logic.TreeBuilder;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.IncomingModel;
+using LinqKit;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -83,10 +84,41 @@ namespace BL.Logic.DictionaryCore
                     .OrderByDescending(x => x.Rate);
             if (resWithRanges.Any())
             {
-
                 return resWithRanges.Select(x => x.DocId).ToList();
             }
             return new List<int> { -1 };
+        }
+
+        private List<FullTextResultList> GetIDsForDictionaryFullTextSearchNew(IContext context, List<EnumObjects> dictionaryTypes, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
+        {
+            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+            var ftRes = ftService.SearchDictionary(context, filter);
+            if (filterFunct == null)
+            {
+                //if (dictionaryTypes.Count > 0)
+                //{
+                //   var filterContains = PredicateBuilder.False<FullTextSearchResult>();
+                //    filterContains = dictionaryTypes.Aggregate(filterContains,
+                //        (current, value) => current.Or(e => e.ObjectType == value).Expand());
+
+                //    ftRes = ftRes.Where(filterContains);
+                //}
+
+                ftRes = ftRes.Where(x => dictionaryTypes.Contains( x.ObjectType));
+            }
+            else
+            {
+                ftRes = filterFunct(context, ftRes);
+            }
+            var resWithRanges =
+                ftRes.GroupBy(x => new { x.ObjectId, x.ObjectType })
+                    .Select(x => new { ObjectId = x.Key.ObjectId, Rate = x.Max(s => s.Score), ObjectType = x.Key.ObjectType })
+                    .OrderByDescending(x => x.Rate);
+            if (resWithRanges.Any())
+            {
+                return resWithRanges.Select(x => new FullTextResultList { ObjectId = x.ObjectId , ObjectType = x.ObjectType }).ToList();
+            }
+            return null;
         }
 
         private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
@@ -219,8 +251,15 @@ namespace BL.Logic.DictionaryCore
 
             if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
+                //newFilter.IDs =  GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
+                var list = GetIDsForDictionaryFullTextSearchNew(context,
+                    new List<EnumObjects> { EnumObjects.DictionaryAgentEmployees, EnumObjects.DictionaryContacts, EnumObjects.DictionaryAgentAddresses, EnumObjects.DictionaryPositions },
+                    ftSearch.FullTextSearchString);
 
+                newFilter.IDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees).Select(x => x.ObjectId).ToList();
+                newFilter.AddressIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(x => x.ObjectId).ToList();
+                newFilter.ContactIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(x => x.ObjectId).ToList();
+                newFilter.PositionIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryPositions).Select(x => x.ObjectId).ToList();
             }
             else
             {
@@ -827,25 +866,29 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id)
         {
 
-            return _dictDb.GetRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }).FirstOrDefault();
+            return _dictDb.GetRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging)
+        {
+            return _dictDb.GetRegistrationJournals(context, filter, paging);
+        }
+
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging)
         {
 
             var newFilter = new FilterDictionaryRegistrationJournal();
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryRegistrationJournals, filter.FullTextSearchString);
-
+                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryRegistrationJournals, ftSearch.FullTextSearchString);
             }
             else
             {
                 newFilter = filter;
             }
 
-            return _dictDb.GetRegistrationJournals(context, newFilter);
+            return _dictDb.GetRegistrationJournals(context, newFilter, paging);
         }
 
         public IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
@@ -856,12 +899,12 @@ namespace BL.Logic.DictionaryCore
             IEnumerable<TreeItem> departments = null;
             IEnumerable<TreeItem> companies = null;
 
-            if (levelCount >= 3 || levelCount == 0)
-            {
-                var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
+            //if (levelCount >= 3 || levelCount == 0)
+            //{
+            //    var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
 
-                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
-            }
+            //    journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
+            //}
 
             if (levelCount >= 2 || levelCount == 0)
             {
@@ -876,7 +919,8 @@ namespace BL.Logic.DictionaryCore
             {
                 companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
                 {
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
+                    DepartmentIDs = departments.Select(x => x.Id).ToList(),
                 });
             }
 

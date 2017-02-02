@@ -14,6 +14,7 @@ using BL.Model.Common;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
+using System.Threading.Tasks;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -44,6 +45,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
                 Question = user.ControlQuestion?.Name,
+                QuestionId = user.ControlQuestionId ?? -1,
                 Answer = user.ControlAnswer
             }, this);
             res.SpentTime = stopWatch;

@@ -1079,6 +1079,43 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => filter.IDs.Contains(x.Id));
                 }
 
+
+                // Сотрудники, у которых адреса в переданном списке Id
+                if (filter.AddressIDs?.Count > 0)
+                {
+                    // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
+                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    filterContains = filter.AddressIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Agent.AgentAddresses.AsQueryable().Any(filterContains));
+                    //qry = qry.Where(x => filter.AddressIDs.Contains(x.Agent.AgentAddresses. Id));
+                }
+
+                // Сотрудники, у которых контакты в переданном списке Id
+                if (filter.ContactIDs?.Count > 0)
+                {
+                    // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
+                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    filterContains = filter.ContactIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Agent.AgentContacts.AsQueryable().Any(filterContains));
+                    //qry = qry.Where(x => filter.AddressIDs.Contains(x.Agent.AgentAddresses. Id));
+                }
+
+                // Сотрудники, у которых должности в переданном списке Id
+                if (filter.PositionIDs?.Count > 0)
+                {
+                    // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
+                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    qry = qry.Where(x => x.PositionExecutors.AsQueryable().Any(filterContains));
+                    //qry = qry.Where(x => filter.AddressIDs.Contains(x.Agent.AgentAddresses. Id));
+                }
+
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
@@ -1983,6 +2020,17 @@ namespace BL.Database.Dictionaries
                         (current, value) => current.And(e => e.Id != value).Expand());
 
                     qry = qry.Where(filterContains);
+                }
+
+
+                // Только компании в который есть отделы
+                if (filter.DepartmentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    filterContains = filter.DepartmentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.Departments.AsQueryable().Any(filterContains));
                 }
 
                 // Тоько активные/неактивные
@@ -3347,6 +3395,9 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(context, dbContext, filter);
 
+                // только отделы с журналами
+                qry = qry.Where(x => x.RegistrationJournals.Any());
+
                 qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
@@ -3363,7 +3414,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsList = true,// !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -5398,13 +5449,15 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
 
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
@@ -5427,6 +5480,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        // Использовался для дерева журналов, как конечне элементы
         public IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -6387,7 +6441,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAccessLevelsQuery(ctx, dbContext , filter);
+                var qry = GetAccessLevelsQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAdminAccessLevel
                 {
