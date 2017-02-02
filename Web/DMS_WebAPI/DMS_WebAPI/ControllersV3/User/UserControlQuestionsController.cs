@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ControlQuestion)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserControlQuestion model)
+        public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

@@ -648,7 +648,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async void ChangeControlQuestion(ModifyAspNetUserControlQuestion model)
+        public void ChangeControlQuestion(ModifyAspNetUserControlQuestion model)
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             var userContext = userContexts.Get();
@@ -658,7 +658,7 @@ namespace DMS_WebAPI.Utilities
             user.ControlAnswer = model.Answer;
             user.LastChangeDate = DateTime.UtcNow;
 
-            var result = await UserManager.UpdateAsync(user);
+            var result = UserManager.Update(user);
 
             if (!result.Succeeded) throw new DatabaseError();
 
