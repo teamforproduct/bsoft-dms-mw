@@ -45,6 +45,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
                 Question = user.ControlQuestion?.Name,
+                QuestionId = user.ControlQuestionId ?? -1,
                 Answer = user.ControlAnswer
             }, this);
             res.SpentTime = stopWatch;
