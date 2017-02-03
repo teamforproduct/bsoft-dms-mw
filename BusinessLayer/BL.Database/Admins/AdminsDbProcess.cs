@@ -371,10 +371,16 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Delete(); ;
+                // Uses
 
-                var dbModel = dbContext.AdminRolesSet.FirstOrDefault(x => x.Id == model.Id);
-                dbContext.AdminRolesSet.Remove(dbModel);
+
+                // Used By
+                dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Delete();
+                dbContext.AdminRolePermissionsSet.Where(x => x.RoleId == model.Id).Delete();
+                dbContext.AdminPositionRolesSet.Where(x => x.RoleId == model.Id).Delete();
+                dbContext.AdminUserRolesSet.Where(x => x.RoleId == model.Id).Delete();
+
+                dbContext.AdminRolesSet.Where(x => x.Id == model.Id).Delete();
                 dbContext.SaveChanges();
                 transaction.Complete();
             }

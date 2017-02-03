@@ -1,26 +1,18 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.Enums;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
-
-using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
-using System.Diagnostics;
-using BL.Model.FullTextSearch;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.IncomingModel;
+using BL.Model.Common;
+using BL.Model.Enums;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
+using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Roles
 {
