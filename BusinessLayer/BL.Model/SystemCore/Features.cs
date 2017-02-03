@@ -27,6 +27,7 @@
         public const string Image = "Image";
         public const string Info = "Info";
         public const string Journals = "Journals";
+        public const string Notifications = "Notifications";
         public const string Papers = "Papers";
         public const string Parameters = "Parameters";
         public const string Passport = "Passport";
