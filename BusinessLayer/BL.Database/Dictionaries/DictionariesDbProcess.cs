@@ -4186,40 +4186,44 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryLinkTypesSet.AsQueryable();
 
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                    // Список первичных ключей
+                    if (filter.IDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionaryLinkTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
+                        qry = qry.Where(filterContains);
+                    }
 
-                    qry = qry.Where(filterContains);
-                }
+                    // Исключение списка первичных ключей
+                    if (filter.NotContainsIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.True<DictionaryLinkTypes>();
+                        filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                            (current, value) => current.And(e => e.Id != value).Expand());
 
-                // Тоько активные/неактивные
-                if (filter.IsActive != null)
-                {
-                    qry = qry.Where(x => filter.IsActive == x.IsActive);
-                }
+                        qry = qry.Where(filterContains);
+                    }
 
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    // Тоько активные/неактивные
+                    if (filter.IsActive != null)
+                    {
+                        qry = qry.Where(x => filter.IsActive == x.IsActive);
+                    }
 
-                    qry = qry.Where(filterContains);
+                    // Поиск по наименованию
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
                 }
 
                 var res = qry.Select(x => new FrontDictionaryLinkType
