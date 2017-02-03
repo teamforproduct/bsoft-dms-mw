@@ -31,25 +31,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     {
         Stopwatch stopWatch = new Stopwatch();
 
-        /// <summary>
-        /// Возвращает список доступов для документов
-        /// </summary>
-        /// <param name="filter">Фильтр</param>
-        /// <param name="paging">Пейджинг</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route(Features.Accesses)]
-        [ResponseType(typeof(List<FrontDocumentAccess>))]
-        public IHttpActionResult Get([FromUri] FilterDocumentAccess filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentAccesses(ctx, filter, paging);
-            var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
+
 
 
     }

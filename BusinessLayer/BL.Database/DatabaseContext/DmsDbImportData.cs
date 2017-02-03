@@ -152,7 +152,6 @@ namespace BL.Database.DatabaseContext
             AddPermission(2110, Modules.Documents, Features.Events, d: false);
             AddPermission(2120, Modules.Documents, Features.Waits, d: false);
             AddPermission(2130, Modules.Documents, Features.Signs, d: false);
-            AddPermission(2140, Modules.Documents, Features.Accesses, c: false, u: false, d: false);
             AddPermission(2150, Modules.Documents, Features.WorkGroups, c: false, u: false, d: false);
             AddPermission(2190, Modules.Documents, Features.SavedFilters);
 
@@ -297,9 +296,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Документ"));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.D), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: "Действия"));
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListItem, EnumObjects.Documents, category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Действия"));
+            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: "Действия"));
             items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Действия"));
             items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: "Действия"));
             items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
@@ -381,7 +380,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.RejectАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.RejectАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
             items.Add(GetSysAct(EnumDocumentActions.RejectSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.VerifySigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
+            items.Add(GetSysAct(EnumDocumentActions.VerifySigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.R), category: "Подписание"));
 
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.U)));

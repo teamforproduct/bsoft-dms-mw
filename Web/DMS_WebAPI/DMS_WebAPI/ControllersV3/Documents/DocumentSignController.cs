@@ -251,5 +251,22 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return res;
         }
 
+        /// <summary>
+        /// Проверяет подписи
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [DimanicAuthorize("R")]
+        [Route(Features.Signs + "/VerifySigning")]
+        [HttpPost]
+        public IHttpActionResult VerifySigning([FromBody]Item model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.VerifySigning, model.Id);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
     }
 }

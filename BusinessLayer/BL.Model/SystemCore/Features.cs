@@ -65,7 +65,6 @@
 
 
         public const string Events = "Events";
-        public const string Accesses = "Accesses";
         public const string DocumentAccesses = "DocumentAccesses";
         public const string Links = "Links";
         public const string SavedFilters = "SavedFilters";
@@ -137,7 +136,7 @@
                 case ValueTypes:            res = 1520; break;
 
                 case Events:                res = 1530; break;
-                case Accesses:              res = 1540; break;
+//                case Accesses:              res = 1540; break;
                 case DocumentAccesses:      res = 1550; break;
                 case Links:                 res = 1560; break;
                 case SavedFilters:          res = 1570; break;
