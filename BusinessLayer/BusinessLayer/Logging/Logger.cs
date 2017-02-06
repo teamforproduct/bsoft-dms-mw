@@ -129,6 +129,7 @@ namespace BL.Logic.Logging
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
                         LogException = x.LogException,
+                        ObjectLog = x.ObjectLog,
                         AgentId = x.ExecutorAgentId,
                         Name = x.ExecutorAgent,
                         ClientId = x.ClientId ?? 0,
