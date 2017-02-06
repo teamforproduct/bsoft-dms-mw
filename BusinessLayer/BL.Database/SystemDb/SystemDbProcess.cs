@@ -107,7 +107,7 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(x=>x.LogDate > dateFrom);
                 }
                 qry = qry.OrderByDescending(x => x.LogDate);
-                var res = qry.Select(x => new FrontAgentEmployeeUser { LastSuccessLogin = x.LogDate }).FirstOrDefault();
+                var res = qry.Select(x => new FrontAgentEmployeeUser { LastErrorLogin = x.LogDate }).FirstOrDefault();
                 if (res!=null)
                 {
                     res.CountErrorLogin = qry.Count();
