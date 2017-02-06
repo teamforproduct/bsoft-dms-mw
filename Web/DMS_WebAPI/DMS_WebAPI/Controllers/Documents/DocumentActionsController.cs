@@ -708,7 +708,7 @@ namespace DMS_WebAPI.Controllers.Documents
         }
 
         /// <summary>
-        /// Проверить подписи
+        /// Проверить подписи use V3
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

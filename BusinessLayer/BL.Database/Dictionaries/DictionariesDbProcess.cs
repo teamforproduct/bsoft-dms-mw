@@ -4046,58 +4046,59 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionaryEventTypesSet.AsQueryable();
-
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    // Список первичных ключей
+                    if (filter.IDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
+                        qry = qry.Where(filterContains);
+                    }
+
+                    // Исключение списка первичных ключей
+                    if (filter.NotContainsIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.True<DictionaryEventTypes>();
+                        filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                            (current, value) => current.And(e => e.Id != value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
+                    // Поиск по наименованию
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
+                    if (filter.ImportanceEventTypeIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                        filterContains = filter.ImportanceEventTypeIDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.ImportanceEventTypeId == value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
+                    if (filter.DocumentIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                        filterContains = filter.DocumentIDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.DocumentId == value).Expand());
+
+                        qry = qry.Where(x =>
+                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                    .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id)
+                                    );
+                    }
                 }
-
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionaryEventTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.ImportanceEventTypeIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
-                    filterContains = filter.ImportanceEventTypeIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ImportanceEventTypeId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.DocumentIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-                    filterContains = filter.DocumentIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                    qry = qry.Where(x =>
-                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
-                                .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id)
-                                );
-                }
-
                 var res = qry.Select(x => new FrontDictionaryEventType
                 {
                     EventType = (EnumEventTypes)x.Id,
