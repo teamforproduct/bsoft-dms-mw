@@ -7,5 +7,6 @@ namespace BL.Model.WebAPI.IncomingModel
     {
         public int ServerId { get; set; }
         public int ClientId { get; set; }
+        public string ClientCode { get; set; }
     }
 }

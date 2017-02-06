@@ -44,27 +44,17 @@ namespace DMS_WebAPI.Infrastructure
             return res;
         }
 
-        public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
+        public static string GetExceptionText (Exception exception, out string logExpression )
         {
-
-            bool fromGlobalAsax = context == null;
-
-            var url = string.Empty;
-            var body = string.Empty;
-            var request = string.Empty;
-            var responceExpression = string.Empty;
-            var logExpression = string.Empty;
-            HttpStatusCode statusCode = HttpStatusCode.OK;
             var exc = exception;
-
+            var responceExpression = string.Empty;
+            logExpression = string.Empty;
 
             try // на всякий случай
             {
-                
+
             }
             catch { }
-
-            #region [+] Формирование текста исключения, лога ...
 
             //#if DEBUG
             //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
@@ -102,11 +92,22 @@ namespace DMS_WebAPI.Infrastructure
             // Если в результате подстановки параметров подставили лейблы, нужно их перевести
             responceExpression = GetTranslation(responceExpression);
 
-            //#else
-            //msgExp = exc.Message;
-            //#endif
+            return responceExpression;
+        }
 
-            #endregion
+        public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
+        {
+
+            bool fromGlobalAsax = context == null;
+
+            var url = string.Empty;
+            var body = string.Empty;
+            var request = string.Empty;
+
+            HttpStatusCode statusCode = HttpStatusCode.OK;
+            var exc = exception;
+            var logExpression = string.Empty;
+            var responceExpression = GetExceptionText(exception, out logExpression);
 
             var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
             var json = JsonConvert.SerializeObject(new { success = false, msg = responceExpression, code = exception.GetType().Name }, settings);

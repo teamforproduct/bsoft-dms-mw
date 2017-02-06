@@ -176,10 +176,17 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var filterClients = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
-                if (setUserServer.ClientId > 0) filterClients.ClientIds = new List<int> { setUserServer.ClientId };
+                var filterClients = new FilterAspNetUserClients();
+                var filterServers = new FilterAspNetUserServers();
 
-                var filterServers = new FilterAspNetUserServers { UserIds = new List<string> { userId } };
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    filterClients.UserIds = new List<string> { userId };
+                    filterServers.UserIds = new List<string> { userId };
+                }
+                if (setUserServer.ClientId > 0) filterClients.ClientIds = new List<int> { setUserServer.ClientId };
+                filterClients.ClientCode = setUserServer.ClientCode;
+
                 if (setUserServer.ServerId > 0) filterServers.ServerIds = new List<int> { setUserServer.ServerId };
 
                 var userClients = GetUserClientsQuery(dbContext, filterClients).Select(x => x.ClientId);

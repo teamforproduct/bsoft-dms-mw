@@ -18,5 +18,20 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Логин
         /// </summary>
         public string Login { get; set; }
+        /// <summary>
+        /// Дата последнего успешного логина
+        /// </summary>
+        public DateTime? LastSuccessLogin { get { return _LastSuccessLogin; } set { _LastSuccessLogin = value.ToUTC(); } }
+        private DateTime? _LastSuccessLogin;
+        /// <summary>
+        /// Дата последней неуспешной попытки входа
+        /// </summary>
+        public DateTime? LastErrorLogin { get { return _LastErrorLogin; } set { _LastErrorLogin = value.ToUTC(); } }
+        private DateTime? _LastErrorLogin;
+        /// <summary>
+        /// Количество неуспешных попыток входа
+        /// </summary>
+        public int? CountErrorLogin { get; set; }
+
     } 
 }

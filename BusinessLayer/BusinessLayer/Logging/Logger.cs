@@ -35,7 +35,20 @@ namespace BL.Logic.Logging
         public IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions)
         {
 
-            List<int> res = sessions.Where(x => x.AgentId.HasValue && x.LastUsage > DateTime.UtcNow.AddMinutes(-1)).Select(x=>x.AgentId.Value).Distinct().ToList();
+            List<int> res = sessions.Where(x => x.AgentId.HasValue && x.LastUsage > DateTime.UtcNow.AddMinutes(-1)).Select(x => x.AgentId.Value).Distinct().ToList();
+            return res;
+        }
+
+        public FrontAgentEmployeeUser GetLastUserLoginInfo(IContext context)
+        {
+            var lastSuccessLoginInfo = _systemDb.GetLastSuccessLoginInfo(context);
+            var lastErrorLoginInfo = _systemDb.GetLastErrorLoginInfo(context, lastSuccessLoginInfo?.LastSuccessLogin);
+            var res = new FrontAgentEmployeeUser
+            {
+                LastSuccessLogin = lastSuccessLoginInfo?.LastSuccessLogin,
+                LastErrorLogin = lastErrorLoginInfo?.LastErrorLogin,
+                CountErrorLogin = lastErrorLoginInfo?.CountErrorLogin,
+            };
             return res;
         }
 
@@ -115,9 +128,11 @@ namespace BL.Logic.Logging
                         LastUsage = x.LogDate1,
                         LoginLogId = x.Id,
                         LoginLogInfo = x.Message,
+                        LogException = x.LogException,
                         AgentId = x.ExecutorAgentId,
                         Name = x.ExecutorAgent,
                         ClientId = x.ClientId ?? 0,
+                        IsSuccess = x.LogLevel == 0,
                     }).ToList();
                 res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
                     .ForEach(r =>
@@ -190,7 +205,7 @@ namespace BL.Logic.Logging
                 {
                     info.Date1 = info.Date;
                 }
-                info.AgentId = ctx.CurrentAgentId;
+                info.AgentId = info.AgentId ?? ctx.CurrentAgentId;
                 var id = _systemDb.AddLog(ctx, info);
                 return id;
             }
@@ -254,7 +269,23 @@ namespace BL.Logic.Logging
                 LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
-
+        public int? Error(IContext ctx,  string message = null, string exception = null, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, int? agentId = null, params object[] args)
+        {
+            var js = new JavaScriptSerializer();
+            var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
+            return AddLogToDb(ctx, new LogInfo
+            {
+                LogType = EnumLogTypes.Error,
+                Message = message,
+                LogException = exception,
+                LogTrace = null,
+                ObjectId = objectId,
+                ActionId = actionId,
+                RecordId = recordId,
+                LogObject = frontObjJson,
+                AgentId = agentId,
+            });
+        }
         public int? Fatal(IContext ctx, string message, params object[] args)
         {
             return AddLogToDb(ctx, new LogInfo
@@ -271,7 +302,7 @@ namespace BL.Logic.Logging
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
-                LogException =$"{message ?? ""} // {exception.GetType()} // {exception.Message} // {exception.Data} // {exception.StackTrace}",
+                LogException = $"{message ?? ""} // {exception.GetType()} // {exception.Message} // {exception.Data} // {exception.StackTrace}",
                 LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }

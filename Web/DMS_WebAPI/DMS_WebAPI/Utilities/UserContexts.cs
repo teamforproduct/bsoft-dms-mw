@@ -71,7 +71,7 @@ namespace DMS_WebAPI.Utilities
                     Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
                     ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
                     IsActive = true,
-
+                    IsSuccess = true,
                 });
             return res;
         }

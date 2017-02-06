@@ -9,6 +9,7 @@ using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
 using BL.Database.DBModel.System;
 using System;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace BL.Database.SystemDb
 {
@@ -17,6 +18,8 @@ namespace BL.Database.SystemDb
         void InitializerDatabase(IContext context);
 
         #region Logging
+        FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context);
+        FrontAgentEmployeeUser GetLastErrorLoginInfo(IContext context, DateTime? dateFrom);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         int AddLog(IContext ctx, LogInfo log);
         void UpdateLogDate1(IContext ctx, int id, DateTime datetime);

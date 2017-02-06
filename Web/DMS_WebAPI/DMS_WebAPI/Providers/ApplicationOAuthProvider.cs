@@ -1,7 +1,13 @@
-﻿using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.WebAPI.Filters;
+using BL.Model.WebAPI.FrontModel;
+using BL.Model.WebAPI.IncomingModel;
+using DMS_WebAPI.Infrastructure;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
@@ -12,6 +18,7 @@ using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -78,12 +85,12 @@ namespace DMS_WebAPI.Providers
             // Эта штука НЕ отлавливается нашим обработчиком ошибок и не фиксируется в файл лог
 
             // Эти исключения отлавливает Application_Error в Global.asax
-            if (user == null) throw new UserNameOrPasswordIsIncorrect();
+            if (user == null) ThrowErrorGrantResourceOwnerCredentials(context, new UserNameOrPasswordIsIncorrect());
 
-            if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
+            if (user.IsLockout) ThrowErrorGrantResourceOwnerCredentials(context, new UserIsDeactivated(user.UserName));
 
             // Проверка подтверждения адреса
-            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) throw new UserMustConfirmEmail();
+            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
 
             // Проверка Fingerprint: Если пользователь включил Fingerprint
             if (user.IsFingerprintEnabled)
@@ -96,12 +103,12 @@ namespace DMS_WebAPI.Providers
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                        throw new UserAnswerIsIncorrect();
+                        ThrowErrorGrantResourceOwnerCredentials (context, new UserAnswerIsIncorrect());
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
                     {
-                        webService.AddUserFingerprint(new BL.Model.WebAPI.IncomingModel.AddAspNetUserFingerprint
+                        webService.AddUserFingerprint(new AddAspNetUserFingerprint
                         {
                             UserId = user.Id,
                             Fingerprint = fingerprint,
@@ -112,14 +119,14 @@ namespace DMS_WebAPI.Providers
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(fingerprint)) throw new FingerprintRequired();
+                    if (string.IsNullOrEmpty(fingerprint)) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
 
-                    if (!webService.ExistsUserFingerprints(new BL.Model.WebAPI.Filters.FilterAspNetUserFingerprint
+                    if (!webService.ExistsUserFingerprints(new FilterAspNetUserFingerprint
                     {
                         UserIDs = new List<string> { user.Id },
                         FingerprintExact = fingerprint,
                         IsActive = true,
-                    })) throw new UserFingerprintIsIncorrect();
+                    })) ThrowErrorGrantResourceOwnerCredentials(context, new UserFingerprintIsIncorrect());
                 }
             }
 
@@ -141,6 +148,35 @@ namespace DMS_WebAPI.Providers
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
 
+        private void ThrowErrorGrantResourceOwnerCredentials (OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
+        {
+            string message = GetBrowswerInfo();
+            var dbWeb = new WebAPIDbProcess();
+            var server = dbWeb.GetServerByUser(null, new SetUserServer { ClientId = -1, ServerId = -1, ClientCode = GetClientCodeFromBody(context.Request.Body) });
+            var ctx = new AdminContext(server);
+            var logger = DmsResolver.Current.Get<ILogger>();
+            var errorInfo = new AuthError
+            {
+                ClientCode = GetClientCodeFromBody(context.Request.Body),
+                EMail = context.UserName,
+                FingerPrint = GetFingerprintFromBody(context.Request.Body)
+            };
+            ctx.CurrentClientId = dbWeb.GetClientId(errorInfo.ClientCode);
+            int? agentId = null;
+            var dbService = new WebAPIService();
+            var user = dbService.GetUser(errorInfo.EMail, errorInfo.ClientCode);
+            if (user != null)
+            {
+                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
+                agentId = agentUser?.AgentId;
+            }
+            var logExpression = string.Empty;
+            var exceptionText = ExceptionHandling.GetExceptionText(ex, out logExpression);
+
+            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId : (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId );
+
+            throw ex;
+        }
 
 
         /// <summary>
@@ -180,7 +216,7 @@ namespace DMS_WebAPI.Providers
                 if (client == null) throw new ClientIsNotFound();
 
                 // Предполагаю, что один пользователь всегда привязан только к одному серверу 
-                var server = dbWeb.GetServerByUser(userId, new BL.Model.WebAPI.IncomingModel.SetUserServer { ClientId = client.Id, ServerId = -1 });
+                var server = dbWeb.GetServerByUser(userId, new SetUserServer { ClientId = client.Id, ServerId = -1 });
                 if (server == null) throw new DatabaseIsNotFound();
 
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
@@ -200,7 +236,7 @@ namespace DMS_WebAPI.Providers
                 userContexts.Set(token, server, client.Id);
 
                 // Получаю информацию о браузере
-                string message = GetBrowswerInfo();
+                string message = GetBrowswerInfo(context, user.IsFingerprintEnabled);
 
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1: true);
@@ -215,7 +251,7 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
-        private static string GetBrowswerInfo()
+        private static string GetBrowswerInfo(OAuthTokenEndpointResponseContext context = null, bool isIncludeFingerPrintInfo = false)
         {
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
             var userAgent = HttpContext.Current.Request.UserAgent;
@@ -224,6 +260,18 @@ namespace DMS_WebAPI.Providers
             if (string.IsNullOrEmpty(ip))
                 ip = HttpContext.Current.Request.UserHostAddress;
             var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
+            if (isIncludeFingerPrintInfo && context !=null)
+            {
+                var dbWeb = new WebAPIDbProcess();
+                var fingerprint = GetFingerprintFromBody(context.Request.Body);
+                var fps = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
+                if (fps.Any())
+                {
+                    var fp = fps.First();
+                    message = $"{message};{fp.Fingerprint};{fp.Name}";
+                }
+            }
+
             //{HttpContext.Current.Request.UserHostAddress}
             //var js = new JavaScriptSerializer();
             //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";

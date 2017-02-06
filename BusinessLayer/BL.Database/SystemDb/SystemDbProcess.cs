@@ -1,10 +1,12 @@
-﻿using BL.CrossCutting.Helpers;
+﻿using BL.CrossCutting.Extensions;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.Helper;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
@@ -68,6 +70,48 @@ namespace BL.Database.SystemDb
                     ClientId = x.ClientId,
                 }).ToList();
                 transaction.Complete();
+                return res;
+            }
+        }
+
+        public FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
+                {
+                    ObjectIDs = new List<int> { (int)EnumObjects.System },
+                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    LogLevels = new List<int> { (int)EnumLogTypes.Information },
+                });
+                qry = qry.OrderByDescending(x => x.LogDate);
+                var res = qry.Select(x => new FrontAgentEmployeeUser { LastSuccessLogin = x.LogDate }).FirstOrDefault();
+                return res;
+            }
+        }
+
+        public FrontAgentEmployeeUser GetLastErrorLoginInfo(IContext context, DateTime? dateFrom)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
+                {
+                    ObjectIDs = new List<int> { (int)EnumObjects.System },
+                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    LogLevels = new List<int> { (int)EnumLogTypes.Error },
+                });
+                if (dateFrom != null)
+                {
+                    qry = qry.Where(x=>x.LogDate > dateFrom);
+                }
+                qry = qry.OrderByDescending(x => x.LogDate);
+                var res = qry.Select(x => new FrontAgentEmployeeUser { LastSuccessLogin = x.LogDate }).FirstOrDefault();
+                if (res!=null)
+                {
+                    res.CountErrorLogin = qry.Count();
+                }
                 return res;
             }
         }
@@ -173,16 +217,23 @@ namespace BL.Database.SystemDb
                     LogDate = log.Date,
                     LogDate1 = log.Date1,
                     LogLevel = (int)log.LogType,
-                    LogException = log.LogException,
-                    LogTrace = log.LogTrace,
+                    LogException = log.LogException.Truncate(2000),
+                    LogTrace = log.LogTrace.Truncate(2000),
                     ObjectLog = log.LogObject,
-                    Message = log.Message,
+                    Message = log.Message.Truncate(2000),
                     ObjectId = log.ObjectId,
                     ActionId = log.ActionId,
                     RecordId = log.RecordId,
                 };
                 dbContext.LogSet.Add(nlog);
-                dbContext.SaveChanges();
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (Exception e)
+                {
+
+                }
                 transaction.Complete();
                 return nlog.Id;
             }

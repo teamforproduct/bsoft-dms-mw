@@ -20,6 +20,10 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
         public string LoginLogInfo { get; set; }
         /// <summary>
+        /// Описание ошибки
+        /// </summary>
+        public string LogException { get; set; }
+        /// <summary>
         /// ИД веб пользователя
         /// </summary>
         public string UserId { get; set; }
@@ -28,10 +32,18 @@ namespace BL.CrossCutting.Context
         /// </summary>
         public int? AgentId { get; set; }
         /// <summary>
+        /// Тип лога
+        /// </summary>
+        public int? LogLevel { get; set; }
+        /// <summary>
         /// ФИО
         /// </summary>
         public string Name { get; set; }
         public int ClientId { get; set; }
+        /// <summary>
+        /// Признак успешности входа
+        /// </summary>
+        public bool IsSuccess { get; set; } = true;
         /// <summary>
         /// Активная сессия
         /// </summary>

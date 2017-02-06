@@ -157,6 +157,9 @@ namespace DMS_WebAPI.Utilities
 
             var user = GetUser(context, context.CurrentAgentId);
 
+            var logger = DmsResolver.Current.Get<ILogger>();
+            var lastUserLoginInfo = logger.GetLastUserLoginInfo(context);
+
             return new FrontAgentEmployeeUser()
             {
                 Id = employee.Id,
@@ -176,6 +179,10 @@ namespace DMS_WebAPI.Utilities
                 BirthDate = employee.BirthDate,
                 Description = employee.Description,
                 IsActive = employee.IsActive,
+
+                LastSuccessLogin = lastUserLoginInfo.LastSuccessLogin,
+                LastErrorLogin = lastUserLoginInfo.LastErrorLogin,
+                CountErrorLogin = lastUserLoginInfo.CountErrorLogin,
             };
         }
 
@@ -851,7 +858,7 @@ namespace DMS_WebAPI.Utilities
 
         #endregion
 
-
+        #region Fingerprints
         public IEnumerable<FrontAspNetUserFingerprint> GetUserFingerprints(FilterAspNetUserFingerprint filter)
         {
             var dbWeb = new WebAPIDbProcess();
@@ -929,6 +936,6 @@ namespace DMS_WebAPI.Utilities
             var dbWeb = new WebAPIDbProcess();
             return dbWeb.GetControlQuestions();
         }
-
+        #endregion
     }
 }
