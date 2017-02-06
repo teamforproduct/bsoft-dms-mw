@@ -96,7 +96,7 @@ namespace DMS_WebAPI.Providers
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                        throw new UserNameOrPasswordIsIncorrect();
+                        throw new UserAnswerIsIncorrect();
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)

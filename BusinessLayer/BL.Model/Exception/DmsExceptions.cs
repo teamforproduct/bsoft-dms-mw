@@ -274,6 +274,13 @@ namespace BL.Model.Exception
         public UserNameOrPasswordIsIncorrect() : base() { }
         public UserNameOrPasswordIsIncorrect(System.Exception ex) : base(ex) { }
     }
+   
+    // НЕ переименовывать - есть if на фронте
+    public class UserAnswerIsIncorrect : DmsExceptions
+    {
+        public UserAnswerIsIncorrect() : base() { }
+        public UserAnswerIsIncorrect(System.Exception ex) : base(ex) { }
+    }
 
     public class UserIsDeactivated : DmsExceptions
     {

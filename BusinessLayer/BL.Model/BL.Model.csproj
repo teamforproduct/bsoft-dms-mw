@@ -141,7 +141,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
     <Compile Include="Common\ItemCheck.cs" />
-    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag - Копировать.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddCustomDictionary.cs" />
     <Compile Include="Enums\EnumControlQuestion.cs" />
@@ -369,7 +369,7 @@
     <Compile Include="Enums\EnumDatabaseType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryResultType.cs" />
-    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryJournalsTree.cs" />
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontTag.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPositionWithActions.cs" />
