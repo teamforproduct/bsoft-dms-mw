@@ -119,63 +119,63 @@ namespace DMS_WebAPI.Controllers
             };
         }
 
-        // POST api/Account/ChangePassword
-        [Route("ChangePassword")]
-        public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState, false, this);
-                //return BadRequest(ModelState);
-            }
+        //// POST api/Account/ChangePassword
+        //[Route("ChangePassword")]
+        //public async Task<IHttpActionResult> ChangePassword(ChangePasswordBindingModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return new JsonResult(ModelState, false, this);
+        //        //return BadRequest(ModelState);
+        //    }
 
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
-                model.NewPassword);
+        //    IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
+        //        model.NewPassword);
             
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ",result.Errors), this);
-                //return GetErrorResult(result);
-            }
+        //    if (!result.Succeeded)
+        //    {
+        //        return new JsonResult(result, false, string.Join(" ",result.Errors), this);
+        //        //return GetErrorResult(result);
+        //    }
 
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
+        //    var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        //    ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
 
-            user.IsChangePasswordRequired = false;
+        //    user.IsChangePasswordRequired = false;
 
-            result = await UserManager.UpdateAsync(user);
+        //    result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-                //return GetErrorResult(result);
-            }
+        //    if (!result.Succeeded)
+        //    {
+        //        return new JsonResult(result, false, string.Join(" ", result.Errors), this);
+        //        //return GetErrorResult(result);
+        //    }
 
-            var user_context = DmsResolver.Current.Get<UserContexts>();
-            user_context.UpdateChangePasswordRequired(user.Id, false);
+        //    var user_context = DmsResolver.Current.Get<UserContexts>();
+        //    user_context.UpdateChangePasswordRequired(user.Id, false);
 
-            return new JsonResult(null, this);
-            //return Ok();
-        }
+        //    return new JsonResult(null, this);
+        //    //return Ok();
+        //}
 
-        // POST api/Account/SetPassword
-        [Route("SetPassword")]
-        public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST api/Account/SetPassword
+        //[Route("SetPassword")]
+        //public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+        //    IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
 
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
+        //    if (!result.Succeeded)
+        //    {
+        //        return GetErrorResult(result);
+        //    }
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         // POST api/Account/AddExternalLogin
         [Route("AddExternalLogin")]

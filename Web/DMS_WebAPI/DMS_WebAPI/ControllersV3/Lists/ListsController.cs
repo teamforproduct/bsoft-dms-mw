@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Departments)]
         [ResponseType(typeof(List<ListItemWithPath>))]
-        public IHttpActionResult GetListDepartments([FromUri] FilterTree filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryJournalsTree filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -165,7 +165,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Journals)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterTree filter, [FromUri]  FilterDictionaryRegistrationJournal filterJoirnal, [FromUri]UIPaging paging)
+        public IHttpActionResult GetList([FromUri] FilterDictionaryJournalsTree filter, [FromUri]  FilterDictionaryRegistrationJournal filterJoirnal, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

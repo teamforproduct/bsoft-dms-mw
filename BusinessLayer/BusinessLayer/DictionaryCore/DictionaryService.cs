@@ -104,7 +104,7 @@ namespace BL.Logic.DictionaryCore
                 //    ftRes = ftRes.Where(filterContains);
                 //}
 
-                ftRes = ftRes.Where(x => dictionaryTypes.Contains( x.ObjectType));
+                ftRes = ftRes.Where(x => dictionaryTypes.Contains(x.ObjectType));
             }
             else
             {
@@ -116,7 +116,7 @@ namespace BL.Logic.DictionaryCore
                     .OrderByDescending(x => x.Rate);
             if (resWithRanges.Any())
             {
-                return resWithRanges.Select(x => new FullTextResultList { ObjectId = x.ObjectId , ObjectType = x.ObjectType }).ToList();
+                return resWithRanges.Select(x => new FullTextResultList { ObjectId = x.ObjectId, ObjectType = x.ObjectType }).ToList();
             }
             return null;
         }
@@ -520,8 +520,8 @@ namespace BL.Logic.DictionaryCore
 
         public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
         {
-            _dictDb.SetAgentUserLastPositionChose(context, 
-                new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LastPositionChose = string.Join(",",positionsIdList) });
+            _dictDb.SetAgentUserLastPositionChose(context,
+                new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LastPositionChose = string.Join(",", positionsIdList) });
         }
 
         #endregion DictionaryAgentUser
@@ -599,7 +599,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<ListItemWithPath> GetDepartmentShortList(IContext context, FilterTree filter, UIPaging paging)
         {
-            var tree = GetRegistrationJournalsTree(context, filter);
+            var tree = GetRegistrationJournalsTree(context, new FilterDictionaryJournalsTree { IsShowAll = true, IsActive = true });
 
             var list = new List<ListItemWithPath>();
 
@@ -891,7 +891,14 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetRegistrationJournals(context, newFilter, paging);
         }
 
-        public IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
+        public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FilterDictionaryJournalsTree filter)
+        {
+            if (filter == null) filter = new FilterDictionaryJournalsTree();
+            filter.LevelCount = 2;
+            return GetRegistrationJournalsTree(context, filter);
+        }
+
+        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
@@ -899,16 +906,16 @@ namespace BL.Logic.DictionaryCore
             IEnumerable<TreeItem> departments = null;
             IEnumerable<TreeItem> companies = null;
 
-            //if (levelCount >= 3 || levelCount == 0)
-            //{
-            //    var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
+            if (levelCount >= 3 || levelCount == 0)
+            {
+                var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
 
-            //    journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
-            //}
+                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
+            }
 
             if (levelCount >= 2 || levelCount == 0)
             {
-                departments = _dictDb.GetDepartmentsForRegistrationJournals(context, new FilterDictionaryDepartment()
+                departments = _dictDb.GetDepartmentsForRegistrationJournals(context, filter.IsShowAll,  new FilterDictionaryDepartment()
                 {
                     IsActive = filter?.IsActive,
                     //IDs = filter.DepartmentIDs
@@ -917,11 +924,17 @@ namespace BL.Logic.DictionaryCore
 
             if (levelCount >= 1 || levelCount == 0)
             {
-                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, new FilterDictionaryAgentOrg()
+                var f = new FilterDictionaryAgentOrg()
                 {
                     IsActive = filter?.IsActive,
-                    DepartmentIDs = departments.Select(x => x.Id).ToList(),
-                });
+                };
+
+                if (!filter.IsShowAll.HasValue)
+                {
+                    f.DepartmentIDs = departments.Select(x => x.Id).ToList();
+                }
+
+                companies = _dictDb.GetAgentClientCompaniesForStaffList(context, f);
             }
 
             List<TreeItem> flatList = new List<TreeItem>();
@@ -930,7 +943,7 @@ namespace BL.Logic.DictionaryCore
             if (journals != null) flatList.AddRange(journals);
             if (departments != null) flatList.AddRange(departments);
 
-            if (filter == null) filter = new FilterTree();
+            if (filter == null) filter = new FilterDictionaryJournalsTree();
 
             // Удаляю ветви которые не заканчиваются журналами 
             //filter.RemoveEmptyBranchesByObject = new List<EnumObjects> { EnumObjects.DictionaryRegistrationJournals };
@@ -940,8 +953,12 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        public IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterTree filter, FilterDictionaryRegistrationJournal filterJoirnal, UIPaging paging)
+        public IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryJournalsTree();
+            filter.IsShowAll = true;
+            filter.IsActive = true;
+
             var tree = GetRegistrationJournalsTree(context, filter, filterJoirnal);
 
             var list = new List<ListItemWithPath>();
