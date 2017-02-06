@@ -16,7 +16,7 @@ namespace BL.Database.DatabaseContext
             //context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
             //context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
 
-            // ModuleFeatures последовательность вызовов важна!11
+            // ModuleFeatures последовательность вызовов важна!!!
             DmsDbImportData.InitPermissions();
             context.SystemAccessTypesSet.AddRange(DmsDbImportData.GetSystemAccessTypes());
             context.SystemModulesSet.AddRange(DmsDbImportData.GetSystemModules());
@@ -24,6 +24,7 @@ namespace BL.Database.DatabaseContext
             context.SystemPermissionsSet.AddRange(DmsDbImportData.GetSystemPermissions());
             // ModuleFeatures
 
+            context.AdminRolesTypesSet.AddRange(DmsDbImportData.GetAdminRoleTypes());
             context.AdminAccessLevelsSet.AddRange(DmsDbImportData.GetAdminAccessLevels());
             context.SystemObjectsSet.AddRange(DmsDbImportData.GetSystemObjects());
             context.SystemActionsSet.AddRange(DmsDbImportData.GetSystemActions());

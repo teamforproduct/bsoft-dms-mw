@@ -79,7 +79,7 @@ namespace BL.Database.DatabaseContext
         }
 
         public virtual DbSet<AdminAccessLevels> AdminAccessLevelsSet { get; set; }
-        public virtual DbSet<AdminRoleActions> AdminRoleActionsSet { get; set; }
+        //public virtual DbSet<AdminRoleActions> AdminRoleActionsSet { get; set; }
         public virtual DbSet<AdminRolePermissions> AdminRolePermissionsSet { get; set; }
         public virtual DbSet<AdminRoles> AdminRolesSet { get; set; }
         public virtual DbSet<AdminRoleTypes> AdminRolesTypesSet { get; set; }

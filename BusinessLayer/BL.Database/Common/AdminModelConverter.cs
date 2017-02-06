@@ -148,6 +148,18 @@ namespace BL.Database.Common
             };
         }
 
+        public static IEnumerable<AdminRolePermissions> GetDbRolePermissions(IContext context, IEnumerable<InternalAdminRolePermission> list)
+        {
+            {
+                var items = new List<AdminRolePermissions>();
+                foreach (var item in list)
+                {
+                    items.Add(GetDbRolePermission(context, item));
+                }
+                return items;
+            }
+        }
+
         public static AdminRegistrationJournalPositions GetDbRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition item)
         {
             return item == null ? null : new AdminRegistrationJournalPositions

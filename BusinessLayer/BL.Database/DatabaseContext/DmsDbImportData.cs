@@ -21,6 +21,7 @@ namespace BL.Database.DatabaseContext
         private static List<SystemModules> systemModules = new List<SystemModules>();
         private static List<SystemFeatures> systemFeatures = new List<SystemFeatures>();
         private static List<SystemPermissions> systemPermissions = new List<SystemPermissions>();
+        private static List<AdminRolePermissions> systemRolePermissions = new List<AdminRolePermissions>();
 
         private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
         private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
@@ -30,8 +31,11 @@ namespace BL.Database.DatabaseContext
         public static List<SystemModules> GetSystemModules() => systemModules;
         public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
         public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
+        public static List<AdminRolePermissions> GetAdminRolePermissions() => systemRolePermissions;
 
-        private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
+        private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true,
+            List<EnumDefaultRoles> readRoles = null, List<EnumDefaultRoles> createRoles = null,
+            List<EnumDefaultRoles> updateRoles = null, List<EnumDefaultRoles> deleteRoles = null)
         {
             var m = systemModules.Where(x => x.Code == module).FirstOrDefault();
 
@@ -45,16 +49,33 @@ namespace BL.Database.DatabaseContext
             systemFeatures.Add(f);
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.R), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); 
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.R);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id });
+                readRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.C), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); 
-
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.C);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id });
+                createRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.U), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); 
-
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.U);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id });
+                updateRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.D), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id});     
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.D);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id });
+                deleteRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
+
+            
+
 
         }
 
@@ -64,98 +85,449 @@ namespace BL.Database.DatabaseContext
             systemPermissions.Clear();
             systemModules.Clear();
             systemFeatures.Clear();
+            systemRolePermissions.Clear();
 
-            AddPermission(100, Modules.Org, Features.Info);
-            AddPermission(110, Modules.Org, Features.Addresses);
-            AddPermission(120, Modules.Org, Features.Contacts);
-            AddPermission(200, Modules.Department, Features.Info);
-            AddPermission(210, Modules.Department, Features.Admins, u: false);
-            AddPermission(300, Modules.Position, Features.Info);
-            AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false);
-            AddPermission(320, Modules.Position, Features.Executors);
-            AddPermission(330, Modules.Position, Features.Roles, c: false, d: false);
-            AddPermission(340, Modules.Position, Features.Journals, c: false, d: false);
-            AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false);
+            AddPermission(100, Modules.Org, Features.Info, 
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin},
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(110, Modules.Org, Features.Addresses,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(120, Modules.Org, Features.Contacts,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(200, Modules.Department, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(210, Modules.Department, Features.Admins, u: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(300, Modules.Position, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(320, Modules.Position, Features.Executors,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(330, Modules.Position, Features.Roles, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(340, Modules.Position, Features.Journals, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
 
-            AddPermission(400, Modules.Journal, Features.Info);
-            AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false);
+            AddPermission(400, Modules.Journal, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(500, Modules.Templates, Features.Info);
-            AddPermission(510, Modules.Templates, Features.Tasks);
-            AddPermission(520, Modules.Templates, Features.Files);
-            AddPermission(530, Modules.Templates, Features.Papers);
-            AddPermission(540, Modules.Templates, Features.Plan);
-            AddPermission(550, Modules.Templates, Features.SignLists);
-            AddPermission(560, Modules.Templates, Features.AccessList);
+            AddPermission(500, Modules.Templates, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(510, Modules.Templates, Features.Tasks,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(520, Modules.Templates, Features.Files,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(530, Modules.Templates, Features.Papers,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(540, Modules.Templates, Features.Plan,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(550, Modules.Templates, Features.SignLists,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(560, Modules.Templates, Features.AccessList,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(600, Modules.DocumentType, Features.Info);
-            AddPermission(610, Modules.DocumentType, Features.Parameters);
+            AddPermission(600, Modules.DocumentType, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(610, Modules.DocumentType, Features.Parameters,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(700, Modules.Role, Features.Info);
-            AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false);
-            AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false);
-            AddPermission(730, Modules.Role, Features.Positions, c: false, u: false, d: false);
+            AddPermission(700, Modules.Role, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(730, Modules.Role, Features.Positions, c: false, u: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
 
-            AddPermission(800, Modules.Employee, Features.Info);
-            AddPermission(810, Modules.Employee, Features.Assignments);
-            AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false);
-            AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false);
-            AddPermission(840, Modules.Employee, Features.Addresses);
-            AddPermission(850, Modules.Employee, Features.Contacts);
+            AddPermission(800, Modules.Employee, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(810, Modules.Employee, Features.Assignments,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(840, Modules.Employee, Features.Addresses,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(850, Modules.Employee, Features.Contacts,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(900, Modules.Company, Features.Info);
-            AddPermission(910, Modules.Company, Features.ContactPersons);
-            AddPermission(920, Modules.Company, Features.Addresses);
-            AddPermission(930, Modules.Company, Features.Contacts);
-            AddPermission(940, Modules.Company, Features.Accounts);
-            
+            AddPermission(900, Modules.Company, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(910, Modules.Company, Features.ContactPersons,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(920, Modules.Company, Features.Addresses,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(930, Modules.Company, Features.Contacts,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(940, Modules.Company, Features.Accounts,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1000, Modules.Person, Features.Info);
-            AddPermission(1010, Modules.Person, Features.Passport, c: false, d: false);
-            AddPermission(1020, Modules.Person, Features.Addresses);
-            AddPermission(1030, Modules.Person, Features.Contacts);
 
-            AddPermission(1110, Modules.Bank, Features.Info);
-            AddPermission(1120, Modules.Bank, Features.Addresses);
-            AddPermission(1130, Modules.Bank, Features.Contacts);
+            AddPermission(1000, Modules.Person, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1010, Modules.Person, Features.Passport, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1020, Modules.Person, Features.Addresses,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1030, Modules.Person, Features.Contacts,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1200, Modules.Tags, Features.Info);
+            AddPermission(1110, Modules.Bank, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1120, Modules.Bank, Features.Addresses,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1130, Modules.Bank, Features.Contacts,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1300, Modules.SendList, Features.Info);
-            AddPermission(1310, Modules.SendList, Features.Contents);
+            AddPermission(1200, Modules.Tags, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1400, Modules.ContactType, Features.Info);
-            AddPermission(1410, Modules.AddressType, Features.Info);
+            AddPermission(1300, Modules.SendList, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1310, Modules.SendList, Features.Contents,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1500, Modules.Auditlog, Features.Info, c: false, u: false, d: false);
+            AddPermission(1400, Modules.ContactType, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1410, Modules.AddressType, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false);
-            AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false);
-            AddPermission(1620, Modules.CustomDictionaries, Features.Info);
-            AddPermission(1630, Modules.CustomDictionaries, Features.Contents);
+            AddPermission(1500, Modules.Auditlog, Features.Info, c: false, u: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false);
+            AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1620, Modules.CustomDictionaries, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(1630, Modules.CustomDictionaries, Features.Contents,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(2000, Modules.Documents, Features.Info);
-            AddPermission(2010, Modules.Documents, Features.Files);
-            AddPermission(2020, Modules.Documents, Features.Papers);
+            AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(2040, Modules.Documents, Features.Tasks);
-            AddPermission(2050, Modules.Documents, Features.AccessList, u: false);
-            AddPermission(2060, Modules.Documents, Features.Plan);
-            AddPermission(2070, Modules.Documents, Features.Tags, u: false, d: false);
-            AddPermission(2080, Modules.Documents, Features.Links, u: false);
-            AddPermission(2090, Modules.Documents, Features.Favourite, r: false, c: false, d: false);
+            AddPermission(2000, Modules.Documents, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2010, Modules.Documents, Features.Files,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2020, Modules.Documents, Features.Papers,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(2110, Modules.Documents, Features.Events, d: false);
-            AddPermission(2120, Modules.Documents, Features.Waits, d: false);
-            AddPermission(2130, Modules.Documents, Features.Signs, d: false);
-            AddPermission(2150, Modules.Documents, Features.WorkGroups, c: false, u: false, d: false);
-            AddPermission(2190, Modules.Documents, Features.SavedFilters);
+            AddPermission(2040, Modules.Documents, Features.Tasks,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2050, Modules.Documents, Features.AccessList, u: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2060, Modules.Documents, Features.Plan,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2070, Modules.Documents, Features.Tags, u: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2080, Modules.Documents, Features.Links, u: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2090, Modules.Documents, Features.Favourite, r: false, c: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
-            AddPermission(2200, Modules.PaperList, Features.Info);
+            AddPermission(2110, Modules.Documents, Features.Events, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2120, Modules.Documents, Features.Waits, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2130, Modules.Documents, Features.Signs, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2150, Modules.Documents, Features.WorkGroups, c: false, u: false, d: false,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+            AddPermission(2190, Modules.Documents, Features.SavedFilters,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
+
+            AddPermission(2200, Modules.PaperList, Features.Info,
+                readRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                createRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                updateRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin },
+                deleteRoles: new List<EnumDefaultRoles> { EnumDefaultRoles.Admin }
+                );
 
         }
 
@@ -763,6 +1135,43 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = null,
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
+        public static List<AdminRoleTypes> GetAdminRoleTypes()
+        {
+            var items = new List<AdminRoleTypes>();
+
+            items.Add(GetAdminRoleType(EnumDefaultRoles.Admin));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.User));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.Auditlog));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.DocumAccess));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.DocumActions));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.DocumPapers));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.DocumSign));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.DocumView));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.DocumWaits));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementAgents));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementAuth));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementContactPersons));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementDocumDictionaries));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementEmployees));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementJournals));
+            items.Add(GetAdminRoleType(EnumDefaultRoles.ManagementOrg));
+
+            return items;
+        }
+
+        private static AdminRoleTypes GetAdminRoleType(EnumDefaultRoles id)
+        {
+            string name = GetLabel("Roles", id.ToString());
+            return new AdminRoleTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
                 Name = name,
                 LastChangeUserId = (int)EnumSystemUsers.AdminUser,
                 LastChangeDate = DateTime.UtcNow,
