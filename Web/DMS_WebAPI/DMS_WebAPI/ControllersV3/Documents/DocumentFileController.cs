@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
-        [ResponseType(typeof(FrontDocumentEvent))]
+        [ResponseType(typeof(FrontDocumentAttachedFile))]
         public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Model.Enums;
 using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.FrontModel
