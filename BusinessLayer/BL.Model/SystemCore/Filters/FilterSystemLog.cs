@@ -1,4 +1,5 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.Common;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -7,12 +8,8 @@ namespace BL.Model.SystemCore.Filters
     /// <summary>
     /// Модель фильтра лога
     /// </summary>
-    public class FilterSystemLog
+    public class FilterSystemLog: BaseFilter
     {
-        /// <summary>
-        /// Массив ИД лога
-        /// </summary>
-        public List<int> IDs { get; set; }
         /// <summary>
         /// Массив ИД пользователей
         /// </summary>
