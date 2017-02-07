@@ -1,8 +1,10 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.SystemCore;
+using BL.Model.SystemCore.Filters;
 using BL.Model.Users;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
@@ -99,15 +101,29 @@ namespace DMS_WebAPI.ControllersV3.User
         }
 
         /// <summary>
-        /// Возвращает историю подключений
+        /// Возвращает историю подключений сотрудника
         /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.AuthLog)]
         [ResponseType(typeof(List<FrontSystemSession>))]
-        public IHttpActionResult GetAuthLog()
+        public IHttpActionResult Get( [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            throw new NotImplementedException();
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            var ctx = ctxs.Get();
+            var sesions = ctxs.GetContextListQuery();
+            var tmpService = DmsResolver.Current.Get<ILogger>();
+            if (filter == null) filter = new FilterSystemSession();
+            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
+            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
