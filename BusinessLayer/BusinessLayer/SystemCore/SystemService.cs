@@ -159,41 +159,6 @@ namespace BL.Logic.SystemCore
             return _systemDb.GetSystemActions(context, filter);
         }
 
-        public IEnumerable<ITreeItem> GetSystemActionForDIP(IContext context, int roleId, FilterTree filter)
-        {
-
-            var actions = _systemDb.GetSystemActionsForTree(context, roleId, new FilterSystemAction()
-            {
-                IsGrantable = true,
-                IsVisible = true,
-                IsGrantableByRecordId = false,
-            });
-
-            var objectList = (List<int>)_systemDb.GetObjectsByActions(context, new FilterSystemAction { IDs = actions.Select(x => x.Id).ToList() });
-
-            var objects = _systemDb.GetSystemObjectsForTree(context, roleId, new FilterSystemObject()
-            {
-                IDs = objectList,
-            });
-
-            List<TreeItem> flatList = new List<TreeItem>();
-
-            flatList.AddRange(objects);
-            flatList.AddRange(actions);
-
-            // перевожу на пользовательский язык лейблы в SearchText
-
-            var languageService = DmsResolver.Current.Get<ILanguages>();
-
-            foreach (var item in flatList)
-            {
-                item.SearchText  = languageService.GetTranslation(item.SearchText);
-            }
-
-            var res = Tree.GetList( Tree.Get(flatList, filter));
-
-            return res;
-        }
 
         public void RefreshSystemActions(IContext context)
         {

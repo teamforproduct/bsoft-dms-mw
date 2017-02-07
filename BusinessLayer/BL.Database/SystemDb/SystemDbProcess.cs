@@ -613,65 +613,6 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<TreeItem> GetSystemObjectsForTree(IContext context, int roleId, FilterSystemObject filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetSystemObjectsQuery(context, dbContext, filter);
-
-                qry = qry.OrderBy(x => x.Id);
-
-                var res = qry.Select(x => new FrontSystemObjectForDIP
-                {
-                    Id = x.Id,
-                    Name = x.Description,
-                    SearchText = x.Description,
-                    TreeId = string.Concat(x.Id.ToString(), "_", (int)EnumObjects.SystemObjects),
-                    TreeParentId = string.Empty,
-                    ObjectId = (int)EnumObjects.SystemObjects,
-                    IsActive = true,
-                    IsList = !(x.Actions.Where(y => y.ObjectId == x.Id).Any()),
-                    RoleId = roleId,
-                    SystemObjectId = x.Id,
-                }).ToList();
-
-                transaction.Complete();
-
-                return res;
-
-            }
-        }
-
-        public IEnumerable<TreeItem> GetSystemActionsForTree(IContext context, int roleId, FilterSystemAction filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetSystemActionsQuery(context, dbContext, filter);
-
-                qry = qry.OrderBy(x => x.Id);
-
-                var res = qry.Select(x => new FrontSystemActionForDIP
-                {
-                    Id = x.Id,
-                    Name = x.Description,
-                    SearchText = x.Description,
-                    TreeId = string.Concat(x.Id.ToString(), "_", (int)EnumObjects.SystemActions),
-                    TreeParentId = string.Concat(x.ObjectId.ToString(), "_", (int)EnumObjects.SystemObjects),
-                    ObjectId = (int)EnumObjects.SystemActions,
-                    IsActive = true,
-                    IsList = true,
-                    IsChecked = x.RoleActions.Any(y => y.RoleId == roleId & !y.RecordId.HasValue),
-                    RoleId = roleId,
-                    ActionId = x.Id,
-                }).ToList();
-
-                transaction.Complete();
-
-                return res;
-
-            }
-        }
-
         public IQueryable<SystemObjects> GetSystemObjectsQuery(IContext context, DmsContext dbContext, FilterSystemObject filter)
         {
             var qry = dbContext.SystemObjectsSet.AsQueryable();

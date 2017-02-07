@@ -10,8 +10,8 @@ namespace BL.Database.DBModel.Admin
         public AdminRoles()
         {
             this.UserRoles = new HashSet<AdminUserRoles>();
-            this.RoleActions = new HashSet<AdminRoleActions>();
             this.PositionRoles = new HashSet<AdminPositionRoles>();
+            this.RolePermissions = new HashSet<AdminRolePermissions>();
         }
 
         public int Id { get; set; }
@@ -33,7 +33,6 @@ namespace BL.Database.DBModel.Admin
         public virtual AdminRoleTypes RoleType { get; set; }
 
         public virtual ICollection<AdminUserRoles> UserRoles { get; set; }
-        public virtual ICollection<AdminRoleActions> RoleActions { get; set; }
         public virtual ICollection<AdminRolePermissions> RolePermissions { get; set; }
 
         public virtual ICollection<AdminPositionRoles> PositionRoles { get; set; }

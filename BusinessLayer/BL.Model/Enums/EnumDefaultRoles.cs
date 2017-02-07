@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumDefaultRoles
+    public enum Roles
     {
         
         /// <summary>
@@ -9,9 +9,14 @@
         Admin = 100,
 
         /// <summary>
-        /// Пользователь
+        /// Пользователь с правом выполнения действий с документом
         /// </summary>
         User = 200,
+
+        /// <summary>
+        /// Пользователь с правом просмотра
+        /// </summary>
+        Viewer = 210,
 
         /// <summary>
         /// Инструменты - история подключения
@@ -37,11 +42,6 @@
         /// Документы - право подписания
         /// </summary>
         DocumSign = 530,
-
-        /// <summary>
-        /// Документы - право просмотра документов
-        /// </summary>
-        DocumView = 540,
 
         /// <summary>
         /// Документы - право контроля по документам

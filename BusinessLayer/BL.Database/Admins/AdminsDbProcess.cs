@@ -464,6 +464,22 @@ namespace BL.Database.Admins
             }
         }
 
+        public int GetRoleByCode(IContext context, Roles item)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                // Для заводских ролей отношение к типам ролей 1:1
+                var qry = dbContext.AdminRolesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.RoleType.Code == item.ToString()).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.Id).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public bool ExistsRole(IContext context, FilterAdminRole filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())

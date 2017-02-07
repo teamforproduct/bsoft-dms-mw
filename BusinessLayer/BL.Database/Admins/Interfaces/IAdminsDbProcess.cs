@@ -11,6 +11,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.SystemCore;
+using BL.Model.Enums;
 
 namespace BL.Database.Admins.Interfaces
 {
@@ -35,6 +36,7 @@ namespace BL.Database.Admins.Interfaces
         void DeleteRole(IContext context, InternalAdminRole model);
         bool ExistsRole(IContext context, FilterAdminRole filter);
         string GetRoleTypeCode(IContext context, int id);
+        int GetRoleByCode(IContext context, Roles item);
         InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter);
