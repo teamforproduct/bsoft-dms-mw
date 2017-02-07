@@ -1,4 +1,5 @@
-﻿using BL.Model.WebAPI.IncomingModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using System;
@@ -53,7 +54,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
                         ConnectionString = model.ServerConnectionString,
                     }
                 };
-                var dbService = new WebAPIService();
+                var dbService = DmsResolver.Current.Get<WebAPIService>();
                 var itemId = dbService.AddClient(model2);
 
                 return RedirectToAction("Index", "Home");

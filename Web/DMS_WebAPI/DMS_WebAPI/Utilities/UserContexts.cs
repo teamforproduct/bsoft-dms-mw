@@ -172,7 +172,7 @@ namespace DMS_WebAPI.Utilities
 
             var context = GetInternal(token);
 
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             context.ClientLicence = dbProc.GetClientLicenceActive(clientId);
 
             db.ClientId = clientId;
@@ -269,7 +269,7 @@ namespace DMS_WebAPI.Utilities
 
             var context = GetInternal(token);
 
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             context.ClientLicence = dbProc.GetClientLicenceActive(client.Id);
 
             var dbs = dbProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers { ClientIds = new List<int> { client.Id } });
@@ -320,7 +320,7 @@ namespace DMS_WebAPI.Utilities
             if (clientUsers.Count() <= 0)
                 return;
 
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
             var lic = dbProc.GetClientLicenceActive(clientId);
 
@@ -444,7 +444,7 @@ namespace DMS_WebAPI.Utilities
 
             if (lic == null)
             {
-                var dbProc = new WebAPIDbProcess();
+                var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
                 context.ClientLicence = lic = dbProc.GetClientLicenceActive(clientId);
             }
 

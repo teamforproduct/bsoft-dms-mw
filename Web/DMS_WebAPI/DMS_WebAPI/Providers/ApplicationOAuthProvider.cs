@@ -75,7 +75,7 @@ namespace DMS_WebAPI.Providers
 
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
 
             ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
@@ -151,7 +151,7 @@ namespace DMS_WebAPI.Providers
         private void ThrowErrorGrantResourceOwnerCredentials (OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {
             string message = GetBrowswerInfo();
-            var dbWeb = new WebAPIDbProcess();
+            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
             var server = dbWeb.GetServerByUser(null, new SetUserServer { ClientId = -1, ServerId = -1, ClientCode = GetClientCodeFromBody(context.Request.Body) });
             var ctx = new AdminContext(server);
             var logger = DmsResolver.Current.Get<ILogger>();
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.Providers
             };
             ctx.CurrentClientId = dbWeb.GetClientId(errorInfo.ClientCode);
             int? agentId = null;
-            var dbService = new WebAPIService();
+            var dbService = DmsResolver.Current.Get<WebAPIService>();
             var user = dbService.GetUser(errorInfo.EMail, errorInfo.ClientCode);
             if (user != null)
             {
@@ -208,7 +208,7 @@ namespace DMS_WebAPI.Providers
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
-                var dbWeb = new WebAPIDbProcess();
+                var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
 
 
                 // Предполагаю, что один пользователь всегда привязан только к одному клиенту 
@@ -262,7 +262,7 @@ namespace DMS_WebAPI.Providers
             var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
             if (isIncludeFingerPrintInfo && context !=null)
             {
-                var dbWeb = new WebAPIDbProcess();
+                var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
                 var fingerprint = GetFingerprintFromBody(context.Request.Body);
                 var fps = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
                 if (fps.Any())

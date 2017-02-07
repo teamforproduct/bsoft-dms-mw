@@ -19,32 +19,32 @@ namespace DMS_WebAPI.Controllers.WebAPI
     {
         public IHttpActionResult Get(FilterAspNetLicences filter)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             var items = dbProc.GetLicences(filter);
             return new JsonResult(items, this);
         }
         public IHttpActionResult Get(int id)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             var item = dbProc.GetLicence(id);
             return new JsonResult(item, this);
         }
         public IHttpActionResult Post(ModifyAspNetLicence model)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             var itemId = dbProc.AddLicence(model);
             return Get(itemId);
         }
         public IHttpActionResult Put(int id, ModifyAspNetLicence model)
         {
             model.Id = id;
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             dbProc.UpdateLicence(model);
             return Get(model.Id);
         }
         public IHttpActionResult Delete(int id)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             dbProc.DeleteLicence(id);
             var item = new FrontAspNetLicence { Id = id };
             return new JsonResult(item, this);

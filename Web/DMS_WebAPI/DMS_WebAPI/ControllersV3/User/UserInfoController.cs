@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             var tmpItem = webService.GetUserInfo(ctx);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

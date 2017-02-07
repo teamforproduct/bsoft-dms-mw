@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = new WebAPIService();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
 
             var tmpItem = webSeevice.AddUserEmployee(ctx, model);
 
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = contexts.Get();
-            var webSeevice = new WebAPIService();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
 
             webSeevice.UpdateUserEmployee(ctx, model);
 
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = new WebAPIService();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
             webSeevice.DeleteUserEmployee(ctx, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);

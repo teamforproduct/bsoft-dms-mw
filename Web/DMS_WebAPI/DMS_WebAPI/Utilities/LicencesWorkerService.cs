@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                var webProc = new WebAPIDbProcess();
+                var webProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
                 var userContext = DmsResolver.Current.Get<UserContexts>();
 

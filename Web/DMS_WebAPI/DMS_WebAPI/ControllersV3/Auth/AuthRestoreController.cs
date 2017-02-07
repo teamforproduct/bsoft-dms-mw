@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             await webService.ConfirmEmailAgentUser(model.userId, model.code);
 
             var res = new JsonResult(null, this);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [Route("RestorePassword")]
         public async Task<IHttpActionResult> RestorePassword(RestorePasswordAgentUser model)
         {
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             await webService.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
             return new JsonResult(null, this);
         }
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [Route("ConfirmRestorePassword")]
         public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser([FromBody]ConfirmRestorePasswordAgentUser model)
         {
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             var res = await webService.ConfirmRestorePasswordAgentUser(model);
             return new JsonResult(new { UserName = res }, this);
         }

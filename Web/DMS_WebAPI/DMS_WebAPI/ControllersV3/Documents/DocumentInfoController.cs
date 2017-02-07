@@ -201,9 +201,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocument, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //var res = new JsonResult(tmpItem, this);
+            //res.SpentTime = stopWatch;
+            return Get(tmpItem);
         }
 
         /// <summary>
@@ -217,9 +217,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocument, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //var res = new JsonResult(tmpItem, this);
+            //res.SpentTime = stopWatch;
+            return Get(tmpItem);
         }
 
         /// <summary>
@@ -250,9 +250,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //var res = new JsonResult(tmpItem, this);
+            //res.SpentTime = stopWatch;
+            return Get(tmpItem);
         }
 
         /// <summary>

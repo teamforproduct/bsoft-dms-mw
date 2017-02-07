@@ -15,33 +15,33 @@ namespace DMS_WebAPI.Controllers.WebAPI
     {
         public IHttpActionResult Get(FilterAspNetClients filter)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             var items = dbProc.GetClients(filter);
             return new JsonResult(items, this);
         }
         public IHttpActionResult Get(int id)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             var item = dbProc.GetClient(id);
             return new JsonResult(item, this);
         }
         [AllowAnonymous]
         public IHttpActionResult Post(AddAspNetClient model)
         {
-            var dbProc = new WebAPIService();
+            var dbProc = DmsResolver.Current.Get<WebAPIService>();
             var itemId = dbProc.AddClient(model);
             return Get(itemId);
         }
         public IHttpActionResult Put(int id, ModifyAspNetClient model)
         {
             model.Id = id;
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             dbProc.UpdateClient(model);
             return Get(model.Id);
         }
         public IHttpActionResult Delete(int id)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             dbProc.DeleteClient(id);
             var item = new FrontAspNetClient { Id = id };
             return new JsonResult(item, this);

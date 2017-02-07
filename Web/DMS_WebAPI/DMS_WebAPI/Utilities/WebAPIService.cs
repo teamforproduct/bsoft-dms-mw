@@ -39,7 +39,12 @@ namespace DMS_WebAPI.Utilities
 {
     internal class WebAPIService
     {
-        //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+        private readonly WebAPIDbProcess _webDb;
+
+        public WebAPIService (WebAPIDbProcess webDb)
+        {
+            _webDb = webDb;
+        }
 
         private string FormRoleNameAdmin(string clientCode) => FormRoleName("Admin", clientCode);
 
@@ -49,8 +54,7 @@ namespace DMS_WebAPI.Utilities
 
         private string FormUserName(string userEmail, int clientId)
         {
-            var dbProc = new WebAPIDbProcess();
-            var client = dbProc.GetClient(clientId);
+            var client = _webDb.GetClient(clientId);
             if (client == null) throw new ClientIsNotFound();
             return FormUserName(userEmail, client.Code);
         }
@@ -316,36 +320,32 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteUserClients(FilterAspNetUserClients filter)
         {
-            var webDb = new WebAPIDbProcess();
-
             try
             {
-                webDb.DeleteUserClients(filter);
+                _webDb.DeleteUserClients(filter);
             }
             catch (Exception) { throw; }
         }
 
         public void DeleteUserServers(FilterAspNetUserServers filter)
         {
-            var webDb = new WebAPIDbProcess();
             try
             {
-                webDb.DeleteUserServers(filter);
+                _webDb.DeleteUserServers(filter);
             }
             catch (Exception) { throw; }
         }
 
         public string AddUser(AddWebUser model)
         {
-            var dbWeb = new WebAPIDbProcess();
             var userId = string.Empty;
 
             using (var transaction = Transactions.GetTransaction())
             {
                 userId = AddUser(FormUserName(model.Email, model.ClientId), model.Password, model.Email, "");
 
-                dbWeb.AddUserClient(new ModifyAspNetUserClient { UserId = userId, ClientId = model.ClientId });
-                dbWeb.AddUserServer(new ModifyAspNetUserServer { UserId = userId, ClientId = model.ClientId, ServerId = model.ServerId });
+                _webDb.AddUserClient(new ModifyAspNetUserClient { UserId = userId, ClientId = model.ClientId });
+                _webDb.AddUserServer(new ModifyAspNetUserServer { UserId = userId, ClientId = model.ClientId, ServerId = model.ServerId });
 
                 transaction.Complete();
             }
@@ -354,7 +354,7 @@ namespace DMS_WebAPI.Utilities
 
             RestorePasswordAgentUserAsync(new RestorePasswordAgentUser
             {
-                ClientCode = dbWeb.GetClientCode(model.ClientId),
+                ClientCode = _webDb.GetClientCode(model.ClientId),
                 Email = model.Email,
                 FirstEntry = "true"
             }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
@@ -382,10 +382,8 @@ namespace DMS_WebAPI.Utilities
 
         public string AddFirstAdmin(AddFirstAdminClient model)
         {
-            var dbWeb = new WebAPIDbProcess();
-
             #region Verification client code 
-            var client = dbWeb.GetClients(new FilterAspNetClients { Code = model.ClientCode, VerificationCode = model.VerificationCode }).FirstOrDefault();
+            var client = _webDb.GetClients(new FilterAspNetClients { Code = model.ClientCode, VerificationCode = model.VerificationCode }).FirstOrDefault();
 
             if (client == null) throw new ClientVerificationCodeIncorrect();
 
@@ -396,8 +394,8 @@ namespace DMS_WebAPI.Utilities
                 //using (var dbContext = new ApplicationDbContext())
                 using (var transaction = Transactions.GetTransaction())
                 {
-                    var clientId = dbWeb.GetClientId(model.ClientCode);
-                    var serverId = dbWeb.GetServerIdByClientId(clientId);
+                    var clientId = _webDb.GetClientId(model.ClientCode);
+                    var serverId = _webDb.GetServerIdByClientId(clientId);
 
                     #region Create user   
                     var userId = AddUser(new AddWebUser
@@ -439,15 +437,13 @@ namespace DMS_WebAPI.Utilities
 
         public string AddClientSaaS(AddClientSaaS model)
         {
-            var dbWeb = new WebAPIDbProcess();
-
             // Проверка уникальности доменного имени
-            if (dbWeb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+            if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             //TODO Автоматическое определение сервера
             // определяю сервер для клиента пока первый попавшийся
             // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-            var server = dbWeb.GetServers(new FilterAdminServers()).FirstOrDefault();
+            var server = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
             if (server == null) throw new ServerIsNotFound();
 
             // Если не указан язык, беру язык по умолчанию 
@@ -462,14 +458,14 @@ namespace DMS_WebAPI.Utilities
             using (var transaction = Transactions.GetTransaction())
             {
                 // Создаю клиента
-                model.ClientId = dbWeb.AddClient(new ModifyAspNetClient
+                model.ClientId = _webDb.AddClient(new ModifyAspNetClient
                 {
                     Name = model.ClientCode,
                     Code = model.ClientCode,
                 });
 
                 // Линкую клиента на сервер
-                dbWeb.AddClientServer(new ModifyAspNetClientServer { ClientId = model.ClientId, ServerId = server.Id });
+                _webDb.AddClientServer(new ModifyAspNetClientServer { ClientId = model.ClientId, ServerId = server.Id });
 
                 // Линкую клиента на лицензию
 
@@ -526,16 +522,14 @@ namespace DMS_WebAPI.Utilities
 
         public int AddClient(AddAspNetClient model)
         {
-            var dbWeb = new WebAPIDbProcess();
-
             //TODO в transaction не может подлючиться к базе
             if (model.Server.Id <= 0)
             {
-                dbWeb.InitializerDatabase(model.Server);
+                _webDb.InitializerDatabase(model.Server);
             }
 
             // Проверка уникальности доменного имени
-            if (dbWeb.ExistsClients(new FilterAspNetClients { Code = model.Client.Code })) throw new ClientCodeAlreadyExists(model.Client.Code);
+            if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.Client.Code })) throw new ClientCodeAlreadyExists(model.Client.Code);
 
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
@@ -546,7 +540,7 @@ namespace DMS_WebAPI.Utilities
                 #region Create client 1 
 
                 // Создаю клиента
-                var clientId = dbWeb.AddClient(new ModifyAspNetClient
+                var clientId = _webDb.AddClient(new ModifyAspNetClient
                 {
                     Name = model.Client.Name,
                     Code = model.Client.Code,
@@ -555,7 +549,7 @@ namespace DMS_WebAPI.Utilities
                 AspNetClientLicences clientLicence;
                 if (model.LicenceId > 0)
                 {
-                    dbWeb.AddClientLicence(clientId, model.LicenceId.GetValueOrDefault());
+                    _webDb.AddClientLicence(clientId, model.LicenceId.GetValueOrDefault());
                 }
 
                 #endregion Create client 1
@@ -564,10 +558,10 @@ namespace DMS_WebAPI.Utilities
 
                 if (model.Server.Id <= 0)
                 {
-                    model.Server.Id = dbWeb.AddServer(model.Server);
+                    model.Server.Id = _webDb.AddServer(model.Server);
                 }
 
-                dbWeb.AddClientServer(new ModifyAspNetClientServer { ClientId = clientId, ServerId = model.Server.Id });
+                _webDb.AddClientServer(new ModifyAspNetClientServer { ClientId = clientId, ServerId = model.Server.Id });
 
                 #endregion Create DB
 
@@ -700,11 +694,9 @@ namespace DMS_WebAPI.Utilities
 
             var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
 
-            var dbWeb = new WebAPIDbProcess();
+            var client = _webDb.GetClient(model.ClientCode);
 
-            var client = dbWeb.GetClient(model.ClientCode);
-
-            var db = dbWeb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
+            var db = _webDb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
 
             var ctx = new AdminContext(db);
 
@@ -736,11 +728,9 @@ namespace DMS_WebAPI.Utilities
 
             var settings = DmsResolver.Current.Get<ISettings>();
 
-            var dbWeb = new WebAPIDbProcess();
+            var client = _webDb.GetClient(model.ClientCode);
 
-            var client = dbWeb.GetClient(model.ClientCode);
-
-            var db = dbWeb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
+            var db = _webDb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
 
             var ctx = new AdminContext(db);
 
@@ -861,20 +851,17 @@ namespace DMS_WebAPI.Utilities
         #region Fingerprints
         public IEnumerable<FrontAspNetUserFingerprint> GetUserFingerprints(FilterAspNetUserFingerprint filter)
         {
-            var dbWeb = new WebAPIDbProcess();
-            return dbWeb.GetUserFingerprints(filter);
+            return _webDb.GetUserFingerprints(filter);
         }
 
         public FrontAspNetUserFingerprint GetUserFingerprint(int id)
         {
-            var dbWeb = new WebAPIDbProcess();
-            return dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint { IDs = new List<int> { id } }).FirstOrDefault();
+            return _webDb.GetUserFingerprints(new FilterAspNetUserFingerprint { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public bool ExistsUserFingerprints(FilterAspNetUserFingerprint filter)
         {
-            var dbWeb = new WebAPIDbProcess();
-            return dbWeb.ExistsUserFingerprints(filter);
+            return _webDb.ExistsUserFingerprints(filter);
         }
 
         public int MergeUserFingerprint(AddAspNetUserFingerprint model)
@@ -886,9 +873,7 @@ namespace DMS_WebAPI.Utilities
                 model.UserId = user.Id;
             }
 
-            var dbWeb = new WebAPIDbProcess();
-
-            var fp = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint
+            var fp = _webDb.GetUserFingerprints(new FilterAspNetUserFingerprint
             {
                 UserIDs = new List<string> { model.UserId },
                 FingerprintExact = model.Fingerprint
@@ -914,27 +899,23 @@ namespace DMS_WebAPI.Utilities
             model.Browser = bc.Browser;
             model.Platform = bc.Platform;
 
-            var dbWeb = new WebAPIDbProcess();
-            return dbWeb.AddUserFingerprint(model);
+            return _webDb.AddUserFingerprint(model);
         }
 
         public void UpdateUserFingerprint(ModifyAspNetUserFingerprint model)
         {
-            var dbWeb = new WebAPIDbProcess();
-            dbWeb.UpdateUserFingerprint(model);
+            _webDb.UpdateUserFingerprint(model);
         }
 
         public void DeleteUserFingerprint(int id)
         {
-            var dbWeb = new WebAPIDbProcess();
-            dbWeb.DeleteUserFingerprint(id);
+            _webDb.DeleteUserFingerprint(id);
         }
 
 
         public IEnumerable<ListItem> GetControlQuestions()
         {
-            var dbWeb = new WebAPIDbProcess();
-            return dbWeb.GetControlQuestions();
+            return _webDb.GetControlQuestions();
         }
         #endregion
     }

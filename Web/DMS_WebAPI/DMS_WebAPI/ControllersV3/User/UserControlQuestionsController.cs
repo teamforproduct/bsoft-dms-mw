@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             var user = webService.GetUser(ctx, ctx.CurrentAgentId);
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.ChangeControlQuestion(model);
             return Get();
         }
