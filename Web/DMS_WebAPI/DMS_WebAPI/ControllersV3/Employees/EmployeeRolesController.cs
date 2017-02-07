@@ -21,6 +21,7 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.Tree;
+using System;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -49,6 +50,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
@@ -71,6 +74,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = false;
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
