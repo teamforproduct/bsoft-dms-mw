@@ -18,6 +18,8 @@ namespace BL.Logic.AdminCore
             }
         }
 
+        public override bool CanExecute() => IsModified(Model.RoleId);
+
         public override object Execute()
         {
             var list = _systemDb.GetInternalPermissions(_context, new FilterSystemPermissions
