@@ -7,15 +7,12 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.TreeBuilder;
-using BL.Model.Common;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Tree;
-using BL.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -250,7 +247,7 @@ namespace BL.Logic.SystemCore
 
             foreach (var act in systemImportObjects)
             {
-                var i = systemDbObjects.Where(x => x.Id == act.Id).FirstOrDefault();
+                var i = systemDbObjects.FirstOrDefault(x => x.Id == act.Id);
 
                 if (i == null)
                 {
@@ -262,11 +259,6 @@ namespace BL.Logic.SystemCore
                 }
             }
 
-        }
-
-        public void CheckSystemActions()
-        {
-            DmsDbImportData.CheckSystemActions();
         }
 
         public int AddSystemDate(IContext ctx, DateTime date)

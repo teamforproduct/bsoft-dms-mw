@@ -33,9 +33,7 @@ using iTextSharp.text.pdf;
 using System.IO;
 using BL.Database.Documents.Interfaces;
 using BL.Model.Reports.FrontModel;
-using System.Data.Entity.Core.Objects;
 using System.Globalization;
-using System.Threading.Tasks;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
 

@@ -2,68 +2,64 @@
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
 using BL.Model.Common;
-using BL.Model.Constants;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
-using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DatabaseContext
 {
     public static class DmsDbImportData
     {
 
-        private static List<SystemModules> systemModules = new List<SystemModules>();
-        private static List<SystemFeatures> systemFeatures = new List<SystemFeatures>();
-        private static List<SystemPermissions> systemPermissions = new List<SystemPermissions>();
+        private static readonly List<SystemModules> SystemModules = new List<SystemModules>();
+        private static readonly List<SystemFeatures> SystemFeatures = new List<SystemFeatures>();
+        private static readonly List<SystemPermissions> SystemPermissions = new List<SystemPermissions>();
 
         private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
         private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
         private static int GetFeatureId(string module, string feature) => GetConcatId(Modules.GetId(module), Features.GetId(feature));
         public static int GetPermissionId(string module, string feature, EnumAccessTypes type) => GetConcatId(Modules.GetId(module), Features.GetId(feature), type.GetHashCode());
 
-        public static List<SystemModules> GetSystemModules() => systemModules;
-        public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
-        public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
+        public static List<SystemModules> GetSystemModules() => SystemModules;
+        public static List<SystemFeatures> GetSystemFeatures() => SystemFeatures;
+        public static List<SystemPermissions> GetSystemPermissions() => SystemPermissions;
 
         private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
         {
-            var m = systemModules.Where(x => x.Code == module).FirstOrDefault();
+            var m = SystemModules.FirstOrDefault(x => x.Code == module);
 
             if (m == null)
             {
                 m = new SystemModules { Id = Modules.GetId(module), Code = module, Name = GetLabel("Modules", module), Order = order };
-                systemModules.Add(m);
+                SystemModules.Add(m);
             }
 
             var f = new SystemFeatures { Id = GetFeatureId(module, feature), ModuleId = Modules.GetId(module), Code = feature, Name = GetLabel(module, feature), Order = order };
-            systemFeatures.Add(f);
+            SystemFeatures.Add(f);
 
             if (r)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.R), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); 
+                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.R), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); 
 
             if (c)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.C), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); 
+                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.C), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); 
 
             if (u)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.U), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); 
+                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.U), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); 
 
             if (d)
-                systemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.D), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id});     
+                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.D), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id});     
 
         }
 
 
         public static void InitPermissions()
         {
-            systemPermissions.Clear();
-            systemModules.Clear();
-            systemFeatures.Clear();
+            SystemPermissions.Clear();
+            SystemModules.Clear();
+            SystemFeatures.Clear();
 
             AddPermission(100, Modules.Org, Features.Info);
             AddPermission(110, Modules.Org, Features.Addresses);
@@ -162,12 +158,14 @@ namespace BL.Database.DatabaseContext
 
         public static List<SystemAccessTypes> GetSystemAccessTypes()
         {
-            var items = new List<SystemAccessTypes>();
+            var items = new List<SystemAccessTypes>
+            {
+                GetSystemAccessType(EnumAccessTypes.C, 2),
+                GetSystemAccessType(EnumAccessTypes.R, 1),
+                GetSystemAccessType(EnumAccessTypes.U, 3),
+                GetSystemAccessType(EnumAccessTypes.D, 4)
+            };
 
-            items.Add(GetSystemAccessType(EnumAccessTypes.C, 2));
-            items.Add(GetSystemAccessType(EnumAccessTypes.R, 1));
-            items.Add(GetSystemAccessType(EnumAccessTypes.U, 3));
-            items.Add(GetSystemAccessType(EnumAccessTypes.D, 4));
 
             return items;
         }
@@ -175,7 +173,7 @@ namespace BL.Database.DatabaseContext
         private static SystemAccessTypes GetSystemAccessType(EnumAccessTypes id, int order)
 
         {
-            return new SystemAccessTypes()
+            return new SystemAccessTypes
             {
                 Id = (int)id,
                 Code = id.ToString(),
@@ -188,84 +186,86 @@ namespace BL.Database.DatabaseContext
 
         public static List<SystemObjects> GetSystemObjects()
         {
-            var items = new List<SystemObjects>();
+            var items = new List<SystemObjects>
+            {
+                GetSystemObjects(EnumObjects.System),
+                GetSystemObjects(EnumObjects.SystemObjects),
+                GetSystemObjects(EnumObjects.SystemActions),
+                GetSystemObjects(EnumObjects.Documents),
+                GetSystemObjects(EnumObjects.DocumentAccesses),
+                GetSystemObjects(EnumObjects.DocumentRestrictedSendLists),
+                GetSystemObjects(EnumObjects.DocumentSendLists),
+                GetSystemObjects(EnumObjects.DocumentFiles),
+                GetSystemObjects(EnumObjects.DocumentLinks),
+                GetSystemObjects(EnumObjects.DocumentSendListStages),
+                GetSystemObjects(EnumObjects.DocumentEvents),
+                GetSystemObjects(EnumObjects.DocumentWaits),
+                GetSystemObjects(EnumObjects.DocumentSubscriptions),
+                GetSystemObjects(EnumObjects.DocumentTasks),
+                GetSystemObjects(EnumObjects.DocumentPapers),
+                GetSystemObjects(EnumObjects.DocumentPaperEvents),
+                GetSystemObjects(EnumObjects.DocumentPaperLists),
+                GetSystemObjects(EnumObjects.DocumentSavedFilters),
+                GetSystemObjects(EnumObjects.DocumentTags),
+                GetSystemObjects(EnumObjects.DictionaryDocumentType),
+                GetSystemObjects(EnumObjects.DictionaryAddressType),
+                GetSystemObjects(EnumObjects.DictionaryDocumentSubjects),
+                GetSystemObjects(EnumObjects.DictionaryRegistrationJournals),
+                GetSystemObjects(EnumObjects.DictionaryContactType),
+                GetSystemObjects(EnumObjects.DictionaryAgents),
+                GetSystemObjects(EnumObjects.DictionaryAgentAddresses),
+                GetSystemObjects(EnumObjects.DictionaryBankAddress),
+                GetSystemObjects(EnumObjects.DictionaryClientCompanyAddress),
+                GetSystemObjects(EnumObjects.DictionaryCompanyAddress),
+                GetSystemObjects(EnumObjects.DictionaryEmployeeAddress),
+                GetSystemObjects(EnumObjects.DictionaryPersonAddress),
+                GetSystemObjects(EnumObjects.DictionaryContacts),
+                GetSystemObjects(EnumObjects.DictionaryBankContact),
+                GetSystemObjects(EnumObjects.DictionaryClientCompanyContact),
+                GetSystemObjects(EnumObjects.DictionaryCompanyContact),
+                GetSystemObjects(EnumObjects.DictionaryEmployeeContact),
+                GetSystemObjects(EnumObjects.DictionaryPersonContact),
+                GetSystemObjects(EnumObjects.DictionaryAgentPeople),
+                GetSystemObjects(EnumObjects.DictionaryAgentPersons),
+                GetSystemObjects(EnumObjects.DictionaryAgentEmployees),
+                GetSystemObjects(EnumObjects.DictionaryAgentCompanies),
+                GetSystemObjects(EnumObjects.DictionaryAgentBanks),
+                GetSystemObjects(EnumObjects.DictionaryAgentUsers),
+                GetSystemObjects(EnumObjects.DictionaryAgentAccounts),
+                GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies),
+                GetSystemObjects(EnumObjects.DictionaryDepartments),
+                GetSystemObjects(EnumObjects.DictionaryPositions),
+                GetSystemObjects(EnumObjects.DictionaryStandartSendListContent),
+                GetSystemObjects(EnumObjects.DictionaryStandartSendLists),
+                GetSystemObjects(EnumObjects.DictionaryPositionExecutorTypes),
+                GetSystemObjects(EnumObjects.DictionaryPositionExecutors),
+                GetSystemObjects(EnumObjects.TemplateDocument),
+                GetSystemObjects(EnumObjects.TemplateDocumentSendList),
+                GetSystemObjects(EnumObjects.TemplateDocumentRestrictedSendList),
+                GetSystemObjects(EnumObjects.TemplateDocumentTask),
+                GetSystemObjects(EnumObjects.TemplateDocumentAttachedFiles),
+                GetSystemObjects(EnumObjects.TemplateDocumentPaper),
+                GetSystemObjects(EnumObjects.DictionaryTag),
+                GetSystemObjects(EnumObjects.CustomDictionaryTypes),
+                GetSystemObjects(EnumObjects.CustomDictionaries),
+                GetSystemObjects(EnumObjects.Properties),
+                GetSystemObjects(EnumObjects.PropertyLinks),
+                GetSystemObjects(EnumObjects.PropertyValues),
+                GetSystemObjects(EnumObjects.EncryptionCertificates),
+                GetSystemObjects(EnumObjects.AdminRoles),
+                GetSystemObjects(EnumObjects.AdminRolePermission),
+                GetSystemObjects(EnumObjects.AdminPositionRoles),
+                GetSystemObjects(EnumObjects.AdminUserRoles),
+                GetSystemObjects(EnumObjects.AdminSubordination),
+                GetSystemObjects(EnumObjects.AdminRegistrationJournalPositions),
+                GetSystemObjects(EnumObjects.SystemSettings)
+            };
 
-            items.Add(GetSystemObjects(EnumObjects.System));
-            items.Add(GetSystemObjects(EnumObjects.SystemObjects));
-            items.Add(GetSystemObjects(EnumObjects.SystemActions));
 
-            items.Add(GetSystemObjects(EnumObjects.Documents));
-            items.Add(GetSystemObjects(EnumObjects.DocumentAccesses));
-            items.Add(GetSystemObjects(EnumObjects.DocumentRestrictedSendLists));
-            items.Add(GetSystemObjects(EnumObjects.DocumentSendLists));
-            items.Add(GetSystemObjects(EnumObjects.DocumentFiles));
-            items.Add(GetSystemObjects(EnumObjects.DocumentLinks));
-            items.Add(GetSystemObjects(EnumObjects.DocumentSendListStages));
-            items.Add(GetSystemObjects(EnumObjects.DocumentEvents));
-            items.Add(GetSystemObjects(EnumObjects.DocumentWaits));
-            items.Add(GetSystemObjects(EnumObjects.DocumentSubscriptions));
-            items.Add(GetSystemObjects(EnumObjects.DocumentTasks));
-            items.Add(GetSystemObjects(EnumObjects.DocumentPapers));
-            items.Add(GetSystemObjects(EnumObjects.DocumentPaperEvents));
-            items.Add(GetSystemObjects(EnumObjects.DocumentPaperLists));
-            items.Add(GetSystemObjects(EnumObjects.DocumentSavedFilters));
-            items.Add(GetSystemObjects(EnumObjects.DocumentTags));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryDocumentType));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAddressType));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryDocumentSubjects));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryRegistrationJournals));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryContactType));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgents));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAddresses));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryBankAddress));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryClientCompanyAddress));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyAddress));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeAddress));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryPersonAddress));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryContacts));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryBankContact));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryClientCompanyContact));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyContact));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeContact));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryPersonContact));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPeople));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentBanks));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentUsers));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAccounts));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryDepartments));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryPositions));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendListContent));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendLists));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutorTypes));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutors));
-            items.Add(GetSystemObjects(EnumObjects.TemplateDocument));
-            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentSendList));
-            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentRestrictedSendList));
-            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentTask));
-            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentAttachedFiles));
-            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentPaper));
-            items.Add(GetSystemObjects(EnumObjects.DictionaryTag));
-            items.Add(GetSystemObjects(EnumObjects.CustomDictionaryTypes));
-            items.Add(GetSystemObjects(EnumObjects.CustomDictionaries));
-            items.Add(GetSystemObjects(EnumObjects.Properties));
-            items.Add(GetSystemObjects(EnumObjects.PropertyLinks));
-            items.Add(GetSystemObjects(EnumObjects.PropertyValues));
 
-            items.Add(GetSystemObjects(EnumObjects.EncryptionCertificates));
 
-            items.Add(GetSystemObjects(EnumObjects.AdminRoles));
-            items.Add(GetSystemObjects(EnumObjects.AdminRolePermission));
-            items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles));
-            items.Add(GetSystemObjects(EnumObjects.AdminUserRoles));
-            items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
             //items.Add(GetSystemObjects(EnumObjects.DepartmentAdmin));
-            items.Add(GetSystemObjects(EnumObjects.AdminRegistrationJournalPositions));
 
-            items.Add(GetSystemObjects(EnumObjects.SystemSettings));
 
 
             return items;
@@ -275,7 +275,7 @@ namespace BL.Database.DatabaseContext
         {
             string description = GetLabel("Objects", id.ToString());
 
-            return new SystemObjects()
+            return new SystemObjects
             {
                 Id = (int)id,
                 Code = id.ToString(),
@@ -307,7 +307,6 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForControl, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
-            //items.Add(GetSysAct(EnumDocumentActions.SendForControlChange, EnumObjects.Documents, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecution, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents, category: "Подписание", isVisibleInMenu: false));
@@ -599,34 +598,6 @@ namespace BL.Database.DatabaseContext
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
             return items;
-        }
-
-        public static void CheckSystemActions()
-        {
-            return; // При переходе на Permissions CheckSystemActions потерял смысл и даже вредет. В базе нет необходимости хранить действия
-
-            int actionsCountByEnums =
-            Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
-
-            var actionsCountByList = GetSystemActions().Count();
-
-            if (actionsCountByEnums != actionsCountByList)
-            {
-                List<EnumModel> list = CheckSystemActions2();
-                string s = string.Empty;
-                foreach (var item in list)
-                {
-                    s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
-                }
-                throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
-            }
-
-
         }
 
         public static List<EnumModel> CheckSystemActions2()
@@ -1295,7 +1266,7 @@ namespace BL.Database.DatabaseContext
         private static SystemFormats GetSystemFormats(EnumSystemFormats id, string code)
         {
             string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id + ".Description");
             return new SystemFormats()
             {
                 Id = (int)id,

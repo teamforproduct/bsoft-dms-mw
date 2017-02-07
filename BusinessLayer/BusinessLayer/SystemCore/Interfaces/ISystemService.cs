@@ -1,18 +1,11 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.DocumentCore.Filters;
-using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
-using BL.Model.DocumentCore.Actions;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.Tree;
 using System;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Database.DBModel.System;
-using BL.Model.Users;
-using BL.Model.Common;
 
 namespace BL.Logic.SystemCore.Interfaces
 {
@@ -46,8 +39,5 @@ namespace BL.Logic.SystemCore.Interfaces
         DateTime GetSystemDate(IContext ctx);
 
         void RefreshModuleFeature(IContext context);
-
-        void CheckSystemActions();
-
     }
 }

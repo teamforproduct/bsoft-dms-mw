@@ -75,10 +75,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
 
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
-                var objToProcess = new EnumObjects[]
+                var objToProcess = new[]
                 {
                     EnumObjects.Documents, /*EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,*/
-                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
+                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles, EnumObjects.DocumentTags
                 };
                 //delete all current document before reindexing
                 worker.DeleteAllDocuments();
@@ -263,7 +263,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 }
 
                 var toUpdateNonDocuments = _systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
-                //_logger.Information(ctx, $"To update Non document {toUpdateNonDocuments.Count} ");
                 if (toUpdateNonDocuments.Any())
                 {
                     foreach (var itm in toUpdateNonDocuments)
@@ -295,7 +294,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var objToProcess = new[]
                 {
                     EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
-                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles
+                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles, EnumObjects.DocumentTags
                 };
 
                 var maxId = _systemDb.GetCurrentMaxCasheId(ctx);

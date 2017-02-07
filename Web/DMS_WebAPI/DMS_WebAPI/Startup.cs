@@ -27,7 +27,6 @@ namespace DMS_WebAPI
 
             // Проверка на целостность Actions в процедуре импорта 
             var systemService = DmsResolver.Current.Get<ISystemService>();
-            systemService.CheckSystemActions();
 
             // Проверка на целостность переводов
             ApplicationDbImportData.CheckLanguages();

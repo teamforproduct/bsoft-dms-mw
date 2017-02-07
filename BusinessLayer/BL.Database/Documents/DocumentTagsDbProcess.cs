@@ -6,7 +6,6 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
 using LinqKit;
 using BL.Database.DBModel.Document;
-using System.Transactions;
 using BL.CrossCutting.Helpers;
 
 namespace BL.Database.Documents
@@ -26,7 +25,7 @@ namespace BL.Database.Documents
                     .Where(x => x.DocumentId == documentId).AsQueryable();
                 if (!ctx.IsAdmin)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentTags>();
+                    var filterContains = PredicateBuilder.New<DocumentTags>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Tag.PositionId == value || !e.Tag.PositionId.HasValue).Expand());
 
