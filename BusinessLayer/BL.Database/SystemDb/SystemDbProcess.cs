@@ -2428,8 +2428,8 @@ namespace BL.Database.SystemDb
                             ObjectId = x.id,
                             ObjectText = x.agent.Name.Trim()
                         }).ToList());
-
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgents && !res.Select(s=>s.Id).Contains(x.Id) && x.Id <= maxId).Select(x=>x.Id).ToList()); 
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgents && !ids.Contains(x.Id) && x.Id <= maxId).Select(x=>x.Id).ToList()); 
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
@@ -2445,7 +2445,8 @@ namespace BL.Database.SystemDb
                             ObjectId = x.id,
                             ObjectText = x.employee.PersonnelNumber + " " + x.employee.Description + " " + x.employee.Agent.Name + " " + x.employee.Agent.AgentPeople.FullName + " " + x.employee.Agent.AgentPeople.BirthDate + " " + x.employee.Agent.AgentPeople.PassportDate + " " + x.employee.Agent.AgentPeople.PassportNumber + " " + x.employee.Agent.AgentPeople.PassportSerial + " " + x.employee.Agent.AgentPeople.PassportText + " " + x.employee.Agent.AgentPeople.TaxCode
                         }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentEmployees && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentCompanies))
@@ -2462,7 +2463,8 @@ namespace BL.Database.SystemDb
                             ObjectText = x.agent.FullName.Trim() + " " + x.agent.OKPOCode.Trim() + " " + x.agent.Description.Trim() + " "
                                      + x.agent.TaxCode.Trim() + " " + x.agent.VATCode.Trim()
                         }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentCompanies && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentCompanies && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentPersons))
@@ -2478,7 +2480,8 @@ namespace BL.Database.SystemDb
                         ObjectText = x.person.Agent.AgentPeople.FullName.Trim() + " " + x.person.Description.Trim() + " " + x.person.Agent.AgentPeople.TaxCode.Trim() + " "
                                      + x.person.Agent.AgentPeople.BirthDate + " " + x.person.Agent.AgentPeople.PassportNumber + " " + x.person.Agent.AgentPeople.PassportSerial.Trim() + " " + x.person.Agent.AgentPeople.PassportText.Trim()
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentPersons && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentPersons && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentBanks))
@@ -2493,7 +2496,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.agent.Agent.Name.Trim() + " " + x.agent.Description.Trim() + " " + x.agent.MFOCode.Trim() + " " + x.agent.Swift.Trim()
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentBanks && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentBanks && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryContacts))
@@ -2509,7 +2513,8 @@ namespace BL.Database.SystemDb
                         ObjectText = x.contact.Agent.Name.Trim() + " " + x.contact.Description.Trim() + " " + x.contact.Contact.Trim() + " " + x.contact.ContactType.Code.Trim() + " "
                         + x.contact.ContactType.Name.Trim()
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryContacts && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryContacts && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 // не должны добавляться в полнотекст т.к. значения не локализованы
@@ -2540,7 +2545,8 @@ namespace BL.Database.SystemDb
                         ObjectText = x.address.Agent.Name.Trim() + " " + x.address.Description.Trim() + " " + x.address.Address.Trim() + " " + x.address.PostCode.Trim() + " "
                         + x.address.AddressType.Name.Trim()
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentAddresses && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentAddresses && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 //if (objectTypesToProcess.Contains(EnumObjects.DictionaryAddressType))
@@ -2569,7 +2575,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.account.AccountNumber + " " + x.account.Name + " " + x.account.Agent.Name + " " + x.account.AgentBank.MFOCode + " " + x.account.AgentBank.Agent.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentAccounts && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentAccounts && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 //if (objectTypesToProcess.Contains(EnumObjects.DictionaryDocumentType))
@@ -2598,7 +2605,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Name.Trim()
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryRegistrationJournals))
@@ -2613,7 +2621,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Index.Trim() + " " + x.doc.Name.Trim() + " " + x.doc.Department.Name.Trim() + " " + x.doc.Department.FullName.Trim()
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryRegistrationJournals && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryRegistrationJournals && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
 
@@ -2629,7 +2638,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.FullName + " " + x.doc.Code + " " + x.doc.Name + " " + x.doc.Company.FullName + " " + x.doc.ChiefPosition.FullName
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDepartments && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryDepartments && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositions))
@@ -2644,7 +2654,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.FullName + " " + x.doc.Name + " " + x.doc.Department.Name + " " + x.doc.ExecutorAgent.Name + " " + x.doc.MainExecutorAgent.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositions && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositions && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryStandartSendLists))
@@ -2659,7 +2670,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Name + " " + x.doc.Position.Department.Name + " " + x.doc.Position.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryStandartSendLists && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryStandartSendLists && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryStandartSendListContent))
@@ -2674,7 +2686,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Task + " " + x.doc.Description + " " + x.doc.StandartSendList.Name + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryStandartSendListContent && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryStandartSendListContent && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentClientCompanies))
@@ -2689,7 +2702,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.FullName
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentClientCompanies && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgentClientCompanies && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositionExecutorTypes))
@@ -2704,7 +2718,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Name + " " + x.doc.Code
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositionExecutorTypes && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositionExecutorTypes && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.CustomDictionaries))
@@ -2719,7 +2734,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Name + " " + x.doc.Code + " " + x.doc.Description
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.CustomDictionaries && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.CustomDictionaries && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryPositionExecutors))
@@ -2734,7 +2750,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Description + " " + x.doc.Agent.Name + " " + x.doc.EndDate + " " + x.doc.Position.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositionExecutors && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryPositionExecutors && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryTag))
@@ -2749,7 +2766,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.doc.Id,
                         ObjectText = x.doc.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryTag && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryTag && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 #endregion Dictionaries
@@ -2768,7 +2786,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Description + " " + x.doc.Addressee + " "  + x.doc.DocumentSubject.Name + " "+ x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocument && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocument && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentSendList))
@@ -2783,7 +2802,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Description + " " + x.doc.Document.Name + " " + x.doc.SendType.Name + " " + " " + x.doc.TargetAgent.Name + " " + x.doc.TargetPosition.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentSendList && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentSendList && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentRestrictedSendList))
@@ -2798,7 +2818,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentRestrictedSendList && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentRestrictedSendList && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentTask))
@@ -2813,7 +2834,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Document.Name + " " + x.doc.Position.FullName + " " + x.doc.Position.Name + " " + x.doc.Task
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentTask && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentTask && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.TemplateDocumentAttachedFiles))
@@ -2828,7 +2850,8 @@ namespace BL.Database.SystemDb
                         ObjectId = x.id,
                         ObjectText = x.doc.Document.Name + " " + x.doc.Extention + " " + x.doc.Name
                     }).ToList());
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentAttachedFiles && !res.Select(s => s.Id).Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
+                    var ids = res.Select(s => s.Id).ToList();
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocumentAttachedFiles && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 #endregion TemplateDocuments
