@@ -1,19 +1,12 @@
-﻿using BL.CrossCutting.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DependencyInjection;
+﻿using BL.Logic.AdminCore.Interfaces;
 using BL.Model.SystemCore;
-using DMS_WebAPI.Utilities;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
-using System.Web.Script.Serialization;
 using BL.CrossCutting.DependencyInjection;
 using System.Text;
 using System.Diagnostics;
@@ -22,12 +15,12 @@ namespace DMS_WebAPI.Results
 {
     public class JsonResult : IHttpActionResult
     {
-        object _data;
-        HttpRequestMessage _request;
-        bool _success;
-        string _msg;
-        object _meta;
-        UIPaging _paging;
+        readonly object _data;
+        readonly HttpRequestMessage _request;
+        readonly bool _success;
+        readonly string _msg;
+        readonly object _meta;
+        public UIPaging _paging;
         Stopwatch _stopwatch; // время выполнения запроса
 
         public UIPaging Paging { set { _paging = value; } }
@@ -51,26 +44,12 @@ namespace DMS_WebAPI.Results
         {
             _success = success;
         }
-        public JsonResult(object data, object meta, bool success, ApiController controller) : this(data, meta, controller)
-        {
-            _success = success;
-        }
-        public JsonResult(object data, string msg, ApiController controller) : this(data, controller)
-        {
-            _msg = msg;
-        }
-        public JsonResult(object data, object meta, string msg, ApiController controller) : this(data, meta, controller)
-        {
-            _msg = msg;
-        }
+
         public JsonResult(object data, bool success, string msg, ApiController controller) : this(data, success, controller)
         {
             _msg = msg;
         }
-        public JsonResult(object data, object meta, bool success, string msg, ApiController controller) : this(data, success, controller)
-        {
-            _msg = msg;
-        }
+
         public Task<HttpResponseMessage> ExecuteAsync(CancellationToken cancellationToken)
         {
 

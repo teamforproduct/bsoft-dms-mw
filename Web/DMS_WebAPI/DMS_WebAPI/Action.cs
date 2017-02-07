@@ -1,16 +1,11 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Enums;
 using DMS_WebAPI.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace DMS_WebAPI
 {
@@ -22,8 +17,7 @@ namespace DMS_WebAPI
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var res = tmpService.ExecuteAction(action, ctx, model);
 
-            if (res is int) return (int)res;
-            else return -1;
+            return res is int ? (int)res : -1;
         }
 
         public static int Execute(EnumAdminActions action, object model)
@@ -32,8 +26,7 @@ namespace DMS_WebAPI
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var res = tmpService.ExecuteAction(action, ctx, model);
 
-            if (res is int) return (int)res;
-            else return -1;
+            return res is int ? (int)res : -1;
         }
 
         public static int Execute(EnumSystemActions action, object model)
@@ -42,8 +35,7 @@ namespace DMS_WebAPI
             var tmpService = DmsResolver.Current.Get<ISystemService>();
             var res = tmpService.ExecuteAction(action, ctx, model);
 
-            if (res is int) return (int)res;
-            else return -1;
+            return res is int ? (int)res : -1;
         }
 
         public static int Execute(EnumEncryptionActions action, object model)
@@ -52,8 +44,7 @@ namespace DMS_WebAPI
             var tmpService = DmsResolver.Current.Get<IEncryptionService>();
             var res = tmpService.ExecuteAction(action, ctx, model);
 
-            if (res is int) return (int)res;
-            else return -1;
+            return res is int ? (int)res : -1;
         }
 
         public static int Execute(EnumDocumentActions action, object model, int? сurrentPositionId = null)
@@ -62,8 +53,7 @@ namespace DMS_WebAPI
             var tmpService = DmsResolver.Current.Get<IDocumentService>();
             var res = tmpService.ExecuteAction(action, ctx, model);
 
-            if (res is int) return (int)res;
-            else return -1;
+            return res is int ? (int)res : -1;
         }
 
     }
