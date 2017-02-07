@@ -80,6 +80,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
                 {
+                    NotContainsIDs = new List<int> { context.LoginLogId.HasValue? context.LoginLogId.Value: 0 },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                     ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
@@ -127,6 +128,13 @@ namespace BL.Database.SystemDb
                     var filterContains = PredicateBuilder.False<SystemLogs>();
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<SystemLogs>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ObjectIDs?.Count > 0)
