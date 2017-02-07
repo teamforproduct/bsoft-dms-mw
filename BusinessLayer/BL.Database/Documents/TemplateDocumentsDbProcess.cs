@@ -474,7 +474,7 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.Task.Task.Contains(filter.Task));
                     }
                 }
-                qry = qry.OrderBy(x => x.StageTypeId).ThenBy(x => x.StageTypeId).ThenBy(x => x.SendTypeId).ThenBy(x=>x.Id);
+                qry = qry.OrderBy(x => x.StageTypeId).ThenBy(x => x.Stage).ThenBy(x => x.SendTypeId).ThenBy(x=>x.Id);
                 var res = qry.Select(x => new FrontTemplateDocumentSendList
                 {
                     Id = x.Id,
