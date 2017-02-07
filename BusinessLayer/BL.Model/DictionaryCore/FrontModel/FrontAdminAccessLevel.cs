@@ -2,10 +2,8 @@
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
-    public class FrontAdminAccessLevel 
+    public class FrontAdminAccessLevel : ListItem
     {
-        public int Id { get; set; }
         public string Code { get; set; }
-        public string Name { get; set; }
     }
 }

@@ -38,7 +38,6 @@ namespace BL.Logic.SystemCore.Interfaces
         IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter);
         FrontSystemAction GetSystemAction(IContext context, int id);
         IEnumerable<FrontSystemAction> GetSystemActions(IContext context, FilterSystemAction filter);
-        IEnumerable<ITreeItem> GetSystemActionForDIP(IContext context, int roleId, FilterTree filter);
         void RefreshSystemActions(IContext context);
         void RefreshSystemObjects(IContext context);
 

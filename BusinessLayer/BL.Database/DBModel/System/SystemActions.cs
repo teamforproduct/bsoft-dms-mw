@@ -12,7 +12,6 @@ namespace BL.Database.DBModel.System
     {
         public SystemActions()
         {
-            this.RoleActions = new HashSet<AdminRoleActions>();
             this.GarantableActions = new HashSet<SystemActions>();
         }
 
@@ -43,7 +42,6 @@ namespace BL.Database.DBModel.System
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }
 
-        public virtual ICollection<AdminRoleActions> RoleActions { get; set; }
         [ForeignKey("GrantId")]
         public virtual SystemActions GrantAction { get; set; }
 

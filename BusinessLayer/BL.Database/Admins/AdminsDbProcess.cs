@@ -85,13 +85,14 @@ namespace BL.Database.Admins
                     PermissionId = x.PermissionId
                 }).ToList();
 
-                res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRoleAction
-                {
-                    Id = x.Id,
-                    RecordId = x.RecordId,
-                    RoleId = x.RoleId,
-                    ActionId = x.ActionId
-                }).ToList();
+                // pss Таблица подлежит удалению - пустая
+                //res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == context.CurrentClientId).Select(x => new InternalAdminRoleAction
+                //{
+                //    Id = x.Id,
+                //    RecordId = x.RecordId,
+                //    RoleId = x.RoleId,
+                //    ActionId = x.ActionId
+                //}).ToList();
                 transaction.Complete();
                 return res;
             }
@@ -318,31 +319,31 @@ namespace BL.Database.Admins
             }
         }
 
-        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                // Классификатор роли
-                var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
+        //public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
+        //{
+        //    using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+        //    {
+        //        // Классификатор роли
+        //        var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
 
-                // Новая роль со ссылкой на классификатор ролей.
-                var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
+        //        // Новая роль со ссылкой на классификатор ролей.
+        //        var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
 
-                var ra = new List<AdminRoleActions>();
+        //        var rp = new List<AdminRolePermissions>();
 
-                // Указание ид роли для предложенных действий
-                foreach (var item in roleActions)
-                {
-                    ra.Add(new AdminRoleActions() { ActionId = item.ActionId, RoleId = roleId });
-                }
+        //        // Указание ид роли для предложенных действий
+        //        foreach (var item in roleActions)
+        //        {
+        //            rp.Add(new AdminRolePermissions() { PermissionId = item.PermissionId, RoleId = roleId });
+        //        }
 
-                // Запись списка соответствий роль-действие
-                dbContext.AdminRoleActionsSet.AddRange(ra);
-                dbContext.SaveChanges();
-                transaction.Complete();
-                return roleId;
-            }
-        }
+        //        // Запись списка соответствий роль-действие
+        //        dbContext.AdminRolePermissionsSet.AddRange(rp);
+        //        dbContext.SaveChanges();
+        //        transaction.Complete();
+        //        return roleId;
+        //    }
+        //}
 
         public int AddRole(IContext context, InternalAdminRole model)
         {
@@ -375,7 +376,6 @@ namespace BL.Database.Admins
 
 
                 // Used By
-                dbContext.AdminRoleActionsSet.Where(x => x.RoleId == model.Id).Delete();
                 dbContext.AdminRolePermissionsSet.Where(x => x.RoleId == model.Id).Delete();
                 dbContext.AdminPositionRolesSet.Where(x => x.RoleId == model.Id).Delete();
                 dbContext.AdminUserRolesSet.Where(x => x.RoleId == model.Id).Delete();
@@ -459,6 +459,22 @@ namespace BL.Database.Admins
                     AsQueryable();
 
                 var res = qry.Select(x => x.RoleType.Code).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public int GetRoleByCode(IContext context, Roles item)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                // Для заводских ролей отношение к типам ролей 1:1
+                var qry = dbContext.AdminRolesSet.
+                    Where(x => x.ClientId == context.CurrentClientId).
+                    Where(x => x.RoleType.Code == item.ToString()).
+                    AsQueryable();
+
+                var res = qry.Select(x => x.Id).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
@@ -560,191 +576,6 @@ namespace BL.Database.Admins
         }
         #endregion
 
-        #region [+] RoleAction ...
-        public int AddRoleAction(IContext context, InternalAdminRoleAction model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
-                dbContext.AdminRoleActionsSet.Add(dbModel);
-                dbContext.SaveChanges();
-                model.Id = dbModel.Id;
-                transaction.Complete();
-                return dbModel.Id;
-            }
-        }
-
-        public void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModels = AdminModelConverter.GetDbRoleActions(context, models);
-                dbContext.AdminRoleActionsSet.AddRange(dbModels);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        public void UpdateRoleAction(IContext context, InternalAdminRoleAction model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminRoleActions dbModel = AdminModelConverter.GetDbRoleAction(context, model);
-                dbContext.AdminRoleActionsSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-        public void DeleteRoleAction(IContext context, InternalAdminRoleAction model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = dbContext.AdminRoleActionsSet.FirstOrDefault(x => x.Id == model.Id);
-                dbContext.AdminRoleActionsSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        public void DeleteRoleActions(IContext context, FilterAdminRoleAction filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetRoleActionQuery(context, dbContext, filter);
-                qry.Delete();
-                //dbContext.AdminRoleActionsSet.Remove(dbModel);
-                //dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        public InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetRoleActionQuery(context, dbContext, filter);
-                var res = qry.Select(x => new InternalAdminRoleAction
-                {
-                    Id = x.Id,
-                    RoleId = x.RoleId,
-                    ActionId = x.ActionId,
-                    RecordId = x.RecordId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
-                }).FirstOrDefault();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-
-        public IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetRoleActionQuery(context, dbContext, filter);
-
-                //qry = qry.OrderBy(x => x.Name);
-
-                var res = qry.Select(x => new FrontAdminRoleAction
-                {
-                    Id = x.Id,
-                    RoleId = x.RoleId,
-                    RoleName = x.Role.Name,
-                    ActionId = x.ActionId,
-                    ActionDescription = x.Action.Description,
-                    RecordId = x.RecordId,
-                }).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetRoleActionQuery(context, dbContext, filter);
-                var res = qry.Any();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        private IQueryable<AdminRoleActions> GetRoleActionQuery(IContext context, DmsContext dbContext, FilterAdminRoleAction filter)
-        {
-            var qry = dbContext.AdminRoleActionsSet.AsQueryable();
-
-            if (filter != null)
-            {
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
-
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<AdminRoleActions>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.RoleIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
-
-                    filterContains = filter.RoleIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.RoleId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.ActionIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
-
-                    filterContains = filter.ActionIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ActionId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.RecordIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<AdminRoleActions>();
-
-                    filterContains = filter.RecordIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.RecordId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-            }
-
-            return qry;
-        }
-
-        public List<int> GetActionsByRoles(IContext context, FilterAdminRoleAction filter)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetRoleActionQuery(context, dbContext, filter);
-                var res = qry.Select(x => x.ActionId).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        #endregion
 
         #region [+] PositionRole ...
         public int AddPositionRole(IContext context, InternalAdminPositionRole model)
@@ -1754,6 +1585,18 @@ namespace BL.Database.Admins
             }
         }
 
+        public void AddRolePermissions(IContext context, IEnumerable<InternalAdminRolePermission> models)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModels = AdminModelConverter.GetDbRolePermissions(context, models);
+                dbContext.AdminRolePermissionsSet.AddRange(dbModels);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+
         public void DeleteRolePermission(IContext context, InternalAdminRolePermission model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2046,11 +1889,11 @@ namespace BL.Database.Admins
 
         #region [+] AddNewClient ...
 
-        public List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context)
+        public List<InternalAdminRolePermission> GetRolePermissionsForAdmin(IContext context)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.SystemActionsSet.Select(x => new InternalAdminRoleAction { ActionId = x.Id }).ToList();
+                var res = dbContext.SystemPermissionsSet.Select(x => new InternalAdminRolePermission { PermissionId = x.Id }).ToList();
 
                 transaction.Complete();
 

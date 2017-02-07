@@ -17,8 +17,13 @@ namespace BL.Logic.AdminCore
         public override bool CanBeDisplayed(int Id) => true;
 
         public override bool CanExecute()
+        { throw new NotImplementedException(); }
+
+        public bool IsModified(int roleId)
         {
-            _adminService.VerifyAccess(_context, EnumAdminActions.SetRolePermission, false);
+            string roleCode = _adminDb.GetRoleTypeCode(_context, roleId);
+
+            if (!string.IsNullOrEmpty(roleCode)) throw new DefaultRolesCouldNotBeModified();
 
             return true;
         }

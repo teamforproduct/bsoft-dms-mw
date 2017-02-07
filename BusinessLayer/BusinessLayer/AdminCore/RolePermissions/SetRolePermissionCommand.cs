@@ -23,6 +23,9 @@ namespace BL.Logic.AdminCore
             }
         }
 
+        public override bool CanExecute() => IsModified(Model.RoleId);
+
+
         public override object Execute()
         {
             Set(Model.Module, Model.Feature, Model.AccessType, Model.RoleId, Model.IsChecked);

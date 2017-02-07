@@ -27,7 +27,6 @@ namespace BL.Logic.AdminCore.Interfaces
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetEmployeeForContext(IContext context, string userId);
-        IEnumerable<FrontSystemAction> GetUserActions(IContext ctx);
         #endregion
 
         #region [+] Verify ...
@@ -42,16 +41,13 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] Roles ...
         //FrontAdminRole GetAdminRole(IContext context, int id);
-        int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions);
+        int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRolePermission> roleActions);
         FrontAdminRole GetAdminRole(IContext context, int id);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter);
         IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging);
         #endregion
 
-        #region [+] RoleActions ...
-        IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter);
-        #endregion
 
         #region [+] PositionRoles ...
         IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter);

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BL.Model.SystemCore.FrontModel
+﻿namespace BL.Model.SystemCore.FrontModel
 {
 
     public class FrontSystemValueType
