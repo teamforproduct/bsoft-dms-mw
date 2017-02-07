@@ -14,13 +14,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
 {
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
-        private const int MAX_ROW_PROCESS = 10000;
-        private const int MAX_ENTITY_FOR_THREAD = 1000000;
+        private const int _MAX_ROW_PROCESS = 10000;
+        private const int _MAX_ENTITY_FOR_THREAD = 1000000;
 
         private readonly Dictionary<FullTextSettings, Timer> _timers;
-        private List<Timer> _stopTimersList = new List<Timer>();
-        List<IFullTextIndexWorker> _workers;
-        ISystemDbProcess _systemDb;
+        private readonly List<Timer> _stopTimersList = new List<Timer>();
+        readonly List<IFullTextIndexWorker> _workers;
+        readonly ISystemDbProcess _systemDb;
 
         public FullTextSearchService(ISettings setting, ILogger logger, ISystemDbProcess systemDb) : base(setting, logger)
         {
@@ -34,16 +34,16 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var offset = fromNumber;
             do
             {
-                var selectCount = (offset + MAX_ROW_PROCESS < toNumber) ? MAX_ROW_PROCESS : toNumber - offset;
+                var selectCount = (offset + _MAX_ROW_PROCESS < toNumber) ? _MAX_ROW_PROCESS : toNumber - offset;
                 var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, selectCount, offset);
                 foreach (var itm in data)
                 {
                     worker.AddNewItem(itm);
                 }
 
-                if (data.Count() == MAX_ROW_PROCESS)
+                if (data.Count() == _MAX_ROW_PROCESS)
                 {
-                    offset += MAX_ROW_PROCESS;
+                    offset += _MAX_ROW_PROCESS;
                 }
                 else
                 {
@@ -92,15 +92,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         do
                         {
 
-                            var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, MAX_ROW_PROCESS, offset);
+                            var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, _MAX_ROW_PROCESS, offset);
                             foreach (var itm in data)
                             {
                                 worker.AddNewItem(itm);
                             }
 
-                            if (data.Count() == MAX_ROW_PROCESS)
+                            if (data.Count() == _MAX_ROW_PROCESS)
                             {
-                                offset += MAX_ROW_PROCESS;
+                                offset += _MAX_ROW_PROCESS;
                             }
                             else
                             {
@@ -128,9 +128,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     tskList.Add(Task.Factory.StartNew(() =>
                     {
-                        ReindexPart(ctx, worker, EnumObjects.DocumentSendLists, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                        ReindexPart(ctx, worker, EnumObjects.DocumentSendLists, startFrom, startFrom + _MAX_ENTITY_FOR_THREAD - 1);
                     }));
-                    startFrom += MAX_ENTITY_FOR_THREAD;
+                    startFrom += _MAX_ENTITY_FOR_THREAD;
                 }
 
                 var eventCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentEvents);
@@ -139,9 +139,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     tskList.Add(Task.Factory.StartNew(() =>
                     {
-                        ReindexPart(ctx, worker, EnumObjects.DocumentEvents, startFrom, startFrom + MAX_ENTITY_FOR_THREAD - 1);
+                        ReindexPart(ctx, worker, EnumObjects.DocumentEvents, startFrom, startFrom + _MAX_ENTITY_FOR_THREAD - 1);
                     }));
-                    startFrom += MAX_ENTITY_FOR_THREAD;
+                    startFrom += _MAX_ENTITY_FOR_THREAD;
                 }
 
                 Task.WaitAll(tskList.ToArray());
@@ -171,21 +171,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
         }
 
-        public IEnumerable<FullTextSearchResult> SearchDocument(IContext ctx, string text)
+        public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            return GetWorker(ctx)?.SearchDocument(text, ctx.CurrentClientId);
+            return GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter);
         }
-
-        public IEnumerable<FullTextSearchResult> SearchDictionary(IContext ctx, string text)
-        {
-            return GetWorker(ctx)?.SearchDictionary(text, ctx.CurrentClientId);
-        }
-
-        public IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, int documentId)
-        {
-            return GetWorker(ctx)?.SearchInDocument(text, documentId);
-        }
-
+        
         protected override void InitializeServers()
         {
             try
@@ -301,7 +291,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 foreach (var objType in objToProcess)
                 {
-                    var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, MAX_ROW_PROCESS, maxId);
+                    var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
                     //_logger.Information(ctx, $"To update Type {objType} Count {toUpdate.Count()} ");
                     while (toUpdate.Any())
                     {
@@ -327,7 +317,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
                         processedIds.Clear();
-                        toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, MAX_ROW_PROCESS, maxId);
+                        toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
                     }
                 }
 

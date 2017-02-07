@@ -67,7 +67,7 @@ namespace BL.Logic.DictionaryCore
         private List<int> GetIDsForDictionaryFullTextSearch(IContext context, EnumObjects dictionaryType, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
         {
             var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            var ftRes = ftService.SearchDictionary(context, filter);
+            var ftRes = ftService.SearchItems(context, filter, new FullTextSearchFilter()); //TODO FTS Set correct parent object type or object type
             if (filterFunct == null)
             {
                 ftRes = ftRes.Where(x => x.ObjectType == dictionaryType);
@@ -91,7 +91,7 @@ namespace BL.Logic.DictionaryCore
         private List<FullTextResultList> GetIDsForDictionaryFullTextSearchNew(IContext context, List<EnumObjects> dictionaryTypes, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
         {
             var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            var ftRes = ftService.SearchDictionary(context, filter);
+            var ftRes = ftService.SearchItems(context, filter, new FullTextSearchFilter()); //TODO FTS Set correct parent object type or object type
             if (filterFunct == null)
             {
                 //if (dictionaryTypes.Count > 0)

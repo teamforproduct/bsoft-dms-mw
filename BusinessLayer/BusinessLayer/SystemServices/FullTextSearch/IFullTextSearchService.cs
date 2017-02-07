@@ -9,8 +9,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
     {
         void Dispose();
         void ReindexDatabase(IContext ctx);
-        IEnumerable<FullTextSearchResult> SearchDocument(IContext ctx, string text);
-        IEnumerable<FullTextSearchResult> SearchDictionary(IContext ctx, string text);
-        IEnumerable<FullTextSearchResult> SearchInDocument(IContext ctx, string text, int documentId);
+        IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter);
+
     }
 }

@@ -54,7 +54,7 @@ namespace BL.Logic.DocumentCore
                 if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
                 {
                     var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                    var ftRes = ftService.SearchDocument(ctx, filter.Document.FullTextSearch);
+                    var ftRes = ftService.SearchItems(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter {ParentObjectType = EnumObjects.Documents});
                     if (ftRes != null)
                     {
                         var resWithRanges =

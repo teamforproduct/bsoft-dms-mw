@@ -24,20 +24,20 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private Analyzer _analyzer;
         private IndexReader _indexReader;
         private IndexSearcher _searcher;
-        private const string FIELD_DOC_ID = "DocumentId";
+        private const string FIELD_PARENT_ID = "ParentId";
+        private const string FIELD_PARENT_TYPE = "ParentType";
         private const string FIELD_OBJECT_TYPE = "ObjectType";
         private const string FIELD_OBJECT_ID = "ObjectId";
         private const string FIELD_BODY = "postBody";
         private const string FIELD_CLIENT_ID = "ClientId";
         private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
         IndexWriter _writer;
-        object _lockObject;
 
         public FullTextIndexWorker(string serverKey, string storePath)
         {
             _serverKey = serverKey;
             _storePath = storePath;
-            _lockObject = new object();
+
             var dir = Path.Combine(_storePath,_serverKey.Replace("\\", "").Replace(",", "").Replace(".", "").Replace("/", "_"));
             if (!System.IO.Directory.Exists(dir))
             {
@@ -59,10 +59,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public void DeleteItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
-            //var qryVal = new[] { ((int)item.ItemType), item.ObjectId };
-            //var fld = new[] { FIELD_OBJECT_TYPE, FIELD_OBJECT_ID };
-            //var flags = new[] { Occur.MUST, Occur.MUST };
-            //var query = MultiFieldQueryParser.Parse(Version.LUCENE_30, qryVal, fld, flags, _analyzer);
             var qry1 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)item.ItemType, (int)item.ItemType, true, true);
             var qry2 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_ID, item.ObjectId, item.ObjectId, true, true); 
             var bQuery = new BooleanQuery();
@@ -76,9 +72,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             if (_writer == null) return;
             var doc = new Document();
-            var docIdFld = new NumericField(FIELD_DOC_ID, Field.Store.YES, true);
+            var docIdFld = new NumericField(FIELD_PARENT_ID, Field.Store.YES, true);
             docIdFld.SetIntValue(item.ParentId);
             doc.Add(docIdFld);
+
+            var typeParentFld = new NumericField(FIELD_PARENT_TYPE, Field.Store.YES, true);
+            typeParentFld.SetIntValue((int)item.ParentItemType);
+            doc.Add(typeParentFld);
 
             var typeIdFld = new NumericField(FIELD_OBJECT_TYPE, Field.Store.YES, true);
             typeIdFld.SetIntValue((int)item.ItemType);
@@ -99,21 +99,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (_writer == null) return;
             DeleteItem(item);
             AddNewItem(item);
-
-            //TODO probably _writer.UpdateDocument can be used here, but how to build Term for multiple field
-            //var qryVal = new string[] {documentId.ToString(), ((int) objType).ToString(), objId.ToString()};
-            //var fld = new string[] {FIELD_DOC_ID, FIELD_OBJECT_TYPE, FIELD_OBJECT_ID};
-            //var flags = new Occur[] {Occur.MUST, Occur.MUST, Occur.MUST};
-            //var query = MultiFieldQueryParser.Parse(Version.LUCENE_30, qryVal, fld, flags, _analyzer);
-            //var qryRes = _searcher.Search(query, null, 100);
-            //var doc = qryRes.ScoreDocs.FirstOrDefault();
-            //if (doc != null)
-            //{
-            //    var rdoc = _searcher.Doc(doc.Doc);
-            //    var term = new Term();
-            //    _writer.UpdateDocument(term, rdoc,_analyzer);
-            //}
-
         }
 
         public void StartUpdate()
@@ -124,72 +109,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public void CommitChanges()
         {
             _writer.Optimize();
-            //Close the writer
             _writer.Commit();
             _writer.Dispose();
             _writer = null;
-            //_searcher.Dispose();
-            //_indexReader.Dispose();
             _indexReader = IndexReader.Open(_directory, true);
             _searcher = new IndexSearcher(_indexReader);
         }
 
         public IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter)
-        {
-            return null;
-        }
-
-
-        public IEnumerable<FullTextSearchResult> SearchDocument(string text, int clientId)
-        {
-            text = text.Trim();
-
-            var arr = text.Split(' ').ToList();
-            arr.ForEach(x=>x.Trim());
-
-            arr.RemoveAll(string.IsNullOrEmpty);
-
-            var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
-
-            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
-            parser.AllowLeadingWildcard = true;
-            var textQry = parser.Parse(qryString);
-            var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 1, null, true, true);
-            var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
-
-            var boolQry = new BooleanQuery();
-            boolQry.Add(textQry, Occur.MUST);
-            boolQry.Add(idQry, Occur.MUST);
-            boolQry.Add(clientQry, Occur.MUST);
-            //arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
-
-            var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
-
-            var searchResult = new List<FullTextSearchResult>();
-
-            foreach (var doc in qryRes.ScoreDocs.Where(x=>x.Score>1).OrderByDescending(x=>x.Score)) //x.Score>0.1 filtrate different "noise" from search.
-            {
-                try
-                {
-                    var rdoc = _searcher.Doc(doc.Doc);
-                    var sr = new FullTextSearchResult
-                    {
-                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
-                        ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
-                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
-                        Score = doc.Score
-                    };
-                    searchResult.Add(sr);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-            return searchResult;//.Where(x=>x.DocumentId>0).ToList();
-        }
-
-        public IEnumerable<FullTextSearchResult> SearchDictionary(string text, int clientId)
         {
             text = text.Trim();
 
@@ -203,17 +130,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
             parser.AllowLeadingWildcard = true;
             var textQry = parser.Parse(qryString);
-
-            var idQry = NumericRangeQuery.NewIntRange(FIELD_DOC_ID, 0, 0, true, true);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
-
             var boolQry = new BooleanQuery();
             boolQry.Add(textQry, Occur.MUST);
-            boolQry.Add(idQry, Occur.MUST);
             boolQry.Add(clientQry, Occur.MUST);
-            //arrayQry = arrayQry.Combine(new[] { arrayQry, idQry, clientQry });
+            if (filter.ParentObjectType.HasValue)
+            {
+                var parentQry = new TermQuery(new Term(FIELD_PARENT_TYPE, ((int)filter.ParentObjectType).ToString()));
+                boolQry.Add(parentQry, Occur.MUST);
+            }
+            if (filter.ObjectType.HasValue)
+            {
+                var objQry = new TermQuery(new Term(FIELD_OBJECT_TYPE, ((int)filter.ObjectType).ToString()));
+                boolQry.Add(objQry, Occur.MUST);
+            }
 
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
+
             var searchResult = new List<FullTextSearchResult>();
 
             foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
@@ -223,40 +156,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var rdoc = _searcher.Doc(doc.Doc);
                     var sr = new FullTextSearchResult
                     {
-                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
-                        ObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
-                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
-                        Score = doc.Score
-                    };
-                    searchResult.Add(sr);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-            return searchResult; //.Where(x=>x.DocumentId == 0).ToList();
-        }
-
-        public IEnumerable<FullTextSearchResult> SearchInDocument(string text, int documentId)
-        {
-            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
-
-            var conditionQry = parser.Parse(text);
-            var idQry = new TermQuery(new Term(FIELD_DOC_ID, documentId.ToString()));
-            var query = conditionQry.Combine(new Query[] { conditionQry, idQry });
-            var qryRes = _searcher.Search(query, MAX_DOCUMENT_COUNT_RETURN);
-            var searchResult = new List<FullTextSearchResult>();
-
-            foreach (var doc in qryRes.ScoreDocs.OrderByDescending(x => x.Score))
-            {
-                try
-                {
-                    var rdoc = _searcher.Doc(doc.Doc);
-                    var sr = new FullTextSearchResult
-                    {
-                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
-                        ObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
+                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_PARENT_ID)),
+                        ParentObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
+                        ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         Score = doc.Score
                     };

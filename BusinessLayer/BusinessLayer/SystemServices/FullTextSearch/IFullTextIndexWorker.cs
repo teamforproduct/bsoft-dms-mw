@@ -15,9 +15,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void DeleteItem(FullTextIndexItem item);
         void UpdateItem(FullTextIndexItem item);
 
-        IEnumerable<FullTextSearchResult> SearchDocument(string text, int clientId);
-        IEnumerable<FullTextSearchResult> SearchDictionary(string text, int clientId);
-        IEnumerable<FullTextSearchResult> SearchInDocument(string text, int documentId);
+        IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter);
 
         void DeleteAllDocuments();
     }
