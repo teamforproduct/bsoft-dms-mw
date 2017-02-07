@@ -71,6 +71,40 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
+        /// Возвращает файл по ИД 
+        /// </summary>
+        /// <param name="Id">ИД файла</param>
+        /// <returns>Событие</returns>
+        [HttpGet]
+        [Route(Features.Files + "/{Id:int}/Pdf")]
+        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        public IHttpActionResult GetPdf([FromUri]FilterDocumentFileIdentity Id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var item = docProc.GetUserFilePdf(ctx, Id);
+            var res = new JsonResult(item, this);
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает файл по ИД 
+        /// </summary>
+        /// <param name="Id">ИД файла</param>
+        /// <returns>Событие</returns>
+        [HttpGet]
+        [Route(Features.Files + "/{Id:int}/Preview")]
+        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        public IHttpActionResult GetPreview([FromUri]FilterDocumentFileIdentity Id)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var item = docProc.GetUserFilePreview(ctx, Id);
+            var res = new JsonResult(item, this);
+            return res;
+        }
+
+        /// <summary>
         /// Добавляет файл, если файл с таким именем есть создается новая версия файла
         /// </summary>
         /// <param name="model"></param>

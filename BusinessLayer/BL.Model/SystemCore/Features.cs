@@ -23,8 +23,6 @@
         public const string Employees = "Employees";
         public const string Executors = "Executors";
         public const string Files = "Files";
-        public const string FilePdf = "FilePdf";
-        public const string FilePreview = "FilePreview";
         public const string Fingerprints = "Fingerprints";
         public const string Image = "Image";
         public const string Info = "Info";

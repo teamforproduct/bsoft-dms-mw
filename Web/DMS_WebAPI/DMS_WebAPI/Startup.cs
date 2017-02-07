@@ -57,8 +57,8 @@ namespace DMS_WebAPI
 #if !DEBUG
             //TODO
             // Полнотекстовый поиск
-            var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
-            indexService.Initialize(dbs);
+   //         var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
+  //          indexService.Initialize(dbs);
 #endif
 
 
