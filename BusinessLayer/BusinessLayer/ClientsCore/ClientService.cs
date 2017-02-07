@@ -248,7 +248,7 @@ namespace BL.Logic.ClientCore
 
             _AdminService.AddNamedRole(context, "Admin", "##l@Roles:Administrator@l##", GetRoleActionsForAdmin(context));
 
-            _AdminService.AddNamedRole(context, "DocumentReview", "##l@Roles:ViewDocuments@l##", GetRoleActionsForDocumentReview());
+            //_AdminService.AddNamedRole(context, "DocumentReview", "##l@Roles:ViewDocuments@l##", GetRoleActionsForDocumentReview());
 
             //_AdminService.AddNamedRole(context, "DocumentActions", "##l@Roles:ExecuteDocumentActions@l##", GetRoleActionsForDocumentReview());
 

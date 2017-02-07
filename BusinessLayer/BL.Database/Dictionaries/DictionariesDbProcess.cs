@@ -4106,8 +4106,6 @@ namespace BL.Database.Dictionaries
                     Code = x.Code,
                     Name = x.Name,
                     ImportanceEventTypeId = x.ImportanceEventTypeId,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                     ImportanceEventTypeName = x.ImportanceEventType.Name
                 }).ToList();
                 transaction.Complete();
@@ -4173,8 +4171,6 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.Code,
                     Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
                 }).ToList();
 
                 transaction.Complete();
@@ -4235,8 +4231,6 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Name,
                     IsImportant = x.IsImportant,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
                 }).ToList();
 
                 transaction.Complete();
@@ -5296,7 +5290,6 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryPositionExecutorType
                 {
                     Id = x.Id,
-                    IsActive = x.IsActive,
                     Code = x.Code,
                     Name = x.Name
                 }).ToList();
@@ -5751,8 +5744,6 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Name = x.Name,
                     IsExecute = x.IsExecute,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -5812,8 +5803,6 @@ namespace BL.Database.Dictionaries
                     SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
                     SubordinationTypeName = x.SubordinationType.Name,
                     IsExternal = x.Id == (int)EnumSendTypes.SendForInformationExternal,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate,
                 }).ToList();
 
                 transaction.Complete();
@@ -5829,36 +5818,41 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionaryStageTypesSet.AsQueryable();
 
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    // Список первичных ключей
+                    if (filter.IDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
+                        qry = qry.Where(filterContains);
+                    }
+
+                    // Исключение списка первичных ключей
+                    if (filter.NotContainsIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.True<DictionaryStageTypes>();
+                        filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                            (current, value) => current.And(e => e.Id != value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
+                    // Поиск по наименованию
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
                 }
 
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionaryStageTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
                 qry = qry.OrderBy(x => x.Code);
+
                 var res = qry.Select(x => new ListItem
                 {
                     Id = x.Id,
@@ -6183,34 +6177,37 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionarySubordinationTypesSet.AsQueryable();
 
-                // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter != null)
                 {
-                    var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
-                    filterContains = filter.IDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    // Список первичных ключей
+                    if (filter.IDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
+                        filterContains = filter.IDs.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                        qry = qry.Where(filterContains);
+                    }
 
-                // Исключение списка первичных ключей
-                if (filter.NotContainsIDs?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.True<DictionarySubordinationTypes>();
-                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.Id != value).Expand());
+                    // Исключение списка первичных ключей
+                    if (filter.NotContainsIDs?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.True<DictionarySubordinationTypes>();
+                        filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                            (current, value) => current.And(e => e.Id != value).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                        qry = qry.Where(filterContains);
+                    }
 
-                // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    // Поиск по наименованию
+                    if (!string.IsNullOrEmpty(filter.Name))
+                    {
+                        var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
+                        qry = qry.Where(filterContains);
+                    }
                 }
 
                 var res = qry.Select(x => new ListItem

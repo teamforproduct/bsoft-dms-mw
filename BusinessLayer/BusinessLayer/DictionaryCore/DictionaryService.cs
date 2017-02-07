@@ -848,15 +848,10 @@ namespace BL.Logic.DictionaryCore
 
         // Типы исполнителей
         #region DictionaryPositinExecutorTypes
-        public FrontDictionaryPositionExecutorType GetDictionaryPositionExecutorType(IContext context, int id)
-        {
-
-            return _dictDb.GetPositionExecutorTypes(context, new FilterDictionaryPositionExecutorType { IDs = new List<int> { id } }).FirstOrDefault();
-        }
-
         public IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter)
         {
-
+            if (filter == null) filter = new FilterDictionaryPositionExecutorType();
+            filter.IsActive = true;
             return _dictDb.GetPositionExecutorTypes(context, filter);
         }
         #endregion DictionaryPositinExecutorTypes
