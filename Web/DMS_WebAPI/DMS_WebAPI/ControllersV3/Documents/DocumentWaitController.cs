@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public IHttpActionResult ControlOn([FromBody]ControlOn model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ControlOn, model);
+            Action.Execute(EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
             var res = new JsonResult(true, this);
             res.SpentTime = stopWatch;
             return res;

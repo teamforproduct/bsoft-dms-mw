@@ -36,7 +36,7 @@ namespace DMS_WebAPI
         //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
         //var tt = Database.Exists("DefaultConnection");
 
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
             var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
 #if !DEBUG

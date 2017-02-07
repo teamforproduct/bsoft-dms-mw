@@ -28,7 +28,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info + "/FullTextReindex")]
         public IHttpActionResult FullTextReindex([FromBody]Item model)
         {
-            var dbProc = new WebAPIDbProcess();
+            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
             var clientServer = dbProc.GetClientServer(model.Id);
             DatabaseModel srv = dbProc.GetServer(clientServer.ServerId);
             srv.ClientId = clientServer.ClientId;

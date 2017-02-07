@@ -1,4 +1,5 @@
-﻿using BL.Model.Exception;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Models;
@@ -32,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             var tmpItems = webService.GetControlQuestions();
 
             var res = new JsonResult(tmpItems, this);
@@ -52,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
 
             ApplicationUser user = await webService.GetUser(model.UserName, model.Password, model.Client_Id);
 

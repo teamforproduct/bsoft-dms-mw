@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
 
             ApplicationUser user = await webService.GetUserAsync(ctx, Id);
 
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.ChangeLoginAgentUser(model);
 
             var res = new JsonResult(null, this);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
 
             await webService.ChangePasswordAgentUserAsync(model);
 
@@ -120,7 +120,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             await webService.ChangeLockoutAgentUserAsync(ctx, model);
 
             var res = new JsonResult(null, this);

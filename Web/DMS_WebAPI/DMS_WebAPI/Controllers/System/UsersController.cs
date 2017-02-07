@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Controllers
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
-            var webService = new WebAPIService();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
 
             ApplicationUser user = await webService.GetUserAsync(ctx, agentId);
              
