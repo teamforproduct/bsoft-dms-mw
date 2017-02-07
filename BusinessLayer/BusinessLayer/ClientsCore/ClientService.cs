@@ -25,6 +25,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Database.DatabaseContext;
 using BL.Logic.Settings;
 using BL.Database.SystemDb;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.ClientCore
 {
@@ -111,7 +112,7 @@ namespace BL.Logic.ClientCore
 
         public void AddNewClient(IContext context, AddClientSaaS client)
         {
-            
+
             //GetSystemSettings
 
             #region [+] ContactsTypes ...
@@ -227,34 +228,63 @@ namespace BL.Logic.ClientCore
         /// <returns></returns>
         public void AddClientRoles(IContext context)
         {
+
+            //Администратор
+            //Администратор - управление структурой организации
+            //Документы - право выполнения действий
+            //Документы - право контроля по документам
+            //Документы - право подписания
+            //Документы - право просмотра документов
+            //Документы - право управления бумажными носителями
+            //Инструменты - история подключения
+            //Инструменты - управление доступом к документам
+            //Пользователь
+            //Справочники - управление авторизацией пользователей
+            //Справочники - управление журналами организации
+            //Справочники - управление контактными лицами котрагентов
+            //Справочники - управление контрагентами
+            //Справочники - управление сотрудниками
+            //Справочники - управление справочниками СЭДО
+
             _AdminService.AddNamedRole(context, "Admin", "##l@Roles:Administrator@l##", GetRoleActionsForAdmin(context));
 
-            _AdminService.AddNamedRole(context, "DocumentReview", "##l@Roles:ViewDocuments@l##", GetRoleActionsForDocumentReview());
+            //_AdminService.AddNamedRole(context, "DocumentReview", "##l@Roles:ViewDocuments@l##", GetRoleActionsForDocumentReview());
 
-            _AdminService.AddNamedRole(context, "DocumentActions", "##l@Roles:ExecuteDocumentActions@l##", GetRoleActionsForDocumentReview());
+            //_AdminService.AddNamedRole(context, "DocumentActions", "##l@Roles:ExecuteDocumentActions@l##", GetRoleActionsForDocumentReview());
 
-            _AdminService.AddNamedRole(context, "DocumentControl", "##l@Roles:ControlDocumentActions@l##", GetRoleActionsForDocumentControl());
+            //_AdminService.AddNamedRole(context, "DocumentControl", "##l@Roles:ControlDocumentActions@l##", GetRoleActionsForDocumentControl());
 
-            _AdminService.AddNamedRole(context, "DocumentSigning", "##l@Roles:SigningDocumentActions@l##", GetRoleActionsForSigning());
+            //_AdminService.AddNamedRole(context, "DocumentSigning", "##l@Roles:SigningDocumentActions@l##", GetRoleActionsForSigning());
 
-            _AdminService.AddNamedRole(context, "DocumentPapers", "##l@Roles:PaperActions@l##", GetRoleActionsForPapers());
+            //_AdminService.AddNamedRole(context, "DocumentPapers", "##l@Roles:PaperActions@l##", GetRoleActionsForPapers());
 
-            _AdminService.AddNamedRole(context, "DocumentAccess", "##l@Roles:AccessDocumentActions@l##", GetRoleActionsForDocumentAccess());
+            //_AdminService.AddNamedRole(context, "DocumentAccess", "##l@Roles:AccessDocumentActions@l##", GetRoleActionsForDocumentAccess());
 
-            _AdminService.AddNamedRole(context, "DictionariesDMS", "##l@Roles:DmsDictionaryActions@l##", GetRoleActionsForDictionaryDMS());
+            //_AdminService.AddNamedRole(context, "DictionariesDMS", "##l@Roles:DmsDictionaryActions@l##", GetRoleActionsForDictionaryDMS());
 
-            _AdminService.AddNamedRole(context, "DictionaryAgents", "##l@Roles:DictionaryAgentActions@l##", GetRoleActionsForDictionaryAgents());
+            //_AdminService.AddNamedRole(context, "DictionaryAgents", "##l@Roles:DictionaryAgentActions@l##", GetRoleActionsForDictionaryAgents());
 
-            _AdminService.AddNamedRole(context, "DictionaryAgentContacts", "##l@Roles:DictionaryAgentContactActions@l##", GetRoleActionsForDictionaryAgentContats());
+            //_AdminService.AddNamedRole(context, "DictionaryAgentContacts", "##l@Roles:DictionaryAgentContactActions@l##", GetRoleActionsForDictionaryAgentContats());
 
-            _AdminService.AddNamedRole(context, "DictionaryStaffList", "##l@Roles:StaffListActions@l##", GetRoleActionsForDictionaryStaffList());
+            //_AdminService.AddNamedRole(context, "DictionaryStaffList", "##l@Roles:StaffListActions@l##", GetRoleActionsForDictionaryStaffList());
 
         }
 
         #region [+] DefaultRoles
-        private List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context)
+        private List<InternalAdminRolePermission> GetRoleActionsForAdmin(IContext context)
         {
-            return _AdminDb.GetRoleActionsForAdmin(context);
+            return _AdminDb.GetRolePermissionsForAdmin(context);
+        }
+
+        private List<InternalAdminRolePermission> GetRoleActionsForStaffList()
+        {
+            var items = new List<InternalAdminRolePermission>();
+
+            items.Add(new InternalAdminRolePermission() { PermissionId = DmsDbImportData.GetPermissionId(Modules.Auditlog, Features.AccessLevels, EnumAccessTypes.C) });
+            items.Add(new InternalAdminRolePermission() { PermissionId = (int)EnumDocumentActions.AddSavedFilter });
+            items.Add(new InternalAdminRolePermission() { PermissionId = (int)EnumDocumentActions.ModifySavedFilter });
+            items.Add(new InternalAdminRolePermission() { PermissionId = (int)EnumDocumentActions.DeleteSavedFilter });
+            return items;
         }
 
         private List<InternalAdminRoleAction> GetRoleActionsForDocumentReview()

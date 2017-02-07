@@ -128,40 +128,6 @@ namespace BL.Logic.AdminCore
             return res;
         }
 
-        public IEnumerable<FrontSystemAction> GetUserActions(IContext ctx)
-        {
-
-            var positionExecutors = _dictDb.GetInternalPositionExecutors(ctx, new FilterDictionaryPositionExecutor
-            {
-                AgentIDs = new List<int> { ctx.CurrentAgentId },
-                PositionIDs = ctx.CurrentPositionsIdList,
-                IsActive = true,
-                StartDate = DateTime.UtcNow,
-                EndDate = DateTime.UtcNow,
-            });
-
-            var roles = _adminDb.GetInternalUserRoles(ctx, new FilterAdminUserRole
-            {
-                PositionExecutorIDs = positionExecutors.Select(x => x.Id).ToList(),
-            });
-
-            var actions = _adminDb.GetActionsByRoles(ctx, new FilterAdminRoleAction
-            {
-                RoleIDs = roles.Select(x => x.RoleId).ToList()
-            });
-
-            var res = _systemDb.GetSystemActions(ctx, new FilterSystemAction
-            {
-                IDs = actions,
-                IsGrantable = true,
-                IsVisible = true,
-                IsGrantableByRecordId = false,
-            });
-
-
-            return res;
-        }
-        #endregion
 
         #region [+] Verify ...
 
@@ -320,7 +286,7 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetRoles(context, filter);
         }
 
-        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
+        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRolePermission> roleActions)
         {
             int roleId = 0;
 
@@ -338,17 +304,17 @@ namespace BL.Logic.AdminCore
                 // Новая роль со ссылкой на классификатор ролей.
                 roleId = _adminDb.AddRole(context, role);
 
-                var ra = new List<InternalAdminRoleAction>();
+                var rp = new List<InternalAdminRolePermission>();
 
                 // Указание ид роли для предложенных действий
                 foreach (var item in roleActions)
                 {
-                    ra.Add(new InternalAdminRoleAction() { ActionId = item.ActionId, RoleId = roleId });
+                    rp.Add(new InternalAdminRolePermission() { PermissionId = item.PermissionId, RoleId = roleId });
                 }
 
-                CommonDocumentUtilities.SetLastChange(context, ra);
+                CommonDocumentUtilities.SetLastChange(context, rp);
 
-                _adminDb.AddRoleActions(context, ra);
+                _adminDb.AddRolePermissions(context, rp);
 
                 transaction.Complete();
             }
@@ -356,11 +322,6 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
-        #region [+] RoleAction ...
-        public IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter)
-        {
-            return _adminDb.GetRoleActions(context, filter);
-        }
 
         #endregion
 

@@ -610,9 +610,17 @@ namespace BL.Model.Exception
     /// </summary>
     public class DictionarySystemRecordCouldNotBeDeleted : DmsExceptions
     {
-        // pss локализация
         public DictionarySystemRecordCouldNotBeDeleted() : base() { }
         public DictionarySystemRecordCouldNotBeDeleted(System.Exception ex) : base(ex) { }
+    }
+
+    /// <summary>
+    /// Сообщение о невозможности удаления системной записи из справочника
+    /// </summary>
+    public class DefaultRolesCouldNotBeModified : DmsExceptions
+    {
+        public DefaultRolesCouldNotBeModified() : base() { }
+        public DefaultRolesCouldNotBeModified(System.Exception ex) : base(ex) { }
     }
 
     /// <summary>

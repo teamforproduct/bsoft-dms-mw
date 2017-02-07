@@ -176,7 +176,6 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         // Типы исполнителей
         #region DictionaryPositionExecutorTypes
-        FrontDictionaryPositionExecutorType GetDictionaryPositionExecutorType(IContext context, int id);
         IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter);
         #endregion DictionaryPositionExecutorTypes
 

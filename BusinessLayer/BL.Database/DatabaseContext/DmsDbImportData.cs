@@ -2,170 +2,498 @@
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
 using BL.Model.Common;
+using BL.Model.Constants;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BL.Database.DatabaseContext
 {
     public static class DmsDbImportData
     {
 
-        private static readonly List<SystemModules> SystemModules = new List<SystemModules>();
-        private static readonly List<SystemFeatures> SystemFeatures = new List<SystemFeatures>();
-        private static readonly List<SystemPermissions> SystemPermissions = new List<SystemPermissions>();
+        private static List<SystemModules> systemModules = new List<SystemModules>();
+        private static List<SystemFeatures> systemFeatures = new List<SystemFeatures>();
+        private static List<SystemPermissions> systemPermissions = new List<SystemPermissions>();
+        private static List<AdminRolePermissions> systemRolePermissions = new List<AdminRolePermissions>();
 
         private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
         private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
         private static int GetFeatureId(string module, string feature) => GetConcatId(Modules.GetId(module), Features.GetId(feature));
         public static int GetPermissionId(string module, string feature, EnumAccessTypes type) => GetConcatId(Modules.GetId(module), Features.GetId(feature), type.GetHashCode());
 
-        public static List<SystemModules> GetSystemModules() => SystemModules;
-        public static List<SystemFeatures> GetSystemFeatures() => SystemFeatures;
-        public static List<SystemPermissions> GetSystemPermissions() => SystemPermissions;
+        public static List<SystemModules> GetSystemModules() => systemModules;
+        public static List<SystemFeatures> GetSystemFeatures() => systemFeatures;
+        public static List<SystemPermissions> GetSystemPermissions() => systemPermissions;
+        public static List<AdminRolePermissions> GetAdminRolePermissions() => systemRolePermissions;
 
-        private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true)
+        private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true,
+            List<Roles> readRoles = null, List<Roles> createRoles = null,
+            List<Roles> updateRoles = null, List<Roles> deleteRoles = null)
         {
-            var m = SystemModules.FirstOrDefault(x => x.Code == module);
+            var m = systemModules.Where(x => x.Code == module).FirstOrDefault();
 
             if (m == null)
             {
                 m = new SystemModules { Id = Modules.GetId(module), Code = module, Name = GetLabel("Modules", module), Order = order };
-                SystemModules.Add(m);
+                systemModules.Add(m);
             }
 
             var f = new SystemFeatures { Id = GetFeatureId(module, feature), ModuleId = Modules.GetId(module), Code = feature, Name = GetLabel(module, feature), Order = order };
-            SystemFeatures.Add(f);
+            systemFeatures.Add(f);
 
             if (r)
-                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.R), AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id}); 
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.R);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.R, ModuleId = m.Id, FeatureId = f.Id });
+                readRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
 
             if (c)
-                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.C), AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id}); 
-
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.C);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.C, ModuleId = m.Id, FeatureId = f.Id });
+                createRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
             if (u)
-                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.U), AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id}); 
-
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.U);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.U, ModuleId = m.Id, FeatureId = f.Id });
+                updateRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
             if (d)
-                SystemPermissions.Add(new SystemPermissions { Id = GetPermissionId(module, feature, EnumAccessTypes.D), AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id});     
+            {
+                var id = GetPermissionId(module, feature, EnumAccessTypes.D);
+                systemPermissions.Add(new SystemPermissions { Id = id, AccessTypeId = (int)EnumAccessTypes.D, ModuleId = m.Id, FeatureId = f.Id });
+                deleteRoles?.ForEach(x => systemRolePermissions.Add(new AdminRolePermissions { PermissionId = id, RoleId = (int)x }));
+            }
+
+
+
 
         }
 
 
         public static void InitPermissions()
         {
-            SystemPermissions.Clear();
-            SystemModules.Clear();
-            SystemFeatures.Clear();
+            systemPermissions.Clear();
+            systemModules.Clear();
+            systemFeatures.Clear();
+            systemRolePermissions.Clear();
 
-            AddPermission(100, Modules.Org, Features.Info);
-            AddPermission(110, Modules.Org, Features.Addresses);
-            AddPermission(120, Modules.Org, Features.Contacts);
-            AddPermission(200, Modules.Department, Features.Info);
-            AddPermission(210, Modules.Department, Features.Admins, u: false);
-            AddPermission(300, Modules.Position, Features.Info);
-            AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false);
-            AddPermission(320, Modules.Position, Features.Executors);
-            AddPermission(330, Modules.Position, Features.Roles, c: false, d: false);
-            AddPermission(340, Modules.Position, Features.Journals, c: false, d: false);
-            AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false);
+            AddPermission(100, Modules.Org, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(110, Modules.Org, Features.Addresses,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(120, Modules.Org, Features.Contacts,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(200, Modules.Department, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(210, Modules.Department, Features.Admins, u: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(300, Modules.Position, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(320, Modules.Position, Features.Executors,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(330, Modules.Position, Features.Roles, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(340, Modules.Position, Features.Journals, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                );
+            AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false,
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.DocumAccess }
+                );
 
 
-            AddPermission(400, Modules.Journal, Features.Info);
-            AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false);
+            AddPermission(400, Modules.Journal, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
+                );
 
-            AddPermission(500, Modules.Templates, Features.Info);
-            AddPermission(510, Modules.Templates, Features.Tasks);
-            AddPermission(520, Modules.Templates, Features.Files);
-            AddPermission(530, Modules.Templates, Features.Papers);
-            AddPermission(540, Modules.Templates, Features.Plan);
-            AddPermission(550, Modules.Templates, Features.SignLists);
-            AddPermission(560, Modules.Templates, Features.AccessList);
+            AddPermission(500, Modules.Templates, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(510, Modules.Templates, Features.Tasks,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(520, Modules.Templates, Features.Files,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(530, Modules.Templates, Features.Papers,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(540, Modules.Templates, Features.Plan,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(550, Modules.Templates, Features.SignLists,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(560, Modules.Templates, Features.AccessList,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
 
-            AddPermission(600, Modules.DocumentType, Features.Info);
-            AddPermission(610, Modules.DocumentType, Features.Parameters);
+            AddPermission(600, Modules.DocumentType, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(610, Modules.DocumentType, Features.Parameters,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
 
-            AddPermission(700, Modules.Role, Features.Info);
-            AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false);
-            AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false);
-            AddPermission(730, Modules.Role, Features.Positions, c: false, u: false, d: false);
+            AddPermission(700, Modules.Role, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin },
+                createRoles: new List<Roles> { Roles.Admin },
+                updateRoles: new List<Roles> { Roles.Admin },
+                deleteRoles: new List<Roles> { Roles.Admin }
+                );
+            AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin }
+                );
+            AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin }
+                );
+            AddPermission(730, Modules.Role, Features.Positions, c: false, u: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin }
+                );
 
 
-            AddPermission(800, Modules.Employee, Features.Info);
-            AddPermission(810, Modules.Employee, Features.Assignments);
-            AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false);
-            AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false);
-            AddPermission(840, Modules.Employee, Features.Addresses);
-            AddPermission(850, Modules.Employee, Features.Contacts);
+            AddPermission(800, Modules.Employee, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                );
+            AddPermission(810, Modules.Employee, Features.Assignments,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                );
+            AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                );
+            AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                );
+            AddPermission(840, Modules.Employee, Features.Addresses,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                );
+            AddPermission(850, Modules.Employee, Features.Contacts,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                );
 
-            AddPermission(900, Modules.Company, Features.Info);
-            AddPermission(910, Modules.Company, Features.ContactPersons);
-            AddPermission(920, Modules.Company, Features.Addresses);
-            AddPermission(930, Modules.Company, Features.Contacts);
-            AddPermission(940, Modules.Company, Features.Accounts);
-            
+            AddPermission(900, Modules.Company, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(910, Modules.Company, Features.ContactPersons,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons }
+                );
+            AddPermission(920, Modules.Company, Features.Addresses,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(930, Modules.Company, Features.Contacts,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(940, Modules.Company, Features.Accounts,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
 
-            AddPermission(1000, Modules.Person, Features.Info);
-            AddPermission(1010, Modules.Person, Features.Passport, c: false, d: false);
-            AddPermission(1020, Modules.Person, Features.Addresses);
-            AddPermission(1030, Modules.Person, Features.Contacts);
 
-            AddPermission(1110, Modules.Bank, Features.Info);
-            AddPermission(1120, Modules.Bank, Features.Addresses);
-            AddPermission(1130, Modules.Bank, Features.Contacts);
+            AddPermission(1000, Modules.Person, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(1010, Modules.Person, Features.Passport, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(1020, Modules.Person, Features.Addresses,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(1030, Modules.Person, Features.Contacts,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
 
-            AddPermission(1200, Modules.Tags, Features.Info);
+            AddPermission(1110, Modules.Bank, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(1120, Modules.Bank, Features.Addresses,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
+            AddPermission(1130, Modules.Bank, Features.Contacts,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                );
 
-            AddPermission(1300, Modules.SendList, Features.Info);
-            AddPermission(1310, Modules.SendList, Features.Contents);
+            AddPermission(1200, Modules.Tags, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
 
-            AddPermission(1400, Modules.ContactType, Features.Info);
-            AddPermission(1410, Modules.AddressType, Features.Info);
+            AddPermission(1300, Modules.SendList, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(1310, Modules.SendList, Features.Contents,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
 
-            AddPermission(1500, Modules.Auditlog, Features.Info, c: false, u: false, d: false);
+            AddPermission(1400, Modules.ContactType, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees }
+                );
+            AddPermission(1410, Modules.AddressType, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees }
+                );
 
-            AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false);
-            AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false);
-            AddPermission(1620, Modules.CustomDictionaries, Features.Info);
-            AddPermission(1630, Modules.CustomDictionaries, Features.Contents);
+            AddPermission(1500, Modules.Auditlog, Features.Info, c: false, u: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.Auditlog }
+                );
 
-            AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false);
+            AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth }
+                );
+            AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin },
+                updateRoles: new List<Roles> { Roles.Admin }
+                );
+            AddPermission(1620, Modules.CustomDictionaries, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(1630, Modules.CustomDictionaries, Features.Contents,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
 
-            AddPermission(2000, Modules.Documents, Features.Info);
-            AddPermission(2010, Modules.Documents, Features.Files);
-            AddPermission(2020, Modules.Documents, Features.Papers);
+            AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false,
+                createRoles: new List<Roles> { Roles.Admin }
+                );
 
-            AddPermission(2040, Modules.Documents, Features.Tasks);
-            AddPermission(2050, Modules.Documents, Features.AccessList, u: false);
-            AddPermission(2060, Modules.Documents, Features.Plan);
-            AddPermission(2070, Modules.Documents, Features.Tags, u: false, d: false);
-            AddPermission(2080, Modules.Documents, Features.Links, u: false);
-            AddPermission(2090, Modules.Documents, Features.Favourite, r: false, c: false, d: false);
+            AddPermission(2000, Modules.Documents, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2010, Modules.Documents, Features.Files,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2020, Modules.Documents, Features.Papers,
+                readRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User }
+                );
 
-            AddPermission(2110, Modules.Documents, Features.Events, d: false);
-            AddPermission(2120, Modules.Documents, Features.Waits, d: false);
-            AddPermission(2130, Modules.Documents, Features.Signs, d: false);
-            AddPermission(2150, Modules.Documents, Features.WorkGroups, c: false, u: false, d: false);
-            AddPermission(2190, Modules.Documents, Features.SavedFilters);
+            AddPermission(2040, Modules.Documents, Features.Tasks,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2050, Modules.Documents, Features.AccessList, u: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2060, Modules.Documents, Features.Plan,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2070, Modules.Documents, Features.Tags, u: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2080, Modules.Documents, Features.Links, u: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+            AddPermission(2090, Modules.Documents, Features.Favourite, r: false, c: false, d: false,
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer }
+                );
 
-            AddPermission(2200, Modules.PaperList, Features.Info);
+            AddPermission(2110, Modules.Documents, Features.Events, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.DocumActions, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.DocumActions, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumActions, Roles.User }
+                );
+            AddPermission(2120, Modules.Documents, Features.Waits, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User }
+                );
+            AddPermission(2130, Modules.Documents, Features.Signs, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User }
+                );
+            AddPermission(2150, Modules.Documents, Features.WorkGroups, c: false, u: false, d: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer }
+                );
+            AddPermission(2190, Modules.Documents, Features.SavedFilters,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+
+            AddPermission(2200, Modules.PaperList, Features.Info,
+                readRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User, Roles.Viewer },
+                createRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User }
+                );
 
         }
 
 
         public static List<SystemAccessTypes> GetSystemAccessTypes()
         {
-            var items = new List<SystemAccessTypes>
-            {
-                GetSystemAccessType(EnumAccessTypes.C, 2),
-                GetSystemAccessType(EnumAccessTypes.R, 1),
-                GetSystemAccessType(EnumAccessTypes.U, 3),
-                GetSystemAccessType(EnumAccessTypes.D, 4)
-            };
+            var items = new List<SystemAccessTypes>();
 
+            items.Add(GetSystemAccessType(EnumAccessTypes.C, 2));
+            items.Add(GetSystemAccessType(EnumAccessTypes.R, 1));
+            items.Add(GetSystemAccessType(EnumAccessTypes.U, 3));
+            items.Add(GetSystemAccessType(EnumAccessTypes.D, 4));
 
             return items;
         }
@@ -173,7 +501,7 @@ namespace BL.Database.DatabaseContext
         private static SystemAccessTypes GetSystemAccessType(EnumAccessTypes id, int order)
 
         {
-            return new SystemAccessTypes
+            return new SystemAccessTypes()
             {
                 Id = (int)id,
                 Code = id.ToString(),
@@ -186,86 +514,84 @@ namespace BL.Database.DatabaseContext
 
         public static List<SystemObjects> GetSystemObjects()
         {
-            var items = new List<SystemObjects>
-            {
-                GetSystemObjects(EnumObjects.System),
-                GetSystemObjects(EnumObjects.SystemObjects),
-                GetSystemObjects(EnumObjects.SystemActions),
-                GetSystemObjects(EnumObjects.Documents),
-                GetSystemObjects(EnumObjects.DocumentAccesses),
-                GetSystemObjects(EnumObjects.DocumentRestrictedSendLists),
-                GetSystemObjects(EnumObjects.DocumentSendLists),
-                GetSystemObjects(EnumObjects.DocumentFiles),
-                GetSystemObjects(EnumObjects.DocumentLinks),
-                GetSystemObjects(EnumObjects.DocumentSendListStages),
-                GetSystemObjects(EnumObjects.DocumentEvents),
-                GetSystemObjects(EnumObjects.DocumentWaits),
-                GetSystemObjects(EnumObjects.DocumentSubscriptions),
-                GetSystemObjects(EnumObjects.DocumentTasks),
-                GetSystemObjects(EnumObjects.DocumentPapers),
-                GetSystemObjects(EnumObjects.DocumentPaperEvents),
-                GetSystemObjects(EnumObjects.DocumentPaperLists),
-                GetSystemObjects(EnumObjects.DocumentSavedFilters),
-                GetSystemObjects(EnumObjects.DocumentTags),
-                GetSystemObjects(EnumObjects.DictionaryDocumentType),
-                GetSystemObjects(EnumObjects.DictionaryAddressType),
-                GetSystemObjects(EnumObjects.DictionaryDocumentSubjects),
-                GetSystemObjects(EnumObjects.DictionaryRegistrationJournals),
-                GetSystemObjects(EnumObjects.DictionaryContactType),
-                GetSystemObjects(EnumObjects.DictionaryAgents),
-                GetSystemObjects(EnumObjects.DictionaryAgentAddresses),
-                GetSystemObjects(EnumObjects.DictionaryBankAddress),
-                GetSystemObjects(EnumObjects.DictionaryClientCompanyAddress),
-                GetSystemObjects(EnumObjects.DictionaryCompanyAddress),
-                GetSystemObjects(EnumObjects.DictionaryEmployeeAddress),
-                GetSystemObjects(EnumObjects.DictionaryPersonAddress),
-                GetSystemObjects(EnumObjects.DictionaryContacts),
-                GetSystemObjects(EnumObjects.DictionaryBankContact),
-                GetSystemObjects(EnumObjects.DictionaryClientCompanyContact),
-                GetSystemObjects(EnumObjects.DictionaryCompanyContact),
-                GetSystemObjects(EnumObjects.DictionaryEmployeeContact),
-                GetSystemObjects(EnumObjects.DictionaryPersonContact),
-                GetSystemObjects(EnumObjects.DictionaryAgentPeople),
-                GetSystemObjects(EnumObjects.DictionaryAgentPersons),
-                GetSystemObjects(EnumObjects.DictionaryAgentEmployees),
-                GetSystemObjects(EnumObjects.DictionaryAgentCompanies),
-                GetSystemObjects(EnumObjects.DictionaryAgentBanks),
-                GetSystemObjects(EnumObjects.DictionaryAgentUsers),
-                GetSystemObjects(EnumObjects.DictionaryAgentAccounts),
-                GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies),
-                GetSystemObjects(EnumObjects.DictionaryDepartments),
-                GetSystemObjects(EnumObjects.DictionaryPositions),
-                GetSystemObjects(EnumObjects.DictionaryStandartSendListContent),
-                GetSystemObjects(EnumObjects.DictionaryStandartSendLists),
-                GetSystemObjects(EnumObjects.DictionaryPositionExecutorTypes),
-                GetSystemObjects(EnumObjects.DictionaryPositionExecutors),
-                GetSystemObjects(EnumObjects.TemplateDocument),
-                GetSystemObjects(EnumObjects.TemplateDocumentSendList),
-                GetSystemObjects(EnumObjects.TemplateDocumentRestrictedSendList),
-                GetSystemObjects(EnumObjects.TemplateDocumentTask),
-                GetSystemObjects(EnumObjects.TemplateDocumentAttachedFiles),
-                GetSystemObjects(EnumObjects.TemplateDocumentPaper),
-                GetSystemObjects(EnumObjects.DictionaryTag),
-                GetSystemObjects(EnumObjects.CustomDictionaryTypes),
-                GetSystemObjects(EnumObjects.CustomDictionaries),
-                GetSystemObjects(EnumObjects.Properties),
-                GetSystemObjects(EnumObjects.PropertyLinks),
-                GetSystemObjects(EnumObjects.PropertyValues),
-                GetSystemObjects(EnumObjects.EncryptionCertificates),
-                GetSystemObjects(EnumObjects.AdminRoles),
-                GetSystemObjects(EnumObjects.AdminRolePermission),
-                GetSystemObjects(EnumObjects.AdminPositionRoles),
-                GetSystemObjects(EnumObjects.AdminUserRoles),
-                GetSystemObjects(EnumObjects.AdminSubordination),
-                GetSystemObjects(EnumObjects.AdminRegistrationJournalPositions),
-                GetSystemObjects(EnumObjects.SystemSettings)
-            };
+            var items = new List<SystemObjects>();
 
+            items.Add(GetSystemObjects(EnumObjects.System));
+            items.Add(GetSystemObjects(EnumObjects.SystemObjects));
+            items.Add(GetSystemObjects(EnumObjects.SystemActions));
 
+            items.Add(GetSystemObjects(EnumObjects.Documents));
+            items.Add(GetSystemObjects(EnumObjects.DocumentAccesses));
+            items.Add(GetSystemObjects(EnumObjects.DocumentRestrictedSendLists));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSendLists));
+            items.Add(GetSystemObjects(EnumObjects.DocumentFiles));
+            items.Add(GetSystemObjects(EnumObjects.DocumentLinks));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSendListStages));
+            items.Add(GetSystemObjects(EnumObjects.DocumentEvents));
+            items.Add(GetSystemObjects(EnumObjects.DocumentWaits));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSubscriptions));
+            items.Add(GetSystemObjects(EnumObjects.DocumentTasks));
+            items.Add(GetSystemObjects(EnumObjects.DocumentPapers));
+            items.Add(GetSystemObjects(EnumObjects.DocumentPaperEvents));
+            items.Add(GetSystemObjects(EnumObjects.DocumentPaperLists));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSavedFilters));
+            items.Add(GetSystemObjects(EnumObjects.DocumentTags));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDocumentType));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAddressType));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDocumentSubjects));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryRegistrationJournals));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryContactType));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgents));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryBankAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryContacts));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryBankContact));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryClientCompanyContact));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryCompanyContact));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryEmployeeContact));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPersonContact));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPeople));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentPersons));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentEmployees));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentCompanies));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentBanks));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentAccounts));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryAgentClientCompanies));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryDepartments));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositions));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendListContent));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryStandartSendLists));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutorTypes));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryPositionExecutors));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocument));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentSendList));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentRestrictedSendList));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentTask));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentAttachedFiles));
+            items.Add(GetSystemObjects(EnumObjects.TemplateDocumentPaper));
+            items.Add(GetSystemObjects(EnumObjects.DictionaryTag));
+            items.Add(GetSystemObjects(EnumObjects.CustomDictionaryTypes));
+            items.Add(GetSystemObjects(EnumObjects.CustomDictionaries));
+            items.Add(GetSystemObjects(EnumObjects.Properties));
+            items.Add(GetSystemObjects(EnumObjects.PropertyLinks));
+            items.Add(GetSystemObjects(EnumObjects.PropertyValues));
 
+            items.Add(GetSystemObjects(EnumObjects.EncryptionCertificates));
 
+            items.Add(GetSystemObjects(EnumObjects.AdminRoles));
+            items.Add(GetSystemObjects(EnumObjects.AdminRolePermission));
+            items.Add(GetSystemObjects(EnumObjects.AdminPositionRoles));
+            items.Add(GetSystemObjects(EnumObjects.AdminUserRoles));
+            items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
             //items.Add(GetSystemObjects(EnumObjects.DepartmentAdmin));
+            items.Add(GetSystemObjects(EnumObjects.AdminRegistrationJournalPositions));
 
+            items.Add(GetSystemObjects(EnumObjects.SystemSettings));
 
 
             return items;
@@ -275,7 +601,7 @@ namespace BL.Database.DatabaseContext
         {
             string description = GetLabel("Objects", id.ToString());
 
-            return new SystemObjects
+            return new SystemObjects()
             {
                 Id = (int)id,
                 Code = id.ToString(),
@@ -307,6 +633,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForControl, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
+            //items.Add(GetSysAct(EnumDocumentActions.SendForControlChange, EnumObjects.Documents, category: "Контроль"));
             items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecution, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
             items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents, category: "Подписание", isVisibleInMenu: false));
@@ -600,6 +927,34 @@ namespace BL.Database.DatabaseContext
             return items;
         }
 
+        public static void CheckSystemActions()
+        {
+            return; // При переходе на Permissions CheckSystemActions потерял смысл и даже вредет. В базе нет необходимости хранить действия
+
+            int actionsCountByEnums =
+            Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
+            Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
+
+            var actionsCountByList = GetSystemActions().Count();
+
+            if (actionsCountByEnums != actionsCountByList)
+            {
+                List<EnumModel> list = CheckSystemActions2();
+                string s = string.Empty;
+                foreach (var item in list)
+                {
+                    s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
+                }
+                throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
+            }
+
+
+        }
+
         public static List<EnumModel> CheckSystemActions2()
         {
             var AdminActionsList = GetListByEnum<EnumAdminActions>().Where(x => x.Value > 0);
@@ -734,6 +1089,43 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = null,
+                Name = name,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
+        }
+
+        public static List<AdminRoleTypes> GetAdminRoleTypes()
+        {
+            var items = new List<AdminRoleTypes>();
+
+            items.Add(GetAdminRoleType(Roles.Admin));
+            items.Add(GetAdminRoleType(Roles.User));
+            items.Add(GetAdminRoleType(Roles.Viewer));
+            items.Add(GetAdminRoleType(Roles.Auditlog));
+            items.Add(GetAdminRoleType(Roles.DocumAccess));
+            items.Add(GetAdminRoleType(Roles.DocumActions));
+            items.Add(GetAdminRoleType(Roles.DocumPapers));
+            items.Add(GetAdminRoleType(Roles.DocumSign));
+            items.Add(GetAdminRoleType(Roles.DocumWaits));
+            items.Add(GetAdminRoleType(Roles.ManagementAgents));
+            items.Add(GetAdminRoleType(Roles.ManagementAuth));
+            items.Add(GetAdminRoleType(Roles.ManagementContactPersons));
+            items.Add(GetAdminRoleType(Roles.ManagementDocumDictionaries));
+            items.Add(GetAdminRoleType(Roles.ManagementEmployees));
+            items.Add(GetAdminRoleType(Roles.ManagementJournals));
+            items.Add(GetAdminRoleType(Roles.ManagementOrg));
+
+            return items;
+        }
+
+        private static AdminRoleTypes GetAdminRoleType(Roles id)
+        {
+            string name = GetLabel("Roles", id.ToString());
+            return new AdminRoleTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
                 Name = name,
                 LastChangeUserId = (int)EnumSystemUsers.AdminUser,
                 LastChangeDate = DateTime.UtcNow,
@@ -1266,7 +1658,7 @@ namespace BL.Database.DatabaseContext
         private static SystemFormats GetSystemFormats(EnumSystemFormats id, string code)
         {
             string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id + ".Description");
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
             return new SystemFormats()
             {
                 Id = (int)id,

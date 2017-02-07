@@ -1,19 +1,14 @@
-﻿namespace BL.Model.AdminCore.InternalModel
+﻿using BL.Model.Common;
+
+namespace BL.Model.AdminCore.InternalModel
 {
-    public class InternalAdminLanguage
+    public class InternalAdminLanguage : ListItem
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// Код языка
         /// </summary>
         public string Code { get; set; }
-        /// <summary>
-        /// Название языка
-        /// </summary>
-        public string Name { get; set; }
+
         /// <summary>
         /// Язык по умолчанию
         /// </summary>

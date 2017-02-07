@@ -37,30 +37,6 @@ namespace BL.Database.Common
             };
         }
 
-        public static AdminRoleActions GetDbRoleAction(IContext context, InternalAdminRoleAction item)
-        {
-            return item == null ? null : new AdminRoleActions
-            {
-                Id = item.Id,
-                LastChangeDate = item.LastChangeDate,
-                LastChangeUserId = item.LastChangeUserId,
-                ActionId = item.ActionId,
-                RoleId = item.RoleId,
-                RecordId = item.RecordId
-            };
-        }
-
-        public static IEnumerable<AdminRoleActions> GetDbRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> list)
-        {
-            {
-                var items = new List<AdminRoleActions>();
-                foreach (var item in list)
-                {
-                    items.Add(GetDbRoleAction(context, item));
-                }
-                return items;
-            }
-        }
 
 
         public static AdminPositionRoles GetDbPositionRole(IContext context, InternalAdminPositionRole item)
@@ -146,6 +122,18 @@ namespace BL.Database.Common
                 RoleId = item.RoleId,
                 PermissionId = item.PermissionId,
             };
+        }
+
+        public static IEnumerable<AdminRolePermissions> GetDbRolePermissions(IContext context, IEnumerable<InternalAdminRolePermission> list)
+        {
+            {
+                var items = new List<AdminRolePermissions>();
+                foreach (var item in list)
+                {
+                    items.Add(GetDbRolePermission(context, item));
+                }
+                return items;
+            }
         }
 
         public static AdminRegistrationJournalPositions GetDbRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition item)

@@ -11,6 +11,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.SystemCore;
+using BL.Model.Enums;
 
 namespace BL.Database.Admins.Interfaces
 {
@@ -35,22 +36,12 @@ namespace BL.Database.Admins.Interfaces
         void DeleteRole(IContext context, InternalAdminRole model);
         bool ExistsRole(IContext context, FilterAdminRole filter);
         string GetRoleTypeCode(IContext context, int id);
+        int GetRoleByCode(IContext context, Roles item);
         InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter);
         #endregion
 
-        #region [+] RoleAction ...
-        int AddRoleAction(IContext context, InternalAdminRoleAction model);
-        void AddRoleActions(IContext context, IEnumerable<InternalAdminRoleAction> models);
-        void UpdateRoleAction(IContext context, InternalAdminRoleAction model);
-        void DeleteRoleAction(IContext context, InternalAdminRoleAction model);
-        void DeleteRoleActions(IContext context, FilterAdminRoleAction filter);
-        bool ExistsRoleAction(IContext context, FilterAdminRoleAction filter);
-        InternalAdminRoleAction GetInternalRoleAction(IContext context, FilterAdminRoleAction filter);
-        IEnumerable<FrontAdminRoleAction> GetRoleActions(IContext context, FilterAdminRoleAction filter);
-        List<int> GetActionsByRoles(IContext context, FilterAdminRoleAction filter);
-        #endregion
 
         #region [+] PositionRole ...
         int AddPositionRole(IContext context, InternalAdminPositionRole model);
@@ -111,7 +102,7 @@ namespace BL.Database.Admins.Interfaces
 
         #region [+] AddNewClient ...
 
-        List<InternalAdminRoleAction> GetRoleActionsForAdmin(IContext context);
+        List<InternalAdminRolePermission> GetRolePermissionsForAdmin(IContext context);
 
         #endregion
 
@@ -120,6 +111,7 @@ namespace BL.Database.Admins.Interfaces
         void DeleteDepartmentAdmin(IContext context, int id);
 
         int AddRolePermission(IContext context, InternalAdminRolePermission model);
+        void AddRolePermissions(IContext context, IEnumerable<InternalAdminRolePermission> models);
 
         void DeleteRolePermission(IContext context, InternalAdminRolePermission model);
 

@@ -9,16 +9,17 @@ namespace BL.Model.Users
 {
     public class RestorePasswordAgentUser
     {
-        [Required]
         /// <summary>
         /// 
         /// </summary>       
+        [Required]
         public string Email { get; set; }
 
-        [Required]
+
         /// <summary>
         /// 
-        /// </summary>       
+        /// </summary>   
+        [Required]
         public string ClientCode { get; set; }
         
         public string FirstEntry { get; set; }

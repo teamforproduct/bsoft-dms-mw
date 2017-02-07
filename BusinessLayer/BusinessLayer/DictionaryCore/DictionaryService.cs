@@ -256,6 +256,8 @@ namespace BL.Logic.DictionaryCore
                     new List<EnumObjects> { EnumObjects.DictionaryAgentEmployees, EnumObjects.DictionaryContacts, EnumObjects.DictionaryAgentAddresses, EnumObjects.DictionaryPositions },
                     ftSearch.FullTextSearchString);
 
+                if (list == null) return new List<FrontMainAgentEmployee>();
+
                 newFilter.IDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees).Select(x => x.ObjectId).ToList();
                 newFilter.AddressIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(x => x.ObjectId).ToList();
                 newFilter.ContactIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(x => x.ObjectId).ToList();
@@ -849,15 +851,10 @@ namespace BL.Logic.DictionaryCore
 
         // Типы исполнителей
         #region DictionaryPositinExecutorTypes
-        public FrontDictionaryPositionExecutorType GetDictionaryPositionExecutorType(IContext context, int id)
-        {
-
-            return _dictDb.GetPositionExecutorTypes(context, new FilterDictionaryPositionExecutorType { IDs = new List<int> { id } }).FirstOrDefault();
-        }
-
         public IEnumerable<FrontDictionaryPositionExecutorType> GetDictionaryPositionExecutorTypes(IContext context, FilterDictionaryPositionExecutorType filter)
         {
-
+            if (filter == null) filter = new FilterDictionaryPositionExecutorType();
+            filter.IsActive = true;
             return _dictDb.GetPositionExecutorTypes(context, filter);
         }
         #endregion DictionaryPositinExecutorTypes

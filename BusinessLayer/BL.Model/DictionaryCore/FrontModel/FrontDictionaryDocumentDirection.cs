@@ -1,4 +1,5 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.Common;
+using BL.Model.Extensions;
 using System;
 
 namespace BL.Model.DictionaryCore.FrontModel
@@ -7,19 +8,11 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// Направления документов
     /// </summary>
-    public class FrontDictionaryDocumentDirection
+    public class FrontDictionaryDocumentDirection : ListItem
     {
-        /// <summary>
-        /// ID
-        /// </summary>
-        public int Id { get; set; }
         /// <summary>
         /// Код
         /// </summary>
         public string Code { get; set; }
-        /// <summary>
-        /// Наименование
-        /// </summary>
-        public string Name { get; set; }
     }
 }

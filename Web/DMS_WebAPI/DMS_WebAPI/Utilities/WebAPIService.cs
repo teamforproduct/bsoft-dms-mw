@@ -833,6 +833,7 @@ namespace DMS_WebAPI.Utilities
 
             user.EmailConfirmed = true;
             user.IsEmailConfirmRequired = false;
+            user.IsChangePasswordRequired = false;
             user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);

@@ -9,16 +9,18 @@ namespace BL.Model.Users
 {
     public class ConfirmRestorePasswordAgentUser
     {
-        [Required]
+
         /// <summary>
         /// 
         /// </summary>       
+        [Required]
         public string UserId { get; set; }
 
-        [Required]
+
         /// <summary>
         /// 
         /// </summary>       
+        [Required]
         public string Code { get; set; }
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace BL.Model.Users
         [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
