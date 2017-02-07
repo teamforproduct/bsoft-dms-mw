@@ -20,7 +20,6 @@ using BL.Logic.TreeBuilder;
 using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.IncomingModel;
-using LinqKit;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -141,9 +140,10 @@ namespace BL.Logic.DictionaryCore
             var tmp = _dictDb.GetAgentsIDByAddress(ctx,
                 ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
 
+            //TODO WHAT A ???
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,
+                ParentId = 0,
                 ObjectId = x,
                 ObjectType = EnumObjects.DictionaryAgents,
                 Score = 0
@@ -154,7 +154,7 @@ namespace BL.Logic.DictionaryCore
 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,
+                ParentId = 0,
                 ObjectId = x,
                 ObjectType = EnumObjects.DictionaryAgents,
                 Score = 0
@@ -425,7 +425,7 @@ namespace BL.Logic.DictionaryCore
 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,
+                ParentId = 0,
                 ObjectId = x,
                 ObjectType = EnumObjects.DictionaryAgents,
                 Score = 0
@@ -436,7 +436,7 @@ namespace BL.Logic.DictionaryCore
 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,
+                ParentId = 0,
                 ObjectId = x,
                 ObjectType = EnumObjects.DictionaryAgents,
                 Score = 0
@@ -488,9 +488,10 @@ namespace BL.Logic.DictionaryCore
             var tmp = _dictDb.GetAgentsIDByAddress(ctx,
                 ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
 
+            //TODO WHAT A F??? 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,
+                ParentId = 0,
                 ObjectId = x,
                 ObjectType = EnumObjects.DictionaryAgents,
                 Score = 0
@@ -501,7 +502,7 @@ namespace BL.Logic.DictionaryCore
 
             res.AddRange(tmp.Select(x => new FullTextSearchResult
             {
-                DocumentId = 0,
+                ParentId = 0,
                 ObjectId = x,
                 ObjectType = EnumObjects.DictionaryAgents,
                 Score = 0

@@ -10,7 +10,9 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Document ID
         /// </summary>
-        public int DocumentId { get; set; }
+        public int ParentId { get; set; }
+
+        public EnumObjects ParentObjectType { get; set; }
         /// <summary>
         /// Type if document part, where text was found (i.e. Document, event etc.)
         /// </summary>

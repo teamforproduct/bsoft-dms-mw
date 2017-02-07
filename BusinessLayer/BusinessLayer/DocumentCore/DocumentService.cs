@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
@@ -16,7 +15,6 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Exception;
-using System.Transactions;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -60,7 +58,7 @@ namespace BL.Logic.DocumentCore
                     if (ftRes != null)
                     {
                         var resWithRanges =
-                            ftRes.GroupBy(x => x.DocumentId)
+                            ftRes.GroupBy(x => x.ParentId)
                                 .Select(x => new {DocId = x.Key, Rate = x.Max(s => s.Score)})
                                 .OrderByDescending(x => x.Rate);
                         filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();

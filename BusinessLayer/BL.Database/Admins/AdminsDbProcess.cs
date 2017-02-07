@@ -17,8 +17,6 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Database.Common;
 using System;
 using BL.Database.DBModel.Dictionary;
-using System.Transactions;
-using BL.Model.DictionaryCore.FrontModel;
 using EntityFramework.Extensions;
 using BL.Model.SystemCore.InternalModel;
 using BL.CrossCutting.Helpers;

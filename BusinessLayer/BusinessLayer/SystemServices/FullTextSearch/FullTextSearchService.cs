@@ -255,7 +255,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.DocumentId} ");
+                            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.ParentId} ");
                         }
                     }
                     _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
@@ -284,7 +284,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.DocumentId} ");
+                            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.ParentId} ");
                         }
                     }
                     _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
@@ -322,7 +322,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                             }
                             catch (Exception ex)
                             {
-                                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.DocumentId} ");
+                                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.ParentId} ");
                             }
                         }
                         _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
@@ -343,7 +343,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.DocumentId} ");
+                        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.ParentId} ");
                     }
                 }
                 if (processedIds.Any())

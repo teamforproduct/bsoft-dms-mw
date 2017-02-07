@@ -15,7 +15,13 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// ID of document
         /// </summary>
-        public int DocumentId { get; set; }
+        public int ParentId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public EnumObjects ParentItemType { get; set; }
+
         /// <summary>
         /// Which part of document should be updated
         /// </summary>
@@ -39,5 +45,6 @@ namespace BL.Model.FullTextSearch
         /// ID of the client
         /// </summary>
         public int ClientId { get; set; }
+
     }
 }

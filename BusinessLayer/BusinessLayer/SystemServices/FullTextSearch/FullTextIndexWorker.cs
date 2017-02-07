@@ -77,7 +77,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (_writer == null) return;
             var doc = new Document();
             var docIdFld = new NumericField(FIELD_DOC_ID, Field.Store.YES, true);
-            docIdFld.SetIntValue(item.DocumentId);
+            docIdFld.SetIntValue(item.ParentId);
             doc.Add(docIdFld);
 
             var typeIdFld = new NumericField(FIELD_OBJECT_TYPE, Field.Store.YES, true);
@@ -134,6 +134,12 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _searcher = new IndexSearcher(_indexReader);
         }
 
+        public IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter)
+        {
+            return null;
+        }
+
+
         public IEnumerable<FullTextSearchResult> SearchDocument(string text, int clientId)
         {
             text = text.Trim();
@@ -168,7 +174,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var rdoc = _searcher.Doc(doc.Doc);
                     var sr = new FullTextSearchResult
                     {
-                        DocumentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
+                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
                         ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         Score = doc.Score
@@ -217,7 +223,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var rdoc = _searcher.Doc(doc.Doc);
                     var sr = new FullTextSearchResult
                     {
-                        DocumentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
+                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
                         ObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         Score = doc.Score
@@ -249,7 +255,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var rdoc = _searcher.Doc(doc.Doc);
                     var sr = new FullTextSearchResult
                     {
-                        DocumentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
+                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_DOC_ID)),
                         ObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         Score = doc.Score
