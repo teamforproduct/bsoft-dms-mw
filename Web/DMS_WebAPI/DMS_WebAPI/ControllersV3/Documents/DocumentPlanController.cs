@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Добавляет пункт плана TODO переделать входящие модели
+        /// Добавляет пункт плана
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -73,15 +73,33 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public IHttpActionResult Post([FromBody]AddDocumentSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
+            //if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
+            //var res = new JsonResult(tmpItem, this);
+            //res.SpentTime = stopWatch;
+            return GetById(tmpItem);
+        }
+
+        /// <summary>
+        /// Добавляет этап плана работы над документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Plan+"/AddStage")]
+        public IHttpActionResult AddStage([FromBody]ModifyDocumentSendListStage model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var tmpItem = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, ctx, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
 
         /// <summary>
-        /// Измененяет пункт плана TODO переделать входящие модели
+        /// Измененяет пункт плана
         /// </summary>
         /// <param name="model">Модель для обновления пункта плана</param>
         /// <returns>Обновленный пункт плана</returns>
@@ -89,11 +107,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public IHttpActionResult Put([FromBody]ModifyDocumentSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
+//            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentSendList, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //var res = new JsonResult(tmpItem, this);
+            //res.SpentTime = stopWatch;
+            return GetById(tmpItem);
         }
 
         /// <summary>
@@ -113,6 +131,21 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return res;
         }
 
+        /// <summary>
+        /// Удаляет этапа плана работы над документом
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route(Features.Plan + "/DeleteStage")]
+        public IHttpActionResult DeleteStage([FromUri]ModifyDocumentSendListStage model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            Action.Execute(EnumDocumentActions.DeleteDocumentSendListStage, model);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
         /// <summary>
         /// Возвращает меню по ИД документа для работы с планами 
         /// </summary>
