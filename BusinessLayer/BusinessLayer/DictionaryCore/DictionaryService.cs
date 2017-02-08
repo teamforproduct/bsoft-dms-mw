@@ -22,6 +22,7 @@ using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using LinqKit;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.Common;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -525,7 +526,9 @@ namespace BL.Logic.DictionaryCore
         {
             var languageService = DmsResolver.Current.Get<ILanguages>();
             var languageId = languageService.GetLanguageIdByCode(languageCode);
-            _dictDb.SetAgentUserLanguage(context, new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LanguageId = languageId });
+            var model = new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LanguageId = languageId };
+            CommonDocumentUtilities.SetLastChange(context, model);
+            _dictDb.SetAgentUserLanguage(context, model);
             return languageId;
         }
 
