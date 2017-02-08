@@ -176,13 +176,13 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userLanguage"></param>
         /// <param name="text">json с множеством лейблов для перевода</param>
         /// <returns></returns>
-        public string ReplaceLanguageLabel(string languageName, string text)
+        public string ReplaceLanguageLabel(string languageCode, string text)
         {
             if (!ExistsLabels(text)) return text;
 
-            if (string.IsNullOrEmpty(languageName)) languageName = string.Empty;
+            if (string.IsNullOrEmpty(languageCode)) languageCode = string.Empty;
 
-            return ReplaceLanguageLabel(GetLanguageIdByCode(languageName), text);
+            return ReplaceLanguageLabel(GetLanguageIdByCode(languageCode), text);
         }
 
         public int GetLanguageIdByCode(string languageCode)
@@ -190,8 +190,12 @@ namespace DMS_WebAPI.Utilities
             // запрашиваю из кэша переводы
             var languageInfo = GetLanguageInfo();
 
+
+            // languageCode может быть ru или ru_RU в зависимости от настроек браузера
             // нахожу локаль по имени 
-            var language = languageInfo.Languages.FirstOrDefault(x => languageCode.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+            //var language = languageInfo.Languages.FirstOrDefault(x => languageCode.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+
+            var language = languageInfo.Languages.FirstOrDefault(x => x.Code.Contains(languageCode));
 
             // если локаль не определена, беру локаль по умолчанию
             if (language == null)
