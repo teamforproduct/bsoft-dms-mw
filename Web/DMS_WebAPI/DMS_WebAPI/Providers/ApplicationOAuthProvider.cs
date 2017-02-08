@@ -108,11 +108,13 @@ namespace DMS_WebAPI.Providers
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
                     {
+                        HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
+
                         webService.AddUserFingerprint(new AddAspNetUserFingerprint
                         {
                             UserId = user.Id,
                             Fingerprint = fingerprint,
-                            Name = "Autosave_" + DateTime.UtcNow.ToString("HHmmss"),
+                            Name = bc.Browser + " " + bc.Platform + " " + DateTime.UtcNow.ToString("HHmmss"),
                             IsActive = true
                         });
                     }
