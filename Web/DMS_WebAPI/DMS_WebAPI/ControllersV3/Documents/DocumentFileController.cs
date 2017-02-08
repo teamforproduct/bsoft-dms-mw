@@ -126,12 +126,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Добавляет версию файла
+        /// Добавляет версию существующего файла
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Files)]
+        [Route(Features.Files+ "/AddUseMainNameFile")]
         public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
