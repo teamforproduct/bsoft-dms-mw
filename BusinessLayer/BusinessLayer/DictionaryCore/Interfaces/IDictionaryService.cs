@@ -22,6 +22,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
         FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id);
+        int SetAgentUserLanguage(IContext context, string languageCode);
         void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
 

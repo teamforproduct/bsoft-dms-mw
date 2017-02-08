@@ -21,6 +21,7 @@ using static BL.Database.Dictionaries.DictionariesDbProcess;
 using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using LinqKit;
+using BL.Logic.AdminCore.Interfaces;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -518,6 +519,14 @@ namespace BL.Logic.DictionaryCore
         public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
         {
             return _dictDb.GetAgentUser(context, id);
+        }
+
+        public int SetAgentUserLanguage(IContext context, string languageCode)
+        {
+            var languageService = DmsResolver.Current.Get<ILanguages>();
+            var languageId = languageService.GetLanguageIdByCode(languageCode);
+            _dictDb.SetAgentUserLanguage(context, new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LanguageId = languageId });
+            return languageId;
         }
 
         public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
@@ -1122,7 +1131,7 @@ namespace BL.Logic.DictionaryCore
                 newFilter = filter;
             }
 
-            return _dictDb.GetMainTags(context, filter, paging);
+            return _dictDb.GetMainTags(context, newFilter, paging);
         }
 
         public IEnumerable<ListItem> GetTagList(IContext context, FilterDictionaryTag filter, UIPaging paging)
