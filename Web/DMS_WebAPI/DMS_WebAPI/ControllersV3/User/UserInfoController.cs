@@ -2,10 +2,12 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Users;
+using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -14,6 +16,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
@@ -103,7 +106,6 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <summary>
         /// Возвращает историю подключений сотрудника
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
@@ -136,6 +138,27 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult ChangeLogin([FromBody]ChangeLogin model)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Устанавливает локаль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Language")]
+        public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
+        {
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem= tmpService.SetAgentUserLanguage(ctx,model.LanguageCode);
+            contexts.UpdateLanguageId(ctx.CurrentAgentId, tmpItem);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>
