@@ -207,7 +207,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Корректирует документ TODO Required!!!!!!!!!!!!!!!!!!
+        /// Корректирует документ
         /// </summary>
         /// <param name="model">Модель для обновления документа</param>
         /// <returns>Обновленный документ</returns>
@@ -219,7 +219,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocument, model);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
-            return Get(tmpItem);
+            return Get(model.Id);
         }
 
         /// <summary>

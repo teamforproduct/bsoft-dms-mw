@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentSendList, model);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
-            return GetById(tmpItem);
+            return GetById(model.Id);
         }
 
         /// <summary>

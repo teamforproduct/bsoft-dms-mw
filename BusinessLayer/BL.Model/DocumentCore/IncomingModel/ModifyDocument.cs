@@ -17,7 +17,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИД Документа
         /// </summary>
-        //TODO Required!!!!!!!!!!!!!!!!!!
+        [Required]
         public int Id { get; set; }
         /// <summary>
         /// ИД Тематики документа
