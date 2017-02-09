@@ -197,7 +197,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var aplan = DmsResolver.Current.Get<IAutoPlanService>();
             aplan.ManualRunAutoPlan(ctx, model.Id, null);
-            var res = new JsonResult(null, this);
+            var res = new JsonResult(model.Id, this);
             res.SpentTime = stopWatch;
             return res;
         }
