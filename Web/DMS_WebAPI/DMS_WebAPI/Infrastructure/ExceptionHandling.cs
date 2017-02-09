@@ -43,7 +43,12 @@ namespace DMS_WebAPI.Infrastructure
 
             return res;
         }
-
+        /// <summary>
+        /// Получает метку для перевода исключения
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="logExpression"></param>
+        /// <returns></returns>
         public static string GetExceptionText (Exception exception, out string logExpression )
         {
             var exc = exception;
