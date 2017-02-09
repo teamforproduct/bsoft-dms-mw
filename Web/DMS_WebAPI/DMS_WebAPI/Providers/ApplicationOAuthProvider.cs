@@ -238,7 +238,7 @@ namespace DMS_WebAPI.Providers
                 userContexts.Set(token, server, client.Id);
 
                 // Получаю информацию о браузере
-                string message = GetBrowswerInfo(context, user.IsFingerprintEnabled);
+                string message = GetBrowswerInfo(context);
 
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1: true);
@@ -253,7 +253,7 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
-        private static string GetBrowswerInfo(OAuthTokenEndpointResponseContext context = null, bool isIncludeFingerPrintInfo = false)
+        private static string GetBrowswerInfo(OAuthTokenEndpointResponseContext context = null, bool isIncludeFingerPrintInfo = true)
         {
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
             var userAgent = HttpContext.Current.Request.UserAgent;
