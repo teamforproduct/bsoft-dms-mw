@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Departments)]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetListDepartments([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDepartment filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Journals)]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryRegistrationJournal filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -204,7 +204,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Positions)]
-        [ResponseType(typeof(List<FrontShortListPosition>))]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

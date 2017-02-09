@@ -3422,7 +3422,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(context, dbContext, filter);
 
-                
+
 
                 qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
 
@@ -4703,8 +4703,8 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    SearchText = x.Name,
+                    Name = x.Name + " " + x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (<b>" + x.ExecutorType.Suffix + "</b>)" : null),
+                    SearchText = x.Name + " " + x.ExecutorAgent.Name + " " + x.ExecutorType.Suffix,
                     ObjectId = (int)EnumObjects.DictionaryPositions,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
@@ -5768,7 +5768,7 @@ namespace BL.Database.Dictionaries
                 if (filter.DocumentDirection.HasValue)
                 {
                     qry = qry.Where(x => x.DirectionCodes.Contains(((int)filter.DocumentDirection).ToString()));
-                } 
+                }
 
                 //// Условие по IsIncoming
                 //if (filter.IsIncoming != null)
