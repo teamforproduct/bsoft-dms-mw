@@ -34,5 +34,15 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public List<int> ParentIDs { get; set; }
 
+        /// <summary>
+        /// исключить отделы без журналов
+        /// </summary>
+        public bool? ExcludeDepartmentsWithoutJournals { get; set; }
+
+        /// <summary>
+        /// исключить отделы без должностей
+        /// </summary>
+        public bool? ExcludeDepartmentsWithoutPositions { get; set; }
+
     }
 }

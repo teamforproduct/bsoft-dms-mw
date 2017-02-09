@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -30,19 +31,25 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> DepartmentByPositionIDs { get; set; }
 
         /// <summary>
-        /// Входящий от внешнего агента
+        /// Направление документа
         /// </summary>
-        public bool? IsIncoming { get; set; }
+        public EnumDocumentDirections? DocumentDirection { get; set; }
 
-        /// <summary>
-        /// Исходящий - направлен внешнему агенту
-        /// </summary>
-        public bool? IsOutcoming { get; set; }
+        ///// <summary>
+        ///// Входящий от внешнего агента
+        ///// </summary>
+        //public bool? IsIncoming { get; set; }
 
-        /// <summary>
-        ///  Внутренний - внутренняя переписка
-        /// </summary>
-        public bool? IsInternal { get; set; }
+        ///// <summary>
+        ///// Исходящий - направлен внешнему агенту
+        ///// </summary>
+        //public bool? IsOutcoming { get; set; }
+
+        ///// <summary>
+        /////  Внутренний - внутренняя переписка
+        ///// </summary>
+        //public bool? IsInternal { get; set; }
+
         /// <summary>
         ///  Признак доступен для регистрации документа в журнале
         /// </summary>

@@ -198,7 +198,6 @@
     <Compile Include="DictionaryCore\FrontModel\AddressTypes\FrontDictionaryAddressType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryPositionExecutor.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryStageType.cs" />
-    <Compile Include="Common\ListItemWithPath.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontListAgentPersonSimlpe.cs" />
     <Compile Include="DictionaryCore\FrontModel\Persons\FrontAgentPerson.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentUser.cs" />

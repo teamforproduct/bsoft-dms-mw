@@ -50,6 +50,6 @@ namespace BL.Model.Tree
         /// <summary>
         /// Список потомков, который формирует универсальная процедура построения дерева.
         /// </summary>
-        IEnumerable<ITreeItem> Childs { get; set; }
+        IEnumerable<TreeItem> Childs { get; set; }
     }
 }

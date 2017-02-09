@@ -57,9 +57,9 @@ namespace BL.Logic.TreeBuilder
 
 
 
-        public static List<ITreeItem> GetList(List<TreeItem> tree)
+        public static List<TreeItem> GetList(List<TreeItem> tree)
         {
-            List<ITreeItem> list = new List<ITreeItem>();
+            List<TreeItem> list = new List<TreeItem>();
 
             TreeToList(tree, list);
 
@@ -67,7 +67,7 @@ namespace BL.Logic.TreeBuilder
         }
 
 
-        private static void TreeToList(IEnumerable<ITreeItem> tree, List<ITreeItem> list)
+        private static void TreeToList(IEnumerable<TreeItem> tree, List<TreeItem> list)
         {
             if (tree != null)
             {
