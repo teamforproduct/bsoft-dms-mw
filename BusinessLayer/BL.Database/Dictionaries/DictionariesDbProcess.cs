@@ -4703,7 +4703,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    Name = x.Name + " " + x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (<b>" + x.ExecutorType.Suffix + "</b>)" : null),
+                    Name = "<span class='position-name'>" + x.Name + "</span> <span class='executor-name'>" + x.ExecutorAgent.Name + "</span>" + (x.ExecutorType.Suffix != null ? " (<strong>" + x.ExecutorType.Suffix + "</strong>)" : null),
                     SearchText = x.Name + " " + x.ExecutorAgent.Name + " " + x.ExecutorType.Suffix,
                     ObjectId = (int)EnumObjects.DictionaryPositions,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
