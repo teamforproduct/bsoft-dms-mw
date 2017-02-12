@@ -1725,7 +1725,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     ParentObjectId = (x.ObjectType == (int)EnumObjects.Documents) ? x.ObjectId : 0,
-                    ItemType = (EnumObjects)x.ObjectType,
+                    ObjectType = (EnumObjects)x.ObjectType,
                     OperationType = (EnumOperationType)x.OperationType,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.ObjectId,
@@ -1766,8 +1766,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.Documents,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.Documents,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.Documents,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.Documents,
                     ObjectText = (x.Main.RegistrationNumber != null ? (x.Main.RegistrationNumberPrefix ?? "") + x.Main.RegistrationNumber + (x.Main.RegistrationNumberSuffix ?? "") : "#" + x.Main.Id) + " "
                                 + x.Main.RegistrationJournal.Name + " " + x.Main.RegistrationJournal.Department.Name + " "
                                 + x.Main.TemplateDocument.DocumentType.Name + " " + x.Main.Description + " "
@@ -1775,10 +1775,6 @@ namespace BL.Database.SystemDb
                                 + x.Main.SenderAgent.Name + " " + x.Main.SenderAgentPerson.Agent.Name + " " + x.Main.SenderNumber + " "+ x.Main.Addressee
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
-                if (filterType == EnamFilterType.MainSlave)
-                {
-                    res.AddRange(FullTextIndexItemQuery[EnumObjects.DocumentEvents](ctx,dbContext,EnamFilterType.Slave));
-                }
                 return res;
             } },
             { EnumObjects.DocumentEvents, (ctx,dbContext,filterType) =>
@@ -1801,8 +1797,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DocumentEvents,
-                    ParentObjectId = x.Main.DocumentId, ParentItemType = EnumObjects.Documents,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     ObjectText = x.Main.Description + " " + x.Main.AddDescription + " " + x.Main.Task.Task + " "
                     + x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
                     + x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
@@ -1825,8 +1821,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryAgentClientCompanies,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryAgentClientCompanies,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentClientCompanies,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                     ObjectText = x.Main.Agent.Name + " " + x.Main.FullName+ " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1843,8 +1839,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryDepartments,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryDepartments,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryDepartments,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryDepartments,
                     ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.Code
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1861,8 +1857,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryPositions,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryPositions,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryPositions,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryPositions,
                     ObjectText = x.Main.Name + " " + x.Main.FullName
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1879,8 +1875,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryAgentEmployees,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryAgentEmployees,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentEmployees,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                     ObjectText = x.Main.PersonnelNumber + " " + x.Main.Description + " " + x.Main.Agent.Name + " "
                     + x.Main.Agent.AgentPeople.FullName + " " + x.Main.Agent.AgentPeople.BirthDate + " " + " " + x.Main.Agent.AgentPeople.TaxCode
                     + x.Main.Agent.AgentPeople.PassportDate + " " + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText
@@ -1899,8 +1895,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.AdminRoles,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.AdminRoles,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminRoles,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.AdminRoles,
                     ObjectText = x.Main.Name + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1919,8 +1915,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.AdminUserRoles,
-                    ParentObjectId = x.Main.RoleId, ParentItemType = EnumObjects.AdminRoles,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminUserRoles,
+                    ParentObjectId = x.Main.RoleId, ParentObjectType = EnumObjects.AdminRoles,
                     ObjectText = x.Main.Role.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1929,8 +1925,8 @@ namespace BL.Database.SystemDb
                 var qryRes1= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId1, FeatureId = featureId1,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.AdminUserRoles,
-                    ParentObjectId = x.Main.PositionExecutor.AgentId, ParentItemType = EnumObjects.DictionaryAgentEmployees,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminUserRoles,
+                    ParentObjectId = x.Main.PositionExecutor.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                     ObjectText = x.Main.PositionExecutor.Agent.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes1, FilterType = filterType});
@@ -1951,8 +1947,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryAddressType,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryAddressType,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAddressType,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAddressType,
                     ObjectText = x.Main.Code + " " + x.Main.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1969,8 +1965,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryContactType,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryContactType,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContactType,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryContactType,
                     ObjectText = x.Main.Code + " " + x.Main.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1987,8 +1983,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryDocumentType,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryDocumentType,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryDocumentType,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryDocumentType,
                     ObjectText = x.Main.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -2008,8 +2004,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryRegistrationJournals,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryRegistrationJournals,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryRegistrationJournals,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryRegistrationJournals,
                     ObjectText =  x.Main.Index + " " + x.Main.Name + " " + x.Main.Department.FullName + " " + x.Main.Department.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -2026,31 +2022,58 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryTag,
-                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryTag,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryTag,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryTag,
                     ObjectText = x.Main.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
-                if (filterType == EnamFilterType.MainSlave)
-                {
-                    res.AddRange(FullTextIndexItemQuery[EnumObjects.Documents](ctx,dbContext,EnamFilterType.TemplateDocumentDocumentTypeId));
-                }
                 return res;
             } },
             #endregion Simple Dictionary
-    };
+        };
+
+        public static Dictionary<EnumObjects, List<FullTextDeepUpdateItemQuery>> FullTextDeepUpdateParams =
+        new Dictionary<EnumObjects, List<FullTextDeepUpdateItemQuery>>
+        {
+            {EnumObjects.Documents, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.Slave },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentWaits, FilterType = EnamFilterType.Slave },
+                }
+            },
+            {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
+                }
+            },
+            { EnumObjects.DictionaryDocumentType, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.TemplateDocumentDocumentTypeId },
+                }
+            },
+            { EnumObjects.DictionaryTag, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentTags, FilterType = EnamFilterType.TagId },
+                }
+            },
+        };
 
         // перепостраивает поисковый индекс для указанного документа
-        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool IsDirectFilter, int idBeg, int idEnd)
+        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects objectType, EnamFilterType filterType, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd)
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
 
-                var qrys = FullTextIndexItemQuery[EnumObjects.Documents](ctx, dbContext, filterType);
+                var qrys = FullTextIndexItemQuery[objectType](ctx, dbContext, filterType);
+
+                if (isDeepUpdate)
+                    foreach (var item in FullTextDeepUpdateParams[objectType])
+                        qrys.AddRange(FullTextIndexItemQuery[item.ObjectType](ctx, dbContext, item.FilterType));
+
                 foreach (var qry in qrys)
                 {
-                    if (qry.FilterType == EnamFilterType.Main || qry.FilterType == EnamFilterType.MainSlave)
+                    if (qry.FilterType == EnamFilterType.Main)
                     {
                         if (IsDirectFilter)
                         {
@@ -2109,7 +2132,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.doc.Id,
-                            ItemType = EnumObjects.Documents,
+                            ObjectType = EnumObjects.Documents,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.doc.Id,
@@ -2140,7 +2163,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.evt.DocumentId,
-                            ItemType = EnumObjects.DocumentEvents,
+                            ObjectType = EnumObjects.DocumentEvents,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.evt.Id,
@@ -2161,7 +2184,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.sl.DocumentId,
-                            ItemType = EnumObjects.DocumentSendLists,
+                            ObjectType = EnumObjects.DocumentSendLists,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.sl.Id,
@@ -2187,7 +2210,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.fl.DocumentId,
-                            ItemType = EnumObjects.DocumentFiles,
+                            ObjectType = EnumObjects.DocumentFiles,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.fl.Id,
@@ -2205,7 +2228,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.ss.DocumentId,
-                            ItemType = EnumObjects.DocumentSubscriptions,
+                            ObjectType = EnumObjects.DocumentSubscriptions,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.ss.Id,
@@ -2226,7 +2249,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.ss.DocumentId,
-                            ItemType = EnumObjects.DocumentTags,
+                            ObjectType = EnumObjects.DocumentTags,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.ss.Id,
@@ -2254,7 +2277,7 @@ namespace BL.Database.SystemDb
                         {
                             ParentObjectId = x.Id,
                             ClientId = ctx.CurrentClientId,
-                            ItemType = EnumObjects.Documents,
+                            ObjectType = EnumObjects.Documents,
                             OperationType = EnumOperationType.AddNew,
                             ObjectId = x.Id,
                             ObjectText = (x.RegistrationNumber != null
@@ -2277,7 +2300,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
                         ParentObjectId = x.DocumentId,
-                        ItemType = EnumObjects.DocumentEvents,
+                        ObjectType = EnumObjects.DocumentEvents,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
@@ -2295,7 +2318,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
                         ParentObjectId = x.DocumentId,
-                        ItemType = EnumObjects.DocumentFiles,
+                        ObjectType = EnumObjects.DocumentFiles,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
@@ -2307,7 +2330,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
                         ParentObjectId = x.DocumentId,
-                        ItemType = EnumObjects.DocumentSendLists,
+                        ObjectType = EnumObjects.DocumentSendLists,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
@@ -2324,7 +2347,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
                         ParentObjectId = x.DocumentId,
-                        ItemType = EnumObjects.DocumentSubscriptions,
+                        ObjectType = EnumObjects.DocumentSubscriptions,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
@@ -2338,7 +2361,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
                         ParentObjectId = x.DocumentId,
-                        ItemType = EnumObjects.DocumentTags,
+                        ObjectType = EnumObjects.DocumentTags,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.Id,
@@ -2370,7 +2393,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.doc.Id,
-                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            ObjectType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.doc.Id,
@@ -2396,7 +2419,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.evt.DocumentId,
-                            ItemType = EnumObjects.DocumentEvents,
+                            ObjectType = EnumObjects.DocumentEvents,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.evt.Id,
@@ -2412,7 +2435,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.fl.DocumentId,
-                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            ObjectType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.fl.Id,
@@ -2428,7 +2451,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = x.sl.DocumentId,
-                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            ObjectType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.sl.Id,
@@ -2447,7 +2470,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = x.ss.DocumentId,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.ss.Id,
@@ -2463,7 +2486,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = x.ss.DocumentId,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.ss.Id,
@@ -2498,7 +2521,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgents,
+                    ObjectType = EnumObjects.DictionaryAgents,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2508,7 +2531,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentEmployees,
+                    ObjectType = EnumObjects.DictionaryAgentEmployees,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2518,7 +2541,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentCompanies,
+                    ObjectType = EnumObjects.DictionaryAgentCompanies,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2528,7 +2551,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentPersons,
+                    ObjectType = EnumObjects.DictionaryAgentPersons,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2538,7 +2561,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentBanks,
+                    ObjectType = EnumObjects.DictionaryAgentBanks,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2548,7 +2571,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryContacts,
+                    ObjectType = EnumObjects.DictionaryContacts,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2558,7 +2581,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryContactType,
+                    ObjectType = EnumObjects.DictionaryContactType,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2568,7 +2591,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentAddresses,
+                    ObjectType = EnumObjects.DictionaryAgentAddresses,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2578,7 +2601,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAddressType,
+                    ObjectType = EnumObjects.DictionaryAddressType,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2588,7 +2611,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentAccounts,
+                    ObjectType = EnumObjects.DictionaryAgentAccounts,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2599,7 +2622,7 @@ namespace BL.Database.SystemDb
                 //res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 //{
                 //    ParentId = 0,
-                //    ItemType = EnumObjects.DictionaryDocumentType,
+                //    ObjectType = EnumObjects.DictionaryDocumentType,
                 //    OperationType = EnumOperationType.AddNew,
                 //    ClientId = ctx.CurrentClientId,
                 //    ObjectId = x.Id,
@@ -2609,7 +2632,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryDocumentSubjects,
+                    ObjectType = EnumObjects.DictionaryDocumentSubjects,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2619,7 +2642,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryDocumentSubjects,
+                    ObjectType = EnumObjects.DictionaryDocumentSubjects,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2629,7 +2652,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryRegistrationJournals,
+                    ObjectType = EnumObjects.DictionaryRegistrationJournals,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2639,7 +2662,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryDepartments,
+                    ObjectType = EnumObjects.DictionaryDepartments,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2649,7 +2672,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryPositions,
+                    ObjectType = EnumObjects.DictionaryPositions,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2659,7 +2682,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryStandartSendLists,
+                    ObjectType = EnumObjects.DictionaryStandartSendLists,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2669,7 +2692,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryStandartSendListContent,
+                    ObjectType = EnumObjects.DictionaryStandartSendListContent,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2679,7 +2702,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryAgentClientCompanies,
+                    ObjectType = EnumObjects.DictionaryAgentClientCompanies,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2689,7 +2712,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryPositionExecutors,
+                    ObjectType = EnumObjects.DictionaryPositionExecutors,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2699,7 +2722,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryPositionExecutorTypesSet.Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryPositionExecutorTypes,
+                    ObjectType = EnumObjects.DictionaryPositionExecutorTypes,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2709,7 +2732,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.CustomDictionaries,
+                    ObjectType = EnumObjects.CustomDictionaries,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2719,7 +2742,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.DictionaryTag,
+                    ObjectType = EnumObjects.DictionaryTag,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2732,7 +2755,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.TemplateDocument,
+                    ObjectType = EnumObjects.TemplateDocument,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2742,7 +2765,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.TemplateDocumentSendList,
+                    ObjectType = EnumObjects.TemplateDocumentSendList,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2752,7 +2775,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.TemplateDocumentRestrictedSendList,
+                    ObjectType = EnumObjects.TemplateDocumentRestrictedSendList,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2762,7 +2785,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.TemplateDocumentTask,
+                    ObjectType = EnumObjects.TemplateDocumentTask,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2772,7 +2795,7 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
                 {
                     ParentObjectId = 0,
-                    ItemType = EnumObjects.TemplateDocumentAttachedFiles,
+                    ObjectType = EnumObjects.TemplateDocumentAttachedFiles,
                     OperationType = EnumOperationType.AddNew,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.Id,
@@ -2808,7 +2831,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = 0,
-                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            ObjectType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
@@ -2825,7 +2848,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = 0,
-                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            ObjectType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
@@ -2842,7 +2865,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ind.Id,
                             ParentObjectId = 0,
-                            ItemType = (EnumObjects)x.ind.ObjectType,
+                            ObjectType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.id,
@@ -2859,7 +2882,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -2876,7 +2899,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -2892,7 +2915,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -2910,7 +2933,7 @@ namespace BL.Database.SystemDb
                 //    {
                 //        Id = x.ind.Id,
                 //        ParentId = 0,
-                //        ItemType = (EnumObjects)x.ind.ObjectType,
+                //        ObjectType = (EnumObjects)x.ind.ObjectType,
                 //        OperationType = (EnumOperationType)x.ind.OperationType,
                 //        ClientId = ctx.CurrentClientId,
                 //        ObjectId = x.id,
@@ -2924,7 +2947,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -2941,7 +2964,7 @@ namespace BL.Database.SystemDb
                 //    {
                 //        Id = x.ind.Id,
                 //        ParentId = 0,
-                //        ItemType = (EnumObjects)x.ind.ObjectType,
+                //        ObjectType = (EnumObjects)x.ind.ObjectType,
                 //        OperationType = (EnumOperationType)x.ind.OperationType,
                 //        ClientId = ctx.CurrentClientId,
                 //        ObjectId = x.id,
@@ -2955,7 +2978,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -2971,7 +2994,7 @@ namespace BL.Database.SystemDb
                 //    {
                 //        Id = x.ind.Id,
                 //        ParentId = 0,
-                //        ItemType = (EnumObjects)x.ind.ObjectType,
+                //        ObjectType = (EnumObjects)x.ind.ObjectType,
                 //        OperationType = (EnumOperationType)x.ind.OperationType,
                 //        ClientId = ctx.CurrentClientId,
                 //        ObjectId = x.id,
@@ -2985,7 +3008,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3001,7 +3024,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3018,7 +3041,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3034,7 +3057,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3050,7 +3073,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3066,7 +3089,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3082,7 +3105,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3098,7 +3121,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3114,7 +3137,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3130,7 +3153,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3146,7 +3169,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.doc.Id,
@@ -3166,7 +3189,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3182,7 +3205,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3198,7 +3221,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3214,7 +3237,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
@@ -3230,7 +3253,7 @@ namespace BL.Database.SystemDb
                     {
                         Id = x.ind.Id,
                         ParentObjectId = 0,
-                        ItemType = (EnumObjects)x.ind.ObjectType,
+                        ObjectType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,

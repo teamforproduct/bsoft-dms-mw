@@ -59,7 +59,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public void DeleteItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
-            var qry1 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)item.ItemType, (int)item.ItemType, true, true);
+            var qry1 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
             var qry2 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_ID, item.ObjectId, item.ObjectId, true, true); 
             var bQuery = new BooleanQuery();
             bQuery.Add(qry1, Occur.MUST);
@@ -77,11 +77,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(docIdFld);
 
             var typeParentFld = new NumericField(FIELD_PARENT_TYPE, Field.Store.YES, true);
-            typeParentFld.SetIntValue((int)item.ParentItemType);
+            typeParentFld.SetIntValue((int)item.ParentObjectType);
             doc.Add(typeParentFld);
 
             var typeIdFld = new NumericField(FIELD_OBJECT_TYPE, Field.Store.YES, true);
-            typeIdFld.SetIntValue((int)item.ItemType);
+            typeIdFld.SetIntValue((int)item.ObjectType);
             doc.Add(typeIdFld);
 
             var objIdFld = new NumericField(FIELD_OBJECT_ID, Field.Store.YES, true);

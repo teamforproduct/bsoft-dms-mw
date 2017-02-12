@@ -222,9 +222,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return res;
         }
 
-        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool IsDirectFilter, int idBeg, int idEnd)
+        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd)
         {
-            return _systemDb.FullTextIndexPrepareNew(ctx, obj, filterType, IsDirectFilter, idBeg, idEnd);
+            return _systemDb.FullTextIndexPrepareNew(ctx, obj, filterType, isDeepUpdate, IsDirectFilter, idBeg, idEnd);
         }
 
         private void SinchronizeServer(IContext ctx)
@@ -265,7 +265,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         try
                         {
                             if (itm.ObjectText == null)
-                                _logger.Warning(ctx, $"NonDocument {itm.ItemType} id={itm.Id} has NULL text");
+                                _logger.Warning(ctx, $"NonDocument {itm.ObjectType} id={itm.Id} has NULL text");
                             switch (itm.OperationType)
                             {
                                 case EnumOperationType.AddNew:

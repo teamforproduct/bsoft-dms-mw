@@ -19,11 +19,6 @@
         /// </summary>
         Dependant = -3,
 
-        /// <summary>
-        /// Основной и связанные
-        /// </summary>
-        MainSlave = 0,
-
         TemplateDocumentDocumentTypeId = 103,
         ExecutorPositionExecutorAgentId = 105,
         RegistrationJournalId = 110,
@@ -34,6 +29,8 @@
         SourceAgentId = 215,
         TargetPositionExecutorAgentId = 220,
         TargetAgentId = 225,
+
+        TagId = 410,
 
         DepartmentId = 510,
 

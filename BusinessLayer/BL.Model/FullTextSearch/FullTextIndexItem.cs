@@ -19,7 +19,7 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Which part of document should be updated
         /// </summary>
-        public EnumObjects ItemType { get; set; }
+        public EnumObjects ObjectType { get; set; }
         /// <summary>
         /// ID of document
         /// </summary>
@@ -27,7 +27,7 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// 
         /// </summary>
-        public EnumObjects ParentItemType { get; set; }
+        public EnumObjects ParentObjectType { get; set; }
         public int FilterId { get; set; }
         /// <summary>
         /// type of operation add/delete/update
@@ -52,9 +52,5 @@ namespace BL.Model.FullTextSearch
         /// Feature ID 
         /// </summary>
         public int FeatureId { get; set; }
-
-
-
-
     }
 }

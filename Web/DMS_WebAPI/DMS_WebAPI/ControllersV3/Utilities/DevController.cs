@@ -137,7 +137,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, EnamFilterType.MainSlave, true, 0, 1000);
+            ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, EnamFilterType.Main, true, true, 0, 1000);
             return new JsonResult(null, this);
         }
 

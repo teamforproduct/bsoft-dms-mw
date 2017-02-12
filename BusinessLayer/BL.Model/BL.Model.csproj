@@ -148,6 +148,7 @@
     <Compile Include="Enums\EnumGroupCountType.cs" />
     <Compile Include="Enums\EnumDefaultRoles.cs" />
     <Compile Include="FullTextSearch\EnamFilterType.cs" />
+    <Compile Include="FullTextSearch\FullTextDeepUpdateItemQuery.cs" />
     <Compile Include="FullTextSearch\FullTextQuery.cs" />
     <Compile Include="FullTextSearch\FullTextResultList.cs" />
     <Compile Include="FullTextSearch\FullTextSearchFilter.cs" />

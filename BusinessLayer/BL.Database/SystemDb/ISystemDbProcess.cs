@@ -109,7 +109,7 @@ namespace BL.Database.SystemDb
         IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments);
 
         #region Full text search
-        IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool IsDirectFilter, int idBeg, int idEnd);
+        IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd);
         int GetEntityNumbers(IContext ctx, EnumObjects objType);
         int GetCurrentMaxCasheId(IContext ctx);
         IEnumerable<FullTextIndexItem> FullTextIndexOneDocumentReindexDbPrepare(IContext ctx, int selectBis);
