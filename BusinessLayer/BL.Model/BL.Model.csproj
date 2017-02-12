@@ -147,6 +147,8 @@
     <Compile Include="Enums\EnumControlQuestion.cs" />
     <Compile Include="Enums\EnumGroupCountType.cs" />
     <Compile Include="Enums\EnumDefaultRoles.cs" />
+    <Compile Include="FullTextSearch\EnamFilterType.cs" />
+    <Compile Include="FullTextSearch\FullTextQuery.cs" />
     <Compile Include="FullTextSearch\FullTextResultList.cs" />
     <Compile Include="FullTextSearch\FullTextSearchFilter.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemFetures.cs" />

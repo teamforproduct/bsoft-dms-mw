@@ -13,28 +13,26 @@ namespace BL.Model.FullTextSearch
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// ID of document
+        /// ID of the document part, which is indexed.
         /// </summary>
-        public int ParentId { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public EnumObjects ParentItemType { get; set; }
-
+        public int ObjectId { get; set; }
         /// <summary>
         /// Which part of document should be updated
         /// </summary>
         public EnumObjects ItemType { get; set; }
         /// <summary>
+        /// ID of document
+        /// </summary>
+        public int ParentObjectId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public EnumObjects ParentItemType { get; set; }
+        public int FilterId { get; set; }
+        /// <summary>
         /// type of operation add/delete/update
         /// </summary>
         public EnumOperationType OperationType { get; set; }
-
-        /// <summary>
-        /// ID of the document part, which is indexed.
-        /// </summary>
-        public int ObjectId { get; set; }
 
         /// <summary>
         /// Text which should be added to full text search
@@ -45,6 +43,18 @@ namespace BL.Model.FullTextSearch
         /// ID of the client
         /// </summary>
         public int ClientId { get; set; }
+
+        /// <summary>
+        /// Module ID 
+        /// </summary>
+        public int ModuleId { get; set; }
+        /// <summary>
+        /// Feature ID 
+        /// </summary>
+        public int FeatureId { get; set; }
+
+
+
 
     }
 }

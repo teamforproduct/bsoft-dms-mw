@@ -73,7 +73,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (_writer == null) return;
             var doc = new Document();
             var docIdFld = new NumericField(FIELD_PARENT_ID, Field.Store.YES, true);
-            docIdFld.SetIntValue(item.ParentId);
+            docIdFld.SetIntValue(item.ParentObjectId);
             doc.Add(docIdFld);
 
             var typeParentFld = new NumericField(FIELD_PARENT_TYPE, Field.Store.YES, true);

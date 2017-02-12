@@ -17,6 +17,8 @@ using System;
 using BL.Model.SystemCore;
 using System.Reflection;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.SystemServices.FullTextSearch;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Utilities
 {
@@ -124,5 +126,20 @@ namespace DMS_WebAPI.ControllersV3.Utilities
             var count = DmsResolver.Current.Get<UserContexts>().Count;
             return new JsonResult(count, this);
         }
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("FullTextIndexPrepareNew")]
+        public IHttpActionResult Test()
+        {
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+            ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, EnamFilterType.MainSlave, true, 0, 1000);
+            return new JsonResult(null, this);
+        }
+
     }
 }

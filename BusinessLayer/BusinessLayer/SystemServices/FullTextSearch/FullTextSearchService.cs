@@ -222,6 +222,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return res;
         }
 
+        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool IsDirectFilter, int idBeg, int idEnd)
+        {
+            return _systemDb.FullTextIndexPrepareNew(ctx, obj, filterType, IsDirectFilter, idBeg, idEnd);
+        }
+
         private void SinchronizeServer(IContext ctx)
         {
             //_logger.Information(ctx, "Start FullText sinchronization " + DateTime.Now);
@@ -245,7 +250,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.ParentId} ");
+                            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.ParentObjectId} ");
                         }
                     }
                     _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
@@ -274,7 +279,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.ParentId} ");
+                            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.ParentObjectId} ");
                         }
                     }
                     _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
@@ -312,7 +317,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                             }
                             catch (Exception ex)
                             {
-                                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.ParentId} ");
+                                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.ParentObjectId} ");
                             }
                         }
                         _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
@@ -333,7 +338,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.ParentId} ");
+                        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.ParentObjectId} ");
                     }
                 }
                 if (processedIds.Any())

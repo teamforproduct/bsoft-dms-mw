@@ -35,9 +35,247 @@ namespace BL.Database.SystemDb
 
         }
 
+        #region Common
+
+        public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
+        {
+
+
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemUIElementsSet.AsQueryable();
+
+                if (filter.UIElementId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    filterContains = filter.UIElementId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ActionId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    filterContains = filter.ActionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ActionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ObjectId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    filterContains = filter.ObjectId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    qry = qry.Where(x => x.Code.Contains(filter.Code));
+                }
+                if (!string.IsNullOrEmpty(filter.ObjectCode))
+                {
+                    qry = qry.Where(x => x.Action.Object.Code.Contains(filter.ObjectCode));
+                }
+                if (!string.IsNullOrEmpty(filter.ActionCode))
+                {
+                    qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
+                }
+                qry = qry.OrderBy(x => x.Order);
+                var res = qry.Select(x => new BaseSystemUIElement
+                {
+                    Id = x.Id,
+                    ObjectCode = x.Action.Object.Code,
+                    ActionCode = x.Action.Code,
+                    Code = x.Code,
+                    TypeCode = x.TypeCode,
+                    Label = x.Label,
+                    Hint = x.Hint,
+                    ValueTypeCode = x.ValueType.Code,
+                    IsMandatory = x.IsMandatory,
+                    IsReadOnly = x.IsReadOnly,
+                    IsVisible = x.IsVisible,
+                    SelectAPI = x.SelectAPI,
+                    SelectFilter = x.SelectFilter,
+                    SelectFieldCode = x.SelectFieldCode,
+                    SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
+                    ValueFieldCode = x.ValueFieldCode,
+                    ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
+                    Format = x.Format
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+
+        }
+
+
+        public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemFormatsSet.AsQueryable();
+
+                var res = qry.Select(x => new FrontSystemFormat
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext ctx, FilterSystemFormula filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemFormulasSet.AsQueryable();
+
+                var res = qry.Select(x => new FrontSystemFormula
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Example = x.Example
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+        public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemPatternsSet.AsQueryable();
+
+                var res = qry.Select(x => new FrontSystemPattern
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+        public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemValueTypesSet.AsQueryable();
+
+                var res = qry.Select(x => new FrontSystemValueType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Description = x.Description,
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+
+            }
+        }
+
+        public int AddSystemDate(IContext ctx, DateTime date)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = new SystemDate
+                {
+                    Date = date,
+                };
+                dbContext.SystemDateSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Added;
+
+                dbContext.SaveChanges();
+                transaction.Complete();
+                return item.Id;
+            }
+        }
+
+        public DateTime GetSystemDate(IContext ctx)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemDateSet.ToList();
+
+                var res = DateTime.UtcNow.AddYears(-50);
+
+                if (qry?.Count > 0)
+                    res = qry.LastOrDefault().Date;
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+        public void RefreshModuleFeature(IContext context)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AdminRolePermissionsSet.Delete();
+
+                dbContext.SystemPermissionsSet.Delete();
+
+                dbContext.SystemFeaturesSet.Delete();
+
+                dbContext.SystemModulesSet.Delete();
+
+                dbContext.SystemAccessTypesSet.Delete();
+
+                DmsDbImportData.InitPermissions();
+
+                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
+                {
+                    dbContext.SystemAccessTypesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemModules())
+                {
+                    dbContext.SystemModulesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemFeatures())
+                {
+                    dbContext.SystemFeaturesSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                foreach (var item in DmsDbImportData.GetSystemPermissions())
+                {
+
+                    dbContext.SystemPermissionsSet.Attach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+
+
+                transaction.Complete();
+
+            }
+
+        }
+
+        #endregion
+
         #region [+] Logs ...
-
-
 
         public IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging)
         {
@@ -80,7 +318,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
                 {
-                    NotContainsIDs = new List<int> { context.LoginLogId.HasValue? context.LoginLogId.Value: 0 },
+                    NotContainsIDs = new List<int> { context.LoginLogId.HasValue ? context.LoginLogId.Value : 0 },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                     ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
@@ -105,11 +343,11 @@ namespace BL.Database.SystemDb
                 });
                 if (dateFrom != null)
                 {
-                    qry = qry.Where(x=>x.LogDate > dateFrom);
+                    qry = qry.Where(x => x.LogDate > dateFrom);
                 }
                 qry = qry.OrderByDescending(x => x.LogDate);
                 var res = qry.Select(x => new FrontAgentEmployeeUser { LastErrorLogin = x.LogDate }).FirstOrDefault();
-                if (res!=null)
+                if (res != null)
                 {
                     res.CountErrorLogin = qry.Count();
                 }
@@ -419,75 +657,6 @@ namespace BL.Database.SystemDb
 
         #endregion
 
-        public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
-        {
-
-
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemUIElementsSet.AsQueryable();
-
-                if (filter.UIElementId?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<SystemUIElements>();
-                    filterContains = filter.UIElementId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-                    qry = qry.Where(filterContains);
-                }
-                if (filter.ActionId?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<SystemUIElements>();
-                    filterContains = filter.ActionId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ActionId == value).Expand());
-                    qry = qry.Where(filterContains);
-                }
-                if (filter.ObjectId?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.False<SystemUIElements>();
-                    filterContains = filter.ObjectId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
-                    qry = qry.Where(filterContains);
-                }
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    qry = qry.Where(x => x.Code.Contains(filter.Code));
-                }
-                if (!string.IsNullOrEmpty(filter.ObjectCode))
-                {
-                    qry = qry.Where(x => x.Action.Object.Code.Contains(filter.ObjectCode));
-                }
-                if (!string.IsNullOrEmpty(filter.ActionCode))
-                {
-                    qry = qry.Where(x => x.Action.Code.Contains(filter.ActionCode));
-                }
-                qry = qry.OrderBy(x => x.Order);
-                var res = qry.Select(x => new BaseSystemUIElement
-                {
-                    Id = x.Id,
-                    ObjectCode = x.Action.Object.Code,
-                    ActionCode = x.Action.Code,
-                    Code = x.Code,
-                    TypeCode = x.TypeCode,
-                    Label = x.Label,
-                    Hint = x.Hint,
-                    ValueTypeCode = x.ValueType.Code,
-                    IsMandatory = x.IsMandatory,
-                    IsReadOnly = x.IsReadOnly,
-                    IsVisible = x.IsVisible,
-                    SelectAPI = x.SelectAPI,
-                    SelectFilter = x.SelectFilter,
-                    SelectFieldCode = x.SelectFieldCode,
-                    SelectDescriptionFieldCode = x.SelectDescriptionFieldCode,
-                    ValueFieldCode = x.ValueFieldCode,
-                    ValueDescriptionFieldCode = x.ValueDescriptionFieldCode,
-                    Format = x.Format
-                }).ToList();
-                transaction.Complete();
-                return res;
-            }
-
-        }
-
         #region [+] SystemObjects ...
         public void AddSystemObject(IContext context, InternalSystemObject item)
         {
@@ -694,7 +863,7 @@ namespace BL.Database.SystemDb
                 (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
                 VALUES
                 ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
-                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null": item.PermissionId.ToString())
+                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null" : item.PermissionId.ToString())
                 );
 
                 //dbContext.SystemActionsSet.Add(item);
@@ -922,7 +1091,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture , AccessType = accessType } );
+                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture, AccessType = accessType });
 
                 var item = qry.FirstOrDefault();
 
@@ -965,87 +1134,6 @@ namespace BL.Database.SystemDb
             }
         }
         #endregion
-
-        public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemFormatsSet.AsQueryable();
-
-                var res = qry.Select(x => new FrontSystemFormat
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
-                    Description = x.Description,
-                }).ToList();
-
-                transaction.Complete();
-
-                return res;
-            }
-        }
-
-        public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext ctx, FilterSystemFormula filter)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemFormulasSet.AsQueryable();
-
-                var res = qry.Select(x => new FrontSystemFormula
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Example = x.Example
-                }).ToList();
-
-                transaction.Complete();
-
-                return res;
-            }
-        }
-        public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemPatternsSet.AsQueryable();
-
-                var res = qry.Select(x => new FrontSystemPattern
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
-                    Description = x.Description,
-                }).ToList();
-
-                transaction.Complete();
-
-                return res;
-            }
-        }
-        public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemValueTypesSet.AsQueryable();
-
-                var res = qry.Select(x => new FrontSystemValueType
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Description = x.Description,
-                }).ToList();
-
-                transaction.Complete();
-
-                return res;
-
-            }
-        }
-
-
 
         #region [+] Properties ...
 
@@ -1626,306 +1714,6 @@ namespace BL.Database.SystemDb
             }
         }
 
-        // перепостраивает все индексы, относящиеся к общей части
-        public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx)
-        {
-            var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                dbContext.Database.CommandTimeout = 0;
-
-                #region Dictionaries
-
-                res.AddRange(dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgents,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentEmployees,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText + " " + x.Agent.AgentPeople.TaxCode
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentCompanies,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.OKPOCode + " " + x.Description + " " + x.TaxCode + " " + x.VATCode
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentPersons,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Description + " " + x.Agent.AgentPeople.TaxCode + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentBanks,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.Description + " " + x.MFOCode + " " + x.Swift
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryContacts,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact + " " + x.ContactType.Code + " " + x.ContactType.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryContactType,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Code + " " + x.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentAddresses,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address + " " + x.PostCode + " " + x.AddressType.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAddressType,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Code + " " + x.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentAccounts,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Agent.Name + " " + x.AgentBank.FullName + " " + x.AccountNumber + " " + x.Name + " " + x.AgentBank.MFOCode
-                }).ToList());
-
-                // не должны добавляться в полнотекст т.к. значения не локализованы
-                //res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                //{
-                //    ParentId = 0,
-                //    ItemType = EnumObjects.DictionaryDocumentType,
-                //    OperationType = EnumOperationType.AddNew,
-                //    ClientId = ctx.CurrentClientId,
-                //    ObjectId = x.Id,
-                //    ObjectText = x.Name
-                //}).ToList());
-
-                res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryDocumentSubjects,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryDocumentSubjects,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryRegistrationJournals,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName + " " + x.Department.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryDepartments,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.FullName + " " + x.ChiefPosition.FullName
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryPositions,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.FullName + " " + x.Name + " " + x.Department.Name + " " + x.ExecutorAgent.Name + " " + x.MainExecutorAgent.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryStandartSendLists,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name + " " + x.Position.Department.Name + " " + x.Position.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryStandartSendListContent,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryAgentClientCompanies,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.FullName
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryPositionExecutors,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " " + x.Position.Name //+ " " + x.PositionExecutorType.Name // не должны добавляться в полнотекст т.к. значения не локализованы
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryPositionExecutorTypesSet.Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryPositionExecutorTypes,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name + " " + x.Code
-                }).ToList());
-
-                res.AddRange(dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.CustomDictionaries,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name + " " + x.Code + " " + x.Description
-                }).ToList());
-
-                res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.DictionaryTag,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Name
-                }).ToList());
-                #endregion Dictionaries
-
-                #region DocumentTemplates
-
-                res.AddRange(dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.TemplateDocument,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name
-                }).ToList());
-
-                res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.TemplateDocumentSendList,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
-                }).ToList());
-
-                res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.TemplateDocumentRestrictedSendList,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name
-                }).ToList());
-
-                res.AddRange(dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.TemplateDocumentTask,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name + " " + x.Task
-                }).ToList());
-
-                res.AddRange(dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
-                {
-                    ParentId = 0,
-                    ItemType = EnumObjects.TemplateDocumentAttachedFiles,
-                    OperationType = EnumOperationType.AddNew,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.Id,
-                    ObjectText = x.Document.Name + " " + x.Extention + " " + x.Name
-                }).ToList());
-
-                #endregion DocumentTemplates
-                transaction.Complete();
-            }
-            return res;
-        }
-
         public IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
@@ -1936,13 +1724,367 @@ namespace BL.Database.SystemDb
                 res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType == (int)EnumOperationType.Delete).Select(x => new FullTextIndexItem
                 {
                     Id = x.Id,
-                    ParentId = (x.ObjectType == (int)EnumObjects.Documents) ? x.ObjectId : 0,
+                    ParentObjectId = (x.ObjectType == (int)EnumObjects.Documents) ? x.ObjectId : 0,
                     ItemType = (EnumObjects)x.ObjectType,
                     OperationType = (EnumOperationType)x.OperationType,
                     ClientId = ctx.CurrentClientId,
                     ObjectId = x.ObjectId,
                     ObjectText = ""
                 }).ToList());
+                transaction.Complete();
+            }
+            return res;
+        }
+
+        public delegate List<FullTextQueryPrepare> DFullTextIndexItemQuery(IContext ctx, DmsContext dbContext, EnamFilterType filterType = EnamFilterType.Main);
+
+        public static Dictionary<EnumObjects, DFullTextIndexItemQuery> FullTextIndexItemQuery =
+        new Dictionary<EnumObjects, DFullTextIndexItemQuery>
+        {
+            #region Documents
+            { EnumObjects.Documents, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DocumentsSet
+                            .Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                if (filterType == EnamFilterType.TemplateDocumentDocumentTypeId)
+                    qry = qry.Where(x=>x.Main.TemplateDocument.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TemplateDocument.DocumentTypeId});
+                else if (filterType == EnamFilterType.ExecutorPositionExecutorAgentId)
+                    qry = qry.Where(x=>x.Main.ExecutorPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.ExecutorPositionExecutorAgentId});
+                else if (filterType == EnamFilterType.RegistrationJournalId)
+                    qry = qry.Where(x=>x.Main.RegistrationJournal!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RegistrationJournalId.Value});
+                else if (filterType == EnamFilterType.RegistrationJournalDepartmentId)
+                    qry = qry.Where(x=>x.Main.RegistrationJournal.Department!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RegistrationJournal.DepartmentId});
+                else if (filterType == EnamFilterType.SenderAgentId)
+                    qry = qry.Where(x=>x.Main.SenderAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentId.Value});
+                else if (filterType == EnamFilterType.SenderAgentPersonId)
+                    qry = qry.Where(x=>x.Main.SenderAgentPerson!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentPersonId.Value});
+
+                var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.Documents,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.Documents,
+                    ObjectText = (x.Main.RegistrationNumber != null ? (x.Main.RegistrationNumberPrefix ?? "") + x.Main.RegistrationNumber + (x.Main.RegistrationNumberSuffix ?? "") : "#" + x.Main.Id) + " "
+                                + x.Main.RegistrationJournal.Name + " " + x.Main.RegistrationJournal.Department.Name + " "
+                                + x.Main.TemplateDocument.DocumentType.Name + " " + x.Main.Description + " "
+                                + x.Main.ExecutorPositionExecutorAgent.Name + " "
+                                + x.Main.SenderAgent.Name + " " + x.Main.SenderAgentPerson.Agent.Name + " " + x.Main.SenderNumber + " "+ x.Main.Addressee
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                if (filterType == EnamFilterType.MainSlave)
+                {
+                    res.AddRange(FullTextIndexItemQuery[EnumObjects.DocumentEvents](ctx,dbContext,EnamFilterType.Slave));
+                }
+                return res;
+            } },
+            { EnumObjects.DocumentEvents, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DocumentEventsSet
+                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                if (filterType == EnamFilterType.SourcePositionExecutorAgentId)
+                    qry = qry.Where(x=>x.Main.SourcePositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionExecutorAgentId.Value});
+                else if (filterType == EnamFilterType.SourceAgentId)
+                    qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId.Value});
+                else if (filterType == EnamFilterType.TargetPositionExecutorAgentId)
+                    qry = qry.Where(x=>x.Main.TargetPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionExecutorAgentId.Value});
+                else if (filterType == EnamFilterType.TargetAgentId)
+                    qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
+
+                var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Events);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DocumentEvents,
+                    ParentObjectId = x.Main.DocumentId, ParentItemType = EnumObjects.Documents,
+                    ObjectText = x.Main.Description + " " + x.Main.AddDescription + " " + x.Main.Task.Task + " "
+                    + x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
+                    + x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            #endregion Documents
+
+            #region Complex Dictionary
+            #region Complex Dictionary Info
+            { EnumObjects.DictionaryAgentClientCompanies, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAgentClientCompaniesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Org); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryAgentClientCompanies,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryAgentClientCompanies,
+                    ObjectText = x.Main.Agent.Name + " " + x.Main.FullName+ " " + x.Main.Description
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryDepartments, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryDepartmentsSet
+                            .Where(x => x.Company.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Department); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryDepartments,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryDepartments,
+                    ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.Code
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryPositions, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryPositionsSet
+                            .Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryPositions,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryPositions,
+                    ObjectText = x.Main.Name + " " + x.Main.FullName
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryAgentEmployees, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAgentEmployeesSet
+                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryAgentEmployees,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryAgentEmployees,
+                    ObjectText = x.Main.PersonnelNumber + " " + x.Main.Description + " " + x.Main.Agent.Name + " "
+                    + x.Main.Agent.AgentPeople.FullName + " " + x.Main.Agent.AgentPeople.BirthDate + " " + " " + x.Main.Agent.AgentPeople.TaxCode
+                    + x.Main.Agent.AgentPeople.PassportDate + " " + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.AdminRoles, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.AdminRolesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.AdminRoles,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.AdminRoles,
+                    ObjectText = x.Main.Name + " " + x.Main.Description
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            #endregion Complex Dictionary Info
+            #region Complex Dictionary Details
+            { EnumObjects.AdminUserRoles, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.AdminUserRolesSet
+                            .Where(x => x.Role.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Employees);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.AdminUserRoles,
+                    ParentObjectId = x.Main.RoleId, ParentItemType = EnumObjects.AdminRoles,
+                    ObjectText = x.Main.Role.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+
+                var moduleId1 = Modules.GetId(Modules.Employee); var featureId1 = Features.GetId(Features.Roles);
+                var qryRes1= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId1, FeatureId = featureId1,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.AdminUserRoles,
+                    ParentObjectId = x.Main.PositionExecutor.AgentId, ParentItemType = EnumObjects.DictionaryAgentEmployees,
+                    ObjectText = x.Main.PositionExecutor.Agent.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes1, FilterType = filterType});
+                return res;
+            } },
+            #endregion Complex Dictionary Details
+            #endregion Complex Dictionary
+
+            #region Simple Dictionary
+            { EnumObjects.DictionaryAddressType, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAddressTypesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.AddressType); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryAddressType,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryAddressType,
+                    ObjectText = x.Main.Code + " " + x.Main.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryContactType, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryContactTypesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.ContactType); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryContactType,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryContactType,
+                    ObjectText = x.Main.Code + " " + x.Main.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryDocumentType, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryDocumentTypesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.DocumentType); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryDocumentType,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryDocumentType,
+                    ObjectText = x.Main.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryRegistrationJournals, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryRegistrationJournalsSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                if (filterType == EnamFilterType.DepartmentId)
+                    qry = qry.Where(x=>x.Main.Department!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.DepartmentId});
+
+                var moduleId = Modules.GetId(Modules.Journal); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryRegistrationJournals,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryRegistrationJournals,
+                    ObjectText =  x.Main.Index + " " + x.Main.Name + " " + x.Main.Department.FullName + " " + x.Main.Department.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryTag, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryTagsSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                var moduleId = Modules.GetId(Modules.Tags); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ItemType = EnumObjects.DictionaryTag,
+                    ParentObjectId = x.Main.Id, ParentItemType = EnumObjects.DictionaryTag,
+                    ObjectText = x.Main.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                if (filterType == EnamFilterType.MainSlave)
+                {
+                    res.AddRange(FullTextIndexItemQuery[EnumObjects.Documents](ctx,dbContext,EnamFilterType.TemplateDocumentDocumentTypeId));
+                }
+                return res;
+            } },
+            #endregion Simple Dictionary
+    };
+
+        // перепостраивает поисковый индекс для указанного документа
+        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool IsDirectFilter, int idBeg, int idEnd)
+        {
+            var res = new List<FullTextIndexItem>();
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+
+                var qrys = FullTextIndexItemQuery[EnumObjects.Documents](ctx, dbContext, filterType);
+                foreach (var qry in qrys)
+                {
+                    if (qry.FilterType == EnamFilterType.Main || qry.FilterType == EnamFilterType.MainSlave)
+                    {
+                        if (IsDirectFilter)
+                        {
+                            qry.Query = qry.Query.Where(x => x.ObjectId >= idBeg && x.ObjectId <= idEnd);
+                        }
+                        else
+                        {
+                            qry.Query = qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.Id >= idBeg && y.Id <= idEnd).Select(y => y.ObjectId).Contains(x.ObjectId));
+                        }
+                    }
+                    else if (qry.FilterType == EnamFilterType.Slave)
+                    {
+                        if (IsDirectFilter)
+                        {
+                            qry.Query = qry.Query.Where(x => x.ParentObjectId >= idBeg && x.ObjectId <= idEnd);
+                        }
+                        else
+                        {
+                            qry.Query = qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.Id >= idBeg && y.Id <= idEnd).Select(y => y.ObjectId).Contains(x.ParentObjectId));
+                        }
+                    }
+                    else
+                    {
+                        if (IsDirectFilter)
+                        {
+                            qry.Query = qry.Query.Where(x => x.FilterId >= idBeg && x.ObjectId <= idEnd);
+                        }
+                        else
+                        {
+                            qry.Query = qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.Id >= idBeg && y.Id <= idEnd).Select(y => y.ObjectId).Contains(x.FilterId));
+                        }
+                    }
+                    res.AddRange(qry.Query.ToList());
+                }
                 transaction.Complete();
             }
             return res;
@@ -1966,7 +2108,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.doc.Id,
+                            ParentObjectId = x.doc.Id,
                             ItemType = EnumObjects.Documents,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -1997,7 +2139,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.evt.DocumentId,
+                            ParentObjectId = x.evt.DocumentId,
                             ItemType = EnumObjects.DocumentEvents,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -2018,7 +2160,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.sl.DocumentId,
+                            ParentObjectId = x.sl.DocumentId,
                             ItemType = EnumObjects.DocumentSendLists,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -2044,7 +2186,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.fl.DocumentId,
+                            ParentObjectId = x.fl.DocumentId,
                             ItemType = EnumObjects.DocumentFiles,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -2062,7 +2204,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.ss.DocumentId,
+                            ParentObjectId = x.ss.DocumentId,
                             ItemType = EnumObjects.DocumentSubscriptions,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -2083,7 +2225,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.ss.DocumentId,
+                            ParentObjectId = x.ss.DocumentId,
                             ItemType = EnumObjects.DocumentTags,
                             OperationType = EnumOperationType.UpdateDocument,
                             ClientId = ctx.CurrentClientId,
@@ -2110,7 +2252,7 @@ namespace BL.Database.SystemDb
                         .OrderBy(x => x.Id)
                         .Select(x => new FullTextIndexItem
                         {
-                            ParentId = x.Id,
+                            ParentObjectId = x.Id,
                             ClientId = ctx.CurrentClientId,
                             ItemType = EnumObjects.Documents,
                             OperationType = EnumOperationType.AddNew,
@@ -2134,7 +2276,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
-                        ParentId = x.DocumentId,
+                        ParentObjectId = x.DocumentId,
                         ItemType = EnumObjects.DocumentEvents,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
@@ -2152,7 +2294,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
-                        ParentId = x.DocumentId,
+                        ParentObjectId = x.DocumentId,
                         ItemType = EnumObjects.DocumentFiles,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
@@ -2164,7 +2306,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
-                        ParentId = x.DocumentId,
+                        ParentObjectId = x.DocumentId,
                         ItemType = EnumObjects.DocumentSendLists,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
@@ -2181,7 +2323,7 @@ namespace BL.Database.SystemDb
                 {
                     res.AddRange(dbContext.DocumentSubscriptionsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
-                        ParentId = x.DocumentId,
+                        ParentObjectId = x.DocumentId,
                         ItemType = EnumObjects.DocumentSubscriptions,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
@@ -2190,11 +2332,12 @@ namespace BL.Database.SystemDb
                         //+ x.SubscriptionState.Name + " "  // не должны добавляться в полнотекст т.к. значения не локализованы
                         + x.DoneEvent.SourcePositionExecutorAgent.Name + " "
                     }).Skip(() => rowOffset).Take(() => rowToSelect).ToList());
-                } else if (objType == EnumObjects.DocumentTags)
+                }
+                else if (objType == EnumObjects.DocumentTags)
                 {
                     res.AddRange(dbContext.DocumentTagsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).OrderBy(x => x.Id).Select(x => new FullTextIndexItem
                     {
-                        ParentId = x.DocumentId,
+                        ParentObjectId = x.DocumentId,
                         ItemType = EnumObjects.DocumentTags,
                         OperationType = EnumOperationType.AddNew,
                         ClientId = ctx.CurrentClientId,
@@ -2226,7 +2369,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.doc.Id,
+                            ParentObjectId = x.doc.Id,
                             ItemType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2252,7 +2395,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.evt.DocumentId,
+                            ParentObjectId = x.evt.DocumentId,
                             ItemType = EnumObjects.DocumentEvents,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2268,7 +2411,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.fl.DocumentId,
+                            ParentObjectId = x.fl.DocumentId,
                             ItemType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2284,7 +2427,7 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = x.sl.DocumentId,
+                            ParentObjectId = x.sl.DocumentId,
                             ItemType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2303,7 +2446,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.Id <= selectBis && x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DocumentSubscriptions).OrderBy(x => x.ObjectId).ThenBy(x => x.Id).Join(dbContext.DocumentSubscriptionsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, ss = d }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = x.ss.DocumentId,
+                        ParentObjectId = x.ss.DocumentId,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2319,7 +2462,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.Id <= selectBis && x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DocumentTags).OrderBy(x => x.ObjectId).ThenBy(x => x.Id).Join(dbContext.DocumentTagsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, ss = d }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = x.ss.DocumentId,
+                        ParentObjectId = x.ss.DocumentId,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2342,6 +2485,308 @@ namespace BL.Database.SystemDb
             return res;
         }
 
+        // перепостраивает все индексы, относящиеся к общей части
+        public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx)
+        {
+            var res = new List<FullTextIndexItem>();
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.Database.CommandTimeout = 0;
+
+                #region Dictionaries
+
+                res.AddRange(dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgents,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentEmployeesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentEmployees,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.PersonnelNumber + " " + x.Description + " " + x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText + " " + x.Agent.AgentPeople.TaxCode
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentCompaniesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentCompanies,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.OKPOCode + " " + x.Description + " " + x.TaxCode + " " + x.VATCode
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentPersons,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Agent.Name + " " + x.Agent.AgentPeople.FullName + " " + x.Description + " " + x.Agent.AgentPeople.TaxCode + " " + x.Agent.AgentPeople.BirthDate + " " + x.Agent.AgentPeople.PassportNumber + " " + x.Agent.AgentPeople.PassportSerial + " " + x.Agent.AgentPeople.PassportText
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentBanksSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentBanks,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Agent.Name + " " + x.FullName + " " + x.Description + " " + x.MFOCode + " " + x.Swift
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryContacts,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Contact + " " + x.ContactType.Code + " " + x.ContactType.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryContactTypesSet.Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryContactType,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Code + " " + x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentAddresses,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Agent.Name + " " + x.Description + " " + x.Address + " " + x.PostCode + " " + x.AddressType.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAddressTypesSet.Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAddressType,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Code + " " + x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentAccounts,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Agent.Name + " " + x.AgentBank.FullName + " " + x.AccountNumber + " " + x.Name + " " + x.AgentBank.MFOCode
+                }).ToList());
+
+                // не должны добавляться в полнотекст т.к. значения не локализованы
+                //res.AddRange(dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                //{
+                //    ParentId = 0,
+                //    ItemType = EnumObjects.DictionaryDocumentType,
+                //    OperationType = EnumOperationType.AddNew,
+                //    ClientId = ctx.CurrentClientId,
+                //    ObjectId = x.Id,
+                //    ObjectText = x.Name
+                //}).ToList());
+
+                res.AddRange(dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryDocumentSubjects,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryDocumentSubjects,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryRegistrationJournals,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Index + " " + x.Name + " " + x.Department.FullName + " " + x.Department.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryDepartments,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.FullName + " " + x.Code + " " + x.Name + " " + x.Company.FullName + " " + x.ChiefPosition.FullName
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryPositions,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.FullName + " " + x.Name + " " + x.Department.Name + " " + x.ExecutorAgent.Name + " " + x.MainExecutorAgent.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryStandartSendLists,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name + " " + x.Position.Department.Name + " " + x.Position.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryStandartSendListContent,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Task + " " + x.Description + " " + x.SendType.Name + x.StandartSendList.Name + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryAgentClientCompanies,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.FullName
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryPositionExecutors,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Description + " " + x.Agent.Name + " " + x.EndDate + " " + x.Position.Name //+ " " + x.PositionExecutorType.Name // не должны добавляться в полнотекст т.к. значения не локализованы
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryPositionExecutorTypesSet.Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryPositionExecutorTypes,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name + " " + x.Code
+                }).ToList());
+
+                res.AddRange(dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.CustomDictionaries,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name + " " + x.Code + " " + x.Description
+                }).ToList());
+
+                res.AddRange(dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.DictionaryTag,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Name
+                }).ToList());
+                #endregion Dictionaries
+
+                #region DocumentTemplates
+
+                res.AddRange(dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.TemplateDocument,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Description + " " + x.Addressee + " " /*+ x.DocumentDirection.Name + " "*/ + x.DocumentSubject.Name /*+ " " + x.DocumentType.Name */+ " " + x.Name + " " + x.RegistrationJournal.Name + " " + x.SenderAgent.Name + " " + x.SenderAgentPerson.Agent.Name
+                }).ToList());
+
+                res.AddRange(dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.TemplateDocumentSendList,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Description + " " + x.Document.Name + /*" " + x.SendType.Name +*/ " " + " " + x.TargetAgent.Name + " " + x.TargetPosition.Name
+                }).ToList());
+
+                res.AddRange(dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.TemplateDocumentRestrictedSendList,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name
+                }).ToList());
+
+                res.AddRange(dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.TemplateDocumentTask,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Document.Name + " " + x.Position.FullName + " " + x.Position.Name + " " + x.Task
+                }).ToList());
+
+                res.AddRange(dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Select(x => new FullTextIndexItem
+                {
+                    ParentObjectId = 0,
+                    ItemType = EnumObjects.TemplateDocumentAttachedFiles,
+                    OperationType = EnumOperationType.AddNew,
+                    ClientId = ctx.CurrentClientId,
+                    ObjectId = x.Id,
+                    ObjectText = x.Document.Name + " " + x.Extention + " " + x.Name
+                }).ToList());
+
+                #endregion DocumentTemplates
+                transaction.Complete();
+            }
+            return res;
+        }
+
+
+
         // создание поисковых индексов в рабочем режиме по таблице FullTextIndexCashSet, НЕ относящихся к документу
         public IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsPrepare(IContext ctx)
         {
@@ -2362,7 +2807,7 @@ namespace BL.Database.SystemDb
                         .Join(dbContext.DictionaryAgentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = 0,
+                            ParentObjectId = 0,
                             ItemType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2370,7 +2815,7 @@ namespace BL.Database.SystemDb
                             ObjectText = x.agent.Name.Trim()
                         }).ToList());
                     var ids = res.Select(s => s.Id).ToList();
-                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgents && !ids.Contains(x.Id) && x.Id <= maxId).Select(x=>x.Id).ToList()); 
+                    removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.DictionaryAgents && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
                 }
 
                 if (objectTypesToProcess.Contains(EnumObjects.DictionaryAgentEmployees))
@@ -2379,7 +2824,7 @@ namespace BL.Database.SystemDb
                         .Join(dbContext.DictionaryAgentEmployeesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, employee = d, id = d.Id }).Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = 0,
+                            ParentObjectId = 0,
                             ItemType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2396,7 +2841,7 @@ namespace BL.Database.SystemDb
                         .Join(dbContext.DictionaryAgentCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
                         {
                             Id = x.ind.Id,
-                            ParentId = 0,
+                            ParentObjectId = 0,
                             ItemType = (EnumObjects)x.ind.ObjectType,
                             OperationType = (EnumOperationType)x.ind.OperationType,
                             ClientId = ctx.CurrentClientId,
@@ -2413,7 +2858,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentPersons).Join(dbContext.DictionaryAgentPersonsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, person = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2430,7 +2875,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentBanks).Join(dbContext.DictionaryAgentBanksSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, agent = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2446,7 +2891,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryContacts).Join(dbContext.DictionaryAgentContactsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, contact = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2478,7 +2923,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentAddresses).Join(dbContext.DictionaryAgentAddressesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, address = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2509,7 +2954,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentAccounts).Join(dbContext.DictionaryAgentAccountsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, account = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2539,7 +2984,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDocumentSubjects).Join(dbContext.DictionaryDocumentSubjectsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2555,7 +3000,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryRegistrationJournals).Join(dbContext.DictionaryRegistrationJournalsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2572,7 +3017,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryDepartments).Join(dbContext.DictionaryDepartmentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2588,7 +3033,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryPositions).Join(dbContext.DictionaryPositionsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2604,7 +3049,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryStandartSendLists).Join(dbContext.DictionaryStandartSendListsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2620,7 +3065,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryStandartSendListContent).Join(dbContext.DictionaryStandartSendListContentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2636,7 +3081,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryAgentClientCompanies).Join(dbContext.DictionaryAgentClientCompaniesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2652,7 +3097,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryPositionExecutorTypes).Join(dbContext.DictionaryPositionExecutorTypesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2668,7 +3113,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.CustomDictionaries).Join(dbContext.CustomDictionariesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2684,7 +3129,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryPositionExecutors).Join(dbContext.DictionaryPositionExecutorsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2700,7 +3145,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.DictionaryTag).Join(dbContext.DictionaryTagsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2720,12 +3165,12 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.TemplateDocument).Join(dbContext.TemplateDocumentsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
                         ObjectId = x.id,
-                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " "  + x.doc.DocumentSubject.Name + " "+ x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name
+                        ObjectText = x.doc.Description + " " + x.doc.Addressee + " " + x.doc.DocumentSubject.Name + " " + x.doc.Name + " " + x.doc.RegistrationJournal.Name + " " + x.doc.SenderAgent.Name + " " + x.doc.SenderAgentPerson.Agent.Name
                     }).ToList());
                     var ids = res.Select(s => s.Id).ToList();
                     removedItems.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.ObjectType == (int)EnumObjects.TemplateDocument && !ids.Contains(x.Id) && x.Id <= maxId).Select(x => x.Id).ToList());
@@ -2736,7 +3181,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.TemplateDocumentSendList).Join(dbContext.TemplateDocumentSendListsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2752,7 +3197,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.TemplateDocumentRestrictedSendList).Join(dbContext.TemplateDocumentRestrictedSendListsSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2768,7 +3213,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.TemplateDocumentTask).Join(dbContext.TemplateDocumentTasksSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2784,7 +3229,7 @@ namespace BL.Database.SystemDb
                     res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType != (int)EnumOperationType.Delete && x.ObjectType == (int)EnumObjects.TemplateDocumentAttachedFiles).Join(dbContext.TemplateDocumentFilesSet, i => i.ObjectId, d => d.Id, (i, d) => new { ind = i, doc = d, id = d.Id }).Select(x => new FullTextIndexItem
                     {
                         Id = x.ind.Id,
-                        ParentId = 0,
+                        ParentObjectId = 0,
                         ItemType = (EnumObjects)x.ind.ObjectType,
                         OperationType = (EnumOperationType)x.ind.OperationType,
                         ClientId = ctx.CurrentClientId,
@@ -2827,93 +3272,6 @@ namespace BL.Database.SystemDb
         }
 
         #endregion
-
-        public int AddSystemDate(IContext ctx, DateTime date)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var item = new SystemDate
-                {
-                    Date = date,
-                };
-                dbContext.SystemDateSet.Attach(item);
-                dbContext.Entry(item).State = EntityState.Added;
-
-                dbContext.SaveChanges();
-                transaction.Complete();
-                return item.Id;
-            }
-        }
-
-        public DateTime GetSystemDate(IContext ctx)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemDateSet.ToList();
-
-                var res = DateTime.UtcNow.AddYears(-50);
-
-                if (qry?.Count > 0)
-                    res = qry.LastOrDefault().Date;
-
-                transaction.Complete();
-
-                return res;
-            }
-        }
-
-        public void RefreshModuleFeature(IContext context)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                dbContext.AdminRolePermissionsSet.Delete();
-
-                dbContext.SystemPermissionsSet.Delete();
-
-                dbContext.SystemFeaturesSet.Delete();
-
-                dbContext.SystemModulesSet.Delete();
-
-                dbContext.SystemAccessTypesSet.Delete();
-
-                DmsDbImportData.InitPermissions();
-
-                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
-                {
-                    dbContext.SystemAccessTypesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
-                    dbContext.SaveChanges();
-                }
-
-                foreach (var item in DmsDbImportData.GetSystemModules())
-                {
-                    dbContext.SystemModulesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
-                    dbContext.SaveChanges();
-                }
-
-                foreach (var item in DmsDbImportData.GetSystemFeatures())
-                {
-                    dbContext.SystemFeaturesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
-                    dbContext.SaveChanges();
-                }
-
-                foreach (var item in DmsDbImportData.GetSystemPermissions())
-                {
-
-                    dbContext.SystemPermissionsSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
-                    dbContext.SaveChanges();
-                }
-
-                
-
-                transaction.Complete();
-
-            }
-
-        }
 
     }
 }
