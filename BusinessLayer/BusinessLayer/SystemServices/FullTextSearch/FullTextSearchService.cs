@@ -222,9 +222,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return res;
         }
 
-        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd)
+        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd)
         {
-            return _systemDb.FullTextIndexPrepareNew(ctx, obj, filterType, isDeepUpdate, IsDirectFilter, idBeg, idEnd);
+            return _systemDb.FullTextIndexPrepareNew(ctx, obj, isDeepUpdate, IsDirectFilter, idBeg, idEnd);
         }
 
         private void SinchronizeServer(IContext ctx)

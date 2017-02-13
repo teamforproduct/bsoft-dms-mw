@@ -218,6 +218,11 @@ namespace BL.Database.Documents
                     #region Others
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
+                        var qryT = qry;
+                        if (filter?.Document?.TagId?.Count>1)
+                        {
+                            qryT = qryT.Where(x=>x.Tags.Count == filter.Document.TagId.Count);
+                        }
                         var qryTagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
                                 {
                                     TagId = x.Id,
@@ -226,7 +231,7 @@ namespace BL.Database.Documents
                                     Color = x.Color,
                                     Name = x.Name,
                                     IsSystem = !x.PositionId.HasValue,
-                                    DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                                    DocCount = x.Documents.Count(y => qryT.Select(z => z.Id).Contains(y.DocumentId))
                                 }).Where(x => x.DocCount > 0);
                         var tagCounters = qryTagCounters.ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };

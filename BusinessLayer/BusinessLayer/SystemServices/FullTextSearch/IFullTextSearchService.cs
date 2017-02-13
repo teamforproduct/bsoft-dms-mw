@@ -12,7 +12,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void ReindexDatabase(IContext ctx);
         IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter);
 
-        IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, EnamFilterType filterType, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd);
+        IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd);
 
     }
 }
