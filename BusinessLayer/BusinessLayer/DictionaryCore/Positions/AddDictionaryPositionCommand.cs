@@ -44,11 +44,11 @@ namespace BL.Logic.DictionaryCore
 
                     // рассылка для исполнения на всех
                     if (GetSubordinationsSendAllForExecution())
-                    { SetAllSubordinations(new SetAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Execution }); }
+                    { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Execution }); }
 
                     // рассылка для сведения на всех
                     if (GetSubordinationsSendAllForInforming())
-                    { SetAllSubordinations(new SetAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
+                    { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
 
                     // базовые роли
                     SetDefaultRoles( model.Id, new List<Roles> {Roles.User });
@@ -70,7 +70,7 @@ namespace BL.Logic.DictionaryCore
 
         private void SetDefaultRJournalPositions(ModifyAdminDefaultByPosition model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetDefaultRegistrationJournalPosition, _context, model);
+            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccessDefault_Position, _context, model);
         }
 
         private void SetDefaultSubordinations(ModifyAdminDefaultByPosition model)
@@ -78,7 +78,7 @@ namespace BL.Logic.DictionaryCore
             _adminService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, _context, model);
         }
 
-        private void SetAllSubordinations(SetAdminSubordinations model)
+        private void SetAllSubordinations(SetSubordinations model)
         {
             _adminService.ExecuteAction(EnumAdminActions.SetAllSubordination, _context, model);
         }

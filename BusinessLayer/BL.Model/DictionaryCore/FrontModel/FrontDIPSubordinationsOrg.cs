@@ -10,7 +10,7 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// <summary>
     /// 
     /// </summary>
-    public class FrontDIPSubordinationsClientCompany: FrontDIPSubordinationsBase
+    public class FrontDIPSubordinationsOrg: FrontDIPSubordinationsBase
     {
   
         /// <summary>
@@ -19,7 +19,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         public int? SourcePositionId { get; set; }
 
         /// <summary>
-        /// Исполнитель
+        /// Id организации
         /// </summary>
         public int? CompanyId { get; set; }
         

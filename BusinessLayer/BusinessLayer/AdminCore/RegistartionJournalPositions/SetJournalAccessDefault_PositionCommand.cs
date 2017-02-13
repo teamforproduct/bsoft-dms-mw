@@ -1,30 +1,17 @@
 ﻿using BL.CrossCutting.Helpers;
-using BL.Logic.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.IncomingModel;
-using BL.Model.AdminCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Exception;
-using System;
 using System.Collections.Generic;
-using System.Transactions;
 
 namespace BL.Logic.AdminCore
 {
-    public class SetDefaultRJournalPositionsCommand : BaseRJournalPositionCommand
+    public class SetJournalAccessDefault_PositionCommand : BaseJournalAccessCommand
     {
-        private ModifyAdminDefaultByPosition Model
-        {
-            get
-            {
-                if (!(_param is ModifyAdminDefaultByPosition)) throw new WrongParameterTypeError();
-                return (ModifyAdminDefaultByPosition)_param;
-            }
-        }
+        private ModifyAdminDefaultByPosition Model { get { return GetModel<ModifyAdminDefaultByPosition>(); } }
 
         public override object Execute()
         {
-
             var position = _dictDb.GetPosition(_context, Model.PositionId);
 
             if (position == null) return null;
@@ -42,7 +29,7 @@ namespace BL.Logic.AdminCore
                 //    IgnoreChildDepartments = true,
                 //});
 
-                SetRegistrationJournalPositionByDepartment(new ModifyAdminRegistrationJournalPositionByDepartment
+                SetRegistrationJournalPositionByDepartment(new SetJournalAccessByDepartment_Position
                 {
                     DepartmentId = position.DepartmentId,
                     IsChecked = true,
@@ -59,9 +46,9 @@ namespace BL.Logic.AdminCore
 
         }
 
-        protected void SetRegistrationJournalPositionByDepartment(ModifyAdminRegistrationJournalPositionByDepartment model)
+        protected void SetRegistrationJournalPositionByDepartment(SetJournalAccessByDepartment_Position model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetRegistrationJournalPositionByDepartment, _context, model);
+            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccessByDepartment_Position, _context, model);
         }
     }
 }

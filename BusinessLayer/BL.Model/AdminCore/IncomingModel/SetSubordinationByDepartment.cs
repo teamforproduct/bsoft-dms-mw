@@ -10,12 +10,13 @@ using BL.Model.Enums;
 namespace BL.Model.AdminCore.IncomingModel
 {
     /// <summary>
-    /// Настройка доступа к документам в журналах регистрации
+    /// "Настройка правил рассылки между должностями (для исполнения, для сведения)", добавления/редактирования записи.
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyAdminRegistrationJournalPosition
+    public class SetSubordinationByDepartment
     {
+
         /// <summary>
         /// ID
         /// </summary>
@@ -23,22 +24,22 @@ namespace BL.Model.AdminCore.IncomingModel
         public int Id { get; set; }
 
         /// <summary>
-        /// Id Должности
+        /// Руководитель
         /// </summary>
         [Required]
-        public int PositionId { get; set; }
+        public int SourcePositionId { get; set; }
 
         /// <summary>
-        /// Id журнала регистрации
+        /// Подразделение
         /// </summary>
         [Required]
-        public int RegistrationJournalId { get; set; }
+        public int DepartmentId { get; set; }
 
         /// <summary>
-        /// Тип доступа к журналу
+        /// Тип рассылки (для исполнения, для сведения)
         /// </summary>
         [Required]
-        public EnumRegistrationJournalAccessTypes RegJournalAccessTypeId { get; set; }
+        public EnumSubordinationTypes SubordinationTypeId { get; set; }
 
         /// <summary>
         /// Установить галочку

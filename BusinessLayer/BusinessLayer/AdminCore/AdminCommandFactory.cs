@@ -108,24 +108,40 @@ namespace BL.Logic.AdminCore
                 #endregion
 
                 #region RegistrationJournalPosition
-                case EnumAdminActions.SetRegistrationJournalPosition:
-                    cmd = DmsResolver.Current.Get<SetRJournalPositionCommand>();
+                case EnumAdminActions.SetJournalAccess:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessCommand>();
                     break;
-                case EnumAdminActions.DuplicateRegistrationJournalPositions:
-                    cmd = DmsResolver.Current.Get<DuplicateRJournalPositionCommand>();
+                case EnumAdminActions.DuplicateJournalAccess_Journal:
+                    cmd = DmsResolver.Current.Get<DuplicateJournalAccess_JournalCommand>();
                     break;
-                case EnumAdminActions.SetRegistrationJournalPositionByDepartment:
-                    cmd = DmsResolver.Current.Get<SetRJournalPositionByDepartmentCommand>();
+                case EnumAdminActions.DuplicateJournalAccess_Position:
+                    cmd = DmsResolver.Current.Get<DuplicateJournalAccess_PositionCommand>();
                     break;
-                case EnumAdminActions.SetRegistrationJournalPositionByCompany:
-                    cmd = DmsResolver.Current.Get<SetRJournalPositionByCompanyCommand>();
+                case EnumAdminActions.SetJournalAccessByDepartment_Journal:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessByDepartment_JournalCommand>();
                     break;
-                case EnumAdminActions.SetDefaultRegistrationJournalPosition:
-                    cmd = DmsResolver.Current.Get<SetDefaultRJournalPositionsCommand>();
+                case EnumAdminActions.SetJournalAccessByDepartment_Position:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessByDepartment_PositionCommand>();
                     break;
-                case EnumAdminActions.SetAllRegistrationJournalPosition:
-                    cmd = DmsResolver.Current.Get<SetAllRJournalPositionsCommand>();
+                case EnumAdminActions.SetJournalAccessByCompany_Journal:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessByCompany_JournalCommand>();
                     break;
+                case EnumAdminActions.SetJournalAccessByCompany_Position:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessByCompany_PositionCommand>();
+                    break;
+                //case EnumAdminActions.SetJournalAccessDefault_Journal:
+                //    cmd = DmsResolver.Current.Get<SetJournalAccessDefault_JournalCommand>();
+                //    break;
+                case EnumAdminActions.SetJournalAccessDefault_Position:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessDefault_PositionCommand>();
+                    break;
+                case EnumAdminActions.SetJournalAccessAll_Journal:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessAll_JournalCommand>();
+                    break;
+                case EnumAdminActions.SetJournalAccessAll_Position:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessAll_PositionCommand>();
+                    break;
+                
                 #endregion
 
                 #region AdminSubordinations

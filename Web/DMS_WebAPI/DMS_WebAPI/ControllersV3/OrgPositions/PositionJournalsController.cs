@@ -1,26 +1,15 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.Enums;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
-
-using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
-using System.Diagnostics;
-using BL.Model.AdminCore.FrontModel;
-using BL.Model.AdminCore.FilterModel;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using BL.Model.Tree;
+using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.OrgPositions
 {
@@ -86,10 +75,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/Set")]
-        public IHttpActionResult Set([FromBody] ModifyAdminRegistrationJournalPosition model)
+        public IHttpActionResult Set([FromBody] SetJournalAccess model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRegistrationJournalPosition, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccess, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -102,10 +91,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetByDepartment")]
-        public IHttpActionResult SetByDepartment([FromBody] ModifyAdminRegistrationJournalPositionByDepartment model)
+        public IHttpActionResult SetByDepartment([FromBody] SetJournalAccessByDepartment_Position model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRegistrationJournalPositionByDepartment, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByDepartment_Position, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -118,10 +107,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetByCompany")]
-        public IHttpActionResult SetByCompany([FromBody] ModifyAdminRegistrationJournalPositionByCompany model)
+        public IHttpActionResult SetByCompany([FromBody] SetJournalAccessByCompany_Position model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRegistrationJournalPositionByCompany, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByCompany_Position, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -138,7 +127,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetDefaultRegistrationJournalPosition, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessDefault_Position, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -151,10 +140,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetAll")]
-        public IHttpActionResult SetAll([FromBody] ModifyAdminRegistrationJournalPositions model)
+        public IHttpActionResult SetAll([FromBody] SetJournalAccessAll_Position model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetAllRegistrationJournalPosition, model);
+            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessAll_Position, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -170,7 +159,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.DuplicateRegistrationJournalPositions, model);
+            var tmpItem = Action.Execute(EnumAdminActions.DuplicateJournalAccess_Position, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

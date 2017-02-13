@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
+﻿using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
-using BL.Model.Enums;
 
 namespace BL.Model.AdminCore.IncomingModel
 {
@@ -14,20 +8,26 @@ namespace BL.Model.AdminCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class SetAdminSubordinations
+    public class SetJournalAccessByDepartment_Position
     {
 
         /// <summary>
-        /// Руководитель
+        /// Id Должности
         /// </summary>
         [Required]
         public int PositionId { get; set; }
 
         /// <summary>
-        /// Тип рассылки (для исполнения, для сведения)
+        /// Подразделение
         /// </summary>
         [Required]
-        public EnumSubordinationTypes SubordinationTypeId { get; set; }
+        public int DepartmentId { get; set; }
+
+        /// <summary>
+        /// Тип доступа (для просмотра, для регистрации)
+        /// </summary>
+        [Required]
+        public EnumRegistrationJournalAccessTypes RegJournalAccessTypeId { get; set; }
 
         /// <summary>
         /// Установить галочку
@@ -35,6 +35,11 @@ namespace BL.Model.AdminCore.IncomingModel
         [Required]
         public bool IsChecked { get; set; }
 
+        
+        /// <summary>
+        /// Не применять к дочерним отделам
+        /// </summary>
+        public bool IgnoreChildDepartments { get; set; }
 
     }
 }

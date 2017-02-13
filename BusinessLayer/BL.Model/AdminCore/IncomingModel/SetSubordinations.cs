@@ -14,26 +14,14 @@ namespace BL.Model.AdminCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class SetAdminSubordination
+    public class SetSubordinations
     {
-
-        /// <summary>
-        /// ID
-        /// </summary>
-        [IgnoreDataMember]
-        public int Id { get; set; }
 
         /// <summary>
         /// Руководитель
         /// </summary>
         [Required]
-        public int SourcePositionId { get; set; }
-
-        /// <summary>
-        /// Исполнитель
-        /// </summary>
-        [Required]
-        public int TargetPositionId { get; set; }
+        public int PositionId { get; set; }
 
         /// <summary>
         /// Тип рассылки (для исполнения, для сведения)
@@ -46,6 +34,7 @@ namespace BL.Model.AdminCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsChecked { get; set; }
+
 
     }
 }

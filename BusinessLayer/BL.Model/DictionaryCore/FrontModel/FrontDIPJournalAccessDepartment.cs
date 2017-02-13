@@ -3,18 +3,13 @@
     /// <summary>
     /// 
     /// </summary>
-    public class FrontDIPSubordinationsDepartment: FrontDIPSubordinationsBase
+    public class FrontDIPJournalAccessDepartment : FrontDIPJournalAccessBase
     {
 
         /// <summary>
         /// Код подразделения
         /// </summary>
         public string Code { get; set; }
-
-        /// <summary>
-        /// Руководитель
-        /// </summary>
-        public int? SourcePositionId { get; set; }
 
         /// <summary>
         /// Исполнитель

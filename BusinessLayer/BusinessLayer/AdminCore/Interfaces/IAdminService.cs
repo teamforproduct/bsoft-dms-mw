@@ -67,14 +67,13 @@ namespace BL.Logic.AdminCore.Interfaces
         #endregion
 
         #region [+] Subordinations ...
-        IEnumerable<FrontAdminSubordination> GetAdminSubordinations(IContext context, FilterAdminSubordination filter);
 
         IEnumerable<ITreeItem> GetSubordinationsDIP(IContext context, int positionId, FilterAdminSubordinationTree filter);
         #endregion
 
         #region [+] RegistrationJournalPositions ...
         IEnumerable<ITreeItem> GetRegistrationJournalPositionsDIP(IContext context, int positionId, FilterTree filter);
-        IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsByJournalDIP(IContext context, int journalId, FilterDictionaryPosition filter);
+        IEnumerable<ITreeItem> GetPositionsByJournalDIP(IContext context, int journalId, FilterTree filter);
         #endregion
 
         IEnumerable<FrontPermission> GetUserPermissions(IContext context);

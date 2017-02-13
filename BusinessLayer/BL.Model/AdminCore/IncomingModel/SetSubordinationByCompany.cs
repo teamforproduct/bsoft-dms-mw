@@ -14,8 +14,9 @@ namespace BL.Model.AdminCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, значения которых можно изменить из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyAdminRegistrationJournalPositionByDepartment
+    public class SetSubordinationByCompany
     {
+
         /// <summary>
         /// ID
         /// </summary>
@@ -23,34 +24,28 @@ namespace BL.Model.AdminCore.IncomingModel
         public int Id { get; set; }
 
         /// <summary>
-        /// Id Должности
+        /// Руководитель
         /// </summary>
         [Required]
-        public int PositionId { get; set; }
+        public int SourcePositionId { get; set; }
 
         /// <summary>
-        /// Подразделение
+        /// Исполнитель
         /// </summary>
         [Required]
-        public int DepartmentId { get; set; }
+        public int CompanyId { get; set; }
 
         /// <summary>
         /// Тип рассылки (для исполнения, для сведения)
         /// </summary>
         [Required]
-        public EnumRegistrationJournalAccessTypes RegJournalAccessTypeId { get; set; }
+        public EnumSubordinationTypes SubordinationTypeId { get; set; }
 
         /// <summary>
         /// Установить галочку
         /// </summary>
         [Required]
         public bool IsChecked { get; set; }
-
-        
-        /// <summary>
-        /// Не применять к дочерним отделам
-        /// </summary>
-        public bool IgnoreChildDepartments { get; set; }
 
     }
 }

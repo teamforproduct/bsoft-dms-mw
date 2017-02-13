@@ -4,7 +4,7 @@
     /// 
     /// </summary>
     // 
-    public class FrontDIPSubordinationsPosition: FrontDIPSubordinationsBase
+    public class FrontDIPJournalAccessPosition : FrontDIPJournalAccessBase
     {
 
         /// <summary>
@@ -18,17 +18,12 @@
         public string ExecutorTypeSuffix { get; set; }
 
         /// <summary>
-        /// Руководитель
+        /// Id должности
         /// </summary>
-        public int? SourcePositionId { get; set; }
-
-        /// <summary>
-        /// Исполнитель
-        /// </summary>
-        public int? TargetPositionId { get; set; }
+        public int? PositionId { get; set; }
         
         /// <summary>
-        /// Исполнитель
+        /// Порядок
         /// </summary>
         public int? Order { get; set; }
     }
