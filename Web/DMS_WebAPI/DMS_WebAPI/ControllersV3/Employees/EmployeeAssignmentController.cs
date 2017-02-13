@@ -69,6 +69,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             filter.AgentIDs = new List<int> { Id };
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
+            filter.IsActive = true;
 
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

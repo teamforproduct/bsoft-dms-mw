@@ -2,14 +2,12 @@
 using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {

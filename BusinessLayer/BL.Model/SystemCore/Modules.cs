@@ -8,6 +8,7 @@ namespace BL.Model.SystemCore
         public const string System = "System";
         public const string Org = "Org";
         public const string Department = "Department";
+        public const string Delegates = "Delegates";
         public const string Position = "Position";
         public const string Person = "Person";
         public const string Employee = "Employee";
@@ -65,6 +66,8 @@ namespace BL.Model.SystemCore
 
                 case Documents:             res = 330; break;
                 case PaperList:             res = 340; break;
+
+                case Delegates:             res = 350; break;
 
                 default: throw new System.Exception();
             }

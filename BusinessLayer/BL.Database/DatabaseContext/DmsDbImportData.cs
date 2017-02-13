@@ -483,6 +483,17 @@ namespace BL.Database.DatabaseContext
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User }
                 );
 
+
+            AddPermission(2300, Modules.User, Features.Positions,
+                readRoles: new List<Roles> { Roles.Admin, Roles.User },
+                createRoles: new List<Roles> { Roles.Admin, Roles.User },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                );
+
+
+
+
         }
 
 

@@ -305,8 +305,18 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.DeleteExecutor:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryPositionExecutorCommand>();
                     break;
-                #endregion DictionaryPositionExecutors
 
+                // Делегирование полномочий
+                case EnumDictionaryActions.AddUserPositionExecutor:
+                    cmd = DmsResolver.Current.Get<AddUserPositionExecutorCommand>();
+                    break;
+                case EnumDictionaryActions.ModifyUserPositionExecutor:
+                    cmd = DmsResolver.Current.Get<ModifyUserPositionExecutorCommand>();
+                    break;
+                case EnumDictionaryActions.DeleteUserPositionExecutor:
+                    cmd = DmsResolver.Current.Get<DeleteUserPositionExecutorCommand>();
+                    break;
+                #endregion 
 
 
                 #region DictionaryStandartSendList

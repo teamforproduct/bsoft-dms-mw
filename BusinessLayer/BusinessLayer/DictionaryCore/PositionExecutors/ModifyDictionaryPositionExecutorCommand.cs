@@ -16,7 +16,7 @@ using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryPositionExecutorCommand : BaseDictionaryPositionExecutorCommand
+    public class ModifyDictionaryPositionExecutorCommand : BaseUserPositionExecutorCommand
     {
         private readonly IDocumentsDbProcess _docDb;
 
