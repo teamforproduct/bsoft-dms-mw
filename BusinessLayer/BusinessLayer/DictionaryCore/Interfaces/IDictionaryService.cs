@@ -172,6 +172,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryPositionExecutors
         FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id);
         IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetUserPositionExecutors(IContext context, int positionId, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context);
+        int GetPositionPersonalAgent(IContext context, int positionId);
         IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutorsByAgent(IContext context, int agentId, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors

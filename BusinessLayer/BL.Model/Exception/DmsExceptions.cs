@@ -152,6 +152,12 @@ namespace BL.Model.Exception
         public UserCouldNotBeDeleted(System.Exception ex) : base(ex) { }
     }
 
+    public class UserUserPositionExecutorIsIncorrect : DmsExceptions
+    {
+        public UserUserPositionExecutorIsIncorrect() : base() { }
+        public UserUserPositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
+    }
+
     public class RoleNameAlreadyExists : DmsExceptions
     {
         public RoleNameAlreadyExists(string roleName) : base() { Parameters = new List<string> { roleName }; }

@@ -311,6 +311,7 @@
     <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
+    <Compile Include="ControllersV3\User\UserPositionExecutorsController.cs" />
     <Compile Include="ControllersV3\User\UserControlQuestionsController.cs" />
     <Compile Include="ControllersV3\User\UserFingerprintsController.cs" />
     <Compile Include="ControllersV3\Utilities\DevController.cs" />
@@ -633,7 +634,9 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ControllersV3\Delegates\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

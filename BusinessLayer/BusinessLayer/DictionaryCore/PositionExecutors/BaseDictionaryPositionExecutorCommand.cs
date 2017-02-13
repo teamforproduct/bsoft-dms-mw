@@ -18,20 +18,11 @@ namespace BL.Logic.DictionaryCore
 
         public override bool CanBeDisplayed(int positionId) => true;
 
-        public void PrepareData()
-        {
-            // Model.StartDate = Model.StartDate.StartOfDay();
-            //Model.EndDate = Model.EndDate?.EndOfDay() ?? DateTime.MaxValue;
-
-
-            if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();
-        }
-
         public override bool CanExecute()
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            PrepareData();
+            if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();
 
             FrontDictionaryPositionExecutor executor = null;
 

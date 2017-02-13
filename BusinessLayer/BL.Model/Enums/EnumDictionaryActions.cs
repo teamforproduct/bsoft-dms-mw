@@ -387,6 +387,13 @@
         DeleteExecutor = 220009,
         #endregion DictionaryPositionExecutors
 
+        #region  UserPositionExecutor
+        AddUserPositionExecutor = 220006,
+
+        ModifyUserPositionExecutor = 220007,
+
+        DeleteUserPositionExecutor = 220008,
+        #endregion 
 
         #region CustomDictionaryType
         /// <summary>

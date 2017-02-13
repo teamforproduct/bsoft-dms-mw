@@ -757,8 +757,8 @@ namespace BL.Logic.DictionaryCore
         #region [+] DictionaryPositions ...
         public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
-
-            return _dictDb.GetPosition(context, id);
+            return _dictDb.GetPositions(context, new FilterDictionaryPosition { IDs = new List<int> { id } }).FirstOrDefault();
+            //return _dictDb.GetPosition(context, id);
         }
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
@@ -871,6 +871,48 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
         {
             return _dictDb.GetPositionExecutors(context, filter);
+        }
+
+        public IEnumerable<FrontDictionaryPositionExecutor> GetUserPositionExecutors(IContext context, int positionId, FilterDictionaryPositionExecutor filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            filter.PositionIDs = new List<int> { positionId };
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
+            filter.IsActive = true;
+
+            // Должности к которым текущий пользователь имеет отношение на текущий момоент
+            var myPositions = GetCurrentPositionExecutors(context);
+
+            // Если запрашиваются назначения должности, к которой текущий пользователь НЕ имеет отношение
+            if (!myPositions.Any(x => x.PositionId == positionId)) return new List<FrontDictionaryPositionExecutor>();
+
+            return _dictDb.GetPositionExecutors(context, filter);
+        }
+
+        // Возвращает актуальные назначения текущего пользователя
+        public IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context)
+        {
+            return _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+            {
+                IsActive = true,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow,
+                AgentIDs = new List<int> { context.CurrentAgentId }
+            });
+        }
+
+        public int GetPositionPersonalAgent(IContext context, int positionId)
+        {
+            var position = _dictDb.GetInternalPositions(context, new FilterDictionaryPosition
+            {
+                IDs = new List<int> { positionId }
+            }).FirstOrDefault();
+
+            if (position == null) return -1;
+
+            return position.ExecutorAgentId ?? -1;
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutorsByAgent(IContext context, int agentId, FilterDictionaryPositionExecutor filter)
