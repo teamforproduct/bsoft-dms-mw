@@ -264,6 +264,7 @@ namespace DMS_WebAPI.Providers
             var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
             if (isIncludeFingerPrintInfo && context !=null)
             {
+                message = message + "f";
                 var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
                 var fingerprint = GetFingerprintFromBody(context.Request.Body);
                 var fps = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
