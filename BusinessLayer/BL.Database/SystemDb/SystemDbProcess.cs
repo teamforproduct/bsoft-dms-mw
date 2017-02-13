@@ -8,6 +8,7 @@ using BL.Database.DBModel.System;
 using BL.Database.Helper;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
+using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
@@ -1749,18 +1750,31 @@ namespace BL.Database.SystemDb
                             .Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
-                if (filterType == EnamFilterType.TemplateDocumentDocumentTypeId)
-                    qry = qry.Where(x=>x.Main.TemplateDocument.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TemplateDocument.DocumentTypeId});
-                else if (filterType == EnamFilterType.ExecutorPositionExecutorAgentId)
-                    qry = qry.Where(x=>x.Main.ExecutorPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.ExecutorPositionExecutorAgentId});
-                else if (filterType == EnamFilterType.RegistrationJournalId)
-                    qry = qry.Where(x=>x.Main.RegistrationJournal!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RegistrationJournalId.Value});
-                else if (filterType == EnamFilterType.RegistrationJournalDepartmentId)
-                    qry = qry.Where(x=>x.Main.RegistrationJournal.Department!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RegistrationJournal.DepartmentId});
-                else if (filterType == EnamFilterType.SenderAgentId)
-                    qry = qry.Where(x=>x.Main.SenderAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentId.Value});
-                else if (filterType == EnamFilterType.SenderAgentPersonId)
-                    qry = qry.Where(x=>x.Main.SenderAgentPerson!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentPersonId.Value});
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.TemplateDocumentDocumentTypeId:
+                        qry = qry.Where(x=>x.Main.TemplateDocument.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TemplateDocument.DocumentTypeId});
+                        break;
+                    case EnamFilterType.ExecutorPositionExecutorAgentId:
+                        qry = qry.Where(x=>x.Main.ExecutorPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.ExecutorPositionExecutorAgentId});
+                        break;
+                    case EnamFilterType.RegistrationJournalId:
+                        qry = qry.Where(x=>x.Main.RegistrationJournal!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RegistrationJournalId.Value});
+                        break;
+                    case EnamFilterType.RegistrationJournalDepartmentId:
+                        qry = qry.Where(x=>x.Main.RegistrationJournal.Department!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RegistrationJournal.DepartmentId});
+                        break;
+                    case EnamFilterType.SenderAgentId:
+                        qry = qry.Where(x=>x.Main.SenderAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentId.Value});
+                        break;
+                    case EnamFilterType.SenderAgentPersonId:
+                        qry = qry.Where(x=>x.Main.SenderAgentPerson!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentPersonId.Value});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1784,14 +1798,27 @@ namespace BL.Database.SystemDb
                             .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
-                if (filterType == EnamFilterType.SourcePositionExecutorAgentId)
-                    qry = qry.Where(x=>x.Main.SourcePositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionExecutorAgentId.Value});
-                else if (filterType == EnamFilterType.SourceAgentId)
-                    qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId.Value});
-                else if (filterType == EnamFilterType.TargetPositionExecutorAgentId)
-                    qry = qry.Where(x=>x.Main.TargetPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionExecutorAgentId.Value});
-                else if (filterType == EnamFilterType.TargetAgentId)
-                    qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.Slave:
+                        break;
+                    case EnamFilterType.SourcePositionExecutorAgentId:
+                        qry = qry.Where(x=>x.Main.SourcePositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionExecutorAgentId.Value});
+                        break;
+                    case EnamFilterType.TargetPositionExecutorAgentId:
+                        qry = qry.Where(x=>x.Main.TargetPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionExecutorAgentId.Value});
+                        break;
+                    case EnamFilterType.SourceAgentId:
+                        qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId.Value});
+                        break;
+                    case EnamFilterType.TargetAgentId:
+                        qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Events);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1806,9 +1833,41 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
+            { EnumObjects.DocumentTags, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DocumentTagsSet
+                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.Slave:
+                        break;
+                    case EnamFilterType.TagId:
+                        qry = qry.Where(x=>x.Main.Tag!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TagId});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Tags);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
+                    ObjectText = x.Main.Tag.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
             #endregion Documents
 
             #region Complex Dictionary
+
             #region Complex Dictionary Info
             { EnumObjects.DictionaryAgentClientCompanies, (ctx,dbContext,filterType) =>
             {
@@ -1816,6 +1875,14 @@ namespace BL.Database.SystemDb
                 var qry = dbContext.DictionaryAgentClientCompaniesSet
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Org); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1835,6 +1902,14 @@ namespace BL.Database.SystemDb
                             .Where(x => x.Company.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
                 var moduleId = Modules.GetId(Modules.Department); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
@@ -1852,6 +1927,14 @@ namespace BL.Database.SystemDb
                 var qry = dbContext.DictionaryPositionsSet
                             .Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1871,6 +1954,14 @@ namespace BL.Database.SystemDb
                             .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
                 var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
@@ -1884,12 +1975,152 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
+            { EnumObjects.DictionaryAgentCompanies, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAgentCompaniesSet
+                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.Company); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentCompanies,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
+                    ObjectText = x.Main.Agent.Name + " " + x.Main.FullName + " " + x.Main.OKPOCode + " " + x.Main.Description + " " + x.Main.TaxCode + " " + x.Main.VATCode
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryAgentPersons, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAgentPersonsSet
+                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.Person); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentPersons,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPersons,
+                    ObjectText = x.Main.Agent.Name + " " + " " + x.Main.Description + " "
+                         + x.Main.Agent.AgentPeople.FullName + x.Main.Agent.AgentPeople.TaxCode + " " + x.Main.Agent.AgentPeople.BirthDate + " "
+                        + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryAgentBanks, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAgentBanksSet
+                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.Bank); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentBanks,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentBanks,
+                    ObjectText = x.Main.Agent.Name + " " + x.Main.FullName + " " + x.Main.Description + " " + x.Main.MFOCode + " " + x.Main.Swift
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DictionaryStandartSendLists, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryStandartSendListsSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.SendList); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
+                    ObjectText = x.Main.Name + " " + x.Main.Position.Name + " "+ x.Main.Position.ExecutorAgent.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.CustomDictionaryTypes, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.CustomDictionaryTypesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.CustomDictionaries); var featureId = Features.GetId(Features.Info);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.CustomDictionaryTypes,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.CustomDictionaryTypes,
+                    ObjectText = x.Main.Code + " " + x.Main.Name + " " + x.Main.Description
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
             { EnumObjects.AdminRoles, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminRolesSet
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1903,13 +2134,89 @@ namespace BL.Database.SystemDb
                 return res;
             } },
             #endregion Complex Dictionary Info
+
             #region Complex Dictionary Details
+            { EnumObjects.DictionaryStandartSendListContent, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryStandartSendListContentsSet
+                            .Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.TargetPositionExecutorAgentId:
+                        qry = qry.Where(x=>x.Main.TargetPosition.ExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPosition.ExecutorAgentId.Value});
+                        break;
+                    case EnamFilterType.TargetPositionId:
+                        qry = qry.Where(x=>x.Main.TargetPosition!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionId.Value});
+                        break;
+                    case EnamFilterType.TargetAgentId:
+                        qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.SendList); var featureId = Features.GetId(Features.Contents);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
+                    ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.CustomDictionaries, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.CustomDictionariesSet
+                            .Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.CustomDictionaries); var featureId = Features.GetId(Features.Contents);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.CustomDictionaries,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.CustomDictionaryTypes,
+                    ObjectText = x.Main.Code + " " + x.Main.Name + " " + x.Main.Description
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
             { EnumObjects.AdminUserRoles, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminUserRolesSet
                             .Where(x => x.Role.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.RoleId:
+                        qry = qry.Where(x=>x.Main.Role!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.RoleId});
+                        break;
+                    case EnamFilterType.PositionExecutorAgentId:
+                        qry = qry.Where(x=>x.Main.PositionExecutor.Agent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.PositionExecutor.AgentId});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Employees);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1933,6 +2240,7 @@ namespace BL.Database.SystemDb
                 return res;
             } },
             #endregion Complex Dictionary Details
+
             #endregion Complex Dictionary
 
             #region Simple Dictionary
@@ -1942,6 +2250,14 @@ namespace BL.Database.SystemDb
                 var qry = dbContext.DictionaryAddressTypesSet
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.AddressType); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1961,6 +2277,14 @@ namespace BL.Database.SystemDb
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
                 var moduleId = Modules.GetId(Modules.ContactType); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
@@ -1978,6 +2302,14 @@ namespace BL.Database.SystemDb
                 var qry = dbContext.DictionaryDocumentTypesSet
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.DocumentType); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -1997,8 +2329,16 @@ namespace BL.Database.SystemDb
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
-                if (filterType == EnamFilterType.DepartmentId)
-                    qry = qry.Where(x=>x.Main.Department!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.DepartmentId});
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.DepartmentId:
+                        qry = qry.Where(x=>x.Main.Department!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.DepartmentId});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Journal); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -2017,6 +2357,14 @@ namespace BL.Database.SystemDb
                 var qry = dbContext.DictionaryTagsSet
                             .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
 
                 var moduleId = Modules.GetId(Modules.Tags); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
@@ -2039,6 +2387,8 @@ namespace BL.Database.SystemDb
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentWaits, FilterType = EnamFilterType.Slave },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentTags, FilterType = EnamFilterType.Slave },
+
                 }
             },
             {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
@@ -2046,9 +2396,40 @@ namespace BL.Database.SystemDb
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
                 }
             },
+            {EnumObjects.DictionaryPositions, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendListContent, FilterType = EnamFilterType.TargetPositionId },
+                }
+            },
+            {EnumObjects.DictionaryAgentEmployees, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.ExecutorPositionExecutorAgentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.SourcePositionExecutorAgentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.TargetPositionExecutorAgentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendListContent, FilterType = EnamFilterType.TargetPositionExecutorAgentId },
+
+                }
+            },
+
+            {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
+                }
+            },
+
+            {EnumObjects.AdminRoles, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.AdminUserRoles, FilterType = EnamFilterType.RoleId },
+                }
+            },
             { EnumObjects.DictionaryDocumentType, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.TemplateDocumentDocumentTypeId },
+                }
+            },
+            { EnumObjects.DictionaryRegistrationJournals, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.RegistrationJournalId },
                 }
             },
             { EnumObjects.DictionaryTag, new List<FullTextDeepUpdateItemQuery>

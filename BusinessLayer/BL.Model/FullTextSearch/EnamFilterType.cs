@@ -22,17 +22,22 @@
         TemplateDocumentDocumentTypeId = 103,
         ExecutorPositionExecutorAgentId = 105,
         RegistrationJournalId = 110,
-        RegistrationJournalDepartmentId = 110,
+        RegistrationJournalDepartmentId = 115,
         SenderAgentId = 120,
         SenderAgentPersonId = 125,
         SourcePositionExecutorAgentId = 210,
+        SourcePositionId = 213,
         SourceAgentId = 215,
         TargetPositionExecutorAgentId = 220,
+        TargetPositionId = 223,
         TargetAgentId = 225,
 
         TagId = 410,
 
         DepartmentId = 510,
+        RoleId = 610,
+        PositionExecutorAgentId = 620,
+        PositionId = 623,
 
 
 
