@@ -340,6 +340,14 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
+
+                if (filter.SimultaneousAccessPositionId?.Count() > 0)
+                {
+                    foreach (var id in filter.SimultaneousAccessPositionId)
+                    {
+                        qry = qry.Where(x => x.Accesses.Any(y => y.PositionId == id));
+                    }
+                }
                 #endregion Base
 
                 #region Subscription
