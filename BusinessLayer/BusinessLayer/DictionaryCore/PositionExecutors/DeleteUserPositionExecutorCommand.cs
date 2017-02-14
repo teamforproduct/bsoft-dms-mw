@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore
             if (positionExecutor.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal) throw new DictionaryRecordCouldNotBeDeleted();
 
             // Если на должность штатно назначен не текущий пользователь
-            if (_dictService.GetPositionPersonalAgent(_context, Model) != _context.CurrentAgentId) throw new DictionaryRecordCouldNotBeDeleted();
+            if (_dictService.GetPositionPersonalAgent(_context, positionExecutor.PositionId) != _context.CurrentAgentId) throw new DictionaryRecordCouldNotBeDeleted();
 
 
             return true;
