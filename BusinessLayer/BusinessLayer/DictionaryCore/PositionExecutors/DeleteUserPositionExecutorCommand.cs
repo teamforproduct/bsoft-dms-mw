@@ -37,16 +37,27 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            var positionExecutor = _dictDb.GetInternalPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
+            var delExecution = _dictDb.GetInternalPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
 
-            if (positionExecutor == null) throw new DictionaryRecordWasNotFound();
+            if (delExecution == null) throw new DictionaryRecordWasNotFound();
 
-            // Можно удалять только ио или референта
-            if (positionExecutor.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal) throw new DictionaryRecordCouldNotBeDeleted();
+            // Можно удалять только своих ио или референтов
+            if (delExecution.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal) throw new DictionaryRecordCouldNotBeDeleted();
+
+            // Вычисляю кто назначен на должность из delExecution
+            var personalExecution = _dictDb.GetInternalPositionExecutors(_context, new FilterDictionaryPositionExecutor
+            {
+                PositionIDs = new List<int> { delExecution.PositionId },
+                PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { EnumPositionExecutionTypes.Personal },
+                IsActive = true,
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow,
+            }).FirstOrDefault();
+
+            if (personalExecution == null) throw new DictionaryRecordCouldNotBeDeleted();
 
             // Если на должность штатно назначен не текущий пользователь
-            if (_dictService.GetPositionPersonalAgent(_context, positionExecutor.PositionId) != _context.CurrentAgentId) throw new DictionaryRecordCouldNotBeDeleted();
-
+            if (personalExecution.AgentId != _context.CurrentAgentId) throw new DictionaryRecordCouldNotBeDeleted();
 
             return true;
         }

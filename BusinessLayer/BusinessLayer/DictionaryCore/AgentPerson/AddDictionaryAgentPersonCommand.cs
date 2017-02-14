@@ -12,16 +12,9 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
-            {
-                var newPerson = new InternalDictionaryAgentPerson(Model);
-                CommonDocumentUtilities.SetLastChange(_context, newPerson);
-                return _dictDb.AddAgentPerson(_context, newPerson);
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
-            }
+            var newPerson = new InternalDictionaryAgentPerson(Model);
+            CommonDocumentUtilities.SetLastChange(_context, newPerson);
+            return _dictDb.AddAgentPerson(_context, newPerson);
         }
 
     }
