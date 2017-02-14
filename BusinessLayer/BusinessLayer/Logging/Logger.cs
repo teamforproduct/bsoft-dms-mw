@@ -135,11 +135,13 @@ namespace BL.Logic.Logging
                         ClientId = x.ClientId ?? 0,
                         IsSuccess = x.LogLevel == 0,
                     }).ToList();
+                res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
+                    .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
                 res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
                     .ForEach(r =>
                     {
                         r.x.CreateDate = r.y.CreateDate;
-                        r.x.Token = r.y.Token;
+                        //r.x.Token = r.y.Token;
                         r.x.LastUsage = r.y.LastUsage;
                         r.x.UserId = r.y.UserId;
                         r.x.IsActive = true;

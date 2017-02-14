@@ -111,7 +111,10 @@ namespace BL.Database.SystemDb
                 var res = qry.Select(x => new FrontAgentEmployeeUser { LastErrorLogin = x.LogDate }).FirstOrDefault();
                 if (res!=null)
                 {
-                    res.CountErrorLogin = qry.Count();
+                    res.CountErrorLogin = qry.Where(x=>     x.LogException.Equals("DmsExceptions:UserNameOrPasswordIsIncorrect")
+                                                     || x.LogException.Equals("DmsExceptions:UserIsDeactivated")
+                                                     || x.LogException.Equals("DmsExceptions:UserAnswerIsIncorrect")
+                                                     || x.LogException.Equals("DmsExceptions:FingerprintRequired")).Count();
                 }
                 return res;
             }

@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Utilities
                 .Where(x => x.Value.StoreObject is IContext)
                 .Select(x => new FrontSystemSession
                 {
-                    Token = x.Key,
+                    //Token = x.Key,
                     LastUsage = x.Value.LastUsage,
                     CreateDate = (x.Value.StoreObject as IContext).CreateDate,
                     LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,

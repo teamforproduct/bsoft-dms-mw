@@ -172,8 +172,8 @@ namespace DMS_WebAPI.Providers
                 var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
                 agentId = agentUser?.AgentId;
             }
-            var exceptionText = (ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message;
 
+            var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;
             var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId : (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId );
 
             throw ex;
