@@ -17,7 +17,7 @@
         /// <summary>
         /// Зависимые записи
         /// </summary>
-        Dependant = -3,
+        //Dependant = -3,
 
         TemplateDocumentDocumentTypeId = 103,
         ExecutorPositionExecutorAgentId = 105,
@@ -33,7 +33,7 @@
         TargetAgentId = 225,
 
         TagId = 410,
-
+        AgentId = 310,
         DepartmentId = 510,
         RoleId = 610,
         PositionExecutorAgentId = 620,
