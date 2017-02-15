@@ -590,6 +590,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.AdminSubordination));
             //items.Add(GetSystemObjects(EnumObjects.DepartmentAdmin));
             items.Add(GetSystemObjects(EnumObjects.AdminRegistrationJournalPositions));
+            items.Add(GetSystemObjects(EnumObjects.AdminEmployeeDepartments));
 
             items.Add(GetSystemObjects(EnumObjects.SystemSettings));
 

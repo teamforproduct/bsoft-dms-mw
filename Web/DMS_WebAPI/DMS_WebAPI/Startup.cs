@@ -26,7 +26,7 @@ namespace DMS_WebAPI
             ConfigureAuth(app);
 
             // Проверка на целостность Actions в процедуре импорта 
-            var systemService = DmsResolver.Current.Get<ISystemService>();
+            //var systemService = DmsResolver.Current.Get<ISystemService>();
 
             // Проверка на целостность переводов
             ApplicationDbImportData.CheckLanguages();

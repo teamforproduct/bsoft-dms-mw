@@ -129,7 +129,7 @@ namespace BL.Logic.DictionaryCore
                 EnumObjects.DictionaryAgentBanks,
                 EnumObjects.DictionaryAgentCompanies,
                 EnumObjects.DictionaryAgentEmployees,
-                EnumObjects.DictionaryAgentPersons
+                EnumObjects.DictionaryAgentPeople
             };
 
             var res = new List<FullTextSearchResult>();
