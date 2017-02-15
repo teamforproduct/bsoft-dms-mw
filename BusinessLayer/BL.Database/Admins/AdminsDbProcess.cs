@@ -130,6 +130,7 @@ namespace BL.Database.Admins
                     RolePositionExecutorTypeName = x.PositionExecutorType.Name,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
+                    DepartmentName = x.Position.Department.Name,
                 }).ToList();
 
                 try
