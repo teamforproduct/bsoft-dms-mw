@@ -3280,6 +3280,12 @@ namespace BL.Database.Dictionaries
 
                 if (positions.Count() > 0) DeletePositions(context, positions.ToList());
 
+                // AdminEmployeeDepartments
+                dbContext.AdminEmployeeDepartmentsSet.Where(x => list.Contains(x.DepartmentId)).Delete();
+
+                // DictionaryRegistrationJournals
+                dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId && list.Contains(x.DepartmentId)).Delete();
+
                 dbContext.DictionaryDepartmentsSet
                     .Where(x => x.Company.ClientId == context.CurrentClientId)
                     .Where(x => list.Contains(x.Id))
