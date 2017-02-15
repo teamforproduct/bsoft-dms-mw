@@ -9,6 +9,7 @@ using BL.Logic.Common;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Logic.Settings;
+using Lucene.Net.Util;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -20,27 +21,36 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private readonly Dictionary<FullTextSettings, Timer> _timers;
         private readonly List<Timer> _stopTimersList = new List<Timer>();
         readonly List<IFullTextIndexWorker> _workers;
-        readonly ISystemDbProcess _systemDb;
+        readonly IFullTextDbProcess _systemDb;
 
-        public FullTextSearchService(ISettings setting, ILogger logger, ISystemDbProcess systemDb) : base(setting, logger)
+        public FullTextSearchService(ISettings setting, ILogger logger, IFullTextDbProcess systemDb) : base(setting, logger)
         {
             _timers = new Dictionary<FullTextSettings, Timer>();
             _workers = new List<IFullTextIndexWorker>();
             _systemDb = systemDb;
         }
 
-        private void ReindexPart(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType, int fromNumber, int toNumber)
+        private void ReindexObject(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType)
         {
-            var offset = fromNumber;
+            var data = _systemDb.GetItemsToReindex(ctx, dataType, true, null, null);
+            foreach (var itm in data)
+            {
+                worker.AddNewItem(itm);
+            }
+        }
+
+        private void ReindexBigObject(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType, int fromNumber, int toNumber)
+        {
+            int offset = fromNumber;
             do
             {
                 var selectCount = (offset + _MAX_ROW_PROCESS < toNumber) ? _MAX_ROW_PROCESS : toNumber - offset;
-                var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, selectCount, offset);
+
+                var data = _systemDb.GetItemsToReindex(ctx, dataType, true, selectCount, offset);
                 foreach (var itm in data)
                 {
                     worker.AddNewItem(itm);
                 }
-
                 if (data.Count() == _MAX_ROW_PROCESS)
                 {
                     offset += _MAX_ROW_PROCESS;
@@ -49,7 +59,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     offset = 0;
                 }
-
             } while (offset != 0 && offset < toNumber);
         }
 
@@ -73,75 +82,33 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.StartUpdate();
             try
             {
-
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
-                var objToProcess = new[]
-                {
-                    EnumObjects.Documents, /*EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,*/
-                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles, EnumObjects.DocumentTags
-                };
+                var objToProcess = _systemDb.ObjectToReindex();
                 //delete all current document before reindexing
                 worker.DeleteAllDocuments();
                 var tskList = new List<Task>();
-                //going through the documents objects and add it. Select max 1000 row for one processing
-                foreach (var dataType in objToProcess)
+                foreach (var obj in objToProcess)
                 {
-                    tskList.Add(Task.Factory.StartNew(() =>
+                    var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, true);
+                    if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
+
+                    if (itmsCount.Count >= 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
                     {
-                        int offset = 0;
+                        tskList.Add(Task.Factory.StartNew(() => { ReindexObject(ctx, worker, obj); }));
+                    }
+                    else
+                    {
+                        int indFrom = 0; 
                         do
                         {
+                            int indTo = Math.Min(indFrom + _MAX_ENTITY_FOR_THREAD - 1, itmsCount[0]);
+                            var @fromIndex = indFrom;
+                            tskList.Add(Task.Factory.StartNew(() => { ReindexBigObject(ctx, worker, obj, @fromIndex, indTo); }));
+                            indFrom = indTo +1;
+                        } while (indFrom< itmsCount[0]);
 
-                            var data = _systemDb.FullTextIndexDocumentsReindexDbPrepare(ctx, dataType, _MAX_ROW_PROCESS, offset);
-                            foreach (var itm in data)
-                            {
-                                worker.AddNewItem(itm);
-                            }
-
-                            if (data.Count() == _MAX_ROW_PROCESS)
-                            {
-                                offset += _MAX_ROW_PROCESS;
-                            }
-                            else
-                            {
-                                offset = 0;
-                            }
-
-                        } while (offset != 0);
-                    }));
-                }
-
-                tskList.Add(Task.Factory.StartNew(() =>
-                {
-                    // add to index dictionaries and templates 
-                    var additionaData = _systemDb.FullTextIndexNonDocumentsReindexDbPrepare(ctx);
-                    foreach (var itm in additionaData)
-                    {
-                        worker.AddNewItem(itm);
                     }
-                }));
 
-
-                var docSLCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentSendLists);
-                int startFrom = 0;
-                while (startFrom < docSLCount)
-                {
-                    tskList.Add(Task.Factory.StartNew(() =>
-                    {
-                        ReindexPart(ctx, worker, EnumObjects.DocumentSendLists, startFrom, startFrom + _MAX_ENTITY_FOR_THREAD - 1);
-                    }));
-                    startFrom += _MAX_ENTITY_FOR_THREAD;
-                }
-
-                var eventCount = _systemDb.GetEntityNumbers(ctx, EnumObjects.DocumentEvents);
-                startFrom = 0;
-                while (startFrom < eventCount)
-                {
-                    tskList.Add(Task.Factory.StartNew(() =>
-                    {
-                        ReindexPart(ctx, worker, EnumObjects.DocumentEvents, startFrom, startFrom + _MAX_ENTITY_FOR_THREAD - 1);
-                    }));
-                    startFrom += _MAX_ENTITY_FOR_THREAD;
                 }
 
                 Task.WaitAll(tskList.ToArray());
@@ -222,11 +189,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return res;
         }
 
-        public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd)
-        {
-            return _systemDb.FullTextIndexPrepareNew(ctx, obj, isDeepUpdate, IsDirectFilter, idBeg, idEnd);
-        }
-
         private void SinchronizeServer(IContext ctx)
         {
             //_logger.Information(ctx, "Start FullText sinchronization " + DateTime.Now);
@@ -238,113 +200,113 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.StartUpdate();
             try
             {
-                var toDelete = _systemDb.FullTextIndexToDeletePrepare(ctx);
-                if (toDelete.Any())
-                {
-                    foreach (var itm in toDelete)
-                    {
-                        try
-                        {
-                            worker.DeleteItem(itm);
-                            processedIds.Add(itm.Id);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.ParentObjectId} ");
-                        }
-                    }
-                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
-                    processedIds.Clear();
-                }
+                //var toDelete = _systemDb.FullTextIndexToDeletePrepare(ctx);
+                //if (toDelete.Any())
+                //{
+                //    foreach (var itm in toDelete)
+                //    {
+                //        try
+                //        {
+                //            worker.DeleteItem(itm);
+                //            processedIds.Add(itm.Id);
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.ParentObjectId} ");
+                //        }
+                //    }
+                //    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
+                //    processedIds.Clear();
+                //}
 
-                var toUpdateNonDocuments = _systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
-                if (toUpdateNonDocuments.Any())
-                {
-                    foreach (var itm in toUpdateNonDocuments)
-                    {
-                        try
-                        {
-                            if (itm.ObjectText == null)
-                                _logger.Warning(ctx, $"NonDocument {itm.ObjectType} id={itm.Id} has NULL text");
-                            switch (itm.OperationType)
-                            {
-                                case EnumOperationType.AddNew:
-                                    worker.AddNewItem(itm);
-                                    break;
-                                case EnumOperationType.Update:
-                                    worker.UpdateItem(itm);
-                                    break;
-                            }
-                            processedIds.Add(itm.Id);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.ParentObjectId} ");
-                        }
-                    }
-                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
-                    processedIds.Clear();
-                }
+                //var toUpdateNonDocuments = _systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
+                //if (toUpdateNonDocuments.Any())
+                //{
+                //    foreach (var itm in toUpdateNonDocuments)
+                //    {
+                //        try
+                //        {
+                //            if (itm.ObjectText == null)
+                //                _logger.Warning(ctx, $"NonDocument {itm.ObjectType} id={itm.Id} has NULL text");
+                //            switch (itm.OperationType)
+                //            {
+                //                case EnumOperationType.AddNew:
+                //                    worker.AddNewItem(itm);
+                //                    break;
+                //                case EnumOperationType.Update:
+                //                    worker.UpdateItem(itm);
+                //                    break;
+                //            }
+                //            processedIds.Add(itm.Id);
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.ParentObjectId} ");
+                //        }
+                //    }
+                //    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
+                //    processedIds.Clear();
+                //}
 
-                var objToProcess = new[]
-                {
-                    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
-                    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles, EnumObjects.DocumentTags
-                };
+                //var objToProcess = new[]
+                //{
+                //    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
+                //    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles, EnumObjects.DocumentTags
+                //};
 
-                var maxId = _systemDb.GetCurrentMaxCasheId(ctx);
+                //var maxId = _systemDb.GetCurrentMaxCasheId(ctx);
 
-                foreach (var objType in objToProcess)
-                {
-                    var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
-                    //_logger.Information(ctx, $"To update Type {objType} Count {toUpdate.Count()} ");
-                    while (toUpdate.Any())
-                    {
-                        foreach (var itm in toUpdate)
-                        {
-                            try
-                            {
-                                switch (itm.OperationType)
-                                {
-                                    case EnumOperationType.AddNew:
-                                        worker.AddNewItem(itm);
-                                        break;
-                                    case EnumOperationType.Update:
-                                        worker.UpdateItem(itm);
-                                        break;
-                                }
-                                processedIds.Add(itm.Id);
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.ParentObjectId} ");
-                            }
-                        }
-                        _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
-                        processedIds.Clear();
-                        toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
-                    }
-                }
+                //foreach (var objType in objToProcess)
+                //{
+                //    var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
+                //    //_logger.Information(ctx, $"To update Type {objType} Count {toUpdate.Count()} ");
+                //    while (toUpdate.Any())
+                //    {
+                //        foreach (var itm in toUpdate)
+                //        {
+                //            try
+                //            {
+                //                switch (itm.OperationType)
+                //                {
+                //                    case EnumOperationType.AddNew:
+                //                        worker.AddNewItem(itm);
+                //                        break;
+                //                    case EnumOperationType.Update:
+                //                        worker.UpdateItem(itm);
+                //                        break;
+                //                }
+                //                processedIds.Add(itm.Id);
+                //            }
+                //            catch (Exception ex)
+                //            {
+                //                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.ParentObjectId} ");
+                //            }
+                //        }
+                //        _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
+                //        processedIds.Clear();
+                //        toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
+                //    }
+                //}
 
-                processedIds.Clear();
-                var updateFullDoc = _systemDb.FullTextIndexOneDocumentReindexDbPrepare(ctx, maxId);
-                foreach (var itm in updateFullDoc)
-                {
-                    try
-                    {
-                        worker.UpdateItem(itm);
+                //processedIds.Clear();
+                //var updateFullDoc = _systemDb.FullTextIndexOneDocumentReindexDbPrepare(ctx, maxId);
+                //foreach (var itm in updateFullDoc)
+                //{
+                //    try
+                //    {
+                //        worker.UpdateItem(itm);
 
-                        processedIds.Add(itm.Id);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.ParentObjectId} ");
-                    }
-                }
-                if (processedIds.Any())
-                {
-                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds.Distinct());
-                }
+                //        processedIds.Add(itm.Id);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.ParentObjectId} ");
+                //    }
+                //}
+                //if (processedIds.Any())
+                //{
+                //    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds.Distinct());
+                //}
 
             }
             catch (Exception ex)

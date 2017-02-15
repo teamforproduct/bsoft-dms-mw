@@ -30,6 +30,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_OBJECT_ID = "ObjectId";
         private const string FIELD_BODY = "postBody";
         private const string FIELD_CLIENT_ID = "ClientId";
+        private const string FIELD_MODULE_ID = "ModuleId";
+        private const string FIELD_FEATURE_ID = "FeatureId";
         private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
         IndexWriter _writer;
 
@@ -87,6 +89,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var objIdFld = new NumericField(FIELD_OBJECT_ID, Field.Store.YES, true);
             objIdFld.SetIntValue(item.ObjectId);
             doc.Add(objIdFld);
+
+
+            var moduleId = new NumericField(FIELD_MODULE_ID, Field.Store.YES, true);
+            moduleId.SetIntValue(item.ModuleId);
+            doc.Add(moduleId);
+
+            var featureId = new NumericField(FIELD_FEATURE_ID, Field.Store.YES, true);
+            featureId.SetIntValue(item.FeatureId);
+            doc.Add(featureId);
 
             doc.Add(new Field(FIELD_BODY, item.ObjectText??"", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));

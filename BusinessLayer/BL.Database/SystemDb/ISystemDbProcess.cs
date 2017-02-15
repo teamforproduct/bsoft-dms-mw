@@ -108,21 +108,6 @@ namespace BL.Database.SystemDb
 
         IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments);
 
-        #region Full text search
-        IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd);
-        int GetEntityNumbers(IContext ctx, EnumObjects objType);
-        int GetCurrentMaxCasheId(IContext ctx);
-        IEnumerable<FullTextIndexItem> FullTextIndexOneDocumentReindexDbPrepare(IContext ctx, int selectBis);
-        IEnumerable<FullTextIndexItem> FullTextIndexDocumentsReindexDbPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int rowOffset);
-        IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsReindexDbPrepare(IContext ctx);
-        IEnumerable<FullTextIndexItem> FullTextIndexDocumentsPrepare(IContext ctx, EnumObjects objType, int rowToSelect, int selectBis);
-        IEnumerable<FullTextIndexItem> FullTextIndexNonDocumentsPrepare(IContext ctx);
-        IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx);
-        void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds, bool deleteSimilarObject = false);
-        void FullTextIndexDeleteCash(IContext ctx, int deleteBis);
-
-        #endregion
-
         int AddSystemDate(IContext ctx, DateTime date);
         DateTime GetSystemDate(IContext ctx);
 

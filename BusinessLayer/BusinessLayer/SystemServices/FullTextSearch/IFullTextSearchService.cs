@@ -2,7 +2,6 @@
 using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Model.FullTextSearch;
-using BL.Model.Enums;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -11,8 +10,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void Dispose();
         void ReindexDatabase(IContext ctx);
         IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter);
-
-        IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects obj, bool isDeepUpdate, bool IsDirectFilter, int idBeg, int idEnd);
 
     }
 }
