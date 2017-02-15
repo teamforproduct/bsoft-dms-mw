@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Users;
@@ -16,7 +17,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
@@ -82,6 +82,41 @@ namespace DMS_WebAPI.ControllersV3.User
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
+        }
+
+        /// <summary>
+        /// Корректирует реквизиты сотрудника
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Info)]
+        public IHttpActionResult Put([FromBody]ModifyAgentUser model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+
+            var employee = tmpService.GetDictionaryAgentEmployee(ctx, ctx.CurrentAgentId);
+
+            employee.ImageId = model.ImageId;
+            employee.LanguageId = model.LanguageId;
+
+            employee.Name = model.Name;
+            employee.FirstName = model.FirstName;
+            employee.MiddleName = model.MiddleName;
+            employee.LastName = model.LastName;
+            employee.TaxCode = model.TaxCode;
+            employee.IsMale = model.IsMale;
+            employee.BirthDate = model.BirthDate;
+
+            webSeevice.UpdateUserEmployee(ctx, employee);
+
+            contexts.UpdateLanguageId(employee.Id, model.LanguageId);
+
+            return Get();
         }
 
         /// <summary>
