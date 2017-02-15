@@ -162,6 +162,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<TreeItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter);
+        List<int> GetChildPositions(IContext context, int positionId);
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
 
         void SetPositionOrder(IContext context, ModifyPositionOrder model);

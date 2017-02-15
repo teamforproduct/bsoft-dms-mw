@@ -818,6 +818,62 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
+        /// <summary>
+        /// Возвращает Id должнсотей, которые ниже по Order и в ниже стоящих отделах
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="positionId"></param>
+        /// <returns></returns>
+        public List<int> GetChildPositions(IContext context, int positionId)
+        {
+            var position = _dictDb.GetInternalPositions(context, new FilterDictionaryPosition { IDs = new List<int> { positionId } }).FirstOrDefault();
+
+            var depernment = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { position.DepartmentId } }).FirstOrDefault();
+
+            // должности в своем отделе
+            var positionsInDepartment = _dictDb.GetInternalPositions(context, new FilterDictionaryPosition
+            {
+                DepartmentIDs = new List<int> { depernment.Id },
+            });
+
+
+            IEnumerable<TreeItem> positions = null;
+            IEnumerable<TreeItem> departments = null;
+            List<int> res = new List<int>();
+
+            // должности
+            positions = _dictDb.GetPositionsShortList(context, new FilterDictionaryPosition
+            {
+                IsActive = true
+            });
+
+
+            // отделы
+            departments = _dictDb.GetDepartmentsShortList(context, new FilterDictionaryDepartment()
+            {
+                IsActive = true,
+                ExcludeDepartmentsWithoutPositions = true,
+            });
+
+            List<TreeItem> flatList = new List<TreeItem>();
+
+            if (positions != null) flatList.AddRange(positions);
+            if (departments != null) flatList.AddRange(departments);
+
+            // отстаиваю дерево начиная с моего отдела
+            var fTree = new FilterTree() { StartWithTreeId = string.Concat(position.DepartmentId.ToString(), "_", ((int)EnumObjects.DictionaryDepartments).ToString()) };
+
+            var list = Tree.GetList(Tree.Get(flatList, fTree));
+
+            res = list.Where(x => x.ObjectId == (int)EnumObjects.DictionaryPositions)
+                .Select(x => x.Id).ToList();
+
+            // исключаю вышестоящие должности моего отдела
+            res.RemoveAll(x => positionsInDepartment.Where(y => y.Order <= position.Order).Select(y => y.Id).ToList().Contains(x));
+
+            return res;
+        }
+
         public void SetPositionOrder(IContext context, ModifyPositionOrder model)
         {
             var position = _dictDb.GetPosition(context, model.PositionId);
