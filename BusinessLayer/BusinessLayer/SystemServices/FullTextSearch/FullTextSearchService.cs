@@ -200,115 +200,63 @@ namespace BL.Logic.SystemServices.FullTextSearch
             try
             {
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
+                var cashList = _systemDb.FullTextIndexToUpdate(ctx);
 
+                foreach (var item in cashList)
+                {
+                    try
+                    {
+                        switch (item.OperationType)
+                        {
+                            case EnumOperationType.AddNew:
+                                var toAdd = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false, null, currCashId);
+                                foreach (var itmAdd in toAdd)
+                                {
+                                    worker.AddNewItem(itmAdd);
+                                }
 
-                //var toDelete = _systemDb.FullTextIndexToDeletePrepare(ctx);
-                //if (toDelete.Any())
-                //{
-                //    foreach (var itm in toDelete)
-                //    {
-                //        try
-                //        {
-                //            worker.DeleteItem(itm);
-                //            processedIds.Add(itm.Id);
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            _logger.Error(ctx,ex, $"FullTextService cannot process doc Id={itm.ParentObjectId} ");
-                //        }
-                //    }
-                //    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds, true);
-                //    processedIds.Clear();
-                //}
+                                break;
+                            case EnumOperationType.Update:
+                                var toUpd = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false, null, currCashId);
+                                foreach (var itmUpd in toUpd)
+                                {
+                                    worker.UpdateItem(itmUpd);
+                                }
+                                break;
+                            case EnumOperationType.Delete:
+                                var toDelete = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false,null, currCashId);
+                                foreach (var itmDel in toDelete)
+                                {
+                                    worker.DeleteItem(itmDel);
+                                }
+                                break;
+                            case EnumOperationType.UpdateFull:
+                                var toUpdFull = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, true, false, null, currCashId);
+                                foreach (var itmUpd in toUpdFull)
+                                {
+                                    worker.UpdateItem(itmUpd);
+                                }
+                                break;
+                            case EnumOperationType.DeleteFull:
+                                var toDeleteFull = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, true, false, null, currCashId);
+                                foreach (var itmDel in toDeleteFull)
+                                {
+                                    worker.DeleteItem(itmDel);
+                                }
+                                break;
+                        }
+                        processedIds.Add(item.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ctx, ex, $"FullTextService cannot process item. CashID={item.Id} Type={item.ParentObjectId} ObjectId={item.ObjectId}");
+                    }
+                }
 
-                //var toUpdateNonDocuments = _systemDb.FullTextIndexNonDocumentsPrepare(ctx) as List<FullTextIndexItem>;
-                //if (toUpdateNonDocuments.Any())
-                //{
-                //    foreach (var itm in toUpdateNonDocuments)
-                //    {
-                //        try
-                //        {
-                //            if (itm.ObjectText == null)
-                //                _logger.Warning(ctx, $"NonDocument {itm.ObjectType} id={itm.Id} has NULL text");
-                //            switch (itm.OperationType)
-                //            {
-                //                case EnumOperationType.AddNew:
-                //                    worker.AddNewItem(itm);
-                //                    break;
-                //                case EnumOperationType.Update:
-                //                    worker.UpdateItem(itm);
-                //                    break;
-                //            }
-                //            processedIds.Add(itm.Id);
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            _logger.Error(ctx,ex, $"FullTextService cannot process DOC Id={itm.ParentObjectId} ");
-                //        }
-                //    }
-                //    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
-                //    processedIds.Clear();
-                //}
-
-                //var objToProcess = new[]
-                //{
-                //    EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentSendLists,
-                //    EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles, EnumObjects.DocumentTags
-                //};
-
-                //var maxId = _systemDb.GetCurrentMaxCasheId(ctx);
-
-                //foreach (var objType in objToProcess)
-                //{
-                //    var toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
-                //    //_logger.Information(ctx, $"To update Type {objType} Count {toUpdate.Count()} ");
-                //    while (toUpdate.Any())
-                //    {
-                //        foreach (var itm in toUpdate)
-                //        {
-                //            try
-                //            {
-                //                switch (itm.OperationType)
-                //                {
-                //                    case EnumOperationType.AddNew:
-                //                        worker.AddNewItem(itm);
-                //                        break;
-                //                    case EnumOperationType.Update:
-                //                        worker.UpdateItem(itm);
-                //                        break;
-                //                }
-                //                processedIds.Add(itm.Id);
-                //            }
-                //            catch (Exception ex)
-                //            {
-                //                _logger.Error(ctx, ex, $"FullTextService cannot process Doc Id={itm.ParentObjectId} ");
-                //            }
-                //        }
-                //        _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds);
-                //        processedIds.Clear();
-                //        toUpdate = _systemDb.FullTextIndexDocumentsPrepare(ctx, objType, _MAX_ROW_PROCESS, maxId);
-                //    }
-                //}
-
-                //processedIds.Clear();
-                //var updateFullDoc = _systemDb.FullTextIndexOneDocumentReindexDbPrepare(ctx, maxId);
-                //foreach (var itm in updateFullDoc)
-                //{
-                //    try
-                //    {
-                //        worker.UpdateItem(itm);
-
-                //        processedIds.Add(itm.Id);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        _logger.Error(ctx, ex, $"FullTextService cannot process DocId={itm.ParentObjectId} ");
-                //    }
-                //}
-                //if (processedIds.Any())
-                //{
-                //    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds.Distinct());
-                //}
+                if (processedIds.Any())
+                {
+                    _systemDb.FullTextIndexDeleteProcessed(ctx, processedIds.Distinct());
+                }
 
             }
             catch (Exception ex)
@@ -346,7 +294,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
                 _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
             }
-            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
+            tmr.Change(md.TimeToUpdate*60000, Timeout.Infinite); //start new iteration of the timer
         }
 
         public override void Dispose()

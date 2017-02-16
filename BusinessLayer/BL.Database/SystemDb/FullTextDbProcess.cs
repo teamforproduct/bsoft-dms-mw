@@ -24,7 +24,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx)
+        public IEnumerable<FullTextIndexItem> FullTextIndexToUpdate(IContext ctx)
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -1505,7 +1505,21 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.FullTextIndexCashSet.RemoveRange(dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
+                if (processedIds.Count() < 50)
+                {
+                    dbContext.FullTextIndexCashSet.RemoveRange(
+                        dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
+                }
+                else
+                {
+                    while (processedIds.Any())
+                    {
+                        var currIds = processedIds.Take(50).ToList();
+                        dbContext.FullTextIndexCashSet.RemoveRange(dbContext.FullTextIndexCashSet.Where(x => currIds.Contains(x.Id)));
+                        processedIds = processedIds.Except(currIds);
+
+                    }
+                }
                 dbContext.SaveChanges();
                 transaction.Complete();
             }

@@ -9,7 +9,7 @@ namespace BL.Database.SystemDb
     {
         List<EnumObjects> ObjectToReindex();
         int GetCurrentMaxCasheId(IContext ctx);
-        IEnumerable<FullTextIndexItem> FullTextIndexToDeletePrepare(IContext ctx);
+        IEnumerable<FullTextIndexItem> FullTextIndexToUpdate(IContext ctx);
         List<int> GetItemsToUpdateCount(IContext ctx, EnumObjects objectType, bool isDeepUpdate);
         IEnumerable<FullTextIndexItem> GetItemsToReindex(IContext ctx, EnumObjects objectType,int? itemCount, int? offset);
         IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects objectType, bool isDeepUpdate, bool IsDirectFilter, int? idBeg, int? idEnd);
