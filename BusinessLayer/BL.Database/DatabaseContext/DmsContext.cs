@@ -105,6 +105,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryAgentAccounts> DictionaryAgentAccountsSet { get; set; }
         public virtual DbSet<DictionaryAgentAddresses> DictionaryAgentAddressesSet { get; set; }
         public virtual DbSet<DictionaryAgentContacts> DictionaryAgentContactsSet { get; set; }
+        public virtual DbSet<DictionaryAgentFavorites> DictionaryAgentFavoritesSet { get; set; }
+        
 
         public virtual DbSet<DictionaryResidentTypes> DictionaryResidentTypesSet { get; set; }
         public virtual DbSet<DictionaryContactTypes> DictionaryContactTypesSet { get; set; }

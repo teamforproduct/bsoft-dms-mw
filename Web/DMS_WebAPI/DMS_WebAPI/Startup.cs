@@ -42,7 +42,7 @@ namespace DMS_WebAPI
 
 //#if !DEBUG
             var userContexts = DmsResolver.Current.Get<UserContexts>();
-            userContexts.LoadFromBase();
+            userContexts.Load();
 //#endif
 
 

@@ -559,7 +559,7 @@ namespace DMS_WebAPI.Utilities
             storeInfo.LastUsage = DateTime.UtcNow;
         }
 
-        public void LoadFromBase()
+        public void Load()
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var list = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext());
