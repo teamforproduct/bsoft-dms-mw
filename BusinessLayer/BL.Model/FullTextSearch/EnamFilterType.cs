@@ -34,6 +34,8 @@
 
         TagId = 410,
         AgentId = 310,
+        EmployeeId = 320,
+        PeopleId = 330,
         DepartmentId = 510,
         RoleId = 610,
         PositionExecutorAgentId = 620,
