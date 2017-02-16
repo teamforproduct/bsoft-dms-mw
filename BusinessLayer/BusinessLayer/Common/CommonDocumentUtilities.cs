@@ -1189,5 +1189,20 @@ namespace BL.Logic.Common
             return res;
         }
 
+        public static void ThrowError (IContext context, Exception ex, InternalDocumentSendList model)
+        {
+            if (ex != null)
+            {
+                if (model.Stage.HasValue)
+                {
+                    model.AddDescription = (ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message;
+                    var _operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+                    _operationDb.ModifyDocumentSendListAddDescription(context, model);
+                }
+                throw ex;
+            }
+        }
+
+
     }
 }

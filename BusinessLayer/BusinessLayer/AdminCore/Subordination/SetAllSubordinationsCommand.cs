@@ -10,12 +10,12 @@ namespace BL.Logic.AdminCore
 {
     public class SetAllSubordinationsCommand : BaseSubordinationCommand
     {
-        private SetAdminSubordinations Model
+        private SetSubordinations Model
         {
             get
             {
-                if (!(_param is SetAdminSubordinations)) throw new WrongParameterTypeError();
-                return (SetAdminSubordinations)_param;
+                if (!(_param is SetSubordinations)) throw new WrongParameterTypeError();
+                return (SetSubordinations)_param;
             }
         }
 

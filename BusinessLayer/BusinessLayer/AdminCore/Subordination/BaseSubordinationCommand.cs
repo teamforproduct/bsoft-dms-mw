@@ -162,42 +162,30 @@ namespace BL.Logic.AdminCore
             // Удаляю существующую предустановку
             _adminDb.DeleteSubordinations(_context, new FilterAdminSubordination { PositionIDs = new List<int> { positionId } });
 
-            var position = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { positionId } }).FirstOrDefault();
+            //var position = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { positionId } }).FirstOrDefault();
 
 
-            var depernment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { position.DepartmentId } }).FirstOrDefault();
+            //var depernment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { position.DepartmentId } }).FirstOrDefault();
 
-            // должности в своем отделе
-            var positionsInDepartment = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
-            {
-                DepartmentIDs = new List<int> { depernment.Id },
-            });
+            //// должности в своем отделе
+            //var positionsInDepartment = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
+            //{
+            //    DepartmentIDs = new List<int> { depernment.Id },
+            //});
 
             // должности в вышестоящем отделе
-            var parentDepernment = new InternalDictionaryDepartment();
-            var positionsInParentDepartment = new List<InternalDictionaryPosition>();
+            //var parentDepernment = new InternalDictionaryDepartment();
+            //var positionsInParentDepartment = new List<InternalDictionaryPosition>();
 
-            if (depernment.ParentId.HasValue)
-            {
-                parentDepernment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { depernment.ParentId ?? -1 } }).FirstOrDefault();
+            //if (depernment.ParentId.HasValue)
+            //{
+            //    parentDepernment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { depernment.ParentId ?? -1 } }).FirstOrDefault();
 
-                positionsInParentDepartment = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
-                {
-                    DepartmentIDs = new List<int> { parentDepernment.Id },
-                }).ToList();
-            }
-
-            var childDepartments = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { ParentIDs = new List<int> { depernment.Id } });
-
-            IEnumerable<InternalDictionaryPosition> positionsInChildDepartments = new List<InternalDictionaryPosition>();
-
-            // должности в нижестоящих отделах
-            if (childDepartments.Count() > 0)
-                positionsInChildDepartments = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
-                {
-                    DepartmentIDs = childDepartments.Select(x => x.Id).ToList(),
-                });
-
+            //    positionsInParentDepartment = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition
+            //    {
+            //        DepartmentIDs = new List<int> { parentDepernment.Id },
+            //    }).ToList();
+            //}
 
             var subordinations = new List<InternalAdminSubordination>();
 
@@ -205,29 +193,39 @@ namespace BL.Logic.AdminCore
             {
                 // разрешаю выполнять рыссылку ОТ указанной должности для исполнения
 
-                // ниже по списку
-                var positions = positionsInDepartment.Where(x => x.Order > position.Order).Select(x => x.Id).ToList();
 
-                // в нижестоящих отделах, руководителям
-                positions.AddRange(positionsInChildDepartments.Where(x => x.Order == 1).Select(x => x.Id).ToList());
+                var childPositions = _dictService.GetChildPositions(_context, positionId);
 
-                subordinations.AddRange(positions.Select(x => new InternalAdminSubordination()
+                subordinations.AddRange(childPositions.Select(x => new InternalAdminSubordination()
                 {
                     SourcePositionId = positionId,
                     TargetPositionId = x,
                     SubordinationTypeId = (int)EnumSubordinationTypes.Execution
                 }));
 
-                // Руководитель вышестоящего отдела НА указанную должность
-                if (positionsInParentDepartment.Count > 0)
-                {
-                    subordinations.Add(new InternalAdminSubordination()
-                    {
-                        SourcePositionId = positionsInParentDepartment.Where(x => x.Order == 1).Select(x => x.Id).FirstOrDefault(),
-                        TargetPositionId = positionId,
-                        SubordinationTypeId = (int)EnumSubordinationTypes.Execution
-                    });
-                }
+                //// ниже по списку
+                //var positions = positionsInDepartment.Where(x => x.Order > position.Order).Select(x => x.Id).ToList();
+
+                //// в нижестоящих отделах, руководителям
+                //positions.AddRange(positionsInChildDepartments.Where(x => x.Order == 1).Select(x => x.Id).ToList());
+
+                //subordinations.AddRange(positions.Select(x => new InternalAdminSubordination()
+                //{
+                //    SourcePositionId = positionId,
+                //    TargetPositionId = x,
+                //    SubordinationTypeId = (int)EnumSubordinationTypes.Execution
+                //}));
+
+                //// Руководитель вышестоящего отдела НА указанную должность
+                //if (positionsInParentDepartment.Count > 0)
+                //{
+                //    subordinations.Add(new InternalAdminSubordination()
+                //    {
+                //        SourcePositionId = positionsInParentDepartment.Where(x => x.Order == 1).Select(x => x.Id).FirstOrDefault(),
+                //        TargetPositionId = positionId,
+                //        SubordinationTypeId = (int)EnumSubordinationTypes.Execution
+                //    });
+                //}
             }
 
             if (IsInforming)
@@ -242,49 +240,6 @@ namespace BL.Logic.AdminCore
                     TargetPositionId = x.Id,
                     SubordinationTypeId = (int)EnumSubordinationTypes.Informing
                 }));
-
-                // разрешаю выполнять рыссылку ОТ указанной должности для сведения
-                //var positions = positionsInDepartment.Select(x => x.Id).ToList();
-
-                //subordinations.AddRange(positions.Select(x => new InternalAdminSubordination()
-                //{
-                //    SourcePositionId = positionId,
-                //    TargetPositionId = x,
-                //    SubordinationTypeId = (int)EnumSubordinationTypes.Informing
-                //}));
-
-                //// если указанная должность руководитель отдела
-                ////if (position.Order == 1)
-                ////{
-                //    // для сведения дочерним отделам
-                //    subordinations.AddRange(positionsInChildDepartments.Select(x => new InternalAdminSubordination()
-                //    {
-                //        SourcePositionId = positionId,
-                //        TargetPositionId = x.Id,
-                //        SubordinationTypeId = (int)EnumSubordinationTypes.Informing
-                //    }));
-                ////}
-
-
-                //if (positionsInParentDepartment.Count > 0)
-                //{
-                //    // Руководителю вышестоящего отдела ОТ указанной должности
-                //    subordinations.Add(new InternalAdminSubordination()
-                //    {
-                //        SourcePositionId = positionId,
-                //        TargetPositionId = positionsInParentDepartment.Where(x => x.Order == 1).Select(x => x.Id).FirstOrDefault(),
-                //        SubordinationTypeId = (int)EnumSubordinationTypes.Informing
-                //    });
-
-                //    // Руководитель вышестоящего отдела НА указанную должность 
-                //    subordinations.Add(new InternalAdminSubordination()
-                //    {
-                //        SourcePositionId = positionsInParentDepartment.Where(x => x.Order == 1).Select(x => x.Id).FirstOrDefault(),
-                //        TargetPositionId = positionId,
-                //        SubordinationTypeId = (int)EnumSubordinationTypes.Informing
-                //    });
-                //}
-
 
             }
 

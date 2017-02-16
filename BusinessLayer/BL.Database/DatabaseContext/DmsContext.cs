@@ -105,6 +105,8 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DictionaryAgentAccounts> DictionaryAgentAccountsSet { get; set; }
         public virtual DbSet<DictionaryAgentAddresses> DictionaryAgentAddressesSet { get; set; }
         public virtual DbSet<DictionaryAgentContacts> DictionaryAgentContactsSet { get; set; }
+        public virtual DbSet<DictionaryAgentFavorites> DictionaryAgentFavoritesSet { get; set; }
+        
 
         public virtual DbSet<DictionaryResidentTypes> DictionaryResidentTypesSet { get; set; }
         public virtual DbSet<DictionaryContactTypes> DictionaryContactTypesSet { get; set; }
@@ -186,6 +188,7 @@ namespace BL.Database.DatabaseContext
 
         public virtual DbSet<FullTextIndexCash> FullTextIndexCashSet { get; set; }
         public virtual DbSet<SystemLogs> LogSet { get; set; }
+        public virtual DbSet<SystemSearchQueryLogs> SystemSearchQueryLogsSet { get; set; }
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
 
         public virtual DbSet<EncryptionCertificates> EncryptionCertificatesSet { get; set; }

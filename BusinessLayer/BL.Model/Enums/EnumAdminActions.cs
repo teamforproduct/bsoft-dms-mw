@@ -108,33 +108,60 @@
         #region [+] RegistrationJournalPositions ...
 
         /// <summary>
-        /// Совокупность действий по управлению субординацией
+        /// Совокупность действий по управлению доступом к журналам
         /// </summary>
-        SetRegistrationJournalPosition = 706001,
+        SetJournalAccess = 706000,
 
         /// <summary>
-        /// Копирование рассылки
+        /// Копирование доступа от журнала к журналу
         /// </summary>
-        DuplicateRegistrationJournalPositions = 706002,
+        DuplicateJournalAccess_Journal = 706001,
         /// <summary>
-        /// Совокупность действий по управлению субординацией для всего подразделения
+        /// Копирование доступа от должнсости к должности
         /// </summary>
-        SetRegistrationJournalPositionByDepartment = 706003,
+        DuplicateJournalAccess_Position = 706002,
+
 
         /// <summary>
-        /// Совокупность действий по управлению субординацией для всей компании
+        /// Управлению доступом к журналам
         /// </summary>
-        SetRegistrationJournalPositionByCompany = 706004,
+        SetJournalAccessByDepartment_Journal = 706003,
 
         /// <summary>
-        /// Совокупность действий по управлению субординацией для всей компании
+        /// Управлению доступом к журналам
         /// </summary>
-        SetDefaultRegistrationJournalPosition = 706005,
+        SetJournalAccessByDepartment_Position = 706004,
 
         /// <summary>
-        /// Разрешить все
+        /// Управлению доступом к журналам
         /// </summary>
-        SetAllRegistrationJournalPosition = 706006,
+        SetJournalAccessByCompany_Journal = 706005,
+        /// <summary>
+        /// Управлению доступом к журналам
+        /// </summary>
+        SetJournalAccessByCompany_Position = 706006,
+
+        /// <summary>
+        /// Управлению доступом к журналам
+        /// </summary>
+        SetJournalAccessDefault_Journal = 706007,
+
+        /// <summary>
+        /// Управлению доступом к журналам
+        /// </summary>
+        SetJournalAccessDefault_Position = 706008,
+
+
+        /// <summary>
+        /// Управлению доступом к журналам
+        /// </summary>
+        SetJournalAccessAll_Journal = 706009,
+
+        /// <summary>
+        /// Управлению доступом к журналам
+        /// </summary>
+        SetJournalAccessAll_Position = 706010,
+
         #endregion
 
         #region [+] DepartmentAdmin ...

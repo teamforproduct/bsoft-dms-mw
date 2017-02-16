@@ -9,7 +9,7 @@ namespace BL.CrossCutting.Context
 
     public class FrontSystemSession
     {
-        public string Token { get; set; }
+        //public string Token { get; set; }
 
         public DateTime? LastUsage { get { return _LastUsage; } set { _LastUsage = value.ToUTC(); } }
         private DateTime? _LastUsage;
@@ -23,6 +23,10 @@ namespace BL.CrossCutting.Context
         /// Описание ошибки
         /// </summary>
         public string LogException { get; set; }
+        /// <summary>
+        /// Тип ДМС ошибки
+        /// </summary>
+        public string TypeException { get; set; }
         /// <summary>
         /// Объект к логу
         /// </summary>

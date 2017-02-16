@@ -62,5 +62,10 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public int? NewEventsCount { get; set; }
 
+        /// <summary>
+        /// Отдел
+        /// </summary>
+        public string DepartmentName { get; set; }
+
     }
 }

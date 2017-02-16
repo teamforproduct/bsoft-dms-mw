@@ -1,10 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FilterModel;
-using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
+using BL.Model.Tree;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.SendRules)]
-        [ResponseType(typeof(List<FrontAdminSubordination>))]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.SendRules + "/Edit")]
-        [ResponseType(typeof(List<FrontAdminSubordination>))]
+        [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/Set")]
-        public IHttpActionResult Set([FromBody] SetAdminSubordination model)
+        public IHttpActionResult Set([FromBody] SetSubordination model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordination, model);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetByDepartment")]
-        public IHttpActionResult SetByDepartment([FromBody] SetAdminSubordinationByDepartment model)
+        public IHttpActionResult SetByDepartment([FromBody] SetSubordinationByDepartment model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByDepartment, model);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetByCompany")]
-        public IHttpActionResult SetByCompany([FromBody] SetAdminSubordinationByCompany model)
+        public IHttpActionResult SetByCompany([FromBody] SetSubordinationByCompany model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByCompany, model);
@@ -143,7 +143,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetAll")]
-        public IHttpActionResult SetAll([FromBody] SetAdminSubordinations model)
+        public IHttpActionResult SetAll([FromBody] SetSubordinations model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetAllSubordination, model);

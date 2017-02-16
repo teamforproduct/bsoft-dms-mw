@@ -156,6 +156,29 @@ namespace BL.Model.DictionaryCore.IncomingModel
     }
 
     /// <summary>
+    /// Для корректировки параметров из профиля
+    /// </summary>
+    public class ModifyAgentUser : AddAgentPeople
+    {
+        /// <summary>
+        /// ИД аватарки, если она была загружена
+        /// </summary>
+        public int? ImageId { get; set; }
+
+        /// <summary>
+        /// Данные файла
+        /// </summary>
+        [IgnoreDataMember]
+        public string PostedFileData { get; set; }
+
+        /// <summary>
+        /// Профиль пользователя. Язык интерфейса.
+        /// </summary>
+        [Required]
+        public int LanguageId { get; set; }
+    }
+
+    /// <summary>
     /// Контрагент - физическое лицо
     /// </summary>
     public class ModifyAgentPerson : AddAgentPerson
@@ -297,7 +320,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class ModifyDictionaryAgentUser: AddDictionaryAgentUser
+    public class ModifyDictionaryAgentUser : AddDictionaryAgentUser
     {
         /// <summary>
         /// ID

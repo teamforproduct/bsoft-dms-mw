@@ -98,6 +98,10 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> AccessPositionId { get; set; }
         /// <summary>
+        /// Массив ИД позиций, которые одновременно имеют доступ к документу
+        /// </summary>
+        public List<int> SimultaneousAccessPositionId { get; set; }
+        /// <summary>
         /// Массив ИД ответственного по документу
         /// </summary>
         public List<int> ExecutorPositionExecutorAgentId { get; set; }

@@ -1,27 +1,14 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.Tree
 {
     /// <summary>
     /// Элемент дерева (Node)
     /// </summary>
-    public class TreeItem : ITreeItem
+    public class TreeItem : DictionaryItem, ITreeItem
     {
-        /// <summary>
-        /// Id элемента, может быть не уникален.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Наименование элемента
-        /// </summary>
-        public string Name { get; set; }
-
         /// <summary>
         /// Текст для поиска
         /// </summary>
@@ -67,23 +54,15 @@ namespace BL.Model.Tree
         public bool? IsList { get; set; }
 
         /// <summary>
-        /// Признак активности элемента
-        /// </summary>
-        public bool? IsActive { get; set; }
-
-        /// <summary>
         /// Отмечен.
         /// </summary>
         public bool? IsChecked { get; set; }
 
-        /// <summary>
-        /// Описание элемента
-        /// </summary>
-        public string Description { get; set; }
+        
 
         /// <summary>
         /// Список потомков, который формирует универсальная процедура построения дерева.
         /// </summary>
-        public IEnumerable<ITreeItem> Childs { get; set; }
+        public IEnumerable<TreeItem> Childs { get; set; }
     }
 }

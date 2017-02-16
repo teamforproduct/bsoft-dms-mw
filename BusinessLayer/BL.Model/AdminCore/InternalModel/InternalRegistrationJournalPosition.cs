@@ -8,7 +8,7 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalRegistrationJournalPosition()
         { }
 
-        public InternalRegistrationJournalPosition(ModifyAdminRegistrationJournalPosition model)
+        public InternalRegistrationJournalPosition(SetJournalAccess model)
         {
             Id = model.Id;
             PositionId = model.PositionId;

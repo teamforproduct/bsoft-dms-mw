@@ -8,7 +8,7 @@ namespace BL.Model.AdminCore.InternalModel
         public InternalAdminSubordination()
         { }
 
-        public InternalAdminSubordination(SetAdminSubordination model)
+        public InternalAdminSubordination(SetSubordination model)
         {
             Id = model.Id;
             SourcePositionId = model.SourcePositionId;

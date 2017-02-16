@@ -207,7 +207,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Корректирует документ TODO Required!!!!!!!!!!!!!!!!!!
+        /// Корректирует документ
         /// </summary>
         /// <param name="model">Модель для обновления документа</param>
         /// <returns>Обновленный документ</returns>
@@ -219,7 +219,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocument, model);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
-            return Get(tmpItem);
+            return Get(model.Id);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный документ</returns>
         [Route(Features.Info + "/Register")]
         [HttpPut]
-        public IHttpActionResult RegisterDocument(RegisterDocument model)
+        public IHttpActionResult RegisterDocument([FromBody]RegisterDocument model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.RegisterDocument, model, model.CurrentPositionId);
@@ -282,7 +282,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info + "/GetNextRegisterDocumentNumber")]
         [HttpGet]
         [ResponseType(typeof(FrontRegistrationFullNumber))]
-        public IHttpActionResult GetNextRegisterDocumentNumber(RegisterDocument model)
+        public IHttpActionResult GetNextRegisterDocumentNumber([FromUri]RegisterDocument model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);

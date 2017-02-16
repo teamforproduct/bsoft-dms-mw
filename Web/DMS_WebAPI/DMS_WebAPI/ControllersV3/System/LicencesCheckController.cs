@@ -1,18 +1,12 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
-using BL.Model.Common;
-using System.Diagnostics;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.FrontModel;
+using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
+using System.Diagnostics;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
@@ -40,9 +34,9 @@ namespace DMS_WebAPI.ControllersV3.System
             var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
             var tmpItem = new FrontSystemLicencesInfo
             {
-                MessageLevelTypes = EnumMessageLevelTypes.Red,
-                MessageLevelTypesName = EnumMessageLevelTypes.Red.ToString(),
-                Message = "Ваша лицензия на V2 заканчивается. Пожалуйста, перейдите на V3", //TODO 
+                MessageLevelTypes = EnumMessageLevelTypes.Green,
+                MessageLevelTypesName = EnumMessageLevelTypes.Green.ToString(),
+                Message = "Успех, работаем на V3", //TODO 
             };
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

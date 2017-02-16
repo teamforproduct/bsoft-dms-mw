@@ -22,6 +22,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
         FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id);
+        int SetAgentUserLanguage(IContext context, string languageCode);
         void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
 
@@ -111,7 +112,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
 
-        IEnumerable<ListItemWithPath> GetDepartmentShortList(IContext context, FilterTree filter, UIPaging paging);
+        IEnumerable<ListItem> GetDepartmentsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryDepartment filter);
 
         string GetDepartmentPrefix(IContext context, int parentId);
         #endregion DictionaryDepartments
@@ -160,6 +161,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
 
+        IEnumerable<TreeItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter);
+        List<int> GetChildPositions(IContext context, int positionId);
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
 
         void SetPositionOrder(IContext context, ModifyPositionOrder model);
@@ -170,6 +173,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryPositionExecutors
         FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id);
         IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetUserPositionExecutors(IContext context, int positionId, FilterDictionaryPositionExecutor filter);
+        IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context);
+        int GetPositionPersonalAgent(IContext context, int positionId);
         IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutorsByAgent(IContext context, int agentId, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
@@ -188,7 +194,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging);
         IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FilterDictionaryJournalsTree filter);
         //IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null);
-        IEnumerable<ListItemWithPath> GetRegistrationJournalShortList(IContext context, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal, UIPaging paging);
+        IEnumerable<ITreeItem> GetRegistrationJournalsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         // Компании

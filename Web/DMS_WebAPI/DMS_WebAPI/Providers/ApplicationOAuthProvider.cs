@@ -108,11 +108,13 @@ namespace DMS_WebAPI.Providers
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
                     {
+                        HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
+
                         webService.AddUserFingerprint(new AddAspNetUserFingerprint
                         {
                             UserId = user.Id,
                             Fingerprint = fingerprint,
-                            Name = "Autosave_" + DateTime.UtcNow.ToString("HHmmss"),
+                            Name = bc.Browser + " " + bc.Platform + " " + DateTime.UtcNow.ToString("HHmmss"),
                             IsActive = true
                         });
                     }
@@ -170,9 +172,8 @@ namespace DMS_WebAPI.Providers
                 var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
                 agentId = agentUser?.AgentId;
             }
-            var logExpression = string.Empty;
-            var exceptionText = ExceptionHandling.GetExceptionText(ex, out logExpression);
 
+            var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;
             var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId : (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId );
 
             throw ex;
@@ -236,7 +237,7 @@ namespace DMS_WebAPI.Providers
                 userContexts.Set(token, server, client.Id);
 
                 // Получаю информацию о браузере
-                string message = GetBrowswerInfo(context, user.IsFingerprintEnabled);
+                string message = GetBrowswerInfo(context);
 
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1: true);
@@ -251,7 +252,7 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
-        private static string GetBrowswerInfo(OAuthTokenEndpointResponseContext context = null, bool isIncludeFingerPrintInfo = false)
+        private static string GetBrowswerInfo(OAuthTokenEndpointResponseContext context = null, bool isIncludeFingerPrintInfo = true)
         {
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
             var userAgent = HttpContext.Current.Request.UserAgent;
@@ -270,6 +271,8 @@ namespace DMS_WebAPI.Providers
                     var fp = fps.First();
                     message = $"{message};{fp.Fingerprint};{fp.Name}";
                 }
+                else
+                    message = $"{message};{fingerprint.Substring(1, 8) + "..."};Not Saved";
             }
 
             //{HttpContext.Current.Request.UserHostAddress}

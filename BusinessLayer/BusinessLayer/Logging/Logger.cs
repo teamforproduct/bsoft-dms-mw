@@ -12,6 +12,7 @@ using BL.CrossCutting.Context;
 using BL.Model.DictionaryCore.FrontModel;
 using LinqKit;
 using BL.Database.Common;
+using BL.Logic.Common;
 
 namespace BL.Logic.Logging
 {
@@ -135,11 +136,13 @@ namespace BL.Logic.Logging
                         ClientId = x.ClientId ?? 0,
                         IsSuccess = x.LogLevel == 0,
                     }).ToList();
+                res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
+                    .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
                 res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
                     .ForEach(r =>
                     {
                         r.x.CreateDate = r.y.CreateDate;
-                        r.x.Token = r.y.Token;
+                        //r.x.Token = r.y.Token;
                         r.x.LastUsage = r.y.LastUsage;
                         r.x.UserId = r.y.UserId;
                         r.x.IsActive = true;
@@ -162,6 +165,12 @@ namespace BL.Logic.Logging
                 item.ObjectLog = null;
                 item.LogTrace = null;
             }
+            return res;
+        }
+
+        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        {
+            var res = _systemDb.GetSystemSearchQueryLogs(context, filter, paging);
             return res;
         }
 
@@ -196,7 +205,15 @@ namespace BL.Logic.Logging
             return null;
         }
 
-        private int? AddLogToDb(IContext ctx, LogInfo info)
+        public int? AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model)
+        {
+            model.ClientId = ctx.CurrentClientId;
+            CommonDocumentUtilities.SetLastChange(ctx, model);
+            var id = _systemDb.AddSearchQueryLog(ctx, model);
+            return id;
+        }
+
+        private int? AddLogToDb(IContext ctx, InternalLog info)
         {
             int loggerLevel = 0;//TODO Get it from settings
             if ((int)info.LogType >= loggerLevel)
@@ -207,6 +224,7 @@ namespace BL.Logic.Logging
                     info.Date1 = info.Date;
                 }
                 info.AgentId = info.AgentId ?? ctx.CurrentAgentId;
+                info.ClientId = ctx.CurrentClientId;
                 var id = _systemDb.AddLog(ctx, info);
                 return id;
             }
@@ -215,7 +233,7 @@ namespace BL.Logic.Logging
 
         public int? Trace(IContext ctx, string message, params object[] args)
         {
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Trace,
                 Message = message,
@@ -227,7 +245,7 @@ namespace BL.Logic.Logging
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Information,
                 Message = message,
@@ -242,7 +260,7 @@ namespace BL.Logic.Logging
 
         public int? Warning(IContext ctx, string message, params object[] args)
         {
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Warning,
                 Message = message,
@@ -252,7 +270,7 @@ namespace BL.Logic.Logging
 
         public int? Error(IContext ctx, string message, params object[] args)
         {
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
@@ -262,7 +280,7 @@ namespace BL.Logic.Logging
 
         public int? Error(IContext ctx, Exception exception, string message = null, params object[] args)
         {
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
@@ -274,7 +292,7 @@ namespace BL.Logic.Logging
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Error,
                 Message = message,
@@ -289,7 +307,7 @@ namespace BL.Logic.Logging
         }
         public int? Fatal(IContext ctx, string message, params object[] args)
         {
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,
@@ -299,7 +317,7 @@ namespace BL.Logic.Logging
 
         public int? Fatal(IContext ctx, Exception exception, string message = null, params object[] args)
         {
-            return AddLogToDb(ctx, new LogInfo
+            return AddLogToDb(ctx, new InternalLog
             {
                 LogType = EnumLogTypes.Fatal,
                 Message = message,

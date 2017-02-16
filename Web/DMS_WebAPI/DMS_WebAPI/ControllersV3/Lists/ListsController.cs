@@ -12,6 +12,7 @@ using BL.Model.SystemCore;
 using System.Diagnostics;
 using BL.Model.Tree;
 using BL.CrossCutting.Interfaces;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Lists
 {
@@ -95,20 +96,19 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Отделы
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Departments)]
-        [ResponseType(typeof(List<ListItemWithPath>))]
-        public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryJournalsTree filter, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<TreeItem>))]
+        public IHttpActionResult GetListDepartments([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDepartment filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDepartmentShortList(ctx, filter, paging);
+            var tmpItems = tmpService.GetDepartmentsShortList(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
@@ -158,21 +158,19 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Журналы
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
-        /// <param name="filterJoirnal"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Journals)]
-        [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryJournalsTree filter, [FromUri]  FilterDictionaryRegistrationJournal filterJoirnal, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<TreeItem>))]
+        public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryRegistrationJournal filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournalShortList(ctx, filter, filterJoirnal, paging);
+            var tmpItems = tmpService.GetRegistrationJournalsShortList(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
@@ -201,20 +199,19 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Должности
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Positions)]
-        [ResponseType(typeof(List<FrontShortListPosition>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
+        [ResponseType(typeof(List<TreeItem>))]
+        public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionList(ctx, filter, paging); 
+            var tmpItems = tmpService.GetPositionsShortList(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }

@@ -15,6 +15,8 @@ namespace BL.CrossCutting.Interfaces
         IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions);
         FrontAgentEmployeeUser GetLastUserLoginInfo(IContext context);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
+        IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging);
+        int? AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model);
         int? Trace(IContext ctx, string message, params object[] args);
         int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, bool isCopyDate1 = false);
         int? Warning(IContext ctx, string message, params object[] args);

@@ -30,7 +30,7 @@ namespace BL.Logic.DictionaryCore
 
                     var id = _dictDb.AddAgentOrg(_context, model);
 
-                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetAgentOrgs(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

@@ -1,7 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.AdminCore;
 using BL.Logic.Common;
 using BL.Model.AdminCore.IncomingModel;
 using BL.Model.DictionaryCore.FilterModel;
@@ -12,7 +11,6 @@ using BL.Model.Exception;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -22,55 +20,48 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
+            var model = new InternalDictionaryPosition(Model);
+
+            CommonDocumentUtilities.SetLastChange(_context, model);
+
+            using (var transaction = Transactions.GetTransaction())
             {
-                var model = new InternalDictionaryPosition(Model);
+                // добавляю должность
+                model.Id = _dictDb.AddPosition(_context, model);
 
-                CommonDocumentUtilities.SetLastChange(_context, model);
+                // устанавливаю порядок отображения
+                _dictService.SetPositionOrder(_context, new ModifyPositionOrder { PositionId = model.Id, Order = Model.Order });
 
-                using (var transaction = Transactions.GetTransaction())
-                {
-                    // добавляю должность
-                    model.Id = _dictDb.AddPosition(_context, model);
+                // включаю доступ к журналам в своем отделе
+                SetDefaultRJournalPositions(new ModifyAdminDefaultByPosition { PositionId = model.Id });
 
-                    // устанавливаю порядок отображения
-                    _dictService.SetPositionOrder(_context, new ModifyPositionOrder { PositionId = model.Id, Order = Model.Order });
+                // всегда устанавливаю рассылку по умолчанию 
+                SetDefaultSubordinations(new ModifyAdminDefaultByPosition { PositionId = model.Id });
 
-                    // включаю доступ к журналам в своем отделе
-                    SetDefaultRJournalPositions(new ModifyAdminDefaultByPosition { PositionId = model.Id });
+                // рассылка для исполнения на всех
+                if (GetSubordinationsSendAllForExecution())
+                { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Execution }); }
 
-                    // всегда устанавливаю рассылку по умолчанию 
-                    SetDefaultSubordinations(new ModifyAdminDefaultByPosition { PositionId = model.Id });
+                // рассылка для сведения на всех
+                if (GetSubordinationsSendAllForInforming())
+                { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
 
-                    // рассылка для исполнения на всех
-                    if (GetSubordinationsSendAllForExecution())
-                    { SetAllSubordinations(new SetAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Execution }); }
+                // базовые роли
+                SetDefaultRoles(model.Id, new List<Roles> { Roles.User });
 
-                    // рассылка для сведения на всех
-                    if (GetSubordinationsSendAllForInforming())
-                    { SetAllSubordinations(new SetAdminSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
-
-                    // базовые роли
-                    SetDefaultRoles( model.Id, new List<Roles> {Roles.User });
-
-                    var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
+                var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
+                _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
 
 
-                    transaction.Complete();
-                }
-
-                return model.Id;
+                transaction.Complete();
             }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
-            }
+
+            return model.Id;
         }
 
         private void SetDefaultRJournalPositions(ModifyAdminDefaultByPosition model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetDefaultRegistrationJournalPosition, _context, model);
+            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccessDefault_Position, _context, model);
         }
 
         private void SetDefaultSubordinations(ModifyAdminDefaultByPosition model)
@@ -78,14 +69,14 @@ namespace BL.Logic.DictionaryCore
             _adminService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, _context, model);
         }
 
-        private void SetAllSubordinations(SetAdminSubordinations model)
+        private void SetAllSubordinations(SetSubordinations model)
         {
             _adminService.ExecuteAction(EnumAdminActions.SetAllSubordination, _context, model);
         }
 
         private void SetDefaultRoles(int positionId, List<Roles> list)
         {
-            var model = new SetAdminPositionRole() { IsChecked = true};
+            var model = new SetAdminPositionRole() { IsChecked = true };
 
             foreach (var item in list)
             {
@@ -94,7 +85,7 @@ namespace BL.Logic.DictionaryCore
 
                 _adminService.ExecuteAction(EnumAdminActions.SetPositionRole, _context, model);
             }
-            
+
         }
 
         private bool GetSubordinationsSendAllForExecution()

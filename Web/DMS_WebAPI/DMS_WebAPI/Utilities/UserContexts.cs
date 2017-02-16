@@ -13,6 +13,7 @@ using BL.Model.WebAPI.FrontModel;
 using Newtonsoft.Json;
 using BL.CrossCutting.Helpers;
 using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.WebAPI.IncomingModel;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -61,7 +62,7 @@ namespace DMS_WebAPI.Utilities
                 .Where(x => x.Value.StoreObject is IContext)
                 .Select(x => new FrontSystemSession
                 {
-                    Token = x.Key,
+                    //Token = x.Key,
                     LastUsage = x.Value.LastUsage,
                     CreateDate = (x.Value.StoreObject as IContext).CreateDate,
                     LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
@@ -114,7 +115,7 @@ namespace DMS_WebAPI.Utilities
             return request_ctx;
         }
 
-       
+
 
 
         /// <summary>
@@ -125,6 +126,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="token"></param>
         /// <param name="userId">Id Web-пользователя</param>
         /// <param name="clientCode">доменное имя клиента</param>
+        /// <param name="IsChangePasswordRequired">доменное имя клиента</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         public IContext Set(string token, string userId, string clientCode, bool IsChangePasswordRequired)
@@ -253,6 +255,20 @@ namespace DMS_WebAPI.Utilities
             // Контекст полностью сформирован и готов к работе
             context.IsFormed = true;
             KeepAlive(token);
+
+            // Сохраняю текущий контекст
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.MergeUserContexts(new DBModel.AspNetUserContexts
+            {
+                Token = context.CurrentEmployee.Token,
+                ClientId = context.CurrentClientId,
+                CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
+                DatabaseId = context.CurrentDB.Id,
+                IsChangePasswordRequired = context.IsChangePasswordRequired,
+                UserId = context.CurrentEmployee.UserId,
+                LoginLogId = context.LoginLogId,
+                LoginLogInfo = context.LoginLogInfo
+            });
         }
 
         /// <summary>
@@ -371,6 +387,9 @@ namespace DMS_WebAPI.Utilities
             // удаляю пользовательский контекст из коллекции
             _casheContexts.Remove(token);
 
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.DeleteUserContext(token);
+
             //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
             return ctx;
@@ -383,12 +402,12 @@ namespace DMS_WebAPI.Utilities
         {
             var logger = DmsResolver.Current.Get<ILogger>();
             _casheContexts.Where(x => (x.Value.StoreObject is IContext) && ((IContext)x.Value.StoreObject).LoginLogId.HasValue).ToList()
-            .ForEach(x => 
+            .ForEach(x =>
                 {
                     var ctx = (x.Value.StoreObject as IContext);
                     logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, x.Value.LastUsage);
                 });
-            
+
         }
 
         /// <summary>
@@ -432,7 +451,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        
+
 
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
         {
@@ -541,45 +560,25 @@ namespace DMS_WebAPI.Utilities
             storeInfo.LastUsage = DateTime.UtcNow;
         }
 
-        //public void Dispose()
-        //{
-        //    try
-        //    {
-        //        var folderPath = System.IO.Path.Combine(HttpContext.Current.Server.MapPath("~/App_Data/"), "UserContexts");
+        public void Load()
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var list = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext());
 
+            foreach (var item in list)
+            {
+                var clientCode = webService.GetClientCode(item.ClientId);
+                if (string.IsNullOrEmpty( clientCode)) continue;
+                var server = webService.GetServerByUser(item.UserId, new SetUserServer { ClientId = item.ClientId, ServerId = -1 });
+                if (server == null) continue;
 
-        //        try
-        //        {
-        //            var files = System.IO.Directory.GetFiles(folderPath);
-        //            foreach (var item in files)
-        //            {
-        //                System.IO.File.Delete(item);
-        //            }
-        //            System.IO.Directory.Delete(folderPath);
-        //        }
-        //        catch { }
+                Set(item.Token, item.UserId, clientCode, item.IsChangePasswordRequired);
+                Set(item.Token, server, item.ClientId);
+                Set(item.Token, item.LoginLogId, item.LoginLogInfo);
+                SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
+            }
+        }
 
-        //        try { System.IO.Directory.CreateDirectory(folderPath); } catch { }
-
-        //        foreach (var item in _casheContexts)
-        //        {
-        //            if (!(item.Value.StoreObject is UserContext)) continue;
-
-        //            var context = (UserContext)item.Value.StoreObject;
-
-        //            context.SetSilentMode();
-
-        //            try
-        //            {
-        //                var json = JsonConvert.SerializeObject(context);
-
-        //                FileLogger.AppendTextToFile(json, System.IO.Path.Combine(folderPath, context.LoginLogId?.ToString() + "_" + DateTime.UtcNow.ToString("ddHHmmss")));
-        //            }
-        //            catch { }
-        //        }
-        //    }
-        //    catch { }
-        //}
 
     }
 }

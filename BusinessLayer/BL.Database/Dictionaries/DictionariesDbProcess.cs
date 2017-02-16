@@ -1869,7 +1869,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new InternalDictionaryAgentOrg
                 {
@@ -1887,11 +1887,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryAgentClientCompany> GetAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter)
+        public IEnumerable<FrontDictionaryAgentClientCompany> GetAgentOrgs(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -1910,11 +1910,11 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<TreeItem> GetAgentClientCompaniesForStaffList(IContext context, FilterDictionaryAgentOrg filter)
+        public IEnumerable<TreeItem> GetAgentOrgsForStaffList(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -1937,17 +1937,44 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem> GetAgentClientCompaniesForDIPSubordinations(IContext context, int positionId, FilterDictionaryAgentOrg filter)
+        public IEnumerable<TreeItem> GetAgentOrgsShortList(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
                 var objId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
 
-                var res = qry.Select(x => new FrontDIPSubordinationsClientCompany
+                var res = qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    SearchText = x.Agent.Name,
+                    ObjectId = (int)EnumObjects.DictionaryAgentClientCompanies,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = string.Empty,
+                    IsActive = x.IsActive,
+                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<TreeItem> GetAgentOrgsForDIPSubordinations(IContext context, int positionId, FilterDictionaryAgentOrg filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                var objId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                var res = qry.Select(x => new FrontDIPSubordinationsOrg
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
@@ -1966,11 +1993,40 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<TreeItem> GetAgentOrgsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryAgentOrg filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                var objId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                var res = qry.Select(x => new FrontDIPJournalAccessOrg
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    SearchText = x.Agent.Name,
+                    ObjectId = (int)EnumObjects.DictionaryAgentClientCompanies,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = string.Empty,
+                    IsActive = x.IsActive,
+                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    JournalId = journalId,
+                    CompanyId = x.Id
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentClientCompaniesQuery(context, dbContext, filter);
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -1996,7 +2052,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        private IQueryable<DictionaryCompanies> GetAgentClientCompaniesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentOrg filter)
+        private IQueryable<DictionaryCompanies> GetAgentOrgsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentOrg filter)
         {
             var qry = dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -2067,7 +2123,7 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = GetAgentClientCompaniesQuery(context, dbContext, filter).Any();
+                var res = GetAgentOrgsQuery(context, dbContext, filter).Any();
                 transaction.Complete();
                 return res;
             }
@@ -3224,6 +3280,12 @@ namespace BL.Database.Dictionaries
 
                 if (positions.Count() > 0) DeletePositions(context, positions.ToList());
 
+                // AdminEmployeeDepartments
+                dbContext.AdminEmployeeDepartmentsSet.Where(x => list.Contains(x.DepartmentId)).Delete();
+
+                // DictionaryRegistrationJournals
+                dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId && list.Contains(x.DepartmentId)).Delete();
+
                 dbContext.DictionaryDepartmentsSet
                     .Where(x => x.Company.ClientId == context.CurrentClientId)
                     .Where(x => list.Contains(x.Id))
@@ -3389,17 +3451,13 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, bool? IsShowAll, FilterDictionaryDepartment filter)
+        public IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetDepartmentsQuery(context, dbContext, filter);
 
-                if (!IsShowAll.HasValue)
-                {
-                    // только отделы с журналами
-                    qry = qry.Where(x => x.RegistrationJournals.Any());
-                }
+
 
                 qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
 
@@ -3425,6 +3483,32 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<TreeItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetDepartmentsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+
+                var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
+                var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                var res = qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name = x.FullPath + " " + x.Name,
+                    SearchText = x.FullPath + " " + x.Name,
+                    ObjectId = (int)EnumObjects.DictionaryDepartments,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<TreeItem> GetDepartmentsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -3441,13 +3525,46 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     Code = x.FullPath,
                     Name = x.Name,
-                    SearchText = x.Name,
+                    SearchText = x.FullPath + " " + x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
                     IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     SourcePositionId = sourcePositionId,
+                    DepartmentId = x.Id,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        
+
+        public IEnumerable<TreeItem> GetDepartmentsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryDepartment filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetDepartmentsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+
+                var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
+                var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
+
+                var res = qry.Select(x => new FrontDIPJournalAccessDepartment
+                {
+                    Id = x.Id,
+                    Code = x.FullPath,
+                    Name = x.Name,
+                    SearchText = x.FullPath + " " + x.Name,
+                    ObjectId = (int)EnumObjects.DictionaryDepartments,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
+                    IsActive = x.IsActive,
+                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    JournalId = journalId,
                     DepartmentId = x.Id,
                 }).ToList();
 
@@ -3592,6 +3709,18 @@ namespace BL.Database.Dictionaries
                 if (filter.ChiefPositionId != null)
                 {
                     qry = qry.Where(x => filter.ChiefPositionId == x.ChiefPositionId);
+                }
+
+                if (filter.ExcludeDepartmentsWithoutJournals ?? false)
+                {
+                    // только отделы с журналами
+                    qry = qry.Where(x => x.RegistrationJournals.Any());
+                }
+
+                if (filter.ExcludeDepartmentsWithoutPositions ?? false)
+                {
+                    // только отделы с должностями
+                    qry = qry.Where(x => x.Positions.Any());
                 }
             }
             return qry;
@@ -4630,6 +4759,30 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<TreeItem> GetPositionsShortList(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                string objId = ((int)EnumObjects.DictionaryPositions).ToString();
+                string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
+
+                var res = qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name =  x.Name + x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? x.ExecutorType.Suffix : null),
+                    SearchText = x.Name + " " + x.ExecutorAgent.Name + " " + x.ExecutorType.Suffix,
+                    ObjectId = (int)EnumObjects.DictionaryPositions,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -4694,6 +4847,7 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     IsList = true,
                     ExecutorName = x.ExecutorAgent.Name,
+                    ExecutorTypeSuffix = x.ExecutorType.Suffix,
                     IsInforming = (x.TargetPositionSubordinations
                         .Where(y => y.TargetPositionId == x.Id)
                         .Where(y => y.SourcePositionId == sourcePositionId)
@@ -4706,6 +4860,46 @@ namespace BL.Database.Dictionaries
                         .Any() ? 1 : 0),
                     SourcePositionId = sourcePositionId,
                     TargetPositionId = x.Id
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontDIPJournalAccessPosition> GetPositionsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                string objId = ((int)EnumObjects.DictionaryPositions).ToString();
+                string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
+
+                var res = qry.Select(x => new FrontDIPJournalAccessPosition
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    SearchText = string.Concat(x.Name, " ", x.ExecutorAgent.Name),
+                    ObjectId = (int)EnumObjects.DictionaryPositions,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
+                    IsActive = x.IsActive,
+                    IsList = true,
+                    ExecutorName = x.ExecutorAgent.Name,
+                    ExecutorTypeSuffix = x.ExecutorType.Suffix,
+                    IsView = (x.PositionRegistrationJournals
+                        .Where(y => y.PositionId == x.Id)
+                        .Where(y => y.RegJournalId == journalId)
+                        .Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
+                        .Any() ? 1 : 0),
+                    IsRegistration = (x.PositionRegistrationJournals
+                        .Where(y => y.PositionId == x.Id)
+                        .Where(y => y.RegJournalId == journalId)
+                        .Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
+                        .Any() ? 1 : 0),
+                    JournalId = journalId,
+                    PositionId = x.Id
                 }).ToList();
 
                 transaction.Complete();
@@ -5510,6 +5704,31 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<TreeItem> GetRegistrationJournalsShortList(IContext context, FilterDictionaryRegistrationJournal filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRegistrationJournalsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                string objId = ((int)EnumObjects.DictionaryRegistrationJournals).ToString();
+                string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
+
+                var res = qry.Select(x => new TreeItem
+                {
+                    Id = x.Id,
+                    Name = x.Index + " " + x.Name,
+                    SearchText = x.Index + " " + x.Name,
+                    ObjectId = (int)EnumObjects.DictionaryRegistrationJournals,
+                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
+                    TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
 
         public IEnumerable<TreeItem> GetRegistrationJournalsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryRegistrationJournal filter)
         {
@@ -5655,23 +5874,28 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.Department.Positions.AsQueryable().Any(filterContains));
                 }
 
-                // Условие по IsIncoming
-                if (filter.IsIncoming != null)
+                if (filter.DocumentDirection.HasValue)
                 {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Incoming).ToString()));
+                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)filter.DocumentDirection).ToString()));
                 }
 
-                // Условие по IsOutcoming
-                if (filter.IsOutcoming != null)
-                {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Outcoming).ToString()));
-                }
+                //// Условие по IsIncoming
+                //if (filter.IsIncoming != null)
+                //{
+                //    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Incoming).ToString()));
+                //}
 
-                // Условие по IsInternal
-                if (filter.IsInternal != null)
-                {
-                    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Internal).ToString()));
-                }
+                //// Условие по IsOutcoming
+                //if (filter.IsOutcoming != null)
+                //{
+                //    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Outcoming).ToString()));
+                //}
+
+                //// Условие по IsInternal
+                //if (filter.IsInternal != null)
+                //{
+                //    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Internal).ToString()));
+                //}
 
                 if (filter.PositionIdsAccessForRegistration?.Count > 0)
                 {

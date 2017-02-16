@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Favourite)]
+        [Route(Features.Favourite + "/Add")]
         [HttpPut]
         public IHttpActionResult AddFavourite(ChangeFavourites model)
         {
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Favourite)]
+        [Route(Features.Favourite+ "/Delete")]
         [HttpPut]
         public IHttpActionResult DeleteFavourite(ChangeFavourites model)
         {

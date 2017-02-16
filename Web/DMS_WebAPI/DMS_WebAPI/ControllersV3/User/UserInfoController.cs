@@ -2,10 +2,13 @@
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Users;
+using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -82,6 +85,41 @@ namespace DMS_WebAPI.ControllersV3.User
         }
 
         /// <summary>
+        /// Корректирует реквизиты сотрудника
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Info)]
+        public IHttpActionResult Put([FromBody]ModifyAgentUser model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+
+            var employee = tmpService.GetDictionaryAgentEmployee(ctx, ctx.CurrentAgentId);
+
+            employee.ImageId = model.ImageId;
+            employee.LanguageId = model.LanguageId;
+
+            employee.Name = model.Name;
+            employee.FirstName = model.FirstName;
+            employee.MiddleName = model.MiddleName;
+            employee.LastName = model.LastName;
+            employee.TaxCode = model.TaxCode;
+            employee.IsMale = model.IsMale;
+            employee.BirthDate = model.BirthDate;
+
+            webSeevice.UpdateUserEmployee(ctx, employee);
+
+            contexts.UpdateLanguageId(employee.Id, model.LanguageId);
+
+            return Get();
+        }
+
+        /// <summary>
         /// Возвращает набор прав в терминах: module, feature, CRUD
         /// </summary>
         /// <returns></returns>
@@ -103,7 +141,6 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <summary>
         /// Возвращает историю подключений сотрудника
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
@@ -136,6 +173,27 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult ChangeLogin([FromBody]ChangeLogin model)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Устанавливает локаль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("Language")]
+        public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
+        {
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var ctx = contexts.Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem= tmpService.SetAgentUserLanguage(ctx,model.LanguageCode);
+            contexts.UpdateLanguageId(ctx.CurrentAgentId, tmpItem);
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
         }
 
         /// <summary>

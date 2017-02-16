@@ -29,7 +29,7 @@ namespace BL.Logic.DictionaryCore
                     CommonDocumentUtilities.SetLastChange(_context, model);
                     _dictDb.UpdateAgentOrg(_context, model);
 
-                    var frontObj = _dictDb.GetAgentClientCompanies(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { model.Id } }).FirstOrDefault();
+                    var frontObj = _dictDb.GetAgentOrgs(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { model.Id } }).FirstOrDefault();
                     _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                     transaction.Complete();

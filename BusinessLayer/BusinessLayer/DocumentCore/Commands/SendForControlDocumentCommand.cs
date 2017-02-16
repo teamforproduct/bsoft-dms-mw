@@ -95,12 +95,8 @@ namespace BL.Logic.DocumentCore.Commands
                 ex = new SubordinationHasBeenViolated();
             }
 
-            if (ex != null)
-            {
-                Model.AddDescription = ex.Message;
-                _operationDb.ModifyDocumentSendListAddDescription(_context, Model);
-                throw ex;
-            }
+            if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
+
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }

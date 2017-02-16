@@ -18,6 +18,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// ИЗ записи плана
         /// </summary>
+        [Required]
         public int Id { get; set; }
     }
 }

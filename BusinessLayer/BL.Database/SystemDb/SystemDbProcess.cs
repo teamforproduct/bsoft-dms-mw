@@ -310,6 +310,24 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter);
+
+                qry = qry.OrderByDescending(x => x.LastChangeDate);
+
+                var qryT = qry.Select(x => x.SearchQueryText).Distinct();
+
+                Paging.Set(ref qry, paging);
+
+                var res = qryT.ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -347,13 +365,68 @@ namespace BL.Database.SystemDb
                 var res = qry.Select(x => new FrontAgentEmployeeUser { LastErrorLogin = x.LogDate }).FirstOrDefault();
                 if (res != null)
                 {
-                    res.CountErrorLogin = qry.Count();
+                    res.CountErrorLogin = qry.Where(x=>     x.LogException.Equals("DmsExceptions:UserNameOrPasswordIsIncorrect")
+                                                     || x.LogException.Equals("DmsExceptions:UserIsDeactivated")
+                                                     || x.LogException.Equals("DmsExceptions:UserAnswerIsIncorrect")
+                                                     || x.LogException.Equals("DmsExceptions:FingerprintRequired")).Count();
                 }
                 return res;
             }
         }
 
-        public IQueryable<SystemLogs> GetSystemLogsQuery(IContext context, DmsContext dbContext, FilterSystemLog filter)
+        private IQueryable<SystemSearchQueryLogs> GetSystemSearchQueryLogsQuery(IContext context, DmsContext dbContext, FilterSystemSearchQueryLog filter)
+        {
+            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(true);
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ModuleId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = filter.ModuleId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ModuleId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.FeatureId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = filter.FeatureId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.FeatureId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.AllSearchQueryTextParts))
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(true);
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.AllSearchQueryTextParts).Aggregate(filterContains,
+                        (current, value) => current.And(e => e.SearchQueryText.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.OneSearchQueryTextParts))
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.OneSearchQueryTextParts)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.SearchQueryText.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+            }
+            return qry;
+        }
+
+        private IQueryable<SystemLogs> GetSystemLogsQuery(IContext context, DmsContext dbContext, FilterSystemLog filter)
         {
             var qry = dbContext.LogSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -450,13 +523,40 @@ namespace BL.Database.SystemDb
             return qry;
         }
 
-        public int AddLog(IContext ctx, LogInfo log)
+        public int AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var nlog = new SystemSearchQueryLogs
+                {
+                    ClientId = model.ClientId,
+                    LastChangeUserId = model.LastChangeUserId,
+                    LastChangeDate = model.LastChangeDate,
+                    FeatureId = model.FeatureId,
+                    ModuleId = model.ModuleId,
+                    SearchQueryText = model.SearchQueryText
+                };
+                dbContext.SystemSearchQueryLogsSet.Add(nlog);
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (Exception e)
+                {
+
+                }
+                transaction.Complete();
+                return nlog.Id;
+            }
+        }
+
+        public int AddLog(IContext ctx, InternalLog log)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var nlog = new SystemLogs
                 {
-                    ClientId = ctx.CurrentClientId,
+                    ClientId = log.ClientId,
                     ExecutorAgentId = log.AgentId,
                     LogDate = log.Date,
                     LogDate1 = log.Date1,
