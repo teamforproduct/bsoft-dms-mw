@@ -106,6 +106,7 @@ namespace DMS_WebAPI.Models
         public virtual DbSet<AspNetUserServers> AspNetUserServersSet { get; set; }
         public virtual DbSet<AspNetUserClients> AspNetUserClientsSet { get; set; }
         public virtual DbSet<AspNetUserFingerprints> AspNetUserFingerprintsSet { get; set; }
+        public virtual DbSet<AspNetUserContexts> AspNetUserContextsSet { get; set; }
         public virtual DbSet<AspNetLicences> AspNetLicencesSet { get; set; }
 
         public virtual DbSet<SystemControlQuestions> SystemControlQuestionsSet { get; set; }

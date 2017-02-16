@@ -14,7 +14,7 @@ namespace BL.CrossCutting.Context
     /// </summary>
     public class UserContext : IContext
     {
-        private bool _silentMode = false;
+        private bool _isFormed = false;
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
@@ -101,7 +101,11 @@ namespace BL.CrossCutting.Context
         /// <summary>
         ///  Флаг TRUE если контекст сформирован и готов к работе
         /// </summary>
-        public bool IsFormed { get; set; }
+        public bool IsFormed
+        {
+            get { return _isFormed; }
+            set { _isFormed = value; }
+        }
 
 
         public List<int> CurrentPositionsIdList
@@ -110,8 +114,7 @@ namespace BL.CrossCutting.Context
             {
                 if ((_currentPositionsIdList == null) || !_currentPositionsIdList.Any())
                 {
-                    if (!_silentMode) throw new UserContextIsNotDefined();
-                    else return null;
+                    throw new UserContextIsNotDefined();
                 }
                 return _currentPositionsIdList;
             }
@@ -127,8 +130,7 @@ namespace BL.CrossCutting.Context
             {
                 if ((_currentPositionsAccessLevel == null) || !_currentPositionsAccessLevel.Any())
                 {
-                    if (!_silentMode) throw new UserContextIsNotDefined();
-                    else return null;
+                    throw new UserContextIsNotDefined();
                 }
                 return _currentPositionsAccessLevel;
             }
@@ -144,8 +146,7 @@ namespace BL.CrossCutting.Context
             {
                 if (!_currentPositionId.HasValue)
                 {
-                    if (!_silentMode) throw new UserContextIsNotDefined();
-                    else return -1;
+                    throw new UserContextIsNotDefined();
                 }
                 return _currentPositionId.Value;
             }
@@ -157,8 +158,7 @@ namespace BL.CrossCutting.Context
             {
                 if (CurrentEmployee?.AgentId == null)
                 {
-                    if (!_silentMode) throw new UserContextIsNotDefined();
-                    else return -1;
+                    throw new UserContextIsNotDefined();
                 }
                 return CurrentEmployee.AgentId.GetValueOrDefault();
             }
@@ -169,10 +169,6 @@ namespace BL.CrossCutting.Context
             _currentPositionId = position;
         }
 
-        public void SetSilentMode()
-        {
-            _silentMode = true;
-        }
 
         public bool IsAdmin => false;
 
@@ -184,8 +180,7 @@ namespace BL.CrossCutting.Context
             {
                 if (_currentDb == null)
                 {
-                    if (!_silentMode)throw new DatabaseIsNotSet();
-                    else return null;
+                    throw new DatabaseIsNotSet();
                 }
                 return _currentDb;
             }
@@ -218,9 +213,6 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
-
-
-
 
     }
 }
