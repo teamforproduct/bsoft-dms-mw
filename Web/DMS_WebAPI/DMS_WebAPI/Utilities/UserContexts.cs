@@ -256,6 +256,7 @@ namespace DMS_WebAPI.Utilities
             context.IsFormed = true;
             KeepAlive(token);
 
+            // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.MergeUserContexts(new DBModel.AspNetUserContexts
             {
@@ -567,7 +568,9 @@ namespace DMS_WebAPI.Utilities
             foreach (var item in list)
             {
                 var clientCode = webService.GetClientCode(item.ClientId);
-                var server = webService.GetServerByUser(item.UserId, new SetUserServer { ClientId = item.Id, ServerId = -1 });
+                if (string.IsNullOrEmpty( clientCode)) continue;
+                var server = webService.GetServerByUser(item.UserId, new SetUserServer { ClientId = item.ClientId, ServerId = -1 });
+                if (server == null) continue;
 
                 Set(item.Token, item.UserId, clientCode, item.IsChangePasswordRequired);
                 Set(item.Token, server, item.ClientId);
