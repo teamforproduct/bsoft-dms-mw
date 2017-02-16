@@ -9,13 +9,12 @@ using BL.Logic.Common;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Logic.Settings;
-using Lucene.Net.Util;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
-        private const int _MAX_ROW_PROCESS = 10000;
+        private const int _MAX_ROW_PROCESS = 100000;
         private const int _MAX_ENTITY_FOR_THREAD = 1000000;
 
         private readonly Dictionary<FullTextSettings, Timer> _timers;
@@ -32,7 +31,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         private void ReindexObject(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType)
         {
-            var data = _systemDb.GetItemsToReindex(ctx, dataType, true, null, null);
+            var data = _systemDb.GetItemsToReindex(ctx, dataType, null, null);
             foreach (var itm in data)
             {
                 worker.AddNewItem(itm);
@@ -46,7 +45,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 var selectCount = (offset + _MAX_ROW_PROCESS < toNumber) ? _MAX_ROW_PROCESS : toNumber - offset;
 
-                var data = _systemDb.GetItemsToReindex(ctx, dataType, true, selectCount, offset);
+                var data = _systemDb.GetItemsToReindex(ctx, dataType, selectCount, offset);
                 foreach (var itm in data)
                 {
                     worker.AddNewItem(itm);
@@ -200,6 +199,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.StartUpdate();
             try
             {
+                var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
+
+
                 //var toDelete = _systemDb.FullTextIndexToDeletePrepare(ctx);
                 //if (toDelete.Any())
                 //{

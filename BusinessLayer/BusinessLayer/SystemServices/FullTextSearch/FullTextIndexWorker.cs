@@ -147,13 +147,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
             boolQry.Add(clientQry, Occur.MUST);
             if (filter.ParentObjectType.HasValue)
             {
-                var parentQry = new TermQuery(new Term(FIELD_PARENT_TYPE, ((int)filter.ParentObjectType).ToString()));
+                var parentQry = new TermQuery(new Term(FIELD_PARENT_TYPE, ((int)filter.ParentObjectType.Value).ToString()));
                 boolQry.Add(parentQry, Occur.MUST);
             }
             if (filter.ObjectType.HasValue)
             {
-                var objQry = new TermQuery(new Term(FIELD_OBJECT_TYPE, ((int)filter.ObjectType).ToString()));
+                var objQry = new TermQuery(new Term(FIELD_OBJECT_TYPE, ((int)filter.ObjectType.Value).ToString()));
                 boolQry.Add(objQry, Occur.MUST);
+            }
+            if (filter.ModuleId.HasValue)
+            {
+                var moduleQry = new TermQuery(new Term(FIELD_MODULE_ID, filter.ModuleId.Value.ToString()));
+                boolQry.Add(moduleQry, Occur.MUST);
+            }
+            if (filter.FeatureId.HasValue)
+            {
+                var featureQry = new TermQuery(new Term(FIELD_FEATURE_ID, filter.FeatureId.Value.ToString()));
+                boolQry.Add(featureQry, Occur.MUST);
             }
 
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
@@ -171,6 +181,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         ParentObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
                         ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
+                        ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
+                        FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
                         Score = doc.Score
                     };
                     searchResult.Add(sr);

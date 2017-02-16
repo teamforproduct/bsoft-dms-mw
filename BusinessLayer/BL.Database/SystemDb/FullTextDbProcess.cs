@@ -14,43 +14,6 @@ namespace BL.Database.SystemDb
 {
     public class FullTextDbProcess : IFullTextDbProcess
     {
-
-        public int GetEntityNumbers(IContext ctx, EnumObjects objType)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                int res;
-                switch (objType)
-                {
-                    case EnumObjects.Documents:
-                        res = dbContext.DocumentsSet.Count(x => x.TemplateDocument.ClientId == ctx.CurrentClientId);
-                        break;
-                    case EnumObjects.DocumentSendLists:
-                        res = dbContext.DocumentSendListsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
-                        break;
-                    case EnumObjects.DocumentFiles:
-                        res = dbContext.DocumentFilesSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId && !x.IsDeleted);
-                        break;
-                    case EnumObjects.DocumentEvents:
-                        res = dbContext.DocumentEventsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
-                        break;
-                    case EnumObjects.DocumentSubscriptions:
-                        res = dbContext.DocumentSubscriptionsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
-                        break;
-                    case EnumObjects.DocumentTags:
-                        res = dbContext.DocumentTagsSet.Count(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId);
-                        break;
-                    default:
-                        res = 0;
-                        break;
-                }
-
-                transaction.Complete();
-
-                return res;
-            }
-        }
-
         public int GetCurrentMaxCasheId(IContext ctx)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -68,10 +31,9 @@ namespace BL.Database.SystemDb
             {
                 dbContext.Database.CommandTimeout = 0;
                 //Add deleted item to  process processing full text index
-                res.AddRange(dbContext.FullTextIndexCashSet.Where(x => x.OperationType == (int)EnumOperationType.Delete).Select(x => new FullTextIndexItem
+                res.AddRange(dbContext.FullTextIndexCashSet.Select(x => new FullTextIndexItem
                 {
                     Id = x.Id,
-                    ParentObjectId = (x.ObjectType == (int)EnumObjects.Documents) ? x.ObjectId : 0,
                     ObjectType = (EnumObjects)x.ObjectType,
                     OperationType = (EnumOperationType)x.OperationType,
                     ClientId = ctx.CurrentClientId,
@@ -83,7 +45,7 @@ namespace BL.Database.SystemDb
             return res;
         }
 
-        public delegate List<FullTextQueryPrepare> DFullTextIndexItemQuery(IContext ctx, DmsContext dbContext, EnamFilterType filterType = EnamFilterType.Main);
+        private delegate List<FullTextQueryPrepare> DFullTextIndexItemQuery(IContext ctx, DmsContext dbContext, EnamFilterType filterType = EnamFilterType.Main);
 
         private static readonly Dictionary<EnumObjects, DFullTextIndexItemQuery> FullTextIndexItemQuery =
         new Dictionary<EnumObjects, DFullTextIndexItemQuery>
@@ -1410,19 +1372,16 @@ namespace BL.Database.SystemDb
             return res;
         }
 
-        public IEnumerable<FullTextIndexItem> GetItemsToReindex(IContext ctx, EnumObjects objectType, bool isDeepUpdate, int? itemCount, int? offset)
+        public IEnumerable<FullTextIndexItem> GetItemsToReindex(IContext ctx, EnumObjects objectType, int? itemCount, int? offset)
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var qrys = FullTextIndexItemQuery[objectType](ctx, dbContext);
 
-                if (isDeepUpdate)
-                    foreach (var item in FullTextDeepUpdateParams[objectType])
-                        qrys.AddRange(FullTextIndexItemQuery[item.ObjectType](ctx, dbContext, item.FilterType));
-
                 foreach (var qry in qrys)
                 {
+                    qry.Query = qry.Query.OrderBy(x => x.ObjectId);
                     if (offset.HasValue)
                     {
                         qry.Query = qry.Query.Skip(() => offset.Value);

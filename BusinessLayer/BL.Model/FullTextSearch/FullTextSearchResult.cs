@@ -26,5 +26,9 @@ namespace BL.Model.FullTextSearch
         /// Score in FullText search result
         /// </summary>
         public float Score { get; set; }
+
+        public int ModuleId { get; set; }
+
+        public int FeatureId { get; set; }
     }
 }

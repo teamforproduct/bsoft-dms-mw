@@ -9,10 +9,12 @@
         /// Add new element, we should add new element to index
         /// </summary>
         AddNew = 0,
+
         /// <summary>
         /// update exist elemen, we should update index
         /// </summary>
         Update = 1,
+
         /// <summary>
         /// delete element. We shoould remove it from index
         /// </summary>
@@ -21,6 +23,11 @@
         /// <summary>
         /// add/update all information about document (include SendLists, Files etc.)
         /// </summary>
-        UpdateDocument = 3
+        UpdateFull = 3,
+
+        /// <summary>
+        /// delete full information about the object and his child
+        /// </summary>
+        DeleteFull = 4
     }
 }
