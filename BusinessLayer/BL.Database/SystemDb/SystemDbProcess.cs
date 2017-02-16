@@ -217,13 +217,40 @@ namespace BL.Database.SystemDb
             return qry;
         }
 
-        public int AddLog(IContext ctx, LogInfo log)
+        public int AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var nlog = new SystemSearchQueryLogs
+                {
+                    ClientId = model.ClientId,
+                    LastChangeUserId = model.LastChangeUserId,
+                    LastChangeDate = model.LastChangeDate,
+                    FeatureId = model.FeatureId,
+                    ModuleId = model.ModuleId,
+                    SearchQueryText = model.SearchQueryText
+                };
+                dbContext.SystemSearchQueryLogsSet.Add(nlog);
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (Exception e)
+                {
+
+                }
+                transaction.Complete();
+                return nlog.Id;
+            }
+        }
+
+        public int AddLog(IContext ctx, InternalLog log)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var nlog = new SystemLogs
                 {
-                    ClientId = ctx.CurrentClientId,
+                    ClientId = log.ClientId,
                     ExecutorAgentId = log.AgentId,
                     LogDate = log.Date,
                     LogDate1 = log.Date1,

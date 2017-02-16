@@ -21,7 +21,8 @@ namespace BL.Database.SystemDb
         FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context);
         FrontAgentEmployeeUser GetLastErrorLoginInfo(IContext context, DateTime? dateFrom);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
-        int AddLog(IContext ctx, LogInfo log);
+        int AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model);
+        int AddLog(IContext ctx, InternalLog log);
         void UpdateLogDate1(IContext ctx, int id, DateTime datetime);
         #endregion
 

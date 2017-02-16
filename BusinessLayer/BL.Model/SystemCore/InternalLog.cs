@@ -3,8 +3,9 @@ using BL.Model.Enums;
 
 namespace BL.Model.SystemCore
 {
-    public class LogInfo
+    public class InternalLog
     {
+        public int ClientId { get; set; }
         public EnumLogTypes LogType { get; set; }
         public string Message { get; set; }
         public string LogTrace { get; set; }

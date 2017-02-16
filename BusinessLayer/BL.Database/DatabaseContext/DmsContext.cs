@@ -186,6 +186,7 @@ namespace BL.Database.DatabaseContext
 
         public virtual DbSet<FullTextIndexCash> FullTextIndexCashSet { get; set; }
         public virtual DbSet<SystemLogs> LogSet { get; set; }
+        public virtual DbSet<SystemSearchQueryLogs> SystemSearchQueryLogsSet { get; set; }
         public virtual DbSet<SystemSettings> SettingsSet { get; set; }
 
         public virtual DbSet<EncryptionCertificates> EncryptionCertificatesSet { get; set; }

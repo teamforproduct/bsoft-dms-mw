@@ -159,6 +159,7 @@
     <Compile Include="FullTextSearch\FullTextResultList.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemFetures.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemModules.cs" />
+    <Compile Include="SystemCore\InternalSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
     <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
@@ -581,7 +582,7 @@
     <Compile Include="SystemCore\InternalModel\InternalSystemActionForDocument.cs" />
     <Compile Include="SystemCore\ModifyLicenceInfo.cs" />
     <Compile Include="SystemCore\LicenceInfo.cs" />
-    <Compile Include="SystemCore\LogInfo.cs" />
+    <Compile Include="SystemCore\InternalLog.cs" />
     <Compile Include="AdminCore\DocumentActionsModel.cs" />
     <Compile Include="SystemCore\BaseSystemUIElement.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPositionInfo.cs" />

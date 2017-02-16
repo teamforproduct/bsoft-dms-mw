@@ -446,6 +446,10 @@
     <Compile Include="Migrations\201701302106109_Fingerprint.Designer.cs">
       <DependentUpon>201701302106109_Fingerprint.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.cs" />
+    <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.Designer.cs">
+      <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -630,6 +634,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701302106109_Fingerprint.resx">
       <DependentUpon>201701302106109_Fingerprint.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702161742311_SystemSearchQueryLogs.resx">
+      <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
