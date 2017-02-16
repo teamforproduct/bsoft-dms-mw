@@ -590,7 +590,7 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-            { EnumObjects.DictionaryAgentPersons, (ctx,dbContext,filterType) =>
+            { EnumObjects.DictionaryAgentPeople, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentPersonsSet
@@ -609,8 +609,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentPersons,
-                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPersons,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentPeople,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                     ObjectText = x.Main.Agent.Name + " " + " " + x.Main.Description + " "
                          + x.Main.Agent.AgentPeople.FullName + x.Main.Agent.AgentPeople.TaxCode + " " + x.Main.Agent.AgentPeople.BirthDate + " "
                         + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText
@@ -766,7 +766,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPersons,
+                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -848,7 +848,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPersons,
+                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -889,6 +889,39 @@ namespace BL.Database.SystemDb
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
                         ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
+                    });
+                    res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                }
+
+                return res;
+            } },
+            { EnumObjects.DictionaryAgentPersons, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DictionaryAgentPersonsSet
+                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.PeopleId:
+                        qry = qry.Where(x=>x.Main.People!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.Id});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                {
+                    var moduleId = Modules.GetId(Modules.Company); var featureId = Features.GetId(Features.Contacts);
+                    var qryRes= qry.Where(x=>x.Main.Agent.AgentCompany != null)
+                    .Select(x => new FullTextIndexItem
+                    {
+                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentPersons,
+                        ParentObjectId = x.Main.AgentCompanyId.Value, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
+                        ObjectText = x.Main.People.Agent.Name + x.Main.People.FullName + x.Main.Position + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 }
@@ -1140,6 +1173,38 @@ namespace BL.Database.SystemDb
                 }
                 return res;
             } },
+            { EnumObjects.AdminEmployeeDepartments, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.AdminEmployeeDepartmentsSet
+                            .Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.EmployeeId:
+                        qry = qry.Where(x=>x.Main.Employee.Agent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.EmployeeId});
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                {
+                    var moduleId = Modules.GetId(Modules.Department); var featureId = Features.GetId(Features.Admins);
+                    var qryRes= qry.Select(x => new FullTextIndexItem
+                    {
+                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminEmployeeDepartments,
+                        ParentObjectId = x.Main.DepartmentId, ParentObjectType = EnumObjects.DictionaryDepartments,
+                        ObjectText = x.Main.Employee.Agent.Name
+                    });
+                    res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                }
+
+                return res;
+            } },
             #endregion Complex Dictionary Details
 
             #region Simple Dictionary
@@ -1297,6 +1362,9 @@ namespace BL.Database.SystemDb
             {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
                 }
             },
             {EnumObjects.DictionaryPositions, new List<FullTextDeepUpdateItemQuery>
@@ -1327,6 +1395,7 @@ namespace BL.Database.SystemDb
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendLists, FilterType = EnamFilterType.PositionExecutorAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendListContent, FilterType = EnamFilterType.TargetPositionExecutorAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.AdminUserRoles, FilterType = EnamFilterType.PositionExecutorAgentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.AdminEmployeeDepartments, FilterType = EnamFilterType.EmployeeId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryPositionExecutors, FilterType = EnamFilterType.PositionExecutorAgentId },
                }
             },
@@ -1341,14 +1410,15 @@ namespace BL.Database.SystemDb
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocumentSendList, FilterType = EnamFilterType.TargetAgentId },
                 }
             },
-            {EnumObjects.DictionaryAgentPersons, new List<FullTextDeepUpdateItemQuery>
+            {EnumObjects.DictionaryAgentPeople, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.SourceAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.TargetAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.SourceAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.TargetAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocumentSendList, FilterType = EnamFilterType.TargetAgentId },
-                }
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryAgentPersons, FilterType = EnamFilterType.PeopleId },
+            }
             },
             {EnumObjects.DictionaryAgentBanks, new List<FullTextDeepUpdateItemQuery>
                 {
@@ -1357,13 +1427,6 @@ namespace BL.Database.SystemDb
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.SourceAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.TargetAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocumentSendList, FilterType = EnamFilterType.TargetAgentId },
-                }
-            },
-            {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
-                {
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
                 }
             },
             {EnumObjects.AdminRoles, new List<FullTextDeepUpdateItemQuery>
