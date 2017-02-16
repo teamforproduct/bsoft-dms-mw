@@ -455,7 +455,6 @@
     <Compile Include="Migrations\201702161918125_AspNetUserContexts.Designer.cs">
       <DependentUpon>201702161918125_AspNetUserContexts.cs</DependentUpon>
     </Compile>
-    </Compile>
     <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.cs" />
     <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.Designer.cs">
       <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>

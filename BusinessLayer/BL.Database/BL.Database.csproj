@@ -563,10 +563,13 @@
     <Compile Include="Migrations\201702161927147_AgentFavorites.Designer.cs">
       <DependentUpon>201702161927147_AgentFavorites.cs</DependentUpon>
     </Compile>
-    </Compile>
     <Compile Include="Migrations\201702161744322_SystemSearchQueryLogs.cs" />
     <Compile Include="Migrations\201702161744322_SystemSearchQueryLogs.Designer.cs">
       <DependentUpon>201702161744322_SystemSearchQueryLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702161944588_SystemSearchQueryLogsIndex.cs" />
+    <Compile Include="Migrations\201702161944588_SystemSearchQueryLogsIndex.Designer.cs">
+      <DependentUpon>201702161944588_SystemSearchQueryLogsIndex.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -854,6 +857,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702161744322_SystemSearchQueryLogs.resx">
       <DependentUpon>201702161744322_SystemSearchQueryLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702161944588_SystemSearchQueryLogsIndex.resx">
+      <DependentUpon>201702161944588_SystemSearchQueryLogsIndex.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
