@@ -159,6 +159,7 @@
     <Compile Include="FullTextSearch\FullTextResultList.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemFetures.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSystemModules.cs" />
+    <Compile Include="SystemCore\Filters\FilterSystemSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
     <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />

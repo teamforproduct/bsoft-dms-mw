@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore
                     {
                         var resWithRanges =
                             ftRes.GroupBy(x => x.DocumentId)
-                                .Select(x => new {DocId = x.Key, Rate = x.Max(s => s.Score)})
+                                .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
                                 .OrderByDescending(x => x.Rate);
                         filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
                     }
@@ -70,7 +70,17 @@ namespace BL.Logic.DocumentCore
                         filter.Document.FullTextSearchDocumentId = new List<int>();
                     }
                 }
-                return _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
+                var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
+                if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) /*&& res.Any()*/) //TODO UNCOMMENT!!!
+                {
+                    DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(ctx, new InternalSearchQueryLog
+                    {
+                        ModuleId = Modules.GetId(Modules.Documents),
+                        FeatureId = Features.GetId(Features.Info),
+                        SearchQueryText = filter?.Document?.FullTextSearch,
+                    });
+                }
+                return res;
             }
             catch (Exception ex)
             {

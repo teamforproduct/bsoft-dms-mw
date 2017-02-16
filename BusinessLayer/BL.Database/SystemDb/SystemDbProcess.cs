@@ -74,6 +74,24 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter);
+
+                qry = qry.OrderByDescending(x => x.LastChangeDate);
+
+                var qryT = qry.Select(x => x.SearchQueryText).Distinct();
+
+                Paging.Set(ref qry, paging);
+
+                var res = qryT.ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -120,7 +138,59 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IQueryable<SystemLogs> GetSystemLogsQuery(IContext context, DmsContext dbContext, FilterSystemLog filter)
+        private IQueryable<SystemSearchQueryLogs> GetSystemSearchQueryLogsQuery(IContext context, DmsContext dbContext, FilterSystemSearchQueryLog filter)
+        {
+            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(true);
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ModuleId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = filter.ModuleId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ModuleId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.FeatureId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = filter.FeatureId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.FeatureId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.AllSearchQueryTextParts))
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(true);
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.AllSearchQueryTextParts).Aggregate(filterContains,
+                        (current, value) => current.And(e => e.SearchQueryText.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.OneSearchQueryTextParts))
+                {
+                    var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.OneSearchQueryTextParts)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.SearchQueryText.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+            }
+            return qry;
+        }
+
+        private IQueryable<SystemLogs> GetSystemLogsQuery(IContext context, DmsContext dbContext, FilterSystemLog filter)
         {
             var qry = dbContext.LogSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 

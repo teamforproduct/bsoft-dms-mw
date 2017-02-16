@@ -168,6 +168,12 @@ namespace BL.Logic.Logging
             return res;
         }
 
+        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        {
+            var res = _systemDb.GetSystemSearchQueryLogs(context, filter, paging);
+            return res;
+        }
+
         private string GetObjectChangeDescription(object logObject)
         {
             if (logObject is FrontDictionaryAgentClientCompany)
