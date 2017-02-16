@@ -595,6 +595,8 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="SystemDb\FullTextDbProcess.cs" />
+    <Compile Include="SystemDb\IFullTextDbProcess.cs" />
     <Compile Include="SystemDb\ISystemDbProcess.cs" />
     <Compile Include="SystemDb\SystemDbProcess.cs" />
   </ItemGroup>

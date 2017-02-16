@@ -49,6 +49,7 @@ namespace BL.Database.DependencyInjection
             Bind<ILanguagesDbProcess>().To<LanguagesDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
             Bind<IFileStore>().To<FileStore>().InSingletonScope();
+            Bind<IFullTextDbProcess>().To<FullTextDbProcess>().InSingletonScope();
         }
 
         private void RegistrateEncryptionProcess()

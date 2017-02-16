@@ -1,24 +1,14 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using DMS_WebAPI.Results;
+﻿using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
 using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
-using System.Collections.Generic;
-using BL.Model.Common;
 using System.Diagnostics;
-using BL.Logic.SystemServices.TempStorage;
 using System.Web;
-using System;
 using BL.Model.SystemCore;
 using System.Reflection;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.FullTextSearch;
-using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Utilities
 {
@@ -89,6 +79,10 @@ namespace DMS_WebAPI.ControllersV3.Utilities
             return res;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemActions")]
         public IHttpActionResult RefreshSystemActions()
@@ -102,6 +96,10 @@ namespace DMS_WebAPI.ControllersV3.Utilities
             return res;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemObjects")]
         public IHttpActionResult RefreshSystemObjects()
@@ -135,9 +133,10 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("FullTextIndexPrepareNew")]
         public IHttpActionResult Test()
         {
+            //TODO REMOVE
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, true, true, 0, 1000);
+            //ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, true, true, 0, 1000);
             return new JsonResult(null, this);
         }
 
