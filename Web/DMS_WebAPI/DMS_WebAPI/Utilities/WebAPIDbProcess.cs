@@ -21,6 +21,7 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
+using EntityFramework.Extensions;
 using LinqKit;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -1483,6 +1484,113 @@ namespace DMS_WebAPI.Utilities
                 dbContext.Entry(item).State = EntityState.Deleted;
 
                 dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+
+        #endregion
+
+        #region UserContexts
+
+        private IQueryable<AspNetUserContexts> GetUserContextQuery(ApplicationDbContext dbContext, FilterAspNetUserContext filter)
+        {
+            var qry = dbContext.AspNetUserContextsSet.AsQueryable();
+
+            if (filter != null)
+            {
+
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AspNetUserContexts>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AspNetUserContexts>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.UserIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AspNetUserContexts>();
+                    filterContains = filter.UserIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.TokenExact))
+                {
+                    qry = qry.Where(x => filter.TokenExact.Equals(x.Token, StringComparison.OrdinalIgnoreCase));
+                }
+
+
+            }
+
+            return qry;
+        }
+
+        public IEnumerable<AspNetUserContexts> GetUserContexts(FilterAspNetUserContext filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserContextQuery(dbContext, filter);
+
+                var items = qry.ToList();
+                transaction.Complete();
+                return items;
+            }
+        }
+
+        public bool ExistsUserContexts(FilterAspNetUserContext filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserContextQuery(dbContext, filter);
+
+                var res = qry.Any();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public int AddUserContext(AspNetUserContexts item)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AspNetUserContextsSet.Add(item);
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+                return item.Id;
+            }
+        }
+
+        public void UpdateUserContext(AspNetUserContexts item)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AspNetUserContextsSet.Attach(item);
+                dbContext.Entry(item).State = EntityState.Modified;
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        public void DeleteUserContext(string  token)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.AspNetUserContextsSet.Where(x=>x.Token == token).Delete();
                 transaction.Complete();
             }
         }
