@@ -19,7 +19,9 @@ namespace DMS_WebAPI.Controllers.Dictionaries
         /// <summary>
         /// Получить список доступных тегов для выставленых должностей
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
+        /// <param name="paging"></param>
         /// <returns>Список доступных тегов для выставленых должностей</returns>
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, UIPaging paging)
         {

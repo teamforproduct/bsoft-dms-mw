@@ -1,28 +1,15 @@
 ﻿using BL.Logic.Common;
-using BL.Model.Exception;
 using BL.Model.EncryptionCore.IncomingModel;
 using BL.Model.EncryptionCore.InternalModel;
+using BL.Model.Exception;
 
 namespace BL.Logic.EncryptionCore.Certificate
 {
     public class ModifyEncryptionCertificateCommand : BaseEncryptionCommand
     {
-        private ModifyEncryptionCertificate Model
-        {
-            get
-            {
-                if (!(_param is ModifyEncryptionCertificate))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyEncryptionCertificate)_param;
-            }
-        }
+        private ModifyEncryptionCertificate Model { get { return GetModel<ModifyEncryptionCertificate>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {

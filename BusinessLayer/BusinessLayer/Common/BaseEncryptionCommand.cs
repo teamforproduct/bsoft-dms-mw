@@ -4,6 +4,7 @@ using BL.Database.Encryption.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.Exception;
 
 namespace BL.Logic.Common
 {
@@ -40,5 +41,16 @@ namespace BL.Logic.Common
         public abstract object Execute();
 
         public virtual EnumEncryptionActions CommandType => _action;
+
+        public bool TypeModelIs<T>() => _param is T;
+
+        public T GetModel<T>()
+        {
+            if (!(TypeModelIs<T>()))
+            {
+                throw new WrongParameterTypeError();
+            }
+            return (T)_param;
+        }
     }
 }

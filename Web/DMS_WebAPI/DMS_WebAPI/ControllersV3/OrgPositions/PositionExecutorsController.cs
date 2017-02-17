@@ -115,7 +115,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <summary>
         /// Корректирует параметры назначения
         /// </summary>
-        /// <param name="Id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]

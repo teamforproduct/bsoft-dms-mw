@@ -369,7 +369,7 @@ namespace BL.Database.Admins
                 transaction.Complete();
             }
         }
-        public void DeleteRole(IContext context, InternalAdminRole model)
+        public void DeleteRole(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -377,11 +377,11 @@ namespace BL.Database.Admins
 
 
                 // Used By
-                dbContext.AdminRolePermissionsSet.Where(x => x.RoleId == model.Id).Delete();
-                dbContext.AdminPositionRolesSet.Where(x => x.RoleId == model.Id).Delete();
-                dbContext.AdminUserRolesSet.Where(x => x.RoleId == model.Id).Delete();
+                dbContext.AdminRolePermissionsSet.Where(x => x.RoleId == id).Delete();
+                dbContext.AdminPositionRolesSet.Where(x => x.RoleId == id).Delete();
+                dbContext.AdminUserRolesSet.Where(x => x.RoleId == id).Delete();
 
-                dbContext.AdminRolesSet.Where(x => x.Id == model.Id).Delete();
+                dbContext.AdminRolesSet.Where(x => x.Id == id).Delete();
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -441,6 +441,7 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
+                    IsEditable = x.RoleType == null
 
                     //RoleCode = x.RoleType.Code,
                     //RoleName = x.RoleType.Name

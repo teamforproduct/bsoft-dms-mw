@@ -316,6 +316,7 @@
     <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
+    <Compile Include="ControllersV3\User\UserFavoritesController.cs" />
     <Compile Include="ControllersV3\User\UserNotificationsController.cs" />
     <Compile Include="ControllersV3\User\UserPositionExecutorsController.cs" />
     <Compile Include="ControllersV3\User\UserControlQuestionsController.cs" />

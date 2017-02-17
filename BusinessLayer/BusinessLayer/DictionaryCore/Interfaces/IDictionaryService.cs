@@ -270,6 +270,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #endregion
 
-        IEnumerable<int> GetFavouriteList(IContext context, string module, string feature);
+        IEnumerable<int> GetFavouriteList(IContext context, IEnumerable<ListItem> list, string module, string feature);
+        FrontUserFavorites GetUserFavourites(IContext context);
+        void SetUserFavorite(IContext context, AddAgentFavourite model);
+        void SetUserFavoritesBulk(IContext context, FrontUserFavorites model);
     }
 }

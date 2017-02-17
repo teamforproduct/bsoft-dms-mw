@@ -23,6 +23,7 @@
         public const string DocumentTypes = "DocumentTypes";
         public const string Employees = "Employees";
         public const string Executors = "Executors";
+        public const string Favorites = "Favorites";
         public const string Files = "Files";
         public const string Fingerprints = "Fingerprints";
         public const string Image = "Image";

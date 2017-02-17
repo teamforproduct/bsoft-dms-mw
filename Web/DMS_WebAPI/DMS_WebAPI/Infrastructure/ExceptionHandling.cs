@@ -43,43 +43,35 @@ namespace DMS_WebAPI.Infrastructure
 
             return res;
         }
+
         /// <summary>
         /// Получает метку для перевода исключения
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="logExpression"></param>
+        /// <param name="descriptionExpression"></param>
         /// <returns></returns>
-        public static string GetExceptionText (Exception exception, out string logExpression )
+        public static string GetExceptionText(Exception exception, out string logExpression, out string descriptionExpression)
         {
             var exc = exception;
             var responceExpression = string.Empty;
             logExpression = string.Empty;
+            descriptionExpression = string.Empty;
 
-            try // на всякий случай
-            {
-
-            }
-            catch { }
-
-            //#if DEBUG
-            //pss Убрать в продакшине, пока для понимания вопроса во время разработки пусть отображается полная информация!!!
             while (exc != null)
             {
                 var m = string.Empty;
 
+                // для DmsExceptions Message формирую на основании названия класса
                 if (exc is DmsExceptions) m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
                 else m = exc.Message;
 
-                if (!m.Contains("See the inner exception for details"))
-                {
-                    logExpression += (logExpression == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
-                    logExpression += $"   Message: {exc.Message}\r\n";
-                    logExpression += $"   Source: {exc.Source}\r\n";
-                    logExpression += $"   Method: {exc.TargetSite}\r\n";
-                }
+                if (m.Contains("See the inner exception for details")) continue;
 
+                // перевожу
                 m = GetTranslation(m);
 
+                // подстановка параметров в сообщение
                 if (exc is DmsExceptions)
                 {
                     var p = (exc as DmsExceptions).Parameters;
@@ -87,14 +79,22 @@ namespace DMS_WebAPI.Infrastructure
                     if (p?.Count > 0) m = InsertValues(m, p);
                 }
 
-                if (!m.Contains("See the inner exception for details"))
-                {
-                    responceExpression = responceExpression + (responceExpression == string.Empty ? string.Empty : ";    ") + m;
-                }
+
+                // Без вложенных сообщений
+                if (string.IsNullOrEmpty(responceExpression)) responceExpression = m;
+                //else
+                descriptionExpression = descriptionExpression + (descriptionExpression == string.Empty ? string.Empty : ";    ") + m;
+
+                logExpression += (logExpression == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
+                logExpression += $"   Message: {exc.Message}\r\n";
+                logExpression += $"   Source: {exc.Source}\r\n";
+                logExpression += $"   Method: {exc.TargetSite}\r\n";
+
                 exc = exc.InnerException;
             };
 
             // Если в результате подстановки параметров подставили лейблы, нужно их перевести
+            descriptionExpression = GetTranslation(descriptionExpression);
             responceExpression = GetTranslation(responceExpression);
 
             return responceExpression;
@@ -112,10 +112,11 @@ namespace DMS_WebAPI.Infrastructure
             HttpStatusCode statusCode = HttpStatusCode.OK;
             var exc = exception;
             var logExpression = string.Empty;
-            var responceExpression = GetExceptionText(exception, out logExpression);
-
+            var responceDescription = string.Empty;
+            var responceExpression = GetExceptionText(exception, out logExpression, out responceDescription);
+            
             var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
-            var json = JsonConvert.SerializeObject(new { success = false, msg = responceExpression, code = exception.GetType().Name }, settings);
+            var json = JsonConvert.SerializeObject(new { success = false, msg = responceExpression, code = exception.GetType().Name, description = responceDescription }, settings);
 
             #region [+] Получение параметров текущего HttpContext ...
 

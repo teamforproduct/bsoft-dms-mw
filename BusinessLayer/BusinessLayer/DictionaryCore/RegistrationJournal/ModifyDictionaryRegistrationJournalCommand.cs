@@ -1,12 +1,6 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.SystemCore;
-using System.Collections.Generic;
 
 
 namespace BL.Logic.DictionaryCore
@@ -16,22 +10,11 @@ namespace BL.Logic.DictionaryCore
         private ModifyRegistrationJournal Model { get { return GetModel<ModifyRegistrationJournal>(); } }
         public override object Execute()
         {
-            try
-            {
-                var model = new InternalDictionaryRegistrationJournal(Model);
+            var model = new InternalDictionaryRegistrationJournal(Model);
 
-                CommonDocumentUtilities.SetLastChange(_context, model);
+            CommonDocumentUtilities.SetLastChange(_context, model);
 
-                _dictDb.UpdateRegistrationJournal(_context, model);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseError(ex);
-            }
+            _dictDb.UpdateRegistrationJournal(_context, model);
             return null;
         }
     }

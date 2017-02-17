@@ -34,7 +34,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentPerson
 
         void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson person);
-        void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson person);
+        void DeleteAgentPerson(IContext context, int id);
         int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
         //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
@@ -48,7 +48,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentEmployee
 
         void UpdateAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
-        void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
+        void DeleteAgentEmployee(IContext context, int id);
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
         FrontAgentEmployee GetAgentEmployee(IContext context, int id);
@@ -72,7 +72,7 @@ namespace BL.Database.Dictionaries.Interfaces
 
         FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id);
         void UpdateAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
-        void DeleteAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
+        void DeleteAgentAddress(IContext context, int id);
         int AddAgentAddress(IContext context, InternalDictionaryAgentAddress addr);
         IEnumerable<FrontDictionaryAgentAddress> GetAgentAddresses(IContext context, FilterDictionaryAgentAddress filter);
 
@@ -85,7 +85,7 @@ namespace BL.Database.Dictionaries.Interfaces
         InternalDictionaryAddressType GetInternalDictionaryAddressType(IContext context,
             FilterDictionaryAddressType filter);
         void UpdateAddressType(IContext context, InternalDictionaryAddressType addrType);
-        void DeleteAddressType(IContext context, InternalDictionaryAddressType addrType);
+        void DeleteAddressType(IContext context, int id);
         int AddAddressType(IContext context, InternalDictionaryAddressType addrType);
         bool ExistsAddressTypeSpecCode(IContext context, int addressTypeId);
         IEnumerable<FrontAddressType> GetAddressTypes(IContext context, FilterDictionaryAddressType filter);
@@ -107,7 +107,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentBanks
         int AddAgentBank(IContext context, InternalDictionaryAgentBank bank);
         void UpdateAgentBank(IContext context, InternalDictionaryAgentBank bank);
-        void DeleteAgentBank(IContext context, InternalDictionaryAgentBank bank);
+        void DeleteAgentBank(IContext context, int id);
         bool ExistsAgentBanks(IContext context, FilterDictionaryAgentBank filter);
         FrontAgentBank GetAgentBank(IContext context, int id);
         IEnumerable<FrontMainAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
@@ -116,7 +116,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryAgentAccounts
         FrontDictionaryAgentAccount GetAgentAccount(IContext context, int id);
         void UpdateAgentAccount(IContext context, InternalDictionaryAgentAccount account);
-        void DeleteAgentAccount(IContext context, InternalDictionaryAgentAccount account);
+        void DeleteAgentAccount(IContext context, int id);
         int AddAgentAccount(IContext context, InternalDictionaryAgentAccount account);
         IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext context, FilterDictionaryAgentAccount filter);
         IEnumerable<InternalDictionaryAgentAccount> GetInternalAgentAccounts(IContext context, FilterDictionaryAgentAccount filter);
@@ -140,7 +140,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int GetContactsTypeId(IContext context, EnumContactTypes type);
         FrontDictionaryContactType GetInternalDictionaryContactType(IContext context, FilterDictionaryContactType filter);
         void UpdateContactType(IContext context, InternalDictionaryContactType contactType);
-        void DeleteContactType(IContext context, InternalDictionaryContactType contactType);
+        void DeleteContactType(IContext context, int id);
         int AddContactType(IContext context, InternalDictionaryContactType contactType);
         bool ExistsContactTypeSpecCode(IContext context, int contactTypeId);
         IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter);
@@ -175,7 +175,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryDocumentSubjects
         int AddDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
         void UpdateDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
-        void DeleteDocumentSubject(IContext context, InternalDictionaryDocumentSubject docType);
+        void DeleteDocumentSubject(IContext context, int id);
         bool ExistsDictionaryDocumentSubject(IContext context, FilterDictionaryDocumentSubject filter);
         IEnumerable<InternalDictionaryDocumentSubject> GetInternalDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
         IEnumerable<FrontDictionaryDocumentSubject> GetDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
@@ -184,7 +184,7 @@ namespace BL.Database.Dictionaries.Interfaces
         // Типы документов
         #region DictionaryDocumentTypes
         void UpdateDocumentType(IContext context, InternalDictionaryDocumentType docType);
-        void DeleteDocumentType(IContext context, InternalDictionaryDocumentType docType);
+        void DeleteDocumentType(IContext context, int id);
         int AddDocumentType(IContext context, InternalDictionaryDocumentType docType);
         IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
         IEnumerable<InternalDictionaryDocumentType> GetInternalDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
@@ -250,7 +250,7 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryRegistrationJournals
         int AddRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
         void UpdateRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
-        void DeleteRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
+        void DeleteRegistrationJournal(IContext context, int id);
         bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<InternalDictionaryRegistrationJournal> GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging);
@@ -288,14 +288,14 @@ namespace BL.Database.Dictionaries.Interfaces
         #region DictionaryStandartSendListContents
         int AddStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
         void UpdateStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
-        void DeleteStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content);
+        void DeleteStandartSendListContent(IContext context, int id);
         IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext context, FilterDictionaryStandartSendListContent filter);
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
         int AddStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void UpdateStandartSendList(IContext context, InternalDictionaryStandartSendList list);
-        void DeleteStandartSendList(IContext context, InternalDictionaryStandartSendList list);
+        void DeleteStandartSendList(IContext context, int id);
         IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging);
         #endregion DictionaryStandartSendList
 
@@ -312,7 +312,7 @@ namespace BL.Database.Dictionaries.Interfaces
         int DocsWithTagCount(IContext context, int tagId);
         int AddTag(IContext context, InternalDictionaryTag model);
         void UpdateTag(IContext context, InternalDictionaryTag model);
-        void DeleteTag(IContext context, InternalDictionaryTag model);
+        void DeleteTag(IContext context, int id);
         #endregion DictionaryTags
 
         #region Admins
@@ -348,5 +348,10 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion CustomDictionaries
 
         IEnumerable<int> GetFavouriteList(IContext context, string module, string feature);
+        int AddAgentFavourite(IContext context, InternalAgentFavourite model);
+        void AddAgentFavourites(IContext context, IEnumerable<InternalAgentFavourite> list);
+        void UpdateAgentFavourite(IContext context, InternalAgentFavourite model);
+        void DeleteAgentFavourite(IContext context, FilterAgentFavourite filter);
+        IEnumerable<InternalAgentFavourite> GetInternalAgentFavourite(IContext context, FilterAgentFavourite filter);
     }
 }

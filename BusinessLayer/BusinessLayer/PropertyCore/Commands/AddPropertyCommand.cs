@@ -1,14 +1,12 @@
-﻿using System;
+﻿using BL.Database.SystemDb;
 using BL.Logic.Common;
-using BL.Model.Exception;
-using BL.Database.SystemDb;
+using BL.Model.Enums;
 using BL.Model.SystemCore.IncomingModel;
 using BL.Model.SystemCore.InternalModel;
-using BL.Model.Enums;
 
 namespace BL.Logic.PropertyCore.Commands
 {
-    public class AddPropertyCommand : BasePropertCommand
+    public class AddPropertyCommand : BasePropertyCommand
     {
         private readonly ISystemDbProcess _systDb;
 
@@ -17,17 +15,7 @@ namespace BL.Logic.PropertyCore.Commands
             _systDb = systDb;
         }
 
-        private ModifyProperty Model
-        {
-            get
-            {
-                if (!(_param is ModifyProperty))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (ModifyProperty)_param;
-            }
-        }
+        private ModifyProperty Model { get { return GetModel<ModifyProperty>(); } }
 
         public override bool CanBeDisplayed(int positionId)
         {
@@ -42,31 +30,24 @@ namespace BL.Logic.PropertyCore.Commands
 
         public override object Execute()
         {
-            try
+            var item = new InternalProperty
             {
-                var item = new InternalProperty
-                {
-                    Code = Model.Code,
-                    TypeCode = Model.TypeCode,
-                    Description = Model.Description,
-                    Label = Model.Label,
-                    Hint = Model.Hint,
-                    ValueTypeId = Model.ValueTypeId,
-                    OutFormat = Model.OutFormat,
-                    InputFormat = Model.InputFormat,
-                    SelectAPI = Model.SelectAPI,
-                    SelectFilter = Model.SelectFilter,
-                    SelectFieldCode = Model.SelectFieldCode,
-                    SelectDescriptionFieldCode = Model.SelectDescriptionFieldCode,
-                    SelectTable = Model.SelectTable,
-                };
-                CommonDocumentUtilities.SetLastChange(_context, item);
-                return _systDb.AddProperty(_context, item);
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
-            }
+                Code = Model.Code,
+                TypeCode = Model.TypeCode,
+                Description = Model.Description,
+                Label = Model.Label,
+                Hint = Model.Hint,
+                ValueTypeId = Model.ValueTypeId,
+                OutFormat = Model.OutFormat,
+                InputFormat = Model.InputFormat,
+                SelectAPI = Model.SelectAPI,
+                SelectFilter = Model.SelectFilter,
+                SelectFieldCode = Model.SelectFieldCode,
+                SelectDescriptionFieldCode = Model.SelectDescriptionFieldCode,
+                SelectTable = Model.SelectTable,
+            };
+            CommonDocumentUtilities.SetLastChange(_context, item);
+            return _systDb.AddProperty(_context, item);
         }
 
         public override EnumPropertyActions CommandType => EnumPropertyActions.AddProperty;

@@ -29,6 +29,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// Получение списка Tasks для документов use V3
         /// </summary>
         /// <param name="filter"></param>
+        /// <param name="paging"></param>
         /// <returns>Список Tasks</returns>
         public IHttpActionResult Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {

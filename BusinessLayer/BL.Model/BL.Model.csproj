@@ -148,6 +148,7 @@
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterAgentFavourite.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontUserFavorites.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPJournalAccessBase.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPJournalAccessDepartment.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDIPJournalAccessOrg.cs" />

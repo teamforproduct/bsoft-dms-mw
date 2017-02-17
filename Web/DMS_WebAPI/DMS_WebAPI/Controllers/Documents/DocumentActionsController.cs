@@ -710,7 +710,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Проверить подписи use V3
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [Route("VerifySigning/{id}")]
         [HttpPost]
@@ -826,7 +826,6 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Запустить автоматические планы вручную
         /// </summary>
-        /// <param name="id">ИД PaperList</param>>
         /// <returns></returns>
         [Route("ManualStartAutoPlan")]
         [HttpPost]

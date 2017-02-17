@@ -9,17 +9,7 @@ namespace BL.Logic.EncryptionCore.Certificate
 {
     public class AddEncryptionCertificateCommand : BaseEncryptionCommand
     {
-        private AddEncryptionCertificate Model
-        {
-            get
-            {
-                if (!(_param is AddEncryptionCertificate))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (AddEncryptionCertificate)_param;
-            }
-        }
+        private AddEncryptionCertificate Model { get { return GetModel<AddEncryptionCertificate>(); } }
 
         public override bool CanBeDisplayed(int positionId)
         {

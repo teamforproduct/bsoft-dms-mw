@@ -22,7 +22,6 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Получить список файлов шаблона
         /// </summary>
-        /// <param name="templateId"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         public IHttpActionResult Get([FromUri]FilterTemplateAttachedFile model)

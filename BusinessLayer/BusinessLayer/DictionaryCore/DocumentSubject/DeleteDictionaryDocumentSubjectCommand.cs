@@ -1,33 +1,12 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
-using BL.Model.DictionaryCore.InternalModel;
-
-using BL.Model.Exception;
-using BL.Model.SystemCore;
+﻿using BL.Logic.Common;
 
 namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryDocumentSubjectCommand : BaseDictionaryCommand
-
     {
-      
-        private int Model
-        {
-            get
-            {
-                if (!(_param is int))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (int)_param;
-            }
-        }
+        private int Model { get { return GetModel<int>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
 
         public override bool CanExecute()
@@ -38,20 +17,8 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
-            {
-                var dds = new InternalDictionaryDocumentSubject
-                {
-                    Id = Model
-
-                };
-                _dictDb.DeleteDocumentSubject(_context, dds);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeDeleted(ex);
-            }
+            _dictDb.DeleteDocumentSubject(_context, Model);
+            return null;
         }
     }
 

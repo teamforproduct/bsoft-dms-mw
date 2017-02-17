@@ -15,7 +15,6 @@ namespace DMS_WebAPI.Models
     public static class ApplicationDbImportData
     {
 
-        private static int IdSequence = 0;
 
         #region [+] Languages ...
 

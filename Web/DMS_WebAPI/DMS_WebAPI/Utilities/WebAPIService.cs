@@ -925,8 +925,22 @@ namespace DMS_WebAPI.Utilities
             return _webDb.GetUserContexts(filter);
         }
 
-        public int MergeUserContexts(AspNetUserContexts model)
+        public int SaveUserContexts(IContext context)
         {
+
+            var model = new AspNetUserContexts
+            {
+                Token = context.CurrentEmployee.Token,
+                ClientId = context.CurrentClientId,
+                CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
+                DatabaseId = context.CurrentDB.Id,
+                IsChangePasswordRequired = context.IsChangePasswordRequired,
+                UserId = context.CurrentEmployee.UserId,
+                LoginLogId = context.LoginLogId,
+                LoginLogInfo = context.LoginLogInfo
+            };
+
+
             var uc = _webDb.GetUserContexts(new FilterAspNetUserContext
             {
                 TokenExact = model.Token

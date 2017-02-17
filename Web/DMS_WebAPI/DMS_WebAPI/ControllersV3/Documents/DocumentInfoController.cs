@@ -159,7 +159,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Проверяет подписанный PDF-файл на нарушение ЕЦП
         /// </summary>
-        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info + "/VerifyPdf")]

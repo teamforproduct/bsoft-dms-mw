@@ -173,7 +173,7 @@ namespace DMS_WebAPI.Utilities
         /// <summary>
         /// переводит текст с лейблами ##l@(.*?)@l##
         /// </summary>
-        /// <param name="userLanguage"></param>
+        /// <param name="languageCode"></param>
         /// <param name="text">json с множеством лейблов для перевода</param>
         /// <returns></returns>
         public string ReplaceLanguageLabel(string languageCode, string text)

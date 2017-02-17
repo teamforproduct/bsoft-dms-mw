@@ -5,10 +5,12 @@ namespace BL.Model.DictionaryCore.FilterModel
 {
     public class FilterAgentFavourite : BaseFilter
     {
-        public string Module { get; set; }
+        public string ModuleExact { get; set; }
 
-        public string Feature { get; set; }
+        public string FeatureExact { get; set; }
 
         public List<int> AgentIDs { get; set; }
+
+        public List<int> ObjectIDs { get; set; }
     }
 }

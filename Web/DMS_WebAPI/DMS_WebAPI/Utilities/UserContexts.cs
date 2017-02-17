@@ -221,8 +221,8 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token">new server parameters</param>
-        /// <param name="db">new server parameters</param>
-        /// <param name="clientId">clientId</param>
+        /// <param name="loginLogId">clientId</param>
+        /// <param name="loginLogInfo">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         public void Set(string token, int? loginLogId, string loginLogInfo)
@@ -258,17 +258,7 @@ namespace DMS_WebAPI.Utilities
 
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.MergeUserContexts(new DBModel.AspNetUserContexts
-            {
-                Token = context.CurrentEmployee.Token,
-                ClientId = context.CurrentClientId,
-                CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                DatabaseId = context.CurrentDB.Id,
-                IsChangePasswordRequired = context.IsChangePasswordRequired,
-                UserId = context.CurrentEmployee.UserId,
-                LoginLogId = context.LoginLogId,
-                LoginLogInfo = context.LoginLogInfo
-            });
+            webService.SaveUserContexts(context);
         }
 
         /// <summary>

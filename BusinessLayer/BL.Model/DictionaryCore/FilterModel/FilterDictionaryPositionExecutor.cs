@@ -27,10 +27,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public List<int> NotContainsAgentIDs { get; set; }
 
-        /// <summary>
-        /// Дата начала исполнения должностных обязанностей
-        /// </summary>
-        //public Period Period { get; set; }
 
         /// <summary>
         /// Дата начала исполнения должности
