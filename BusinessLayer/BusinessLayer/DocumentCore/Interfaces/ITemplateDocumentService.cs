@@ -26,6 +26,9 @@ namespace BL.Logic.DocumentCore
         IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext context,FilterTemplateDocumentRestrictedSendList filter);
         FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext context, int id);
 
+        IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext context, FilterTemplateDocumentAccess filter);
+        FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext context, int id);
+
         IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext context,FilterTemplateDocumentTask filter);
         FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id);
 

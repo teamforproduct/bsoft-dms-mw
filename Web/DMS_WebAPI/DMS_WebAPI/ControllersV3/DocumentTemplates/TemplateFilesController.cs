@@ -13,6 +13,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using BL.Logic.DocumentCore.Interfaces;
 
 namespace DMS_WebAPI.ControllersV3.DocumentTemplates
 {
@@ -107,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             //    model.FileType = file.ContentType;
             //}
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpService = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = (FrontTemplateAttachedFile)tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, ctx, model);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

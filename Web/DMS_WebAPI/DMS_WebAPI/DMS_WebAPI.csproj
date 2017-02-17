@@ -250,6 +250,7 @@
     <Compile Include="ControllersV3\Documents\DocumentInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesInfoController.cs" />
     <Compile Include="ControllersV3\CustomDictionaries\CustomDictionariesContentsController.cs" />
+    <Compile Include="ControllersV3\DocumentTemplates\TemplateAccesses.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionDocumentAccessesController.cs" />
     <Compile Include="ControllersV3\System\LicencesCheckController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />

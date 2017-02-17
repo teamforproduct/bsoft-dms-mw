@@ -248,9 +248,12 @@
     <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\AddTemplateAccessCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\CopyTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\AddTemplatePaperCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\DeleteTemplatePaperCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\DeleteTemplateAccessCommand.cs" />
+    <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateAccessCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateTaskCommand.cs" />
     <Compile Include="EncryptionCore\Commands\VerifyPdfCommand.cs" />
     <Compile Include="EncryptionCore\EncryptionCommandFactory.cs" />
@@ -283,7 +286,6 @@
     <Compile Include="DocumentCore\Commands\SendForSigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForResponsibleExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
-    <Compile Include="DocumentCore\TemplateCommandFactory.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />

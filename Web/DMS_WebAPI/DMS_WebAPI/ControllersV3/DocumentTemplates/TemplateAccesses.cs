@@ -16,12 +16,12 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.DocumentTemlates
 {
     /// <summary>
-    /// Шаблоны документов. Ограничительные списки рассылки.
+    /// Шаблоны документов. Доступы.
     /// </summary>
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
-    public class TemplateAccessListController : ApiController
+    public class TemplateAccesses : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
@@ -32,17 +32,17 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="filter">параметры фильтрации</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/" + Features.AccessList)]
-        [ResponseType(typeof(List<FrontTemplateDocumentRestrictedSendList>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentRestrictedSendList filter)
+        [Route("{Id:int}/" + Features.Accesses)]
+        [ResponseType(typeof(List<FrontTemplateDocumentAccess>))]
+        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentAccess filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterTemplateDocumentRestrictedSendList();
+            if (filter == null) filter = new FilterTemplateDocumentAccess();
             filter.TemplateId =  Id ;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentRestrictedSendLists(ctx, filter);
+            var tmpItems = tmpService.GetTemplateDocumentAccesses(ctx, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
@@ -55,14 +55,14 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.AccessList + "/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentRestrictedSendList))]
+        [Route(Features.Accesses + "/{Id:int}")]
+        [ResponseType(typeof(FrontTemplateDocumentAccess))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentRestrictedSendList(ctx, Id);
+            var tmpItem = tmpService.GetTemplateDocumentAccess(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -74,11 +74,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.AccessList)]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentRestrictedSendList model)
+        [Route(Features.Accesses)]
+        public IHttpActionResult Post([FromBody]AddTemplateDocumentAccess model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentRestrictedSendList, model);
+            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentAccess, model);
             return Get(tmpItem);
         }
 
@@ -88,11 +88,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.AccessList)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentRestrictedSendList model)
+        [Route(Features.Accesses)]
+        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentAccess model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList, model);
+            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentAccess, model);
             return Get(model.Id);
         }
 
@@ -102,11 +102,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.AccessList + "/{Id:int}")]
+        [Route(Features.Accesses + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList, Id);
+            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentAccess, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;

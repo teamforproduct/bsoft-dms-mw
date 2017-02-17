@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи плана работы для шаблона
     /// </summary>
-    public class AddTemplateDocumentSendLists 
+    public class AddTemplateDocumentSendList 
     {
         /// <summary>
         /// ИД шаблона

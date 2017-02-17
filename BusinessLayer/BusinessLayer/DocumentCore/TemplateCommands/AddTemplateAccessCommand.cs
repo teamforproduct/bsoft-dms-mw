@@ -2,32 +2,33 @@
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Logic.Common;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
-    public class ModifyTemplateSendListCommand : BaseDocumentCommand
+    public class AddTemplateAccessCommand : BaseDocumentCommand
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
-        private InternalTemplateDocumentSendList _sendList;
 
-        public ModifyTemplateSendListCommand(ITemplateDocumentsDbProcess operationDb)
+
+        public AddTemplateAccessCommand(ITemplateDocumentsDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private ModifyTemplateDocumentSendList Model
+        private AddTemplateDocumentAccess Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentSendList))
+                if (!(_param is AddTemplateDocumentAccess))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentSendList)_param;
+                return (AddTemplateDocumentAccess)_param;
             }
         }
 
@@ -39,15 +40,19 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType, false);
+            if (_operationDb.ExistsTemplateDocumentAccesses(_context, new FilterTemplateDocumentAccess { TemplateId = Model.DocumentId,PositionId = Model.PositionId }))
+            {
+                throw new RecordNotUnique();
+            }
             return true;
         }
 
         public override object Execute()
         {
-            CommonDocumentUtilities.CorrectModel(_context,Model);
-            _sendList = new InternalTemplateDocumentSendList(Model);
-            CommonDocumentUtilities.SetLastChange(_context, _sendList);
-            return _operationDb.AddOrUpdateTemplateSendList(_context, _sendList);
+            var model = new InternalTemplateDocumentAccess(Model);
+            CommonDocumentUtilities.SetLastChange(_context, model);
+            return _operationDb.AddOrUpdateTemplateAccess(_context, model);
+
         }
 
 

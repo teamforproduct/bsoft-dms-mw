@@ -64,6 +64,7 @@
         TemplateDocumentTask = 254, // Задачи в шаблонах
         TemplateDocumentAttachedFiles = 255, // Прикрепленные к шаблонам файлы
         TemplateDocumentPaper = 256, // БН в шаблонах
+        TemplateDocumentAccess = 257, // Доступы к шаблонам
         DictionaryTag = 291, // Теги
         CustomDictionaryTypes = 301, // Типы пользовательских словарей
         CustomDictionaries = 302, // Пользовательские словари

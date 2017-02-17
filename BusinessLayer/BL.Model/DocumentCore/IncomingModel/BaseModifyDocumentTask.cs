@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Базовая модель для добаления/исправления задачи
     /// </summary>
-    public class BaseModifyDocumentTasks
+    public class BaseModifyDocumentTask
     {
         /// <summary>
         /// ИД Документа

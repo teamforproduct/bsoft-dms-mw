@@ -39,9 +39,10 @@ namespace BL.Logic.DocumentCore
 
         public object ExecuteAction(EnumDocumentActions act, IContext context, object param)
         {
-            var cmd = TemplateCommandFactory.GetTemplateCommand(act, context, null, param);
-            var res = _commandService.ExecuteCommand(cmd);
-            return res;
+            //var cmd = TemplateCommandFactory.GetTemplateCommand(act, context, null, param);
+            //var res = _commandService.ExecuteCommand(cmd);
+            //return res;
+            return null;
         }
 
         #region TemplateDocuments
@@ -113,6 +114,21 @@ namespace BL.Logic.DocumentCore
         }
 
         #endregion TemplateDocumentsRestrictedSendList
+
+        #region TemplateDocumentsAccess
+
+        public IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext context, FilterTemplateDocumentAccess filter)
+        {
+            return _templateDb.GetTemplateDocumentAccesses(context, filter);
+        }
+
+
+        public FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext context, int id)
+        {
+            return _templateDb.GetTemplateDocumentAccess(context, id);
+        }
+
+        #endregion TemplateDocumentsAccess
 
         #region TemplateDocumentTasks
 

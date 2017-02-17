@@ -8,7 +8,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для формирования реестров БН
     /// </summary>
-    public class AddDocumentPaperLists
+    public class AddDocumentPaperList
     {
         /// <summary>
         /// Комментарий к реестру

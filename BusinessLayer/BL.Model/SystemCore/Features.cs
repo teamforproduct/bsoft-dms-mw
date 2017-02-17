@@ -3,6 +3,7 @@
     public static class Features
     {   
         public const string AccessList = "AccessList";
+        public const string Accesses = "Accesses";
         public const string Accounts = "Accounts";
         public const string Addresses = "Addresses";
         public const string AddressTypes = "AddressTypes";
@@ -63,7 +64,7 @@
         public const string SubordinationTypes = "SubordinationTypes";
         public const string StageTypes = "StageTypes";
         public const string ValueTypes = "ValueTypes";
-        public const string SearchQueryLogs = "SearchQueryLogs";
+        public const string SearchQueries = "SearchQueryLogs";
 
         public const string Events = "Events";
         public const string DocumentAccesses = "DocumentAccesses";
@@ -83,6 +84,7 @@
             switch (Name)
             {
                 case AccessList:            res = 1000; break;
+                case Accesses:              res = 1005; break;
                 case Addresses:             res = 1010; break;
                 case AddressTypes:          res = 1020; break;
                 case Admins:                res = 1030; break;
@@ -135,7 +137,7 @@
                 case SendTypes:             res = 1500; break;
                 case SubordinationTypes:    res = 1510; break;
                 case ValueTypes:            res = 1520; break;
-                case SearchQueryLogs:       res = 1525; break;
+                case SearchQueries  :       res = 1525; break;
                 case Events:                res = 1530; break;
 //                case Accesses:              res = 1540; break;
                 case DocumentAccesses:      res = 1550; break;

@@ -472,7 +472,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, BaseModifyDocumentPapers model, int orderNumber)
+        public static InternalDocumentPaper GetNewDocumentPaper(IContext context, BaseModifyDocumentPaper model, int orderNumber)
         {
             return new InternalDocumentPaper
             {
@@ -491,7 +491,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, BaseModifyDocumentPapers model, int maxOrderNumber)
+        public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, BaseModifyDocumentPaper model, int maxOrderNumber)
         {
             var res = new List<InternalDocumentPaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)
@@ -874,7 +874,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static void CorrectModel(IContext context,  AddTemplateDocumentSendLists model)
+        public static void CorrectModel(IContext context,  AddTemplateDocumentSendList model)
         {
             if (model.SendType == EnumSendTypes.SendForInformation || model.SendType == EnumSendTypes.SendForConsideration)
             {

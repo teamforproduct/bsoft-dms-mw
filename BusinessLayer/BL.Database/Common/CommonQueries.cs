@@ -3640,10 +3640,10 @@ namespace BL.Database.Common
             var qry3 = qry1.GroupBy(x => new { x.TaskId, x.TargetPositionId }).Where(x => x.Key.TargetPositionId.HasValue)
                 .Select(x => new { x.Key.TaskId, PositionId = x.Key.TargetPositionId }).ToList();
             var taNew = qry2.Union(qry3).GroupBy(x => new { x.TaskId, x.PositionId })
-                .Select(x => new InternalDocumentTaskAccesses { TaskId = x.Key.TaskId.Value, PositionId = x.Key.PositionId.Value }).ToList();
+                .Select(x => new InternalDocumentTaskAccess { TaskId = x.Key.TaskId.Value, PositionId = x.Key.PositionId.Value }).ToList();
 
             var taOld = dbContext.DocumentTaskAccessesSet.Where(x => x.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == documentId)
-                .Select(x => new InternalDocumentTaskAccesses { Id = x.Id, TaskId = x.TaskId, PositionId = x.PositionId }).ToList();
+                .Select(x => new InternalDocumentTaskAccess { Id = x.Id, TaskId = x.TaskId, PositionId = x.PositionId }).ToList();
 
             var delId = taOld.GroupJoin(taNew
                 , ta1 => new { ta1.TaskId, ta1.PositionId }

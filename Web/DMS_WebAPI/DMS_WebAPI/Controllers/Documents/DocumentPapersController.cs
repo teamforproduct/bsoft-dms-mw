@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
-        public IHttpActionResult Post([FromBody]AddDocumentPapers model)
+        public IHttpActionResult Post([FromBody]AddDocumentPaper model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="id">ИД записи</param>
         /// <param name="model"></param>
         /// <returns>Измененная запись</returns>
-        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentPapers model)
+        public IHttpActionResult Put(int id, [FromBody]ModifyDocumentPaper model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

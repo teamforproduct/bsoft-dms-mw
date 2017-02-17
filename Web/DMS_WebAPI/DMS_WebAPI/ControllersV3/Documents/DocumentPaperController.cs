@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Papers)]
-        public IHttpActionResult Post([FromBody]AddDocumentPapers model)
+        public IHttpActionResult Post([FromBody]AddDocumentPaper model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentPaper, model, model.CurrentPositionId);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Papers)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentPapers model)
+        public IHttpActionResult Put([FromBody]ModifyDocumentPaper model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentPaper, model);

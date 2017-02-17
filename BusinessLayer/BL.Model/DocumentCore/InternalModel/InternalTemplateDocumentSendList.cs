@@ -33,18 +33,18 @@ namespace BL.Model.DocumentCore.InternalModel
         {
         }
 
-        public InternalTemplateDocumentSendList(AddTemplateDocumentSendLists model)
+        public InternalTemplateDocumentSendList(AddTemplateDocumentSendList model)
         {
             SetInternalTemplateDocumentSendList(model);
         }
 
-        public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendLists model)
+        public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendList model)
         {
             Id = model.Id;
             SetInternalTemplateDocumentSendList(model);
         }
 
-        private void SetInternalTemplateDocumentSendList(AddTemplateDocumentSendLists model)
+        private void SetInternalTemplateDocumentSendList(AddTemplateDocumentSendList model)
         {
             DocumentId = model.DocumentId;
             SendType = model.SendType;

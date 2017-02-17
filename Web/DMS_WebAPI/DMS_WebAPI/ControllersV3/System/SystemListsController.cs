@@ -326,7 +326,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.SearchQueryLogs)]
+        [Route(Features.SearchQueries)]
         [ResponseType(typeof(List<string>))]
         public IHttpActionResult Get([FromUri] FilterSystemSearchQueryLog filter, UIPaging paging)
         {

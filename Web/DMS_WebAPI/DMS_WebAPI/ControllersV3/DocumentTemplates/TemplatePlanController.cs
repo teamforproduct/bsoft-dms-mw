@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Plan)]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentSendLists model)
+        public IHttpActionResult Post([FromBody]AddTemplateDocumentSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentSendList, model);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Plan)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentSendLists model)
+        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentSendList, model);

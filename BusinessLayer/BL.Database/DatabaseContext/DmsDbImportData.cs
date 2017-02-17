@@ -195,7 +195,13 @@ namespace BL.Database.DatabaseContext
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
                 );
-            AddPermission(560, Modules.Templates, Features.AccessList,
+            AddPermission(560, Modules.Templates, Features.AccessList, u: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(570, Modules.Templates, Features.Accesses, u: false,
                 readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
@@ -762,6 +768,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AddTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
             items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
             items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
+
+            items.Add(GetSysAct(EnumDocumentActions.AddTemplateDocumentAccess, EnumObjects.TemplateDocumentAccess));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateDocumentAccess, EnumObjects.TemplateDocumentAccess));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateDocumentAccess, EnumObjects.TemplateDocumentAccess));
+
 
             //items.Add(GetSysAct(EnumDictionaryActions.AddDocumentType, EnumObjects.DictionaryDocumentType));
             //items.Add(GetSysAct(EnumDictionaryActions.ModifyDocumentType, EnumObjects.DictionaryDocumentType));
