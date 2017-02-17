@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления задачи
     /// </summary>
-    public class AddDocumentTasks : BaseModifyDocumentTasks
+    public class AddDocumentTask : BaseModifyDocumentTask
     {
         /// <summary>
         /// ИД должности, от которой будет выполнятся действие

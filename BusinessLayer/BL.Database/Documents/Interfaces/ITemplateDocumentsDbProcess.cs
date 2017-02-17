@@ -44,6 +44,14 @@ namespace BL.Database.Documents.Interfaces
         void DeleteTemplateRestrictedSendList(IContext ctx, int id);
         #endregion TemplateDocumentRestrictedSendList
 
+        #region TemplateDocumentAccess
+        IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext ctx, FilterTemplateDocumentAccess filter);
+        bool ExistsTemplateDocumentAccesses(IContext ctx, FilterTemplateDocumentAccess filter);
+        FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext ctx, int id);
+        int AddOrUpdateTemplateAccess(IContext ctx, InternalTemplateDocumentAccess template);
+        void DeleteTemplateAccess(IContext ctx, int id);
+        #endregion TemplateDocumentAccess
+
         #region TemplateDocumentPapers
         IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
         bool ExistsTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);

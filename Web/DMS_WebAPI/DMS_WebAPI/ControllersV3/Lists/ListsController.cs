@@ -34,7 +34,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// Типы адресов
         /// </summary>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.AddressTypes)]
@@ -55,7 +54,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// Типы контактов
         /// </summary>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.ContactTypes)]
@@ -87,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentCompanyList(ctx, filter, paging);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -109,7 +107,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDepartmentsShortList(ctx, ftSearch, filter);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;
             return res;
@@ -151,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentEmployeeList(ctx, filter, paging);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -173,8 +171,8 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetRegistrationJournalsShortList(ctx, ftSearch, filter);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
-            var res = new JsonResult(tmpItems, metaData, this);
+            //var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -194,7 +192,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetShortListAgentPersons(ctx, filter, paging);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -216,7 +214,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetPositionsShortList(ctx, ftSearch, filter);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;
             return res;
@@ -237,7 +235,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetTagList(ctx, filter, paging);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;

@@ -1,5 +1,4 @@
 ﻿using BL.Model.DictionaryCore.IncomingModel;
-using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -8,9 +7,5 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// </summary>
     public class FrontCustomDictionaryType : ModifyCustomDictionaryType
     {
-        /// <summary>
-        /// Значения словаря
-        /// </summary>
-        //public IEnumerable<FrontCustomDictionary> CustomDictionaries { get; set; }
     }
 }

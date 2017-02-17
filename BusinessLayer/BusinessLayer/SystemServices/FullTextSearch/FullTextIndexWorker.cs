@@ -147,22 +147,22 @@ namespace BL.Logic.SystemServices.FullTextSearch
             boolQry.Add(clientQry, Occur.MUST);
             if (filter.ParentObjectType.HasValue)
             {
-                var parentQry = new TermQuery(new Term(FIELD_PARENT_TYPE, ((int)filter.ParentObjectType.Value).ToString()));
+                var parentQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)filter.ParentObjectType.Value, (int)filter.ParentObjectType.Value, true, true);
                 boolQry.Add(parentQry, Occur.MUST);
             }
             if (filter.ObjectType.HasValue)
             {
-                var objQry = new TermQuery(new Term(FIELD_OBJECT_TYPE, ((int)filter.ObjectType.Value).ToString()));
+                var objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true); 
                 boolQry.Add(objQry, Occur.MUST);
             }
             if (filter.ModuleId.HasValue)
             {
-                var moduleQry = new TermQuery(new Term(FIELD_MODULE_ID, filter.ModuleId.Value.ToString()));
+                var moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, filter.ModuleId.Value, filter.ModuleId.Value, true, true);
                 boolQry.Add(moduleQry, Occur.MUST);
             }
             if (filter.FeatureId.HasValue)
             {
-                var featureQry = new TermQuery(new Term(FIELD_FEATURE_ID, filter.FeatureId.Value.ToString()));
+                var featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, filter.FeatureId.Value, filter.FeatureId.Value, true, true);
                 boolQry.Add(featureQry, Occur.MUST);
             }
 

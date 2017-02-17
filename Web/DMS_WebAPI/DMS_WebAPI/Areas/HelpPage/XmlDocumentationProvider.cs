@@ -27,6 +27,7 @@ namespace DMS_WebAPI.Areas.HelpPage
         /// Initializes a new instance of the <see cref="XmlDocumentationProvider"/> class.
         /// </summary>
         /// <param name="appDataPath">The physical path to XML document.</param>
+        /// <param name="files"></param>
         public XmlDocumentationProvider(string appDataPath, string[] files)
         {
             if (appDataPath == null)

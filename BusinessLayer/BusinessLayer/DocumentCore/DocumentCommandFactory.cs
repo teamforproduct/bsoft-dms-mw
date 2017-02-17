@@ -377,6 +377,16 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList:
                     cmd = DmsResolver.Current.Get<ModifyTemplateRestrictedSendListCommand>();
                     break;
+                case EnumDocumentActions.AddTemplateDocumentAccess:
+                    cmd = DmsResolver.Current.Get<AddTemplateAccessCommand>();
+                    break;
+                case EnumDocumentActions.DeleteTemplateDocumentAccess:
+                    cmd = DmsResolver.Current.Get<DeleteTemplateAccessCommand>();
+                    break;
+                case EnumDocumentActions.ModifyTemplateDocumentAccess:
+                    cmd = DmsResolver.Current.Get<ModifyTemplateAccessCommand>();
+                    break;
+
                 case EnumDocumentActions.AddTemplateDocumentTask:
                     cmd = DmsResolver.Current.Get<AddTemplateTaskCommand>();
                     break;

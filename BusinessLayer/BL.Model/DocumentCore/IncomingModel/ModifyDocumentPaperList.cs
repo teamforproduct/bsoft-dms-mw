@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель модификации реестров БН
     /// </summary>
-    public class ModifyDocumentPaperLists
+    public class ModifyDocumentPaperList
     {
         /// <summary>
         /// ИД БН

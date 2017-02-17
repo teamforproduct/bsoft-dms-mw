@@ -7,7 +7,7 @@ using BL.Model.Enums;
 
 namespace BL.Logic.PropertyCore.Commands
 {
-    public class DeletePropertyCommand : BasePropertCommand
+    public class DeletePropertyCommand : BasePropertyCommand
    
     {
         private readonly ISystemDbProcess _systDb;
@@ -17,22 +17,9 @@ namespace BL.Logic.PropertyCore.Commands
             _systDb = systDb;
         }
 
-        private int Model
-        {
-            get
-            {
-                if (!(_param is int))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (int)_param;
-            }
-        }
+        private int Model { get { return GetModel<int>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
 
         public override bool CanExecute()

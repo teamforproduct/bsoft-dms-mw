@@ -18,15 +18,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private AddTemplateDocumentSendLists Model
+        private AddTemplateDocumentSendList Model
         {
             get
             {
-                if (!(_param is AddTemplateDocumentSendLists))
+                if (!(_param is AddTemplateDocumentSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateDocumentSendLists)_param;
+                return (AddTemplateDocumentSendList)_param;
             }
         }
 

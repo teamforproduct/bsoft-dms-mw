@@ -35,7 +35,6 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <summary>
         /// Добавляет нового клиента
         /// </summary>
-        /// <param name="model">ModifyAdminPositionRole</param>
         /// <returns>FrontAdminPositionRole</returns>
         [HttpPost]
         [Route("AddDefaultRoles")]

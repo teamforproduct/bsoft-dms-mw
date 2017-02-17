@@ -20,15 +20,15 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         }
 
-        private AddTemplateDocumentRestrictedSendLists Model
+        private AddTemplateDocumentRestrictedSendList Model
         {
             get
             {
-                if (!(_param is AddTemplateDocumentRestrictedSendLists))
+                if (!(_param is AddTemplateDocumentRestrictedSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateDocumentRestrictedSendLists)_param;
+                return (AddTemplateDocumentRestrictedSendList)_param;
             }
         }
 

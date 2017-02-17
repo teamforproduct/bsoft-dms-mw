@@ -4,12 +4,12 @@ using System.Runtime.Serialization;
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
-    /// Модель для модификации бумажных носителей
+    /// Модель для исправления задачи
     /// </summary>
-    public class ModifyDocumentPapers: BaseModifyDocumentPapers
+    public class ModifyDocumentTask : BaseModifyDocumentTask
     {
         /// <summary>
-        /// ИД Бумажного носителя
+        /// ИД Task
         /// </summary>
         public int Id { get; set; }
     }

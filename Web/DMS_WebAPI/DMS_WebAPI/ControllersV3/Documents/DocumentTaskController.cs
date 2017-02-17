@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Tasks)]
-        public IHttpActionResult Post([FromBody]AddDocumentTasks model)
+        public IHttpActionResult Post([FromBody]AddDocumentTask model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный пункт плана</returns>
         [HttpPut]
         [Route(Features.Tasks)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentTasks model)
+        public IHttpActionResult Put([FromBody]ModifyDocumentTask model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTask, model);

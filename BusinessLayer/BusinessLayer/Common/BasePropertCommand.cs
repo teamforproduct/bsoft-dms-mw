@@ -1,11 +1,11 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.SystemCore;
+using BL.Model.Exception;
 
 namespace BL.Logic.Common
 {
-    public abstract class BasePropertCommand : IPropertyCommand
+    public abstract class BasePropertyCommand : IPropertyCommand
     {
         protected IContext _context;
         protected object _param;
@@ -34,5 +34,16 @@ namespace BL.Logic.Common
         public abstract object Execute();
 
         public virtual EnumPropertyActions CommandType => _action;
+
+        public bool TypeModelIs<T>() => _param is T;
+
+        public T GetModel<T>()
+        {
+            if (!(TypeModelIs<T>()))
+            {
+                throw new WrongParameterTypeError();
+            }
+            return (T)_param;
+        }
     }
 }

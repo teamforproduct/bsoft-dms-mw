@@ -22,6 +22,7 @@ using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -1408,9 +1409,130 @@ namespace BL.Logic.DictionaryCore
         #endregion
 
 
-        public IEnumerable<int> GetFavouriteList(IContext context, string module, string feature)
+        public IEnumerable<int> GetFavouriteList(IContext context, IEnumerable<ListItem> list, string module, string feature)
         {
-            return _dictDb.GetFavouriteList(context, module, feature);
+            // список избранных, отсортированный по актуальности
+            var fList = _dictDb.GetFavouriteList(context, module, feature);
+
+            // только те которые содержатся в списке
+            fList = fList.Where(x => list.Any(y => y.Id == x));
+
+            // беру 10 актуальных
+            fList = fList.Take(10);
+
+            return fList;
         }
+
+        public FrontUserFavorites GetUserFavourites(IContext context)
+        {
+            var res = new FrontUserFavorites();
+
+            res.ListEmployees = _dictDb.GetFavouriteList(context, Modules.List, Features.Employees).ToList();
+            res.ListCompanies = _dictDb.GetFavouriteList(context, Modules.List, Features.Companies).ToList();
+            res.ListDepartments = _dictDb.GetFavouriteList(context, Modules.List, Features.Departments).ToList();
+            res.ListJournals = _dictDb.GetFavouriteList(context, Modules.List, Features.Journals).ToList();
+            res.ListPersons = _dictDb.GetFavouriteList(context, Modules.List, Features.Persons).ToList();
+            res.ListPositions = _dictDb.GetFavouriteList(context, Modules.List, Features.Positions).ToList();
+            res.ListTags = _dictDb.GetFavouriteList(context, Modules.List, Features.Tags).ToList();
+
+            return res;
+        }
+
+        private List<InternalAgentFavourite> PrepareAgentFavouriteItems(IContext context, List<int> list, string module, string feature)
+        {
+            var items = list.Select(x => new InternalAgentFavourite
+            {
+                ObjectId = x,
+                AgentId = context.CurrentAgentId,
+                Date = DateTime.UtcNow,
+                Module = module,
+                Feature = feature,
+
+            }).ToList();
+
+            CommonDocumentUtilities.SetLastChange(context, items);
+
+            return items;
+
+        }
+
+        public void SetUserFavorite(IContext context, AddAgentFavourite model)
+        {
+            var uf = _dictDb.GetInternalAgentFavourite(context, new FilterAgentFavourite
+            {
+                AgentIDs = new List<int> { context.CurrentAgentId },
+                ObjectIDs = new List<int> { model.ObjectId },
+                FeatureExact = model.Feauture,
+                ModuleExact = model.Module,
+            }).FirstOrDefault();
+
+            if (uf == null)
+            {
+                _dictDb.AddAgentFavourite(context, uf);
+            }
+            else
+            {
+                uf.Date = DateTime.UtcNow;
+                _dictDb.UpdateAgentFavourite(context, uf);
+            }
+        }
+
+        public void SetUserFavoritesBulk(IContext context, FrontUserFavorites model)
+        {
+            if (model == null) return;
+
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _dictDb.DeleteAgentFavourite(context, new FilterAgentFavourite { AgentIDs = new List<int> { context.CurrentAgentId } });
+
+                if (model.ListEmployees?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListEmployees, Modules.List, Features.Employees);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                if (model.ListCompanies?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListCompanies, Modules.List, Features.Companies);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                if (model.ListDepartments?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListDepartments, Modules.List, Features.Departments);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                if (model.ListJournals?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListJournals, Modules.List, Features.Journals);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                if (model.ListPersons?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListPersons, Modules.List, Features.Persons);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                if (model.ListPositions?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListPositions, Modules.List, Features.Positions);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                if (model.ListTags?.Count > 0)
+                {
+                    var items = PrepareAgentFavouriteItems(context, model.ListTags, Modules.List, Features.Tags);
+                    _dictDb.AddAgentFavourites(context, items);
+                }
+
+                transaction.Complete();
+
+            }
+
+        }
+
+
     }
 }

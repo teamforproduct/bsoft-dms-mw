@@ -195,7 +195,13 @@ namespace BL.Database.DatabaseContext
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
                 );
-            AddPermission(560, Modules.Templates, Features.AccessList,
+            AddPermission(560, Modules.Templates, Features.AccessList, u: false,
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                );
+            AddPermission(570, Modules.Templates, Features.Accesses, u: false,
                 readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
@@ -764,6 +770,11 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
             items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateDocumentPaper, EnumObjects.TemplateDocumentPaper));
 
+            items.Add(GetSysAct(EnumDocumentActions.AddTemplateDocumentAccess, EnumObjects.TemplateDocumentAccess));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateDocumentAccess, EnumObjects.TemplateDocumentAccess));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateDocumentAccess, EnumObjects.TemplateDocumentAccess));
+
+
             //items.Add(GetSysAct(EnumDictionaryActions.AddDocumentType, EnumObjects.DictionaryDocumentType));
             //items.Add(GetSysAct(EnumDictionaryActions.ModifyDocumentType, EnumObjects.DictionaryDocumentType));
             //items.Add(GetSysAct(EnumDictionaryActions.DeleteDocumentType, EnumObjects.DictionaryDocumentType));
@@ -943,26 +954,26 @@ namespace BL.Database.DatabaseContext
         {
             return; // При переходе на Permissions CheckSystemActions потерял смысл и даже вредет. В базе нет необходимости хранить действия
 
-            int actionsCountByEnums =
-            Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
+            //int actionsCountByEnums =
+            //Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
 
-            var actionsCountByList = GetSystemActions().Count();
+            //var actionsCountByList = GetSystemActions().Count();
 
-            if (actionsCountByEnums != actionsCountByList)
-            {
-                List<EnumModel> list = CheckSystemActions2();
-                string s = string.Empty;
-                foreach (var item in list)
-                {
-                    s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
-                }
-                throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
-            }
+            //if (actionsCountByEnums != actionsCountByList)
+            //{
+            //    List<EnumModel> list = CheckSystemActions2();
+            //    string s = string.Empty;
+            //    foreach (var item in list)
+            //    {
+            //        s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
+            //    }
+            //    throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
+            //}
 
 
         }

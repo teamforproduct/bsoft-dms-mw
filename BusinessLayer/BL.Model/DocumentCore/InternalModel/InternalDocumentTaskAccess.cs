@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentTaskAccesses
+    public class InternalDocumentTaskAccess
     {
         public int Id { get; set; }
         public int TaskId { get; set; }

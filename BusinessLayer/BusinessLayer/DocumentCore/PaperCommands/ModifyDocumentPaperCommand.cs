@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.PaperCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentPapers Model
+        private ModifyDocumentPaper Model
         {
             get
             {
-                if (!(_param is ModifyDocumentPapers))
+                if (!(_param is ModifyDocumentPaper))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentPapers)_param;
+                return (ModifyDocumentPaper)_param;
             }
         }
 

@@ -2276,7 +2276,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ModifyDocumentTaskPrepare(IContext context, int? id, BaseModifyDocumentTasks model)
+        public InternalDocument ModifyDocumentTaskPrepare(IContext context, int? id, BaseModifyDocumentTask model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2392,7 +2392,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ModifyDocumentPaperPrepare(IContext context, int? id, BaseModifyDocumentPapers model)
+        public InternalDocument ModifyDocumentPaperPrepare(IContext context, int? id, BaseModifyDocumentPaper model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2708,7 +2708,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumentPaperList AddDocumentPaperListsPrepare(IContext context, AddDocumentPaperLists model)
+        public InternalDocumentPaperList AddDocumentPaperListsPrepare(IContext context, AddDocumentPaperList model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {

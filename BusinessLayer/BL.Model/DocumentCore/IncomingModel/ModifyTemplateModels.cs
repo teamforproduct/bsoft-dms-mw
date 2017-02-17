@@ -40,7 +40,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи плана работы для шаблона
     /// </summary>
-    public class ModifyTemplateDocumentSendLists : AddTemplateDocumentSendLists
+    public class ModifyTemplateDocumentSendList : AddTemplateDocumentSendList
     {
         /// <summary>
         /// ИД бн
@@ -49,7 +49,16 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int Id { get; set; }
     }
 
-    public class ModifyTemplateDocumentRestrictedSendLists : AddTemplateDocumentRestrictedSendLists
+    public class ModifyTemplateDocumentRestrictedSendList : AddTemplateDocumentRestrictedSendList
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        [Required]
+        public int Id { get; set; }
+    }
+
+    public class ModifyTemplateDocumentAccess : AddTemplateDocumentAccess
     {
         /// <summary>
         /// 

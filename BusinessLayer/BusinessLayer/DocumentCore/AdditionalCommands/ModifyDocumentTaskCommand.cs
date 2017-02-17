@@ -19,15 +19,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _operationDb = operationDb;
         }
 
-        private ModifyDocumentTasks Model
+        private ModifyDocumentTask Model
         {
             get
             {
-                if (!(_param is ModifyDocumentTasks))
+                if (!(_param is ModifyDocumentTask))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyDocumentTasks)_param;
+                return (ModifyDocumentTask)_param;
             }
         }
 

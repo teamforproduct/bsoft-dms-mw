@@ -44,10 +44,6 @@ namespace BL.Model.AdminCore.FilterModel
         /// </summary>
         public List<int> PositionExecutorIDs { get; set; }
 
-        /// <summary>
-        /// Рассматриваемый период
-        /// </summary>
-        //public Period Period { get; set; }
 
         /// <summary>
         /// Дата начала

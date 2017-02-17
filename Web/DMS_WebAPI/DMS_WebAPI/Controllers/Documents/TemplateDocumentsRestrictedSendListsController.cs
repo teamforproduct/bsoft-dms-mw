@@ -47,7 +47,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentRestrictedSendLists model)
+        public IHttpActionResult Post([FromBody]ModifyTemplateDocumentRestrictedSendList model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpDocProc = DmsResolver.Current.Get<ITemplateDocumentService>();
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentRestrictedSendLists model)
+        public IHttpActionResult Put([Required]int id, [FromBody]ModifyTemplateDocumentRestrictedSendList model)
         {
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

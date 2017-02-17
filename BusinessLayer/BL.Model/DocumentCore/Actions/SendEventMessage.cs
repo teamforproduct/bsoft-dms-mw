@@ -25,9 +25,9 @@ namespace BL.Model.DocumentCore.Actions
         public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
         private DateTime? _eventDate;
 
-        /// <summary>
-        /// Событие доступно в рамках задачи
-        /// </summary>
+        ///// <summary>
+        ///// Событие доступно в рамках задачи
+        ///// </summary>
         ///public bool IsAvailableWithinTask { get; set; }
 
     }

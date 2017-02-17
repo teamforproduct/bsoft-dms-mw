@@ -21,7 +21,7 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Классификатор роли
         /// </summary>
-        public int? RoleTypeId { get; set; }
+        public bool IsEditable { get; set; }
 
         /// <summary>
         /// Описание роли

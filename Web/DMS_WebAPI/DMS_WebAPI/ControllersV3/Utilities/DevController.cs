@@ -1,13 +1,13 @@
-﻿using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Diagnostics;
-using System.Web;
-using BL.Model.SystemCore;
-using System.Reflection;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Model.SystemCore;
+using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
+using System.Diagnostics;
+using System.Reflection;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.Description;
 using BL.Logic.SystemServices.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Utilities

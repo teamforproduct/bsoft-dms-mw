@@ -70,7 +70,7 @@ namespace DMS_WebAPI.Controllers
         /// <summary>
         /// Добавление шаблона документа
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [Route("CopyTemplate/{id}")]
         [HttpPost]

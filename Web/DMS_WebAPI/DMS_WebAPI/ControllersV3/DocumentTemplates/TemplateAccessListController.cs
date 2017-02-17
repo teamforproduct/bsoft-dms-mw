@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.AccessList)]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentRestrictedSendLists model)
+        public IHttpActionResult Post([FromBody]AddTemplateDocumentRestrictedSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentRestrictedSendList, model);
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.AccessList)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentRestrictedSendLists model)
+        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentRestrictedSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList, model);

@@ -4,10 +4,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Exception;
-using System;
 using System.Collections.Generic;
-using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -17,30 +14,23 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
+            var model = new InternalDictionaryDepartment(Model);
+
+            CommonDocumentUtilities.SetLastChange(_context, model);
+
+            using (var transaction = Transactions.GetTransaction())
             {
-                var model = new InternalDictionaryDepartment(Model);
+                if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
 
-                CommonDocumentUtilities.SetLastChange(_context, model);
+                var id = _dictDb.AddDepartment(_context, model);
 
-                using (var transaction = Transactions.GetTransaction())
-                {
-                    if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
+                var frontObj = _dictDb.GetDepartment(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } });
+                _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
-                    var id = _dictDb.AddDepartment(_context, model);
-
-                    var frontObj = _dictDb.GetDepartment(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } });
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
-
-                    transaction.Complete();
-                    return id;
-                }
-
+                transaction.Complete();
+                return id;
             }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
-            }
+
         }
     }
 }

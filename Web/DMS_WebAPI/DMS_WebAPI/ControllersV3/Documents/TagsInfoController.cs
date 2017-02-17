@@ -84,7 +84,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <summary>
         /// Корректирует тег
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]

@@ -444,6 +444,10 @@
         ModifyTemplateDocumentPaper = 256005,
         DeleteTemplateDocumentPaper = 256009,
 
+        AddTemplateDocumentAccess = 257001,
+        ModifyTemplateDocumentAccess = 257005,
+        DeleteTemplateDocumentAccess = 257009,
+
         // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
 
     }

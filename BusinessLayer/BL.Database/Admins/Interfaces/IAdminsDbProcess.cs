@@ -33,7 +33,7 @@ namespace BL.Database.Admins.Interfaces
         int AddRoleType(IContext context, InternalAdminRoleType model);
         int AddRole(IContext context, InternalAdminRole model);
         void UpdateRole(IContext context, InternalAdminRole model);
-        void DeleteRole(IContext context, InternalAdminRole model);
+        void DeleteRole(IContext context, int id);
         bool ExistsRole(IContext context, FilterAdminRole filter);
         string GetRoleTypeCode(IContext context, int id);
         int GetRoleByCode(IContext context, Roles item);

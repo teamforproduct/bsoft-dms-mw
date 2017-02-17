@@ -611,8 +611,6 @@ namespace BL.Database.Documents
         #endregion TemplateDocumentSendLists
 
         #region TemplateDocumentRestrictedSendList
-
-
         private IQueryable<TemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendListsQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocumentRestrictedSendList filter)
         {
             var qry = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
@@ -651,7 +649,6 @@ namespace BL.Database.Documents
             }
             return qry;
         }
-
 
         public IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter)
         {
@@ -730,8 +727,6 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentRestrictedSendList,
-                    template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
                 transaction.Complete();
                 return newTemplate.Id;
             }
@@ -745,12 +740,11 @@ namespace BL.Database.Documents
                 if (ddt == null) return;
                 dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentRestrictedSendList, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
 
-        public bool CanAddTemplateRestrictedSendList(IContext ctx, ModifyTemplateDocumentRestrictedSendLists list)
+        public bool CanAddTemplateRestrictedSendList(IContext ctx, ModifyTemplateDocumentRestrictedSendList list)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -762,9 +756,146 @@ namespace BL.Database.Documents
             }
         }
 
-
-
         #endregion TemplateDocumentRestrictedSendList
+
+        #region TemplateDocumentAccess
+        private IQueryable<TemplateDocumentAccesses> GetTemplateDocumentAccessesQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocumentAccess filter)
+        {
+            var qry = dbContext.TemplateDocumentAccessesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).AsQueryable();
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<TemplateDocumentAccesses>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<TemplateDocumentAccesses>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.TemplateId.HasValue)
+                {
+                    qry = qry.Where(x => x.DocumentId == filter.TemplateId.Value);
+                }
+
+                if (filter.PositionId.HasValue)
+                {
+                    qry = qry.Where(x => x.PositionId == filter.PositionId);
+                }
+
+            }
+            return qry;
+        }
+
+        public IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext ctx, FilterTemplateDocumentAccess filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentAccessesQuery(ctx, dbContext, filter);
+                var res = qry.Select(x => new FrontTemplateDocumentAccess
+                {
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.Position.Id,
+                    PositionName = x.Position.Name,
+                    PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public bool ExistsTemplateDocumentAccesses(IContext ctx, FilterTemplateDocumentAccess filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentAccessesQuery(ctx, dbContext, filter);
+                var res = qry.Any();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = dbContext.TemplateDocumentAccessesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(x => x.Id == id)
+                        .Select(x => new FrontTemplateDocumentAccess
+                        {
+                            Id = x.Id,
+                            DocumentId = x.DocumentId,
+                            PositionId = x.Position.Id,
+                            PositionName = x.Position.Name,
+                            PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
+                        }).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public int AddOrUpdateTemplateAccess(IContext ctx, InternalTemplateDocumentAccess template)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var newTemplate = new TemplateDocumentAccesses()
+                {
+
+                    DocumentId = template.DocumentId,
+                    PositionId = template.PositionId,
+                    LastChangeDate = template.LastChangeDate,
+                    LastChangeUserId = template.LastChangeUserId
+                };
+                var entityState = System.Data.Entity.EntityState.Added;
+                if (template.Id > 0)
+                {
+                    newTemplate.Id = template.Id;
+                    entityState = System.Data.Entity.EntityState.Modified;
+                }
+
+                dbContext.TemplateDocumentAccessesSet.Attach(newTemplate);
+                var entity = dbContext.Entry(newTemplate);
+                entity.State = entityState;
+
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+                return newTemplate.Id;
+            }
+        }
+
+        public void DeleteTemplateAccess(IContext ctx, int id)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                if (ddt == null) return;
+                dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        public bool CanAddTemplateAccess(IContext ctx, ModifyTemplateDocumentAccess list)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var count =
+                    dbContext.TemplateDocumentAccessesSet.Count(
+                        x => x.Document.ClientId == ctx.CurrentClientId && x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
+                transaction.Complete();
+                return count == 0;
+            }
+        }
+
+        #endregion TemplateDocumentAccess
 
         #region TemplateDocumentTasks
 
