@@ -109,6 +109,22 @@ namespace BL.Database.Common
                 LastChangeUserId = item.LastChangeUserId,
             };
         }
+
+        public static DictionaryAgentFavorites GetDbAgentFavorite(IContext context, InternalAgentFavourite item)
+        {
+            return item == null ? null : new DictionaryAgentFavorites
+            {
+                Id = item.Id,
+                AgentId = item.AgentId,
+                ObjectId = item.ObjectId,
+                Module = item.Module,
+                Feature = item.Feature,
+                Date = item.Date,
+                LastChangeDate = item.LastChangeDate,
+                LastChangeUserId = item.LastChangeUserId,
+            };
+        }
+
         public static DictionaryStandartSendLists GetDbStandartSendList(IContext context, InternalDictionaryStandartSendList item)
         {
             return item == null ? null : new DictionaryStandartSendLists

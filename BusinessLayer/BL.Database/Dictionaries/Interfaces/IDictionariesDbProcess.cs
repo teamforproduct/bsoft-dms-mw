@@ -347,6 +347,6 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging);
         #endregion CustomDictionaries
 
-
+        IEnumerable<int> GetFavouriteList(IContext context, string module, string feature);
     }
 }

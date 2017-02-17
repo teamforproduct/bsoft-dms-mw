@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
@@ -6,10 +7,11 @@ namespace DMS_WebAPI.DBModel
     {
         public int Id { get; set; }
 
-        public string UserId { get; set; }
-
+        //[Index("IX_Token", 1)]
         [MaxLength(2000)]
         public string Token { get; set; }
+
+        public string UserId { get; set; }
         public int ClientId { get; set; }
         [MaxLength(2000)]
         public string CurrentPositionsIdList { get; set; }

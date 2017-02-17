@@ -1406,5 +1406,10 @@ namespace BL.Logic.DictionaryCore
 
         #endregion
 
+
+        public IEnumerable<int> GetFavouriteList(IContext context, string module, string feature)
+        {
+            return _dictDb.GetFavouriteList(context, module, feature);
+        }
     }
 }
