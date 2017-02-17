@@ -65,7 +65,7 @@
         public const string SubordinationTypes = "SubordinationTypes";
         public const string StageTypes = "StageTypes";
         public const string ValueTypes = "ValueTypes";
-        public const string SearchQueries = "SearchQueryLogs";
+        public const string SearchQueries = "SearchQueries";
 
         public const string Events = "Events";
         public const string DocumentAccesses = "DocumentAccesses";
