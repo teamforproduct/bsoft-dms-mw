@@ -7117,11 +7117,6 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentFavoritesSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
 
-                entity.Property(x => x.Code).IsModified = true;
-                entity.Property(x => x.Name).IsModified = true;
-                entity.Property(x => x.Description).IsModified = true;
-                entity.Property(x => x.LastChangeDate).IsModified = true;
-                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
