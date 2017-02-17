@@ -7093,5 +7093,109 @@ namespace BL.Database.Dictionaries
 
         #endregion CustomDictionaries
 
+
+        #region [+] AgentFavourites ...
+        public int AddAgentFavourite(IContext context, InternalAgentFavourite model)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentFavorite(context, model);
+                dbContext.DictionaryAgentFavoritesSet.Add(dbModel);
+                dbContext.SaveChanges();
+                model.Id = dbModel.Id;
+
+                transaction.Complete();
+                return dbModel.Id;
+            }
+        }
+
+        public void UpdateAgentFavourite(IContext context, InternalAgentFavourite model)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentFavorite(context, model);
+                dbContext.DictionaryAgentFavoritesSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        public void DeleteAgentFavourite(IContext context, int id)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                //dbContext.DictionaryAgentFavoritesSet.Remove(item);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        public IEnumerable<InternalAgentFavourite> GetInternalAgentFavourite(IContext context, FilterAgentFavourite filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentFavouriteQuery(context, dbContext, filter);
+
+                var res = qry.Select(x => new InternalAgentFavourite
+                {
+                    Id = x.Id,
+                    Module = x.Module,
+                    Feature = x.Feature,
+                    ObjectId = x.ObjectId,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+        public IQueryable<DictionaryAgentFavorites> GetAgentFavouriteQuery(IContext context, DmsContext dbContext, FilterAgentFavourite filter)
+        {
+            var qry = dbContext.DictionaryAgentFavoritesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+
+            // Список первичных ключей
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentFavorites>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DictionaryAgentFavorites>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.AgentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentFavorites>();
+                    filterContains = filter.AgentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AgentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+            }
+            return qry;
+        }
+
+        #endregion
+
+        public IEnumerable<int> GetFavouriteList(IContext context, string module, string feature)
+        {
+            return new List<int>();
+        }
+
     }
 }

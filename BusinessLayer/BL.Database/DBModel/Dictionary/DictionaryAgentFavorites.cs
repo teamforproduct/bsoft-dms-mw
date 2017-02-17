@@ -8,16 +8,19 @@ namespace BL.Database.DBModel.Dictionary
     {
         public int Id { get; set; }
 
+        [Index("IX_Agent", 1)]
         [Index("IX_AgentObjectModuleFeature", 1, IsUnique = true)]
         public int AgentId { get; set; }
 
         [Index("IX_AgentObjectModuleFeature", 2, IsUnique = true)]
         public int ObjectId { get; set; }
 
+        [Index("IX_Module", 1)]
         [Index("IX_AgentObjectModuleFeature", 3, IsUnique = true)]
         [MaxLength(200)]
         public string Module { get; set; }
 
+        [Index("IX_Feature", 1)]
         [Index("IX_AgentObjectModuleFeature", 4, IsUnique = true)]
         [MaxLength(200)]
         public string Feature { get; set; }
