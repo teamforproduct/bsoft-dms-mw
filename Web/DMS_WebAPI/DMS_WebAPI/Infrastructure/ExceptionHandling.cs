@@ -5,6 +5,7 @@ using BL.Model.Exception;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -66,7 +67,33 @@ namespace DMS_WebAPI.Infrastructure
                 if (exc is DmsExceptions) m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
                 else m = exc.Message;
 
-                if (m.Contains("See the inner exception for details")) continue;
+
+                //if (exc is AggregateException)
+                //{
+                //    var e = (exc as AggregateException);
+
+                //}
+
+                // ошибки SQL-базы
+                if (exc is SqlException)
+                {
+                    var e = (exc as SqlException);
+                    switch (e.ErrorCode)
+                    {
+                        // The DELETE statement conflicted with the REFERENCE constraint
+                        case -2146232060:
+                            m = "##l@SqlExceptions:" + "ConflictedWithReferenceConstraint" + "@l##";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (m.Contains("See the inner exception for details") || m.Contains("One or more errors occurred"))
+                {
+                    exc = exc.InnerException;
+                    continue;
+                };
 
                 // перевожу
                 m = GetTranslation(m);
@@ -114,7 +141,7 @@ namespace DMS_WebAPI.Infrastructure
             var logExpression = string.Empty;
             var responceDescription = string.Empty;
             var responceExpression = GetExceptionText(exception, out logExpression, out responceDescription);
-            
+
             var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
             var json = JsonConvert.SerializeObject(new { success = false, msg = responceExpression, code = exception.GetType().Name, description = responceDescription }, settings);
 
