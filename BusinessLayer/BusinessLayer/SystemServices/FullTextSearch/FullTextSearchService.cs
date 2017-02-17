@@ -15,7 +15,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
     public class FullTextSearchService : BaseSystemWorkerService, IFullTextSearchService
     {
         private const int _MAX_ROW_PROCESS = 100000;
-        private const int _MAX_ENTITY_FOR_THREAD = 1000000;
+        private const int _MAX_ENTITY_FOR_THREAD = 500000;
 
         private readonly Dictionary<FullTextSettings, Timer> _timers;
         private readonly List<Timer> _stopTimersList = new List<Timer>();
@@ -91,7 +91,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
                     if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
 
-                    if (itmsCount.Count >= 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
+                    if (itmsCount.Count > 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
                     {
                         tskList.Add(Task.Factory.StartNew(() => { ReindexObject(ctx, worker, obj); }));
                     }

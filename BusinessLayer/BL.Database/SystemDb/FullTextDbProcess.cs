@@ -1317,8 +1317,10 @@ namespace BL.Database.SystemDb
             {EnumObjects.Documents, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.Slave },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentWaits, FilterType = EnamFilterType.Slave },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendLists, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentTags, FilterType = EnamFilterType.Slave },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentFiles, FilterType = EnamFilterType.Slave },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSubscriptions, FilterType = EnamFilterType.Slave },
                 }
             },
             {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
