@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

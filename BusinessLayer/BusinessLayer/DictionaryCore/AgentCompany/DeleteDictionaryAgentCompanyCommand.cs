@@ -1,33 +1,14 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
+﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
-using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Exception;
-using BL.Model.SystemCore;
-using System.Transactions;
 using BL.Model.Enums;
-using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DictionaryCore
 {
     public class DeleteDictionaryAgentCompanyCommand : BaseDictionaryCommand
     {
-        private int Model
-        {
-            get
-            {
-                if (!(_param is int))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (int)_param;
-            }
-        }
+        private int Model { get { return GetModel<int>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
 
         public override bool CanExecute()
@@ -39,24 +20,24 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
+            using (var transaction = Transactions.GetTransaction())
             {
-                using (var transaction = Transactions.GetTransaction())
+                var frontObj = _dictService.GetAgentCompany(_context, Model); ;
+                _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentCompanies, (int)CommandType, frontObj.Id, frontObj);
+
+                var persons = _dictDb.GetInternalAgentPersons(_context, new BL.Model.DictionaryCore.FilterModel.FilterDictionaryAgentPerson { CompanyIDs = new System.Collections.Generic.List<int> { Model } });
+
+                foreach (var item in persons)
                 {
-                    var frontObj = _dictService.GetAgentCompany(_context, Model); ;
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentCompanies, (int)CommandType, frontObj.Id, frontObj);
-
-                    _dictDb.DeleteAgentCompanies(_context, new System.Collections.Generic.List<int>() { Model });
-
-                    transaction.Complete();
-                    return null;
+                    _dictDb.DeleteAgentPerson(_context, item.Id);
                 }
 
+                _dictDb.DeleteAgentCompanies(_context, new System.Collections.Generic.List<int>() { Model });
+
+                transaction.Complete();
+                return null;
             }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeDeleted(ex);
-            }
+
         }
     }
 }

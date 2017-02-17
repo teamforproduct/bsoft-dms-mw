@@ -1,14 +1,9 @@
-﻿using System;
-using System.Transactions;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
-using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.CrossCutting.Helpers;
-using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.AgentEmployee

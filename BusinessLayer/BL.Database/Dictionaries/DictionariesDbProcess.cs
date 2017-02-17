@@ -400,16 +400,16 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentPeople(IContext context, InternalDictionaryAgentPeople people)
+        public void DeleteAgentPeople(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAgentPeopleSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == people.Id);
+                var ddt = dbContext.DictionaryAgentPeopleSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentPeopleSet.Remove(ddt);
                 dbContext.SaveChanges();
 
 
-                DeleteAgentIfNoAny(context, new List<int>() { people.Id });
+                DeleteAgentIfNoAny(context, new List<int>() { id });
 
                 transaction.Complete();
             }
@@ -479,17 +479,17 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public void DeleteAgentPerson(IContext context, InternalDictionaryAgentPerson person)
+        public void DeleteAgentPerson(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == person.Id);
+                var ddt = dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentPersonsSet.Remove(ddt);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, person.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
 
-                DeleteAgentPeople(context, person);
+                DeleteAgentPeople(context, id);
 
                 transaction.Complete();
             }
@@ -847,18 +847,18 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
+        public void DeleteAgentEmployee(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
 
-                var dbModel = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == employee.Id);
+                var dbModel = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentEmployeesSet.Remove(dbModel);
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Delete);
                 dbContext.SaveChanges();
 
-                DeleteAgentUser(context, new InternalDictionaryAgentUser(employee));
-                DeleteAgentPeople(context, employee);
+                DeleteAgentUser(context, id);
+                DeleteAgentPeople(context, id);
 
                 transaction.Complete();
             }
@@ -1282,11 +1282,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentUser(IContext context, InternalDictionaryAgentUser User)
+        public void DeleteAgentUser(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var dbModel = dbContext.DictionaryAgentUsersSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == User.Id);
+                var dbModel = dbContext.DictionaryAgentUsersSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentUsersSet.Remove(dbModel);
                 dbContext.SaveChanges();
                 //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Delete);
@@ -1434,11 +1434,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentAddress(IContext context, InternalDictionaryAgentAddress addr)
+        public void DeleteAgentAddress(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == addr.Id);
+                var ddt = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentAddressesSet.Remove(ddt);
                 dbContext.SaveChanges();
 
@@ -1627,11 +1627,11 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public void DeleteAddressType(IContext context, InternalDictionaryAddressType addrType)
+        public void DeleteAddressType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == addrType.Id);
+                var ddt = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAddressTypesSet.Remove(ddt);
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
                 dbContext.SaveChanges();
@@ -2184,9 +2184,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.DictionaryAgentCompaniesSet.RemoveRange(dbContext.DictionaryAgentCompaniesSet.
+                dbContext.DictionaryAgentCompaniesSet.
                 Where(x => x.Agent.ClientId == context.CurrentClientId).
-                Where(x => list.Contains(x.Id)));
+                Where(x => list.Contains(x.Id)).Delete();
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, list, EnumObjects.DictionaryAgentCompanies, EnumOperationType.Delete);
@@ -2427,7 +2427,7 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryAgentBanksSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.Update);
@@ -2435,17 +2435,17 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentBank(IContext context, InternalDictionaryAgentBank bank)
+        public void DeleteAgentBank(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == bank.Id);
+                var ddt = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentBanksSet.Remove(ddt);
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.Delete);
 
-                DeleteAgentIfNoAny(context, new List<int>() { bank.Id });
+                DeleteAgentIfNoAny(context, new List<int>() { id });
 
                 transaction.Complete();
             }
@@ -2627,11 +2627,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteAgentAccount(IContext context, InternalDictionaryAgentAccount account)
+        public void DeleteAgentAccount(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var dbModel = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == account.Id);
+                var dbModel = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAgentAccountsSet.Remove(dbModel);
                 dbContext.SaveChanges();
 
@@ -2832,11 +2832,11 @@ namespace BL.Database.Dictionaries
                 transaction.Complete();
             }
         }
-        public void DeleteContactType(IContext context, InternalDictionaryContactType contactType)
+        public void DeleteContactType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == contactType.Id);
+                var ddt = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryContactTypesSet.Remove(ddt);
                 dbContext.SaveChanges();
 
@@ -3867,11 +3867,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
+        public void DeleteDocumentSubject(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docSubject.Id);
+                var ddt = dbContext.DictionaryDocumentSubjectsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryDocumentSubjectsSet.Remove(ddt);
                 dbContext.SaveChanges();
 
@@ -4040,11 +4040,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteDocumentType(IContext context, InternalDictionaryDocumentType docType)
+        public void DeleteDocumentType(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docType.Id);
+                var ddt = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryDocumentTypesSet.Remove(ddt);
                 dbContext.SaveChanges();
 
@@ -5599,11 +5599,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docSubject)
+        public void DeleteRegistrationJournal(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var drj = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == docSubject.Id);
+                var drj = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryRegistrationJournalsSet.Remove(drj);
                 dbContext.SaveChanges();
 
@@ -6247,11 +6247,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteStandartSendListContent(IContext context, InternalDictionaryStandartSendListContent content)
+        public void DeleteStandartSendListContent(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == content.Id);
+                var ddt = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryStandartSendListContentsSet.Remove(ddt);
                 dbContext.SaveChanges();
 
@@ -6374,14 +6374,14 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteStandartSendList(IContext context, InternalDictionaryStandartSendList list)
+        public void DeleteStandartSendList(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var contents = dbContext.DictionaryStandartSendListContentsSet.Where(y => y.StandartSendListId == list.Id);
+                var contents = dbContext.DictionaryStandartSendListContentsSet.Where(y => y.StandartSendListId == id);
                 dbContext.DictionaryStandartSendListContentsSet.RemoveRange(contents);
 
-                var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == list.Id);
+                var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryStandartSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
 
@@ -6650,14 +6650,14 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void DeleteTag(IContext context, InternalDictionaryTag model)
+        public void DeleteTag(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var item = dbContext.DictionaryTagsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
+                var item = dbContext.DictionaryTagsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryTagsSet.Remove(item);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(dbContext, model.Id, EnumObjects.DictionaryTag, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.DictionaryTag, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using BL.Logic.Common;
+﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Exception;
-using BL.Model.DictionaryCore.FilterModel;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -14,20 +10,9 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
-            {
-                var newDocType = new InternalDictionaryDocumentType(Model);
-                CommonDocumentUtilities.SetLastChange(_context, newDocType);
-                _dictDb.UpdateDocumentType(_context, newDocType);
-            }
-            catch (DictionaryRecordWasNotFound)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseError(ex);
-            }
+            var newDocType = new InternalDictionaryDocumentType(Model);
+            CommonDocumentUtilities.SetLastChange(_context, newDocType);
+            _dictDb.UpdateDocumentType(_context, newDocType);
             return null;
         }
     }

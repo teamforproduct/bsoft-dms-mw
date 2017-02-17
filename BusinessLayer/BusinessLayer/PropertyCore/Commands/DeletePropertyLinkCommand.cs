@@ -1,14 +1,12 @@
-﻿using System;
+﻿using BL.Database.SystemDb;
 using BL.Logic.Common;
-using BL.Model.Exception;
-using BL.Database.SystemDb;
-using BL.Model.SystemCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.PropertyCore.Commands
 {
-    public class DeletePropertyLinkCommand : BasePropertCommand
-   
+    public class DeletePropertyLinkCommand : BasePropertyCommand
+
     {
         private readonly ISystemDbProcess _systDb;
 
@@ -17,22 +15,9 @@ namespace BL.Logic.PropertyCore.Commands
             _systDb = systDb;
         }
 
-        private int Model
-        {
-            get
-            {
-                if (!(_param is int))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (int)_param;
-            }
-        }
+        private int Model { get { return GetModel<int>(); } }
 
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
+        public override bool CanBeDisplayed(int positionId) => true;
 
 
         public override bool CanExecute()
@@ -43,19 +28,12 @@ namespace BL.Logic.PropertyCore.Commands
 
         public override object Execute()
         {
-            try
+            var item = new InternalPropertyLink
             {
-                var item = new InternalPropertyLink
-                {
-                    Id = Model
-                };
-                _systDb.DeletePropertyLink(_context, item);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeDeleted(ex);
-            }
+                Id = Model
+            };
+            _systDb.DeletePropertyLink(_context, item);
+            return null;
         }
 
         public override EnumPropertyActions CommandType => EnumPropertyActions.DeletePropertyLink;

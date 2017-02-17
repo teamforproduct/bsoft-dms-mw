@@ -4,11 +4,8 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Exception;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -19,28 +16,21 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
+            using (var transaction = Transactions.GetTransaction())
             {
-                using (var transaction = Transactions.GetTransaction())
-                {
 
-                    var model = new InternalDictionaryAgentOrg(Model);
+                var model = new InternalDictionaryAgentOrg(Model);
 
-                    CommonDocumentUtilities.SetLastChange(_context, model);
+                CommonDocumentUtilities.SetLastChange(_context, model);
 
-                    var id = _dictDb.AddAgentOrg(_context, model);
+                var id = _dictDb.AddAgentOrg(_context, model);
 
-                    var frontObj = _dictDb.GetAgentOrgs(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
+                var frontObj = _dictDb.GetAgentOrgs(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
+                _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
-                    transaction.Complete();
+                transaction.Complete();
 
-                    return id;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeAdded(ex);
+                return id;
             }
         }
     }

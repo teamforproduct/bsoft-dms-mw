@@ -1,8 +1,6 @@
 ﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Exception;
-using System;
 
 namespace BL.Logic.DictionaryCore
 {

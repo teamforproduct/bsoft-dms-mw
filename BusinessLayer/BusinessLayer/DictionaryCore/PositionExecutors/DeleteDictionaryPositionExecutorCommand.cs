@@ -20,24 +20,9 @@ namespace BL.Logic.DictionaryCore
             _docDb = documentDb;
         }
 
+        private int Model { get { return GetModel<int>(); } }
 
-        private int Model
-        {
-            get
-            {
-                if (!(_param is int))
-                {
-                    throw new WrongParameterTypeError();
-                }
-                return (int)_param;
-            }
-        }
-
-        public override bool CanBeDisplayed(int positionId)
-        {
-            return true;
-        }
-
+        public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {
@@ -51,8 +36,8 @@ namespace BL.Logic.DictionaryCore
             if (_docDb.ExistsEventsNatively(_context, new FilterDocumentEventNatively
             {
                 SourcePositionIDs = new List<int> { positionExecutor.PositionId },
-                SourcePositionExecutorAgentIDs  = new List<int> { positionExecutor.AgentId } ,
-                Date = new BL.Model.Common.Period(positionExecutor.StartDate, positionExecutor.EndDate?? DateTime.MaxValue)
+                SourcePositionExecutorAgentIDs = new List<int> { positionExecutor.AgentId },
+                Date = new BL.Model.Common.Period(positionExecutor.StartDate, positionExecutor.EndDate ?? DateTime.MaxValue)
             })) throw new DictionaryRecordCouldNotBeDeleted();
 
             // Нельзя удалять назначение если сотрудник в рамках этого назначения породил события
@@ -85,24 +70,17 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            try
+            using (var transaction = Transactions.GetTransaction())
             {
-                using (var transaction = Transactions.GetTransaction())
-                {
-                    var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
-                    _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
+                var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
+                _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
 
-                    _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole() {  PositionExecutorIDs = new List<int> { Model } });
-                    _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });
+                _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole() { PositionExecutorIDs = new List<int> { Model } });
+                _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });
 
-                    transaction.Complete();
-                }
-                return null;
+                transaction.Complete();
             }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeDeleted(ex);
-            }
+            return null;
         }
     }
 
