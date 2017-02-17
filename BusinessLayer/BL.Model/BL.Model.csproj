@@ -615,6 +615,7 @@
     <Compile Include="WebAPI\Filters\FilterAspNetClientLicences.cs" />
     <Compile Include="WebAPI\Filters\FilterAdminServers.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetUserClients.cs" />
+    <Compile Include="WebAPI\Filters\FilterAspNetUserContext.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetUserFingerprint.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetUserServers.cs" />
     <Compile Include="WebAPI\FrontModel\AuthError.cs" />

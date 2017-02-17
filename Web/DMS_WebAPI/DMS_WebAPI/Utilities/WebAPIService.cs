@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Utilities
     {
         private readonly WebAPIDbProcess _webDb;
 
-        public WebAPIService (WebAPIDbProcess webDb)
+        public WebAPIService(WebAPIDbProcess webDb)
         {
             _webDb = webDb;
         }
@@ -919,5 +919,50 @@ namespace DMS_WebAPI.Utilities
             return _webDb.GetControlQuestions();
         }
         #endregion
+
+        public IEnumerable<AspNetUserContexts> GetUserContexts(FilterAspNetUserContext filter)
+        {
+            return _webDb.GetUserContexts(filter);
+        }
+
+        public int MergeUserContexts(AspNetUserContexts model)
+        {
+            var uc = _webDb.GetUserContexts(new FilterAspNetUserContext
+            {
+                TokenExact = model.Token
+            }).FirstOrDefault();
+
+            if (uc == null)
+            {
+                return _webDb.AddUserContext(model);
+            }
+            else
+            {
+                model.Id = uc.Id;
+                _webDb.UpdateUserContext(model);
+                return model.Id;
+            }
+
+        }
+
+        public void DeleteUserContext(string token)
+        {
+            _webDb.DeleteUserContext(token);
+        }
+
+        public string GetClientCode(int clientId)
+        {
+            return _webDb.GetClientCode(clientId);
+            
+        }
+
+        public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)
+        {
+            return _webDb.GetServerByUser(userId, setUserServer);
+        }
+
+
+
+
     }
 }
