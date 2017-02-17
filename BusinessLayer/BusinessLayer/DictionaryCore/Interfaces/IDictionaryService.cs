@@ -267,7 +267,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region [+] StaffList ...
         IEnumerable<ITreeItem> GetStaffList(IContext context, FilterDictionaryStaffList filter);
-        
+
         #endregion
+
+        IEnumerable<int> GetFavouriteList(IContext context, string module, string feature);
     }
 }
