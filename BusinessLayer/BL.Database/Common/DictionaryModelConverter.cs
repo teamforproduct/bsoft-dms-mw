@@ -125,6 +125,16 @@ namespace BL.Database.Common
             };
         }
 
+        public static IEnumerable<DictionaryAgentFavorites> GetDbAgentFavorites(IContext context, IEnumerable<InternalAgentFavourite> list)
+        {
+            var items = new List<DictionaryAgentFavorites>();
+            foreach (var item in list)
+            {
+                items.Add(GetDbAgentFavorite(context, item));
+            }
+            return items;
+        }
+
         public static DictionaryStandartSendLists GetDbStandartSendList(IContext context, InternalDictionaryStandartSendList item)
         {
             return item == null ? null : new DictionaryStandartSendLists

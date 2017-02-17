@@ -258,17 +258,7 @@ namespace DMS_WebAPI.Utilities
 
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.MergeUserContexts(new DBModel.AspNetUserContexts
-            {
-                Token = context.CurrentEmployee.Token,
-                ClientId = context.CurrentClientId,
-                CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                DatabaseId = context.CurrentDB.Id,
-                IsChangePasswordRequired = context.IsChangePasswordRequired,
-                UserId = context.CurrentEmployee.UserId,
-                LoginLogId = context.LoginLogId,
-                LoginLogInfo = context.LoginLogInfo
-            });
+            webService.SaveUserContexts(context);
         }
 
         /// <summary>

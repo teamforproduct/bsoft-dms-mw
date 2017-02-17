@@ -3540,7 +3540,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
+
 
         public IEnumerable<TreeItem> GetDepartmentsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryDepartment filter)
         {
@@ -4771,7 +4771,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    Name =  x.Name + x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? x.ExecutorType.Suffix : null),
+                    Name = x.Name + x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? x.ExecutorType.Suffix : null),
                     SearchText = x.Name + " " + x.ExecutorAgent.Name + " " + x.ExecutorType.Suffix,
                     ObjectId = (int)EnumObjects.DictionaryPositions,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
@@ -7109,26 +7109,35 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public void AddAgentFavourites(IContext context, IEnumerable<InternalAgentFavourite> list)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentFavorites(context, list);
+                dbContext.DictionaryAgentFavoritesSet.AddRange(dbModel);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
         public void UpdateAgentFavourite(IContext context, InternalAgentFavourite model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentFavorite(context, model);
                 dbContext.DictionaryAgentFavoritesSet.Attach(dbModel);
-                var entity = dbContext.Entry(dbModel);
-
+                dbContext.Entry(dbModel).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
 
-        public void DeleteAgentFavourite(IContext context, int id)
+        public void DeleteAgentFavourite(IContext context, FilterAgentFavourite filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var item = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                //dbContext.DictionaryAgentFavoritesSet.Remove(item);
-                dbContext.SaveChanges();
+                var qry = GetAgentFavouriteQuery(context, dbContext, filter);
+                qry.Delete();
                 transaction.Complete();
             }
         }
@@ -7138,6 +7147,8 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentFavouriteQuery(context, dbContext, filter);
+
+                qry = qry.OrderByDescending(x => x.Date).ThenBy(x => x.Id);
 
                 var res = qry.Select(x => new InternalAgentFavourite
                 {
@@ -7151,7 +7162,7 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-        public IQueryable<DictionaryAgentFavorites> GetAgentFavouriteQuery(IContext context, DmsContext dbContext, FilterAgentFavourite filter)
+        private IQueryable<DictionaryAgentFavorites> GetAgentFavouriteQuery(IContext context, DmsContext dbContext, FilterAgentFavourite filter)
         {
             var qry = dbContext.DictionaryAgentFavoritesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -7185,6 +7196,23 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
+                if (filter.ObjectIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAgentFavorites>();
+                    filterContains = filter.ObjectIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ObjectId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.ModuleExact))
+                {
+                    qry = qry.Where(x => filter.ModuleExact.Equals(x.Module, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (!string.IsNullOrEmpty(filter.FeatureExact))
+                {
+                    qry = qry.Where(x => filter.FeatureExact.Equals(x.Feature, StringComparison.OrdinalIgnoreCase));
+                }
 
             }
             return qry;
@@ -7194,7 +7222,14 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<int> GetFavouriteList(IContext context, string module, string feature)
         {
-            return new List<int>();
+            var list = GetInternalAgentFavourite(context, new FilterAgentFavourite
+            {
+                AgentIDs = new List<int> { context.CurrentAgentId },
+                ModuleExact = module,
+                FeatureExact = feature
+            });
+
+            return list.Select(x => x.ObjectId).ToList();
         }
 
     }
