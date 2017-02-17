@@ -1526,6 +1526,8 @@ namespace BL.Logic.DictionaryCore
                     _dictDb.AddAgentFavourites(context, items);
                 }
 
+                transaction.Complete();
+
             }
 
         }
