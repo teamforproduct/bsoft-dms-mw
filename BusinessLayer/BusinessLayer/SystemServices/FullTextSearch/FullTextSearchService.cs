@@ -88,7 +88,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var tskList = new List<Task>();
                 foreach (var obj in objToProcess)
                 {
-                    var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, true);
+                    var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
                     if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
 
                     if (itmsCount.Count >= 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
