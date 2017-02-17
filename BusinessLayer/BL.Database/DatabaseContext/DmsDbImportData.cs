@@ -942,26 +942,26 @@ namespace BL.Database.DatabaseContext
         {
             return; // При переходе на Permissions CheckSystemActions потерял смысл и даже вредет. В базе нет необходимости хранить действия
 
-            int actionsCountByEnums =
-            Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
-            Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
+            //int actionsCountByEnums =
+            //Enum.GetValues(typeof(EnumAdminActions)).Cast<EnumAdminActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumEncryptionActions)).Cast<EnumEncryptionActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumPropertyActions)).Cast<EnumPropertyActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumDictionaryActions)).Cast<EnumDictionaryActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumDocumentActions)).Cast<EnumDocumentActions>().Where(x => x > 0).Count() +
+            //Enum.GetValues(typeof(EnumSystemActions)).Cast<EnumSystemActions>().Where(x => x > 0).Count();
 
-            var actionsCountByList = GetSystemActions().Count();
+            //var actionsCountByList = GetSystemActions().Count();
 
-            if (actionsCountByEnums != actionsCountByList)
-            {
-                List<EnumModel> list = CheckSystemActions2();
-                string s = string.Empty;
-                foreach (var item in list)
-                {
-                    s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
-                }
-                throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
-            }
+            //if (actionsCountByEnums != actionsCountByList)
+            //{
+            //    List<EnumModel> list = CheckSystemActions2();
+            //    string s = string.Empty;
+            //    foreach (var item in list)
+            //    {
+            //        s += "items.Add(GetSysAct(" + item.EnumName + "." + item.Name + ", EnumObjects.?));" + "\r\n";
+            //    }
+            //    throw new Exception("Так не пойдет! Нужно GetSystemActions поддерживать в актуальном состоянии \r\n" + s);
+            //}
 
 
         }

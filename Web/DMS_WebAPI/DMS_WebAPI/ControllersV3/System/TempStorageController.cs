@@ -60,7 +60,6 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <summary>
         /// Добавляет файл во временное хранилище
         /// </summary>
-        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route(Features.TempFileStorage)]

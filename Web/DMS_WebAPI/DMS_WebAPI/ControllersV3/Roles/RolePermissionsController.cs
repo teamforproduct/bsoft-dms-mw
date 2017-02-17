@@ -40,7 +40,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// Возвращает действия роли
         /// </summary>
         /// <param name="Id"></param>
-        /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Permissions)]
@@ -63,7 +62,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// Режим корректировки. Возвращает действия роли
         /// </summary>
         /// <param name="Id"></param>
-        /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Permissions + "/Edit")]

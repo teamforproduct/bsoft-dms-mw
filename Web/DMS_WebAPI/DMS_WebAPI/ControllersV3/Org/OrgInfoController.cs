@@ -106,7 +106,6 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <summary>
         /// Корректирует реквизиты организации
         /// </summary>
-        /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]

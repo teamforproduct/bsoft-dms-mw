@@ -221,8 +221,8 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token">new server parameters</param>
-        /// <param name="db">new server parameters</param>
-        /// <param name="clientId">clientId</param>
+        /// <param name="loginLogId">clientId</param>
+        /// <param name="loginLogInfo">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         public void Set(string token, int? loginLogId, string loginLogInfo)

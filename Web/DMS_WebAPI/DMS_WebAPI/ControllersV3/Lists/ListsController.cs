@@ -34,7 +34,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// Типы адресов
         /// </summary>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.AddressTypes)]
@@ -55,7 +54,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// Типы контактов
         /// </summary>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.ContactTypes)]

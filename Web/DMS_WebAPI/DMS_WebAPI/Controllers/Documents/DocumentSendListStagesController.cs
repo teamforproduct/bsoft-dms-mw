@@ -26,6 +26,7 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <summary>
         /// Получение плана работы над документом
         /// </summary>
+        /// <param name="ctx"></param>
         /// <param name="DocumentId">ИД документа</param>
         /// <param name="isLastStage"></param>
         /// <returns>План работы над документом</returns>
