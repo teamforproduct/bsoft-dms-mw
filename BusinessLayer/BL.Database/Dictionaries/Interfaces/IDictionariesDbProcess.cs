@@ -348,5 +348,10 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion CustomDictionaries
 
         IEnumerable<int> GetFavouriteList(IContext context, string module, string feature);
+        int AddAgentFavourite(IContext context, InternalAgentFavourite model);
+        void AddAgentFavourites(IContext context, IEnumerable<InternalAgentFavourite> list);
+        void UpdateAgentFavourite(IContext context, InternalAgentFavourite model);
+        void DeleteAgentFavourite(IContext context, FilterAgentFavourite filter);
+        IEnumerable<InternalAgentFavourite> GetInternalAgentFavourite(IContext context, FilterAgentFavourite filter);
     }
 }
