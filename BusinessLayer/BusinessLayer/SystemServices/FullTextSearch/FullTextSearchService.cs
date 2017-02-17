@@ -85,7 +85,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var objToProcess = _systemDb.ObjectToReindex();
                 //delete all current document before reindexing
                 worker.DeleteAllDocuments();
-                var tskList = new List<Task>();
+                var tskList = new List<Action>();
                 foreach (var obj in objToProcess)
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
@@ -93,7 +93,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                     if (itmsCount.Count > 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
                     {
-                        tskList.Add(Task.Factory.StartNew(() => { ReindexObject(ctx, worker, obj); }));
+                        tskList.Add(() => { ReindexObject(ctx, worker, obj); });
                     }
                     else
                     {
@@ -102,7 +102,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         {
                             int indTo = Math.Min(indFrom + _MAX_ENTITY_FOR_THREAD - 1, itmsCount[0]);
                             var @fromIndex = indFrom;
-                            tskList.Add(Task.Factory.StartNew(() => { ReindexBigObject(ctx, worker, obj, @fromIndex, indTo); }));
+                            tskList.Add(() => { ReindexBigObject(ctx, worker, obj, @fromIndex, indTo); });
                             indFrom = indTo +1;
                         } while (indFrom< itmsCount[0]);
 
@@ -110,7 +110,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 }
 
-                Task.WaitAll(tskList.ToArray());
+                Parallel.Invoke(tskList.ToArray());
 
                 //delete cash in case we just processed all that documents
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
