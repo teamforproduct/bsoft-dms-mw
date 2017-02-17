@@ -98,7 +98,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
                 {
-                    NotContainsIDs = new List<int> { context.LoginLogId.HasValue? context.LoginLogId.Value: 0 },
+                    NotContainsIDs = new List<int> { context.LoginLogId.HasValue ? context.LoginLogId.Value : 0 },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                     ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
@@ -123,13 +123,13 @@ namespace BL.Database.SystemDb
                 });
                 if (dateFrom != null)
                 {
-                    qry = qry.Where(x=>x.LogDate > dateFrom);
+                    qry = qry.Where(x => x.LogDate > dateFrom);
                 }
                 qry = qry.OrderByDescending(x => x.LogDate);
                 var res = qry.Select(x => new FrontAgentEmployeeUser { LastErrorLogin = x.LogDate }).FirstOrDefault();
-                if (res!=null)
+                if (res != null)
                 {
-                    res.CountErrorLogin = qry.Where(x=>     x.LogException.Equals("DmsExceptions:UserNameOrPasswordIsIncorrect")
+                    res.CountErrorLogin = qry.Where(x => x.LogException.Equals("DmsExceptions:UserNameOrPasswordIsIncorrect")
                                                      || x.LogException.Equals("DmsExceptions:UserIsDeactivated")
                                                      || x.LogException.Equals("DmsExceptions:UserAnswerIsIncorrect")
                                                      || x.LogException.Equals("DmsExceptions:FingerprintRequired")).Count();
@@ -796,7 +796,7 @@ namespace BL.Database.SystemDb
                 (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
                 VALUES
                 ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
-                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null": item.PermissionId.ToString())
+                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null" : item.PermissionId.ToString())
                 );
 
                 //dbContext.SystemActionsSet.Add(item);
@@ -1024,7 +1024,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture , AccessType = accessType } );
+                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture, AccessType = accessType });
 
                 var item = qry.FirstOrDefault();
 
@@ -2881,48 +2881,79 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AdminRolePermissionsSet.Delete();
+                //dbContext.AdminRolePermissionsSet.Delete();
 
-                dbContext.SystemPermissionsSet.Delete();
+                //dbContext.SystemPermissionsSet.Delete();
 
-                dbContext.SystemFeaturesSet.Delete();
+                //dbContext.SystemFeaturesSet.Delete();
 
-                dbContext.SystemModulesSet.Delete();
+                //dbContext.SystemModulesSet.Delete();
 
-                dbContext.SystemAccessTypesSet.Delete();
+                //dbContext.SystemAccessTypesSet.Delete();
 
                 DmsDbImportData.InitPermissions();
 
-                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
-                {
-                    dbContext.SystemAccessTypesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
-                    dbContext.SaveChanges();
-                }
+                //foreach (var item in DmsDbImportData.GetSystemAccessTypes())
+                //{
+                //    dbContext.SystemAccessTypesSet.Attach(item);
+                //    dbContext.Entry(item).State = EntityState.Added;
+                //    dbContext.SaveChanges();
+                //}
+
+                var modules = dbContext.SystemModulesSet.ToList();
 
                 foreach (var item in DmsDbImportData.GetSystemModules())
                 {
+                    if (modules.Any(x => x.Id == item.Id && x.Code == item.Code && x.Name == item.Name && x.Order == item.Order)) continue;
                     dbContext.SystemModulesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
+                    if (modules.Any(x => x.Code == item.Code)) dbContext.Entry(item).State = EntityState.Modified;
+                    else dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
+
+                var features = dbContext.SystemFeaturesSet.ToList();
 
                 foreach (var item in DmsDbImportData.GetSystemFeatures())
                 {
+                    if (features.Any(x => x.Id == item.Id && x.Code == item.Code && x.Name == item.Name && x.Order == item.Order)) continue;
                     dbContext.SystemFeaturesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
+                    if (features.Any(x => x.Code == item.Code)) dbContext.Entry(item).State = EntityState.Modified;
+                    else dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
+
+                var permissions = dbContext.SystemPermissionsSet.ToList();
 
                 foreach (var item in DmsDbImportData.GetSystemPermissions())
                 {
-
+                    if (permissions.Any(x => x.Id == item.Id && x.ModuleId == item.ModuleId && x.FeatureId == item.FeatureId && x.AccessTypeId == item.AccessTypeId)) continue;
                     dbContext.SystemPermissionsSet.Attach(item);
+                    if (permissions.Any(x => x.ModuleId == item.ModuleId && x.FeatureId == item.FeatureId && x.AccessTypeId == item.AccessTypeId)) dbContext.Entry(item).State = EntityState.Modified;
+                    else dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+
+                var rolePermissions = dbContext.AdminRolePermissionsSet.ToList();
+                var rp = DmsDbImportData.GetAdminRolePermissions();
+                var roles = dbContext.AdminRolesSet.ToList();
+                foreach (var item in rp)
+                {
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    item.RoleId = roles.FirstOrDefault(x => x.RoleTypeId == item.RoleId).Id;
+                    if (rolePermissions.Any(x => x.RoleId == item.RoleId && x.PermissionId == item.PermissionId)) continue;
+                    item.LastChangeDate = DateTime.UtcNow;
+                    item.LastChangeUserId = (int)EnumSystemUsers.AdminUser;
+                    dbContext.AdminRolePermissionsSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
-                
+                var rolePermissionsDel = rolePermissions.Where(x => !rp.Any(y => y.PermissionId == x.PermissionId && y.RoleId == x.RoleId)).ToList();
+
+                if (rolePermissionsDel.Count() > 0)
+                {
+                    dbContext.AdminRolePermissionsSet.RemoveRange(rolePermissionsDel);
+                }
 
                 transaction.Complete();
 
