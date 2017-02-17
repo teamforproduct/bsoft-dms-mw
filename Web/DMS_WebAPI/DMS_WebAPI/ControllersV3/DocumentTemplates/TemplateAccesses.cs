@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemlates
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
-    public class TemplateAccesses : ApiController
+    public class TemplateAccessesController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
