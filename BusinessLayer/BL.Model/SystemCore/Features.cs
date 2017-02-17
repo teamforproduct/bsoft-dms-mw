@@ -63,7 +63,7 @@
         public const string SubordinationTypes = "SubordinationTypes";
         public const string StageTypes = "StageTypes";
         public const string ValueTypes = "ValueTypes";
-
+        public const string SearchQueryLogs = "SearchQueryLogs";
 
         public const string Events = "Events";
         public const string DocumentAccesses = "DocumentAccesses";
@@ -135,7 +135,7 @@
                 case SendTypes:             res = 1500; break;
                 case SubordinationTypes:    res = 1510; break;
                 case ValueTypes:            res = 1520; break;
-
+                case SearchQueryLogs:       res = 1525; break;
                 case Events:                res = 1530; break;
 //                case Accesses:              res = 1540; break;
                 case DocumentAccesses:      res = 1550; break;

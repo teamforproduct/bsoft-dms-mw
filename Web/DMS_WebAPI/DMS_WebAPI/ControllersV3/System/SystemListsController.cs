@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
@@ -318,5 +319,21 @@ namespace DMS_WebAPI.ControllersV3.System
             return new JsonResult(tmpItems, this);
         }
 
+        /// <summary>
+        /// Возвращает историю поисковых запросов 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.SearchQueryLogs)]
+        [ResponseType(typeof(List<string>))]
+        public IHttpActionResult Get([FromUri] FilterSystemSearchQueryLog filter, UIPaging paging)
+        {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ILogger>();
+            var tmpItems = tmpService.GetSystemSearchQueryLogs(ctx, filter, paging);
+            return new JsonResult(tmpItems, this);
+        }
     }
 }

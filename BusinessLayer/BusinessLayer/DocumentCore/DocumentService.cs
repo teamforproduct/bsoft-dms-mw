@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore
                     }
                 }
                 var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
-                if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !(paging.IsOnlyCounter??false)/*&& res.Any()*/) //TODO UNCOMMENT!!!
+                if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !groupCountType.HasValue && !(paging.IsOnlyCounter??false)/*&& res.Any()*/) //TODO UNCOMMENT!!!
                 {
                     DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(ctx, new InternalSearchQueryLog
                     {

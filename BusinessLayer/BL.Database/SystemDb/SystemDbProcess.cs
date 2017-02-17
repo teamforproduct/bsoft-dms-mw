@@ -80,9 +80,9 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter);
 
-                qry = qry.OrderByDescending(x => x.LastChangeDate);
-
                 var qryT = qry.Select(x => x.SearchQueryText).Distinct();
+
+                qry = qry.OrderBy(x => x.SearchQueryText.Length).ThenBy(x => x.SearchQueryText);
 
                 Paging.Set(ref qry, paging);
 
@@ -158,17 +158,19 @@ namespace BL.Database.SystemDb
                         (current, value) => current.And(e => e.Id != value).Expand());
                     qry = qry.Where(filterContains);
                 }
-                if (filter.ModuleId?.Count > 0)
+                if (filter.Module?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
-                    filterContains = filter.ModuleId.Aggregate(filterContains,
+                    var moduleId = filter.Module.Select(x => Modules.GetId(x)).ToList();
+                    filterContains = moduleId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ModuleId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
-                if (filter.FeatureId?.Count > 0)
+                if (filter.Feature?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<SystemSearchQueryLogs>(false);
-                    filterContains = filter.FeatureId.Aggregate(filterContains,
+                    var featureId = filter.Feature.Select(x => Features.GetId(x)).ToList();
+                    filterContains = featureId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.FeatureId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
