@@ -9,6 +9,7 @@ using BL.Logic.Common;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Logic.Settings;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -135,6 +136,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private IFullTextIndexWorker GetWorker(IContext ctx)
         {
             return _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
+        }
+
+        public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
+        {
+            var ftRes = SearchItems(ctx, text, new FullTextSearchFilter { ModuleId = Modules.GetId(Modules.Documents) });
+            if (ftRes != null)
+            {
+                var resWithRanges =
+                    ftRes.GroupBy(x => x.ParentId)
+                        .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
+                        .OrderByDescending(x => x.Rate);
+                return resWithRanges.Select(x => x.DocId).ToList();
+            }
+            else
+            {
+                return new List<int>();
+            }
         }
 
         public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)

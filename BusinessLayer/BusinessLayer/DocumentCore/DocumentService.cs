@@ -48,43 +48,24 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging, EnumGroupCountType? groupCountType = null)
         {
-            try
+            if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch))
             {
-                _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
-                if (!String.IsNullOrEmpty(filter?.Document?.FullTextSearch))
-                {
-                    var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-                    var ftRes = ftService.SearchItems(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter {ModuleId  = Modules.GetId(Modules.Documents)});
-                    if (ftRes != null)
-                    {
-                        var resWithRanges =
-                            ftRes.GroupBy(x => x.ParentId)
-                                .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
-                                .OrderByDescending(x => x.Rate);
-                        filter.Document.FullTextSearchDocumentId = resWithRanges.Select(x => x.DocId).ToList();
-                    }
-                    else
-                    {
-                        filter.Document.FullTextSearchDocumentId = new List<int>();
-                    }
-                }
-                var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
-                if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !groupCountType.HasValue && !(paging.IsOnlyCounter??false)/*&& res.Any()*/) //TODO UNCOMMENT!!!
-                {
-                    DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(ctx, new InternalSearchQueryLog
+                filter.Document.FullTextSearchDocumentId
+                    = DmsResolver.Current.Get<IFullTextSearchService>()
+                    .SearchItemParentId(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter { ModuleId = Modules.GetId(Modules.Documents) });
+            }
+            var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
+            if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
+            {
+                DmsResolver.Current.Get<ILogger>()
+                    .AddSearchQueryLog(ctx, new InternalSearchQueryLog
                     {
                         ModuleId = Modules.GetId(Modules.Documents),
                         FeatureId = Features.GetId(Features.Info),
                         SearchQueryText = filter?.Document?.FullTextSearch,
                     });
-                }
-                return res;
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ctx, ex, "Cannot perform GetDocument");
-                throw new Exception("Ошибка при формировании списка документов.");
-            }
+            return res;
         }
 
         public FrontDocument GetDocument(IContext ctx, int documentId)
