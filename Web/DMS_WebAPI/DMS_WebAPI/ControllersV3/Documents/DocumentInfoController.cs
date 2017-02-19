@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -89,13 +90,22 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult PostGetGroupCountPositions([FromBody]FilterBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocuments(ctx, model?? new FilterBase(), new UIPaging(), EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
-            var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //TODO ASYNC AWAIT
+            //return await this.SafeExecuteAsync(ModelState, () =>
+            //{
+                if (!stopWatch.IsRunning) stopWatch.Restart();
+                var uCtx = DmsResolver.Current.Get<UserContexts>();
+                var ctx = uCtx.Get();
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items =
+                    docProc.GetDocuments(ctx, model ?? new FilterBase(), new UIPaging(), EnumGroupCountType.Positions)
+                        .ToList()
+                        .FirstOrDefault()?
+                        .DocumentWorkGroup;
+                var res = new JsonResult(items, this);
+                res.SpentTime = stopWatch;
+                return res;
+           // });
         }
 
         /// <summary>
