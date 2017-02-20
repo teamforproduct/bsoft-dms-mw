@@ -134,9 +134,11 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
+                    Access =  new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId??0 },
                     ObjectText = x.Main.Description + " " + x.Main.AddDescription + " " + x.Main.Task.Task + " "
                     + x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
                     + x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
+
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
@@ -980,6 +982,7 @@ namespace BL.Database.SystemDb
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminUserRoles,
                         ParentObjectId = x.Main.RoleId, ParentObjectType = EnumObjects.AdminRoles,
+                        DateFrom = x.Main.PositionExecutor.StartDate, DateTo = x.Main.PositionExecutor.EndDate,
                         ObjectText = x.Main.PositionExecutor.Agent.Name
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -992,6 +995,7 @@ namespace BL.Database.SystemDb
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminUserRoles,
                         ParentObjectId = x.Main.PositionExecutor.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
+                        DateFrom = x.Main.PositionExecutor.StartDate, DateTo = x.Main.PositionExecutor.EndDate,
                         ObjectText = x.Main.Role.Name
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});

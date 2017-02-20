@@ -1,4 +1,6 @@
 ﻿using BL.Model.Enums;
+using System;
+using System.Collections.Generic;
 
 namespace BL.Model.FullTextSearch
 {
@@ -52,5 +54,18 @@ namespace BL.Model.FullTextSearch
         /// Feature ID 
         /// </summary>
         public int FeatureId { get; set; }
+
+        /// <summary>
+        /// Доступы
+        /// </summary>
+        public List<int> Access { get; set; }
+        /// <summary>
+        /// Актуальность записи с
+        /// </summary>
+        public DateTime DateFrom { get; set; }
+        /// <summary>
+        /// Актуальность записи по
+        /// </summary>
+        public DateTime DateTo { get; set; }
     }
 }

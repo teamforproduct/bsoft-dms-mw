@@ -10,6 +10,8 @@ using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using BL.Logic.Settings;
 using BL.Model.SystemCore;
+using BL.Logic.AdminCore.Interfaces;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -157,7 +159,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            return GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter);
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, filter?.ModuleId)).Select(x=> Features.GetId(x.Feature)).ToList();
+            var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x=> perm.Contains(x.FeatureId));
+            return res;
         }
 
         public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
