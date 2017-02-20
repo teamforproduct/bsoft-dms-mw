@@ -1736,6 +1736,10 @@ namespace BL.Database.Admins
             {
                 qry = qry.Where(x => x.Actions.Any(z => z.Id == filter.ActionId.Value));
             }
+            if (filter.ModuleId.HasValue)
+            {
+                qry = qry.Where(x => x.ModuleId == filter.ModuleId.Value);
+            }
             return qry;
         }
 

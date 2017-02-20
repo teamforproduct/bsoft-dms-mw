@@ -975,10 +975,10 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
-        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
+        public IEnumerable<FrontPermission> GetUserPermissions(IContext context, FilterPermissionsAccess filter = null)
         {
 
-            return _adminDb.GetUserPermissionsAccess(context, GetFilterPermissionsAccessByContext(context, false));
+            return _adminDb.GetUserPermissionsAccess(context, filter ?? GetFilterPermissionsAccessByContext(context, false));
         }
 
         public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)
@@ -986,7 +986,7 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetRolePermissions(context, filter);
         }
 
-        public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null)
+        public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null)
         {
             var res = new FilterPermissionsAccess();
             res.UserId = context.CurrentAgentId;
@@ -1000,6 +1000,7 @@ namespace BL.Logic.AdminCore
             }
             res.ActionId = actionId;
             res.PermissionIDs = permissionIDs;
+            res.ModuleId = moduleId;
             return res;
         }
 

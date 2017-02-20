@@ -76,9 +76,9 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<ITreeItem> GetPositionsByJournalDIP(IContext context, int journalId, FilterTree filter);
         #endregion
 
-        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
+        IEnumerable<FrontPermission> GetUserPermissions(IContext context, FilterPermissionsAccess filter = null);
         IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter);
-        FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext = true, List<int> permissionIDs = null, int? actionId = null);
+        FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext = true, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null);
         bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter);
     }
 }

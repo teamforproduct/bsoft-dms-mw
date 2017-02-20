@@ -60,8 +60,7 @@ namespace BL.Logic.DocumentCore
                 DmsResolver.Current.Get<ILogger>()
                     .AddSearchQueryLog(ctx, new InternalSearchQueryLog
                     {
-                        ModuleId = Modules.GetId(Modules.Documents),
-                        FeatureId = Features.GetId(Features.Info),
+                        ModuleId = Modules.GetId(Modules.Documents),                        
                         SearchQueryText = filter?.Document?.FullTextSearch,
                     });
             }

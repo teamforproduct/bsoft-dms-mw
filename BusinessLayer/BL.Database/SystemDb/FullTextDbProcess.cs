@@ -77,7 +77,7 @@ namespace BL.Database.SystemDb
                     case EnamFilterType.SenderAgentId:
                         qry = qry.Where(x=>x.Main.SenderAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentId.Value});
                         break;
-                    case EnamFilterType.SenderAgentPersonId:    //TODO!!!
+                    case EnamFilterType.SenderAgentPersonId:
                         qry = qry.Where(x=>x.Main.SenderAgentPerson!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentPersonId.Value});
                         break;
                     default:
@@ -302,7 +302,7 @@ namespace BL.Database.SystemDb
                     case EnamFilterType.SenderAgentId:
                         qry = qry.Where(x=>x.Main.SenderAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentId.Value});
                         break;
-                    case EnamFilterType.SenderAgentPersonId:    //TODO!!!
+                    case EnamFilterType.SenderAgentPersonId:
                         qry = qry.Where(x=>x.Main.SenderAgentPerson!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SenderAgentPersonId.Value});
                         break;
                     default:
@@ -1317,7 +1317,7 @@ namespace BL.Database.SystemDb
             {EnumObjects.Documents, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.Slave },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendLists, FilterType = EnamFilterType.Slave },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentTags, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentFiles, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSubscriptions, FilterType = EnamFilterType.Slave },
@@ -1325,7 +1325,6 @@ namespace BL.Database.SystemDb
             },
             {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
                 {
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
@@ -1391,6 +1390,12 @@ namespace BL.Database.SystemDb
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.SourceAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.TargetAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocumentSendList, FilterType = EnamFilterType.TargetAgentId },
+                }
+            },
+            {EnumObjects.DictionaryAgentPersons, new List<FullTextDeepUpdateItemQuery>
+                {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.SenderAgentPersonId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.SenderAgentPersonId },
                 }
             },
             {EnumObjects.AdminRoles, new List<FullTextDeepUpdateItemQuery>

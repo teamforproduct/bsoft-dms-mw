@@ -140,7 +140,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            var ftRes = SearchItems(ctx, text, new FullTextSearchFilter { ModuleId = Modules.GetId(Modules.Documents) });
+            var ftRes = SearchItems(ctx, text, filter);
             if (ftRes != null)
             {
                 var resWithRanges =
