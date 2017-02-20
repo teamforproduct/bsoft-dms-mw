@@ -10,6 +10,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void Dispose();
         void ReindexDatabase(IContext ctx);
         IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter);
+        IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter);
         List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter);
     }
 }
