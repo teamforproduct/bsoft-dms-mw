@@ -159,7 +159,35 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             return GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter);
         }
-        
+
+        public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
+        {
+            var words = text.Split(' ').OrderBy(x=>x.Length);
+            var res = new List<FullTextSearchResult>();
+            var worker = GetWorker(ctx);
+            if (worker == null) return res;
+            var tempRes = new List<List<FullTextSearchResult>>();
+            foreach (var word in words)
+            {
+                var r = worker.SearchItems(word, ctx.CurrentClientId, filter);
+                if (!r.Any()) return res;
+                tempRes.Add(r.ToList());
+            }
+            
+            tempRes.RemoveAll(x => !x.Any());
+
+            if (!tempRes.Any()) return res;
+            res = tempRes.First();
+            tempRes.Remove(res);
+            foreach (var sRes in tempRes)
+            {
+                res = res.Join(sRes, a => new {a.ParentId, a.ParentObjectType},
+                    b => new {b.ParentId, b.ParentObjectType}, (a, b) => a).ToList();
+            }
+
+            return res;
+        }
+
         protected override void InitializeServers()
         {
             try
@@ -218,7 +246,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             try
             {
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
-                var cashList = _systemDb.FullTextIndexToUpdate(ctx);
+                var cashList = _systemDb.FullTextIndexToUpdate(ctx, currCashId);
 
                 foreach (var item in cashList)
                 {

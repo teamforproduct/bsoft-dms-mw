@@ -24,14 +24,14 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<FullTextIndexItem> FullTextIndexToUpdate(IContext ctx)
+        public IEnumerable<FullTextIndexItem> FullTextIndexToUpdate(IContext ctx, int maxIdValue)
         {
             var res = new List<FullTextIndexItem>();
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
                 //Add deleted item to  process processing full text index
-                res.AddRange(dbContext.FullTextIndexCashSet.Select(x => new FullTextIndexItem
+                res.AddRange(dbContext.FullTextIndexCashSet.Where(x=>x.Id<=maxIdValue).Select(x => new FullTextIndexItem
                 {
                     Id = x.Id,
                     ObjectType = (EnumObjects)x.ObjectType,
