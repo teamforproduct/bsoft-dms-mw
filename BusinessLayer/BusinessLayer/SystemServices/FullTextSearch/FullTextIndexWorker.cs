@@ -31,6 +31,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_BODY = "postBody";
         private const string FIELD_CLIENT_ID = "ClientId";
         private const string FIELD_MODULE_ID = "ModuleId";
+        private const string FIELD_SECURITY_ID = "SecurityCodes";
+        private const string FIELD_DATE_FROM_ID = "DateFrom";
+        private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
         private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
         IndexWriter _writer;
@@ -102,6 +105,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new Field(FIELD_BODY, item.ObjectText??"", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
+            var securCodes = (item.Access == null || !item.Access.Any())?"": ";" + string.Join(";", item.Access) + ";";
+            doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.NO, Field.Index.ANALYZED));
+
+            var dateFrom = new NumericField(FIELD_DATE_FROM_ID, Field.Store.NO, true);
+            dateFrom.SetIntValue(item.DateFrom.HasValue?(int)item.DateFrom.Value.ToOADate():0);
+            doc.Add(dateFrom);
+
+            var dateTo = new NumericField(FIELD_DATE_TO_ID, Field.Store.YES, true);
+            dateTo.SetIntValue(item.DateTo.HasValue ? (int)item.DateTo.Value.ToOADate() : 0);
+            doc.Add(dateTo);
+
             _writer.AddDocument(doc);
         }
 
@@ -165,6 +179,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, filter.FeatureId.Value, filter.FeatureId.Value, true, true);
                 boolQry.Add(featureQry, Occur.MUST);
             }
+            if (filter.IsOnlyActual)
+            {
+                var currDat = (int)DateTime.Now.ToOADate();
+                var fromDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
+                boolQry.Add(fromDat, Occur.MUST);
+
+                var maxDate = (int) DateTime.Now.AddYears(20).ToOADate();
+                var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
+                boolQry.Add(toDat, Occur.MUST);
+            }
+
 
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
 

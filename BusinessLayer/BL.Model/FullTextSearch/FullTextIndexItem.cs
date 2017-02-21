@@ -62,10 +62,10 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Актуальность записи с
         /// </summary>
-        public DateTime DateFrom { get; set; }
+        public DateTime? DateFrom { get; set; }
         /// <summary>
         /// Актуальность записи по
         /// </summary>
-        public DateTime DateTo { get; set; }
+        public DateTime? DateTo { get; set; }
     }
 }
