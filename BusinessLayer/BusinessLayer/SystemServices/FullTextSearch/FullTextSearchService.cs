@@ -89,7 +89,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 //delete all current document before reindexing
                 worker.DeleteAllDocuments();
                 var tskList = new List<Action>();
-                foreach (var obj in objToProcess)
+                foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DocumentEvents).ToList())
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
                     if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
@@ -100,13 +100,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     else
                     {
-                        int indFrom = 0; 
+                        int indFrom = 0;
                         do
                         {
                             int indTo = Math.Min(indFrom + _MAX_ENTITY_FOR_THREAD - 1, itmsCount[0]);
                             var @fromIndex = indFrom;
                             tskList.Add(() => { ReindexBigObject(ctx, worker, obj, @fromIndex, indTo); });
-                            indFrom = indTo +1;
+                            indFrom = indTo + 1;
                         } while (indFrom< itmsCount[0]);
 
                     }
