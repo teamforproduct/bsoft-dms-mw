@@ -576,6 +576,10 @@
     <Compile Include="Migrations\201702171651227_TemplateDocumentAccesses.Designer.cs">
       <DependentUpon>201702171651227_TemplateDocumentAccesses.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702221703052_FullTextIndexCashClientId.cs" />
+    <Compile Include="Migrations\201702221703052_FullTextIndexCashClientId.Designer.cs">
+      <DependentUpon>201702221703052_FullTextIndexCashClientId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -870,6 +874,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702171651227_TemplateDocumentAccesses.resx">
       <DependentUpon>201702171651227_TemplateDocumentAccesses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702221703052_FullTextIndexCashClientId.resx">
+      <DependentUpon>201702221703052_FullTextIndexCashClientId.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

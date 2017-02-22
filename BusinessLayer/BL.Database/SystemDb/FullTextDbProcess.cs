@@ -134,7 +134,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = x.Main.Task.TaskAccesses.Select(y=>y.PositionId).ToList()
+                    Access = x.Main.Task.TaskAccesses.Where(y=>x.Main.IsAvailableWithinTask).Select(y=>y.PositionId)
                                 .Concat(new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId??0 }).Distinct().ToList(),
                     ObjectText = x.Main.Description + " " + x.Main.AddDescription + " " + x.Main.Task.Task + " "
                     + x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
@@ -185,6 +185,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSendLists,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
+                    Access = new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId }.Where(y=>!x.Main.IsInitial).Distinct().ToList(),
                     ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
                     + x.Main.SourcePosition.Name + " "+ x.Main.SourcePosition.ExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
                     + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
@@ -214,7 +215,7 @@ namespace BL.Database.SystemDb
                 {
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentFiles,
-                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
+                    Access = new List<int> { x.Main.ExecutorPositionId}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct().ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.Extension + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -318,6 +319,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocument,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.TemplateDocument,
+                    Access = x.Main.Accesses.Select(y=>y.PositionId.Value).ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.RegistrationJournal.Name + " " + x.Main.RegistrationJournal.Department.Name + " "
                                 + x.Main.DocumentType.Name + " " + x.Main.Description + " "
                                 + x.Main.SenderAgent.Name + " " + x.Main.SenderAgentPerson.Agent.Name + x.Main.Addressee
@@ -419,7 +421,6 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-
             #endregion TemplateDocuments
 
             #region Complex Dictionary Info
@@ -1077,6 +1078,7 @@ namespace BL.Database.SystemDb
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryPositionExecutors,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
+                        DateFrom = x.Main.StartDate, DateTo = x.Main.EndDate,
                         ObjectText = x.Main.Position.Name
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1089,6 +1091,7 @@ namespace BL.Database.SystemDb
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryPositionExecutors,
                         ParentObjectId = x.Main.PositionId, ParentObjectType = EnumObjects.DictionaryPositions,
+                        DateFrom = x.Main.StartDate, DateTo = x.Main.EndDate,
                         ObjectText = x.Main.Agent.Name
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});

@@ -47,7 +47,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _serverKey = serverKey;
             _storePath = storePath;
 
-            var dir = Path.Combine(_storePath,_serverKey.Replace("\\", "").Replace(",", "").Replace(".", "").Replace("/", "_"));
+            var dir = Path.Combine(_storePath, _serverKey.Replace("\\", "").Replace(",", "").Replace(".", "").Replace("/", "_"));
             if (!System.IO.Directory.Exists(dir))
             {
                 System.IO.Directory.CreateDirectory(dir);
@@ -106,14 +106,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
             featureId.SetIntValue(item.FeatureId);
             doc.Add(featureId);
 
-            doc.Add(new Field(FIELD_BODY, item.ObjectText??"", Field.Store.NO, Field.Index.ANALYZED));
+            doc.Add(new Field(FIELD_BODY, item.ObjectText ?? "", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
-            var securCodes = (item.Access == null || !item.Access.Any())? NO_RULES_VALUE : ";" + string.Join(";", item.Access) + ";";
+            var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : ";" + string.Join(";", item.Access.Where(x => x != 0).ToList()) + ";";
             doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.NO, Field.Index.ANALYZED));
 
             var dateFrom = new NumericField(FIELD_DATE_FROM_ID, Field.Store.NO, true);
-            dateFrom.SetIntValue(item.DateFrom.HasValue?(int)item.DateFrom.Value.ToOADate():0);
+            dateFrom.SetIntValue(item.DateFrom.HasValue ? (int)item.DateFrom.Value.ToOADate() : 0);
             doc.Add(dateFrom);
 
             var dateTo = new NumericField(FIELD_DATE_TO_ID, Field.Store.YES, true);
@@ -169,7 +169,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             if (filter.ObjectType.HasValue)
             {
-                var objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true); 
+                var objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true);
                 boolQry.Add(objQry, Occur.MUST);
             }
             if (filter.ModuleId.HasValue)
@@ -188,7 +188,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var fromDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
                 boolQry.Add(fromDat, Occur.MUST);
 
-                var maxDate = (int) DateTime.Now.AddYears(20).ToOADate();
+                var maxDate = (int)DateTime.Now.AddYears(20).ToOADate();
                 var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
                 boolQry.Add(toDat, Occur.MUST);
             }
@@ -218,7 +218,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         ParentId = Convert.ToInt32(rdoc.Get(FIELD_PARENT_ID)),
                         ParentObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
-                        ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
+                        ObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
                         FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
@@ -245,7 +245,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public void Dispose()
         {
-            
+
         }
     }
 }
