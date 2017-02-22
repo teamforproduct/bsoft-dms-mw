@@ -89,7 +89,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 //delete all current document before reindexing
                 worker.DeleteAllDocuments();
                 var tskList = new List<Action>();
-                foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DocumentEvents).ToList())
+                foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DocumentSendLists).ToList())
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
                     if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
@@ -142,19 +142,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            var ftRes = SearchItems(ctx, text, filter);
-            if (ftRes != null)
-            {
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ParentId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
-                        .OrderByDescending(x => x.Rate);
-                return resWithRanges.Select(x => x.DocId).ToList();
-            }
-            else
-            {
-                return new List<int>();
-            }
+            return SearchItemsByDetail(ctx, text, filter).Select(x => x.ParentId).Distinct().ToList();
         }
 
         public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)
