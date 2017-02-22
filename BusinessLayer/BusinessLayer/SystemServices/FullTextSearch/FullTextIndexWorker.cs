@@ -20,10 +20,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
     {
         private readonly string _serverKey;
         private readonly string _storePath;
-        private readonly Directory _directory;
-        private Analyzer _analyzer;
-        private IndexReader _indexReader;
-        private IndexSearcher _searcher;
+
         private const string FIELD_PARENT_ID = "ParentId";
         private const string FIELD_PARENT_TYPE = "ParentType";
         private const string FIELD_OBJECT_TYPE = "ObjectType";
@@ -35,8 +32,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_DATE_FROM_ID = "DateFrom";
         private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
+        private const string NO_RULES_VALUE = "NO RULES";
         private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
-        IndexWriter _writer;
+
+        private IndexWriter _writer;
+        private readonly Directory _directory;
+        private readonly Analyzer _analyzer;
+        private IndexReader _indexReader;
+        private IndexSearcher _searcher;
+
 
         public FullTextIndexWorker(string serverKey, string storePath)
         {
@@ -105,7 +109,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new Field(FIELD_BODY, item.ObjectText??"", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
-            var securCodes = (item.Access == null || !item.Access.Any())?"": ";" + string.Join(";", item.Access) + ";";
+            var securCodes = (item.Access == null || !item.Access.Any())? NO_RULES_VALUE : ";" + string.Join(";", item.Access) + ";";
             doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.NO, Field.Index.ANALYZED));
 
             var dateFrom = new NumericField(FIELD_DATE_FROM_ID, Field.Store.NO, true);
@@ -152,8 +156,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
 
-            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer);
-            parser.AllowLeadingWildcard = true;
+            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer) {AllowLeadingWildcard = true};
             var textQry = parser.Parse(qryString);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
             var boolQry = new BooleanQuery();
@@ -189,7 +192,18 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
                 boolQry.Add(toDat, Occur.MUST);
             }
-
+            if (filter.Accesses != null && filter.Accesses.Any())
+            {
+                var accQry = new BooleanQuery();
+                var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
+                accQry.Add(scrEmpty, Occur.SHOULD);
+                foreach (var access in filter.Accesses)
+                {
+                    var scrQry = new TermQuery(new Term(FIELD_SECURITY_ID, ";"+ access+";"));
+                    accQry.Add(scrQry, Occur.SHOULD);
+                }
+                boolQry.Add(accQry, Occur.MUST);
+            }
 
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
 
@@ -220,9 +234,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return searchResult;
         }
 
-        public void DeleteAllDocuments()
+        public void DeleteAllDocuments(int clientId)
         {
-            _writer.DeleteAll();
+            var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
+
+            _writer.DeleteDocuments(clientQry);
+            _writer.Optimize();
+            _writer.Commit();
         }
 
         public void Dispose()

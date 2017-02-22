@@ -79,7 +79,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _stopTimersList.Add(tmr); // to avoid additional raise of timer event
             var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
             systemSetting.Value = false.ToString();
-            _settings.SaveSetting(ctx, systemSetting);
+            Settings.SaveSetting(ctx, systemSetting);
             //initiate the update of FT
             worker.StartUpdate();
             try
@@ -87,7 +87,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = _systemDb.ObjectToReindex();
                 //delete all current document before reindexing
-                worker.DeleteAllDocuments();
+                worker.DeleteAllDocuments(ctx.CurrentClientId);
                 var tskList = new List<Action>();
                 foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DocumentEvents).ToList())
                 {
@@ -113,19 +113,19 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 }
 
-                Parallel.Invoke(new ParallelOptions() {MaxDegreeOfParallelism = 4},tskList.ToArray());
+                Parallel.Invoke(new ParallelOptions() {MaxDegreeOfParallelism = 6},tskList.ToArray());
 
                 //delete cash in case we just processed all that documents
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);
 
                 //set indicator that full text for the client available
                 systemSetting.Value = true.ToString();
-                _settings.SaveSetting(ctx, systemSetting);
+                Settings.SaveSetting(ctx, systemSetting);
                 md.IsFullTextInitialized = true;
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, ex, "Error duing the reindexing database for client.");
+                Logger.Error(ctx, ex, "Error duing the reindexing database for client.");
             }
             finally
             {
@@ -140,25 +140,26 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
         }
 
+        private void ReindexBeforeSearch()
+        {
+        }
+
         public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
         {
+            ReindexBeforeSearch();
             var ftRes = SearchItems(ctx, text, filter);
-            if (ftRes != null)
-            {
-                var resWithRanges =
-                    ftRes.GroupBy(x => x.ParentId)
-                        .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
-                        .OrderByDescending(x => x.Rate);
-                return resWithRanges.Select(x => x.DocId).ToList();
-            }
-            else
-            {
-                return new List<int>();
-            }
+            if (ftRes == null) return new List<int>();
+
+            var resWithRanges =
+                ftRes.GroupBy(x => x.ParentId)
+                    .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
+                    .OrderByDescending(x => x.Rate);
+            return resWithRanges.Select(x => x.DocId).ToList();
         }
 
         public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)
         {
+            ReindexBeforeSearch();
             var admService = DmsResolver.Current.Get<IAdminService>();
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, filter?.ModuleId)).Select(x=> Features.GetId(x.Feature)).ToList();
             var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x=> perm.Contains(x.FeatureId));
@@ -167,6 +168,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
         {
+            ReindexBeforeSearch();
             var words = text.Split(' ').OrderBy(x=>x.Length);
             var res = new List<FullTextSearchResult>();
             var worker = GetWorker(ctx);
@@ -174,9 +176,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var tempRes = new List<List<FullTextSearchResult>>();
             foreach (var word in words)
             {
-                var r = worker.SearchItems(word, ctx.CurrentClientId, filter);
+                var r = worker.SearchItems(word, ctx.CurrentClientId, filter).ToList();
                 if (!r.Any()) return res;
-                tempRes.Add(r.ToList());
+                tempRes.Add(r);
             }
             
             tempRes.RemoveAll(x => !x.Any());
@@ -204,16 +206,16 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 // ignored
             }
 
-            foreach (var keyValuePair in _serverContext)
+            foreach (var keyValuePair in ServerContext)
             {
                 try
                 {
                     var ftsSetting = new FullTextSettings
                     {
-                        TimeToUpdate = _settings.GetFulltextRefreshTimeout(keyValuePair.Value),
+                        TimeToUpdate = Settings.GetFulltextRefreshTimeout(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
-                        StorePath = _settings.GetFulltextDatastorePath(keyValuePair.Value),
-                        IsFullTextInitialized = _settings.GetFulltextWasInitialized(keyValuePair.Value)
+                        StorePath = Settings.GetFulltextDatastorePath(keyValuePair.Value),
+                        IsFullTextInitialized = Settings.GetFulltextWasInitialized(keyValuePair.Value)
                     };
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
                     _workers.Add(worker);
@@ -223,7 +225,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, ex, "Could not initialize Full text service for server");
+                    Logger.Error(keyValuePair.Value, ex, "Could not initialize Full text service for server");
                 }
             }
         }
@@ -231,7 +233,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private Timer GetTimer(FullTextSettings key)
         {
             Timer res = null;
-            lock (_lockObjectTimer)
+            lock (LockObjectTimer)
             {
                 if (_timers.ContainsKey(key))
                     res = _timers[key];
@@ -241,7 +243,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         private void SinchronizeServer(IContext ctx)
         {
-            //_logger.Information(ctx, "Start FullText sinchronization " + DateTime.Now);
+            //Logger.Information(ctx, "Start FullText sinchronization " + DateTime.Now);
             var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
             if (worker == null) return;
 
@@ -300,7 +302,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ctx, ex, $"FullTextService cannot process item. CashID={item.Id} Type={item.ParentObjectId} ObjectId={item.ObjectId}");
+                        Logger.Error(ctx, ex, $"FullTextService cannot process item. CashID={item.Id} Type={item.ParentObjectId} ObjectId={item.ObjectId}");
                     }
                 }
 
@@ -312,11 +314,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "FullTextService raise an exception when process cash. ", ex);
+                Logger.Error(ctx, "FullTextService raise an exception when process cash. ", ex);
             }
             finally
             {
-                //_logger.Information(ctx, "Finisch FullText sinchronization " + DateTime.Now);
+                //Logger.Information(ctx, "Finisch FullText sinchronization " + DateTime.Now);
                 worker.CommitChanges();
             }
         }
@@ -342,8 +344,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
-                _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
+                Logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
+                Logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
             }
             tmr.Change(md.TimeToUpdate*60000, Timeout.Infinite); //start new iteration of the timer
         }

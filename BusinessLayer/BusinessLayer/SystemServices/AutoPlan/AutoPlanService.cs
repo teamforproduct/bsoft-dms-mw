@@ -37,13 +37,13 @@ namespace BL.Logic.SystemServices.AutoPlan
 
         protected override void InitializeServers()
         {
-            foreach (var keyValuePair in _serverContext)
+            foreach (var keyValuePair in ServerContext)
             {
                 try
                 {
                     var ftsSetting = new AutoPlanSettings
                     {
-                        TimeToUpdate = _settings.GetAutoplanTimeoutMinute(keyValuePair.Value),
+                        TimeToUpdate = Settings.GetAutoplanTimeoutMinute(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
                     };
                     var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
@@ -51,7 +51,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, "Could not start AutoPlan for server", ex);
+                    Logger.Error(keyValuePair.Value, "Could not start AutoPlan for server", ex);
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         private Timer GetTimer(AutoPlanSettings key)
         {
             Timer res = null;
-            lock (_lockObjectTimer)
+            lock (LockObjectTimer)
             {
                 if (_timers.ContainsKey(key))
                     res = _timers[key];
@@ -97,7 +97,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                             catch (Exception ex)
                             {
                                 isRepeat = false;
-                                _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                                Logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
                                 try
                                 {
                                     var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
@@ -109,7 +109,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                                 }
                                 catch (Exception ex2)
                                 {
-                                    _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                                    Logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
                                 }
                             }
                         }
@@ -117,7 +117,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ctx, "Could not process autoplan", ex);
+                    Logger.Error(ctx, "Could not process autoplan", ex);
                 }
             }) {CurrentContext = ctx};
             _workerSrv.AddNewTask(ctx, wrkUnit);
@@ -157,7 +157,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                            Logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
                             try
                             {
                                 var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
@@ -169,7 +169,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                             }
                             catch (Exception ex2)
                             {
-                                _logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                                Logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
                             }
 
                         }
@@ -177,7 +177,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ctx, "Could not process autoplan", ex);
+                    Logger.Error(ctx, "Could not process autoplan", ex);
                 }
                 tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
             }) { CurrentContext = ctx };

@@ -1,4 +1,5 @@
-﻿using BL.Model.Enums;
+﻿using System.Collections.Generic;
+using BL.Model.Enums;
 
 namespace BL.Model.FullTextSearch
 {
@@ -12,5 +13,7 @@ namespace BL.Model.FullTextSearch
         public int? FeatureId { get; set; }
 
         public bool IsOnlyActual { get; set; }
+
+        public List<int> Accesses { get; set; }
     }
 }

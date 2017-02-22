@@ -27,7 +27,7 @@ namespace BL.Logic.SystemServices.MailWorker
         private Timer GetTimer(InternalSendMailServerParameters key)
         {
             Timer res = null;
-            lock (_lockObjectTimer)
+            lock (LockObjectTimer)
             {
                 if (_timers.ContainsKey(key))
                     res = _timers[key];
@@ -47,7 +47,7 @@ namespace BL.Logic.SystemServices.MailWorker
                 // ignored
             }
 
-            foreach (var keyValuePair in _serverContext)
+            foreach (var keyValuePair in ServerContext)
             {
                 try
                 {
@@ -56,13 +56,13 @@ namespace BL.Logic.SystemServices.MailWorker
                     var msSetting = new InternalSendMailServerParameters
                     {
                         DatabaseKey = keyValuePair.Key,
-                        CheckInterval = _settings.GetMailTimeoutMin(ctx),
-                        ServerType = _settings.GetMailInfoServerType(ctx),
-                        FromAddress = _settings.GetMailInfoSystemMail(ctx),
-                        Login = _settings.GetMailInfoLogin(ctx),
-                        Pass = _settings.GetMailInfoPassword(ctx),
-                        Server = _settings.GetMailInfoName(ctx),
-                        Port = _settings.GetMailInfoPort(ctx)
+                        CheckInterval = Settings.GetMailTimeoutMin(ctx),
+                        ServerType = Settings.GetMailInfoServerType(ctx),
+                        FromAddress = Settings.GetMailInfoSystemMail(ctx),
+                        Login = Settings.GetMailInfoLogin(ctx),
+                        Pass = Settings.GetMailInfoPassword(ctx),
+                        Server = Settings.GetMailInfoName(ctx),
+                        Port = Settings.GetMailInfoPort(ctx)
                     };
 
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
@@ -71,7 +71,7 @@ namespace BL.Logic.SystemServices.MailWorker
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, "Could not start MeilSender for server", ex);
+                    Logger.Error(keyValuePair.Value, "Could not start MeilSender for server", ex);
                 }
             }
         }
@@ -105,7 +105,7 @@ namespace BL.Logic.SystemServices.MailWorker
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ctx, $"MailWorkerService cannot process Event Id={evt.EventId} DocId ={evt.DocumentId} ", ex);
+                        Logger.Error(ctx, $"MailWorkerService cannot process Event Id={evt.EventId} DocId ={evt.DocumentId} ", ex);
                     }
                 }
                 //TODO possible error: when we sent all meils, but could not save an result to DB, then all messages could be sended again
@@ -113,7 +113,7 @@ namespace BL.Logic.SystemServices.MailWorker
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Error while processing new events and sending EMails", ex);
+                Logger.Error(ctx, "Error while processing new events and sending EMails", ex);
             }
             tmr.Change(md.CheckInterval * 60000, Timeout.Infinite);//start new iteration of the timer
         }
@@ -132,7 +132,7 @@ namespace BL.Logic.SystemServices.MailWorker
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Cannot send email!", msSetting, ex);
+                Logger.Error(ctx, "Cannot send email!", msSetting, ex);
             }
         }
 
@@ -141,13 +141,13 @@ namespace BL.Logic.SystemServices.MailWorker
             var msSetting = new InternalSendMailParameters(
                     new InternalSendMailServerParameters
                     {
-                        CheckInterval = _settings.GetMailTimeoutMin(ctx),
-                        ServerType = _settings.GetMailInfoServerType(ctx),
-                        FromAddress = _settings.GetMailInfoSystemMail(ctx),
-                        Login = _settings.GetMailInfoLogin(ctx),
-                        Pass = _settings.GetMailInfoPassword(ctx),
-                        Server = _settings.GetMailInfoName(ctx),
-                        Port = _settings.GetMailInfoPort(ctx)
+                        CheckInterval = Settings.GetMailTimeoutMin(ctx),
+                        ServerType = Settings.GetMailInfoServerType(ctx),
+                        FromAddress = Settings.GetMailInfoSystemMail(ctx),
+                        Login = Settings.GetMailInfoLogin(ctx),
+                        Pass = Settings.GetMailInfoPassword(ctx),
+                        Server = Settings.GetMailInfoName(ctx),
+                        Port = Settings.GetMailInfoPort(ctx)
                     })
             {
                 Body = body,

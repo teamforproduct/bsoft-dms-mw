@@ -17,6 +17,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter);
 
-        void DeleteAllDocuments();
+        void DeleteAllDocuments(int clientId);
     }
 }
