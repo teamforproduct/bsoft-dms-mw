@@ -205,12 +205,37 @@ namespace BL.Logic.Logging
             return null;
         }
 
+
         public int? AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model)
         {
             model.ClientId = ctx.CurrentClientId;
             CommonDocumentUtilities.SetLastChange(ctx, model);
             var id = _systemDb.AddSearchQueryLog(ctx, model);
             return id;
+        }
+
+        public int? AddSearchQueryLog(IContext ctx, string module, string searchText)
+        {
+            var model = new InternalSearchQueryLog
+            {
+                ClientId = ctx.CurrentClientId,
+                ModuleId = Modules.GetId(module),
+                SearchQueryText = searchText,
+            };
+            CommonDocumentUtilities.SetLastChange(ctx, model);
+            var id = _systemDb.AddSearchQueryLog(ctx, model);
+            return id;
+        }
+
+        public int? AddSearchQueryLog(IContext ctx, bool existsResults, string module, string searchText, UIPaging paging = null)
+        {
+            if (!existsResults) return null;
+
+            if (string.IsNullOrEmpty(searchText)) return null;
+
+            if (paging?.IsOnlyCounter ?? false) return null;
+
+            return AddSearchQueryLog(ctx, module, searchText);
         }
 
         private int? AddLogToDb(IContext ctx, InternalLog info)
@@ -288,7 +313,7 @@ namespace BL.Logic.Logging
                 LogTrace = string.Join(" / ", args, Environment.StackTrace)
             });
         }
-        public int? Error(IContext ctx,  string message = null, string exception = null, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, int? agentId = null, params object[] args)
+        public int? Error(IContext ctx, string message = null, string exception = null, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, int? agentId = null, params object[] args)
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;

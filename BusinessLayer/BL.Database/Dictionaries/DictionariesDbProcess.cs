@@ -993,11 +993,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentEmployee> GetAgentEmployeesMain(IContext context, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentEmployeesQuery(context, dbContext, filter);
+                var qry = GetAgentEmployeesQuery(context, dbContext, filter as FilterDictionaryAgentEmployee);
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -2197,11 +2197,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentCompany> GetAgentCompanies(IContext context, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentCompaniesQuery(context, dbContext, filter);
+                var qry = GetAgentCompaniesQuery(context, dbContext, (filter as FilterDictionaryAgentCompany));
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -2474,11 +2474,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentBank> GetAgentBanks(IContext context, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentBanksQuery(context, dbContext, filter);
+                var qry = GetAgentBanksQuery(context, dbContext, (filter as FilterDictionaryAgentBank));
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -4073,11 +4073,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetDocumentTypesQuery(context, dbContext, filter);
+                var qry = GetDocumentTypesQuery(context, dbContext, filter as FilterDictionaryDocumentType);
 
                 qry = qry.OrderBy(x => x.Name);
 
@@ -5644,11 +5644,11 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetRegistrationJournalsQuery(context, dbContext, filter);
+                var qry = GetRegistrationJournalsQuery(context, dbContext, filter as FilterDictionaryRegistrationJournal);
 
                 qry = qry.OrderBy(x => x.Name);
 
@@ -6316,6 +6316,24 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, IBaseFilter filter, UIPaging paging)
+        {
+            var sendLists = GetStandartSendLists(context, filter as FilterDictionaryStandartSendList, paging);
+
+            var res = sendLists.GroupBy(x => new { x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
+                 .OrderBy(x => x.Key.PositionName)
+                 .Select(x => new FrontMainDictionaryStandartSendList()
+                 {
+                     Id = x.Key.PositionId ?? -1,
+                     Name = x.Key.PositionName,
+                     ExecutorName = x.Key.PositionExecutorName,
+                     ExecutorTypeSuffix = x.Key.PositionExecutorTypeSuffix,
+                     SendLists = x.OrderBy(y => y.Name).ToList()
+                 });
+
+            return res;
+
+        }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging)
         {
@@ -6554,11 +6572,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainTag> GetMainTags(IContext ctx, FilterDictionaryTag filter, UIPaging paging)
+        public IEnumerable<FrontMainTag> GetMainTags(IContext ctx, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetTagsQuery(ctx, dbContext, filter);
+                var qry = GetTagsQuery(ctx, dbContext, filter as FilterDictionaryTag);
 
                 qry = qry.OrderBy(x => x.Name);
 
@@ -6990,11 +7008,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging)
+        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, IBaseFilter filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetCustomDictionaryQuery(context, dbContext, filter);
+                var qry = GetCustomDictionaryQuery(context, dbContext, filter as FilterCustomDictionary);
 
                 qry = qry.OrderBy(x => x.Name);
 

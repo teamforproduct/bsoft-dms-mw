@@ -8,9 +8,9 @@ namespace BL.Model.FullTextSearch
         public EnumObjects? ParentObjectType { get; set; }
         public EnumObjects? ObjectType { get; set; }
 
-        public int? ModuleId { get; set; }
+        public string Module { get; set; }
 
-        public int? FeatureId { get; set; }
+        public string Feature { get; set; }
 
         public bool IsOnlyActual { get; set; }
 

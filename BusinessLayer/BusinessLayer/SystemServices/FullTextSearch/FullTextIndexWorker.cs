@@ -13,6 +13,7 @@ using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -172,14 +173,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true);
                 boolQry.Add(objQry, Occur.MUST);
             }
-            if (filter.ModuleId.HasValue)
+            if (!string.IsNullOrEmpty(filter.Module))
             {
-                var moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, filter.ModuleId.Value, filter.ModuleId.Value, true, true);
+                var moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module),  Modules.GetId(filter.Module), true, true);
                 boolQry.Add(moduleQry, Occur.MUST);
             }
-            if (filter.FeatureId.HasValue)
+            if (!string.IsNullOrEmpty(filter.Feature))
             {
-                var featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, filter.FeatureId.Value, filter.FeatureId.Value, true, true);
+                var featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, Features.GetId(filter.Feature), Features.GetId(filter.Feature), true, true);
                 boolQry.Add(featureQry, Occur.MUST);
             }
             if (filter.IsOnlyActual)

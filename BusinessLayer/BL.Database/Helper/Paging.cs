@@ -1,5 +1,6 @@
 ﻿using BL.Model.Enums;
 using BL.Model.SystemCore;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
@@ -34,6 +35,37 @@ namespace BL.Database.Helper
                 int skip = paging.PageSize * (paging.CurrentPage - 1);
                 int take = paging.PageSize;
                 qry = qry.Skip(() => skip).Take(() => take);
+                return EnumPagingResult.IsPaging;
+            }
+
+        }
+
+        public static EnumPagingResult Set<TDbModel>(ref List<TDbModel> list, UIPaging paging)
+        {
+            if (paging == null) return EnumPagingResult.NoPaging;
+
+            // Пагинация.Вернет только количество записей если = true
+            // Вернет количество записей и данные если = null
+            // Вернет только данные если = false
+            // По умолчанию null
+
+            if (paging.IsOnlyCounter ?? true)
+            { // IsOnlyCounter in (null, true)
+                paging.TotalItemsCount = list.Count();
+            }
+
+            if (paging.IsOnlyCounter ?? false)
+            { // IsOnlyCounter in (true)
+                return EnumPagingResult.IsOnlyCounter;
+            }
+
+            if (paging.IsAll)
+            { return EnumPagingResult.IsAll; }
+            else
+            {
+                int skip = paging.PageSize * (paging.CurrentPage - 1);
+                int take = paging.PageSize;
+                list = list.Skip(skip).Take(take).ToList();
                 return EnumPagingResult.IsPaging;
             }
 

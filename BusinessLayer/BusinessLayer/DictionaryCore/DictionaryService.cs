@@ -23,6 +23,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.CrossCutting.Helpers;
+using BL.Database.Helper;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -53,142 +54,19 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
-            var newFilter = new FilterDictionaryAgent();
-            if (!string.IsNullOrEmpty(filter.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents, filter.FullTextSearchString, ResolveSearchResultAgents);
+            //var newFilter = new FilterDictionaryAgent();
+            //if (!string.IsNullOrEmpty(filter.FullTextSearchString))
+            //{
+            //    newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents, filter.FullTextSearchString, ResolveSearchResultAgents);
 
-            }
-            else
-            {
-                newFilter = filter;
-            }
+            //}
+            //else
+            //{
+            //    newFilter = filter;
+            //}
 
-            return _dictDb.GetAgents(context, newFilter, paging);
+            return _dictDb.GetAgents(context, filter, paging);
         }
-
-        private List<int> GetIDsForDictionaryFullTextSearch(IContext context, EnumObjects dictionaryType, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
-        {
-            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            var ftRes = ftService.SearchItems(context, filter, new FullTextSearchFilter()); //TODO FTS Set correct parent object type or object type
-            if (filterFunct == null)
-            {
-                ftRes = ftRes.Where(x => x.ObjectType == dictionaryType);
-            }
-            else
-            {
-                ftRes = filterFunct(context, ftRes);
-            }
-
-            var resWithRanges =
-                ftRes.GroupBy(x => x.ObjectId)
-                    .Select(x => new { DocId = x.Key, Rate = x.Max(s => s.Score) })
-                    .OrderByDescending(x => x.Rate);
-            if (resWithRanges.Any())
-            {
-                return resWithRanges.Select(x => x.DocId).ToList();
-            }
-            return new List<int> { -1 };
-        }
-
-        private List<FullTextResultList> GetIDsForDictionaryFullTextSearchNew(IContext context, List<EnumObjects> dictionaryTypes, string filter, Func<IContext, IEnumerable<FullTextSearchResult>, IEnumerable<FullTextSearchResult>> filterFunct = null)
-        {
-            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            var ftRes = ftService.SearchItems(context, filter, new FullTextSearchFilter()); //TODO FTS Set correct parent object type or object type
-            if (filterFunct == null)
-            {
-                //if (dictionaryTypes.Count > 0)
-                //{
-                //   var filterContains = PredicateBuilder.False<FullTextSearchResult>();
-                //    filterContains = dictionaryTypes.Aggregate(filterContains,
-                //        (current, value) => current.Or(e => e.ObjectType == value).Expand());
-
-                //    ftRes = ftRes.Where(filterContains);
-                //}
-
-                ftRes = ftRes.Where(x => dictionaryTypes.Contains(x.ObjectType));
-            }
-            else
-            {
-                ftRes = filterFunct(context, ftRes);
-            }
-            var resWithRanges =
-                ftRes.GroupBy(x => new { x.ObjectId, x.ObjectType })
-                    .Select(x => new { ObjectId = x.Key.ObjectId, Rate = x.Max(s => s.Score), ObjectType = x.Key.ObjectType })
-                    .OrderByDescending(x => x.Rate);
-            if (resWithRanges.Any())
-            {
-                return resWithRanges.Select(x => new FullTextResultList { ObjectId = x.ObjectId, ObjectType = x.ObjectType }).ToList();
-            }
-            return null;
-        }
-
-        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgents(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
-        {
-
-            var agentTypes = new List<EnumObjects>
-            {
-                EnumObjects.DictionaryAgents,
-                EnumObjects.DictionaryAgentBanks,
-                EnumObjects.DictionaryAgentCompanies,
-                EnumObjects.DictionaryAgentEmployees,
-                EnumObjects.DictionaryAgentPeople
-            };
-
-            var res = new List<FullTextSearchResult>();
-            res.AddRange(ftRes
-                .Where(x => agentTypes.Contains(x.ObjectType)));
-
-            // Внимание GetAgentsIDByAddress клиентозависимый!!!
-            var tmp = _dictDb.GetAgentsIDByAddress(ctx,
-                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
-
-            //TODO WHAT A ???
-            res.AddRange(tmp.Select(x => new FullTextSearchResult
-            {
-                ParentId = 0,
-                ObjectId = x,
-                ObjectType = EnumObjects.DictionaryAgents,
-                Score = 0
-            }));
-
-            tmp = _dictDb.GetAgentsIDByContacts(ctx,
-                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(y => y.ObjectId).ToList());
-
-            res.AddRange(tmp.Select(x => new FullTextSearchResult
-            {
-                ParentId = 0,
-                ObjectId = x,
-                ObjectType = EnumObjects.DictionaryAgents,
-                Score = 0
-            }));
-
-            return res;
-        }
-
-
-        //public bool IsAgentOneRole(IContext context, int id, EnumDictionaryAgentTypes source)
-        //{
-
-        //    var agent = GetDictionaryAgent(context, id);
-
-        //    switch (source)
-        //    {
-        //        case EnumDictionaryAgentTypes.isEmployee:
-        //            if (!agent.IsCompany && !agent.IsBank) { return true; }
-        //            break;
-        //        case EnumDictionaryAgentTypes.isCompany:
-        //            if (!agent.IsIndividual && !agent.IsEmployee && !agent.IsBank) { return true; }
-        //            break;
-        //        case EnumDictionaryAgentTypes.isIndividual:
-        //            if (!agent.IsCompany && !agent.IsBank) { return true; }
-        //            break;
-        //        case EnumDictionaryAgentTypes.isBank:
-        //            if (!agent.IsEmployee && !agent.IsCompany && !agent.IsIndividual) { return true; }
-        //            break;
-        //    }
-        //    return false;
-        //}
 
         #endregion DictionaryAgents
 
@@ -216,19 +94,25 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging)
         {
-            var newFilter = new FilterDictionaryAgentPerson();
+            if (filter == null) filter = new FilterDictionaryAgentPerson();
 
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentPersons, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
+                //TODO FTS FullTextSearchFilter
+                var list = DmsResolver.Current.Get<IFullTextSearchService>().SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Person });
+
+                Paging.Set(ref list, paging);
+
+                filter.IDs = list;
             }
 
-            return _dictDb.GetMainAgentPersons(context, newFilter, paging);
+            var res = _dictDb.GetMainAgentPersons(context, filter, paging);
+
+            DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, res.Any(), Modules.Position, ftSearch?.FullTextSearchString, paging);
+
+            return res;
         }
+
         #endregion DictionaryAgentPersons
 
         #region DicionaryAgentEmployees
@@ -249,30 +133,8 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
-
-            var newFilter = new FilterDictionaryAgentEmployee();
-
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                //newFilter.IDs =  GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentEmployees, ftSearch.FullTextSearchString);
-                var list = GetIDsForDictionaryFullTextSearchNew(context,
-                    new List<EnumObjects> { EnumObjects.DictionaryAgentEmployees, EnumObjects.DictionaryContacts, EnumObjects.DictionaryAgentAddresses, EnumObjects.DictionaryPositions },
-                    ftSearch.FullTextSearchString);
-
-                if (list == null) return new List<FrontMainAgentEmployee>();
-
-                newFilter.IDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentEmployees).Select(x => x.ObjectId).ToList();
-                newFilter.AddressIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(x => x.ObjectId).ToList();
-                newFilter.ContactIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(x => x.ObjectId).ToList();
-                newFilter.PositionIDs = list.Where(x => x.ObjectType == EnumObjects.DictionaryPositions).Select(x => x.ObjectId).ToList();
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-            return _dictDb.GetAgentEmployeesMain(context, newFilter, paging);
-
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.Employee, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetAgentEmployeesMain);
         }
 
         public FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId)
@@ -327,20 +189,11 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter)
         {
-            var newFilter = new FilterDictionaryAddressType();
+            var res = _dictDb.GetAddressTypes(context, filter);
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, filter.FullTextSearchString);
+            //DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, res.Any(), Modules.Position, filter?.Name);
 
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-
-            return _dictDb.GetAddressTypes(context, newFilter);
+            return res;
         }
 
         public IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter)
@@ -394,58 +247,30 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
-
-            var newFilter = new FilterDictionaryAgentCompany();
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentCompanies, ftSearch.FullTextSearchString, ResolveSearchResultAgentCompanies);
-
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-            return _dictDb.GetAgentCompanies(context, newFilter, paging);
-
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.Company, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetAgentCompanies);
         }
 
-
-        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgentCompanies(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
+        private IEnumerable<MainFront> FTS<MainFront>(IContext context, string module, string searchString, IBaseFilter filter, UIPaging paging,
+            Func<IContext, IBaseFilter, UIPaging, IEnumerable<MainFront>> MainFunc,
+            FullTextSearchFilter ftsFilter = null)
         {
+            var bfilter = new BaseFilter();
 
-            var agentTypes = new List<EnumObjects>
+            if (!string.IsNullOrEmpty(searchString))
             {
+                if (ftsFilter == null) ftsFilter = new FullTextSearchFilter { Module = module };
 
-                EnumObjects.DictionaryAgentCompanies,
+                var list = DmsResolver.Current.Get<IFullTextSearchService>().SearchItemParentId(context, searchString, ftsFilter);
 
-            };
+                Paging.Set(ref list, paging);
 
-            var res = new List<FullTextSearchResult>();
-            res.AddRange(ftRes
-                .Where(x => agentTypes.Contains(x.ObjectType)));
+                filter.IDs = list;
+            }
 
-            var tmp = _dictDb.GetAgentsIDByAddress(ctx,
-                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
+            var res = MainFunc(context, filter, paging);
 
-            res.AddRange(tmp.Select(x => new FullTextSearchResult
-            {
-                ParentId = 0,
-                ObjectId = x,
-                ObjectType = EnumObjects.DictionaryAgents,
-                Score = 0
-            }));
-
-            tmp = _dictDb.GetAgentsIDByContacts(ctx,
-                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(y => y.ObjectId).ToList());
-
-            res.AddRange(tmp.Select(x => new FullTextSearchResult
-            {
-                ParentId = 0,
-                ObjectId = x,
-                ObjectType = EnumObjects.DictionaryAgents,
-                Score = 0
-            }));
+            DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, res.Any(), module, searchString, paging);
 
             return res;
         }
@@ -460,20 +285,8 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging)
         {
-            var newFilter = new FilterDictionaryAgentBank();
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgentBanks, ftSearch.FullTextSearchString, ResolveSearchResultAgentBanks);
-
-            }
-            else
-            {
-
-                newFilter = filter;
-            }
-
-            return _dictDb.GetAgentBanks(context, newFilter, paging);
-
+            //TODO FTS FullTextSearchFilter
+            return FTS<FrontMainAgentBank>(context, Modules.Bank, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetAgentBanks);
         }
 
         private IEnumerable<FullTextSearchResult> ResolveSearchResultAgentBanks(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
@@ -567,19 +380,13 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter)
         {
-            var newFilter = new FilterDictionaryContactType();
+            // TODO FTS
 
-            if (!String.IsNullOrEmpty(filter.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryContactType, filter.FullTextSearchString);
+            var res = _dictDb.GetContactTypes(context, filter);
 
-            }
-            else
-            {
-                newFilter = filter;
-            }
+            DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, res.Any(), Modules.Employee, filter?.FullTextSearchString);
 
-            return _dictDb.GetContactTypes(context, newFilter);
+            return res;
         }
 
         public IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter)
@@ -701,22 +508,10 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryDocumentType> GetMainDictionaryDocumentTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryDocumentType filter, UIPaging paging)
         {
-
-            var newFilter = new FilterDictionaryDocumentType();
-
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAddressType, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-
-            return _dictDb.GetDocumentTypes(context, newFilter, paging);
-
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.DocumentType, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetDocumentTypes);
         }
+
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
@@ -1020,19 +815,8 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging)
         {
-
-            var newFilter = new FilterDictionaryRegistrationJournal();
-
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryRegistrationJournals, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-            return _dictDb.GetRegistrationJournals(context, newFilter, paging);
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.Journal, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetRegistrationJournals);
         }
 
         public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FilterDictionaryJournalsTree filter)
@@ -1216,31 +1000,8 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging)
         {
-            var newFilter = new FilterDictionaryStandartSendList();
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryStandartSendLists, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-            var sendLists = _dictDb.GetStandartSendLists(context, filter, paging);
-
-            var res = sendLists.GroupBy(x => new { x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
-                 .OrderBy(x => x.Key.PositionName)
-                 .Select(x => new FrontMainDictionaryStandartSendList()
-                 {
-                     Id = x.Key.PositionId ?? -1,
-                     Name = x.Key.PositionName,
-                     ExecutorName = x.Key.PositionExecutorName,
-                     ExecutorTypeSuffix = x.Key.PositionExecutorTypeSuffix,
-                     SendLists = x.OrderBy(y => y.Name).ToList()
-                 });
-
-
-            return res;
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.SendList, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetMainStandartSendLists);
         }
 
         #endregion DictionaryStandartSendList
@@ -1256,17 +1017,8 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryTags
         public IEnumerable<FrontMainTag> GetMainTags(IContext context, FullTextSearch ftSearch, FilterDictionaryTag filter, UIPaging paging)
         {
-            var newFilter = new FilterDictionaryTag();
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryTag, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-            return _dictDb.GetMainTags(context, newFilter, paging);
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.Tags, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetMainTags);
         }
 
         public IEnumerable<ListItem> GetTagList(IContext context, FilterDictionaryTag filter, UIPaging paging)
@@ -1312,13 +1064,8 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging)
         {
-            if (!String.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                if (filter == null) filter = new FilterCustomDictionary();
-                filter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.CustomDictionaries, ftSearch.FullTextSearchString);
-            }
-
-            return _dictDb.GetCustomDictionaries(context, filter, paging);
+            //TODO FTS FullTextSearchFilter
+            return FTS(context, Modules.CustomDictionaries, ftSearch?.FullTextSearchString, filter, paging, _dictDb.GetCustomDictionaries);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging)
