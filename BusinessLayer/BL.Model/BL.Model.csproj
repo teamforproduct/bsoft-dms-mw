@@ -146,6 +146,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
     <Compile Include="Common\ItemCheck.cs" />
+    <Compile Include="SystemCore\UISorting.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterAgentFavourite.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontUserFavorites.cs" />

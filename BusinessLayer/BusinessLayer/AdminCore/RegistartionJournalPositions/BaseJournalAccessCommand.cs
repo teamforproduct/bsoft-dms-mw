@@ -43,8 +43,8 @@ namespace BL.Logic.AdminCore
                         var existsJournals = _adminDb.GetInternalRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { PositionIDs = new List<int> { positionId } });
 
                         // все журналы
-                        var allJournals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal()
-                        { IsActive = true }, null);
+                        var allJournals = _dictDb.GetInternalRegistrationJournals(_context, new FilterDictionaryRegistrationJournal()
+                        { IsActive = true });
 
                         var newJournals = new List<InternalRegistrationJournalPosition>();
 
@@ -200,7 +200,7 @@ namespace BL.Logic.AdminCore
 
         public void SetByDepartment_Position(int departmentId, int positionId, bool isChecked, EnumRegistrationJournalAccessTypes type)
         {
-            var journals = _dictDb.GetRegistrationJournals(_context, new FilterDictionaryRegistrationJournal() { DepartmentIDs = new List<int> { departmentId }, IsActive = true }, null);
+            var journals = _dictDb.GetInternalRegistrationJournals(_context, new FilterDictionaryRegistrationJournal() { DepartmentIDs = new List<int> { departmentId }, IsActive = true });
 
             if (journals.Count() > 0)
             {

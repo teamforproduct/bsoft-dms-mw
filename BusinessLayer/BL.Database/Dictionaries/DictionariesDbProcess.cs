@@ -35,7 +35,7 @@ namespace BL.Database.Dictionaries
 
         //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
-        #region [+] DictionaryAgents ...
+        #region [+]Agents ...
 
 
         //public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
@@ -331,9 +331,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionaryAgents
+        #endregion
 
-        #region [+] DictionaryAgentPeople ...
+        #region [+]People ...
         public int AddAgentPeople(IContext context, InternalDictionaryAgentPeople people)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -439,7 +439,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
-        #region [+] DictionaryAgentPerson ...
+        #region [+]Person ...
         public int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -477,7 +477,6 @@ namespace BL.Database.Dictionaries
 
             }
         }
-
 
         public void DeleteAgentPerson(IContext context, int id)
         {
@@ -541,14 +540,12 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
-
-        public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
 
-                var qry = GetAgentPersonsQuery(context, dbContext, filter);
+                var qry = GetAgentPersonsQuery(context, dbContext, filter as FilterDictionaryAgentPerson);
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
@@ -566,6 +563,21 @@ namespace BL.Database.Dictionaries
                     Description = x.Description,
                     IsActive = x.IsActive,
                 }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetAgentPersonIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentPersonsQuery(context, dbContext, filter as FilterDictionaryAgentPerson);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
 
                 transaction.Complete();
                 return res;
@@ -626,11 +638,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public FrontAgentPerson GetAgentPerson(IContext context, int id)
+        public IEnumerable<FrontAgentPerson> GetAgentPerson(IContext context, FilterDictionaryAgentPerson filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentPersonsQuery(context, dbContext, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
+                var qry = GetAgentPersonsQuery(context, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAgentPerson
                 {
@@ -642,24 +654,18 @@ namespace BL.Database.Dictionaries
                     FullName = x.Agent.AgentPeople.FullName,
                     TaxCode = x.Agent.AgentPeople.TaxCode,
                     IsMale = x.Agent.AgentPeople.IsMale,
-                    //PassportSerial = x.Agent.AgentPeople.PassportSerial,
-                    //PassportNumber = x.Agent.AgentPeople.PassportNumber,
-                    //PassportText = x.Agent.AgentPeople.PassportText,
-                    //PassportDate = x.Agent.AgentPeople.PassportDate,
                     BirthDate = x.Agent.AgentPeople.BirthDate,
                     Position = x.Position,
                     Description = x.Description,
                     IsActive = x.IsActive,
                     AgentCompanyId = x.AgentCompanyId,
                     AgentCompanyName = x.AgentCompany.Agent.Name,
-                }).FirstOrDefault();
+                }).ToList();
 
                 transaction.Complete();
                 return res;
             }
         }
-
-
 
         public bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter)
         {
@@ -672,7 +678,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryAgentPersons> GetAgentPersonsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentPerson filter)
+        private IQueryable<DictionaryAgentPersons> GetAgentPersonsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentPerson filter)
         {
             var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -806,10 +812,34 @@ namespace BL.Database.Dictionaries
 
             return qry;
         }
+        private void SetSort<TSource, TKey>(IQueryable<DictionaryAgentPersons> qry, UISorting sorting)
+        {
+            if (sorting == null) return;
 
-        #endregion DictionaryAgentPerson
+            if (sorting.SortPrimary == EnumSort.NoSorting) return;
 
-        #region [+] DictionaryAgentEmployee ...
+            //System.Linq.Expression<Func<DictionaryAgentPersons, string>> keySelector = x => x.Agent.Name;
+
+            if (sorting.SortPrimaryAsc)
+                //IOrderedQueryable<DictionaryAgentPersons> o
+                    qry = qry.OrderBy(x => x.Agent.Name);
+            else
+                qry = qry.OrderByDescending(x => x.Agent.Name);
+
+            if (sorting.SortSecondary == EnumSort.NoSorting) return;
+
+            if (sorting.SortSecondaryAsc) qry = qry.OrderBy(x => x.Agent.Name).ThenBy(x => x.Agent.Name);
+            else qry = qry.OrderByDescending(x => x.Agent.Name).ThenBy(x => x.Agent.Name);
+
+            if (sorting.SortThird == EnumSort.NoSorting) return;
+
+            if (sorting.SortThirdAsc) qry = qry.OrderBy(x => x.Agent.Name).ThenBy(x => x.Agent.Name).ThenBy(x => x.Agent.Name);
+            else qry = qry.OrderByDescending(x => x.Agent.Name).ThenBy(x => x.Agent.Name).ThenBy(x => x.Agent.Name);
+
+        }
+        #endregion
+
+        #region [+]Employee ...
         public int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -863,69 +893,6 @@ namespace BL.Database.Dictionaries
                 transaction.Complete();
             }
         }
-
-        //public FrontDictionaryAgentEmployee GetAgentEmployee(IContext context, int id)
-        //{
-        //    using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var res = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentEmployee
-        //        {
-        //            Id = x.Id,
-        //            PersonnelNumber = x.PersonnelNumber,
-        //            IsActive = x.IsActive,
-        //            Description = x.Description,
-        //            Name = x.Agent.Name,
-        //            FullName = x.Agent.AgentPerson.FullName,
-        //            FirstName = x.Agent.AgentPerson.FirstName,
-        //            LastName = x.Agent.AgentPerson.LastName,
-        //            MiddleName = x.Agent.AgentPerson.MiddleName,
-        //            TaxCode = x.Agent.AgentPerson.TaxCode,
-        //            IsMale = x.Agent.AgentPerson.IsMale,
-        //            PassportSerial = x.Agent.AgentPerson.PassportSerial,
-        //            PassportNumber = x.Agent.AgentPerson.PassportNumber,
-        //            PassportText = x.Agent.AgentPerson.PassportText,
-        //            PassportDate = x.Agent.AgentPerson.PassportDate,
-        //            BirthDate = x.Agent.AgentPerson.BirthDate,
-        //            LanguageId = x.Agent.AgentUser.LanguageId,
-
-        //            Contacts = x.Agent.AgentContacts.Select(y => new FrontDictionaryContact
-        //            {
-        //                Id = y.Id,
-        //                AgentId = y.AgentId,
-        //                ContactType = new FrontDictionaryContactType
-        //                {
-        //                    Id = y.ContactType.Id,
-        //                    Name = y.ContactType.Name,
-        //                    Code = y.ContactType.Code,
-        //                    InputMask = y.ContactType.InputMask,
-        //                    IsActive = y.ContactType.IsActive
-        //                },
-        //                Value = y.Contact,
-        //                IsActive = y.IsActive,
-        //                Description = y.Description
-        //            }),
-        //            Addresses = x.Agent.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-        //            {
-        //                Id = z.Id,
-        //                AgentId = z.AgentId,
-        //                AddressType = new FrontDictionaryAddressType
-        //                {
-        //                    Id = z.AddressType.Id,
-        //                    Name = z.AddressType.Name,
-        //                    IsActive = z.AddressType.IsActive
-        //                },
-        //                PostCode = z.PostCode,
-        //                Address = z.Address,
-        //                IsActive = z.IsActive,
-        //                Description = z.Description
-        //            })
-        //        }).FirstOrDefault();
-
-        //        transaction.Complete();
-        //        return res;
-
-        //    }
-        //}
 
         public int GetAgentEmployeePersonnelNumber(IContext context)
         {
@@ -993,7 +960,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainAgentEmployee> GetAgentEmployeesMain(IContext context, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1038,6 +1005,21 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public List<int> GetAgentEmployeeIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentEmployeesQuery(context, dbContext, filter as FilterDictionaryAgentEmployee);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1058,7 +1040,6 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-
 
         public IQueryable<DictionaryAgentEmployees> GetAgentEmployeesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentEmployee filter)
         {
@@ -1249,9 +1230,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionaryAgentEmployee
+        #endregion
 
-        #region [+] DictionaryAgentUser ...
+        #region [+]User ...
         public int AddAgentUser(IContext context, InternalDictionaryAgentUser User)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1393,7 +1374,7 @@ namespace BL.Database.Dictionaries
 
         #endregion
 
-        #region [+] DictionaryAgentAddress ...
+        #region [+]Address ...
         public FrontDictionaryAgentAddress GetAgentAddress(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1588,7 +1569,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
-        #region [+] DictionaryAddressTypes ...
+        #region [+] AddressTypes ...
         public int AddAddressType(IContext context, InternalDictionaryAddressType addrType)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1798,7 +1779,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
-        #region [+] DictionaryAgentOrg ...
+        #region [+]Org ...
         public int AddAgentOrg(IContext context, InternalDictionaryAgentOrg org)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2132,7 +2113,7 @@ namespace BL.Database.Dictionaries
 
         #endregion
 
-        #region [+] DictionaryAgentCompanies ...
+        #region [+]Companies ...
         public int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2197,7 +2178,34 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainAgentCompany> GetAgentCompanies(IContext context, IBaseFilter filter, UIPaging paging)
+        
+        public IEnumerable<FrontAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentCompaniesQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontAgentCompany>();
+
+                var res = qry.Select(x => new FrontAgentCompany
+                {
+                    Id = x.Id,
+                    FullName = x.FullName,
+                    Name = x.Agent.Name,
+                    TaxCode = x.TaxCode,
+                    OKPOCode = x.OKPOCode,
+                    VATCode = x.VATCode,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+        public IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2230,28 +2238,21 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public FrontAgentCompany GetAgentCompany(IContext context, int id)
+        public List<int> GetAgentCompanyIDs(IContext context, IBaseFilter filter, UISorting sortin)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentCompaniesQuery(context, dbContext, new FilterDictionaryAgentCompany { IDs = new List<int> { id } });
+                var qry = GetAgentCompaniesQuery(context, dbContext, (filter as FilterDictionaryAgentCompany));
 
-                var res = qry.Select(x => new FrontAgentCompany
-                {
-                    Id = x.Id,
-                    FullName = x.FullName,
-                    Name = x.Agent.Name,
-                    TaxCode = x.TaxCode,
-                    OKPOCode = x.OKPOCode,
-                    VATCode = x.VATCode,
-                    Description = x.Description,
-                    IsActive = x.IsActive,
-                }).FirstOrDefault();
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
 
                 transaction.Complete();
                 return res;
             }
         }
+
 
         public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
@@ -2385,9 +2386,9 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion DictionaryAgentCompanies
+        #endregion
 
-        #region [+] DictionaryAgentBanks ...
+        #region [+]Banks ...
 
         public int AddAgentBank(IContext context, InternalDictionaryAgentBank bank)
         {
@@ -2474,7 +2475,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainAgentBank> GetAgentBanks(IContext context, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, IBaseFilter filter, UIPaging paging, UISorting sortin)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -2494,6 +2495,21 @@ namespace BL.Database.Dictionaries
                     Description = x.Description,
                     IsActive = x.IsActive,
                 }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetAgentBankIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentBanksQuery(context, dbContext, (filter as FilterDictionaryAgentBank));
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
 
                 transaction.Complete();
                 return res;
@@ -2579,9 +2595,9 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion DictionaryAgentBanks
+        #endregion
 
-        #region [+] DictionaryAgentAccounts ...
+        #region [+]Accounts ...
         public FrontDictionaryAgentAccount GetAgentAccount(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2793,9 +2809,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionaryAgentAccounts
+        #endregion
 
-        #region [+] DictionaryContactTypes ...
+        #region [+] ContactTypes ...
         public int AddContactType(IContext context, InternalDictionaryContactType model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2998,7 +3014,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
-        #region [+] DictionaryAgentContacts ...
+        #region [+]Contacts ...
 
         public int AddContact(IContext context, InternalDictionaryContact contact)
         {
@@ -3224,7 +3240,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion
 
-        #region [+] DictionaryDepartments ...
+        #region [+] Departments ...
         public int AddDepartment(IContext context, InternalDictionaryDepartment department)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -3725,9 +3741,9 @@ namespace BL.Database.Dictionaries
             }
             return qry;
         }
-        #endregion DictionaryDepartments
+        #endregion
 
-        #region [+] DictionaryDocumentDirections ...
+        #region [+] DocumentDirections ...
 
         public IEnumerable<FrontDictionaryDocumentDirection> GetDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter)
         {
@@ -3807,7 +3823,7 @@ namespace BL.Database.Dictionaries
         }
         #endregion DictionaryDepartments
 
-        #region [+] DictionaryDocumentSubjects ...
+        #region [+] DocumentSubjects ...
 
         public int AddDocumentSubject(IContext context, InternalDictionaryDocumentSubject docSubject)
         {
@@ -4008,9 +4024,9 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion DictionaryDocumentSubjects
+        #endregion
 
-        #region [+] DictionaryDocumentTypes ...
+        #region [+] DocumentTypes ...
         public int AddDocumentType(IContext context, InternalDictionaryDocumentType docType)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -4073,7 +4089,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryDocumentType> GetMainDocumentTypes(IContext context, IBaseFilter filter, UIPaging paging, UISorting sortin)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -4089,6 +4105,21 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     IsActive = x.IsActive
                 }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetDocumentTypeIDs(IContext context, IBaseFilter filter, UISorting sortin)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetDocumentTypesQuery(context, dbContext, filter as FilterDictionaryDocumentType);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
 
                 transaction.Complete();
                 return res;
@@ -4167,9 +4198,9 @@ namespace BL.Database.Dictionaries
 
             return qry;
         }
-        #endregion DictionaryDocumentTypes
+        #endregion
 
-        #region [+] DictionaryEventTypes ...
+        #region [+] EventTypes ...
         public IEnumerable<FrontDictionaryEventType> GetEventTypes(IContext context, FilterDictionaryEventType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -4241,9 +4272,9 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-        #endregion DictionaryEventTypes
+        #endregion
 
-        #region [+] DictionaryImportanceEventTypes ...
+        #region [+] ImportanceEventTypes ...
         public IEnumerable<FrontDictionaryImportanceEventType> GetImportanceEventTypes(IContext context, FilterDictionaryImportanceEventType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -4306,9 +4337,9 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-        #endregion DictionaryImportanceEventTypes
+        #endregion
 
-        #region [+] DictionaryLinkTypes ...
+        #region [+] LinkTypes ...
         public IEnumerable<FrontDictionaryLinkType> GetLinkTypes(IContext context, FilterDictionaryLinkType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -4366,9 +4397,9 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-        #endregion DictionaryLinkTypes
+        #endregion
 
-        #region [+] DictionaryPositions ...
+        #region [+] Positions ...
         public int AddPosition(IContext context, InternalDictionaryPosition position)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -4494,7 +4525,7 @@ namespace BL.Database.Dictionaries
                 #endregion
 
                 // Удаляю настройку сенд лист ????
-                //#region [+] DictionaryStandartSendListContents ...
+                //#region [+] StandartSendListContents ...
                 //var filterStandartSendListContents = PredicateBuilder.False<DictionaryStandartSendListContents>();
                 //filterStandartSendListContents = list.Aggregate(filterStandartSendListContents,
                 //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
@@ -4512,7 +4543,7 @@ namespace BL.Database.Dictionaries
                 #endregion
 
                 // Удаляю руководителей подразделений
-                #region [+] DictionaryDepartments ...
+                #region [+] Departments ...
                 var filterDepartments = PredicateBuilder.False<DictionaryDepartments>();
                 filterDepartments = list.Aggregate(filterDepartments,
                     (current, value) => current.Or(e => e.ChiefPositionId == value).Expand());
@@ -4530,7 +4561,7 @@ namespace BL.Database.Dictionaries
                 #endregion
 
                 // Удаляю исполнителей
-                #region [+] DictionaryPositionExecutors ...
+                #region [+] PositionExecutors ...
                 var filterPositionExecutors = PredicateBuilder.False<DictionaryPositionExecutors>();
                 filterPositionExecutors = list.Aggregate(filterPositionExecutors,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -5144,9 +5175,9 @@ namespace BL.Database.Dictionaries
         //    }
         //}
 
-        #endregion DictionaryPositions
+        #endregion
 
-        #region [+] DictionaryPositionExecutors ...
+        #region [+] PositionExecutors ...
         public int AddExecutor(IContext context, InternalDictionaryPositionExecutor executor)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -5451,9 +5482,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionaryPositionExecutors
+        #endregion
 
-        #region [+] DictionaryPositionExecutorTypes ...
+        #region [+] PositionExecutorTypes ...
         public IEnumerable<InternalDictionaryPositionExecutorType> GetInternalDictionaryPositionExecutorType(IContext context, FilterDictionaryPositionExecutorType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -5568,9 +5599,9 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion DictionaryPositionExecutorTypes
+        #endregion
 
-        #region [+] DictionaryRegistrationJournals ...
+        #region [+] RegistrationJournals ...
         public int AddRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal regJournal)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -5612,7 +5643,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<InternalDictionaryRegistrationJournal> GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<InternalDictionaryRegistrationJournal> GetInternalRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -5644,7 +5675,7 @@ namespace BL.Database.Dictionaries
 
 
 
-        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -5669,6 +5700,21 @@ namespace BL.Database.Dictionaries
                     IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
                     DepartmentName = x.Department.Name
                 }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetRegistrationJournalIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRegistrationJournalsQuery(context, dbContext, filter as FilterDictionaryRegistrationJournal);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
 
                 transaction.Complete();
                 return res;
@@ -5911,9 +5957,9 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion DictionaryRegistrationJournals
+        #endregion
 
-        #region [+] DictionaryResultTypes ...
+        #region [+] ResultTypes ...
         public IEnumerable<FrontDictionaryResultType> GetResultTypes(IContext context, FilterDictionaryResultType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -5975,9 +6021,9 @@ namespace BL.Database.Dictionaries
         }
 
 
-        #endregion DictionaryResultTypes
+        #endregion
 
-        #region [+] DictionarySendTypes ...
+        #region [+] SendTypes ...
 
         public IEnumerable<FrontDictionarySendType> GetSendTypes(IContext context, FilterDictionarySendType filter)
         {
@@ -6033,9 +6079,9 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-        #endregion DictionarySendTypes
+        #endregion
 
-        #region [+] DictionaryStageTypes ...
+        #region [+] StageTypes ...
         public IEnumerable<ListItem> GetStageTypes(IContext context, FilterDictionaryStageType filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -6088,9 +6134,9 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
-        #endregion DictionaryStageTypes
+        #endregion
 
-        #region [+] DictionaryStandartSendListContents ...
+        #region [+] StandartSendListContents ...
 
         public IQueryable<DictionaryStandartSendListContents> GetStandartSendListContentsQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendListContent filter)
         {
@@ -6261,9 +6307,9 @@ namespace BL.Database.Dictionaries
         }
 
 
-        #endregion DictionaryStandartSendListContents
+        #endregion
 
-        #region [+] DictionaryStandartSendLists ...
+        #region [+] StandartSendLists ...
         public IQueryable<DictionaryStandartSendLists> GetStandartSendListQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendList filter)
         {
             var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
@@ -6316,7 +6362,7 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, IBaseFilter filter, UIPaging paging, UISorting sortin)
         {
             var sendLists = GetStandartSendLists(context, filter as FilterDictionaryStandartSendList, paging);
 
@@ -6332,6 +6378,22 @@ namespace BL.Database.Dictionaries
                  });
 
             return res;
+
+        }
+
+        public List<int> GetStandartSendListIDs(IContext context, IBaseFilter filter, UISorting sortin)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListQuery(context, dbContext, filter as FilterDictionaryStandartSendList);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
 
         }
 
@@ -6409,9 +6471,9 @@ namespace BL.Database.Dictionaries
         }
 
 
-        #endregion DictionaryStandartSendList
+        #endregion
 
-        #region [+] DictionarySubordinationTypes ...
+        #region [+] SubordinationTypes ...
 
         public IEnumerable<ListItem> GetSubordinationTypes(IContext context, FilterDictionarySubordinationType filter)
         {
@@ -6464,9 +6526,9 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionarySubordinationTypes
+        #endregion
 
-        #region [+] DictionaryTags ...
+        #region [+] Tags ...
 
         private IQueryable<DictionaryTags> GetTagsQuery(IContext context, DmsContext dbContext, FilterDictionaryTag filter)
         {
@@ -6532,11 +6594,11 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public FrontTag GetTag(IContext ctx, int id)
+        public IEnumerable<FrontTag> GetTag(IContext ctx, FilterDictionaryTag filter)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetTagsQuery(ctx, dbContext, new FilterDictionaryTag { IDs = new List<int> { id } });
+                var qry = GetTagsQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontTag
                 {
@@ -6544,7 +6606,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     Color = x.Color,
                     IsActive = x.IsActive,
-                }).FirstOrDefault();
+                }).ToList();
 
                 transaction.Complete();
                 return res;
@@ -6572,7 +6634,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontMainTag> GetMainTags(IContext ctx, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontMainTag> GetMainTags(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sortin)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -6602,7 +6664,20 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public List<int> GetTagIDs(IContext ctx, IBaseFilter filter, UISorting sortin)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTagsQuery(ctx, dbContext, filter as FilterDictionaryTag);
 
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
         public int DocsWithTagCount(IContext context, int tagId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -6680,7 +6755,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        #endregion DictionaryTags
+        #endregion
 
         // pss перенести в AdminCore
         #region [+] AdminAccessLevels ...
@@ -6763,7 +6838,7 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion AdminAccessLevels
+        #endregion
 
         #region [+] CustomDictionaryTypes ...
         public int AddCustomDictionaryType(IContext context, InternalCustomDictionaryType model)
@@ -6939,7 +7014,7 @@ namespace BL.Database.Dictionaries
 
             return qry;
         }
-        #endregion CustomDictionaryTypes
+        #endregion
 
         #region [+] CustomDictionaries ...
         public int AddCustomDictionary(IContext context, InternalCustomDictionary model)
@@ -7008,7 +7083,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, IBaseFilter filter, UIPaging paging)
+        public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -7026,6 +7101,21 @@ namespace BL.Database.Dictionaries
                     Description = x.Description,
                     TypeId = x.DictionaryTypeId
                 }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetCustomDictionarieIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetCustomDictionaryQuery(context, dbContext, filter as FilterCustomDictionary);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
 
                 transaction.Complete();
                 return res;
@@ -7109,7 +7199,7 @@ namespace BL.Database.Dictionaries
             return qry;
         }
 
-        #endregion CustomDictionaries
+        #endregion
 
 
         #region [+] AgentFavourites ...

@@ -18,7 +18,7 @@ namespace BL.CrossCutting.Interfaces
         IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging);
         int? AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model);
         int? AddSearchQueryLog(IContext ctx, string module, string searchText);
-        int? AddSearchQueryLog(IContext ctx, bool existsResults, string module, string searchText, UIPaging paging = null);
+        int? AddSearchQueryLog(IContext ctx, bool existsResults, string module, string searchText);
         int? Trace(IContext ctx, string message, params object[] args);
         int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, bool isCopyDate1 = false);
         int? Warning(IContext ctx, string message, params object[] args);

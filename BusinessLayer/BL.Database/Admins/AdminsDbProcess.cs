@@ -425,6 +425,22 @@ namespace BL.Database.Admins
             }
         }
 
+        public List<int> GetRolesIDs(IContext context, FilterAdminRole filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRolesQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<int>();
+
+                var res = qry.Select(x => x.Id).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
 
         public IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter)
         {

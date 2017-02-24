@@ -227,13 +227,11 @@ namespace BL.Logic.Logging
             return id;
         }
 
-        public int? AddSearchQueryLog(IContext ctx, bool existsResults, string module, string searchText, UIPaging paging = null)
+        public int? AddSearchQueryLog(IContext ctx, bool existsResults, string module, string searchText)
         {
             if (!existsResults) return null;
 
             if (string.IsNullOrEmpty(searchText)) return null;
-
-            if (paging?.IsOnlyCounter ?? false) return null;
 
             return AddSearchQueryLog(ctx, module, searchText);
         }
