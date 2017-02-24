@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore
             {
                 filter.Document.FullTextSearchDocumentId
                     = DmsResolver.Current.Get<IFullTextSearchService>()
-                    .SearchItemParentId(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter { ModuleId = Modules.GetId(Modules.Documents) });
+                    .SearchItemParentId(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter { Module = Modules.Documents });
             }
             var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
             if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())

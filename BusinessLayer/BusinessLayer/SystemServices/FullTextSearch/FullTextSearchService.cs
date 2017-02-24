@@ -90,7 +90,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 foreach (var obj in objToProcess)
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
-                    if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
+                    if (!itmsCount.Any() || itmsCount.All(x => x == 0)) continue;
 
                     if (itmsCount.Count > 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
                     {
@@ -98,14 +98,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     else
                     {
-                        int indFrom = 0; 
+                        int indFrom = 0;
                         do
                         {
                             int indTo = Math.Min(indFrom + _MAX_ENTITY_FOR_THREAD - 1, itmsCount[0]);
                             var @fromIndex = indFrom;
                             tskList.Add(() => { ReindexBigObject(ctx, worker, obj, @fromIndex, indTo); });
-                            indFrom = indTo +1;
-                        } while (indFrom< itmsCount[0]);
+                            indFrom = indTo + 1;
+                        } while (indFrom < itmsCount[0]);
 
                     }
 
@@ -140,7 +140,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            var ftRes = SearchItems(ctx, text, new FullTextSearchFilter { ModuleId = Modules.GetId(Modules.Documents) });
+            var ftRes = SearchItems(ctx, text, filter);
             if (ftRes != null)
             {
                 var resWithRanges =
@@ -162,7 +162,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            var words = text.Split(' ').OrderBy(x=>x.Length);
+            var words = text.Split(' ').OrderBy(x => x.Length);
             var res = new List<FullTextSearchResult>();
             var worker = GetWorker(ctx);
             if (worker == null) return res;
@@ -173,7 +173,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 if (!r.Any()) return res;
                 tempRes.Add(r.ToList());
             }
-            
+
             tempRes.RemoveAll(x => !x.Any());
 
             if (!tempRes.Any()) return res;
@@ -181,8 +181,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             tempRes.Remove(res);
             foreach (var sRes in tempRes)
             {
-                res = res.Join(sRes, a => new {a.ParentId, a.ParentObjectType},
-                    b => new {b.ParentId, b.ParentObjectType}, (a, b) => a).ToList();
+                res = res.Join(sRes, a => new { a.ParentId, a.ParentObjectType },
+                    b => new { b.ParentId, b.ParentObjectType }, (a, b) => a).ToList();
             }
 
             return res;
@@ -270,7 +270,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                                 }
                                 break;
                             case EnumOperationType.Delete:
-                                var toDelete = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false,null, currCashId);
+                                var toDelete = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false, null, currCashId);
                                 foreach (var itmDel in toDelete)
                                 {
                                     worker.DeleteItem(itmDel);
@@ -340,7 +340,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
                 _logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
             }
-            tmr.Change(md.TimeToUpdate*60000, Timeout.Infinite); //start new iteration of the timer
+            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
 
         public override void Dispose()
