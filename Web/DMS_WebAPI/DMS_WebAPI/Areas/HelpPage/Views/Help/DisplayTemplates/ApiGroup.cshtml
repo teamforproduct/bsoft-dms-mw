@@ -27,16 +27,22 @@
 }
 <table class="help-page-table">
   @*<thead>
-    <tr><th>API</th><th>Description</th></tr>
-  </thead>*@
+      <tr><th>API</th><th>Description</th></tr>
+    </thead>*@
   <tbody>
     @foreach (var api in Model)
     {
         <tr>
           <td class="api-name">
-            <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">@api.HttpMethod.Method @api.RelativePath</a>
+
             @if ("POST,PUT".Contains(@api.HttpMethod.Method))
             {
+
+                <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                  @api.HttpMethod.Method @api.GetFriendlyName()
+                </a>
+
+
               HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
               var text = string.Empty;
 
@@ -58,11 +64,38 @@
                 {
                   text = "(" + text + ")";
 
-                  @Html.Raw(text);
+                        @Html.Raw(text);
 
                 }
 
               }
+
+            }
+
+            else if ("GET" == @api.HttpMethod.Method)
+            {
+              HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
+              var dContent = string.Empty;
+              if (apiModel.UriParameters.Count > 0)
+              {
+                    <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
+                       data-container="body" data-toggle="popover"
+                       title="Параметры" data-placement="right" data-trigger="hover"
+                       data-content=@foreach (var item in apiModel.UriParameters.OrderBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                       {
+                         @Html.Raw(item.Name + "&ensp;");
+                       }>
+                      @api.HttpMethod.Method @api.GetFriendlyName()
+                    </a>
+
+              }
+              else
+              {
+                    <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                      @api.HttpMethod.Method @api.GetFriendlyName()
+                    </a>
+              }
+
 
             }
 
@@ -82,3 +115,9 @@
     }
   </tbody>
 </table>
+
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="popover"]').popover();
+  });
+</script>

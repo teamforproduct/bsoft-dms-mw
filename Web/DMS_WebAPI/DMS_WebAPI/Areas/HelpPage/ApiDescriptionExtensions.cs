@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Areas.HelpPage
                 string[] queryKeys = HttpUtility.ParseQueryString(query).AllKeys;
                 queryKeyString = String.Join("_", queryKeys);
             }
-
+            
             StringBuilder friendlyPath = new StringBuilder();
             friendlyPath.AppendFormat("{0}-{1}",
                 description.HttpMethod.Method,
@@ -34,6 +34,15 @@ namespace DMS_WebAPI.Areas.HelpPage
                 friendlyPath.AppendFormat("_{0}", queryKeyString.Replace('.', '-'));
             }
             return friendlyPath.ToString();
+        }
+
+        public static string GetFriendlyName(this ApiDescription description)
+        {
+            string path = description.RelativePath;
+            string[] urlParts = path.Split('?');
+            var res = urlParts[0];
+
+            return res;
         }
     }
 }

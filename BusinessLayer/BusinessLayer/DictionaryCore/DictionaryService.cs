@@ -249,9 +249,15 @@ namespace BL.Logic.DictionaryCore
 
                 // Получаю список ид из полнотекста
                 var ftList = DmsResolver.Current.Get<IFullTextSearchService>().SearchItemParentId(context, searchString, ftsFilter);
-                
+
+                // Если полнотекст ничего не нашел...
+                if (!ftList.Any()) return new List<MainFront>();
+
                 // Получаю список ид из таблицы сущности
                 var dbList = IdsFunc(context, filter, sorting);
+
+                // Если в базе ничего не нашлось...
+                if (!dbList.Any()) return new List<MainFront>();
 
                 // Нахожу пересечение множеств ftList и dbList
                 var sortList = dbList.Select((x, i) => new { Id = x, Index = i }).ToList();
@@ -259,13 +265,14 @@ namespace BL.Logic.DictionaryCore
                 var list = ftList.Join(sortList, o => o, i => i.Id, (o, i) => i)
                     .OrderBy(x => x.Index).Select(x => x.Id).ToList();
 
+                // Накладываю параметры пагинации на список
                 Paging.Set(ref list, paging);
 
                 filter.IDs = list;
 
                 res = MainFunc(context, filter, paging, sorting);
 
-                if ((paging?.IsOnlyCounter ?? false) && res.Any())
+                if (!(paging.IsOnlyCounter ?? false) && res.Any())
                 {
                     DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, module, searchString);
                 }
