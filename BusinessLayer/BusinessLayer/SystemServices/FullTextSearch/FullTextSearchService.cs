@@ -153,7 +153,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             ReindexBeforeSearch();
             var admService = DmsResolver.Current.Get<IAdminService>();
-            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, filter?.ModuleId)).Select(x=> Features.GetId(x.Feature)).ToList();
+            int? moduleId = (filter?.Module == null) ? (int?)null :  Modules.GetId(filter?.Module);
+            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId)).Select(x=> Features.GetId(x.Feature)).ToList();
             var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x=> perm.Contains(x.FeatureId));
             return res;
         }
