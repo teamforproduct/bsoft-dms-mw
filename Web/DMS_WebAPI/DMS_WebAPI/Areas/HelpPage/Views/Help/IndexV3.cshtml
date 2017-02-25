@@ -9,7 +9,20 @@
     ViewBag.Title = "API.V3 Help Page";
 
     // Group APIs by controller
-    ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
+    //ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
+
+    //ControllerName = x.ActionDescriptor.ControllerDescriptor.ControllerName
+
+    var list = Model.Where(x => x.ActionDescriptor.ControllerDescriptor.ControllerType.Namespace.Contains("ControllersV3."))
+.GroupBy(x => new { Namespace = x.ActionDescriptor.ControllerDescriptor.ControllerType.Namespace })
+.OrderBy(x => x.Key.Namespace.Replace(".Lists", ".AA_Lists").Replace(".User", ".WW_User").Replace(".System", ".ZZ_System"))
+// .ThenBy(g => g.Key.ControllerName)
+.Select(x => new
+{
+  Name = x.Key.Namespace.Split('.').Last().ToString(),
+  List = x.ToLookup(api => api.ActionDescriptor.ControllerDescriptor).OrderBy(y=>y.Key.ControllerName.Replace("Info", "A_Info"))
+}).ToList();
+
 }
 
 <link type="text/css" href="~/Areas/HelpPage/HelpPage.css" rel="stylesheet" />
@@ -36,13 +49,68 @@
     </div>
   </section>
   <section class="content-wrapper main-content clear-fix">
-    @foreach (var group in apiGroups
-                                .Where(g => g.Key.ControllerType.FullName.Contains("ControllersV3."))
-                                .OrderBy(g => g.Key.ControllerType.FullName.Replace("Info", "A_Info").Replace(".Lists", ".AA_Lists").Replace(".User", ".WW_User").Replace(".System", ".ZZ_System"))
-                                .ThenBy(g => g.Key.ControllerName))
+    @foreach (var group in list)
     {
 
-        @Html.DisplayFor(m => group, "ApiGroup")
+        <div class="well well-sm" data-target=@Html.Raw("#" + @group.Name + "collapse") data-toggle="collapse">
+          <h2 id=@group.Name>@group.Name</h2>
+          
+        </div>
+
+
+        <div id=@Html.Raw(group.Name + "collapse") class="collapse">
+
+          @if (group.List.Count() > 1)
+          {
+              <ul class="nav nav-tabs">
+                @foreach (var gr in group.List)
+                {
+                    <li class=@(gr == group.List.FirstOrDefault() ? "active" : "=")>
+                      <a data-toggle="tab" href=@Html.Raw("#" + gr.Key.ControllerName)>
+                        @gr.Key.ControllerName
+                        @*@string.Join("", gr.Key.ControllerName.Substring(2).SkipWhile(x => !char.IsUpper(x)))*@
+                      </a>
+                    </li>
+                }
+              </ul>
+
+              <div class="tab-content">
+                @foreach (var apis in group.List)
+                {
+                  if (apis == group.List.FirstOrDefault())
+                  {
+                        <div id=@Html.Raw(apis.Key.ControllerName) class="tab-pane fade in active">
+                          @Html.DisplayFor(m => apis, "ApiGroup");
+                        </div>
+
+                  }
+                  else
+                  {
+                        <div id=@Html.Raw(apis.Key.ControllerName) class="tab-pane fade">
+                          @Html.DisplayFor(m => apis, "ApiGroup");
+                        </div>
+                  }
+
+                }
+
+              </div>
+          }
+          else
+          {
+              foreach (var apis in group.List)
+              {
+                  @Html.DisplayFor(m => apis, "ApiGroup");
+              }
+          }
+
+        </div>
     }
   </section>
 </div>
+
+
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="popover"]').popover();
+  });
+</script>

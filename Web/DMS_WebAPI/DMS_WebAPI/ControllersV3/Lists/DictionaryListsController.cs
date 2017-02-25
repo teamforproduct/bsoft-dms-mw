@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.List)]
-    public class ListsController : ApiController
+    public class DictionaryListsController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 

@@ -12,18 +12,18 @@
 
 }
 
-@if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName == "Lists")
+@*@if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName == "Lists")
 {
     <h1 id="@Model.Key.ControllerName.Replace("Info", "")">  @Model.Key.ControllerName.Replace("Info", "")</h1>
 }
 @if (@Model.Key.ControllerName == "Settings")
 {
     <h1 id="System">System</h1>
-}
-<h2 id="@Model.Key.ControllerName">@Model.Key.ControllerName</h2>
+}*@
+@*<h2 id="@Model.Key.ControllerName">@Model.Key.ControllerName</h2>*@
 @if (!String.IsNullOrEmpty(controllerDocumentation))
 {
-    <p>@controllerDocumentation</p>
+    <h2>@controllerDocumentation</h2>
 }
 <table class="help-page-table">
   @*<thead>
@@ -34,67 +34,74 @@
     {
         <tr>
           <td class="api-name">
+            @{
+                HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
+                var text = string.Empty;
+                var curMethod = api.HttpMethod.Method;
 
-            @if ("POST,PUT".Contains(@api.HttpMethod.Method))
-            {
-
-                <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
-                  @api.HttpMethod.Method @api.GetFriendlyName()
-                </a>
-
-
-              HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
-              var text = string.Empty;
-
-              if (apiModel.RequestBodyParameters != null)
-              {
-                foreach (var item in apiModel.RequestBodyParameters
-                        .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
-                        .ThenBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                if ("GET" == @curMethod)
                 {
-                  var itemName = item.Name;
-                  if (item.Annotations.Any(x => x.Documentation == "Required"))
+                  if (apiModel.UriParameters.Count > 0)
                   {
-                    itemName = "<b>" + itemName + "</b>";
-                  }
-                  text = text + (text == string.Empty ? string.Empty : ", ") + itemName;
-                }
-
-                if (!string.IsNullOrEmpty(text))
-                {
-                  text = "(" + text + ")";
-
-                        @Html.Raw(text);
-
-                }
-
-              }
-
-            }
-
-            else if ("GET" == @api.HttpMethod.Method)
-            {
-              HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
-              var dContent = string.Empty;
-              if (apiModel.UriParameters.Count > 0)
-              {
-                    <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
-                       data-container="body" data-toggle="popover"
-                       title="Параметры" data-placement="right" data-trigger="hover"
-                       data-content=@foreach (var item in apiModel.UriParameters.OrderBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
-                       {
+                        <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
+                           data-container="body" data-toggle="popover"
+                           title="Параметры" data-placement="right" data-trigger="hover"
+                           data-content=@foreach (var item in apiModel.UriParameters.OrderBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                           {
                          @Html.Raw(item.Name + "&ensp;");
-                       }>
-                      @api.HttpMethod.Method @api.GetFriendlyName()
-                    </a>
+                           }>
+                          @api.HttpMethod.Method @api.GetFriendlyName()
+                        </a>
 
-              }
-              else
-              {
+                  }
+                  else
+                  {
+                        <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                          @api.HttpMethod.Method @api.GetFriendlyName()
+                        </a>
+                  }
+
+
+                }
+
+                else if ("POST,PUT".Contains(@api.HttpMethod.Method))
+                {
+
                     <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
                       @api.HttpMethod.Method @api.GetFriendlyName()
                     </a>
-              }
+
+                  if (apiModel.RequestBodyParameters != null)
+                  {
+                    foreach (var item in apiModel.RequestBodyParameters
+                            .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
+                            .ThenBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                    {
+                      var itemName = item.Name;
+                      if (item.Annotations.Any(x => x.Documentation == "Required"))
+                      {
+                        itemName = "<b>" + itemName + "</b>";
+                      }
+                      text = text + (text == string.Empty ? string.Empty : ", ") + itemName;
+                    }
+
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                      text = "(" + text + ")";
+
+                            @Html.Raw(text);
+
+                    }
+
+                  }
+
+                }
+                else
+                {
+                    <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                      @api.HttpMethod.Method @api.GetFriendlyName()
+                    </a>
+                }
 
 
             }
@@ -112,12 +119,7 @@
             }
           </td>
         </tr>
-    }
+                }
   </tbody>
 </table>
 
-<script>
-  $(document).ready(function () {
-    $('[data-toggle="popover"]').popover();
-  });
-</script>

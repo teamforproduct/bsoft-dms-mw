@@ -353,8 +353,8 @@
     <Compile Include="ControllersV3\User\UserContactsController.cs" />
     <Compile Include="ControllersV3\User\UserAssignmentsController.cs" />
     <Compile Include="ControllersV3\System\SystemToolsController.cs" />
-    <Compile Include="ControllersV3\System\SystemListsController.cs" />
-    <Compile Include="ControllersV3\Lists\ListsController.cs" />
+    <Compile Include="ControllersV3\Lists\SystemListsController.cs" />
+    <Compile Include="ControllersV3\Lists\DictionaryListsController.cs" />
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="ControllersV3\Utilities\WebPartialViewController.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />

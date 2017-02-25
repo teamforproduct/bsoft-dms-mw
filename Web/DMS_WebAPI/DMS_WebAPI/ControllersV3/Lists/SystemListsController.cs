@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.System
+namespace DMS_WebAPI.ControllersV3.Lists
 {
     /// <summary>
     /// !!! Доступ не ограничен.

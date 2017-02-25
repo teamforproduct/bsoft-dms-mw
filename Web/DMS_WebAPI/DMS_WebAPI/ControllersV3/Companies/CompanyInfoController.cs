@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.Licences
+namespace DMS_WebAPI.ControllersV3.Companies
 {
     /// <summary>
     /// Юридические лица

@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.Documents
+namespace DMS_WebAPI.ControllersV3.Tags
 {
     /// <summary>
     /// Теги
