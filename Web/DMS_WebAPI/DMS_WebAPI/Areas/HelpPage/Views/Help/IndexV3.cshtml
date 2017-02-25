@@ -67,8 +67,9 @@
                 {
                     <li class=@(gr == group.List.FirstOrDefault() ? "active" : "=")>
                       <a data-toggle="tab" href=@Html.Raw("#" + gr.Key.ControllerName)>
-                        @gr.Key.ControllerName
-                        @*@string.Join("", gr.Key.ControllerName.Substring(2).SkipWhile(x => !char.IsUpper(x)))*@
+                        @((gr.Key.ControllerName.Contains("System") || gr.Key.ControllerName.Contains("List")) ? 
+                        gr.Key.ControllerName : 
+                        string.Join("", gr.Key.ControllerName.Substring(2).SkipWhile(x => !char.IsUpper(x))))
                       </a>
                     </li>
                 }
