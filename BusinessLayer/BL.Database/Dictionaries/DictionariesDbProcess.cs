@@ -598,7 +598,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    Details = new List<string> { x.People.TaxCode },
+                    Details = new List<string> { x.People.TaxCode ?? string.Empty },
                 }).ToList();
 
                 transaction.Complete();
@@ -2269,7 +2269,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    Details = new List<string> { x.OKPOCode }
+                    Details = new List<string> { x.OKPOCode ?? string.Empty }
                 }).ToList();
 
                 transaction.Complete();
@@ -2512,6 +2512,28 @@ namespace BL.Database.Dictionaries
                 qry = qry.OrderBy(x => x.Agent.Name);
 
                 var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<AutocompleteItem> GetShortListAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentBanksQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<AutocompleteItem>();
+
+                var res = qry.Select(x => new AutocompleteItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    Details = new List<string> { x.MFOCode ?? string.Empty },
+                }).ToList();
 
                 transaction.Complete();
                 return res;
@@ -3517,7 +3539,7 @@ namespace BL.Database.Dictionaries
                     {
                         x.ParentDepartment.FullPath +" " + x.ParentDepartment.Name,
                         x.Company.Agent.Name,
-                        x.ChiefPosition.Name
+                        x.ChiefPosition.Name ?? string.Empty
                     },
                 }).ToList();
 
@@ -4711,8 +4733,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-
                 var qry = GetPositionsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
                 var filterMaxSubordinationTypeContains = PredicateBuilder.False<DBModel.Admin.AdminSubordinations>();
                 if (filter.SubordinatedPositions?.Count() > 0)
@@ -4760,6 +4783,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
+
                 var res = qry.Select(
                     x => new InternalDictionaryPosition
                     {
@@ -4786,6 +4811,7 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
                 var res = qry.Select(x => x.Id).ToList();
                 transaction.Complete();
                 return res;
@@ -4818,11 +4844,12 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem>  GetPositionsTree(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<TreeItem> GetPositionsTree(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
@@ -4848,10 +4875,12 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.Name);
+
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
-                    Name = x.Name ,
+                    Name = x.Name,
                     Details = new List<string>
                     {
                         x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? x.ExecutorType.Suffix : null),
@@ -4869,6 +4898,8 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
@@ -4896,6 +4927,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
+
                 var res = qry.Select(x => new FrontDIPRegistrationJournalPositions
                 {
                     Id = x.Id,
@@ -4913,6 +4946,8 @@ namespace BL.Database.Dictionaries
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
@@ -4954,6 +4989,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
+
                 string objId = ((int)EnumObjects.DictionaryPositions).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryDepartments).ToString();
 
@@ -4994,6 +5031,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
+
                 var res = qry.Select(x => new SortPositoin
                 {
                     Id = x.Id,
@@ -5023,8 +5062,6 @@ namespace BL.Database.Dictionaries
         public IQueryable<DictionaryPositions> GetPositionsQuery(IContext context, DmsContext dbContext, FilterDictionaryPosition filter)
         {
             var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
-
-            qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
             if (filter != null)
             {
@@ -5347,7 +5384,27 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
+        public IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
+                qry = qry.OrderBy(x => x.Agent.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<AutocompleteItem>();
+
+                var res = qry.Select(x => new AutocompleteItem
+                {
+                    Id = x.PositionId,
+                    Name = x.Agent.Name,
+                    Details = new List<string> { x.Position.Name ?? string.Empty, x.Position.Department.FullPath + " " + x.Position.Department.Name },
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
         public IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())

@@ -69,6 +69,28 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
+        /// Банки
+        /// </summary>
+        /// <param name="filter">параметры фильтрации</param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Banks)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetShortListAgentBanks(ctx, filter, paging);
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var res = new JsonResult(tmpItems, metaData, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Юридические лица
         /// </summary>
         /// <param name="filter">параметры фильтрации</param>
@@ -150,6 +172,28 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Исполнители должностей
+        /// </summary>
+        /// <param name="ftSearch"></param>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Executors)]
+        [ResponseType(typeof(List<AutocompleteItem>))]
+        public IHttpActionResult GetListDepartments([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetShortListPositionExecutors(ctx, ftSearch, filter, paging);
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;
             return res;
         }

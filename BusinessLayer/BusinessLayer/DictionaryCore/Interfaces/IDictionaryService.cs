@@ -59,6 +59,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontAgentBank GetAgentBank(IContext context, int id);
 
         IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging, UISorting sorting);
+        IEnumerable<AutocompleteItem> GetShortListAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentEmployees
@@ -173,6 +174,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryPositionExecutors
         FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id);
         IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FullTextSearch ftSearch, FilterDictionaryPositionExecutor filter, UIPaging paging);
         IEnumerable<FrontDictionaryPositionExecutor> GetUserPositionExecutors(IContext context, int positionId, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context);
         int GetPositionPersonalAgent(IContext context, int positionId);

@@ -10,6 +10,7 @@
         public const string Admins = "Admins";
         public const string Assignments = "Assignments";
         public const string AuthLog = "AuthLog";
+        public const string Banks = "Banks";
         public const string ChangeLogin = "ChangeLogin";
         public const string ChangePassword = "ChangePassword";
         public const string Companies = "Companies";
@@ -151,6 +152,7 @@
 
                 case OnlineUsers:           res = 1620; break;
                 case Accounts:              res = 1630; break;
+                case Banks:                 res = 1640; break;
 
                 default: throw new System.Exception();
             }

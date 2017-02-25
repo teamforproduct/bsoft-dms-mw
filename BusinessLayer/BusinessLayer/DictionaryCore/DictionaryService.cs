@@ -298,46 +298,14 @@ namespace BL.Logic.DictionaryCore
             return FTS<FrontMainAgentBank>(context, Modules.Bank, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentBanks, _dictDb.GetAgentBankIDs);
         }
 
-        private IEnumerable<FullTextSearchResult> ResolveSearchResultAgentBanks(IContext ctx, IEnumerable<FullTextSearchResult> ftRes)
+        public IEnumerable<AutocompleteItem> GetShortListAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
         {
+            if (filter == null) filter = new FilterDictionaryAgentBank();
 
-            var agentTypes = new List<EnumObjects>
-            {
+            filter.IsActive = true;
 
-                EnumObjects.DictionaryAgentBanks,
-
-            };
-
-            var res = new List<FullTextSearchResult>();
-            res.AddRange(ftRes
-                .Where(x => agentTypes.Contains(x.ObjectType)));
-
-            var tmp = _dictDb.GetAgentsIDByAddress(ctx,
-                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryAgentAddresses).Select(y => y.ObjectId).ToList());
-
-            //TODO WHAT A F??? 
-            res.AddRange(tmp.Select(x => new FullTextSearchResult
-            {
-                ParentId = 0,
-                ObjectId = x,
-                ObjectType = EnumObjects.DictionaryAgents,
-                Score = 0
-            }));
-
-            tmp = _dictDb.GetAgentsIDByContacts(ctx,
-                ftRes.Where(x => x.ObjectType == EnumObjects.DictionaryContacts).Select(y => y.ObjectId).ToList());
-
-            res.AddRange(tmp.Select(x => new FullTextSearchResult
-            {
-                ParentId = 0,
-                ObjectId = x,
-                ObjectType = EnumObjects.DictionaryAgents,
-                Score = 0
-            }));
-
-            return res;
+            return _dictDb.GetShortListAgentBanks(context, filter, paging);
         }
-
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentUser
@@ -589,6 +557,10 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter)
         {
+            if (filter == null) filter = new FilterDictionaryPosition();
+
+            filter.IsActive = true;
+
             return _dictDb.GetPositionsShortList(context, filter);
             //IEnumerable<TreeItem> positions = null;
             //IEnumerable<TreeItem> departments = null;
@@ -739,6 +711,17 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
         {
             return _dictDb.GetPositionExecutors(context, filter);
+        }
+
+        public IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FullTextSearch ftSearch, FilterDictionaryPositionExecutor filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryPositionExecutor();
+
+            filter.IsActive = true;
+            filter.StartDate = DateTime.UtcNow;
+            filter.EndDate = DateTime.UtcNow;
+
+            return _dictDb.GetShortListPositionExecutors(context, filter, paging);
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetUserPositionExecutors(IContext context, int positionId, FilterDictionaryPositionExecutor filter)
