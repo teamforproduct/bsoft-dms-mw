@@ -20,7 +20,7 @@
 .Select(x => new
 {
   Name = x.Key.Namespace.Split('.').Last().ToString(),
-  List = x.ToLookup(api => api.ActionDescriptor.ControllerDescriptor).OrderBy(y=>y.Key.ControllerName.Replace("Info", "A_Info"))
+  List = x.ToLookup(api => api.ActionDescriptor.ControllerDescriptor).OrderBy(y=>y.Key.ControllerName.Replace("Info", "AAA_Info"))
 }).ToList();
 
 }
@@ -67,7 +67,7 @@
                 {
                     <li class=@(gr == group.List.FirstOrDefault() ? "active" : "=")>
                       <a data-toggle="tab" href=@Html.Raw("#" + gr.Key.ControllerName)>
-                        @((gr.Key.ControllerName.Contains("System") || gr.Key.ControllerName.Contains("List")) ? 
+                        @((gr.Key.ControllerName.Contains("System") || gr.Key.ControllerName.Contains("List") || gr.Key.ControllerName.Contains("TypeInfo")) ? 
                         gr.Key.ControllerName : 
                         string.Join("", gr.Key.ControllerName.Substring(2).SkipWhile(x => !char.IsUpper(x))))
                       </a>
