@@ -1,22 +1,19 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
+using BL.Model.Tree;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-
-using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
-using BL.Model.Tree;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Org
 {
@@ -35,17 +32,18 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <summary>
         /// Возвращает штатное расписание. Компании -> Отделы -> Должности -> Исполнители
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryStaffList filter)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryStaffList filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetStaffList(ctx, filter);
+            var tmpItems = tmpService.GetStaffList(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

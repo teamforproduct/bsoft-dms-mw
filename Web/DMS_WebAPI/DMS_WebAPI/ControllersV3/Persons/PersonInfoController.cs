@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
-        /// <param name="sorting">"</param>
+        /// <param name="sorting"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]

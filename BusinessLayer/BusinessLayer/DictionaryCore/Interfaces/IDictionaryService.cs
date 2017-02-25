@@ -34,7 +34,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgentPersons
         FrontAgentPerson GetAgentPerson(IContext context, int id);
-        IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<AutocompleteItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging, UISorting sorting);
 
         #endregion DictionaryAgentPersons
@@ -112,7 +112,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
 
-        IEnumerable<ListItem> GetDepartmentsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryDepartment filter);
+        IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryDepartment filter);
 
         string GetDepartmentPrefix(IContext context, int parentId);
         #endregion DictionaryDepartments
@@ -161,7 +161,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
 
-        IEnumerable<TreeItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter);
+        IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter);
         List<int> GetChildPositions(IContext context, int positionId);
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
 
@@ -192,9 +192,9 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging, UISorting sorting);
         IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging, UISorting sorting);
-        IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FilterDictionaryJournalsTree filter);
+        IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter);
         //IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null);
-        IEnumerable<ITreeItem> GetRegistrationJournalsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         // Компании
@@ -266,7 +266,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion CustomDictionaries
 
         #region [+] StaffList ...
-        IEnumerable<ITreeItem> GetStaffList(IContext context, FilterDictionaryStaffList filter);
+        IEnumerable<ITreeItem> GetStaffList(IContext context, FullTextSearch ftSearch, FilterDictionaryStaffList filter);
 
         #endregion
 

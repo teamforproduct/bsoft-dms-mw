@@ -1,24 +1,22 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FrontModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using BL.Model.Common;
-using BL.Model.SystemCore;
 using System.Diagnostics;
-using BL.Model.Tree;
-using BL.CrossCutting.Interfaces;
-using BL.Model.FullTextSearch;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Lists
 {
     /// <summary>
     /// !!! Доступ не ограничен.
-    /// Списки Id, Name. Для вызова апи требуется авторизация (доступ для авторизованных пользователей не ограничивается).
+    /// Списки Id, Name.
     /// Подразумевается использование этих апи в выпадающих списках при корректировках ссылочных полей сущности.
     /// В списках отображаются только активные элементы справочников.
     /// </summary>
@@ -100,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Departments)]
-        [ResponseType(typeof(List<TreeItem>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetListDepartments([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDepartment filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -164,7 +162,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Journals)]
-        [ResponseType(typeof(List<TreeItem>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryRegistrationJournal filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -185,7 +183,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Persons)]
-        [ResponseType(typeof(List<FrontShortListPosition>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -207,7 +205,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Positions)]
-        [ResponseType(typeof(List<TreeItem>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

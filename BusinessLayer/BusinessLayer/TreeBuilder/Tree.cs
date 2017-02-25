@@ -35,7 +35,7 @@ namespace BL.Logic.TreeBuilder
 
             }
 
-            if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true))
+            if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true) || filter?.IDs?.Count > 0)
             {
                 var safeList = new List<string>();
 
@@ -120,6 +120,7 @@ namespace BL.Logic.TreeBuilder
             {
                 var existsNameFilter = !string.IsNullOrEmpty(filter.Name);
                 var existsCheckFilter = filter.IsChecked.HasValue;
+                var existsIdFilter = filter.IDs?.Count>0;
 
                 string[] arrName = null;
 
@@ -130,7 +131,7 @@ namespace BL.Logic.TreeBuilder
                 {
                     var searchText = item.SearchText;
 
-                    var addToSafeList = true; 
+                    var addToSafeList = true;
 
                     if (existsNameFilter & addToSafeList)
                     {
@@ -145,6 +146,11 @@ namespace BL.Logic.TreeBuilder
                     if (existsCheckFilter & addToSafeList)
                     {
                         addToSafeList = item.IsChecked ?? false;
+                    }
+
+                    if (existsIdFilter & addToSafeList)
+                    {
+                        addToSafeList = filter.IDs.Any(x=>x.Key == (EnumObjects)item.ObjectId && x.Value == item.Id);
                     }
 
                     if (addToSafeList) safeList.AddRange(item.Path.Split('/'));

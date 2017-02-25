@@ -39,6 +39,11 @@ namespace BL.Model.Tree
         public string Name { get; set; }
 
         /// <summary>
+        /// Сужение по списку Id
+        /// </summary>
+        public Dictionary<EnumObjects, int> IDs { get; set; }
+
+        /// <summary>
         /// Только активные
         /// </summary>
         public bool? IsActive { get; set; }
