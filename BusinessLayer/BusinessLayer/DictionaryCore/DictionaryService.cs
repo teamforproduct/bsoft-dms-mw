@@ -269,7 +269,7 @@ namespace BL.Logic.DictionaryCore
 
                 filter.IDs = list;
 
-                res = MainFunc(context, filter, paging, sorting);
+                res = MainFunc(context, filter, null, sorting);
 
                 if (!(paging.IsOnlyCounter ?? false) && res.Any())
                 {
