@@ -163,7 +163,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForStaffList(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, FilterDictionaryDepartment filter);
-        IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<AutocompleteItem> GetShortListDepartments(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<TreeItem> GetDepartmentsTree(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<TreeItem> GetDepartmentsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryDepartment filter);
         IEnumerable<TreeItem> GetDepartmentsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryDepartment filter);
@@ -223,7 +223,7 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext context, FilterDictionaryPosition filter);
-        IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<AutocompleteItem> GetShortListPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<TreeItem> GetPositionsTree(IContext context, FilterDictionaryPosition filter);
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);
 
@@ -265,7 +265,7 @@ namespace BL.Database.Dictionaries.Interfaces
         List<int> GetRegistrationJournalIDs(IContext context, IBaseFilter filter, UISorting sorting);
         IEnumerable<TreeItem> GetRegistrationJournalsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryRegistrationJournal filter);
         IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<AutocompleteItem> GetShortListRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         #region [+] DictionaryAgentClientCompanies ...
@@ -276,7 +276,7 @@ namespace BL.Database.Dictionaries.Interfaces
         InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<FrontDictionaryAgentClientCompany> GetAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForStaffList(IContext context, FilterDictionaryAgentOrg filter);
-        IEnumerable<TreeItem> GetAgentOrgsShortList(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetShortListAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentOrg filter);

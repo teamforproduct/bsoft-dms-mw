@@ -1919,7 +1919,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem> GetAgentOrgsShortList(IContext context, FilterDictionaryAgentOrg filter)
+        public IEnumerable<TreeItem> GetShortListAgentOrgs(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -3523,7 +3523,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter)
+        public IEnumerable<AutocompleteItem> GetShortListDepartments(IContext context, FilterDictionaryDepartment filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -4869,7 +4869,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<AutocompleteItem> GetShortListPositions(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
@@ -5397,7 +5397,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.PositionId,
-                    Name = x.Agent.Name,
+                    Name = x.Agent.Name + " " + (x.PositionExecutorType.Suffix != null ? " (" + x.PositionExecutorType.Suffix + ")" : null),
                     Details = new List<string> { x.Position.Name ?? string.Empty, x.Position.Department.FullPath + " " + x.Position.Department.Name },
                 }).ToList();
 
@@ -5857,7 +5857,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<AutocompleteItem> GetShortListRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {

@@ -402,7 +402,7 @@ namespace BL.Logic.DictionaryCore
             if (filter == null) filter = new FilterDictionaryDepartment();
 
             filter.IsActive = true;
-            return _dictDb.GetDepartmentsShortList(context, filter);
+            return _dictDb.GetShortListDepartments(context, filter);
 
             //IEnumerable<TreeItem> departments = null;
             //IEnumerable<TreeItem> companies = null;
@@ -561,7 +561,7 @@ namespace BL.Logic.DictionaryCore
 
             filter.IsActive = true;
 
-            return _dictDb.GetPositionsShortList(context, filter);
+            return _dictDb.GetShortListPositions(context, filter);
             //IEnumerable<TreeItem> positions = null;
             //IEnumerable<TreeItem> departments = null;
             //IEnumerable<TreeItem> companies = null;
@@ -720,6 +720,7 @@ namespace BL.Logic.DictionaryCore
             filter.IsActive = true;
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
+            filter.PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { EnumPositionExecutionTypes.Personal, EnumPositionExecutionTypes.IO };
 
             return _dictDb.GetShortListPositionExecutors(context, filter, paging);
         }
@@ -907,7 +908,7 @@ namespace BL.Logic.DictionaryCore
 
             filter.IsActive = true;
 
-            return _dictDb.GetRegistrationJournalsShortList(context, filter);
+            return _dictDb.GetShortListRegistrationJournals(context, filter);
 
             //IEnumerable<TreeItem> journals = null;
             //IEnumerable<TreeItem> departments = null;
