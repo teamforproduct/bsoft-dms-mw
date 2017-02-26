@@ -117,7 +117,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             dateFrom.SetIntValue(item.DateFrom.HasValue ? (int)item.DateFrom.Value.ToOADate() : 0);
             doc.Add(dateFrom);
 
-            var dateTo = new NumericField(FIELD_DATE_TO_ID, Field.Store.YES, true);
+            var dateTo = new NumericField(FIELD_DATE_TO_ID, Field.Store.NO, true);
             dateTo.SetIntValue(item.DateTo.HasValue ? (int)item.DateTo.Value.ToOADate() : 0);
             doc.Add(dateTo);
 
