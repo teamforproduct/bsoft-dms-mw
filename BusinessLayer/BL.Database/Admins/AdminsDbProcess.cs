@@ -528,10 +528,13 @@ namespace BL.Database.Admins
 
 
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminRoles>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -776,10 +779,13 @@ namespace BL.Database.Admins
             {
 
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminPositionRoles>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -967,10 +973,13 @@ namespace BL.Database.Admins
             if (filter != null)
             {
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminUserRoles>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1292,12 +1301,14 @@ namespace BL.Database.Admins
 
             if (filter != null)
             {
-
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminSubordinations>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1531,10 +1542,13 @@ namespace BL.Database.Admins
             if (filter != null)
             {
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1642,12 +1656,14 @@ namespace BL.Database.Admins
 
             if (filter != null)
             {
-
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminRolePermissions>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
