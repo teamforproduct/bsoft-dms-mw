@@ -113,7 +113,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 }
 
-                Parallel.Invoke(new ParallelOptions() {MaxDegreeOfParallelism = 6},tskList.ToArray());
+                Parallel.Invoke(new ParallelOptions() {MaxDegreeOfParallelism = 8},tskList.ToArray());
 
                 //delete cash in case we just processed all that documents
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId);

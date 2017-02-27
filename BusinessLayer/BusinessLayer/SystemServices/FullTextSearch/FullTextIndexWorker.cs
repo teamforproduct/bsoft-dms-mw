@@ -111,7 +111,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
             var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : ";" + string.Join(";", item.Access.Where(x => x != 0).ToList()) + ";";
-            doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.NO, Field.Index.ANALYZED));
+            doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.YES, Field.Index.ANALYZED));
 
             var dateFrom = new NumericField(FIELD_DATE_FROM_ID, Field.Store.NO, true);
             dateFrom.SetIntValue(item.DateFrom.HasValue ? (int)item.DateFrom.Value.ToOADate() : 0);
@@ -193,18 +193,21 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
                 boolQry.Add(toDat, Occur.MUST);
             }
-            if (filter.Accesses != null && filter.Accesses.Any())
-            {
-                var accQry = new BooleanQuery();
-                var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
-                accQry.Add(scrEmpty, Occur.SHOULD);
-                foreach (var access in filter.Accesses)
-                {
-                    var scrQry = new TermQuery(new Term(FIELD_SECURITY_ID, ";"+ access+";"));
-                    accQry.Add(scrQry, Occur.SHOULD);
-                }
-                boolQry.Add(accQry, Occur.MUST);
-            }
+            var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
+            boolQry.Add(scrEmpty, Occur.MUST);
+
+            //if (filter.Accesses != null && filter.Accesses.Any())
+            //{
+            //    var accQry = new BooleanQuery();
+            //    var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
+            //    accQry.Add(scrEmpty, Occur.SHOULD);
+            //    foreach (var access in filter.Accesses)
+            //    {
+            //        var scrQry = new TermQuery(new Term(FIELD_SECURITY_ID, ";"+ access+";"));
+            //        accQry.Add(scrQry, Occur.SHOULD);
+            //    }
+            //    boolQry.Add(accQry, Occur.MUST);
+            //}
 
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
 
@@ -223,6 +226,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
                         FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
+                        Secur = rdoc.Get(FIELD_SECURITY_ID),
                         Score = doc.Score
                     };
                     searchResult.Add(sr);
