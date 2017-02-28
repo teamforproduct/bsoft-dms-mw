@@ -168,11 +168,17 @@ namespace BL.Logic.Logging
             return res;
         }
 
-        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        public IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
         {
             var res = _systemDb.GetSystemSearchQueryLogs(context, filter, paging);
             return res;
         }
+
+        public void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter)
+        {
+            _systemDb.DeleteSystemSearchQueryLogsForCurrentUser(context, filter);
+        }
+
 
         private string GetObjectChangeDescription(object logObject)
         {

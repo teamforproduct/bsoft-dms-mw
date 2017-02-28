@@ -215,6 +215,7 @@ namespace BL.Database.SystemDb
                 {
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentFiles,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Access = new List<int> { x.Main.ExecutorPositionId}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct().ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.Extension + " " + x.Main.Description
                 });
@@ -719,7 +720,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -732,7 +733,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPeople,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -745,7 +746,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentBanks,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentBanks,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -758,7 +759,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -771,7 +772,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -801,7 +802,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -814,7 +815,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPeople,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -827,7 +828,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentBanks,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentBanks,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -840,7 +841,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -853,7 +854,7 @@ namespace BL.Database.SystemDb
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
-                        ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
+                        ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
                     });
                     res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -923,7 +924,7 @@ namespace BL.Database.SystemDb
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
-                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
+                    ParentObjectId = x.Main.StandartSendListId, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
                     ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -949,7 +950,7 @@ namespace BL.Database.SystemDb
                 {
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.CustomDictionaries,
-                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.CustomDictionaryTypes,
+                    ParentObjectId = x.Main.DictionaryTypeId, ParentObjectType = EnumObjects.CustomDictionaryTypes,
                     ObjectText = x.Main.Code + " " + x.Main.Name + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});

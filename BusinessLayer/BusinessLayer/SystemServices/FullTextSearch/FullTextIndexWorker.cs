@@ -193,8 +193,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
                 boolQry.Add(toDat, Occur.MUST);
             }
-            var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
-            boolQry.Add(scrEmpty, Occur.MUST);
+            //var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
+            //boolQry.Add(scrEmpty, Occur.MUST);
 
             //if (filter.Accesses != null && filter.Accesses.Any())
             //{
