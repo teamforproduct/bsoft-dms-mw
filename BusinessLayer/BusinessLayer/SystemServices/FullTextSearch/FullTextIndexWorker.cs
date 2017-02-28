@@ -9,6 +9,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
+using System.Linq.Expressions;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
@@ -33,7 +34,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_DATE_FROM_ID = "DateFrom";
         private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
-        private const string NO_RULES_VALUE = "NO RULES";
+        private const string NO_RULES_VALUE = "NORULES";
         private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
 
         private IndexWriter _writer;
@@ -110,7 +111,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new Field(FIELD_BODY, item.ObjectText ?? "", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
-            var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : ";" + string.Join(";", item.Access.Where(x => x != 0).ToList()) + ";";
+            var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : "_" + string.Join("_", item.Access.Where(x => x != 0).ToList()) + "_";
             doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.YES, Field.Index.ANALYZED));
 
             var dateFrom = new NumericField(FIELD_DATE_FROM_ID, Field.Store.NO, true);
@@ -148,6 +149,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter)
         {
+            var searchResult = new List<FullTextSearchResult>();
+
             text = text.Trim();
 
             var arr = text.Split(' ').ToList();
@@ -160,58 +163,102 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer) {AllowLeadingWildcard = true};
             var textQry = parser.Parse(qryString);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
-            var boolQry = new BooleanQuery();
-            boolQry.Add(textQry, Occur.MUST);
-            boolQry.Add(clientQry, Occur.MUST);
+
+            NumericRangeQuery<int> parentQry = null;
             if (filter.ParentObjectType.HasValue)
             {
-                var parentQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)filter.ParentObjectType.Value, (int)filter.ParentObjectType.Value, true, true);
-                boolQry.Add(parentQry, Occur.MUST);
+                parentQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)filter.ParentObjectType.Value, (int)filter.ParentObjectType.Value, true, true);
+                
             }
+
+            NumericRangeQuery<int> objQry = null;
             if (filter.ObjectType.HasValue)
             {
-                var objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true);
-                boolQry.Add(objQry, Occur.MUST);
+                objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true);
+                
             }
+
+            NumericRangeQuery<int> moduleQry = null;
             if (!string.IsNullOrEmpty(filter.Module))
             {
-                var moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module),  Modules.GetId(filter.Module), true, true);
-                boolQry.Add(moduleQry, Occur.MUST);
+                moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module),  Modules.GetId(filter.Module), true, true);
+                
             }
+
+            NumericRangeQuery<int> featureQry = null;
             if (!string.IsNullOrEmpty(filter.Feature))
             {
-                var featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, Features.GetId(filter.Feature), Features.GetId(filter.Feature), true, true);
-                boolQry.Add(featureQry, Occur.MUST);
+                featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, Features.GetId(filter.Feature), Features.GetId(filter.Feature), true, true);
+                
             }
+
+            NumericRangeQuery<int> fromDat = null;
+            NumericRangeQuery<int> toDat = null;
             if (filter.IsOnlyActual)
             {
                 var currDat = (int)DateTime.Now.ToOADate();
-                var fromDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
-                boolQry.Add(fromDat, Occur.MUST);
+                fromDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
+                
 
                 var maxDate = (int)DateTime.Now.AddYears(20).ToOADate();
-                var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
-                boolQry.Add(toDat, Occur.MUST);
+                toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
+                
             }
-            var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
-            boolQry.Add(scrEmpty, Occur.MUST);
 
-            //if (filter.Accesses != null && filter.Accesses.Any())
-            //{
-            //    var accQry = new BooleanQuery();
-            //    var scrEmpty = new TermQuery(new Term(FIELD_SECURITY_ID, NO_RULES_VALUE));
-            //    accQry.Add(scrEmpty, Occur.SHOULD);
-            //    foreach (var access in filter.Accesses)
-            //    {
-            //        var scrQry = new TermQuery(new Term(FIELD_SECURITY_ID, ";"+ access+";"));
-            //        accQry.Add(scrQry, Occur.SHOULD);
-            //    }
-            //    boolQry.Add(accQry, Occur.MUST);
-            //}
+            if (filter.Accesses != null && filter.Accesses.Any())
+            {
+                var scrParser = new QueryParser(Version.LUCENE_30, FIELD_SECURITY_ID, _analyzer);
+                var scrEmpty = scrParser.Parse(NO_RULES_VALUE);
+                var boolQry = new BooleanQuery();
+                boolQry.Add(textQry, Occur.MUST);
+                boolQry.Add(clientQry, Occur.MUST);
+                boolQry.Add(scrEmpty, Occur.MUST);
+                if (parentQry != null) boolQry.Add(parentQry, Occur.MUST);
+                if (objQry != null) boolQry.Add(objQry, Occur.MUST);
+                if (moduleQry != null) boolQry.Add(moduleQry, Occur.MUST);
+                if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
+                if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
+                if (toDat != null) boolQry.Add(toDat, Occur.MUST);
+                searchResult.AddRange(GetQueryResult(boolQry));
 
+                foreach (var access in filter.Accesses)
+                {
+                    var scrQry = scrParser.Parse($"_{access}_");
+                    boolQry = new BooleanQuery();
+                    boolQry.Add(textQry, Occur.MUST);
+                    boolQry.Add(clientQry, Occur.MUST);
+                    boolQry.Add(scrQry, Occur.MUST);
+                    if (parentQry != null) boolQry.Add(parentQry, Occur.MUST);
+                    if (objQry != null) boolQry.Add(objQry, Occur.MUST);
+                    if (moduleQry != null) boolQry.Add(moduleQry, Occur.MUST);
+                    if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
+                    if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
+                    if (toDat != null) boolQry.Add(toDat, Occur.MUST);
+                    searchResult.AddRange(GetQueryResult(boolQry));
+                }
+                return searchResult.OrderByDescending(x=>x.Score).Take(MAX_DOCUMENT_COUNT_RETURN);
+            }
+            else
+            {
+                var boolQry = new BooleanQuery();
+                boolQry.Add(textQry, Occur.MUST);
+                boolQry.Add(clientQry, Occur.MUST);
+
+                if (parentQry != null) boolQry.Add(parentQry, Occur.MUST);
+                if (objQry != null) boolQry.Add(objQry, Occur.MUST);
+                if (moduleQry != null) boolQry.Add(moduleQry, Occur.MUST);
+                if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
+                if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
+                if (toDat != null) boolQry.Add(toDat, Occur.MUST);
+                searchResult.AddRange(GetQueryResult(boolQry));
+                return searchResult;
+            }
+        }
+
+        private List<FullTextSearchResult> GetQueryResult(BooleanQuery boolQry)
+        {
+            var res = new List<FullTextSearchResult>();
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
-
-            var searchResult = new List<FullTextSearchResult>();
 
             foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
             {
@@ -221,22 +268,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     var sr = new FullTextSearchResult
                     {
                         ParentId = Convert.ToInt32(rdoc.Get(FIELD_PARENT_ID)),
-                        ParentObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
-                        ObjectType = (EnumObjects)Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
+                        ParentObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
+                        ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
                         ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
                         ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
                         FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
                         Secur = rdoc.Get(FIELD_SECURITY_ID),
                         Score = doc.Score
                     };
-                    searchResult.Add(sr);
+                    res.Add(sr);
                 }
                 catch
                 {
                     // ignored
                 }
+                
             }
-            return searchResult;
+            return res;
         }
 
         public void DeleteAllDocuments(int clientId)
