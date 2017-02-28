@@ -310,21 +310,32 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        public IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter);
 
-                var qryT = qry.Select(x => x.SearchQueryText).Distinct();
+                var qryT = qry.GroupBy(x => x.SearchQueryText).Select(x => new FrontSearchQueryLog { SearchQueryText = x.Key, IsOwn = x.Any(y => y.LastChangeUserId == context.CurrentAgentId) });
 
-                qry = qry.OrderBy(x => x.SearchQueryText.Length).ThenBy(x => x.SearchQueryText);
+                qryT = qryT.OrderByDescending(x => x.IsOwn).ThenBy(x => x.SearchQueryText.Length).ThenBy(x => x.SearchQueryText);
 
-                Paging.Set(ref qry, paging);
+                Paging.Set(ref qryT, paging);
 
                 var res = qryT.ToList();
                 transaction.Complete();
                 return res;
+            }
+        }
+
+        public void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter).Where(x => x.LastChangeUserId == context.CurrentAgentId);
+                dbContext.SystemSearchQueryLogsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -423,6 +434,10 @@ namespace BL.Database.SystemDb
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.OneSearchQueryTextParts)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.SearchQueryText.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.SearchQueryTextExact))
+                {
+                    qry = qry.Where(x => x.SearchQueryText == filter.SearchQueryTextExact);
                 }
             }
             return qry;
