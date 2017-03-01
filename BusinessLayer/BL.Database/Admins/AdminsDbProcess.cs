@@ -148,20 +148,15 @@ namespace BL.Database.Admins
                 filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
                     (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)   //TODO include doc access
                                 .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
                                 .Where(filterNewEventTargetPositionContains)
                                 .GroupBy(g => g.TargetPositionId)
                                 .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
                 var newevnt = neweventQry.ToList();
 
-                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
+                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
 
-                //TODO
-                //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
-                //{
-                //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
-                //}
                 transaction.Complete();
                 return res;
             }

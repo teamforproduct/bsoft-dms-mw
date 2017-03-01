@@ -48,20 +48,20 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging, EnumGroupCountType? groupCountType = null)
         {
-            if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch))
+            if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
             {
-                filter.Document.FullTextSearchDocumentId
+                filter.FullTextSearchSearch.FullTextSearchId
                     = DmsResolver.Current.Get<IFullTextSearchService>()
-                    .SearchItemParentId(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter { Module = Modules.Documents, Accesses = ctx.CurrentPositionsIdList.ToList()});
+                    .SearchItemParentId(ctx, filter.FullTextSearchSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Documents, Accesses = ctx.CurrentPositionsIdList.ToList()});
             }
             var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
-            if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
+            if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString) && !filter.FullTextSearchSearch.IsDontSaveSearchQueryLog && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>()
                     .AddSearchQueryLog(ctx, new InternalSearchQueryLog
                     {
                         ModuleId = Modules.GetId(Modules.Documents),                        
-                        SearchQueryText = filter?.Document?.FullTextSearch,
+                        SearchQueryText = filter?.FullTextSearchSearch?.FullTextSearchString,
                     });
             }
             return res;
@@ -69,7 +69,6 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             var doc = _documentDb.GetDocument(ctx, documentId);
             doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
             doc.SendLists = null;
@@ -102,25 +101,21 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentEvent(ctx, eventId);
         }
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentWaits(ctx, filter, paging);
         }
 
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
         }
 
@@ -172,13 +167,11 @@ namespace BL.Logic.DocumentCore
         #region DocumentPapers
         public FrontDocumentPaper GetDocumentPaper(IContext context, int itemId)
         {
-            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument, false);
             return _documentDb.GetDocumentPaper(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument, false);
             return _documentDb.GetDocumentPapers(context, filter, paging);
         }
 

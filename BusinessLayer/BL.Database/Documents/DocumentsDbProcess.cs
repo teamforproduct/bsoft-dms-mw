@@ -141,7 +141,7 @@ namespace BL.Database.Documents
                     }
                     #endregion IncomingIds
                 }
-                else if (filter?.Document?.FullTextSearchDocumentId != null)
+                else if (filter?.FullTextSearchSearch?.FullTextSearchId != null)
                 {
                     #region FullTextSearchDocumentId
                     if (groupCountType == EnumGroupCountType.Tags)
@@ -157,7 +157,7 @@ namespace BL.Database.Documents
                             Name = x.Name,
                             IsSystem = !x.PositionId.HasValue,
                         }).ToList();
-                        tagCounters.ForEach(x=> x.DocCount = docTags.Where(y=>y.TagId == x.TagId && filter.Document.FullTextSearchDocumentId.Contains(y.DocumentId)).Count());
+                        tagCounters.ForEach(x=> x.DocCount = docTags.Where(y=>y.TagId == x.TagId && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());
                         docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x=>x.DocCount>0).ToList() } };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
@@ -173,11 +173,11 @@ namespace BL.Database.Documents
                             DepartmentName = x.Department.Name,
                             ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
                         }).ToList();
-                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.PositionId == x.Id && filter.Document.FullTextSearchDocumentId.Contains(y.DocumentId)).Count());                     docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
+                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.PositionId == x.Id && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());                     docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
                     }
                     else
                     {
-                        var sortDocIds = filter.Document.FullTextSearchDocumentId.Select((x, i) => new { DocId = x, Index = i }).ToList();
+                        var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                         var docIds = qry.Select(x => x.Id).ToList();
                         docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
                             .OrderBy(x => x.Index).Select(x => x.DocId).ToList();
@@ -334,9 +334,9 @@ namespace BL.Database.Documents
                     {
                         docs = docs.OrderBy(x => filter.Document.DocumentId.IndexOf(x.Id)).ToList();
                     }
-                    else if (filter?.Document?.FullTextSearchDocumentId != null && filter.Document.FullTextSearchDocumentId.Any())
+                    else if (filter?.FullTextSearchSearch?.FullTextSearchId != null && filter.FullTextSearchSearch.FullTextSearchId.Any())
                     {
-                        docs = docs.OrderBy(x => filter.Document.FullTextSearchDocumentId.IndexOf(x.Id)).ToList();
+                        docs = docs.OrderBy(x => filter.FullTextSearchSearch.FullTextSearchId.IndexOf(x.Id)).ToList();
                     }
 
                     if (docs.Any(x => x.LinkId.HasValue))

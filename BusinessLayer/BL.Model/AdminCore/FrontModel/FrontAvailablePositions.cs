@@ -63,6 +63,22 @@ namespace BL.Model.AdminCore.FrontModel
         public int? NewEventsCount { get; set; }
 
         /// <summary>
+        /// Количество контролей
+        /// </summary>
+        public int? ControlsCount { get; set; }
+
+        /// <summary>
+        /// Количество просроченных контролей
+        /// </summary>
+        public int? OverdueControlsCount { get; set; }
+
+        /// <summary>
+        /// Минимальная контрольная дата  
+        /// </summary>
+        public DateTime? MinDueDate { get { return _MinDueDate; } set { _MinDueDate = value.ToUTC(); } }
+        private DateTime? _MinDueDate;
+
+        /// <summary>
         /// Отдел
         /// </summary>
         public string DepartmentName { get; set; }

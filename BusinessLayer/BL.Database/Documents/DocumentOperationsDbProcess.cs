@@ -358,8 +358,10 @@ namespace BL.Database.Documents
 
                 if (document.Waits?.Any() ?? false)
                 {
-                    dbContext.DocumentWaitsSet.AddRange(ModelConverter.GetDbDocumentWaits(document.Waits));
+                    var waitDb = ModelConverter.GetDbDocumentWaits(document.Waits).ToList();
+                    dbContext.DocumentWaitsSet.AddRange(waitDb);
                     dbContext.SaveChanges();
+                    waitDb.ForEach(x => CommonQueries.AddFullTextCashInfo(dbContext, x.OnEvent.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
                 CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();

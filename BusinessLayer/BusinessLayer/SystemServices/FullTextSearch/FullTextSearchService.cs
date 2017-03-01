@@ -193,7 +193,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
         {
             ReindexBeforeSearch(ctx);
-            var words = text.Split(' ').OrderBy(x=>x.Length);
+            var words = text.Split(' ').Where(x=>!string.IsNullOrEmpty(x)).OrderBy(x=>x.Length);
             var res = new List<FullTextSearchResult>();
             var worker = GetWorker(ctx);
             if (worker == null) return res;

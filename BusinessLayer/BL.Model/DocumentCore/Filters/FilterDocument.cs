@@ -30,13 +30,6 @@ namespace BL.Model.DocumentCore.Filters
         /// Работает только если в DocumentId передан один ID
         /// </summary>
         public bool AllLinkedDocuments { get; set; }
-
-        /// <summary>
-        /// Массив ИД документов полученного из полнотекстового поиска
-        /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
-        public List<int> FullTextSearchDocumentId { get; set; }
         /// <summary>
         /// Массив ИД шаблонов документов
         /// </summary>
@@ -189,7 +182,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Содержит строку для поиска по полнотекстовому поиску. 
         /// </summary>
-        public string FullTextSearch { get; set; }
+        //public string FullTextSearch { get; set; }
 
         /// <summary>
         /// Фильтр по динамическим свойствам
