@@ -192,7 +192,7 @@ namespace BL.Logic.AdminCore
             if (IsExecution)
             {
                 // разрешаю выполнять рыссылку ОТ указанной должности для исполнения
-
+                // т.е. текущая должность на все, нижестоящие должности
 
                 var childPositions = _dictService.GetChildPositions(_context, positionId);
 
@@ -200,6 +200,17 @@ namespace BL.Logic.AdminCore
                 {
                     SourcePositionId = positionId,
                     TargetPositionId = x,
+                    SubordinationTypeId = (int)EnumSubordinationTypes.Execution
+                }));
+
+                // все вышестоящие должности могут выполнять рассылку для исполнения на указанную
+
+                var parentPositions = _dictService.GetParentPositions(_context, positionId);
+
+                subordinations.AddRange(parentPositions.Select(x => new InternalAdminSubordination()
+                {
+                    SourcePositionId = x,
+                    TargetPositionId = positionId,
                     SubordinationTypeId = (int)EnumSubordinationTypes.Execution
                 }));
 
@@ -232,7 +243,7 @@ namespace BL.Logic.AdminCore
             {
                 // разрешаю выполнять рыссылку ОТ указанной должности для сведения на всех
 
-                var positions = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition());
+                var positions = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition() { NotContainsIDs = new List<int> { positionId } });
 
                 subordinations.AddRange(positions.Select(x => new InternalAdminSubordination()
                 {
@@ -240,6 +251,22 @@ namespace BL.Logic.AdminCore
                     TargetPositionId = x.Id,
                     SubordinationTypeId = (int)EnumSubordinationTypes.Informing
                 }));
+
+                // и от всех на указанную должность
+                subordinations.AddRange(positions.Select(x => new InternalAdminSubordination()
+                {
+                    SourcePositionId = x.Id,
+                    TargetPositionId = positionId,
+                    SubordinationTypeId = (int)EnumSubordinationTypes.Informing
+                }));
+
+                // и самой себе
+                subordinations.Add(new InternalAdminSubordination()
+                {
+                    SourcePositionId = positionId,
+                    TargetPositionId = positionId,
+                    SubordinationTypeId = (int)EnumSubordinationTypes.Informing
+                });
 
             }
 

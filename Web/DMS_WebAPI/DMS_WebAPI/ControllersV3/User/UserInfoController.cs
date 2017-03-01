@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.User
         }
 
         /// <summary>
-        /// Корректирует реквизиты сотрудника
+        /// Корректирует реквизиты пользователя
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
