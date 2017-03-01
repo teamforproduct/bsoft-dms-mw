@@ -120,7 +120,8 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging, UISorting sorting)
         {
             //TODO FTS FullTextSearchFilter
-            return FTS(context, Modules.Employee, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs);
+            return FTS(context, Modules.Employee, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs,
+                new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true });
         }
 
         public FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId)
@@ -279,7 +280,7 @@ namespace BL.Logic.DictionaryCore
                     // Если после джойна ничего не осталось...
                     if (!list.Any()) return new List<MainFront>();
                 }
-                
+
 
                 // Накладываю параметры пагинации на список
                 if (Paging.Set(ref list, paging) == EnumPagingResult.IsOnlyCounter) return new List<MainFront>();
@@ -737,7 +738,7 @@ namespace BL.Logic.DictionaryCore
             filter.IsActive = true;
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
-            filter.PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { EnumPositionExecutionTypes.Personal, EnumPositionExecutionTypes.IO };
+            //filter.PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { EnumPositionExecutionTypes.Personal, EnumPositionExecutionTypes.IO };
 
             return _dictDb.GetShortListPositionExecutors(context, filter, paging);
         }
@@ -1109,7 +1110,7 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
         {
             //TODO FTS FullTextSearchFilter
-            return FTS(context, Modules.CustomDictionaries, ftSearch?.FullTextSearchString, filter, paging,  sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
+            return FTS(context, Modules.CustomDictionaries, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
@@ -1136,7 +1137,7 @@ namespace BL.Logic.DictionaryCore
         #region [+] StaffList ...
 
 
-        public IEnumerable<ITreeItem> GetStaffList(IContext context, FullTextSearch ftSearch,  FilterDictionaryStaffList filter)
+        public IEnumerable<ITreeItem> GetStaffList(IContext context, FullTextSearch ftSearch, FilterDictionaryStaffList filter)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
@@ -1196,7 +1197,7 @@ namespace BL.Logic.DictionaryCore
                 DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Org })
-                    .ForEach(x=> ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
+                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
 
                 DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,

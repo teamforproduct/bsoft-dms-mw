@@ -113,7 +113,7 @@ namespace DMS_WebAPI.Infrastructure
                 descriptionExpression = descriptionExpression + (descriptionExpression == string.Empty ? string.Empty : ";    ") + m;
 
                 logExpression += (logExpression == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
-                logExpression += $"   Message: {exc.Message}\r\n";
+                logExpression += $"   Message: {(exc is DmsExceptions ? exc.GetType().Name : exc.Message)}\r\n";
                 logExpression += $"   Source: {exc.Source}\r\n";
                 logExpression += $"   Method: {exc.TargetSite}\r\n";
 
