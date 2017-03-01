@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
@@ -75,6 +76,12 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (md == null) return;
 
             var tmr = GetTimer(md);
+
+            while (_stopTimersList.Contains(tmr))
+            {
+                Thread.Sleep(10);
+            }
+
             tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
             _stopTimersList.Add(tmr); // to avoid additional raise of timer event
             var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
@@ -131,7 +138,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 worker.CommitChanges();
             }
-
+            _stopTimersList.Remove(tmr);
             tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
 
@@ -140,8 +147,32 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
         }
 
-        private void ReindexBeforeSearch()
+        private void ReindexBeforeSearch(IContext ctx)
         {
+            var dbKey = CommonSystemUtilities.GetServerKey(ctx);
+            var worker = _workers.FirstOrDefault(x => x.ServerKey == dbKey);
+            if (worker == null) return;
+
+            var md = _timers.Keys.First(x => x.DatabaseKey == dbKey);
+
+            if (md == null) return;
+            var tmr = GetTimer(md);
+
+            if (_stopTimersList.Contains(tmr))
+            {
+                while (_stopTimersList.Contains(tmr))
+                {
+                    Thread.Sleep(10);
+                }
+                return;
+            }
+
+            tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
+            _stopTimersList.Add(tmr); // to avoid additional raise of timer event
+            var admCtx = new AdminContext(ctx);
+            SinchronizeServer(admCtx);
+            _stopTimersList.Remove(tmr);
+            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the time                
         }
 
         public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
@@ -151,7 +182,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            ReindexBeforeSearch();
+            ReindexBeforeSearch(ctx);
             var admService = DmsResolver.Current.Get<IAdminService>();
             int? moduleId = (filter?.Module == null) ? (int?)null :  Modules.GetId(filter?.Module);
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId)).Select(x=> Features.GetId(x.Feature)).ToList();
@@ -161,7 +192,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
         {
-            ReindexBeforeSearch();
+            ReindexBeforeSearch(ctx);
             var words = text.Split(' ').OrderBy(x=>x.Length);
             var res = new List<FullTextSearchResult>();
             var worker = GetWorker(ctx);
