@@ -19,6 +19,7 @@ using BL.Model.SystemCore;
 using System;
 using BL.CrossCutting.Helpers;
 using BL.Database.Helper;
+using BL.Model.Common;
 
 namespace BL.Database.Documents
 {
@@ -133,11 +134,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
+        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sotring)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter as FilterTemplateDocument);
 
                 qry = qry.OrderByDescending(x => x.Name);
 
@@ -162,6 +163,22 @@ namespace BL.Database.Documents
                     //DocumentSubjectName = x.DocumentSubject.Name,
                     //LastChangeUserId = x.LastChangeUserId,
                 }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetTemplateDocumentIDs(IContext ctx, IBaseFilter filter, UISorting sotring)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter as FilterTemplateDocument);
+
+                qry = qry.OrderByDescending(x => x.Name);
+
+                //if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainTemplateDocument>();
+
+                var res = qry.Select(x => x.Id).ToList();
                 transaction.Complete();
                 return res;
             }

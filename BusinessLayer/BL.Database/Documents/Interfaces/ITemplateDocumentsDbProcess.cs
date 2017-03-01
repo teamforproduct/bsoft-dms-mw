@@ -8,6 +8,7 @@ using BL.Model.SystemCore;
 using System.Linq;
 using BL.Database.DBModel.Template;
 using BL.Database.DatabaseContext;
+using BL.Model.Common;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -16,7 +17,8 @@ namespace BL.Database.Documents.Interfaces
         #region TemplateDocument
         IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocument filter);
         bool ExistsTemplateDocuments(IContext context, FilterTemplateDocument filter);
-        IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
+        IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sotring);
+        List<int> GetTemplateDocumentIDs(IContext ctx, IBaseFilter filter, UISorting sotring);
         IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
         FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
         FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);

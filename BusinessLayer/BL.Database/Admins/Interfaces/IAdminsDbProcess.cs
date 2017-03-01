@@ -39,8 +39,9 @@ namespace BL.Database.Admins.Interfaces
         int GetRoleByCode(IContext context, Roles item);
         InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
+        IEnumerable<ListItem> GetMainRoles(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
         IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter);
-        List<int> GetRolesIDs(IContext context, FilterAdminRole filter, UIPaging paging);
+        List<int> GetRoleIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion
 
 

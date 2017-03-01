@@ -84,7 +84,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAddressTypes
         FrontAddressType GetDictionaryAddressType(IContext context, int id);
 
-        IEnumerable<FrontAddressType> GetDictionaryAddressTypes(IContext context, FilterDictionaryAddressType filter);
+        IEnumerable<FrontAddressType> GetDictionaryAddressTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryAddressType filter);
         IEnumerable<FrontShortListAddressType> GetShortListAddressTypes(IContext context, FilterDictionaryAddressType filter);
         #endregion
 
@@ -97,7 +97,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryContactTypes
         FrontDictionaryContactType GetDictionaryContactType(IContext context, int id);
-
+        IEnumerable<FrontDictionaryContactType> GetMainDictionaryContactTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryContactType filter);
         IEnumerable<FrontDictionaryContactType> GetDictionaryContactTypes(IContext context, FilterDictionaryContactType filter);
         IEnumerable<FrontShortListContactType> GetShortListContactTypes(IContext context, FilterDictionaryContactType filter);
         #endregion

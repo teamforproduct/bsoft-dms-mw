@@ -7,6 +7,7 @@ using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemCore;
 using BL.Logic.TreeBuilder;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
@@ -129,20 +130,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
         {
-            var newFilter = new FilterAdminRole();
-
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                //newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.AdminRoles, ftSearch.FullTextSearchString);
-                newFilter.Name = ftSearch.FullTextSearchString;
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-
-            return _adminDb.GetListRoles(context, newFilter, paging);
+            return FTS.Get(context, Modules.Role, ftSearch?.FullTextSearchString, filter, paging, null, _adminDb.GetMainRoles, _adminDb.GetRoleIDs);
         }
 
         public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)

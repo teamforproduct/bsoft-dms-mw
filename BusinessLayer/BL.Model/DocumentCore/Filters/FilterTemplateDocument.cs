@@ -1,20 +1,15 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using BL.Model.Enums;
-using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     ///Фильтр для шаблонов документов
     /// </summary>
-    public class FilterTemplateDocument
+    public class FilterTemplateDocument : BaseFilter
     {
-        /// <summary>
-        /// Массив ИД шаблонов документов
-        /// </summary>
-        public List<int> IDs { get; set; }
         /// <summary>
         /// Массив ИД документов полученного из полнотекстового поиска
         /// </summary>

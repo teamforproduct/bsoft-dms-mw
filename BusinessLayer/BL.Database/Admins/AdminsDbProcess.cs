@@ -405,6 +405,26 @@ namespace BL.Database.Admins
             }
         }
 
+        public IEnumerable<ListItem> GetMainRoles(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRolesQuery(context, dbContext, filter as FilterAdminRole);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
+
+                var res = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -424,16 +444,16 @@ namespace BL.Database.Admins
                 return res;
             }
         }
-
-        public List<int> GetRolesIDs(IContext context, FilterAdminRole filter, UIPaging paging)
+        //Func<IContext, IBaseFilter, UISorting, List<int>> IdsFunc,
+        public List<int> GetRoleIDs(IContext context, IBaseFilter filter, UISorting sorting)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetRolesQuery(context, dbContext, filter);
+                var qry = GetRolesQuery(context, dbContext, filter as FilterAdminRole);
 
                 qry = qry.OrderBy(x => x.Name);
 
-                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<int>();
+                //if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<int>();
 
                 var res = qry.Select(x => x.Id).ToList();
                 transaction.Complete();

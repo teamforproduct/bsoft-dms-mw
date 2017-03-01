@@ -1830,12 +1830,22 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+
+
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.CodeExact))
                 {
                     qry = qry.Where(x => x.Code == filter.CodeExact);
                 }
+// Поиск по наименованию
+                if (!string.IsNullOrEmpty(filter.CodeName))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code.Contains(value) || e.Name.Contains(value)).Expand());
 
+                    qry = qry.Where(filterContains);
+                }
             }
 
             return qry;
@@ -3103,6 +3113,15 @@ namespace BL.Database.Dictionaries
                 if (!String.IsNullOrEmpty(filter.CodeExact))
                 {
                     qry = qry.Where(x => x.Code == filter.CodeExact);
+                }
+
+                if (!string.IsNullOrEmpty(filter.CodeName))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Code.Contains(value) || e.Name.Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
             }
