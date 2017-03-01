@@ -318,7 +318,7 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        public IEnumerable<FrontDictionaryContactType> GetMainDictionaryContactTypes(IContext context, FullTextSearch ftSearch,  FilterDictionaryContactType filter)
+        public IEnumerable<FrontDictionaryContactType> GetMainDictionaryContactTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryContactType filter)
         {
             if (filter == null) filter = new FilterDictionaryContactType();
 
@@ -618,6 +618,43 @@ namespace BL.Logic.DictionaryCore
 
             // исключаю вышестоящие должности моего отдела
             res.RemoveAll(x => positionsInDepartment.Where(y => y.Order <= position.Order).Select(y => y.Id).ToList().Contains(x));
+
+            return res;
+        }
+
+        private void AddHigherPositions(IContext context, List<int> res, int departmentId, int positionOrder = -1)
+        {
+            if (departmentId < 0) return;
+
+            var positionsInDepartment = _dictDb.GetInternalPositions(context, new FilterDictionaryPosition
+            {
+                DepartmentIDs = new List<int> { departmentId },
+            });
+
+            if (positionOrder > 0)
+            { res.AddRange(positionsInDepartment.Where(x => x.Order < positionOrder).Select(x => x.Id).ToList()); }
+            else
+            { res.AddRange(positionsInDepartment.Select(x => x.Id).ToList()); }
+
+            var depernment = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = new List<int> { departmentId } }).FirstOrDefault();
+
+            if (depernment != null) AddHigherPositions(context, res, depernment.ParentId ?? -1);
+        }
+
+        /// <summary>
+        /// Возвращает Id должнсотей, которые выше по Order и в выше стоящих отделах
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="positionId"></param>
+        /// <returns></returns>
+        public List<int> GetParentPositions(IContext context, int positionId)
+        {
+            var position = _dictDb.GetInternalPositions(context, new FilterDictionaryPosition { IDs = new List<int> { positionId } }).FirstOrDefault();
+
+            List<int> res = new List<int>();
+
+            // Все вышестоящие в моем отделе
+            AddHigherPositions(context, res, position.DepartmentId, position.Order);
 
             return res;
         }
