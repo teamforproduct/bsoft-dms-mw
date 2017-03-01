@@ -176,11 +176,13 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontAddressType> GetDictionaryAddressTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryAddressType filter)
         {
-            if (filter == null) filter = new FilterDictionaryAddressType { CodeName = ftSearch?.FullTextSearchString };
+            if (filter == null) filter = new FilterDictionaryAddressType();
+
+            filter.CodeName = ftSearch?.FullTextSearchString;
 
             var res = _dictDb.GetAddressTypes(context, filter);
 
-            DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, res.Any(), Modules.ContactType, ftSearch?.FullTextSearchString);
+            DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, res.Any(), Modules.AddressType, ftSearch?.FullTextSearchString);
 
             return res;
         }
@@ -318,7 +320,9 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryContactType> GetMainDictionaryContactTypes(IContext context, FullTextSearch ftSearch,  FilterDictionaryContactType filter)
         {
-            if (filter == null) filter = new FilterDictionaryContactType { CodeName = ftSearch?.FullTextSearchString };
+            if (filter == null) filter = new FilterDictionaryContactType();
+
+            filter.CodeName = ftSearch?.FullTextSearchString;
 
             var res = _dictDb.GetContactTypes(context, filter);
 
