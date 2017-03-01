@@ -69,6 +69,27 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
+        /// Внешние агенты
+        /// </summary>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Agents)]
+        [ResponseType(typeof(List<ListItem>))]
+        public IHttpActionResult GetList([FromUri]UIPaging paging)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetShortListAgentExternal(ctx, paging);
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var res = new JsonResult(tmpItems, metaData, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Банки
         /// </summary>
         /// <param name="filter">параметры фильтрации</param>

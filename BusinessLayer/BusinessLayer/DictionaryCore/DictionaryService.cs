@@ -51,14 +51,16 @@ namespace BL.Logic.DictionaryCore
             return GetAgents(context, new FilterDictionaryAgent { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-
+        public IEnumerable<AutocompleteItem> GetShortListAgentExternal(IContext context, UIPaging paging)
+        {
+            return _dictDb.GetAgentExternalList(context, paging);
+        }
         public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
             //var newFilter = new FilterDictionaryAgent();
             //if (!string.IsNullOrEmpty(filter.FullTextSearchString))
             //{
             //    newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents, filter.FullTextSearchString, ResolveSearchResultAgents);
-
             //}
             //else
             //{
@@ -252,20 +254,35 @@ namespace BL.Logic.DictionaryCore
                 // Если полнотекст ничего не нашел...
                 if (!ftList.Any()) return new List<MainFront>();
 
-                // Получаю список ид из таблицы сущности
-                var dbList = IdsFunc(context, filter, sorting);
+                var list = new List<int>();
 
-                // Если в базе ничего не нашлось...
-                if (!dbList.Any()) return new List<MainFront>();
+                // Если фильтр не задан и результат полнотекста влезает в PageSize 
+                // (список ID из базы можно не джойнить, а сортировка примениться в  MainFunc)
+                if (filter == null && ftList.Count <= paging.PageSize)
+                {
+                    list = ftList;
+                }
+                else
+                {
+                    // Получаю список ид из таблицы сущности с учетом сортировки
+                    var dbList = IdsFunc(context, filter, sorting);
 
-                // Нахожу пересечение множеств ftList и dbList
-                var sortList = dbList.Select((x, i) => new { Id = x, Index = i }).ToList();
+                    // Если в базе ничего не нашлось...
+                    if (!dbList.Any()) return new List<MainFront>();
 
-                var list = ftList.Join(sortList, o => o, i => i.Id, (o, i) => i)
-                    .OrderBy(x => x.Index).Select(x => x.Id).ToList();
+                    // Нахожу пересечение множеств ftList и dbList с сохранением сортировки
+                    var sortList = dbList.Select((x, i) => new { Id = x, Index = i }).ToList();
+
+                    list = ftList.Join(sortList, o => o, i => i.Id, (o, i) => i)
+                        .OrderBy(x => x.Index).Select(x => x.Id).ToList();
+
+                    // Если после джойна ничего не осталось...
+                    if (!list.Any()) return new List<MainFront>();
+                }
+                
 
                 // Накладываю параметры пагинации на список
-                Paging.Set(ref list, paging);
+                if (Paging.Set(ref list, paging) == EnumPagingResult.IsOnlyCounter) return new List<MainFront>();
 
                 filter.IDs = list;
 

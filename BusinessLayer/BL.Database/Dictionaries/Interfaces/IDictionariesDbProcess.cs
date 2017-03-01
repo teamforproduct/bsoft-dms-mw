@@ -23,6 +23,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgent(IContext context, int agentId);
         FrontDictionaryAgentUser GetAgentUser(IContext context, int id);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
+        IEnumerable<AutocompleteItem> GetAgentExternalList(IContext context, UIPaging paging);
         bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 

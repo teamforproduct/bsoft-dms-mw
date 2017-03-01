@@ -8,6 +8,7 @@
         public const string Addresses = "Addresses";
         public const string AddressTypes = "AddressTypes";
         public const string Admins = "Admins";
+        public const string Agents = "Agents";
         public const string Assignments = "Assignments";
         public const string AuthLog = "AuthLog";
         public const string Banks = "Banks";

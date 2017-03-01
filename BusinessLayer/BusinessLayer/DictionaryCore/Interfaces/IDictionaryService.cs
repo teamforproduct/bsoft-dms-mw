@@ -1,17 +1,16 @@
-﻿using BL.Model.DictionaryCore;
-using System.Collections.Generic;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore;
-using BL.Model.SystemCore;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Common;
-using BL.Model.Tree;
-using BL.Model.DictionaryCore.FrontMainModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
+using BL.Model.Tree;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore.Interfaces
 {
@@ -21,6 +20,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
+        IEnumerable<AutocompleteItem> GetShortListAgentExternal(IContext context, UIPaging paging);
         FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id);
         int SetAgentUserLanguage(IContext context, string languageCode);
         void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList);

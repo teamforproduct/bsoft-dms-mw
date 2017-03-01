@@ -273,6 +273,46 @@ namespace BL.Database.Dictionaries
             }
         }
 
+
+        public IEnumerable<AutocompleteItem> GetAgentExternalList(IContext context, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                //Контрагенты(Тип: Физ.лицо / Юр.лицо / Банк, ИНН / ОКПО / МФО)
+                var qryPersons = GetAgentPersonsQuery(context, dbContext, new FilterDictionaryAgentPerson { IsActive = true });
+                var resPersons = qryPersons.Select(x => new AutocompleteItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    Details = new List<string> { "##l@Agents:Person@l##", x.People.TaxCode ?? string.Empty }
+                }).ToList();
+
+                var qryCompanies = GetAgentCompaniesQuery(context, dbContext, new FilterDictionaryAgentCompany { IsActive = true });
+                var resCompanies = qryCompanies.Select(x => new AutocompleteItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    Details = new List<string> { "##l@Agents:Company@l##", x.OKPOCode ?? string.Empty }
+                }).ToList();
+
+                var qryBanks = GetAgentBanksQuery(context, dbContext, new FilterDictionaryAgentBank { IsActive = true });
+                var resBanks = qryBanks.Select(x => new AutocompleteItem
+                {
+                    Id = x.Id,
+                    Name = x.Agent.Name,
+                    Details = new List<string> { "##l@Agents:Bank@l##", x.MFOCode ?? string.Empty }
+                }).ToList();
+
+                var res = resCompanies.Union(resBanks).Union(resPersons).OrderBy(x => x.Name).ToList();
+
+                if (Paging.Set(ref res, paging) == EnumPagingResult.IsOnlyCounter) return new List<AutocompleteItem>();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+
         private IQueryable<DictionaryAgents> GetAgentsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgent filter)
         {
             var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
