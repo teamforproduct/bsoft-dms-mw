@@ -172,10 +172,21 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
             _stopTimersList.Add(tmr); // to avoid additional raise of timer event
-            var admCtx = new AdminContext(ctx);
-            SinchronizeServer(admCtx);
-            _stopTimersList.Remove(tmr);
-            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the time                
+            try
+            {
+                var admCtx = new AdminContext(ctx);
+                SinchronizeServer(admCtx);
+            }
+            catch 
+            {
+                // ignored
+            }
+            finally
+            {
+                _stopTimersList.Remove(tmr);
+                tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the time      
+            }
+                      
         }
 
         public List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter)
@@ -183,15 +194,20 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return SearchItemsByDetail(ctx, text, filter).Select(x => x.ParentId).Distinct().ToList();
         }
 
+        private IEnumerable<FullTextSearchResult> SearchItemsInternal(IContext ctx, string text, FullTextSearchFilter filter)
+        {
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            int? moduleId = (filter?.Module == null) ? (int?)null : Modules.GetId(filter?.Module);
+            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
+                        .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
+            var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x => perm.Contains(x.FeatureId));
+            return res;
+        }
+
         public IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter)
         {
             ReindexBeforeSearch(ctx);
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            int? moduleId = (filter?.Module == null) ? (int?)null :  Modules.GetId(filter?.Module);
-            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
-                        .Where(x=>x.AccessType == EnumAccessTypes.R.ToString()).Select(x=> Features.GetId(x.Feature)).ToList();
-            var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x=> perm.Contains(x.FeatureId));
-            return res;
+            return SearchItemsInternal(ctx, text, filter);
         }
 
         public IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter)
@@ -204,7 +220,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var tempRes = new List<List<FullTextSearchResult>>();
             foreach (var word in words)
             {
-                var r = SearchItems(ctx, word, filter).ToList();
+                var r = SearchItemsInternal(ctx, word, filter).ToList();
                 if (!r.Any()) return res;
                 tempRes.Add(r);
             }
