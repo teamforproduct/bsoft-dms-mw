@@ -285,13 +285,13 @@ namespace BL.Database.Documents
                     }
 
                     #region filters for counters preparing
-                    var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterOnEventPositionsContains = PredicateBuilder.New<DocumentWaits>();
                     filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
 
-                    var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
-                    filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    var filterOnEventTaskAccessesContains = PredicateBuilder.New<DocumentTaskAccesses>();
+                    ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                    var filterNewEventContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterNewEventContains = PredicateBuilder.New<DocumentEvents>();
                     filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains, (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
                     #endregion Counter
 
