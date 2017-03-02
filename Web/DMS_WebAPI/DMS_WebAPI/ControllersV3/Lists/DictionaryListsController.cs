@@ -135,18 +135,17 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Отделы
         /// </summary>
-        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Departments)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetListDepartments([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDepartment filter)
+        public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryDepartment filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDepartmentsShortList(ctx, ftSearch, filter);
+            var tmpItems = tmpService.GetDepartmentsShortList(ctx, filter);
             var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;
@@ -199,19 +198,18 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Исполнители должностей
         /// </summary>
-        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Executors)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetListDepartments([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetShortListPositionExecutors(ctx, ftSearch, filter, paging);
+            var tmpItems = tmpService.GetShortListPositionExecutors(ctx, filter, paging);
             var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;
@@ -221,18 +219,17 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Журналы
         /// </summary>
-        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Journals)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryRegistrationJournal filter)
+        public IHttpActionResult GetList([FromUri]FilterDictionaryRegistrationJournal filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournalsShortList(ctx, ftSearch, filter);
+            var tmpItems = tmpService.GetRegistrationJournalsShortList(ctx, filter);
             //var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
@@ -264,18 +261,17 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <summary>
         /// Должности
         /// </summary>
-        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Positions)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryPosition filter)
+        public IHttpActionResult GetList([FromUri]FilterDictionaryPosition filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionsShortList(ctx, ftSearch, filter);
+            var tmpItems = tmpService.GetPositionsShortList(ctx, filter);
             var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;
