@@ -362,7 +362,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetDepartmentPrefix(context, parentId);
         }
 
-        public IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryDepartment filter)
+        public IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter)
         {
             if (filter == null) filter = new FilterDictionaryDepartment();
 
@@ -519,7 +519,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetPositionList(context, filter, paging);
         }
 
-        public IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter)
+        public IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FilterDictionaryPosition filter)
         {
             if (filter == null) filter = new FilterDictionaryPosition();
 
@@ -714,7 +714,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetPositionExecutors(context, filter);
         }
 
-        public IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FullTextSearch ftSearch, FilterDictionaryPositionExecutor filter, UIPaging paging)
+        public IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, UIPaging paging)
         {
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
@@ -910,7 +910,7 @@ namespace BL.Logic.DictionaryCore
             return res;
         }
 
-        public IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter)
+        public IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context, FilterDictionaryRegistrationJournal filter)
         {
             if (filter == null) filter = new FilterDictionaryRegistrationJournal();
 

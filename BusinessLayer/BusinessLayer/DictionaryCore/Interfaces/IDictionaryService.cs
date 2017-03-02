@@ -113,7 +113,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryDepartment> GetDictionaryDepartments(IContext context, FilterDictionaryDepartment filter);
 
-        IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryDepartment filter);
+        IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter);
 
         string GetDepartmentPrefix(IContext context, int parentId);
         #endregion DictionaryDepartments
@@ -162,7 +162,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
 
-        IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryPosition filter);
+        IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context,  FilterDictionaryPosition filter);
         List<int> GetChildPositions(IContext context, int positionId);
         List<int> GetParentPositions(IContext context, int positionId);
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
@@ -175,7 +175,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryPositionExecutors
         FrontDictionaryPositionExecutor GetDictionaryPositionExecutor(IContext context, int id);
         IEnumerable<FrontDictionaryPositionExecutor> GetDictionaryPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
-        IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FullTextSearch ftSearch, FilterDictionaryPositionExecutor filter, UIPaging paging);
+        IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, UIPaging paging);
         IEnumerable<FrontDictionaryPositionExecutor> GetUserPositionExecutors(IContext context, int positionId, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetCurrentPositionExecutors(IContext context);
         int GetPositionPersonalAgent(IContext context, int positionId);
@@ -197,7 +197,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging, UISorting sorting);
         IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter);
         //IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null);
-        IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<AutocompleteItem> GetRegistrationJournalsShortList(IContext context,  FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         // Компании

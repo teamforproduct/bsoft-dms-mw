@@ -47,11 +47,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public bool? IsMale { get; set; }
 
-        /// <summary>
-        /// Первая буква наименования
-        /// </summary>
-        public char FirstChar { get; set; }
-
         public string FullName { get; set; }
 
         public string FirstNameExact { get; set; }
