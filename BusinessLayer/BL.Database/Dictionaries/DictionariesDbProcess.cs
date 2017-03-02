@@ -5006,8 +5006,8 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     Details = new List<string>
                     {
-                        x.ExecutorAgent.Name + " " + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
-                        x.Department.FullPath + " " + x.Department.Name
+                        x.Department.FullPath + " " + x.Department.Name,
+                        x.ExecutorAgent.Name + " " + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null)
                     },
                 }).ToList();
 
