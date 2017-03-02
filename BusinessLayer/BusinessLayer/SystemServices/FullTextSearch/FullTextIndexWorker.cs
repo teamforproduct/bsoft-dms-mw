@@ -207,7 +207,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             if (filter.Accesses != null && filter.Accesses.Any())
             {
-                var scrParser = new QueryParser(Version.LUCENE_30, FIELD_SECURITY_ID, _analyzer);
+                var scrParser = new QueryParser(Version.LUCENE_30, FIELD_SECURITY_ID, _analyzer) { AllowLeadingWildcard = true };
                 var scrEmpty = scrParser.Parse(NO_RULES_VALUE);
                 var boolQry = new BooleanQuery();
                 boolQry.Add(textQry, Occur.MUST);
@@ -223,7 +223,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 foreach (var access in filter.Accesses)
                 {
-                    var scrQry = scrParser.Parse($"*_{access}_*");
+                    var scrQry = scrParser.Parse($"*{access}*");
                     boolQry = new BooleanQuery();
                     boolQry.Add(textQry, Occur.MUST);
                     boolQry.Add(clientQry, Occur.MUST);

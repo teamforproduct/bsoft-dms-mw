@@ -2833,13 +2833,14 @@ namespace BL.Database.Common
         #endregion
 
         #region FullText
-        public static void AddFullTextCashInfo(DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
+        public static void AddFullTextCashInfo(IContext ctx, DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
         {
             var cashInfo = new FullTextIndexCash
             {
                 ObjectId = objectId,
                 ObjectType = (int)objType,
-                OperationType = (int)operationType
+                OperationType = (int)operationType,
+                ClientId = ctx.CurrentClientId
             };
 
 
