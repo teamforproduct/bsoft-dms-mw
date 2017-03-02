@@ -16,7 +16,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Companies
 {
     /// <summary>
-    /// Юридические лица. Контактные лица компании
+    /// Юридические лица. Контактные лица
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

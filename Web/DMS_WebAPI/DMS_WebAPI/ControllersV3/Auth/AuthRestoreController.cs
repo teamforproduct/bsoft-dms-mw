@@ -12,7 +12,7 @@ using System.Web.Http;
 namespace DMS_WebAPI.ControllersV3.Auth
 {
     /// <summary>
-    /// Авторизация.Восстановление авторизациии сотрудников-пользователей
+    /// Авторизация. Восстановление авторизациии сотрудников-пользователей
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

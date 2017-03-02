@@ -16,7 +16,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.Tools)]
+    [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class SystemSearchQueriesController : ApiController
     {
 
