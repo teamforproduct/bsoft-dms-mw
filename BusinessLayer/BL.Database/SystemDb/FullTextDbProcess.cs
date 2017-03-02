@@ -18,7 +18,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.FullTextIndexCashSet.Any() ? dbContext.FullTextIndexCashSet.Max(x => x.Id) : 0;
+                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentAgentId) ? dbContext.FullTextIndexCashSet.Where(x=>x.ClientId == ctx.CurrentAgentId).Max(x => x.Id) : 0;
                 transaction.Complete();
                 return res;
             }
@@ -27,19 +27,22 @@ namespace BL.Database.SystemDb
         public IEnumerable<FullTextIndexItem> FullTextIndexToUpdate(IContext ctx, int maxIdValue)
         {
             var res = new List<FullTextIndexItem>();
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.Database.CommandTimeout = 0;
                 //Add deleted item to  process processing full text index
-                res.AddRange(dbContext.FullTextIndexCashSet.Where(x=>x.Id<=maxIdValue).Select(x => new FullTextIndexItem
-                {
-                    Id = x.Id,
-                    ObjectType = (EnumObjects)x.ObjectType,
-                    OperationType = (EnumOperationType)x.OperationType,
-                    ClientId = ctx.CurrentClientId,
-                    ObjectId = x.ObjectId,
-                    ObjectText = ""
-                }).ToList());
+                res.AddRange(
+                    dbContext.FullTextIndexCashSet.Where(x => x.Id <= maxIdValue && x.ClientId == ctx.CurrentClientId)
+                        .Select(x => new FullTextIndexItem
+                        {
+                            Id = x.Id,
+                            ObjectType = (EnumObjects) x.ObjectType,
+                            OperationType = (EnumOperationType) x.OperationType,
+                            ClientId = ctx.CurrentClientId,
+                            ObjectId = x.ObjectId,
+                            ObjectText = ""
+                        }).ToList());
                 transaction.Complete();
             }
             return res;
@@ -1499,19 +1502,19 @@ namespace BL.Database.SystemDb
                     {
                         qry.Query = IsDirectFilter 
                             ? qry.Query.Where(x => (!idBeg.HasValue || x.ObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value)) 
-                            : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
+                            : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
                     }
                     else if (qry.FilterType == EnamFilterType.Slave)
                     {
                         qry.Query = IsDirectFilter 
                             ? qry.Query.Where(x => (!idBeg.HasValue || x.ParentObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value)) 
-                            : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
+                            : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
                     }
                     else
                     {
                         qry.Query = IsDirectFilter 
                             ? qry.Query.Where(x => (!idBeg.HasValue || x.FilterId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value)) 
-                            : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
+                            : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
                     }
                     res.AddRange(qry.Query.ToList());
                 }
@@ -1526,8 +1529,7 @@ namespace BL.Database.SystemDb
             {
                 if (processedIds.Count() < 50)
                 {
-                    dbContext.FullTextIndexCashSet.RemoveRange(
-                        dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
+                    dbContext.FullTextIndexCashSet.RemoveRange(dbContext.FullTextIndexCashSet.Where(x => processedIds.Contains(x.Id)));
                 }
                 else
                 {
@@ -1536,7 +1538,6 @@ namespace BL.Database.SystemDb
                         var currIds = processedIds.Take(50).ToList();
                         dbContext.FullTextIndexCashSet.RemoveRange(dbContext.FullTextIndexCashSet.Where(x => currIds.Contains(x.Id)));
                         processedIds = processedIds.Except(currIds);
-
                     }
                 }
                 dbContext.SaveChanges();
@@ -1552,7 +1553,5 @@ namespace BL.Database.SystemDb
                 transaction.Complete();
             }
         }
-
-
     }
 }

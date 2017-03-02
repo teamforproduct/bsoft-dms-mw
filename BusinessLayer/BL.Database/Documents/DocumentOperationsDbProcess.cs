@@ -361,7 +361,7 @@ namespace BL.Database.Documents
                     var waitDb = ModelConverter.GetDbDocumentWaits(document.Waits).ToList();
                     dbContext.DocumentWaitsSet.AddRange(waitDb);
                     dbContext.SaveChanges();
-                    waitDb.ForEach(x => CommonQueries.AddFullTextCashInfo(dbContext, x.OnEvent.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
+                    waitDb.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.OnEvent.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
                 CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
@@ -1322,7 +1322,7 @@ namespace BL.Database.Documents
                         x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == model.DocumentId)
                         .Where(filterContains);
-                    CommonQueries.AddFullTextCashInfo(dbContext, rngToDelete.Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.Delete);
+                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, rngToDelete.Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.Delete);
                     dbContext.DocumentTagsSet.RemoveRange(rngToDelete);
                 }
 
@@ -1339,7 +1339,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentTagsSet.AddRange(newDictionaryTags);
 
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(dbContext, newDictionaryTags.Where(x=>x.Id!=0).Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, newDictionaryTags.Where(x=>x.Id!=0).Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.AddNew);
 
                 transaction.Complete();
             }

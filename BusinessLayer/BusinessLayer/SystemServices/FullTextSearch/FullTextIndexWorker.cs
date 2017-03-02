@@ -34,7 +34,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_DATE_FROM_ID = "DateFrom";
         private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
-        private const string NO_RULES_VALUE = "NORULES";
+        private const string NO_RULES_VALUE = "N";
         private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
 
         private IndexWriter _writer;
@@ -111,7 +111,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new Field(FIELD_BODY, item.ObjectText ?? "", Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
-            var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : "_" + string.Join("_", item.Access.Where(x => x != 0).ToList()) + "_";
+            var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : "v" + string.Join("v", item.Access.Where(x => x != 0).ToList()) + "v";
             doc.Add(new Field(FIELD_SECURITY_ID, securCodes, Field.Store.NO, Field.Index.ANALYZED));
 
             var dateFrom = new NumericField(FIELD_DATE_FROM_ID, Field.Store.NO, true);
@@ -223,7 +223,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 foreach (var access in filter.Accesses)
                 {
-                    var scrQry = scrParser.Parse($"*{access}*");
+                    var scrQry = scrParser.Parse($"*v{access}v*");
                     boolQry = new BooleanQuery();
                     boolQry.Add(textQry, Occur.MUST);
                     boolQry.Add(clientQry, Occur.MUST);
@@ -234,7 +234,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                     if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                     if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                    var searchResultAdd = GetQueryResult(boolQry);
                     searchResult.AddRange(GetQueryResult(boolQry));
                 }
                 return searchResult.OrderByDescending(x=>x.Score).Take(MAX_DOCUMENT_COUNT_RETURN);

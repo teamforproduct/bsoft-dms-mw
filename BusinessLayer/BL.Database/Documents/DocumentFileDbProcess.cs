@@ -222,7 +222,7 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
-                CommonQueries.AddFullTextCashInfo(dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.AddNew);
                 transaction.Complete();
                 return fl.Id;
             }
@@ -270,9 +270,9 @@ namespace BL.Database.Documents
                     var dbEvents = ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList();
                     dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
-                    dbEvents.ForEach(x=> CommonQueries.AddFullTextCashInfo(dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
+                    dbEvents.ForEach(x=> CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
-                CommonQueries.AddFullTextCashInfo(dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -328,7 +328,7 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     dbContext.SaveChanges();
-                    CommonQueries.AddFullTextCashInfo(dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.Update);
+                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.Update);
                 }
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
                 if (docFileEvents != null && docFileEvents.Any(x => x.Id == 0))
@@ -336,7 +336,7 @@ namespace BL.Database.Documents
                     var dbEvents = ModelConverter.GetDbDocumentEvents(docFileEvents.Where(x => x.Id == 0)).ToList();
                     dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
-                    dbEvents.ForEach(x => CommonQueries.AddFullTextCashInfo(dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
+                    dbEvents.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
                 transaction.Complete();
             }
@@ -394,7 +394,7 @@ namespace BL.Database.Documents
                     var dbEvents = ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList();
                     dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
-                    dbEvents.ForEach(x => CommonQueries.AddFullTextCashInfo(dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
+                    dbEvents.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
 
                 var docFileQry = dbContext.DocumentFilesSet
@@ -426,7 +426,7 @@ namespace BL.Database.Documents
                     {
                         entry.Property(x => x.IsDeleted).IsModified = true;
                     }
-                    CommonQueries.AddFullTextCashInfo(dbContext, fileId, EnumObjects.DocumentFiles, EnumOperationType.Delete);
+                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, fileId, EnumObjects.DocumentFiles, EnumOperationType.Delete);
                 }
                 dbContext.SaveChanges();
                 transaction.Complete();

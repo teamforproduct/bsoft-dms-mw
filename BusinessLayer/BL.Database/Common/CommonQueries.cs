@@ -2850,7 +2850,7 @@ namespace BL.Database.Common
 
         }
 
-        public static void AddFullTextCashInfo(DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
+        public static void AddFullTextCashInfo(IContext ctx, DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
         {
             if (objectId == null || !objectId.Any()) return;
             var cashInfos = objectId.Select(x =>
@@ -2858,7 +2858,8 @@ namespace BL.Database.Common
                 {
                     ObjectId = x,
                     ObjectType = (int)objType,
-                    OperationType = (int)operationType
+                    OperationType = (int)operationType,
+                    ClientId = ctx.CurrentClientId
                 }).ToList();
 
             dbContext.FullTextIndexCashSet.AddRange(cashInfos);
