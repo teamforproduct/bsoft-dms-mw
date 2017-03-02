@@ -71,6 +71,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var worker = _workers.FirstOrDefault(x => x.ServerKey == dbKey);
             if (worker == null) return;
 
+            //For test
+            //var testReindex = _systemDb.FullTextIndexPrepareNew(ctx, EnumObjects.DocumentEvents, false, true, 3362259, 3362259);
+
             var md = _timers.Keys.First(x => x.DatabaseKey == dbKey);
 
             if (md == null) return;
@@ -185,7 +188,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             ReindexBeforeSearch(ctx);
             var admService = DmsResolver.Current.Get<IAdminService>();
             int? moduleId = (filter?.Module == null) ? (int?)null :  Modules.GetId(filter?.Module);
-            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId)).Select(x=> Features.GetId(x.Feature)).ToList();
+            var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
+                        .Where(x=>x.AccessType == EnumAccessTypes.R.ToString()).Select(x=> Features.GetId(x.Feature)).ToList();
             var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x=> perm.Contains(x.FeatureId));
             return res;
         }
@@ -200,7 +204,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var tempRes = new List<List<FullTextSearchResult>>();
             foreach (var word in words)
             {
-                var r = worker.SearchItems(word, ctx.CurrentClientId, filter).ToList();
+                var r = SearchItems(ctx, word, filter).ToList();
                 if (!r.Any()) return res;
                 tempRes.Add(r);
             }

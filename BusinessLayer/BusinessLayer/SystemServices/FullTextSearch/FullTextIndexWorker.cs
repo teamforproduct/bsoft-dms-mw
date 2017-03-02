@@ -234,6 +234,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                     if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                     if (toDat != null) boolQry.Add(toDat, Occur.MUST);
+                    var searchResultAdd = GetQueryResult(boolQry);
                     searchResult.AddRange(GetQueryResult(boolQry));
                 }
                 return searchResult.OrderByDescending(x=>x.Score).Take(MAX_DOCUMENT_COUNT_RETURN);

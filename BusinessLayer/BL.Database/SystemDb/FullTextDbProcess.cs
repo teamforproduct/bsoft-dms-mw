@@ -47,6 +47,7 @@ namespace BL.Database.SystemDb
 
         private delegate List<FullTextQueryPrepare> DFullTextIndexItemQuery(IContext ctx, DmsContext dbContext, EnamFilterType filterType = EnamFilterType.Main);
 
+        #region Filling FullTextIndexItemQuery
         private static readonly Dictionary<EnumObjects, DFullTextIndexItemQuery> FullTextIndexItemQuery =
         new Dictionary<EnumObjects, DFullTextIndexItemQuery>
         {
@@ -1315,11 +1316,7 @@ namespace BL.Database.SystemDb
             } },
             #endregion Simple Dictionary
         };
-
-        public List<EnumObjects> ObjectToReindex()
-        {
-            return FullTextIndexItemQuery.Keys.ToList();
-        }
+        #endregion Filling FullTextIndexItemQuery
 
         #region Filling FullTextDeepUpdateParams
         private static readonly Dictionary<EnumObjects, List<FullTextDeepUpdateItemQuery>> FullTextDeepUpdateParams = new Dictionary<EnumObjects, List<FullTextDeepUpdateItemQuery>>
@@ -1434,6 +1431,11 @@ namespace BL.Database.SystemDb
             },
         };
         #endregion Filling FullTextDeepUpdateParams
+
+        public List<EnumObjects> ObjectToReindex()
+        {
+            return FullTextIndexItemQuery.Keys.ToList();
+        }
 
         public List<int> GetItemsToUpdateCount(IContext ctx, EnumObjects objectType, bool isDeepUpdate)
         {
