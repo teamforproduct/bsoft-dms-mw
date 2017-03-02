@@ -1,6 +1,4 @@
-﻿using System;
-using BL.Model.Enums;
-using BL.Model.Common;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
 
 namespace BL.Model.SystemCore.Filters
