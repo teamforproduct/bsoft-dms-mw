@@ -96,7 +96,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.Person, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentPersons, _dictDb.GetAgentPersonIDs);
+            return FTS.Get(context, Modules.Person, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentPersons, _dictDb.GetAgentPersonIDs);
         }
 
         #endregion DictionaryAgentPersons
@@ -119,7 +119,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.Employee, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs
+            return FTS.Get(context, Modules.Employee, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs
                //, new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
                );
         }
@@ -238,7 +238,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentCompany filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.Company, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentCompanies, _dictDb.GetAgentCompanyIDs);
+            return FTS.Get(context, Modules.Company, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentCompanies, _dictDb.GetAgentCompanyIDs);
         }
 
         #endregion DictionaryAgentCompanies
@@ -251,7 +251,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get<FrontMainAgentBank>(context, Modules.Bank, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainAgentBanks, _dictDb.GetAgentBankIDs);
+            return FTS.Get<FrontMainAgentBank>(context, Modules.Bank, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentBanks, _dictDb.GetAgentBankIDs);
         }
 
         public IEnumerable<AutocompleteItem> GetShortListAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging)
@@ -455,7 +455,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryDocumentType> GetMainDictionaryDocumentTypes(IContext context, FullTextSearch ftSearch, FilterDictionaryDocumentType filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.DocumentType, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainDocumentTypes, _dictDb.GetDocumentTypeIDs);
+            return FTS.Get(context, Modules.DocumentType, ftSearch, filter, paging, sorting, _dictDb.GetMainDocumentTypes, _dictDb.GetDocumentTypeIDs);
         }
 
         #endregion DictionaryDocumentTypes
@@ -815,7 +815,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.Journal, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetRegistrationJournals, _dictDb.GetRegistrationJournalIDs);
+            return FTS.Get(context, Modules.Journal, ftSearch, filter, paging, sorting, _dictDb.GetRegistrationJournals, _dictDb.GetRegistrationJournalIDs);
         }
 
         public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
@@ -894,11 +894,18 @@ namespace BL.Logic.DictionaryCore
                     new FullTextSearchFilter { Module = Modules.Journal })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryRegistrationJournals, x));
 
+                if (ftDict.Count == 0) return new List<TreeItem>();
+
                 filter.IDs = ftDict;
             }
 
 
             var res = Tree.Get(flatList, filter);
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res.Any())
+            {
+                DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.Journal, ftSearch?.FullTextSearchString);
+            }
 
             return res;
         }
@@ -1028,7 +1035,7 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.SendList, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
+            return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
         }
 
         #endregion DictionaryStandartSendList
@@ -1044,7 +1051,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryTags
         public IEnumerable<FrontMainTag> GetMainTags(IContext context, FullTextSearch ftSearch, FilterDictionaryTag filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.Tags, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainTags, _dictDb.GetTagIDs);
+            return FTS.Get(context, Modules.Tags, ftSearch, filter, paging, sorting, _dictDb.GetMainTags, _dictDb.GetTagIDs);
         }
 
         public IEnumerable<ListItem> GetTagList(IContext context, FilterDictionaryTag filter, UIPaging paging)
@@ -1090,7 +1097,7 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.CustomDictionaries, ftSearch?.FullTextSearchString, filter, paging, sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
@@ -1194,10 +1201,17 @@ namespace BL.Logic.DictionaryCore
                     new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Executors })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
 
+                if (ftDict.Count == 0) return new List<TreeItem>();
+
                 filter.IDs = ftDict;
             }
 
             var res = Tree.Get(flatList, filter);
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res.Any())
+            {
+                DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.Org, ftSearch?.FullTextSearchString);
+            }
 
             return res;
         }

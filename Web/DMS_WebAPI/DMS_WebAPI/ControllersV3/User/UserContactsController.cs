@@ -16,8 +16,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Контакты пользователя-сотрудника
+    /// Пользователь. Контакты
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

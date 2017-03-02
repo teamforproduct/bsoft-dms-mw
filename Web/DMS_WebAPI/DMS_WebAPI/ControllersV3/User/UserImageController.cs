@@ -3,6 +3,7 @@ using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -14,8 +15,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен
-    /// Аватарка пользователя
+    /// Пользователь. Аватарка пользователя
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]
@@ -26,7 +26,6 @@ namespace DMS_WebAPI.ControllersV3.User
 
 
         /// <summary>
-        /// !!! Доступ не ограничен.
         /// Возвращает аватарку
         /// </summary>
         /// <returns></returns>
@@ -59,23 +58,21 @@ namespace DMS_WebAPI.ControllersV3.User
 
 
         /// <summary>
-        /// Удаляет аватарку
+        /// Удаляет аватарку текущего пользователя
         /// </summary>
-        /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Image + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        [Route(Features.Image)]
+        public IHttpActionResult Delete()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
-            throw new NotImplementedException();
-            var tmpItem = new FrontDeleteModel(Id);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            Action.Execute(EnumDictionaryActions.DeleteAgentImage, ctx.CurrentAgentId);
+            var tmpItem = new FrontDeleteModel(ctx.CurrentAgentId);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
         }
-
-
 
     }
 }

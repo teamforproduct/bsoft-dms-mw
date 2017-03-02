@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Org
 {
     /// <summary>
-    /// Адреса организации (клиентских компаний)
+    /// Организации - клиентские компании. Адреса
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

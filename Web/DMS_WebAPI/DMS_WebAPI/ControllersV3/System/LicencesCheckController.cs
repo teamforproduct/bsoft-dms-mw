@@ -11,7 +11,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// Проверка лицензии
+    /// Лицензия. Проверка лицензии
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

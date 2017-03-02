@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Companies
 {
     /// <summary>
-    /// Контакты контактного лица
+    /// Юридические лица. Контакты контактного лица
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

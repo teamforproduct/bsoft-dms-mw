@@ -130,7 +130,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
         {
-            return FTS.Get(context, Modules.Role, ftSearch?.FullTextSearchString, filter, paging, null, _adminDb.GetMainRoles, _adminDb.GetRoleIDs);
+            return FTS.Get(context, Modules.Role, ftSearch, filter, paging, null, _adminDb.GetMainRoles, _adminDb.GetRoleIDs);
         }
 
         public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)

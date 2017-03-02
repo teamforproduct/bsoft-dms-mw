@@ -13,8 +13,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Паспортные данные пользователя
+    /// Пользователь. Паспортные данные
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

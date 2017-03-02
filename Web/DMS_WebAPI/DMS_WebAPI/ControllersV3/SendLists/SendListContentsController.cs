@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.SendLists
 {
     /// <summary>
-    /// Пункты списка рассылки
+    /// Списки рассылки. Пункты
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

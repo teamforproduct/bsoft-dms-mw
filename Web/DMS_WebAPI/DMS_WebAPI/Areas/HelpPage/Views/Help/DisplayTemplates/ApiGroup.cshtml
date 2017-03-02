@@ -25,6 +25,16 @@
 {
     <h2>@controllerDocumentation</h2>
 }
+
+@if (!Model.Key.ControllerType.CustomAttributes.Any(x => x.AttributeType.Name == "DimanicAuthorizeAttribute"))
+{
+  <div class="access_unlimited">
+    <span data-container="body" data-toggle="popover"
+          data-placement="bottom" data-trigger="hover"
+          data-content="Для вызова API нужна только авторизация"><strong>Доступ не ограничен </strong> </span>
+  </div>
+}
+
 <table class="help-page-table">
   @*<thead>
       <tr><th>API</th><th>Description</th></tr>

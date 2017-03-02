@@ -17,7 +17,7 @@ using BL.Model.FullTextSearch;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// Адреса юридического лица
+    /// Типы контактов
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

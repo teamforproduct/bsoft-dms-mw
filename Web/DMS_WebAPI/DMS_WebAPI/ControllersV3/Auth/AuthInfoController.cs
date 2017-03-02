@@ -19,7 +19,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Auth
 {
     /// <summary>
-    /// Управление авторизацией сотрудников-пользователей
+    /// Авторизация. Управление авторизацией сотрудников-пользователей
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

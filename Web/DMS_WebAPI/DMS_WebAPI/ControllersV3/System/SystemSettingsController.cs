@@ -9,7 +9,6 @@ using System.Web.Http;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
     /// Системные настройки
     /// </summary>
     [Authorize]

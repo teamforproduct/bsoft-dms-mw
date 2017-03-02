@@ -13,7 +13,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Roles
 {
     /// <summary>
-    /// Сотрудники, которым назначена роль
+    /// Роли. Сотрудники, которым назначена роль
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

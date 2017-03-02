@@ -14,8 +14,9 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Journals
 {
     /// <summary>
+    /// Журналы регистрации. Доступ.
     /// Управление доступом должностей к журналам регистрации документов.
-    /// Доступом бывает двух типов: для просмотра и для регистрации.
+    /// Доступ бывает двух типов: для просмотра и для регистрации.
     /// </summary>
     [Authorize]
     [DimanicAuthorize]
