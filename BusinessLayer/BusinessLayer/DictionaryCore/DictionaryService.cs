@@ -894,6 +894,8 @@ namespace BL.Logic.DictionaryCore
                     new FullTextSearchFilter { Module = Modules.Journal })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryRegistrationJournals, x));
 
+                if (ftDict.Count == 0) return new List<TreeItem>();
+
                 filter.IDs = ftDict;
             }
 
@@ -1198,6 +1200,8 @@ namespace BL.Logic.DictionaryCore
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Executors })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
+
+                if (ftDict.Count == 0) return new List<TreeItem>();
 
                 filter.IDs = ftDict;
             }
