@@ -223,7 +223,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 foreach (var access in filter.Accesses)
                 {
-                    var scrQry = scrParser.Parse($"_{access}_");
+                    var scrQry = scrParser.Parse($"*_{access}_*");
                     boolQry = new BooleanQuery();
                     boolQry.Add(textQry, Occur.MUST);
                     boolQry.Add(clientQry, Occur.MUST);

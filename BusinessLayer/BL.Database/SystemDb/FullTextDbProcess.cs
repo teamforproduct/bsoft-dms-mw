@@ -252,6 +252,34 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
+            { EnumObjects.DocumentWaits, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DocumentWaitsSet
+                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        break;
+                    case EnamFilterType.Slave:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Waits);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentWaits,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
+                    ObjectText = x.Main.TargetDescription
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
             { EnumObjects.DocumentTags, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
@@ -1328,7 +1356,8 @@ namespace BL.Database.SystemDb
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentTags, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentFiles, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSubscriptions, FilterType = EnamFilterType.Slave },
-                }
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentWaits, FilterType = EnamFilterType.Slave },
+            }
             },
             {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
                 {
