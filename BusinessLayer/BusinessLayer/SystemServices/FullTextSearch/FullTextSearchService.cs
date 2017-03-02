@@ -311,7 +311,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
                                 {
                                     worker.AddNewItem(itmAdd);
                                 }
-
                                 break;
                             case EnumOperationType.Update:
                                 var toUpd = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false, null, currCashId);
@@ -325,6 +324,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
                                 foreach (var itmDel in toDelete)
                                 {
                                     worker.DeleteItem(itmDel);
+                                }
+                                break;
+                            case EnumOperationType.AddFull:
+                                var toAddFull = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, true, false, null, currCashId);
+                                foreach (var itmAdd in toAddFull)
+                                {
+                                    worker.AddNewItem(itmAdd);
                                 }
                                 break;
                             case EnumOperationType.UpdateFull:
