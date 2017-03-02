@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext context, FullTextSearch ftSearch, FilterTemplateDocument filter, UIPaging paging)
         {
-            return FTS.Get(context, Modules.Templates, ftSearch?.FullTextSearchString, filter, paging, null, _templateDb.GetMainTemplateDocument, _templateDb.GetTemplateDocumentIDs);
+            return FTS.Get(context, Modules.Templates, ftSearch, filter, paging, null, _templateDb.GetMainTemplateDocument, _templateDb.GetTemplateDocumentIDs);
         }
 
         public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)

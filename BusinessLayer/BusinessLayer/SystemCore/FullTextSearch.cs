@@ -14,19 +14,19 @@ namespace BL.Logic.SystemCore
 {
     public static class FTS
     {
-        public static IEnumerable<MainFront> Get<MainFront>(IContext context, string module, string searchString, IBaseFilter filter, UIPaging paging, UISorting sorting,
+        public static IEnumerable<MainFront> Get<MainFront>(IContext context, string module, FullTextSearch searchFilter, IBaseFilter filter, UIPaging paging, UISorting sorting,
             Func<IContext, IBaseFilter, UIPaging, UISorting, IEnumerable<MainFront>> MainFunc,
             Func<IContext, IBaseFilter, UISorting, List<int>> IdsFunc,
             FullTextSearchFilter ftsFilter = null)
         {
             IEnumerable<MainFront> res;
 
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchFilter?.FullTextSearchString))
             {
                 if (ftsFilter == null) ftsFilter = new FullTextSearchFilter { Module = module };
 
                 // Получаю список ид из полнотекста
-                var ftList = DmsResolver.Current.Get<IFullTextSearchService>().SearchItemParentId(context, searchString, ftsFilter);
+                var ftList = DmsResolver.Current.Get<IFullTextSearchService>().SearchItemParentId(context, searchFilter.FullTextSearchString, ftsFilter);
 
                 // Если полнотекст ничего не нашел...
                 if (!ftList.Any()) return new List<MainFront>();
@@ -65,9 +65,10 @@ namespace BL.Logic.SystemCore
 
                 res = MainFunc(context, filter, null, sorting);
 
-                if (!(paging.IsOnlyCounter ?? false) && res.Any())
+                // Если явно не запретили
+                if (!searchFilter.IsDontSaveSearchQueryLog && (paging.IsOnlyCounter ?? false) && res.Any())
                 {
-                    DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, module, searchString);
+                    DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, module, searchFilter?.FullTextSearchString);
                 }
             }
             else
