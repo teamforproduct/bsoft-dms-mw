@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Roles
 {
     /// <summary>
-    /// Должности, которым назначена роль
+    /// Роли. Должности, которым назначена роль
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

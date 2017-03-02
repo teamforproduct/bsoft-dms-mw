@@ -16,8 +16,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Отпечатки браузера
+    /// Пользователь. Отпечатки браузера
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

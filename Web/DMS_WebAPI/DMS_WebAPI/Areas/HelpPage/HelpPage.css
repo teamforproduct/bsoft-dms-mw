@@ -160,3 +160,11 @@ section.content-wrapper.main-content.clear-fix>p {
 }
 
 
+.access_unlimited span{
+    margin-left: 8px;
+}
+
+.access_unlimited{
+    color: #31708f;
+    background-color: #d9edf7;
+}

@@ -14,8 +14,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен
-    /// Аватарка пользователя
+    /// Пользователь. Аватарка пользователя
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]
@@ -26,7 +25,6 @@ namespace DMS_WebAPI.ControllersV3.User
 
 
         /// <summary>
-        /// !!! Доступ не ограничен.
         /// Возвращает аватарку
         /// </summary>
         /// <returns></returns>

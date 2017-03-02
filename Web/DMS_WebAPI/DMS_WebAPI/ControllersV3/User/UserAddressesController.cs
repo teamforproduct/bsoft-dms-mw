@@ -16,8 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Адреса пользователя-сотрудника
+    /// Пользователь. Адреса
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

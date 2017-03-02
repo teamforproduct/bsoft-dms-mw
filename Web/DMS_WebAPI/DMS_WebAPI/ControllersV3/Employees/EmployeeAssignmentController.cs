@@ -19,7 +19,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Employees
 {
     /// <summary>
-    /// Назначения сотрудника на должности
+    /// Сотрудники. Назначения сотрудника на должности
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

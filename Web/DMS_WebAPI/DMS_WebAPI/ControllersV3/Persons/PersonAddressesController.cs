@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Persons
 {
     /// <summary>
-    /// Адреса физического лица
+    /// Физические лица. Адреса
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

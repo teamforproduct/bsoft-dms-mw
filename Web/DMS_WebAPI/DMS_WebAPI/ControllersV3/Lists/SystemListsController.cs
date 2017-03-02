@@ -20,7 +20,6 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Lists
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
     /// Системные справочники и типы.
     /// </summary>
     [Authorize]

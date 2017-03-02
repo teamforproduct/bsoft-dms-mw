@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Companies
 {
     /// <summary>
-    /// Расчетные счета юридического лица
+    /// Юридические лица. Расчетные счета
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

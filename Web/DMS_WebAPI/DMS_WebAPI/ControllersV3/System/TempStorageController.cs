@@ -1,25 +1,19 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
-using BL.Model.Common;
-using System.Diagnostics;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.TempStorage;
-using System.Web;
-using System;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.Enums;
 using BL.Model.SystemCore;
+using DMS_WebAPI.Results;
+using System;
+using System.Diagnostics;
+using System.Web;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
     /// Временное хранилище файлов.
     /// Файлы, прикрепленные к объекту, сразу загружаются во временное файловое хранилище. При записи объекта с фронта отправляются Id файлов, которые из временного хранилища записываются вместе с объектом.   
     /// </summary>

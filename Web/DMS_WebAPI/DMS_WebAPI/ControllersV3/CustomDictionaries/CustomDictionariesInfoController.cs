@@ -16,7 +16,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.CustomDictionaries
 {
     /// <summary>
-    /// Типы пользовательских справочников
+    /// Пользовательские справочники. Типы
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

@@ -18,7 +18,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Employees
 {
     /// <summary>
-    /// Сотрудник
+    /// Сотрудники
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

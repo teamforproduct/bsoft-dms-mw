@@ -12,7 +12,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// Инструменты. Доступ НЕ ограничен
+    /// История поисковых запросов. Доступ НЕ ограничен
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]
