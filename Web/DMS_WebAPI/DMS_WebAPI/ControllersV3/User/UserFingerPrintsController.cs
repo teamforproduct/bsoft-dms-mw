@@ -1,7 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
