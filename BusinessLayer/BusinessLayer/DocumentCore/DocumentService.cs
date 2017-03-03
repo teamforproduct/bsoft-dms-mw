@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
             {
 
-                var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "666", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
+                //var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "666", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
 
                 filter.FullTextSearchSearch.FullTextSearchId
                     = DmsResolver.Current.Get<IFullTextSearchService>()

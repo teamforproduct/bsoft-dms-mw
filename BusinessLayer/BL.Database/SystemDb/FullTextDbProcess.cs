@@ -18,7 +18,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentAgentId) ? dbContext.FullTextIndexCashSet.Where(x=>x.ClientId == ctx.CurrentAgentId).Max(x => x.Id) : 0;
+                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentClientId) ? dbContext.FullTextIndexCashSet.Where(x=>x.ClientId == ctx.CurrentClientId).Max(x => x.Id) : 0;
                 transaction.Complete();
                 return res;
             }
