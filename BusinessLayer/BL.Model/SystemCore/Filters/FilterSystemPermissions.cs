@@ -1,4 +1,5 @@
 ﻿using BL.Model.AdminCore.FilterModel;
+using BL.Model.Common;
 using System.Collections.Generic;
 
 namespace BL.Model.SystemCore.Filters
@@ -6,7 +7,7 @@ namespace BL.Model.SystemCore.Filters
     /// <summary>
     /// Фильтры FilterAdminUserPermissions
     /// </summary>
-    public class FilterSystemPermissions : AdminBaseFilterParameters
+    public class FilterSystemPermissions : BaseFilter
     {
 
         /// <summary>

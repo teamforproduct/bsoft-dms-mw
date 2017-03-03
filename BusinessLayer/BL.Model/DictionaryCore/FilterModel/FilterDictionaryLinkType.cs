@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryLinkType : DictionaryBaseFilterParameters
+    public class FilterDictionaryLinkType : BaseFilterNameIsActive
     {
   
     }

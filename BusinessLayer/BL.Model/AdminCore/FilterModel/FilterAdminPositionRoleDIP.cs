@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace BL.Model.AdminCore.FilterModel
@@ -6,18 +7,8 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminRole
     /// </summary>
-    public class FilterAdminPositionRoleDIP: AdminBaseFilterParameters
+    public class FilterAdminPositionRoleDIP: BaseFilterName
     {
-
-        /// <summary>
-        /// Сужение по наименованию элементов (по входжению)
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Сужение по наименованию элементов (по равенству)
-        /// </summary>
-        public string NameExact { get; set; }
 
         /// <summary>
         /// Список должностей

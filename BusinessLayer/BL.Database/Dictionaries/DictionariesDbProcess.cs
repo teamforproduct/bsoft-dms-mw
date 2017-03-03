@@ -1837,7 +1837,7 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.Code == filter.CodeExact);
                 }
-// Поиск по наименованию
+                // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.CodeName))
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
@@ -5552,7 +5552,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.PositionId,
-                    Name = x.Agent.Name + " " + (x.PositionExecutorType.Suffix != null ? " (" + x.PositionExecutorType.Suffix + ")" : null),
+                    Name = x.Agent.Name + (x.PositionExecutorType.Suffix != null ? " (" + x.PositionExecutorType.Suffix + ")" : null),
                     Details = new List<string> { x.Position.Name ?? string.Empty, x.Position.Department.FullPath + " " + x.Position.Department.Name },
                 }).ToList();
 
@@ -6338,6 +6338,16 @@ namespace BL.Database.Dictionaries
 
                         qry = qry.Where(filterContains);
                     }
+
+                    if (filter.Codes?.Count > 0)
+                    {
+                        var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                        filterContains = filter.Codes.Aggregate(filterContains,
+                            (current, value) => current.Or(e => e.Code == value).Expand());
+
+                        qry = qry.Where(filterContains);
+                    }
+
                 }
                 qry = qry.OrderBy(x => x.Code);
                 var res = qry.Select(x => new FrontDictionarySendType

@@ -1,6 +1,8 @@
-﻿namespace BL.Model.DictionaryCore.FilterModel
+﻿using BL.Model.Common;
+
+namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryTag : DictionaryBaseFilterParameters
+    public class FilterDictionaryTag : BaseFilterNameIsActive
     {
 
 

@@ -1,15 +1,13 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр для счетов контрагента
     /// </summary>
-    public class FilterDictionaryAgentAccount : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentAccount : BaseFilterNameIsActive
     {
        
         /// <summary>
@@ -20,6 +18,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// номер счета
         /// </summary>
+        [IgnoreDataMember]
         public string AccountNumberExact { get; set; }
 
         /// <summary>

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryStageType : DictionaryBaseFilterParameters
+    public class FilterDictionaryStageType : BaseFilterNameIsActive
     {
 
     }

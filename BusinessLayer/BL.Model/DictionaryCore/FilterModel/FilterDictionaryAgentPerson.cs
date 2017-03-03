@@ -2,13 +2,14 @@
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр словаря физических лиц
     /// </summary>
-    public class FilterDictionaryAgentPerson : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentPerson : BaseFilterNameIsActive
     {
 
         /// <summary>
@@ -28,6 +29,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// ИНН
         /// </summary>
+        [IgnoreDataMember]
         public string TaxCodeExact { get; set; }
 
         /// <summary>
@@ -53,26 +55,31 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// по имени равенство
         /// </summary>
+        [IgnoreDataMember]
         public string FirstNameExact { get; set; }
 
         /// <summary>
         /// по фамилии равенство
         /// </summary>
+        [IgnoreDataMember]
         public string LastNameExact { get; set; }
 
         /// <summary>
         /// по серии паспорта равенство
         /// </summary>
+        [IgnoreDataMember]
         public string PassportSerialExact { get; set; }
 
         /// <summary>
         /// по номеру паспорта равенство
         /// </summary>
+        [IgnoreDataMember]
         public int? PassportNumberExact { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [IgnoreDataMember]
         public DateTime? BirthDateExact { get { return _BirthDateExact; } set { _BirthDateExact = value.ToUTC(); } }
         private DateTime? _BirthDateExact;
     }

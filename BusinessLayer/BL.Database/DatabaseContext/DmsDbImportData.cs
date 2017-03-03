@@ -1402,7 +1402,7 @@ namespace BL.Database.DatabaseContext
             return new DictionarySendTypes()
             {
                 Id = (int)id,
-                Code = null,
+                Code = id.ToString().Replace("SendFor", ""),
                 Name = name,
                 IsImportant = isImportant,
                 SubordinationTypeId = subordinationTypeId,

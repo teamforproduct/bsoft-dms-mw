@@ -1,15 +1,13 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// фильтр для адресов агентов
     /// </summary>
-    public class FilterDictionaryAgentAddress : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentAddress : BaseFilterNameIsActive
     {
 
         /// <summary>
@@ -30,6 +28,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// по индексу (совпадение)
         /// </summary>
+        [IgnoreDataMember]
         public string PostCodeExact { get; set; }
 
         /// <summary>
@@ -40,6 +39,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// по адресу (совпадение)
         /// </summary>
+        [IgnoreDataMember]
         public string AddressExact { get; set; }
 
     }

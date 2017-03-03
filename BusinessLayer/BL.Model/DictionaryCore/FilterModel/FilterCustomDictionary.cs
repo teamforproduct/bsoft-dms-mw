@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterCustomDictionary : DictionaryBaseFilterParameters
+    public class FilterCustomDictionary : BaseFilterCodeNameIsActive
     {
-        public string Code { get; set; }
-
-        public string CodeExact { get; set; }
-
         public List<int> TypeIDs { get; set; }
     }
 }
