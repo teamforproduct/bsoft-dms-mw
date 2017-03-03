@@ -9,7 +9,6 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
-using System.Linq.Expressions;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
