@@ -1,5 +1,6 @@
 ﻿using BL.Model.Common;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.WebAPI.Filters
 {
@@ -7,6 +8,7 @@ namespace BL.Model.WebAPI.Filters
     {
         public List<string> UserIDs { get; set; }
 
+        [IgnoreDataMember]
         public string TokenExact { get; set; }
 
     }

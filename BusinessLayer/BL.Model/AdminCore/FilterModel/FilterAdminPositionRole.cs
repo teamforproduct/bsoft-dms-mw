@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,8 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminPositionRole
     /// </summary>
-    public class FilterAdminPositionRole: AdminBaseFilterParameters
+    public class FilterAdminPositionRole: BaseFilter
     {
-
-      
         /// <summary>
         /// Список ролей
         /// </summary>

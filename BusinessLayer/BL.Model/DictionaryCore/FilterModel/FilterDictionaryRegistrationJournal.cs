@@ -1,5 +1,7 @@
-﻿using BL.Model.Enums;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -7,13 +9,15 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// Фильтры FilterDictionaryRegistrationJournal
     /// </summary>
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
-    public class FilterDictionaryRegistrationJournal : DictionaryBaseFilterParameters
+    public class FilterDictionaryRegistrationJournal : BaseFilterNameIsActive
     {
 
         /// <summary>
         /// Сужение по индексу журнала
         /// </summary>
         public string Index { get; set; }
+
+        [IgnoreDataMember]
         public string IndexExact { get; set; }
         /// <summary>
         /// Список подразделений

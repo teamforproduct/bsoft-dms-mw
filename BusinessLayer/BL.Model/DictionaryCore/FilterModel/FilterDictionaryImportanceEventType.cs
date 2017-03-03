@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     ///  Фильтр словаря типов важности событий
     /// </summary>
-    public class FilterDictionaryImportanceEventType : DictionaryBaseFilterParameters
+    public class FilterDictionaryImportanceEventType : BaseFilterNameIsActive
     {
     
         /// <summary>

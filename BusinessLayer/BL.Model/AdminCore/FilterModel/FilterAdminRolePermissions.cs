@@ -1,16 +1,12 @@
-﻿using BL.Model.Enums;
-using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.AdminCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterAdminUserPermissions
     /// </summary>
-    public class FilterAdminRolePermissions : AdminBaseFilterParameters
+    public class FilterAdminRolePermissions : BaseFilter
     {
 
         /// <summary>
