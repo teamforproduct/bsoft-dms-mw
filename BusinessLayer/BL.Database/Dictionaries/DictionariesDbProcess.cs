@@ -4998,12 +4998,12 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionsQuery(context, dbContext, filter);
 
-                qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.ExecutorAgent.Name);
 
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
-                    Name = x.ExecutorAgent.Name + " " + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
+                    Name = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                     Details = new List<string>
                     {
                         x.Name,
@@ -5031,7 +5031,7 @@ namespace BL.Database.Dictionaries
                     Details = new List<string>
                     {
                         x.Department.FullPath + " " + x.Department.Name,
-                        x.ExecutorAgent.Name + " " + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null)
+                        x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null)
                     },
                 }).ToList();
 
