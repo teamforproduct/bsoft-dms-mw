@@ -519,6 +519,15 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetPositionList(context, filter, paging);
         }
 
+        public IEnumerable<AutocompleteItem> GetPositionsExecutorShortList(IContext context, FilterDictionaryPosition filter)
+        {
+            if (filter == null) filter = new FilterDictionaryPosition();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListPositionsExecutor(context, filter);
+        }
+
         public IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context, FilterDictionaryPosition filter)
         {
             if (filter == null) filter = new FilterDictionaryPosition();

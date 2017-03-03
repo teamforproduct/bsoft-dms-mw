@@ -196,7 +196,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
-        /// Исполнители должностей
+        /// Возвращает все назначения на должности (назначненные, ИО, рефе)
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
@@ -259,7 +259,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
-        /// Должности
+        /// Должности, акцент на название должности
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
@@ -272,6 +272,26 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetPositionsShortList(ctx, filter);
+            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+            var res = new JsonResult(tmpItems, metaData, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Должности, акцент на текущем исполнителе по должности
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Positions+ "/Executor")]
+        [ResponseType(typeof(List<AutocompleteItem>))]
+        public IHttpActionResult PositionsExecutors([FromUri]FilterDictionaryPosition filter)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetPositionsExecutorShortList(ctx, filter);
             var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
             var res = new JsonResult(tmpItems, metaData, this);
             res.SpentTime = stopWatch;

@@ -57,5 +57,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по списку вышестоящих элементов
         /// </summary>
         public List<int> ParentIDs { get; set; }
+
+        /// <summary>
+        /// Не показывать вакантные должности
+        /// </summary>
+        public bool? IsHideVacated { get; set; }
     }
 }

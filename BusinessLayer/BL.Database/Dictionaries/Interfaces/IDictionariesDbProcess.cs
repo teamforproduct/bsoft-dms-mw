@@ -224,6 +224,8 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<AutocompleteItem> GetShortListPositionsExecutor(IContext context, FilterDictionaryPosition filter);
+
         IEnumerable<AutocompleteItem> GetShortListPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<TreeItem> GetPositionsTree(IContext context, FilterDictionaryPosition filter);
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);

@@ -4992,6 +4992,30 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public IEnumerable<AutocompleteItem> GetShortListPositionsExecutor(IContext context, FilterDictionaryPosition filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetPositionsQuery(context, dbContext, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => new AutocompleteItem
+                {
+                    Id = x.Id,
+                    Name = x.ExecutorAgent.Name + " " + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
+                    Details = new List<string>
+                    {
+                        x.Name,
+                        x.Department.FullPath + " " + x.Department.Name,                        
+                    },
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<AutocompleteItem> GetShortListPositions(IContext context, FilterDictionaryPosition filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -5296,6 +5320,10 @@ namespace BL.Database.Dictionaries
                         (current, value) => current.Or(e => e.Order == value).Expand());
 
                     qry = qry.Where(filterContains);
+                }
+                if (filter.IsHideVacated??false)
+                {
+                    qry = qry.Where(x => x.ExecutorAgentId.HasValue);
                 }
             }
 

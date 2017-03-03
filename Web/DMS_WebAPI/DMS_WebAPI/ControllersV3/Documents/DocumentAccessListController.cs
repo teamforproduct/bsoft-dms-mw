@@ -78,11 +78,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.AccessList)]
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentRestrictedSendList, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return GetById(tmpItem);
         }
 
         /// <summary>

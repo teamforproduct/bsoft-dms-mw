@@ -161,6 +161,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryPosition GetDictionaryPosition(IContext context, int id);
 
         IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<AutocompleteItem> GetPositionsExecutorShortList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context,  FilterDictionaryPosition filter);
         List<int> GetChildPositions(IContext context, int positionId);
