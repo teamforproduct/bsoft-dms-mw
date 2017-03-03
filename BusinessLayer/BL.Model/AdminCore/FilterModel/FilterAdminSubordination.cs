@@ -1,16 +1,13 @@
-﻿using BL.Model.Enums;
-using System;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.AdminCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterAdminSubordination
     /// </summary>
-    public class FilterAdminSubordination: AdminBaseFilterParameters
+    public class FilterAdminSubordination: BaseFilter
     {
       
         /// <summary>

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр словаря типов событий
     /// </summary>
-    public class FilterDictionaryEventType : DictionaryBaseFilterParameters
+    public class FilterDictionaryEventType : BaseFilterNameIsActive
     {
    
         /// <summary>

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
+﻿using BL.Model.Enums;
 using System.ComponentModel.DataAnnotations;
-using BL.Model.Enums;
+using System.Runtime.Serialization;
 
 namespace BL.Model.AdminCore.IncomingModel
 {

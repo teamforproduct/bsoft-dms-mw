@@ -1,20 +1,14 @@
-﻿namespace BL.Model.DictionaryCore.FilterModel
+﻿using BL.Model.Common;
+using System.Runtime.Serialization;
+
+namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр типов адресов
     /// </summary>
-    public class FilterDictionaryAddressType : DictionaryBaseFilterParameters
+    public class FilterDictionaryAddressType : BaseFilterCodeNameIsActive
     {
-        /// <summary>
-        /// Сужение по краткому наименованию
-        /// </summary>
-        public string Code { get; set; }
-
-        /// <summary>
-        /// Сужение по краткому наименованию
-        /// </summary>
-        public string CodeExact { get; set; }
-
+        [IgnoreDataMember]
         public string CodeName { get; set; }
 
     }

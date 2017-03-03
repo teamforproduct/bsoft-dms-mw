@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BL.Model.Common;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -10,17 +7,14 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильр для контрагентов - банков
     /// </summary>
-    public class FilterDictionaryAgentBank : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentBank : BaseFilterNameIsActive
     {
 
         /// <summary>
         /// МФО
         /// </summary>
         public string MFOCode { get; set; }
+        [IgnoreDataMember]
         public string MFOCodeExact { get; set; }
-        /// <summary>
-        /// Первая буква наименования
-        /// </summary>
-        public char FirstChar { get; set; }
     }
 }
