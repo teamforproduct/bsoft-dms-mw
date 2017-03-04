@@ -35,7 +35,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
         private const string NO_RULES_VALUE = "N";
-        private const int MAX_DOCUMENT_COUNT_RETURN = 100000;
+        private const int MAX_DOCUMENT_COUNT_RETURN = int.MaxValue;
 
         private IndexWriter _writer;
         private readonly Directory _directory;
@@ -259,7 +259,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             var res = new List<FullTextSearchResult>();
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
-
+            var test = qryRes.ScoreDocs.Where(x => x.Score > 1);
             foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
             {
                 try

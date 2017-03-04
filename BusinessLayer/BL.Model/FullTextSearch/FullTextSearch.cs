@@ -21,7 +21,6 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Массив ИД документов полученного из полнотекстового поиска
         /// </summary>
-        [XmlIgnore]
         [IgnoreDataMember]
         public List<int> FullTextSearchId { get; set; }
     }

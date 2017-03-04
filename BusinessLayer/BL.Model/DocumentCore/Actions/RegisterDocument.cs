@@ -33,7 +33,6 @@ namespace BL.Model.DocumentCore.Actions
         /// Не запонять!!!
         /// Префикс для нумерации
         /// </summary>
-        [XmlIgnore]
         [IgnoreDataMember]
         public string NumerationPrefixFormula { get; set; }
     }

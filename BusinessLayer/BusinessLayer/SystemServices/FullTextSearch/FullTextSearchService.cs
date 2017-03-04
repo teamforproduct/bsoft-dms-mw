@@ -72,7 +72,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (worker == null) return;
 
             //For test
-            //var testReindex = _systemDb.FullTextIndexPrepareNew(ctx, EnumObjects.DocumentEvents, false, true, 3362259, 3362259);
+            var testReindex = _systemDb.FullTextIndexPrepareNew(ctx, EnumObjects.DocumentFiles, false, true, 1244572, 1244572);
 
             var md = _timers.Keys.First(x => x.DatabaseKey == dbKey);
 

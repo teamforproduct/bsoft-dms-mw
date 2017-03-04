@@ -914,7 +914,7 @@ namespace BL.Database.SystemDb
                 }
 
                 {
-                    var moduleId = Modules.GetId(Modules.Company); var featureId = Features.GetId(Features.Contacts);
+                    var moduleId = Modules.GetId(Modules.Company); var featureId = Features.GetId(Features.ContactPersons);
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentCompany != null)
                     .Select(x => new FullTextIndexItem
                     {
@@ -1106,7 +1106,7 @@ namespace BL.Database.SystemDb
                 }
 
                 {
-                    var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Positions);
+                    var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Assignments);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
@@ -1119,7 +1119,7 @@ namespace BL.Database.SystemDb
                 }
 
                 {
-                    var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Employees);
+                    var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Executors);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,

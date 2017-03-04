@@ -11,12 +11,6 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterTemplateDocument : BaseFilter
     {
         /// <summary>
-        /// Массив ИД документов полученного из полнотекстового поиска
-        /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
-        public List<int> FullTextSearchDocumentId { get; set; }
-        /// <summary>
         /// Массив ИД направлений документов
         /// </summary>
         public List<int> DocumentDirectionId { get; set; }
