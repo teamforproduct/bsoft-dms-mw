@@ -9,7 +9,6 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System.Linq;
-using System.Linq.Expressions;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
@@ -236,7 +235,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     if (toDat != null) boolQry.Add(toDat, Occur.MUST);
                     searchResult.AddRange(GetQueryResult(boolQry));
                 }
-                return searchResult.OrderByDescending(x=>x.Score).Take(MAX_DOCUMENT_COUNT_RETURN);
+                return searchResult;
             }
             else
             {
@@ -257,33 +256,43 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         private List<FullTextSearchResult> GetQueryResult(BooleanQuery boolQry)
         {
-            var res = new List<FullTextSearchResult>();
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
-            var test = qryRes.ScoreDocs.Where(x => x.Score > 1);
-            foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
-            {
-                try
+
+            //foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
+            //{
+            //    try
+            //    {
+            //        var rdoc = _searcher.Doc(doc.Doc);
+            //        var sr = new FullTextSearchResult
+            //        {
+            //            ParentId = Convert.ToInt32(rdoc.Get(FIELD_PARENT_ID)),
+            //            ParentObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
+            //            ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
+            //            ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
+            //            ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
+            //            FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
+            //            Score = doc.Score
+            //        };
+            //        res.Add(sr);
+            //    }
+            //    catch
+            //    {
+            //        // ignored
+            //    }
+            //}
+            return qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score).AsParallel()
+                .Select(doc => new {doc, luc = _searcher.Doc(doc.Doc)})
+                .Select(rdoc => new FullTextSearchResult
                 {
-                    var rdoc = _searcher.Doc(doc.Doc);
-                    var sr = new FullTextSearchResult
-                    {
-                        ParentId = Convert.ToInt32(rdoc.Get(FIELD_PARENT_ID)),
-                        ParentObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
-                        ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
-                        ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
-                        ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
-                        FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
-                        Score = doc.Score
-                    };
-                    res.Add(sr);
-                }
-                catch
-                {
-                    // ignored
-                }
-                
-            }
-            return res;
+                    ParentId = Convert.ToInt32(rdoc.luc.Get(FIELD_PARENT_ID)),
+                    ParentObjectType = (EnumObjects) Convert.ToInt32(rdoc.luc.Get(FIELD_PARENT_TYPE)),
+                    ObjectType = (EnumObjects) Convert.ToInt32(rdoc.luc.Get(FIELD_OBJECT_TYPE)),
+                    ObjectId = Convert.ToInt32(rdoc.luc.Get(FIELD_OBJECT_ID)),
+                    ModuleId = Convert.ToInt32(rdoc.luc.Get(FIELD_MODULE_ID)),
+                    FeatureId = Convert.ToInt32(rdoc.luc.Get(FIELD_FEATURE_ID)),
+                    Score = rdoc.doc.Score
+                }).ToList();
+
         }
 
         public void DeleteAllDocuments(int clientId)

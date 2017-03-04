@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.Common
 {
@@ -12,6 +13,7 @@ namespace BL.Model.Common
         /// <summary>
         /// Исключение по Id (кроме)
         /// </summary>
+        [IgnoreDataMember]
         public List<int> NotContainsIDs { get; set; }
     }
 

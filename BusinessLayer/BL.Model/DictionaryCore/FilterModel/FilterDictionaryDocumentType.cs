@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// фильтр типов документов
     /// </summary>
-    public class FilterDictionaryDocumentType : DictionaryBaseFilterParameters
+    public class FilterDictionaryDocumentType : BaseFilterNameIsActive
     {
 
     }

@@ -195,26 +195,26 @@ namespace DMS_WebAPI.ControllersV3.Lists
             return res;
         }
 
-        /// <summary>
-        /// Возвращает все назначения на должности (назначненные, ИО, рефе)
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route(Features.Executors)]
-        [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetShortListPositionExecutors(ctx, filter, paging);
-            var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
-            var res = new JsonResult(tmpItems, metaData, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
+        ///// <summary>
+        ///// Исполнители должностей
+        ///// </summary>
+        ///// <param name="filter"></param>
+        ///// <param name="paging"></param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //[Route(Features.Executors)]
+        //[ResponseType(typeof(List<AutocompleteItem>))]
+        //public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
+        //{
+        //    if (!stopWatch.IsRunning) stopWatch.Restart();
+        //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+        //    var tmpItems = tmpService.GetShortListPositionExecutors(ctx, filter, paging);
+        //    var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(ctx, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+        //    var res = new JsonResult(tmpItems, metaData, this);
+        //    res.SpentTime = stopWatch;
+        //    return res;
+        //}
 
         /// <summary>
         /// Журналы

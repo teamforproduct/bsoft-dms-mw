@@ -1,8 +1,11 @@
 ﻿using BL.Model.Common;
 
-namespace BL.Model.DictionaryCore.FilterModel
+namespace BL.Model.Common
 {
-    public class FilterCustomDictionaryType : BaseFilterCodeName
+    /// <summary>
+    /// Базовые фильтры для справочников
+    /// </summary>
+    public class BaseFilterNameIsActive : BaseFilterName
     {
         /// <summary>
         /// Сужение по активности элементов

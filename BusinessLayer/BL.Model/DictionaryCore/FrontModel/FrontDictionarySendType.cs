@@ -19,6 +19,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Важность
         /// </summary>
         public bool IsImportant { get; set; }
+
         /// <summary>
         /// Тип субординации
         /// </summary>

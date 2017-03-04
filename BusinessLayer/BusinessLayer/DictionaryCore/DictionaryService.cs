@@ -905,7 +905,7 @@ namespace BL.Logic.DictionaryCore
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
 
-                filter.IDs = ftDict;
+                filter.DicIDs = ftDict;
             }
 
 
@@ -1212,7 +1212,7 @@ namespace BL.Logic.DictionaryCore
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
 
-                filter.IDs = ftDict;
+                filter.DicIDs = ftDict;
             }
 
             var res = Tree.Get(flatList, filter);

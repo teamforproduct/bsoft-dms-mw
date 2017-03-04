@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -6,7 +7,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// Фильтры FilterDictionaryDepartment
     /// </summary>
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
-    public class FilterDictionaryDepartment : DictionaryBaseFilterParameters
+    public class FilterDictionaryDepartment : BaseFilterNameIsActive
     {
 
         /// <summary>

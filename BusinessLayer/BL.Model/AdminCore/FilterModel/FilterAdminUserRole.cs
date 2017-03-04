@@ -2,27 +2,14 @@
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.AdminCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterAdminUserRole
     /// </summary>
-    public class FilterAdminUserRole: AdminBaseFilterParameters
+    public class FilterAdminUserRole: BaseFilterName
     {
-
-        /// <summary>
-        /// Сужение по наименованию элементов (по входжению)
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Сужение по наименованию элементов (по равенству)
-        /// </summary>
-        public string NameExact { get; set; }
 
         /// <summary>
         /// Пользователи

@@ -1,4 +1,5 @@
-﻿using BL.Model.Enums;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminRegistrationJournalPosition
     /// </summary>
-    public class FilterAdminRegistrationJournalPosition: AdminBaseFilterParameters
+    public class FilterAdminRegistrationJournalPosition: BaseFilter
     {
 
         /// <summary>

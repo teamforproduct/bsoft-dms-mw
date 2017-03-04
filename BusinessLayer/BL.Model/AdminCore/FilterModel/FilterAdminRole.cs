@@ -1,4 +1,5 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.Common;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +12,8 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminRole
     /// </summary>
-    public class FilterAdminRole: AdminBaseFilterParameters
+    public class FilterAdminRole: BaseFilterName
     {
-
-        /// <summary>
-        /// Сужение по наименованию элементов (по входжению)
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Сужение по наименованию элементов (по равенству)
-        /// </summary>
-        public string NameExact { get; set; }
 
         /// <summary>
         /// Сужение по описанию

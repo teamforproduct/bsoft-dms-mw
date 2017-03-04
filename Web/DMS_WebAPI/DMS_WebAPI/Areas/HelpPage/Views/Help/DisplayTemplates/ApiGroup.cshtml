@@ -23,7 +23,7 @@
 @*<h2 id="@Model.Key.ControllerName">@Model.Key.ControllerName</h2>*@
 @if (!String.IsNullOrEmpty(controllerDocumentation))
 {
-    <h2>@controllerDocumentation</h2>
+    <h2 id="@Model.Key.ControllerName">@controllerDocumentation</h2>
 }
 
 @if (!Model.Key.ControllerType.CustomAttributes.Any(x => x.AttributeType.Name == "DimanicAuthorizeAttribute"))
@@ -51,17 +51,24 @@
 
                 if ("GET" == @curMethod)
                 {
-                  if (apiModel.UriParameters.Count > 0)
+                  if (apiModel.ResourceProperties != null && apiModel.ResourceProperties.Count > 0)
                   {
+
                         <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
                            data-container="body" data-toggle="popover"
-                           title="Параметры" data-placement="right" data-trigger="hover"
-                           data-content=@foreach (var item in apiModel.UriParameters.OrderBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                           title="Возвращает" data-placement="right" data-trigger="hover"
+                           data-content=@foreach (var item in apiModel.ResourceProperties.OrderBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
                            {
-                         @Html.Raw(item.Name + "&ensp;");
+                             @Html.Raw(item.Name + "&ensp;");
                            }>
                           @api.HttpMethod.Method @api.GetFriendlyName()
                         </a>
+                        @*<a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
+                           data-container="body" data-toggle="popover"
+                           title="Возвращает" data-placement="right" data-trigger="hover"
+                           data-content=@DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetParametrs(apiModel.ResourceProperties, "&ensp;", false, false)>
+                          @api.HttpMethod.Method @api.GetFriendlyName()
+                        </a>*@
 
                   }
                   else
@@ -71,6 +78,7 @@
                         </a>
                   }
 
+                  @Html.Raw(DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetParametrs(apiModel.UriParameters));
 
                 }
 
@@ -82,27 +90,8 @@
                     </a>
 
                   if (apiModel.RequestBodyParameters != null)
-                  {
-                    foreach (var item in apiModel.RequestBodyParameters
-                            .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
-                            .ThenBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
-                    {
-                      var itemName = item.Name;
-                      if (item.Annotations.Any(x => x.Documentation == "Required"))
-                      {
-                        itemName = "<b>" + itemName + "</b>";
-                      }
-                      text = text + (text == string.Empty ? string.Empty : ", ") + itemName;
-                    }
-
-                    if (!string.IsNullOrEmpty(text))
-                    {
-                      text = "(" + text + ")";
-
-                            @Html.Raw(text);
-
-                    }
-
+                  { 
+                    @Html.Raw(DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetParametrs(apiModel.RequestBodyParameters));
                   }
 
                 }

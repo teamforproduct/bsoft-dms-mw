@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterDictionaryPosition
     /// </summary>
-    public class FilterDictionaryPosition : DictionaryBaseFilterParameters
+    public class FilterDictionaryPosition : BaseFilterNameIsActive
     {
  
         /// <summary>

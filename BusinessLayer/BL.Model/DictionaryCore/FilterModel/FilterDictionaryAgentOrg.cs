@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтры
     /// </summary>
-    public class FilterDictionaryAgentOrg : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentOrg : BaseFilterNameIsActive
     {
         public string FullName { get; set; }
 
