@@ -160,7 +160,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
         InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<InternalDictionaryDepartment> GetInternalDepartments(IContext context, FilterDictionaryDepartment filter);
-
+        List<int> GetDepartmentIDs(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForStaffList(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, FilterDictionaryDepartment filter);

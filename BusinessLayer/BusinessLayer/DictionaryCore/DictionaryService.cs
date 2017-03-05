@@ -827,27 +827,27 @@ namespace BL.Logic.DictionaryCore
             return FTS.Get(context, Modules.Journal, ftSearch, filter, paging, sorting, _dictDb.GetRegistrationJournals, _dictDb.GetRegistrationJournalIDs);
         }
 
-        public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
+        public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
         {
             if (filter == null) filter = new FilterDictionaryJournalsTree();
             filter.LevelCount = 2;
-            return GetRegistrationJournalsTree(context, ftSearch, filter);
+            return GetRegistrationJournalsTree(context, searchInJournals, ftSearch, filter);
         }
 
-        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
+        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, bool searchInJournals, FullTextSearch ftSearch,  FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
-            IEnumerable<TreeItem> journals = null;
+            //IEnumerable<TreeItem> journals = null;
             IEnumerable<TreeItem> departments = null;
             IEnumerable<TreeItem> companies = null;
 
-            if (levelCount >= 3 || levelCount == 0)
-            {
-                var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
+            //if (levelCount >= 3 || levelCount == 0)
+            //{
+            //    var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
 
-                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
-            }
+            //    journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
+            //}
 
             if (levelCount >= 2 || levelCount == 0)
             {
@@ -877,7 +877,7 @@ namespace BL.Logic.DictionaryCore
             List<TreeItem> flatList = new List<TreeItem>();
 
             if (companies != null) flatList.AddRange(companies);
-            if (journals != null) flatList.AddRange(journals);
+            //if (journals != null) flatList.AddRange(journals);
             if (departments != null) flatList.AddRange(departments);
 
             if (filter == null) filter = new FilterDictionaryJournalsTree();
@@ -893,15 +893,24 @@ namespace BL.Logic.DictionaryCore
                     new FullTextSearchFilter { Module = Modules.Org })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
 
-                DmsResolver.Current.Get<IFullTextSearchService>().
-                    SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Department })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryDepartments, x));
 
-                DmsResolver.Current.Get<IFullTextSearchService>().
+                var depList = DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Journal })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryRegistrationJournals, x));
+                    new FullTextSearchFilter { Module = Modules.Department });
+
+               
+                // Если включен поиск по журналам
+                if (searchInJournals)
+                {
+                    var journals = DmsResolver.Current.Get<IFullTextSearchService>().
+                    SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    new FullTextSearchFilter { Module = Modules.Journal });
+
+                    // дополняю depList отделами из журналов
+                    depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
+                }
+
+                depList.ForEach(x => ftDict.Add(EnumObjects.DictionaryDepartments, x));
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
 
@@ -1216,8 +1225,11 @@ namespace BL.Logic.DictionaryCore
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Employee });
 
-                _dictDb.GetPositionExecutorsIDs(context, new FilterDictionaryPositionExecutor { AgentIDs = empLists })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
+                if (empLists.Count > 0)
+                {
+                    _dictDb.GetPositionExecutorsIDs(context, new FilterDictionaryPositionExecutor { AgentIDs = empLists })
+                        .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
+                }
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
 

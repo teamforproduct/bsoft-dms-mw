@@ -1983,7 +1983,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -2010,7 +2010,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -2037,7 +2037,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     SourcePositionId = positionId,
                     CompanyId = x.Id
                 }).ToList();
@@ -2066,7 +2066,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     JournalId = journalId,
                     CompanyId = x.Id
                 }).ToList();
@@ -2095,7 +2095,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     PositionId = positionId,
                     CompanyId = x.Id
                 }).ToList();
@@ -3579,7 +3579,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -3611,7 +3611,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -3692,7 +3692,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     SourcePositionId = sourcePositionId,
                     DepartmentId = x.Id,
                 }).ToList();
@@ -3725,7 +3725,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     JournalId = journalId,
                     DepartmentId = x.Id,
                 }).ToList();
@@ -3756,7 +3756,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     PositionId = positionId,
                     DepartmentId = x.Id,
                 }).ToList();
@@ -3868,6 +3868,20 @@ namespace BL.Database.Dictionaries
                         (current, value) => current.Or(e => e.CompanyId == value).Expand());
 
                     qry = qry.Where(filterContains);
+                }
+
+                // Список первичных ключей
+                if (filter.JournalIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => x.RegistrationJournals.Any(y => filter.JournalIDs.Contains(y.Id)) );
+                }
+                else if (filter.JournalIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    filterContains = filter.JournalIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.RegistrationJournals.AsQueryable().Any(filterContains));
                 }
 
 
@@ -5060,7 +5074,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                     Order = x.Order
                 }).ToList();
 
@@ -5108,7 +5122,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     ExecutorName = x.ExecutorAgent.Name,
                     ExecutorTypeSuffix = x.ExecutorType.Suffix,
                     IsInforming = (x.TargetPositionSubordinations
@@ -5150,7 +5164,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     ExecutorName = x.ExecutorAgent.Name,
                     ExecutorTypeSuffix = x.ExecutorType.Suffix,
                     IsView = (x.PositionRegistrationJournals
@@ -5580,7 +5594,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     Description = x.PositionExecutorType.Code
                 }).ToList();
 
@@ -6017,7 +6031,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                 }).ToList();
 
                 transaction.Complete();
@@ -6065,7 +6079,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     Index = x.Index,
                     IsViewing = (x.PositionsRegistrationJournal
                         .Where(y => y.RegJournalId == x.Id)
