@@ -1607,7 +1607,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
-                var res = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
                                     && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
                                         || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
@@ -1707,7 +1707,7 @@ namespace BL.Database.SystemDb
                     closedSendLists = closedSendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                                     .Where(x => x.Document.IsLaunchPlan && !x.StartEventId.HasValue);
 
                 if (documentId.HasValue)
@@ -1764,7 +1764,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(
                         x =>
                             !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() &&

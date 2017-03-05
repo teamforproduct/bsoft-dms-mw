@@ -100,7 +100,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumDocumentAccesses? AccessLevel { get; set; }
 
         public int TemplateDocumentId { get; set; }
-        public int ExecutorPositionId { get; set; }
+        public int? ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
         public int? ExecutorPositionExecutorTypeId { get; set; }
         public DateTime CreateDate { get; set; }

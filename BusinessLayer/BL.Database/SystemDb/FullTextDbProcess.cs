@@ -59,7 +59,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentsSet
-                            .Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -107,7 +107,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentEventsSet
-                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -152,7 +152,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentSendListsSet
-                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -201,7 +201,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentFilesSet
-                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Where(x=>x.TypeId == (int)EnumFileTypes.Main || x.TypeId == (int)EnumFileTypes.Additional)
                             .Select(x=>new { Main = x, FilterId = 0});
 
@@ -221,7 +221,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentFiles,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = new List<int> { x.Main.ExecutorPositionId}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct().ToList(),
+                    Access = new List<int> { x.Main.ExecutorPositionId??0}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct().ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.Extension + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -231,7 +231,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentSubscriptionsSet
-                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -259,7 +259,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentWaitsSet
-                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -287,7 +287,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentTagsSet
-                            .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)

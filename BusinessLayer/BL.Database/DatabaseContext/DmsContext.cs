@@ -151,7 +151,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
         public virtual DbSet<DocumentTags> DocumentTagsSet { get; set; }
-        //        public virtual DbSet<DocumentEventReaders> DocumentEventReadersSet { get; set; }
+        public virtual DbSet<DocumentEventAccesses> DocumentEventAccessesSet { get; set; }
         public virtual DbSet<DocumentTasks> DocumentTasksSet { get; set; }
         public virtual DbSet<DocumentTaskAccesses> DocumentTaskAccessesSet { get; set; }
 

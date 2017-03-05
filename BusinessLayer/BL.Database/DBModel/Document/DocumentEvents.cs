@@ -22,6 +22,10 @@ namespace BL.Database.DBModel.Document
         }
 
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         [Index("IX_ReadDate", 3)]
         [Index("IX_DocumentId",1)]
         public int DocumentId { get; set; }
@@ -52,6 +56,7 @@ namespace BL.Database.DBModel.Document
 
         [Index("IX_IsAvailableWithinTask", 1)]
         public bool IsAvailableWithinTask { get; set; }
+        public int? EventAccessId { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
 
         [Index("IX_ReadDate", 1)]

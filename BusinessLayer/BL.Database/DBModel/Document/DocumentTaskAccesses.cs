@@ -11,6 +11,11 @@ namespace BL.Database.DBModel.Document
     public partial class DocumentTaskAccesses
     {
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
+        public int DocumentId { get; set; }
         [Index("IX_TaskPosition", 1, IsUnique = true)]
         [Index("IX_PositionTask", 2, IsUnique = true)]
         public int TaskId { get; set; }

@@ -421,7 +421,7 @@ namespace BL.Database.Documents
 
                     TemplateDocumentId = doc.TemplateDocumentId,
                     DocumentSubjectId = doc.DocumentSubjectId,
-                    DocumentSubjectName = doc.DocumentSubject.Name,
+                    DocumentSubjectName = doc.DocumentSubject,
 
                     RegistrationJournalId = doc.RegistrationJournalId,
                     RegistrationJournalName = doc.RegistrationJournal.Name,
@@ -1537,44 +1537,44 @@ namespace BL.Database.Documents
                     {
                         x.ExecutorPositionId = model.NewPositionId;
                     });
-                dbContext.DocumentTasksSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
                     });
-                dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.SourcePositionId = model.NewPositionId;
                     });
-                dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.TargetPositionId = model.NewPositionId;
                     });
-                dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.SourcePositionId = model.NewPositionId;
                     });
-                dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.TargetPositionId = model.NewPositionId;
                     });
-                dbContext.DocumentRestrictedSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
                     });
-                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
-                dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
                     });
-                dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
-                dbContext.DocumentTaskAccessesSet.Where(x => x.Task.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
@@ -1604,7 +1604,7 @@ namespace BL.Database.Documents
                         IsLaunchPlan = x.IsLaunchPlan
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                                     .Where(x => x.DocumentId == documentId)
                                     .Select(x => new InternalDocumentSendList
                                     {

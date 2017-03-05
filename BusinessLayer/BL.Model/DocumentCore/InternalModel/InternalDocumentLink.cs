@@ -9,7 +9,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int LinkTypeId { get; set; }
         public int DocumentId { get; set; }
         public int ParentDocumentId { get; set; }
-        public int ExecutorPositionId { get; set; }
+        public int? ExecutorPositionId { get; set; }
 
     }
 }

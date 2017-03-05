@@ -4420,7 +4420,7 @@ namespace BL.Database.Dictionaries
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                         qry = qry.Where(x =>
-                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                dbContext.DocumentEventsSet.Where(y => y.ClientId == context.CurrentClientId)
                                     .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id)
                                     );
                     }
@@ -4490,7 +4490,7 @@ namespace BL.Database.Dictionaries
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                         qry = qry.Where(x =>
-                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                dbContext.DocumentEventsSet.Where(y => y.ClientId == context.CurrentClientId)
                                     .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
                                     );
                     }
@@ -5289,10 +5289,10 @@ namespace BL.Database.Dictionaries
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                     qry = qry.Where(x =>
-                            dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                            dbContext.DocumentEventsSet.Where(y => y.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.Id)
                                 ||
-                                dbContext.DocumentEventsSet.Where(y => y.Document.TemplateDocument.ClientId == context.CurrentClientId)
+                                dbContext.DocumentEventsSet.Where(y => y.ClientId == context.CurrentClientId)
                                 .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
                                 );
                 }

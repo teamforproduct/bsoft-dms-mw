@@ -46,9 +46,9 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
-            _docAccess = _document?.Accesses.FirstOrDefault();
+            _docAccess = _document?.Accesses.FirstOrDefault(x=>x.PositionId.HasValue);
             if (_docAccess == null
-                || !CanBeDisplayed(_docAccess.PositionId)
+                || !CanBeDisplayed(_docAccess.PositionId.Value)
                 )
             {
                 throw new CouldNotPerformOperation();

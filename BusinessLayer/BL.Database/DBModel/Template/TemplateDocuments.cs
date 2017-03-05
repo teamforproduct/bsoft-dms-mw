@@ -23,6 +23,8 @@ namespace BL.Database.DBModel.Template
         [Index("IX_Name", 2, IsUnique = true)]
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         [MaxLength(400)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
@@ -32,6 +34,8 @@ namespace BL.Database.DBModel.Template
         public int DocumentDirectionId { get; set; }
         public int DocumentTypeId { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
+        [MaxLength(2000)]
+        public string DocumentSubject { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         public Nullable<int> RegistrationJournalId { get; set; }
@@ -61,8 +65,6 @@ namespace BL.Database.DBModel.Template
         public virtual DictionaryDocumentDirections DocumentDirection { get; set; }
         [ForeignKey("DocumentTypeId")]
         public virtual DictionaryDocumentTypes DocumentType { get; set; }
-        [ForeignKey("DocumentSubjectId")]
-        public virtual DictionaryDocumentSubjects DocumentSubject { get; set; }
         [ForeignKey("RegistrationJournalId")]
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
         [ForeignKey("SenderAgentId")]

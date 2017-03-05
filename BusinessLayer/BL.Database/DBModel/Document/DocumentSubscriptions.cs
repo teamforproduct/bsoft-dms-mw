@@ -9,6 +9,10 @@ namespace BL.Database.DBModel.Document
     public class DocumentSubscriptions
     {
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int SendEventId { get; set; }
         public Nullable<int> DoneEventId { get; set; }

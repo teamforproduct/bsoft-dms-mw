@@ -26,6 +26,12 @@ namespace BL.Database.DBModel.Document
 
         [Index("IX_IsRegistered", 2)]
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
+        public int? DocumentDirectionId { get; set; }
+        public int? DocumentTypeId { get; set; }
         [Index("IX_IsRegistered", 3)]
         [Index("IX_TemplateDocumentId", 1)]
         public int TemplateDocumentId { get; set; }
@@ -33,6 +39,8 @@ namespace BL.Database.DBModel.Document
         [Index("IX_CreateDate",1)]
         public DateTime CreateDate { get; set; }
         public Nullable<int> DocumentSubjectId { get; set; }
+        [MaxLength(2000)]
+        public string DocumentSubject { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
         [MaxLength(2000)]
@@ -49,7 +57,7 @@ namespace BL.Database.DBModel.Document
         [MaxLength(100)]
         public string RegistrationNumberPrefix { get; set; }
         public Nullable<DateTime> RegistrationDate { get; set; }
-        public int ExecutorPositionId { get; set; }
+        public int? ExecutorPositionId { get; set; }
         [Column("ExecutorPositionExeAgentId")]
         public int ExecutorPositionExecutorAgentId { get; set; }
         [Column("ExecutorPositionExeTypeId")]
@@ -67,10 +75,13 @@ namespace BL.Database.DBModel.Document
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
+
+        [ForeignKey("DocumentDirectionId")]
+        public virtual DictionaryDocumentDirections DocumentDirection { get; set; }
+        [ForeignKey("DocumentTypeId")]
+        public virtual DictionaryDocumentTypes DocumentType { get; set; }
         [ForeignKey("TemplateDocumentId")]
         public virtual TemplateDocuments TemplateDocument { get; set; }
-        [ForeignKey("DocumentSubjectId")]
-        public virtual DictionaryDocumentSubjects DocumentSubject { get; set; }
         [ForeignKey("RegistrationJournalId")]
         public virtual DictionaryRegistrationJournals RegistrationJournal { get; set; }
         [ForeignKey("ExecutorPositionId")]

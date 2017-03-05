@@ -150,7 +150,7 @@ namespace BL.Database.Admins
                 filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
                     (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
                                 .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
                                 .Where(filterNewEventTargetPositionContains)
                                 .GroupBy(g => g.TargetPositionId)
@@ -161,7 +161,7 @@ namespace BL.Database.Admins
                 filterOnEventPositionsContains = roleList.Aggregate(filterOnEventPositionsContains,
                     (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
 
-                var waitQry = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
                                 .Where(x => !x.OffEventId.HasValue)
                                 .Where(filterOnEventPositionsContains)
                                 .GroupBy(y => new

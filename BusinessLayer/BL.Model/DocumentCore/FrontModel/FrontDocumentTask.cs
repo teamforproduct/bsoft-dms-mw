@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore.FrontModel
     {
         public int Id { get; set; }
 
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }
         public int AgentId { get; set; }
         public string Name { get; set; }

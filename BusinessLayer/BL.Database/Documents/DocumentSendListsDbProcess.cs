@@ -70,7 +70,7 @@ namespace BL.Database.Documents
                 var linkId = dbContext.DocumentsSet.Where(y => y.Id == model.DocumentId)
                     .Where(y => y.Accesses.Any(z => z.PositionId == model.CurrentPositionId && z.IsInWork))
                     .Select(y => y.LinkId).FirstOrDefault();
-                var qry = dbContext.DocumentAccessesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId != model.DocumentId && x.Document.LinkId == linkId);
                 var filterContains = PredicateBuilder.False<DocumentAccesses>();
                 filterContains = model.Positions.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());

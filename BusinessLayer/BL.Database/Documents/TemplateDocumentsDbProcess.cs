@@ -221,7 +221,7 @@ namespace BL.Database.Documents
                             DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
                             DocumentSubjectId = x.DocumentSubjectId,
-                            DocumentSubjectName = x.DocumentSubject.Name,
+                            DocumentSubjectName = x.DocumentSubject,
                             RegistrationJournalId = x.RegistrationJournalId,
                             RegistrationJournalName = x.RegistrationJournal.Name,
                             SenderAgentId = x.SenderAgentId,
