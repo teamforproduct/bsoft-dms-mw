@@ -1353,11 +1353,11 @@ namespace BL.Database.Common
                 {
                     if (filter.IsOverDue.Value)
                     {
-                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow));
+                        qry = qry.Where(x => x.DueDate.HasValue && x.DueDate.Value < (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow));
                     }
                     else
                     {
-                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value > (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow)));
+                        qry = qry.Where(x => !(x.DueDate.HasValue && x.DueDate.Value < (x.OffEvent != null ? x.OffEvent.Date : DateTime.UtcNow)));
                     }
                 }
 
