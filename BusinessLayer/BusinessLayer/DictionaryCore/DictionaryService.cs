@@ -227,7 +227,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentCompanies(context, new FilterDictionaryAgentCompany { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-        public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<AutocompleteItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
             if (filter == null) filter = new FilterDictionaryAgentCompany();
 
@@ -1092,6 +1092,11 @@ namespace BL.Logic.DictionaryCore
         #endregion AdminAccessLevels
 
         #region CustomDictionaryTypes
+        public IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, FullTextSearch ftSearch, FilterCustomDictionaryType filter, UIPaging paging, UISorting sorting)
+        {
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaryTypes, _dictDb.GetCustomDictionaryTypeIDs);
+        }
+
         public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter)
         {
             return _dictDb.GetCustomDictionaryTypes(context, filter);
@@ -1106,7 +1111,9 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, 
+                _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs, 
+                IsUseParentId: false);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)

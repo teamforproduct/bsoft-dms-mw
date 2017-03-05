@@ -39,7 +39,8 @@ namespace DMS_WebAPI.Areas.HelpPage.App_Start
                 {
                     itemName = "<b>" + itemName + "</b>";
                 }
-                text = text + (text == string.Empty ? string.Empty : dlm) + itemName;
+                if (MarkRequired) text = text + (text == string.Empty ? string.Empty : dlm) + GetTooltip(itemName, item.Documentation);
+                else text = text + (text == string.Empty ? string.Empty : dlm) + itemName;
             }
 
             if (InBrackets && !string.IsNullOrEmpty(text))
@@ -48,6 +49,13 @@ namespace DMS_WebAPI.Areas.HelpPage.App_Start
             }
 
             return text;
+        }
+
+        private static string GetTooltip(string text, string tooltip)
+        {
+            if (string.IsNullOrEmpty(tooltip)) return text;
+
+            return "<span data-toggle=\"tooltip\" title=" + tooltip.Replace(" ", "&ensp;") + ">" + text + "</span>";
         }
     }
 }

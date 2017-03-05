@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -24,6 +25,31 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
     public class CustomDictionariesInfoController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
+
+        /// <summary>
+        /// Возвращает список элементов пользовательского справочника
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="ftSearch"></param>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <param name="sorting">"</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Info + "/Main")]
+        [ResponseType(typeof(List<FrontCustomDictionary>))]
+        public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItems = tmpService.GetMainCustomDictionaryTypes(ctx, ftSearch, filter, paging, sorting);
+            var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список пользовательских справочников

@@ -45,7 +45,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         #region DictionaryAgentCompanies
         FrontAgentCompany GetAgentCompany(IContext context, int id);
-        IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        IEnumerable<AutocompleteItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
         IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentCompany filter, UIPaging paging, UISorting sorting);
         #endregion DictionaryAgentCompanies
 
@@ -258,6 +258,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion
 
         #region CustomDictionaryTypes
+        IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, FullTextSearch ftSearch, FilterCustomDictionaryType filter, UIPaging paging, UISorting sorting);
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
 
         FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id);
