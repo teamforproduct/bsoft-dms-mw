@@ -830,11 +830,10 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
         {
             if (filter == null) filter = new FilterDictionaryJournalsTree();
-            filter.LevelCount = 2;
             return GetRegistrationJournalsTree(context, searchInJournals, ftSearch, filter);
         }
 
-        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, bool searchInJournals, FullTextSearch ftSearch,  FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
+        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
@@ -886,30 +885,36 @@ namespace BL.Logic.DictionaryCore
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 var ftDict = new Dictionary<EnumObjects, int>();
+                var depList = new List<int>();
+                var cmpList = new List<int>();
 
-                // Получаю список ид из полнотекста
-                DmsResolver.Current.Get<IFullTextSearchService>().
-                    SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Org })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
-
-
-                var depList = DmsResolver.Current.Get<IFullTextSearchService>().
-                    SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Department });
-
-               
                 // Если включен поиск по журналам
                 if (searchInJournals)
                 {
+                    // ищу только в журналах
                     var journals = DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Journal });
 
-                    // дополняю depList отделами из журналов
+                    // отделы только из найденных журналов
                     depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
+
+                    // организации только из найденных отделов
+                    cmpList = _dictDb.GetAgentOrgIDs(context, new FilterDictionaryAgentOrg { DepartmentIDs = depList });
+                }
+                else
+                {
+                    depList = DmsResolver.Current.Get<IFullTextSearchService>().
+                    SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    new FullTextSearchFilter { Module = Modules.Department });
+
+                    // Получаю список ид из полнотекста
+                    cmpList = DmsResolver.Current.Get<IFullTextSearchService>().
+                        SearchItemParentId(context, ftSearch.FullTextSearchString,
+                        new FullTextSearchFilter { Module = Modules.Org });
                 }
 
+                cmpList.ForEach(x => ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
                 depList.ForEach(x => ftDict.Add(EnumObjects.DictionaryDepartments, x));
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
@@ -1120,8 +1125,8 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, 
-                _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs, 
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting,
+                _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs,
                 IsUseParentId: false);
         }
 

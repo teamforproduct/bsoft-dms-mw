@@ -277,6 +277,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
         void DeleteAgentOrg(IContext context, List<int> list);
         bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        List<int> GetAgentOrgIDs(IContext context, FilterDictionaryAgentOrg filter);
         InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<FrontDictionaryAgentClientCompany> GetAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForStaffList(IContext context, FilterDictionaryAgentOrg filter);

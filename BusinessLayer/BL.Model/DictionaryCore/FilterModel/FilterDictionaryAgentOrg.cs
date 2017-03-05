@@ -8,6 +8,9 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// </summary>
     public class FilterDictionaryAgentOrg : BaseFilterNameIsActive
     {
+        /// <summary>
+        /// Полное наименование
+        /// </summary>
         public string FullName { get; set; }
 
         /// <summary>

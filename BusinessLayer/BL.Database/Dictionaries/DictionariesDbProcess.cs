@@ -1919,6 +1919,19 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public List<int> GetAgentOrgIDs(IContext context, FilterDictionaryAgentOrg filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
+
+                var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2138,7 +2151,11 @@ namespace BL.Database.Dictionaries
 
 
                 // Только компании в который есть отделы
-                if (filter.DepartmentIDs?.Count > 0)
+                if (filter.DepartmentIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => x.Departments.Any(y => filter.DepartmentIDs.Contains(y.Id)));
+                }
+                else if (filter.DepartmentIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryDepartments>();
                     filterContains = filter.DepartmentIDs.Aggregate(filterContains,
@@ -2146,6 +2163,7 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(x => x.Departments.AsQueryable().Any(filterContains));
                 }
+
 
                 // Тоько активные/неактивные
                 if (filter.IsActive != null)
@@ -3873,7 +3891,7 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.JournalIDs?.Count > 100)
                 {
-                    qry = qry.Where(x => x.RegistrationJournals.Any(y => filter.JournalIDs.Contains(y.Id)) );
+                    qry = qry.Where(x => x.RegistrationJournals.Any(y => filter.JournalIDs.Contains(y.Id)));
                 }
                 else if (filter.JournalIDs?.Count > 0)
                 {
@@ -5021,7 +5039,7 @@ namespace BL.Database.Dictionaries
                     Details = new List<string>
                     {
                         x.Name,
-                        x.Department.FullPath + " " + x.Department.Name,                        
+                        x.Department.FullPath + " " + x.Department.Name,
                     },
                 }).ToList();
 
@@ -5335,7 +5353,7 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
-                if (filter.IsHideVacated??false)
+                if (filter.IsHideVacated ?? false)
                 {
                     qry = qry.Where(x => x.ExecutorAgentId.HasValue);
                 }
