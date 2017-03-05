@@ -258,6 +258,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #endregion
 
         #region CustomDictionaryTypes
+        IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, FullTextSearch ftSearch, FilterCustomDictionaryType filter, UIPaging paging, UISorting sorting);
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
 
         FrontCustomDictionaryType GetCustomDictionaryType(IContext context, int id);

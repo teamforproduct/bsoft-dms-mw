@@ -17,7 +17,8 @@ namespace BL.Logic.SystemCore
         public static IEnumerable<MainFront> Get<MainFront>(IContext context, string module, FullTextSearch searchFilter, IBaseFilter filter, UIPaging paging, UISorting sorting,
             Func<IContext, IBaseFilter, UIPaging, UISorting, IEnumerable<MainFront>> MainFunc,
             Func<IContext, IBaseFilter, UISorting, List<int>> IdsFunc,
-            FullTextSearchFilter ftsFilter = null)
+            FullTextSearchFilter ftsFilter = null,
+            bool IsUseParentId = true)
         {
             IEnumerable<MainFront> res;
 
@@ -25,8 +26,15 @@ namespace BL.Logic.SystemCore
             {
                 if (ftsFilter == null) ftsFilter = new FullTextSearchFilter { Module = module };
 
+                var tmpService = DmsResolver.Current.Get<IFullTextSearchService>();
+
                 // Получаю список ид из полнотекста
-                var ftList = DmsResolver.Current.Get<IFullTextSearchService>().SearchItemParentId(context, searchFilter.FullTextSearchString, ftsFilter);
+                var ftList = new List<int>();
+
+                if (IsUseParentId)
+                    ftList = tmpService.SearchItemParentId(context, searchFilter.FullTextSearchString, ftsFilter);
+                else
+                    ftList = tmpService.SearchItemId(context, searchFilter.FullTextSearchString, ftsFilter);
 
                 // Если полнотекст ничего не нашел...
                 if (!ftList.Any()) return new List<MainFront>();

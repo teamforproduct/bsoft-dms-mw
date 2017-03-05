@@ -1092,6 +1092,11 @@ namespace BL.Logic.DictionaryCore
         #endregion AdminAccessLevels
 
         #region CustomDictionaryTypes
+        public IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, FullTextSearch ftSearch, FilterCustomDictionaryType filter, UIPaging paging, UISorting sorting)
+        {
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaryTypes, _dictDb.GetCustomDictionaryTypeIDs);
+        }
+
         public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter)
         {
             return _dictDb.GetCustomDictionaryTypes(context, filter);
@@ -1106,7 +1111,9 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, 
+                _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs, 
+                IsUseParentId: false);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)

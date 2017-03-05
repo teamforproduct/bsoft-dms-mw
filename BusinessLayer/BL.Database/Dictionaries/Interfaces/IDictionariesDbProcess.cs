@@ -346,6 +346,9 @@ namespace BL.Database.Dictionaries.Interfaces
         //FrontCustomDictionaryType GetCustomDictionaryTypeWithCustomDictionaries(IContext context, int id);
 
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
+
+        IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetCustomDictionaryTypeIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
