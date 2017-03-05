@@ -5669,7 +5669,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.AgentIDs?.Count > 0)
+
+                if (filter.AgentIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.AgentIDs.Contains(x.AgentId));
+                }
+                else if (filter.AgentIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
                     filterContains = filter.AgentIDs.Aggregate(filterContains,

@@ -1212,9 +1212,11 @@ namespace BL.Logic.DictionaryCore
                     new FullTextSearchFilter { Module = Modules.Position })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositions, x));
 
-                DmsResolver.Current.Get<IFullTextSearchService>().
+                var empLists = DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Executors })
+                    new FullTextSearchFilter { Module = Modules.Employee });
+
+                _dictDb.GetPositionExecutorsIDs(context, new FilterDictionaryPositionExecutor { AgentIDs = empLists })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
 
                 if (ftDict.Count == 0) return new List<TreeItem>();

@@ -9,6 +9,7 @@ namespace DMS_WebAPI.Areas.HelpPage.App_Start
         public static string GetOrderedName(string Name) =>
             Name
             .Replace("FullTextSearchString", "AAA")
+            .Replace("IsDontSaveSearchQueryLog", "AAB")
             .Replace("NotContainsIDs", "AAC")
             .Replace("IDs", "AAB")
             .Replace("Id", "AAB")
