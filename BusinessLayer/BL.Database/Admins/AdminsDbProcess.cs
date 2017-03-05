@@ -158,7 +158,7 @@ namespace BL.Database.Admins
                 var newevnt = neweventQry.ToList();
 
                 var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
-                filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
+                filterOnEventPositionsContains = roleList.Aggregate(filterOnEventPositionsContains,
                     (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
 
                 var waitQry = dbContext.DocumentWaitsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)   //TODO include doc access
@@ -191,9 +191,9 @@ namespace BL.Database.Admins
                             ControlsCount = y.Sum(z => z.ControlsCount),
                             OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
                         }).FirstOrDefault();
-                    x.MinDueDate = t.MinDueDate;
-                    x.ControlsCount = t.ControlsCount;
-                    x.OverdueControlsCount = t.OverdueControlsCount;
+                    x.MinDueDate = t?.MinDueDate;
+                    x.ControlsCount = t?.ControlsCount ?? 0;
+                    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
                 });
 
                 transaction.Complete();
