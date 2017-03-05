@@ -12,5 +12,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         IEnumerable<FullTextSearchResult> SearchItems(IContext ctx, string text, FullTextSearchFilter filter);
         IEnumerable<FullTextSearchResult> SearchItemsByDetail(IContext ctx, string text, FullTextSearchFilter filter);
         List<int> SearchItemParentId(IContext ctx, string text, FullTextSearchFilter filter);
+        List<int> SearchItemId(IContext ctx, string text, FullTextSearchFilter filter);
     }
 }

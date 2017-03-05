@@ -227,7 +227,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentCompanies(context, new FilterDictionaryAgentCompany { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-        public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<AutocompleteItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
             if (filter == null) filter = new FilterDictionaryAgentCompany();
 
@@ -827,27 +827,26 @@ namespace BL.Logic.DictionaryCore
             return FTS.Get(context, Modules.Journal, ftSearch, filter, paging, sorting, _dictDb.GetRegistrationJournals, _dictDb.GetRegistrationJournalIDs);
         }
 
-        public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
+        public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
         {
             if (filter == null) filter = new FilterDictionaryJournalsTree();
-            filter.LevelCount = 2;
-            return GetRegistrationJournalsTree(context, ftSearch, filter);
+            return GetRegistrationJournalsTree(context, searchInJournals, ftSearch, filter);
         }
 
-        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
+        private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
         {
 
             int levelCount = filter?.LevelCount ?? 0;
-            IEnumerable<TreeItem> journals = null;
+            //IEnumerable<TreeItem> journals = null;
             IEnumerable<TreeItem> departments = null;
             IEnumerable<TreeItem> companies = null;
 
-            if (levelCount >= 3 || levelCount == 0)
-            {
-                var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
+            //if (levelCount >= 3 || levelCount == 0)
+            //{
+            //    var f = filterJoirnal ?? new FilterDictionaryRegistrationJournal { IsActive = filter?.IsActive };
 
-                journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
-            }
+            //    journals = _dictDb.GetRegistrationJournalsForRegistrationJournals(context, f);
+            //}
 
             if (levelCount >= 2 || levelCount == 0)
             {
@@ -877,7 +876,7 @@ namespace BL.Logic.DictionaryCore
             List<TreeItem> flatList = new List<TreeItem>();
 
             if (companies != null) flatList.AddRange(companies);
-            if (journals != null) flatList.AddRange(journals);
+            //if (journals != null) flatList.AddRange(journals);
             if (departments != null) flatList.AddRange(departments);
 
             if (filter == null) filter = new FilterDictionaryJournalsTree();
@@ -886,22 +885,37 @@ namespace BL.Logic.DictionaryCore
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 var ftDict = new Dictionary<EnumObjects, int>();
+                var depList = new List<int>();
+                var cmpList = new List<int>();
 
-                // Получаю список ид из полнотекста
-                DmsResolver.Current.Get<IFullTextSearchService>().
+                // Если включен поиск по журналам
+                if (searchInJournals)
+                {
+                    // ищу только в журналах
+                    var journals = DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Org })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
+                    new FullTextSearchFilter { Module = Modules.Journal });
 
-                DmsResolver.Current.Get<IFullTextSearchService>().
-                    SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Department })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryDepartments, x));
+                    // отделы только из найденных журналов
+                    depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
 
-                DmsResolver.Current.Get<IFullTextSearchService>().
+                    // организации только из найденных отделов
+                    cmpList = _dictDb.GetAgentOrgIDs(context, new FilterDictionaryAgentOrg { DepartmentIDs = depList });
+                }
+                else
+                {
+                    depList = DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Journal })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryRegistrationJournals, x));
+                    new FullTextSearchFilter { Module = Modules.Department });
+
+                    // Получаю список ид из полнотекста
+                    cmpList = DmsResolver.Current.Get<IFullTextSearchService>().
+                        SearchItemParentId(context, ftSearch.FullTextSearchString,
+                        new FullTextSearchFilter { Module = Modules.Org });
+                }
+
+                cmpList.ForEach(x => ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, x));
+                depList.ForEach(x => ftDict.Add(EnumObjects.DictionaryDepartments, x));
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
 
@@ -1092,6 +1106,11 @@ namespace BL.Logic.DictionaryCore
         #endregion AdminAccessLevels
 
         #region CustomDictionaryTypes
+        public IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, FullTextSearch ftSearch, FilterCustomDictionaryType filter, UIPaging paging, UISorting sorting)
+        {
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaryTypes, _dictDb.GetCustomDictionaryTypeIDs);
+        }
+
         public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter)
         {
             return _dictDb.GetCustomDictionaryTypes(context, filter);
@@ -1106,7 +1125,9 @@ namespace BL.Logic.DictionaryCore
         #region CustomDictionaries
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, FullTextSearch ftSearch, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
         {
-            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting, _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs);
+            return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting,
+                _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs,
+                IsUseParentId: false);
         }
 
         public IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging, UISorting sorting)
@@ -1205,10 +1226,15 @@ namespace BL.Logic.DictionaryCore
                     new FullTextSearchFilter { Module = Modules.Position })
                     .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositions, x));
 
-                DmsResolver.Current.Get<IFullTextSearchService>().
+                var empLists = DmsResolver.Current.Get<IFullTextSearchService>().
                     SearchItemParentId(context, ftSearch.FullTextSearchString,
-                    new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Executors })
-                    .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
+                    new FullTextSearchFilter { Module = Modules.Employee });
+
+                if (empLists.Count > 0)
+                {
+                    _dictDb.GetPositionExecutorsIDs(context, new FilterDictionaryPositionExecutor { AgentIDs = empLists })
+                        .ForEach(x => ftDict.Add(EnumObjects.DictionaryPositionExecutors, x));
+                }
 
                 if (ftDict.Count == 0) return new List<TreeItem>();
 

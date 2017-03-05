@@ -33,18 +33,19 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <summary>
         /// Возвращает список журналов сгруппированных по отделам и компаниям (дерево Компании-Отделы-Журналы). 
         /// </summary>
-        /// <param name="ftSearch">"</param>
-        /// <param name="filter">"</param>
+        /// <param name="searchInJournals">Выполнять поиск в журналах</param>
+        /// <param name="ftSearch"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Filters")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter)
+        public IHttpActionResult Get([FromUri]bool? searchInJournals,  [FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournalsFilter(ctx, ftSearch, filter);
+            var tmpItems = tmpService.GetRegistrationJournalsFilter(ctx, searchInJournals ?? false,  ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

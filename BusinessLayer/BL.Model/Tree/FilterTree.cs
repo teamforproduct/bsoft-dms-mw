@@ -57,6 +57,7 @@ namespace BL.Model.Tree
         /// <summary>
         /// Удаляет ветви, которые не содержат листов типа указанного объекта
         /// </summary>
+        [IgnoreDataMember]
         public List<EnumObjects> RemoveEmptyBranchesByObject { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BL.Model.Common;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -24,6 +25,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по компании, которая представляет этот отдел
         /// </summary>
         public List<int> CompanyIDs { get; set; }
+
+        /// <summary>
+        /// Сужение по компании, которая представляет этот отдел
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> JournalIDs { get; set; }
 
         /// <summary>
         /// Руководитель подразделения

@@ -201,6 +201,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             return SearchItemsByDetail(ctx, text, filter).Select(x => x.ParentId).Distinct().ToList();
         }
 
+        public List<int> SearchItemId(IContext ctx, string text, FullTextSearchFilter filter)
+        {
+            return SearchItemsByDetail(ctx, text, filter).Select(x => x.ObjectId).ToList();
+        }
+
         private IEnumerable<FullTextSearchResult> SearchItemsInternal(IContext ctx, string text, FullTextSearchFilter filter)
         {
             var admService = DmsResolver.Current.Get<IAdminService>();

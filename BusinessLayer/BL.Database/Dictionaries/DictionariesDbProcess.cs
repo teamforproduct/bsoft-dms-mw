@@ -1096,7 +1096,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryAgentEmployees> GetAgentEmployeesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentEmployee filter)
+        private IQueryable<DictionaryAgentEmployees> GetAgentEmployeesQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentEmployee filter)
         {
             var qry = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -1919,6 +1919,19 @@ namespace BL.Database.Dictionaries
             }
         }
 
+        public List<int> GetAgentOrgIDs(IContext context, FilterDictionaryAgentOrg filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetAgentOrgsQuery(context, dbContext, filter);
+
+                var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1983,7 +1996,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -2010,7 +2023,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -2037,7 +2050,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     SourcePositionId = positionId,
                     CompanyId = x.Id
                 }).ToList();
@@ -2066,7 +2079,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     JournalId = journalId,
                     CompanyId = x.Id
                 }).ToList();
@@ -2095,7 +2108,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = string.Empty,
                     IsActive = x.IsActive,
-                    IsList = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     PositionId = positionId,
                     CompanyId = x.Id
                 }).ToList();
@@ -2138,7 +2151,11 @@ namespace BL.Database.Dictionaries
 
 
                 // Только компании в который есть отделы
-                if (filter.DepartmentIDs?.Count > 0)
+                if (filter.DepartmentIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => x.Departments.Any(y => filter.DepartmentIDs.Contains(y.Id)));
+                }
+                else if (filter.DepartmentIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryDepartments>();
                     filterContains = filter.DepartmentIDs.Aggregate(filterContains,
@@ -2146,6 +2163,7 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(x => x.Departments.AsQueryable().Any(filterContains));
                 }
+
 
                 // Тоько активные/неактивные
                 if (filter.IsActive != null)
@@ -2629,7 +2647,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryAgentBanks> GetAgentBanksQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentBank filter)
+        private IQueryable<DictionaryAgentBanks> GetAgentBanksQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentBank filter)
         {
             var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -2829,7 +2847,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryAgentAccounts> GetAgentAccountsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentAccount filter)
+        private IQueryable<DictionaryAgentAccounts> GetAgentAccountsQuery(IContext context, DmsContext dbContext, FilterDictionaryAgentAccount filter)
         {
             var qry = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -3233,7 +3251,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryAgentContacts> GetContactsQuery(IContext context, DmsContext dbContext, FilterDictionaryContact filter)
+        private IQueryable<DictionaryAgentContacts> GetContactsQuery(IContext context, DmsContext dbContext, FilterDictionaryContact filter)
         {
             var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -3579,7 +3597,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -3611,7 +3629,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                 }).ToList();
 
                 transaction.Complete();
@@ -3692,7 +3710,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     SourcePositionId = sourcePositionId,
                     DepartmentId = x.Id,
                 }).ToList();
@@ -3725,7 +3743,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.Positions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     JournalId = journalId,
                     DepartmentId = x.Id,
                 }).ToList();
@@ -3756,7 +3774,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
                     IsActive = x.IsActive,
-                    IsList = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
+                    IsLeaf = !(x.ChildDepartments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any() || x.RegistrationJournals.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),
                     PositionId = positionId,
                     DepartmentId = x.Id,
                 }).ToList();
@@ -3868,6 +3886,20 @@ namespace BL.Database.Dictionaries
                         (current, value) => current.Or(e => e.CompanyId == value).Expand());
 
                     qry = qry.Where(filterContains);
+                }
+
+                // Список первичных ключей
+                if (filter.JournalIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => x.RegistrationJournals.Any(y => filter.JournalIDs.Contains(y.Id)));
+                }
+                else if (filter.JournalIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    filterContains = filter.JournalIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(x => x.RegistrationJournals.AsQueryable().Any(filterContains));
                 }
 
 
@@ -5007,7 +5039,7 @@ namespace BL.Database.Dictionaries
                     Details = new List<string>
                     {
                         x.Name,
-                        x.Department.FullPath + " " + x.Department.Name,                        
+                        x.Department.FullPath + " " + x.Department.Name,
                     },
                 }).ToList();
 
@@ -5060,7 +5092,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    IsLeaf = !(x.PositionExecutors.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any()),// || x.ChildPositions.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
                     Order = x.Order
                 }).ToList();
 
@@ -5108,7 +5140,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     ExecutorName = x.ExecutorAgent.Name,
                     ExecutorTypeSuffix = x.ExecutorType.Suffix,
                     IsInforming = (x.TargetPositionSubordinations
@@ -5150,7 +5182,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     ExecutorName = x.ExecutorAgent.Name,
                     ExecutorTypeSuffix = x.ExecutorType.Suffix,
                     IsView = (x.PositionRegistrationJournals
@@ -5206,7 +5238,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryPositions> GetPositionsQuery(IContext context, DmsContext dbContext, FilterDictionaryPosition filter)
+        private IQueryable<DictionaryPositions> GetPositionsQuery(IContext context, DmsContext dbContext, FilterDictionaryPosition filter)
         {
             var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -5321,7 +5353,7 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
-                if (filter.IsHideVacated??false)
+                if (filter.IsHideVacated ?? false)
                 {
                     qry = qry.Where(x => x.ExecutorAgentId.HasValue);
                 }
@@ -5580,7 +5612,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     Description = x.PositionExecutorType.Code
                 }).ToList();
 
@@ -5629,7 +5661,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(IContext context, DmsContext dbContext, FilterDictionaryPositionExecutor filter)
+        private IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(IContext context, DmsContext dbContext, FilterDictionaryPositionExecutor filter)
         {
             var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -5669,7 +5701,12 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.AgentIDs?.Count > 0)
+
+                if (filter.AgentIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.AgentIDs.Contains(x.AgentId));
+                }
+                else if (filter.AgentIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
                     filterContains = filter.AgentIDs.Aggregate(filterContains,
@@ -6012,7 +6049,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                 }).ToList();
 
                 transaction.Complete();
@@ -6060,7 +6097,7 @@ namespace BL.Database.Dictionaries
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = x.DepartmentId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
-                    IsList = true,
+                    IsLeaf = true,
                     Index = x.Index,
                     IsViewing = (x.PositionsRegistrationJournal
                         .Where(y => y.RegJournalId == x.Id)
@@ -6093,7 +6130,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<DictionaryRegistrationJournals> GetRegistrationJournalsQuery(IContext context, DmsContext dbContext, FilterDictionaryRegistrationJournal filter)
+        private IQueryable<DictionaryRegistrationJournals> GetRegistrationJournalsQuery(IContext context, DmsContext dbContext, FilterDictionaryRegistrationJournal filter)
         {
             var qry = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -6428,7 +6465,7 @@ namespace BL.Database.Dictionaries
 
         #region [+] StandartSendListContents ...
 
-        public IQueryable<DictionaryStandartSendListContents> GetStandartSendListContentsQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendListContent filter)
+        private IQueryable<DictionaryStandartSendListContents> GetStandartSendListContentsQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendListContent filter)
         {
             var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -6604,7 +6641,7 @@ namespace BL.Database.Dictionaries
         #endregion
 
         #region [+] StandartSendLists ...
-        public IQueryable<DictionaryStandartSendLists> GetStandartSendListQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendList filter)
+        private IQueryable<DictionaryStandartSendLists> GetStandartSendListQuery(IContext context, DmsContext dbContext, FilterDictionaryStandartSendList filter)
         {
             var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -7074,7 +7111,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<AdminAccessLevels> GetAccessLevelsQuery(IContext context, DmsContext dbContext, FilterAdminAccessLevel filter)
+        private IQueryable<AdminAccessLevels> GetAccessLevelsQuery(IContext context, DmsContext dbContext, FilterAdminAccessLevel filter)
         {
             var qry = dbContext.AdminAccessLevelsSet.AsQueryable();
 
@@ -7258,7 +7295,45 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<CustomDictionaryTypes> GetCustomDictionaryTypesQuery(IContext context, DmsContext dbContext, FilterCustomDictionaryType filter)
+        public IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetCustomDictionaryTypesQuery(context, dbContext, filter as FilterCustomDictionaryType);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontCustomDictionaryType>();
+
+                var res = qry.Select(x => new FrontCustomDictionaryType
+                {
+                    Id = x.Id,
+                    Code = x.Code,
+                    Name = x.Name,
+                    Description = x.Description,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public List<int> GetCustomDictionaryTypeIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetCustomDictionaryTypesQuery(context, dbContext, filter as FilterCustomDictionaryType);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                var res = qry.Select(x => x.Id).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        private IQueryable<CustomDictionaryTypes> GetCustomDictionaryTypesQuery(IContext context, DmsContext dbContext, FilterCustomDictionaryType filter)
         {
             var qry = dbContext.CustomDictionaryTypesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
@@ -7430,7 +7505,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IQueryable<CustomDictionaries> GetCustomDictionaryQuery(IContext context, DmsContext dbContext, FilterCustomDictionary filter)
+        private IQueryable<CustomDictionaries> GetCustomDictionaryQuery(IContext context, DmsContext dbContext, FilterCustomDictionary filter)
         {
             var qry = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == context.CurrentClientId).AsQueryable();
 

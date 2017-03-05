@@ -209,7 +209,7 @@ namespace BL.Logic.TreeBuilder
         {
             foreach (var item in tree)
             {
-                if (item.IsList ?? false) continue;
+                if (item.IsLeaf ?? false) continue;
 
                 RemoveEmptyBranches(item.Childs);
 
@@ -222,7 +222,7 @@ namespace BL.Logic.TreeBuilder
 
         }
 
-        private static bool ExistsLists(IEnumerable<ITreeItem> list) => list.Select(x => x.IsList == true).Any();
+        private static bool ExistsLists(IEnumerable<ITreeItem> list) => list.Select(x => x.IsLeaf == true).Any();
 
 
     }

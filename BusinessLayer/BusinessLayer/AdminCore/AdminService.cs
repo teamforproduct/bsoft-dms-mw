@@ -437,7 +437,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList ?? true) continue;
+                if (item.IsLeaf ?? true) continue;
 
                 SetCheckForDepartmentsAndCompaniesDIPSubordinations((List<TreeItem>)item.Childs);
 
@@ -623,7 +623,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList ?? true) continue;
+                if (item.IsLeaf ?? true) continue;
 
                 SetCheckForDepartmentsAndCompaniesDIPJournalAccess((List<TreeItem>)item.Childs);
 
@@ -785,7 +785,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList ?? true) continue;
+                if (item.IsLeaf ?? true) continue;
 
                 SetCheckForDepartmentsAndCompaniesDIPRJournalPositions((List<TreeItem>)item.Childs);
 

@@ -32,6 +32,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Список должностей
         /// </summary>
+        [IgnoreDataMember]
         public List<int> DepartmentByPositionIDs { get; set; }
 
         /// <summary>

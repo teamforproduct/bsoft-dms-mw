@@ -160,7 +160,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
         InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<InternalDictionaryDepartment> GetInternalDepartments(IContext context, FilterDictionaryDepartment filter);
-
+        List<int> GetDepartmentIDs(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForStaffList(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, FilterDictionaryDepartment filter);
@@ -246,6 +246,7 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<InternalDictionaryPositionExecutor> GetInternalPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        List<int> GetPositionExecutorsIDs(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, UIPaging paging);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutorExtended> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter);
@@ -276,6 +277,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
         void DeleteAgentOrg(IContext context, List<int> list);
         bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        List<int> GetAgentOrgIDs(IContext context, FilterDictionaryAgentOrg filter);
         InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<FrontDictionaryAgentClientCompany> GetAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForStaffList(IContext context, FilterDictionaryAgentOrg filter);
@@ -346,6 +348,9 @@ namespace BL.Database.Dictionaries.Interfaces
         //FrontCustomDictionaryType GetCustomDictionaryTypeWithCustomDictionaries(IContext context, int id);
 
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
+
+        IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetCustomDictionaryTypeIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
