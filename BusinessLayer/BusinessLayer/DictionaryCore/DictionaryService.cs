@@ -227,7 +227,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetAgentCompanies(context, new FilterDictionaryAgentCompany { IDs = new List<int> { id } }, null).FirstOrDefault();
         }
 
-        public IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
+        public IEnumerable<AutocompleteItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging)
         {
             if (filter == null) filter = new FilterDictionaryAgentCompany();
 

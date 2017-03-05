@@ -3,7 +3,6 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -74,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Agents)]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetList([FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -96,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Banks)]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -118,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Companies)]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<AutocompleteItem>))]
         public IHttpActionResult GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -18,6 +18,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// не содержит агентов 
         /// </summary>
+        [IgnoreDataMember]
         public List<int> NotContainsAgentIDs { get; set; }
         
         /// <summary>

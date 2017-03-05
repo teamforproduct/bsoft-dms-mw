@@ -3,6 +3,7 @@ using BL.Model.Enums;
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -25,6 +26,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Исключение сотрудников
         /// </summary>
+        [IgnoreDataMember]
         public List<int> NotContainsAgentIDs { get; set; }
 
 
