@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [HttpGet]
         [Route(Features.Info + "/Filters")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri]bool? searchInJournals,  [FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter)
+        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter, [FromUri]bool? searchInJournals = false)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
