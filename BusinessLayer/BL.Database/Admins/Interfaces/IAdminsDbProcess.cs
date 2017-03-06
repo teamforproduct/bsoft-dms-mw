@@ -22,6 +22,7 @@ namespace BL.Database.Admins.Interfaces
         Employee GetEmployeeForContext(IContext ctx, string userId);
 
         IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext ctx, int agentId, List<int> PositionIDs);
+        IEnumerable<FrontUserAssignmentsAvailable> GetAvailablePositionsList(IContext ctx, int agentId, List<int> PositionIDs);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);

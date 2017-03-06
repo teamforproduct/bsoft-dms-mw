@@ -24,6 +24,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
         IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext context, List<int> PositionIDs = null);
+        IEnumerable<FrontUserAssignmentsAvailableGroup> GetAvailablePositionsDialog(IContext context, List<int> PositionIDs = null);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetEmployeeForContext(IContext context, string userId);
