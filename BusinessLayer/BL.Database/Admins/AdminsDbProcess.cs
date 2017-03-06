@@ -231,7 +231,7 @@ namespace BL.Database.Admins
                     ExecutorName =  (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
                     ExecutorTypeId = x.PositionExecutorType.Id,
                     ExecutorTypeDescription =  x.PositionExecutorType.Description,
-                    ImageByteArray = x.Agent.Image,
+                    ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte [] { } : x.Agent.Image),
                 }).ToList();
 
                 //IsLastChosen
