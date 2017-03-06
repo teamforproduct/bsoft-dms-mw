@@ -462,6 +462,10 @@
     <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.Designer.cs">
       <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703062044277_PositionExecutorTypes_Description.cs" />
+    <Compile Include="Migrations\201703062044277_PositionExecutorTypes_Description.Designer.cs">
+      <DependentUpon>201703062044277_PositionExecutorTypes_Description.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -652,6 +656,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702161918125_AspNetUserContexts.resx">
       <DependentUpon>201702161918125_AspNetUserContexts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703062044277_PositionExecutorTypes_Description.resx">
+      <DependentUpon>201703062044277_PositionExecutorTypes_Description.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
