@@ -18,6 +18,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }
         public int? DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         public string Description { get; set; }
         public int? RegistrationJournalId { get; set; }
         public int? SenderAgentId { get; set; }

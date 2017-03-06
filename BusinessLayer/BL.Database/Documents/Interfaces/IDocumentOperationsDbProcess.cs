@@ -35,6 +35,7 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);
         InternalDocument SelfAffixSigningDocumentPrepare(IContext ctx, int documentId);
+        InternalDocument ModifyDocumentTagsPrepare(IContext ctx, int documentId);
         IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId);
         InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int model);
         InternalDocument ControlChangeDocumentPrepare(IContext context, int eventId);

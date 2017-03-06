@@ -66,10 +66,13 @@ namespace BL.Model.DocumentCore.InternalModel
         /// ИД Документа
         /// </summary>
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         /// <summary>
         /// ИД Тематики документа
         /// </summary>
         public int? DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Краткое содержание
         /// </summary>

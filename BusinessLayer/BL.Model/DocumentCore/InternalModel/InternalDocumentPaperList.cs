@@ -10,6 +10,7 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentPaperList : LastChangeInfo
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
         public DateTime Date { get; set; }
         public string Description { get; set; }
         public IEnumerable<InternalDocumentEvent> Events { get; set; }

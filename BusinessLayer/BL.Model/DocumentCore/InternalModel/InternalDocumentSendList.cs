@@ -9,6 +9,8 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentSendList : LastChangeInfo
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int? Stage { get; set; }
         public EnumStageTypes? StageType { get; set; }

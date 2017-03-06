@@ -3666,7 +3666,7 @@ namespace BL.Database.Common
 
                 dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterContains));
             }
-
+            //TODO DELETE or CLIENT
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 
         }

@@ -7,6 +7,8 @@ namespace BL.Model.DocumentCore.InternalModel
 {
     public class InternalDocumentTag : LastChangeInfo
     {
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         /// <summary>
         /// ИД документа
         /// </summary>

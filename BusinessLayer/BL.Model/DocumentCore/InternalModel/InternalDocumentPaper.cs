@@ -11,6 +11,8 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentPaper : LastChangeInfo, IReports
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

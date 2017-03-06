@@ -190,7 +190,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 templateDocumentId =
-                    dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Id == documentId)
+                    dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == documentId)
                         .Select(x => x.TemplateDocumentId)
                         .FirstOrDefault();
 
@@ -253,7 +253,7 @@ namespace BL.Database.Documents
                     IsForDocument = template.IsForDocument,
                     DocumentDirectionId = (int)template.DocumentDirection,
                     DocumentTypeId = template.DocumentTypeId,
-                    DocumentSubjectId = template.DocumentSubjectId,
+                    DocumentSubject = template.DocumentSubject,
                     Description = template.Description,
                     RegistrationJournalId = template.RegistrationJournalId,
                     SenderAgentId = template.SenderAgentId,
@@ -427,7 +427,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 //TODO: Уточнить безнес-логику, в каких случаях можно менять/удалять шаблон документа
-                var count = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Count(x => x.TemplateDocumentId == template.Id);
+                var count = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Count(x => x.TemplateDocumentId == template.Id);
                 transaction.Complete();
                 return count == 0;
             }

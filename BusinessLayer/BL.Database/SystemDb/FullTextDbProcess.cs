@@ -18,7 +18,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentClientId) ? dbContext.FullTextIndexCashSet.Where(x=>x.ClientId == ctx.CurrentClientId).Max(x => x.Id) : 0;
+                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentClientId) ? dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId).Max(x => x.Id) : 0;
                 transaction.Complete();
                 return res;
             }
@@ -37,8 +37,8 @@ namespace BL.Database.SystemDb
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.Id,
-                            ObjectType = (EnumObjects) x.ObjectType,
-                            OperationType = (EnumOperationType) x.OperationType,
+                            ObjectType = (EnumObjects)x.ObjectType,
+                            OperationType = (EnumOperationType)x.OperationType,
                             ClientId = ctx.CurrentClientId,
                             ObjectId = x.ObjectId,
                             ObjectText = ""
@@ -1527,24 +1527,25 @@ namespace BL.Database.SystemDb
 
                 foreach (var qry in qrys)
                 {
-                    if (qry.FilterType == EnamFilterType.Main)
-                    {
-                        qry.Query = IsDirectFilter 
-                            ? qry.Query.Where(x => (!idBeg.HasValue || x.ObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value)) 
-                            : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
-                    }
-                    else if (qry.FilterType == EnamFilterType.Slave)
-                    {
-                        qry.Query = IsDirectFilter 
-                            ? qry.Query.Where(x => (!idBeg.HasValue || x.ParentObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value)) 
-                            : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
-                    }
-                    else
-                    {
-                        qry.Query = IsDirectFilter 
-                            ? qry.Query.Where(x => (!idBeg.HasValue || x.FilterId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value)) 
-                            : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
-                    }
+                    if (idBeg.HasValue || idEnd.HasValue)
+                        if (qry.FilterType == EnamFilterType.Main)
+                        {
+                            qry.Query = IsDirectFilter
+                                ? qry.Query.Where(x => (!idBeg.HasValue || x.ObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value))
+                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
+                        }
+                        else if (qry.FilterType == EnamFilterType.Slave)
+                        {
+                            qry.Query = IsDirectFilter
+                                ? qry.Query.Where(x => (!idBeg.HasValue || x.ParentObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value))
+                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
+                        }
+                        else
+                        {
+                            qry.Query = IsDirectFilter
+                                ? qry.Query.Where(x => (!idBeg.HasValue || x.FilterId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value))
+                                : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
+                        }
                     res.AddRange(qry.Query.ToList());
                 }
                 transaction.Complete();

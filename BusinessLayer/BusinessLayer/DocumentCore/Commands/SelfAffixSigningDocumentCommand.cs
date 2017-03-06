@@ -43,6 +43,10 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _document = _operationDb.SelfAffixSigningDocumentPrepare(_context, Model.DocumentId);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             //_docWait = _document?.Waits.FirstOrDefault();
             //throw new CouldNotPerformOperation();
             //_operationDb.ControlOffSendListPrepare(_context, _document);

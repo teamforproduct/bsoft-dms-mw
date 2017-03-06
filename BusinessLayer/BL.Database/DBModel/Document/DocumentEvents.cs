@@ -56,7 +56,6 @@ namespace BL.Database.DBModel.Document
 
         [Index("IX_IsAvailableWithinTask", 1)]
         public bool IsAvailableWithinTask { get; set; }
-        public int? EventAccessId { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
 
         [Index("IX_ReadDate", 1)]

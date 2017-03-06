@@ -20,9 +20,15 @@ namespace BL.Database.Common
             return document == null ? null :
                 new DBModel.Document.Documents
                 {
+                    Id = document.Id,
+                    EntityTypeId = document.EntityTypeId,
+                    ClientId = document.ClientId,
+                    DocumentSubject = document.DocumentSubject,
                     TemplateDocumentId = document.TemplateDocumentId,
                     CreateDate = document.CreateDate,
                     DocumentSubjectId = document.DocumentSubjectId,
+                    DocumentTypeId = document.DocumentTypeId,
+                    DocumentDirectionId = (int)document.DocumentDirection,
                     Description = document.Description,
                     IsRegistered = document.IsRegistered,
                     RegistrationJournalId = document.RegistrationJournalId,
@@ -47,6 +53,9 @@ namespace BL.Database.Common
             return access == null ? null :
                 new DocumentAccesses
                 {
+                    Id = access.Id,
+                    EntityTypeId = access.EntityTypeId,
+                    ClientId = access.ClientId,
                     LastChangeDate = access.LastChangeDate,
                     LastChangeUserId = access.LastChangeUserId,
                     DocumentId = access.DocumentId,
@@ -67,6 +76,9 @@ namespace BL.Database.Common
             return evt == null ? null :
                 new DocumentEvents
                 {
+                    Id = evt.Id,
+                    EntityTypeId = evt.EntityTypeId,
+                    ClientId = evt.ClientId,
                     TaskId = evt.TaskId,
                     IsAvailableWithinTask = evt.IsAvailableWithinTask,
                     Description = evt.Description,
@@ -88,7 +100,7 @@ namespace BL.Database.Common
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
 
-                    Id = evt.Id,
+
                     PaperId = evt.PaperId,
                     PaperPlanAgentId = evt.PaperPlanAgentId,
                     PaperPlanDate = evt.PaperPlanDate,
@@ -112,6 +124,8 @@ namespace BL.Database.Common
                 new DocumentTasks
                 {
                     Id = task.Id,
+                    EntityTypeId = task.EntityTypeId,
+                    ClientId = task.ClientId,
                     Task = task.Name,
                     Description = task.Description,
                     DocumentId = task.DocumentId,
@@ -155,6 +169,8 @@ namespace BL.Database.Common
                 new DocumentWaits
                 {
                     Id = wait.Id,
+                    EntityTypeId = wait.EntityTypeId,
+                    ClientId = wait.ClientId,
                     AttentionDate = wait.AttentionDate,
                     DocumentId = wait.DocumentId,
                     DueDate = wait.DueDate ?? DateTime.MaxValue,
@@ -184,6 +200,9 @@ namespace BL.Database.Common
             return subscription == null ? null :
                 new DocumentSubscriptions
                 {
+                    Id = subscription.Id,
+                    EntityTypeId = subscription.EntityTypeId,
+                    ClientId = subscription.ClientId,
                     DocumentId = subscription.DocumentId,
                     LastChangeDate = subscription.LastChangeDate,
                     LastChangeUserId = subscription.LastChangeUserId,
@@ -210,6 +229,8 @@ namespace BL.Database.Common
                 new DocumentSendLists
                 {
                     Id = sendList.Id,
+                    EntityTypeId = sendList.EntityTypeId,
+                    ClientId = sendList.ClientId,
                     DocumentId = sendList.DocumentId,
                     Stage = sendList.Stage.Value,
                     SendTypeId = (int)sendList.SendType,
@@ -255,6 +276,9 @@ namespace BL.Database.Common
             return sendList == null ? null :
                 new DocumentRestrictedSendLists
                 {
+                    Id = sendList.Id,
+                    EntityTypeId = sendList.EntityTypeId,
+                    ClientId = sendList.ClientId,
                     PositionId = sendList.PositionId,
                     AccessLevelId = (int)sendList.AccessLevel,
                     LastChangeUserId = sendList.LastChangeUserId,
@@ -271,34 +295,33 @@ namespace BL.Database.Common
         public static DocumentFiles GetDbDocumentFile(InternalDocumentAttachedFile docFile)
         {
 
-            var res =
-             new DocumentFiles
-             {
-                 //ClientId = context.CurrentClientId,
-
-                 Id = docFile.Id,
-                 DocumentId = docFile.DocumentId,
-                 OrderNumber = docFile.OrderInDocument,
-                 Version = docFile.Version,
-                 Extension = docFile.Extension,
-                 Hash = docFile.Hash,
-                 FileType = docFile.FileType,
-                 FileSize = docFile.FileSize,
-                 TypeId = (int)docFile.Type,
-                 IsDeleted = docFile.IsDeleted,
-                 IsMainVersion = docFile.IsMainVersion,
-                 IsWorkedOut = docFile.IsWorkedOut,
-                 Description = docFile.Description,
-                 LastChangeDate = docFile.LastChangeDate,
-                 LastChangeUserId = docFile.LastChangeUserId,
-                 Name = docFile.Name,
-                 Date = docFile.Date,
-                 ExecutorPositionId = docFile.ExecutorPositionId,
-                 ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
-                 ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
-                 LastPdfAccessDate = docFile.LastPdfAccess,
-                 IsPdfCreated = docFile.PdfCreated,
-             };
+            var res = new DocumentFiles
+            {
+                Id = docFile.Id,
+                EntityTypeId = docFile.EntityTypeId,
+                ClientId = docFile.ClientId,
+                DocumentId = docFile.DocumentId,
+                OrderNumber = docFile.OrderInDocument,
+                Version = docFile.Version,
+                Extension = docFile.Extension,
+                Hash = docFile.Hash,
+                FileType = docFile.FileType,
+                FileSize = docFile.FileSize,
+                TypeId = (int)docFile.Type,
+                IsDeleted = docFile.IsDeleted,
+                IsMainVersion = docFile.IsMainVersion,
+                IsWorkedOut = docFile.IsWorkedOut,
+                Description = docFile.Description,
+                LastChangeDate = docFile.LastChangeDate,
+                LastChangeUserId = docFile.LastChangeUserId,
+                Name = docFile.Name,
+                Date = docFile.Date,
+                ExecutorPositionId = docFile.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
+                ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
+                LastPdfAccessDate = docFile.LastPdfAccess,
+                IsPdfCreated = docFile.PdfCreated,
+            };
 
             return res;
         }
@@ -314,6 +337,8 @@ namespace BL.Database.Common
                 new DocumentPapers
                 {
                     Id = item.Id,
+                    EntityTypeId = item.EntityTypeId,
+                    ClientId = item.ClientId,
                     DocumentId = item.DocumentId,
                     Name = item.Name,
                     Description = item.Description,
@@ -364,6 +389,7 @@ namespace BL.Database.Common
                 new DocumentPaperLists
                 {
                     Id = item.Id,
+                    ClientId = item.ClientId,
                     Date = item.Date,
                     Description = item.Description,
                     LastChangeDate = item.LastChangeDate,

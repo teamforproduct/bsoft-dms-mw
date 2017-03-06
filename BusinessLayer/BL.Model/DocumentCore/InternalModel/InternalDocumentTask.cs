@@ -10,6 +10,8 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentTask : LastChangeInfo
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int? PositionId { get; set; }
         public int PositionExecutorAgentId { get; set; }

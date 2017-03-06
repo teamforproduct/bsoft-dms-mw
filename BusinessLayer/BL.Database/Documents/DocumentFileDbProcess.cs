@@ -414,7 +414,6 @@ namespace BL.Database.Documents
                         Id = fileId,
                         IsDeleted = true,
                     };
-
                     dbContext.DocumentFilesSet.Attach(file);
                     var entry = dbContext.Entry(file);
 
