@@ -50,7 +50,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns>список должностей</returns>
         [HttpGet]
         [Route(Features.Assignments + "/Available")]
-        [ResponseType(typeof(List<FrontUserAssignments>))]
+        [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
         public IHttpActionResult GetAvailableShort()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
