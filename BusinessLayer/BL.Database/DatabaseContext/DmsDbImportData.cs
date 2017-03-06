@@ -1512,11 +1512,28 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryPositionExecutorTypes>();
 
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Personal, Code = EnumPositionExecutionTypes.Personal.ToString(), Name = "##l@PositionExecutionTypes:Personal@l##", Suffix = "##l@PositionExecutionTypes:Personal@l.Suffix##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.IO, Code = EnumPositionExecutionTypes.IO.ToString(), Name = "##l@PositionExecutionTypes:IO@l##", Suffix = "##l@PositionExecutionTypes:IO.Suffix@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Referent, Code = EnumPositionExecutionTypes.Referent.ToString(), Name = "##l@PositionExecutionTypes:Referent@l##", Suffix = "##l@PositionExecutionTypes:Referent.Suffix@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Personal));
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.IO));
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Referent));
 
             return items;
+        }
+
+        private static DictionaryPositionExecutorTypes GetDictionaryPositionExecutorType(EnumPositionExecutionTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string suffix = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Suffix");
+            return new DictionaryPositionExecutorTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                Description = description,
+                Suffix= suffix,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
         }
 
         public static List<DictionaryLinkTypes> GetDictionaryLinkTypes()

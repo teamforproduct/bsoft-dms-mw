@@ -122,6 +122,23 @@ namespace BL.Logic.AdminCore
             return res;
         }
 
+        // Диалог выбора должностей
+        public IEnumerable<FrontUserAssignmentsAvailableGroup> GetAvailablePositionsDialog(IContext context, List<int> PositionIDs = null)
+        {
+            var list = _adminDb.GetAvailablePositionsList(context, context.CurrentAgentId, PositionIDs);
+
+            var res = list.GroupBy(x => new { x.ExecutorTypeId, x.ExecutorTypeDescription })
+                .OrderBy(x => x.Key.ExecutorTypeId)
+                .Select(x => new FrontUserAssignmentsAvailableGroup
+                {
+                    ExecutorTypeId = x.Key.ExecutorTypeId,
+                    ExecutorTypeDescription = x.Key.ExecutorTypeDescription,
+                    Assignments = x.OrderBy(y => y.PositionName).ToList(),
+                });
+
+            return res;
+        }
+
         #region [+] Role ...
         //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
         //{

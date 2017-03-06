@@ -89,6 +89,8 @@
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissions.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontUserAssignmentsAvailableGroup.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontUserAssignmentsAvailable.cs" />
     <Compile Include="AdminCore\FrontModel\FrontFeature.cs" />
     <Compile Include="AdminCore\FrontModel\FrontPermissionValue.cs" />
     <Compile Include="AdminCore\FrontModel\FrontModule.cs" />

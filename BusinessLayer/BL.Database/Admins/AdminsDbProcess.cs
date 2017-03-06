@@ -201,6 +201,110 @@ namespace BL.Database.Admins
             }
         }
 
+
+        public IEnumerable<FrontUserAssignmentsAvailable> GetAvailablePositionsList(IContext ctx, int agentId, List<int> PositionIDs)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+
+                var now = DateTime.UtcNow;
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
+
+                if (PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+
+                    filterContains = PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                qry = qry.Where(x => x.AgentId == agentId && x.Position.ExecutorAgentId.HasValue && x.IsActive && now >= x.StartDate && now <= x.EndDate);
+
+                var res = qry.Select(x => new FrontUserAssignmentsAvailable
+                {
+                    PositionId = x.PositionId,
+                    PositionName = x.Position.Name,
+                    DepartmentName = x.Position.Department.Name,
+                    ExecutorName =  (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
+                    ExecutorTypeId = x.PositionExecutorType.Id,
+                    ExecutorTypeDescription =  x.PositionExecutorType.Description,
+                    ImageByteArray = x.Agent.Image,
+                }).ToList();
+
+                //IsLastChosen
+                try
+                {
+                    var lastPositionChose =
+                        dbContext.DictionaryAgentUsersSet.Where(x => x.Id == ctx.CurrentAgentId)
+                        .Select(x => x.LastPositionChose).FirstOrDefault()
+                        .Split(',').Select(n => Convert.ToInt32(n)).ToArray();
+
+                    res.Where(x => lastPositionChose.Contains(x.PositionId)).ToList().ForEach(x => x.IsLastChosen = true);
+                }
+                catch { };
+
+                var positionList = res.Select(s => s.PositionId).ToList();
+
+                var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                filterNewEventTargetPositionContains = positionList.Aggregate(filterNewEventTargetPositionContains,
+                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                                .Where(filterNewEventTargetPositionContains)
+                                .GroupBy(g => g.TargetPositionId)
+                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                var newevnt = neweventQry.ToList();
+
+                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                filterOnEventPositionsContains = positionList.Aggregate(filterOnEventPositionsContains,
+                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
+
+                var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                                .Where(x => !x.OffEventId.HasValue)
+                                .Where(filterOnEventPositionsContains)
+                                .GroupBy(y => new
+                                {
+                                    y.OnEvent.SourcePositionId,
+                                    y.OnEvent.TargetPositionId,
+                                    // IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
+                                    // DueDate = DbFunctions.TruncateTime(y.DueDate),
+                                })
+                                .Select(x => new
+                                {
+                                    Pos = x.Key,
+                                    ControlsCount = x.Count(),
+                                    OverdueControlsCount = x.Where(y => y.DueDate.HasValue && y.DueDate.Value < DateTime.UtcNow).Count(),
+                                    MinDueDate = x.Where(y => y.DueDate.HasValue).Min(y => y.DueDate),
+                                })
+                                ;
+                var wait = waitQry.ToList();
+
+                //res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
+                res.ForEach(x =>
+                {
+                    x.NewEventsCount = newevnt.Where(y => y.PosID == x.PositionId).Select(y => y.EvnCnt).FirstOrDefault();
+                    var t = wait.Where(y => y.Pos.SourcePositionId == x.PositionId || y.Pos.TargetPositionId == x.PositionId).GroupBy(y => 1)
+                        .Select(y => new
+                        {
+                            MinDueDate = y.Min(z => z.MinDueDate),
+                            ControlsCount = y.Sum(z => z.ControlsCount),
+                            OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
+                        }).FirstOrDefault();
+                    x.MinDueDate = t?.MinDueDate;
+                    x.ControlsCount = t?.ControlsCount ?? 0;
+                    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
+                });
+
+                transaction.Complete();
+                return res;
+            }
+        }
+        
+
         //public IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
         //{
         //    using (var dbContext = new DmsContext(ctx))
