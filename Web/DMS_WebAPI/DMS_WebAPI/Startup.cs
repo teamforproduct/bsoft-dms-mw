@@ -1,8 +1,8 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
+using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.Models;
@@ -10,7 +10,6 @@ using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
 using System.Collections.Generic;
-using BL.Logic.SystemServices.QueueWorker;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
