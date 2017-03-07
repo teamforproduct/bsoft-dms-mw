@@ -1,6 +1,4 @@
-﻿using BL.CrossCutting.Extensions;
-using BL.Logic.Common;
-using BL.Model.Common;
+﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
@@ -12,7 +10,7 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class BaseDictionaryPositionExecutorCommand : BaseDictionaryCommand
+    public class BasePositionExecutorCommand : BaseDictionaryCommand
     {
         private AddPositionExecutor Model { get { return GetModel<AddPositionExecutor>(); } }
 
@@ -42,7 +40,7 @@ namespace BL.Logic.DictionaryCore
             executor = PositionExecutors.FirstOrDefault();
 
             if (executor != null)
-            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName,  executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
+            { throw new DictionaryPositionExecutorNotUnique(executor.PositionName, executor.AgentName, executor.StartDate.ToString("dd.MM.yyyy HH:mm"), executor.EndDate.HasValue ? executor.EndDate.Value.ToString("dd.MM.yyyy HH:mm") : "-"); }
 
 
 
@@ -60,7 +58,7 @@ namespace BL.Logic.DictionaryCore
 
                     if (TypeModelIs<ModifyPositionExecutor>())
                     { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
-                    
+
                     // Personal может быть только один на должности за период
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
@@ -78,7 +76,7 @@ namespace BL.Logic.DictionaryCore
 
                     if (TypeModelIs<ModifyPositionExecutor>())
                     { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
-                    
+
                     // IO может быть только один на должности за период
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
@@ -97,7 +95,7 @@ namespace BL.Logic.DictionaryCore
 
                     if (TypeModelIs<ModifyPositionExecutor>())
                     { filter.NotContainsIDs = new List<int> { GetModel<ModifyPositionExecutor>().Id }; }
-                    
+
                     // Референтов может быть несколько может быть на должности за период
                     executor = _dictDb.GetPositionExecutors(_context, filter).FirstOrDefault();
 
@@ -132,5 +130,6 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         { throw new NotImplementedException(); }
+
     }
 }

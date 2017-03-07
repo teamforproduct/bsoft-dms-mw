@@ -198,13 +198,13 @@
     <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
     <Compile Include="DictionaryCore\DocumentType\BaseDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddUserPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\AddPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\BaseUserPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteUserPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteDictionaryPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\PositionExecutors\BaseDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\BasePositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\ModifyUserPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\PositionExecutors\ModifyDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\ModifyPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\AddDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\DeleteDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\ModifyDictionaryAgentClientCompanyCommand.cs" />
