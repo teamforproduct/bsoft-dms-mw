@@ -46,5 +46,11 @@
         /// </summary>
         public static int LICENCE_TRIAL_NUMBER_OF_CONNECTIONS = 2;
 
+        public static string PERMISSION_CASHE_KEY = @"PERMISSION_TABLE_CASHE";
+        public static string PERMISSION_ADMIN_ROLE_CASHE_KEY = @"PERMISSION_ADMIN_ROLE_TABLE_CASHE";
+        public static string ADMIN_ROLE_CASHE_KEY = @"ADMIN_ROLE_TABLE_CASHE";
+        public static string USER_ROLE_CASHE_KEY = @"USER_ROLE_TABLE_CASHE";
+        public static string DICT_POSITION_EXECUTOR_CASHE_KEY = @"DICT_POSITION_EXECUTOR_TABLE_CASHE";
+        public static string ACTION_CASHE_KEY = @"ACTION_TABLE_CASHE";
     }
 }

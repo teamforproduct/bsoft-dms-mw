@@ -19,13 +19,18 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using BL.CrossCutting.Helpers.CashService;
+using BL.Model.Constants;
 
 namespace BL.Database.SystemDb
 {
     public class SystemDbProcess : CoreDb.CoreDb, ISystemDbProcess
     {
-        public SystemDbProcess()
+        private readonly ICacheService _casheService;
+
+        public SystemDbProcess(ICacheService casheService)
         {
+            _casheService = casheService;
         }
 
         public void InitializerDatabase(IContext ctx)
@@ -262,11 +267,9 @@ namespace BL.Database.SystemDb
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
-
-
-
                 transaction.Complete();
-
+                _casheService.RefreshKey(context, SettingConstants.PERMISSION_CASHE_KEY);
+                _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
             }
 
         }
@@ -951,14 +954,6 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(context, dbContext, filter);
-
-                var actions = qry.Select(x => x.Id).ToList();
-
-                //if (actions.Count() > 0)
-                //{
-                //    dbContext.AdminRoleActionsSet.Where(x => actions.Contains(x.ActionId)).Delete();
-                //}
-
                 qry.Delete();
 
                 transaction.Complete();
@@ -996,9 +991,10 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.SystemActionsSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
+                _casheService.RefreshKey(context, SettingConstants.ACTION_CASHE_KEY);
             }
         }
 

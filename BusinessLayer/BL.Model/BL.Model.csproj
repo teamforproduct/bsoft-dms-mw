@@ -146,6 +146,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalSystemPermission.cs" />
     <Compile Include="Common\BaseFilterCodeName.cs" />
     <Compile Include="Common\BaseFilterName.cs" />
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
@@ -181,10 +182,10 @@
     <Compile Include="SystemCore\Filters\FilterSystemSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
-    <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
-    <Compile Include="AdminCore\InternalModel\InternalRole.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
     <Compile Include="AdminCore\WebUser\AddWebUser.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />

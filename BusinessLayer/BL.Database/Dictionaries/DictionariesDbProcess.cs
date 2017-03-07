@@ -24,16 +24,18 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using BL.Model.Constants;
+using BL.CrossCutting.Helpers.CashService;
 
 namespace BL.Database.Dictionaries
 {
     public class DictionariesDbProcess : CoreDb.CoreDb, IDictionariesDbProcess
     {
-        public DictionariesDbProcess()
+        private readonly ICacheService _casheService;
+        public DictionariesDbProcess(ICacheService casheService)
         {
+            _casheService = casheService;
         }
-
-        //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
 
         #region [+]Agents ...
 
@@ -5454,6 +5456,7 @@ namespace BL.Database.Dictionaries
         #region [+] PositionExecutors ...
         public int AddExecutor(IContext context, InternalDictionaryPositionExecutor executor)
         {
+            int res;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 DictionaryPositionExecutors dc = DictionaryModelConverter.GetDbExecutor(context, executor);
@@ -5463,8 +5466,10 @@ namespace BL.Database.Dictionaries
                 executor.Id = dc.Id;
                 UpdatePositionExecutor(context, new List<int> { dc.PositionId });
                 transaction.Complete();
-                return dc.Id;
+                res = dc.Id;
             }
+            _casheService.RefreshKey(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
+            return res;
         }
 
         public void UpdateExecutor(IContext context, InternalDictionaryPositionExecutor executor)
@@ -5479,6 +5484,7 @@ namespace BL.Database.Dictionaries
                 UpdatePositionExecutor(context, new List<int> { executor.PositionId });
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
         }
 
         public void DeleteExecutors(IContext context, List<int> list)

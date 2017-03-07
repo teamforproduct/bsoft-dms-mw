@@ -24,8 +24,6 @@ namespace BL.Database.DBModel.System
         [Index("IX_ModuleFeatureAccessType", 3, IsUnique = true)]
         public int AccessTypeId { get; set; }
 
-
-
         [ForeignKey("ModuleId")]
         public virtual SystemModules Module { get; set; }
 

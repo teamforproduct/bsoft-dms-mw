@@ -968,13 +968,18 @@ namespace BL.Model.Exception
         public EncryptionCertificateHasExpired() : base() { }
         public EncryptionCertificateHasExpired(System.Exception ex) : base(ex) { }
     }
+
     public class EncryptionCertificatePrivateKeyСanNotBeExported : DmsExceptions
     {
         public EncryptionCertificatePrivateKeyСanNotBeExported() : base() { }
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(ex) { }
     }
 
-
+    public class WrongCasheKey : DmsExceptions
+    {
+        public WrongCasheKey() : base() { }
+        public WrongCasheKey(System.Exception ex) : base(ex) { }
+    }
 
     //public class LockoutAgentUser : DmsExceptions
     //{
