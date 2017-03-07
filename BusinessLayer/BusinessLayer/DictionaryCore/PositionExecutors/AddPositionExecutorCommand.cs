@@ -1,5 +1,4 @@
 ﻿using BL.CrossCutting.Helpers;
-using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
@@ -10,16 +9,9 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyDictionaryPositionExecutorCommand : BaseUserPositionExecutorCommand
+    public class AddPositionExecutorCommand : BasePositionExecutorCommand
     {
-        private readonly IDocumentsDbProcess _docDb;
-
-        private ModifyPositionExecutor Model { get { return GetModel<ModifyPositionExecutor>(); } }
-
-        public ModifyDictionaryPositionExecutorCommand(IDocumentsDbProcess documentDb)
-        {
-            _docDb = documentDb;
-        }
+        private AddPositionExecutor Model { get { return GetModel<AddPositionExecutor>(); } }
 
         public override object Execute()
         {
@@ -30,15 +22,18 @@ namespace BL.Logic.DictionaryCore
             using (var transaction = Transactions.GetTransaction())
             {
 
-                _dictDb.UpdateExecutor(_context, model);
+                model.Id = _dictDb.AddExecutor(_context, model);
+
                 var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { model.Id } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
 
-                // Синхронизация параметров в UserRoles:
+                // При назначении сотрудника добавляю все роли должности
+                _adminService.AddAllPositionRoleForUser(_context, model);
                 transaction.Complete();
+
             }
 
-            return Model.Id;
+            return model.Id;
         }
     }
 }

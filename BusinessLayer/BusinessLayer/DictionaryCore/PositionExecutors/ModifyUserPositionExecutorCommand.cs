@@ -3,7 +3,7 @@ using BL.Model.Enums;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class ModifyUserPositionExecutorCommand : BaseDictionaryPositionExecutorCommand
+    public class ModifyUserPositionExecutorCommand : BaseUserPositionExecutorCommand
     {
         private ModifyPositionExecutor Model { get { return GetModel<ModifyPositionExecutor>(); } }
 

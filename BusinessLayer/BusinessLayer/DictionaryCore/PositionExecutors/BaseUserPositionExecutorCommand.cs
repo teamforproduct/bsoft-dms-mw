@@ -1,4 +1,5 @@
-﻿using BL.Model.DictionaryCore.FilterModel;
+﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -8,9 +9,11 @@ using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class BaseUserPositionExecutorCommand : BaseDictionaryPositionExecutorCommand
+    public class BaseUserPositionExecutorCommand : BaseDictionaryCommand
     {
         private AddPositionExecutor Model { get { return GetModel<AddPositionExecutor>(); } }
+
+        public override bool CanBeDisplayed(int positionId) => true;
 
         public override bool CanExecute()
         {
@@ -19,8 +22,6 @@ namespace BL.Logic.DictionaryCore
 
             // назначать самого себя нельзя
             if (Model.AgentId == _context.CurrentAgentId) throw new UserPositionExecutorIsIncorrect();
-
-            //var res = base.CanExecute();
 
             // делегировать можно только ту должность на которой назначен штатно
             var positionExecutor = _dictDb.GetInternalPositionExecutors(_context, new FilterDictionaryPositionExecutor
