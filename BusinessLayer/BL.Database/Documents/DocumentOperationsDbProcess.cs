@@ -487,6 +487,7 @@ namespace BL.Database.Documents
                     foreach (var docWait in document.Waits)
                     {
                         var wait = ModelConverter.GetDbDocumentWait(docWait);
+                        wait.OffEvent = null;
                         dbContext.DocumentWaitsSet.Attach(wait);
                         wait.OffEvent = offEvent;
                         var entry = dbContext.Entry(wait);
@@ -1909,7 +1910,7 @@ namespace BL.Database.Documents
             List<int> res;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var items = ModelConverter.GetDbDocumentRestrictedSendLists(model);
+                var items = ModelConverter.GetDbDocumentRestrictedSendLists(model).ToList();
                 dbContext.DocumentRestrictedSendListsSet.AddRange(items);
                 dbContext.SaveChanges();
                 res = items.Select(x => x.Id).ToList();
