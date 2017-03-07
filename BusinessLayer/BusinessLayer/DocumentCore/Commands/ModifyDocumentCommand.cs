@@ -66,7 +66,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.Description = Model.Description;
-            _document.DocumentSubjectId = Model.DocumentSubjectId;
+            _document.DocumentSubject = Model.DocumentSubject;
             _document.SenderAgentId = Model.SenderAgentId;
             _document.SenderAgentPersonId = Model.SenderAgentPersonId;
             _document.SenderNumber = Model.SenderNumber;

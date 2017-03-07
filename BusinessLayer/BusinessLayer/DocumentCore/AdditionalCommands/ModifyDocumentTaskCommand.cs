@@ -73,7 +73,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             if (_task.Name != Model.Name || _task.Description != Model.Description)
             {
-                Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, null, EnumEventTypes.TaskFormulation, null, Model.Name + " / " + Model.Description);
+                Document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, null, EnumEventTypes.TaskFormulation, null, Model.Name + " / " + Model.Description);
             }
             _task.Name = Model.Name;
             _task.Description = Model.Description;

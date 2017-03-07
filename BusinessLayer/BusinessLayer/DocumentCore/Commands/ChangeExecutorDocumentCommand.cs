@@ -98,9 +98,9 @@ namespace BL.Logic.DocumentCore.Commands
             _document.ExecutorPositionId = Model.PositionId;
             _document.AccessLevel = Model.AccessLevel;
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, false, Model.PositionId);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, false, Model.PositionId);
 
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.PositionId);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.PositionId);
 
             if (Model.PaperEvents?.Any() ?? false)
             {
@@ -110,7 +110,7 @@ namespace BL.Logic.DocumentCore.Commands
                     if (paper != null)
                     {
                         paper.LastPaperEventId = null;
-                        paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context,
+                        paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, (int)EnumEntytiTypes.Document,
                             paper.DocumentId, paper.Id,
                             EnumEventTypes.MoveDocumentPaper, model.Description, Model.PositionId, null,
                             paper.LastPaperEvent.SourcePositionId, null, true, false);

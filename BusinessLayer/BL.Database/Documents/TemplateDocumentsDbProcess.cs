@@ -53,12 +53,9 @@ namespace BL.Database.Documents
                         (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
-                if (filter.DocumentSubjectId?.Count() > 0)
+                if (!String.IsNullOrEmpty(filter.DocumentSubject))
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                    filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
-                    qry = qry.Where(filterContains);
+                    qry = qry.Where(x => x.Description.Contains(filter.DocumentSubject));
                 }
                 if (filter.RegistrationJournalId?.Count() > 0)
                 {
@@ -220,8 +217,7 @@ namespace BL.Database.Documents
                             DocumentTypeId = x.DocumentTypeId,
                             DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
-                            DocumentSubjectId = x.DocumentSubjectId,
-                            DocumentSubjectName = x.DocumentSubject,
+                            DocumentSubject = x.DocumentSubject,
                             RegistrationJournalId = x.RegistrationJournalId,
                             RegistrationJournalName = x.RegistrationJournal.Name,
                             SenderAgentId = x.SenderAgentId,
@@ -307,7 +303,7 @@ namespace BL.Database.Documents
                         IsForDocument = x.IsForDocument,
                         DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                         DocumentTypeId = x.DocumentTypeId,
-                        DocumentSubjectId = x.DocumentSubjectId,
+                        DocumentSubject = x.DocumentSubject,
                         Description = x.Description,
                         RegistrationJournalId = x.RegistrationJournalId,
                         SenderAgentId = x.SenderAgentId,
@@ -350,6 +346,8 @@ namespace BL.Database.Documents
                 doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateAttachedFile
                     {
+                        ClientId = x.Document.ClientId,
+                        EntityTypeId = x.Document.EntityTypeId,
                         DocumentId = x.DocumentId,
                         Extension = x.Extention,
                         Name = x.Name,
@@ -1356,6 +1354,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalTemplateAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.Document.ClientId,
+                            EntityTypeId = x.Document.EntityTypeId,
                             DocumentId = x.DocumentId,
                             OrderInDocument = x.OrderNumber,
                             Type = (EnumFileTypes)x.TypeId,
@@ -1417,6 +1417,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalTemplateAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.Document.ClientId,
+                            EntityTypeId = x.Document.EntityTypeId,
                             DocumentId = x.DocumentId,
                             OrderInDocument = x.OrderNumber
                         }).FirstOrDefault();

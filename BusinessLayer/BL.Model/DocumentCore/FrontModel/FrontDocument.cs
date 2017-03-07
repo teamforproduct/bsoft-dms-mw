@@ -22,7 +22,7 @@ namespace BL.Model.DocumentCore.FrontModel
             if (model != null)
             {
                 Id = model.Id;
-                DocumentSubjectId = model.DocumentSubjectId;
+                DocumentSubject = model.DocumentSubject;
                 Description = model.Description;
                 SenderAgentId = model.SenderAgentId;
                 SenderAgentPersonId = model.SenderAgentPersonId;
@@ -88,8 +88,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// ИД Документа
         /// </summary>
         public int Id { get; set; }
-
-        public int? DocumentSubjectId { get; set; }
+        /// <summary>
+        /// Тема документа
+        /// </summary>
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Краткое содержание
         /// </summary>
@@ -125,7 +127,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string DocumentDirectionName { get; set; }
         public string DocumentTypeName { get; set; }
 
-        public string DocumentSubjectName { get; set; }
         public string RegistrationJournalName { get; set; }
 
         public int? ExecutorPositionId { get; set; }

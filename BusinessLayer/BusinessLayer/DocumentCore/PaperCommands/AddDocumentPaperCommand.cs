@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, Model, _document.MaxPaperOrderNumber ?? 0);
+            _document.Papers = CommonDocumentUtilities.GetNewDocumentPapers(_context, (int)EnumEntytiTypes.Document, Model, _document.MaxPaperOrderNumber ?? 0);
             return _operationDb.AddDocumentPapers(_context, _document.Papers).ToList();
         }
 

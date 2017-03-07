@@ -64,7 +64,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsLaunchPlan = true;
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.LaunchPlan);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.LaunchPlan);
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
 
             DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);

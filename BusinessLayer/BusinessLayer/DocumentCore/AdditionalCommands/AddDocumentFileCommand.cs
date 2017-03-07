@@ -121,6 +121,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
                 var att = new InternalDocumentAttachedFile
                 {
+                    ClientId = _document.ClientId,
+                    EntityTypeId = _document.EntityTypeId,
                     DocumentId = Model.DocumentId,
                     Date = DateTime.UtcNow,
                     PostedFileData = Model.PostedFileData,
@@ -160,7 +162,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 CommonDocumentUtilities.SetLastChange(_context, att);
                 if (_document.IsRegistered.HasValue)
                 {
-                    att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, att.DocumentId,
+                    att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
                         EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false,
                         att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
                 }

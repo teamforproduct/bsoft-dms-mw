@@ -20,11 +20,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Название типа документа
         /// </summary>
         public string DocumentTypeName { get; set; }
-        
-        /// <summary>
-        /// Название тематики документа
-        /// </summary>
-        public string DocumentSubjectName { get; set; }
+       
 
         /// <summary>
         /// Название журнала регистрации

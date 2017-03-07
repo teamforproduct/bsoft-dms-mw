@@ -1908,13 +1908,13 @@ namespace BL.Database.Admins
             }
             var now = DateTime.UtcNow;
             var qry = dbContext.SystemPermissionsSet.Where(x => x.RolePermissions.AsQueryable()
-                .Where(filterRoles)
-                .Any(y => y.Role.UserRoles.AsQueryable()
-                            .Where(z => z.PositionExecutor.AgentId == filter.UserId
-                            && z.PositionExecutor.IsActive
-                            && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate)
-                            .Where(filterPositions)
-                            .Any()));
+                                                                    .Where(filterRoles)
+                                                                    .Any(y => y.Role.UserRoles.AsQueryable()
+                                                                                .Where(z => z.PositionExecutor.AgentId == filter.UserId
+                                                                                && z.PositionExecutor.IsActive
+                                                                                && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate)
+                                                                                .Where(filterPositions)
+                                                                                .Any()));
             if (filter.PermissionIDs?.Count() > 0)
             {
                 var filterContains = PredicateBuilder.False<SystemPermissions>();

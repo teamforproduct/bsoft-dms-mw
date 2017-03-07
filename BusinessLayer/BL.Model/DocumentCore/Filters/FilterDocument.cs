@@ -53,9 +53,9 @@ namespace BL.Model.DocumentCore.Filters
         public DateTime? CreateToDate { get { return _CreateToDate; } set { _CreateToDate = value.ToUTC(); } }
         private DateTime? _CreateToDate;
         /// <summary>
-        /// Массив ИД тематик документов
+        /// Отрывок тематики документа
         /// </summary>
-        public List<int> DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Отрывок краткого содержания
         /// </summary>

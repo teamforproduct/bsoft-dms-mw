@@ -20,9 +20,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int Id { get; set; }
         /// <summary>
-        /// ИД Тематики документа
+        /// Тематика документа
         /// </summary>
-        public int? DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Краткое содержание
         /// </summary>

@@ -61,6 +61,8 @@ namespace BL.Logic.DocumentCore.PaperCommands
                     Events = x.Select(y => new InternalDocumentEvent
                     {
                         Id = y.Id,
+                        ClientId = y.ClientId,
+                        EntityTypeId = y.EntityTypeId,
                         LastChangeDate = DateTime.UtcNow,
                         LastChangeUserId = _context.CurrentAgentId,
                     }).ToList()

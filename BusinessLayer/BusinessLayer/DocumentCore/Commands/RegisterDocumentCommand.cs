@@ -77,7 +77,7 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.IsRegistered = Model.IsRegistered;
                 _document.RegistrationDate = Model.RegistrationDate;
 
-                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.Registered);
+                _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.Registered);
 
 
                 bool isNeedGenerateNumber;

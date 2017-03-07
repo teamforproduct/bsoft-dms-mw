@@ -99,6 +99,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             var docFile = new InternalDocumentAttachedFile
             {
+                ClientId = _document.ClientId,
+                EntityTypeId = _document.EntityTypeId,
                 DocumentId = Model.DocumentId,
                 OrderInDocument = Model.OrderInDocument,
                 Version = Model.Version ?? 0,

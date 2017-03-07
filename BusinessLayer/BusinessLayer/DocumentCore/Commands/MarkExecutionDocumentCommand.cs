@@ -76,9 +76,9 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, EnumEventTypes.MarkExecution, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.MarkExecution, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
 
-            var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, _document.Id, newEvent);
+            var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, (int)EnumEntytiTypes.Document, _document.Id, newEvent);
 
             newWait.ParentId = _docWait.Id;
 

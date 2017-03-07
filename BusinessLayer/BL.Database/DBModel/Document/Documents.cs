@@ -38,7 +38,7 @@ namespace BL.Database.DBModel.Document
 
         [Index("IX_CreateDate",1)]
         public DateTime CreateDate { get; set; }
-        public Nullable<int> DocumentSubjectId { get; set; }
+//        public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
         public string DocumentSubject { get; set; }
         [MaxLength(2000)]
