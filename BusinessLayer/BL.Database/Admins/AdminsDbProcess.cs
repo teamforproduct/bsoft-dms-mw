@@ -306,71 +306,7 @@ namespace BL.Database.Admins
                 return res;
             }
         }
-        
-
-        //public IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
-        //{
-        //    using (var dbContext = new DmsContext(ctx))
-        //    using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
-
-        //        if (filter.IDs?.Count > 0)
-        //        {
-        //            var filterContains = PredicateBuilder.False<AdminUserRoles>();
-        //            filterContains = filter.IDs.Aggregate(filterContains,
-        //                (current, value) => current.Or(e => e.Id == value).Expand());
-
-        //            qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
-        //        }
-        //        if (filter.UserIDs?.Count > 0)
-        //        {
-        //            var filterContains = PredicateBuilder.False<AdminUserRoles>();
-        //            filterContains = filter.UserIDs.Aggregate(filterContains,
-        //                (current, value) => current.Or(e => e.UserId == value).Expand());
-
-        //            qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
-        //        }
-        //        if (filter.RoleIDs?.Count > 0)
-        //        {
-        //            var filterContains = PredicateBuilder.False<AdminPositionRoles>();
-        //            filterContains = filter.RoleIDs.Aggregate(filterContains,
-        //                (current, value) => current.Or(e => e.RoleId == value).Expand());
-
-        //            qry = qry.Where(filterContains);
-        //        }
-
-        //        var res = qry.Select(x => new FrontAdminUserRole
-        //        {
-        //            RolePositionId = x.PositionId,
-        //            RolePositionName = x.Position.Name,
-        //            RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name
-        //        }).Distinct().ToList();
-
-        //        var roleList = res.Select(s => s.RolePositionId).ToList();
-
-        //        var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-        //        filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
-        //            (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-
-        //        var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-        //                        .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
-        //                        .Where(filterNewEventTargetPositionContains)
-        //                        .GroupBy(g => g.TargetPositionId)
-        //                        .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
-        //        var newevnt = neweventQry.ToList();
-
-        //        res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
-
-        //        //TODO
-        //        //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
-        //        //{
-        //        //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
-        //        //}
-        //        transaction.Complete();
-        //        return res;
-        //    }
-        //}
+ 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return null;
@@ -2006,7 +1942,7 @@ namespace BL.Database.Admins
             if (permiss == null || adminPermiss == null || adminRole == null || userRole == null || dictPos == null) throw new KeyNotFoundException();
 
             var fltRoles = userRole.AsQueryable();
-            if (filter.RoleIDs.Any())
+            if (filter.RoleIDs!=null && filter.RoleIDs.Any())
             {
                 fltRoles = fltRoles.Where(x => filter.RoleIDs.Contains(x.RoleId));
             }
@@ -2014,13 +1950,13 @@ namespace BL.Database.Admins
             var now = DateTime.UtcNow;
 
             var dictFlt =dictPos.Where(x => x.AgentId == filter.UserId && x.IsActive && now >= x.StartDate && now <= x.EndDate);
-            if (filter.PositionsIdList.Any())
+            if (filter.PositionsIdList!=null && filter.PositionsIdList.Any())
             {
                 dictFlt = dictFlt.Where(x => filter.PositionsIdList.Contains(x.PositionId));
             }
 
             var fltPermiss = permiss.AsQueryable();
-            if (filter.PermissionIDs.Any())
+            if (filter.PermissionIDs!=null && filter.PermissionIDs.Any())
             {
                 fltPermiss = fltPermiss.Where(x => filter.PermissionIDs.Contains(x.Id));
             }
