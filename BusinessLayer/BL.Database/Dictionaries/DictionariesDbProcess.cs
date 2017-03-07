@@ -5913,13 +5913,13 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
-                dbContext.DictionaryRegistrationJournalsSet.Add(drj);
+                var dbModel = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
+                dbContext.DictionaryRegistrationJournalsSet.Add(dbModel);
                 dbContext.SaveChanges();
-                regJournal.Id = drj.Id;
-                CommonQueries.AddFullTextCashInfo(context, dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
+                regJournal.Id = dbModel.Id;
+                CommonQueries.AddFullTextCashInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
                 transaction.Complete();
-                return drj.Id;
+                return dbModel.Id;
             }
         }
 
@@ -5927,12 +5927,12 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                DictionaryRegistrationJournals drj = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
-                dbContext.DictionaryRegistrationJournalsSet.Attach(drj);
-                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                var dbModel = DictionaryModelConverter.GetDbRegistrationJournal(context, regJournal);
+                dbContext.DictionaryRegistrationJournalsSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(context, dbContext, drj.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
