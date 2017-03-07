@@ -41,11 +41,6 @@ namespace DMS_WebAPI.ControllersV3.User
             return res;
         }
 
-
-
-
-
-
         ///// <summary>
         ///// Возвращает отпечаток по Id
         ///// </summary>

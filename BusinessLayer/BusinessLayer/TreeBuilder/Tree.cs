@@ -150,7 +150,7 @@ namespace BL.Logic.TreeBuilder
 
                     if (existsIdFilter & addToSafeList)
                     {
-                        addToSafeList = filter.DicIDs.Any(x=>x.Key == (EnumObjects)item.ObjectId && x.Value == item.Id);
+                        addToSafeList = filter.DicIDs.Any(x=>x.Key == (EnumObjects)item.ObjectId && x.Value.Contains(item.Id));
                     }
 
                     if (addToSafeList) safeList.AddRange(item.Path.Split('/'));

@@ -206,7 +206,8 @@ namespace BL.Database.Documents
                                 filterContains = docIds.Aggregate(filterContains,
                                     (current, value) => current.Or(e => e.Id == value).Expand());
 
-                                qry = dbContext.DocumentsSet.Where(filterContains);
+                                qry = dbContext.DocumentsSet.Where(filterContains)
+                                        .OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id); ;
                             }
                             else
                             {
@@ -338,7 +339,7 @@ namespace BL.Database.Documents
                     if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId != null && filter.Document.DocumentId.Count > 0)
                     {
                         docs = docs.OrderBy(x => filter.Document.DocumentId.IndexOf(x.Id)).ToList();
-                    }
+                    }                    
                     //else if (filter?.FullTextSearchSearch?.FullTextSearchId != null && filter.FullTextSearchSearch.FullTextSearchId.Any())
                     //{
                     //    docs = docs.OrderBy(x => filter.FullTextSearchSearch.FullTextSearchId.IndexOf(x.Id)).ToList();

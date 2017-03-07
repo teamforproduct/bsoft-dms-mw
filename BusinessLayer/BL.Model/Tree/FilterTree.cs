@@ -42,7 +42,7 @@ namespace BL.Model.Tree
         /// Сужение по списку Id
         /// </summary>
         [IgnoreDataMember]
-        public Dictionary<EnumObjects, int> DicIDs { get; set; }
+        public Dictionary<EnumObjects, List<int>> DicIDs { get; set; }
 
         /// <summary>
         /// Только активные

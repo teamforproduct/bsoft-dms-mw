@@ -14,6 +14,7 @@ using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 using BL.Model.SystemCore;
+using BL.Model.Exception;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -218,7 +219,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                 if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                 if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                searchResult.AddRange(GetQueryResult(boolQry));
+                searchResult.AddRange(GetQueryResult(text,boolQry));
 
                 foreach (var access in filter.Accesses)
                 {
@@ -233,7 +234,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                     if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                     if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                    searchResult.AddRange(GetQueryResult(boolQry));
+                    searchResult.AddRange(GetQueryResult(text,boolQry));
                 }
                 return searchResult;
             }
@@ -249,14 +250,16 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                 if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                 if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                searchResult.AddRange(GetQueryResult(boolQry));
+                searchResult.AddRange(GetQueryResult(text,boolQry));
                 return searchResult;
             }
         }
 
-        private List<FullTextSearchResult> GetQueryResult(BooleanQuery boolQry)
+        private List<FullTextSearchResult> GetQueryResult(string text, BooleanQuery boolQry)
         {
             var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
+            if (qryRes.TotalHits >= MAX_DOCUMENT_COUNT_RETURN)
+                throw new SystemFullTextTooManyResults(text);
 
             //foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
             //{

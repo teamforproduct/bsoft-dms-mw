@@ -152,10 +152,10 @@ namespace BL.Model.Exception
         public UserCouldNotBeDeleted(System.Exception ex) : base(ex) { }
     }
 
-    public class UserUserPositionExecutorIsIncorrect : DmsExceptions
+    public class UserPositionExecutorIsIncorrect : DmsExceptions
     {
-        public UserUserPositionExecutorIsIncorrect() : base() { }
-        public UserUserPositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
+        public UserPositionExecutorIsIncorrect() : base() { }
+        public UserPositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
     public class RoleNameAlreadyExists : DmsExceptions
@@ -975,6 +975,14 @@ namespace BL.Model.Exception
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(ex) { }
     }
 
+    /// <summary>
+    /// Ошибка возникает, если в полнотекстовом поиске введена комбинация, возвращающая много результатов
+    /// </summary>
+    public class SystemFullTextTooManyResults : DmsExceptions
+    {
+        public SystemFullTextTooManyResults(string word) : base() { Parameters = new List<string> { word }; }
+        public SystemFullTextTooManyResults(System.Exception ex) : base(ex) { }
+    }
     public class WrongCasheKey : DmsExceptions
     {
         public WrongCasheKey() : base() { }
