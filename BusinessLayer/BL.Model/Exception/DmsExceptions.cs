@@ -974,7 +974,14 @@ namespace BL.Model.Exception
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(ex) { }
     }
 
-
+    /// <summary>
+    /// Ошибка возникает, если в полнотекстовом поиске введена комбинация, возвращающая много результатов
+    /// </summary>
+    public class SystemFullTextTooManyResults : DmsExceptions
+    {
+        public SystemFullTextTooManyResults(string word) : base() { Parameters = new List<string> { word }; }
+        public SystemFullTextTooManyResults(System.Exception ex) : base(ex) { }
+    }
 
     //public class LockoutAgentUser : DmsExceptions
     //{

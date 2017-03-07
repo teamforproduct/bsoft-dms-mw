@@ -1335,7 +1335,7 @@ namespace BL.Database.Documents
                         TagId = x,
                         LastChangeUserId = model.LastChangeUserId,
                         LastChangeDate = model.LastChangeDate
-                    });
+                    }).ToList();
 
                 dbContext.DocumentTagsSet.AddRange(newDictionaryTags);
 
