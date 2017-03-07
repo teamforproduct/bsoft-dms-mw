@@ -5958,6 +5958,10 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Name);
 
+                var incom = EnumDocumentDirections.Incoming.GetHashCode().ToString();
+                var outcom = EnumDocumentDirections.Outcoming.GetHashCode().ToString();
+                var intern = EnumDocumentDirections.Internal.GetHashCode().ToString();
+
                 var res = qry.Select(x => new InternalDictionaryRegistrationJournal
                 {
                     Id = x.Id,
@@ -5968,9 +5972,9 @@ namespace BL.Database.Dictionaries
                     NumerationPrefixFormula = x.NumerationPrefixFormula,
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
-                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
-                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
-                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
+                    IsIncoming = x.DirectionCodes.Contains(incom),
+                    IsOutcoming = x.DirectionCodes.Contains(outcom),
+                    IsInternal = x.DirectionCodes.Contains(intern),
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
                 }).ToList();
@@ -5992,6 +5996,10 @@ namespace BL.Database.Dictionaries
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
 
+                var incom = EnumDocumentDirections.Incoming.GetHashCode().ToString();
+                var outcom = EnumDocumentDirections.Outcoming.GetHashCode().ToString();
+                var intern = EnumDocumentDirections.Internal.GetHashCode().ToString();
+
                 var res = qry.Select(x => new FrontDictionaryRegistrationJournal
                 {
                     Id = x.Id,
@@ -6002,9 +6010,9 @@ namespace BL.Database.Dictionaries
                     PrefixFormula = x.PrefixFormula,
                     SuffixFormula = x.SuffixFormula,
                     NumerationPrefixFormula = x.NumerationPrefixFormula,
-                    IsIncoming = x.DirectionCodes.Contains(EnumDocumentDirections.Incoming.ToString()),
-                    IsOutcoming = x.DirectionCodes.Contains(EnumDocumentDirections.Outcoming.ToString()),
-                    IsInternal = x.DirectionCodes.Contains(EnumDocumentDirections.Internal.ToString()),
+                    IsIncoming = x.DirectionCodes.Contains(incom),
+                    IsOutcoming = x.DirectionCodes.Contains(outcom),
+                    IsInternal = x.DirectionCodes.Contains(intern),
                     DepartmentName = x.Department.Name
                 }).ToList();
 

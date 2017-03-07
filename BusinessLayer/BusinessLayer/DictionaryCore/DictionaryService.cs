@@ -813,7 +813,6 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryRegistrationJournals
         public FrontDictionaryRegistrationJournal GetRegistrationJournal(IContext context, int id)
         {
-
             return _dictDb.GetRegistrationJournals(context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { id } }, null, null).FirstOrDefault();
         }
 
