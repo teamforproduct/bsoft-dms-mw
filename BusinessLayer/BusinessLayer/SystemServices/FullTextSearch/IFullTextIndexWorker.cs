@@ -16,6 +16,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void UpdateItem(FullTextIndexItem item);
 
         IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter);
+        IEnumerable<FullTextSearchResult> SearchItems2(string text, int clientId, FullTextSearchFilter filter);
 
         void DeleteAllDocuments(int clientId);
     }

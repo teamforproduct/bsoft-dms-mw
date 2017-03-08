@@ -212,7 +212,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             int? moduleId = (filter?.Module == null) ? (int?)null : Modules.GetId(filter?.Module);
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
                         .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
-            var res = GetWorker(ctx)?.SearchItems(text, ctx.CurrentClientId, filter).Where(x => perm.Contains(x.FeatureId));
+            var res = GetWorker(ctx)?.SearchItems2(text, ctx.CurrentClientId, filter).Where(x => perm.Contains(x.FeatureId));
             return res;
         }
 

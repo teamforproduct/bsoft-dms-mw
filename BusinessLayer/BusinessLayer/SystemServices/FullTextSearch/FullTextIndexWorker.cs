@@ -147,6 +147,78 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _searcher = new IndexSearcher(_indexReader);
         }
 
+        public IEnumerable<FullTextSearchResult> SearchItems2(string text, int clientId, FullTextSearchFilter filter)
+        {
+            var searchResult = new List<FullTextSearchResult>();
+
+            text = text.Trim();
+
+            var arr = text.Split(' ').ToList();
+            arr.ForEach(x => x.Trim());
+
+            arr.RemoveAll(string.IsNullOrEmpty);
+
+            var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
+
+            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer) { AllowLeadingWildcard = true };
+            var textQry = parser.Parse(qryString);
+            var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
+            var boolQry = new BooleanQuery();
+            boolQry.Add(textQry, Occur.MUST);
+            boolQry.Add(clientQry, Occur.MUST);
+
+            if (filter.ParentObjectType.HasValue)
+            {
+                var parentQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)filter.ParentObjectType.Value, (int)filter.ParentObjectType.Value, true, true);
+                boolQry.Add(parentQry, Occur.MUST);
+            }
+
+            if (filter.ObjectType.HasValue)
+            {
+                var objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true);
+                boolQry.Add(objQry, Occur.MUST);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Module))
+            {
+                var moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module), Modules.GetId(filter.Module), true, true);
+                boolQry.Add(moduleQry, Occur.MUST);
+            }
+
+            if (!string.IsNullOrEmpty(filter.Feature))
+            {
+                var featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, Features.GetId(filter.Feature), Features.GetId(filter.Feature), true, true);
+                boolQry.Add(featureQry, Occur.MUST);
+            }
+
+            if (filter.IsOnlyActual)
+            {
+                var currDat = (int)DateTime.Now.ToOADate();
+                var fromDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
+                var maxDate = (int)DateTime.Now.AddYears(20).ToOADate();
+                var toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
+                boolQry.Add(fromDat, Occur.MUST);
+                boolQry.Add(toDat, Occur.MUST);
+            }
+
+            if (filter.Accesses != null && filter.Accesses.Any())
+            {
+                var scrParser = new QueryParser(Version.LUCENE_30, FIELD_SECURITY_ID, _analyzer) { AllowLeadingWildcard = true };
+                var scrEmpty = scrParser.Parse(NO_RULES_VALUE);
+                var boolScr = new BooleanQuery();
+                boolScr.Add(scrEmpty, Occur.SHOULD);
+                foreach (var access in filter.Accesses)
+                {
+                    var scrRule = scrParser.Parse($"*v{access}v*");
+                    boolScr.Add(scrRule, Occur.SHOULD);
+                }
+                boolQry.Add(boolScr, Occur.MUST);
+            }
+            searchResult = GetQueryResult(text, boolQry);
+
+            return searchResult;
+        }
+
         public IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter)
         {
             var searchResult = new List<FullTextSearchResult>();
@@ -168,28 +240,24 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (filter.ParentObjectType.HasValue)
             {
                 parentQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)filter.ParentObjectType.Value, (int)filter.ParentObjectType.Value, true, true);
-                
             }
 
             NumericRangeQuery<int> objQry = null;
             if (filter.ObjectType.HasValue)
             {
                 objQry = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)filter.ObjectType.Value, (int)filter.ObjectType.Value, true, true);
-                
             }
 
             NumericRangeQuery<int> moduleQry = null;
             if (!string.IsNullOrEmpty(filter.Module))
             {
                 moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module),  Modules.GetId(filter.Module), true, true);
-                
             }
 
             NumericRangeQuery<int> featureQry = null;
             if (!string.IsNullOrEmpty(filter.Feature))
             {
                 featureQry = NumericRangeQuery.NewIntRange(FIELD_FEATURE_ID, Features.GetId(filter.Feature), Features.GetId(filter.Feature), true, true);
-                
             }
 
             NumericRangeQuery<int> fromDat = null;
@@ -257,32 +325,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         private List<FullTextSearchResult> GetQueryResult(string text, BooleanQuery boolQry)
         {
-            var qryRes = _searcher.Search(boolQry, MAX_DOCUMENT_COUNT_RETURN);
+            var sort = new Sort(SortField.FIELD_SCORE, new SortField(FIELD_PARENT_ID, SortField.INT, true));
+
+            var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN, sort);
+           //var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN);
             if (qryRes.TotalHits >= MAX_DOCUMENT_COUNT_RETURN)
                 throw new SystemFullTextTooManyResults(text);
 
-            //foreach (var doc in qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score))
-            //{
-            //    try
-            //    {
-            //        var rdoc = _searcher.Doc(doc.Doc);
-            //        var sr = new FullTextSearchResult
-            //        {
-            //            ParentId = Convert.ToInt32(rdoc.Get(FIELD_PARENT_ID)),
-            //            ParentObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_PARENT_TYPE)),
-            //            ObjectType = (EnumObjects) Convert.ToInt32(rdoc.Get(FIELD_OBJECT_TYPE)),
-            //            ObjectId = Convert.ToInt32(rdoc.Get(FIELD_OBJECT_ID)),
-            //            ModuleId = Convert.ToInt32(rdoc.Get(FIELD_MODULE_ID)),
-            //            FeatureId = Convert.ToInt32(rdoc.Get(FIELD_FEATURE_ID)),
-            //            Score = doc.Score
-            //        };
-            //        res.Add(sr);
-            //    }
-            //    catch
-            //    {
-            //        // ignored
-            //    }
-            //}
             return qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score).AsParallel()
                 .Select(doc => new {doc, luc = _searcher.Doc(doc.Doc)})
                 .Select(rdoc => new FullTextSearchResult
