@@ -18,9 +18,11 @@ namespace BL.Model.SystemCore
         /// По умолчанию 25
         /// </summary>
         public int PageSize { get; set; } = 25;
-
+        /// <summary>
+        /// Количество записей
+        /// </summary>
         [XmlIgnore]
-        public int TotalItemsCount { get; set; }
+        public int? TotalItemsCount { get; set; }
 
         /// <summary>
         /// Пагинация. Вернуть все данные не применяя пейджинга
@@ -34,7 +36,9 @@ namespace BL.Model.SystemCore
         /// По умолчанию null
         /// </summary>
         public bool? IsOnlyCounter { get; set; }
-
+        /// <summary>
+        /// Второстепенные счетчики
+        /// </summary>
         [XmlIgnore]
         public UICounters Counters { get; set; }
 

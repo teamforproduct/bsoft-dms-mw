@@ -100,6 +100,17 @@ namespace BL.Database.Documents
                 }
                 #endregion main qry
 
+                #region Position filters for counters preparing
+                var filterAccessPositionsContains = PredicateBuilder.False<DocumentAccesses>();
+                filterAccessPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterAccessPositionsContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
+                filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+
+                var filterNewEventContains = PredicateBuilder.New<DocumentEvents>();
+                filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains, (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                #endregion Position filters for counters preparing
+
                 #region Paging
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
                 {
@@ -148,7 +159,7 @@ namespace BL.Database.Documents
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
                         var docTags = dbContext.DocumentTagsSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId))
-                            .Select(x => new InternalDocumentTag { DocumentId= x.DocumentId, TagId = x.TagId }).ToList();
+                            .Select(x => new InternalDocumentTag { DocumentId = x.DocumentId, TagId = x.TagId }).ToList();
                         var tagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
                         {
                             TagId = x.Id,
@@ -158,8 +169,8 @@ namespace BL.Database.Documents
                             Name = x.Name,
                             IsSystem = !x.PositionId.HasValue,
                         }).ToList();
-                        tagCounters.ForEach(x=> x.DocCount = docTags.Where(y=>y.TagId == x.TagId && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());
-                        docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x=>x.DocCount>0).ToList() } };
+                        tagCounters.ForEach(x => x.DocCount = docTags.Where(y => y.TagId == x.TagId && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());
+                        docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x => x.DocCount > 0).ToList() } };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
@@ -174,11 +185,19 @@ namespace BL.Database.Documents
                             DepartmentName = x.Department.Name,
                             ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
                         }).ToList();
-                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.PositionId == x.Id && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());                     docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
+                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.PositionId == x.Id && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count()); docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
                     }
                     else
                     #endregion groupCount
                     {
+
+                        //var qry2 = dbContext.DocumentAccessesSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
+                        //    .GroupBy(x => x.DocumentId)
+                        //    //.Where(x => x.Any(z => z.IsFavourite));
+                        //    .Select(x => new { x.Key, c1 = x.Max(z => z.IsFavourite ? 1 : 0), c2 = x.Max(z => z.IsInWork ? 1 : 0)});
+                        //var tem2 = qry2.GroupBy(x=>true).Select(x=>new { c0 = x.Count(), c1 = x.Sum(y => y.c1), c2 = x.Sum(y => y.c2) }).FirstOrDefault();
+                        //var tem1 = qry2.ToList();
+
                         var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                         var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
                         docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
@@ -224,35 +243,35 @@ namespace BL.Database.Documents
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
                         var qryT = qry;
-                        if (filter?.Document?.TagId?.Count>1)
+                        if (filter?.Document?.TagId?.Count > 1)
                         {
-                            qryT = qryT.Where(x=>x.Tags.Count == filter.Document.TagId.Count);
+                            qryT = qryT.Where(x => x.Tags.Count == filter.Document.TagId.Count);
                         }
                         var qryTagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
-                                {
-                                    TagId = x.Id,
-                                    PositionId = x.PositionId,
-                                    PositionName = x.Position.Name,
-                                    Color = x.Color,
-                                    Name = x.Name,
-                                    IsSystem = !x.PositionId.HasValue,
-                                    DocCount = x.Documents.Count(y => qryT.Select(z => z.Id).Contains(y.DocumentId))
-                                }).Where(x => x.DocCount > 0);
+                        {
+                            TagId = x.Id,
+                            PositionId = x.PositionId,
+                            PositionName = x.Position.Name,
+                            Color = x.Color,
+                            Name = x.Name,
+                            IsSystem = !x.PositionId.HasValue,
+                            DocCount = x.Documents.Count(y => qryT.Select(z => z.Id).Contains(y.DocumentId))
+                        }).Where(x => x.DocCount > 0);
                         var tagCounters = qryTagCounters.ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
                         var qryPositionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDictionaryPosition
-                                {
-                                    Id = x.Id,
-                                    Name = x.Name,
-                                    DepartmentId = x.DepartmentId,
-                                    ExecutorAgentId = x.ExecutorAgentId,
-                                    DepartmentName = x.Department.Name,
-                                    ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
-                                    DocCount = x.DocumentAccesses.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
-                                }).Where(x => x.DocCount > 0);
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            DepartmentId = x.DepartmentId,
+                            ExecutorAgentId = x.ExecutorAgentId,
+                            DepartmentName = x.Department.Name,
+                            ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
+                            DocCount = x.DocumentAccesses.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                        }).Where(x => x.DocCount > 0);
                         var positionCounters = qryPositionCounters.ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters } };
                     }
@@ -261,6 +280,21 @@ namespace BL.Database.Documents
                     {
                         if (paging.IsOnlyCounter ?? true)
                         {
+
+                            //var counts = qry.GroupBy(x => true)
+                            //    .Select(x => new
+                            //    {
+                            //        //CountAll = x.Count(),
+                            //        //CountNewEvent = x.Sum(z => z.Events.AsQueryable().Where(filterNewEventContains)
+                            //        //                .Where(y => !y.ReadDate.HasValue && y.TargetPositionId.HasValue && y.TargetPositionId != y.SourcePositionId).Any() ? 1 : 0),
+                            //        //CountWait = x.Sum(z => z.Waits.AsQueryable().Where(filterWaitPositionsContains)
+                            //        //                .Where(y => !y.OffEventId.HasValue).Any() ? 1 : 0),
+                            //        CountFavourite = x.Sum(z => z.Accesses.AsQueryable().Where(filterAccessPositionsContains)
+                            //                    .Where(y => y.IsFavourite).Any() ? 1 : 0),
+
+                            //    }).FirstOrDefault();
+                            //paging.TotalItemsCount = counts?.CountAll;
+                            //paging.Counters = new UICounters { Counter1 = counts?.CountNewEvent, Counter2 = counts?.CountWait, Counter3 = counts?.CountFavourite };
                             paging.TotalItemsCount = qry.Count();
                         }
                         if (paging.IsOnlyCounter ?? false)
@@ -290,16 +324,7 @@ namespace BL.Database.Documents
                         throw new WrongAPIParameters();
                     }
 
-                    #region filters for counters preparing
-                    var filterOnEventPositionsContains = PredicateBuilder.New<DocumentWaits>();
-                    filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
 
-                    var filterOnEventTaskAccessesContains = PredicateBuilder.New<DocumentTaskAccesses>();
-                    ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
-
-                    var filterNewEventContains = PredicateBuilder.New<DocumentEvents>();
-                    filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains, (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-                    #endregion Counter
 
                     #region model filling
                     var res = qry.Select(doc => new FrontDocument
@@ -321,7 +346,7 @@ namespace BL.Database.Documents
                         ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
                         ExecutorPositionName = doc.ExecutorPosition.Name,
 
-                        WaitCount = doc.Waits.AsQueryable().Where(x => !x.OffEventId.HasValue).Where(filterOnEventPositionsContains)
+                        WaitCount = doc.Waits.AsQueryable().Where(filterWaitPositionsContains).Where(x => !x.OffEventId.HasValue)
                                 .GroupBy(x => x.DocumentId)
                                 .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow) })
                                 .FirstOrDefault(),
@@ -339,7 +364,7 @@ namespace BL.Database.Documents
                     if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId != null && filter.Document.DocumentId.Count > 0)
                     {
                         docs = docs.OrderBy(x => filter.Document.DocumentId.IndexOf(x.Id)).ToList();
-                    }                    
+                    }
                     //else if (filter?.FullTextSearchSearch?.FullTextSearchId != null && filter.FullTextSearchSearch.FullTextSearchId.Any())
                     //{
                     //    docs = docs.OrderBy(x => filter.FullTextSearchSearch.FullTextSearchId.IndexOf(x.Id)).ToList();
@@ -1063,7 +1088,7 @@ namespace BL.Database.Documents
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-//                entry.Property(x => x.DocumentSubjectId).IsModified = true;
+                //                entry.Property(x => x.DocumentSubjectId).IsModified = true;
                 entry.Property(x => x.Description).IsModified = true;
                 entry.Property(x => x.SenderAgentId).IsModified = true;
                 entry.Property(x => x.SenderAgentPersonId).IsModified = true;
@@ -1212,7 +1237,7 @@ namespace BL.Database.Documents
                     }).ToList();
                 var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.Id == model.RegistrationJournalId)
-                    .Where(x=> x.DirectionCodes.Contains(strDocumentDirection))
+                    .Where(x => x.DirectionCodes.Contains(strDocumentDirection))
                     .Where(x => dbContext.AdminRegistrationJournalPositionsSet
                                             .Where(y => y.PositionId == context.CurrentPositionId && y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
                                             .Select(y => y.RegJournalId).Contains(x.Id))
