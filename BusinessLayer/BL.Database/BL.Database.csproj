@@ -194,6 +194,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryRegistrationJournalAccessTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySubscriptionStates.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
+    <Compile Include="DBModel\Document\DocumentEventAccessGroups.cs" />
     <Compile Include="DBModel\Document\DocumentEventAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentPaperLists.cs" />
     <Compile Include="DBModel\Document\DocumentPapers.cs" />
@@ -632,6 +633,10 @@
     <Compile Include="Migrations\201703072124112_DocumentSubjectIdDel.Designer.cs">
       <DependentUpon>201703072124112_DocumentSubjectIdDel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703092054185_PrepareForChart.cs" />
+    <Compile Include="Migrations\201703092054185_PrepareForChart.Designer.cs">
+      <DependentUpon>201703092054185_PrepareForChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -968,6 +973,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703072124112_DocumentSubjectIdDel.resx">
       <DependentUpon>201703072124112_DocumentSubjectIdDel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703092054185_PrepareForChart.resx">
+      <DependentUpon>201703092054185_PrepareForChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

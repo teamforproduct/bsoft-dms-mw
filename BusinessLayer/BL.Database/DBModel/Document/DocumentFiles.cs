@@ -18,6 +18,7 @@ namespace BL.Database.DBModel.Document
         [Index("IX_DocumentNameExtensionVersion", 1, IsUnique = true)]
         [Index("IX_DocumentOrderNumberVersion", 1, IsUnique = true)]
         public int DocumentId { get; set; }
+        public int? EventId { get; set; }
 
         [MaxLength(2000)]
         [Index("IX_DocumentNameExtensionVersion", 2, IsUnique = true)]
@@ -70,6 +71,8 @@ namespace BL.Database.DBModel.Document
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
+        [ForeignKey("EventId")]
+        public virtual DocumentEvents Event { get; set; }
 
         [ForeignKey("ExecutorPositionId")]
         public virtual DictionaryPositions ExecutorPosition { get; set; }

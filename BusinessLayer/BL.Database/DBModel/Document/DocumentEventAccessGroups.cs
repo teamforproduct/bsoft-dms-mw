@@ -1,41 +1,44 @@
-﻿using BL.Database.DBModel.Admin;
-using BL.Database.DBModel.Dictionary;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.Document
 {
-    public class DocumentAccesses
+    public class DocumentEventAccessGroups
     {
         public int Id { get; set; }
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
         [Index("IX_EntityTypeId", 1)]
         public int EntityTypeId { get; set; }
-        [Index("IX_PositionDocument", 2, IsUnique = true)]
-        [Index("IX_DocumentPosition", 1, IsUnique = true)]
         public int DocumentId { get; set; }
-        [Index("IX_DocumentPosition", 2, IsUnique = true)]
-        [Index("IX_PositionDocument", 1, IsUnique = true)]
+        public int EventId { get; set; }
+        public int AccessTypeId { get; set; }
+        public int AccessGroupsTypeId { get; set; }
+        public int? CompanyId { get; set; }
+        public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
-        public int AccessLevelId { get; set; }
-        public bool IsInWork { get; set; }
-        public bool IsFavourite { get; set; }
-        public bool IsAddLater { get; set; }
         public bool IsActive { get; set; }
-        public int? CountNewEvents { get; set; }
-        public int? CountWaits { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
+        [ForeignKey("EventId")]
+        public virtual DocumentEvents Event { get; set; }
+        [ForeignKey("CompanyId")]
+        public virtual DictionaryCompanies Company { get; set; }
+        [ForeignKey("DepartmentId")]
+        public virtual DictionaryDepartments Department { get; set; }
         [ForeignKey("PositionId")]
         public virtual DictionaryPositions Position { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
-        [ForeignKey("AccessLevelId")]
-        public virtual AdminAccessLevels AccessLevel { get; set; }
+
     }
 }

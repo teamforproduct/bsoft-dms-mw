@@ -43,6 +43,7 @@ namespace BL.Database.DBModel.Document
         public string DocumentSubject { get; set; }
         [MaxLength(2000)]
         public string Description { get; set; }
+        public byte[] Image { get; set; }
         [MaxLength(2000)]
         public string AddDescription { get; set; }
 
