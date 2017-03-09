@@ -69,9 +69,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int ClientId { get; set; }
         public int EntityTypeId { get; set; }
         /// <summary>
-        /// ИД Тематики документа
-        /// </summary>
-        public int? DocumentSubjectId { get; set; }
+        /// Тематика документа
         public string DocumentSubject { get; set; }
         /// <summary>
         /// Краткое содержание
@@ -118,7 +116,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsLaunchPlan { get; set; }
         public bool IsHard { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
-        public int DocumentTypeId { get; set; }
+        public int? DocumentTypeId { get; set; }
 
         public bool IsFavourite { get; set; }
         public bool IsInWork { get; set; }

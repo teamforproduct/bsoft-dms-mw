@@ -247,7 +247,7 @@ namespace BL.Database.Common
                 {
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterContains = filter.DocumentTypeId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TemplateDocument.DocumentTypeId == value).Expand());
+                        (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -265,18 +265,13 @@ namespace BL.Database.Common
                 {
                     var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
                     filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TemplateDocument.DocumentDirectionId == value).Expand());
+                        (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
-
-                if (filter.DocumentSubjectId?.Count() > 0)
+                if (!String.IsNullOrEmpty(filter.DocumentSubject))
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                    filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
-
-                    qry = qry.Where(filterContains);
+                    qry = qry.Where(x => x.Description.Contains(filter.DocumentSubject));
                 }
 
                 if (filter.RegistrationJournalId?.Count() > 0)
@@ -1257,6 +1252,8 @@ namespace BL.Database.Common
                 sq.Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     Date = x.Date,
                     DocumentId = x.DocumentId,
                     Extension = x.Extension,
@@ -1840,6 +1837,8 @@ namespace BL.Database.Common
                         LastChangeDate = acc.LastChangeDate,
                         LastChangeUserId = acc.LastChangeUserId,
                         Id = acc.Id,
+                        ClientId = acc.ClientId,
+                        EntityTypeId = acc.EntityTypeId,
                         PositionId = acc.PositionId,
                         IsInWork = acc.IsInWork,
                         DocumentId = acc.DocumentId,
@@ -2241,6 +2240,8 @@ namespace BL.Database.Common
             var subscriptions = subscriptionsDb.Select(x => new InternalDocumentSubscription
             {
                 Id = x.Id,
+                ClientId = x.ClientId,
+                EntityTypeId = x.EntityTypeId,
                 DocumentId = x.DocumentId,
                 SendEventId = x.SendEventId,
                 SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
@@ -2782,6 +2783,8 @@ namespace BL.Database.Common
             return sendListDb.Select(y => new InternalDocumentSendList
             {
                 Id = y.Id,
+                ClientId = y.ClientId,
+                EntityTypeId = y.EntityTypeId,
                 TargetAgentId = y.TargetAgentId,
                 TargetPositionId = y.TargetPositionId,
                 SendType = (EnumSendTypes)y.SendTypeId,
@@ -3260,7 +3263,9 @@ namespace BL.Database.Common
                 .Select(x => new InternalDocument
                 {
                     Id = x.Id,
-                    DocumentTypeId = x.TemplateDocument.DocumentTypeId,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
+                    DocumentTypeId = x.DocumentTypeId,
                     Description = x.Description
                 }).FirstOrDefault();
 
@@ -3282,9 +3287,11 @@ namespace BL.Database.Common
                 .Select(x => new InternalDocument
                 {
                     Id = x.Id,
-                    DocumentTypeId = x.TemplateDocument.DocumentTypeId,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
+                    DocumentTypeId = x.DocumentTypeId,
                     ExecutorPositionId = x.ExecutorPositionId,
-                    DocumentTypeName = x.TemplateDocument.DocumentType.Name,
+                    DocumentTypeName = x.DocumentType.Name,
                     Description = x.Description,
                     ExecutorPositionName = x.ExecutorPosition.Name,
                     ExecutorPositionExecutorAgentName = x.ExecutorPositionExecutorAgent.Name,
@@ -3314,6 +3321,8 @@ namespace BL.Database.Common
                 .Select(x => new InternalDocumentWait
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     DocumentId = x.DocumentId,
                     CreateDate = x.OnEvent.Date,
                     TargetPositionName = x.OnEvent.TargetPosition.Name,
@@ -3337,6 +3346,8 @@ namespace BL.Database.Common
                 .Select(x => new InternalDocumentSubscription
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     DocumentId = x.DocumentId,
                     SubscriptionStatesName = x.SubscriptionState.Name,
                     DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
@@ -3447,6 +3458,8 @@ namespace BL.Database.Common
                     {
                         var fileBytes = fileStore.GetFile(ctx, new InternalDocumentAttachedFile
                         {
+                            ClientId = file.ClientId,
+                            EntityTypeId = file.EntityTypeId,
                             DocumentId = file.DocumentId,
                             OrderInDocument = file.OrderInDocument,
                             Version = file.Version,
@@ -3493,6 +3506,8 @@ namespace BL.Database.Common
             var att = new InternalDocumentAttachedFile
             {
                 DocumentId = doc.Id,
+                ClientId = doc.ClientId,
+                EntityTypeId = doc.EntityTypeId,
                 Date = DateTime.UtcNow,
                 PostedFileData = null,
                 FileData = pdf.FileContent,

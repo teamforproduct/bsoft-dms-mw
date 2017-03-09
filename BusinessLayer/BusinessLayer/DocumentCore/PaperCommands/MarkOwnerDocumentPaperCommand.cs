@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
         public override object Execute()
         {
 
-            _paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, _document.Id, _paper.Id,EnumEventTypes.MarkOwnerDocumentPaper, Model.Description);
+            _paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, _paper.Id,EnumEventTypes.MarkOwnerDocumentPaper, Model.Description);
             CommonDocumentUtilities.SetLastChange(_context, _paper);
             _operationDb.MarkOwnerDocumentPaper(_context, _paper);
             return null;

@@ -74,6 +74,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             PdfCreated = x.IsPdfCreated??false,
                             LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue
                         }).FirstOrDefault();
@@ -89,6 +91,8 @@ namespace BL.Database.Documents
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
+                                        ClientId = x.ClientId,
+                                        EntityTypeId = x.EntityTypeId,
                                         ExecutorPositionId = x.ExecutorPositionId
                                     }).FirstOrDefault();
 
@@ -102,6 +106,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.fl.Id,
+                            ClientId = x.fl.ClientId,
+                            EntityTypeId = x.fl.EntityTypeId,
                             Date = x.fl.Date,
                             Name = x.fl.Name,
                             DocumentId = x.fl.DocumentId,
@@ -133,6 +139,8 @@ namespace BL.Database.Documents
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
+                                        ClientId = x.ClientId,
+                                        EntityTypeId = x.EntityTypeId,
                                         ExecutorPositionId = x.ExecutorPositionId
                                     }).FirstOrDefault();
 
@@ -146,6 +154,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.fl.Id,
+                            ClientId = x.fl.ClientId,
+                            EntityTypeId = x.fl.EntityTypeId,
                             Date = x.fl.Date,
                             Name = x.fl.Name,
                             Extension = x.fl.Extension,
@@ -171,6 +181,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
                         IsRegistered = x.IsRegistered,
                         DocumentFiles = x.Files.Where(y => y.IsMainVersion).Where(y => !y.IsDeleted)
@@ -178,6 +190,8 @@ namespace BL.Database.Documents
                         new InternalDocumentAttachedFile
                         {
                             Id = y.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             Name = y.Name,
                             Extension = y.Extension,
                             ExecutorPositionId = y.ExecutorPositionId,
@@ -286,6 +300,8 @@ namespace BL.Database.Documents
                .Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     ExecutorPositionId = x.ExecutorPositionId,
                     Name = x.Name,
                     Extension = x.Extension,
@@ -351,6 +367,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         IsRegistered = x.IsRegistered,
                         ExecutorPositionId = x.ExecutorPositionId,
                     }).FirstOrDefault();
@@ -367,6 +385,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             ExecutorPositionId = x.ExecutorPositionId,
                             Name = x.Name,
                             Extension = x.Extension,

@@ -232,16 +232,16 @@ namespace BL.Database.Admins
                     PositionName = x.Position.Name,
                     DepartmentName = x.Position.Department.Name,
                     ExecutorName =  (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
+                    ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte [] { } : x.Position.ExecutorAgent.Image),
                     ExecutorTypeId = x.PositionExecutorType.Id,
                     ExecutorTypeDescription =  x.PositionExecutorType.Description,
-                    ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte [] { } : x.Agent.Image),
                 }).ToList();
 
                 //IsLastChosen
                 try
                 {
                     var lastPositionChose =
-                        dbContext.DictionaryAgentUsersSet.Where(x => x.Id == ctx.CurrentAgentId)
+                        dbContext.DictionaryAgentUsersSet.Where(x => x.Id == agentId)
                         .Select(x => x.LastPositionChose).FirstOrDefault()
                         .Split(',').Select(n => Convert.ToInt32(n)).ToArray();
 

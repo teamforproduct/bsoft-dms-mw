@@ -50,15 +50,22 @@ namespace BL.Logic.Common
 
         public virtual EnumDictionaryActions CommandType => _action;
 
-        public bool TypeModelIs<T>() => _param is T;
+        public bool TypeModelIs<T>() => TypeModelIs<T>(_param);
+
+        private bool TypeModelIs<T>(object param) => param is T;
 
         public T GetModel<T>()
+        {
+            return GetModel<T>(_param);
+        }
+
+        private T GetModel<T>(object param)
         {
             if (!(TypeModelIs<T>()))
             {
                 throw new WrongParameterTypeError();
             }
-            return (T)_param;
+            return (T)param;
         }
     }
 }

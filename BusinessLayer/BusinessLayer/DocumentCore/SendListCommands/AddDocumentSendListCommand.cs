@@ -80,7 +80,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
 
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
-            _sendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, Model, taskId);
+            _sendList = CommonDocumentUtilities.GetNewDocumentSendList(_context, (int)EnumEntytiTypes.Document, Model, taskId);
             var sendLists = _document.SendLists.ToList();
             sendLists.Add(_sendList);
             _document.SendLists = sendLists;
@@ -110,7 +110,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
-                paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
+                paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
             //            using (var transaction = Transactions.GetTransaction())
             {
                 res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents)?.FirstOrDefault();

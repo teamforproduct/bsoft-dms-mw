@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.Filters;
+using BL.Model.Enums;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
@@ -63,6 +64,8 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         {
             var att = new InternalTemplateAttachedFile
             {
+                ClientId = _context.CurrentClientId,
+                EntityTypeId = (int)EnumEntytiTypes.Document,
                 DocumentId = Model.DocumentId,
                 OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
                 //FileContent = Convert.FromBase64String(Model.FileData),

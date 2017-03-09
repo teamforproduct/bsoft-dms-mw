@@ -94,6 +94,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             var docFile = new InternalDocumentAttachedFile
             {
+                ClientId = _document.ClientId,
+                EntityTypeId = _document.EntityTypeId,
                 DocumentId = Model.DocumentId,
                 OrderInDocument = Model.OrderInDocument
             };
@@ -108,7 +110,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             if (_document.IsRegistered.HasValue)
             {
-                docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.Name + "." + _file.Extension);
+                docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.Name + "." + _file.Extension);
             }
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;

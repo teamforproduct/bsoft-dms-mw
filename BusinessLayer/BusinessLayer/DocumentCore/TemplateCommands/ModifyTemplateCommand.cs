@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             {
                 DocumentTypeId = Model.DocumentTypeId,
                 DocumentDirection = Model.DocumentDirection,
-                DocumentSubjectId = Model.DocumentSubjectId,
+                DocumentSubject = Model.DocumentSubject,
             };
 
             CommonDocumentUtilities.SetLastChange(_context, tModel);

@@ -26,7 +26,6 @@ namespace BL.Database.Common
                     DocumentSubject = document.DocumentSubject,
                     TemplateDocumentId = document.TemplateDocumentId,
                     CreateDate = document.CreateDate,
-                    DocumentSubjectId = document.DocumentSubjectId,
                     DocumentTypeId = document.DocumentTypeId,
                     DocumentDirectionId = (int)document.DocumentDirection,
                     Description = document.Description,

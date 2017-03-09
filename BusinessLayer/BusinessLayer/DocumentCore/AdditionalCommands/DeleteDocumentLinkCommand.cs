@@ -97,7 +97,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 _document.NewLinkId = _document.LinkId.Value;
             }
             //CommonDocumentUtilities.SetLastChange(_context, _document);
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, _document.Id, EnumEventTypes.DeleteLink);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.DeleteLink);
             _operationDb.DeleteDocumentLink(_context, _document);
             return null;
         }

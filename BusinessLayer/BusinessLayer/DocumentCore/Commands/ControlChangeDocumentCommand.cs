@@ -83,12 +83,12 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 addDescripton = addDescripton.Remove(addDescripton.Length - 1);
                 var controlOn = new ControlOn(Model, _docWait.DocumentId);
-                var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, controlOn);
+                var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, (int)EnumEntytiTypes.Document, controlOn);
                 newWait.Id = _docWait.Id;
                 newWait.TargetDescription = _docWait.TargetDescription;
                 newWait.AttentionDate = _eventType == EnumEventTypes.ControlChange ? Model.AttentionDate : _docWait.AttentionDate;
 
-                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
                 var oldEvent = _docWait.OnEvent;
 
                 newEvent.Id = newWait.OnEventId = oldEvent.Id;

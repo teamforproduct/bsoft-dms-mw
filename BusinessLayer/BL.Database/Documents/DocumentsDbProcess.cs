@@ -415,9 +415,9 @@ namespace BL.Database.Documents
                 var res = qry.Select(doc => new FrontDocument
                 {
                     Id = doc.Id,
-                    DocumentDirection = (EnumDocumentDirections)doc.TemplateDocument.DocumentDirectionId,
-                    DocumentDirectionName = doc.TemplateDocument.DocumentDirection.Name,
-                    DocumentTypeName = doc.TemplateDocument.DocumentType.Name,
+                    DocumentDirection = (EnumDocumentDirections)doc.DocumentDirectionId,
+                    DocumentDirectionName = doc.DocumentDirection.Name,
+                    DocumentTypeName = doc.DocumentType.Name,
                     DocumentDate = doc.RegistrationDate ?? doc.CreateDate,
                     IsRegistered = doc.IsRegistered,
                     Description = doc.Description,
@@ -426,8 +426,7 @@ namespace BL.Database.Documents
                     LinkedDocumentsCount = 0, //TODO
 
                     TemplateDocumentId = doc.TemplateDocumentId,
-                    DocumentSubjectId = doc.DocumentSubjectId,
-                    DocumentSubjectName = doc.DocumentSubject,
+                    DocumentSubject = doc.DocumentSubject,
 
                     RegistrationJournalId = doc.RegistrationJournalId,
                     RegistrationJournalName = doc.RegistrationJournal.Name,
@@ -575,7 +574,9 @@ namespace BL.Database.Documents
                 var doc = qry.Select(x => new InternalDocument
                 {
                     Id = x.Id,
-                    DocumentDirection = (EnumDocumentDirections)x.TemplateDocument.DocumentDirectionId,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
+                    DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                     IsRegistered = x.IsRegistered,
                     ExecutorPositionId = x.ExecutorPositionId,
                 }).FirstOrDefault();
@@ -605,6 +606,8 @@ namespace BL.Database.Documents
                 var res = new InternalDocument
                 {
                     Id = doc.Id,
+                    ClientId = doc.ClientId,
+                    EntityTypeId = doc.EntityTypeId,
                     DocumentTypeName = doc.TemplateDocument.DocumentType.Name,
                     ExecutorPositionName = doc.ExecutorPosition.Name,
                     Addressee = doc.Addressee,
@@ -621,6 +624,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentWait
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         DocumentId = x.DocumentId,
                         CreateDate = x.OnEvent.Date,
                         TargetPositionName = x.OnEvent.TargetPosition.Name,
@@ -639,6 +644,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentSubscription
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         DocumentId = x.DocumentId,
                         SubscriptionStatesName = x.SubscriptionState.Name,
                         DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
@@ -685,6 +692,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         RegistrationNumber = x.RegistrationNumber,
                         RegistrationNumberPrefix = x.RegistrationNumberPrefix,
                         RegistrationNumberSuffix = x.RegistrationNumberSuffix,
@@ -701,6 +710,8 @@ namespace BL.Database.Documents
                 var events = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     DocumentId = x.DocumentId,
                     SourcePositionName = x.SourcePosition.Name,
                     SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : null),
@@ -712,6 +723,8 @@ namespace BL.Database.Documents
                         : new InternalDocumentPaper
                         {
                             Id = x.Paper.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             DocumentId = x.Paper.DocumentId,
                             Name = x.Paper.Name,
                             Description = x.Paper.Description
@@ -734,7 +747,9 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         TemplateDocumentId = x.Id,
-                        DocumentSubjectId = x.DocumentSubjectId,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        DocumentSubject = x.DocumentSubject,
                         Description = x.Description,
                         SenderAgentId = x.SenderAgentId,
                         SenderAgentPersonId = x.SenderAgentPersonId,
@@ -750,8 +765,10 @@ namespace BL.Database.Documents
                 }
 
                 doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
-                    .Select(y => new InternalDocumentTask()
+                    .Select(y => new InternalDocumentTask
                     {
+                        ClientId = doc.ClientId,
+                        EntityTypeId = doc.EntityTypeId,
                         Name = y.Task,
                         Description = y.Description,
                         PositionId = y.PositionId ?? 0,
@@ -760,6 +777,8 @@ namespace BL.Database.Documents
                 doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentRestrictedSendList()
                     {
+                        ClientId = doc.ClientId,
+                        EntityTypeId = doc.EntityTypeId,
                         PositionId = y.PositionId,
                         AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
                     }).ToList();
@@ -767,6 +786,8 @@ namespace BL.Database.Documents
                 doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentSendList()
                     {
+                        ClientId = doc.ClientId,
+                        EntityTypeId = doc.EntityTypeId,
                         StageType = (EnumStageTypes?)y.StageTypeId,
                         SendType = (EnumSendTypes)y.SendTypeId,
                         //SourcePositionId = y.SourcePositionId??0,
@@ -789,6 +810,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,
+                        ClientId = doc.ClientId,
+                        EntityTypeId = doc.EntityTypeId,
                         DocumentId = x.DocumentId,
                         Extension = x.Extention,
                         Name = x.Name,
@@ -802,6 +825,8 @@ namespace BL.Database.Documents
                 doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId)
                     .Select(y => new InternalDocumentPaper
                     {
+                        ClientId = doc.ClientId,
+                        EntityTypeId = doc.EntityTypeId,
                         Name = y.Name,
                         Description = y.Description,
                         IsCopy = y.IsCopy,
@@ -824,8 +849,12 @@ namespace BL.Database.Documents
                     .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         TemplateDocumentId = x.TemplateDocumentId,
-                        DocumentSubjectId = x.DocumentSubjectId,
+                        DocumentTypeId = x.DocumentTypeId,
+                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentSubject = x.DocumentSubject,
                         Description = x.Description,
                         SenderAgentId = x.SenderAgentId,
                         SenderAgentPersonId = x.SenderAgentPersonId,
@@ -843,6 +872,8 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == documentId)
                         .Select(x => new InternalDocumentTask
                         {
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             Name = x.Task,
                             Description = x.Description,
                             PositionId = x.PositionId,
@@ -852,6 +883,8 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == documentId && x.IsInitial)
                         .Select(y => new InternalDocumentSendList
                         {
+                            ClientId = y.ClientId,
+                            EntityTypeId = y.EntityTypeId,
                             Stage = y.Stage,
                             StageType = (EnumStageTypes?)y.StageTypeId,
                             SendType = (EnumSendTypes)y.SendTypeId,
@@ -877,6 +910,8 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == documentId)
                         .Select(y => new InternalDocumentRestrictedSendList
                         {
+                            ClientId = y.ClientId,
+                            EntityTypeId = y.EntityTypeId,
                             PositionId = y.PositionId,
                             AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
                         }).ToList();
@@ -884,6 +919,8 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == documentId)
                         .Select(y => new InternalDocumentPaper
                         {
+                            ClientId = y.ClientId,
+                            EntityTypeId = y.EntityTypeId,
                             Name = y.Name,
                             Description = y.Description,
                             IsCopy = y.IsCopy,
@@ -991,10 +1028,13 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
                         TemplateDocumentId = x.TemplateDocumentId,
                         IsHard = x.TemplateDocument.IsHard,
-                        DocumentDirection = (EnumDocumentDirections)x.TemplateDocument.DocumentDirectionId,
+                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentTypeId = x.DocumentTypeId,
                         IsRegistered = x.IsRegistered,
                     }).FirstOrDefault();
                 if (doc == null) return null;
@@ -1004,6 +1044,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentAccess
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                         IsInWork = x.IsInWork,
                     }).ToList();
@@ -1021,7 +1063,7 @@ namespace BL.Database.Documents
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                entry.Property(x => x.DocumentSubjectId).IsModified = true;
+//                entry.Property(x => x.DocumentSubjectId).IsModified = true;
                 entry.Property(x => x.Description).IsModified = true;
                 entry.Property(x => x.SenderAgentId).IsModified = true;
                 entry.Property(x => x.SenderAgentPersonId).IsModified = true;
@@ -1069,6 +1111,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         IsRegistered = x.IsRegistered,
                         LinkId = x.LinkId,
                         ExecutorPositionId = x.ExecutorPositionId,
@@ -1128,7 +1172,9 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
-                        DocumentSubjectId = x.DocumentSubjectId,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        DocumentSubject = x.DocumentSubject,
                         Description = x.Description,
                         IsRegistered = x.IsRegistered,
                         ExecutorPositionId = x.ExecutorPositionId,
@@ -1139,8 +1185,8 @@ namespace BL.Database.Documents
                         Addressee = x.Addressee,
                         LinkId = x.LinkId,
 
-                        DocumentTypeId = x.TemplateDocument.DocumentTypeId,
-                        DocumentDirection = (EnumDocumentDirections)x.TemplateDocument.DocumentDirectionId,
+                        DocumentTypeId = x.DocumentTypeId,
+                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                     }).FirstOrDefault();
 
                 if (doc == null)
@@ -1153,10 +1199,14 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentSubscription
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         SubscriptionStatesId = x.SubscriptionStateId,
                         SubscriptionStatesIsSuccess = x.SubscriptionState.IsSuccess,
                         DoneEvent = new InternalDocumentEvent
                         {
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             SourcePositionId = x.DoneEvent.SourcePositionId,
                         }
                     }).ToList();
@@ -1249,6 +1299,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         IsRegistered = x.IsRegistered,
                         RegistrationNumber = x.RegistrationNumber,
                         RegistrationNumberPrefix = x.RegistrationNumberPrefix,
@@ -1349,6 +1401,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
                         IsRegistered = x.IsRegistered
                     }).FirstOrDefault();
@@ -1358,19 +1412,24 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                     }).ToList();
                 doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == doc.ExecutorPositionId)
                     .Select(x => new InternalDocumentTask
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                     }).ToList();
-                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
-                    .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId)
-                    .GroupBy(x => x.PositionId)
+                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId)
                     .Select(x => new InternalDocumentRestrictedSendList
                     {
-                        PositionId = x.Key
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        PositionId = x.PositionId,
                     }).ToList();
                 transaction.Complete();
                 return doc;
@@ -1386,6 +1445,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
                         IsRegistered = x.IsRegistered
                     }).FirstOrDefault();
@@ -1395,12 +1456,16 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                     }).ToList();
                 doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == doc.ExecutorPositionId)
                     .Select(x => new InternalDocumentTask
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                     }).ToList();
                 transaction.Complete();
                 return doc;
@@ -1566,6 +1631,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
                         IsLaunchPlan = x.IsLaunchPlan
                     }).FirstOrDefault();
@@ -1575,6 +1642,8 @@ namespace BL.Database.Documents
                                     .Select(x => new InternalDocumentSendList
                                     {
                                         Id = x.Id,
+                                        ClientId = x.ClientId,
+                                        EntityTypeId = x.EntityTypeId,
                                     }
                                     ).ToList();
                 transaction.Complete();
@@ -1741,6 +1810,8 @@ namespace BL.Database.Documents
                 var res = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     Date = x.Date,
                     ReadDate = x.ReadDate,
                     SourcePositionId = x.SourcePositionId,

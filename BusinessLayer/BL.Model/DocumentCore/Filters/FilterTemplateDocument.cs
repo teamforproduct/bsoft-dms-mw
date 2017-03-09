@@ -19,9 +19,9 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> DocumentTypeId { get; set; }
         /// <summary>
-        /// Массив ИД тематик документов
+        /// Отрывок тематики документа
         /// </summary>
-        public List<int> DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Отрывок названия
         /// </summary>

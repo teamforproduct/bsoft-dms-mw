@@ -67,7 +67,7 @@ namespace BL.Database.SystemDb
                     case EnamFilterType.Main:
                         break;
                     case EnamFilterType.TemplateDocumentDocumentTypeId:
-                        qry = qry.Where(x=>x.Main.TemplateDocument.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TemplateDocument.DocumentTypeId});
+                        qry = qry.Where(x=>x.Main.TemplateDocument.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.DocumentTypeId.Value});
                         break;
                     case EnamFilterType.ExecutorPositionExecutorAgentId:
                         qry = qry.Where(x=>x.Main.ExecutorPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.ExecutorPositionExecutorAgentId});

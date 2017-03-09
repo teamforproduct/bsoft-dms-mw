@@ -102,7 +102,7 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             //var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
             //_document.Waits = new List<InternalDocumentWait> { waitTarget };
 

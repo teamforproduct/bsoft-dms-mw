@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, _document.Id, EnumEventTypes.AddLink);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AddLink);
             if (!newEvent.SourcePositionExecutorAgentId.HasValue)
             {
                 throw new ExecutorAgentForPositionIsNotDefined();

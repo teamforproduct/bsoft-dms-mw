@@ -33,7 +33,7 @@ namespace BL.Database.DBModel.Template
         public bool IsForDocument { get; set; }
         public int DocumentDirectionId { get; set; }
         public int DocumentTypeId { get; set; }
-        public Nullable<int> DocumentSubjectId { get; set; }
+//        public Nullable<int> DocumentSubjectId { get; set; }
         [MaxLength(2000)]
         public string DocumentSubject { get; set; }
         [MaxLength(2000)]
