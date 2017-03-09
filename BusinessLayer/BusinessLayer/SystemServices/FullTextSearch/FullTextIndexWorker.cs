@@ -327,12 +327,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             var sort = new Sort(SortField.FIELD_SCORE, new SortField(FIELD_PARENT_ID, SortField.INT, true));
 
-            var qryRes = _searcher.Search(boolQry, null, 1/*MAX_DOCUMENT_COUNT_RETURN*/, sort);
+            var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN, sort);
            //var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN);
             if (qryRes.TotalHits >= MAX_DOCUMENT_COUNT_RETURN)
                 throw new SystemFullTextTooManyResults(text);
-
-            return qryRes.ScoreDocs.Where(x => x.Score > 1).OrderByDescending(x => x.Score).AsParallel()
+            var res = qryRes.ScoreDocs./*Where(x => x.Score > 1).*/OrderByDescending(x => x.Score).AsParallel()
                 .Select(doc => new {doc, luc = _searcher.Doc(doc.Doc)})
                 .Select(rdoc => new FullTextSearchResult
                 {
@@ -344,7 +343,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     FeatureId = Convert.ToInt32(rdoc.luc.Get(FIELD_FEATURE_ID)),
                     Score = rdoc.doc.Score
                 }).ToList();
-
+            return res;
         }
 
         public void DeleteAllDocuments(int clientId)
