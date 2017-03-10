@@ -40,6 +40,10 @@ namespace DMS_WebAPI.ControllersV3.Auditlog
             var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
             var tmpService = DmsResolver.Current.Get<ILogger>();
+
+            if (filter == null) filter = new FilterSystemSession();
+            filter.LoginLogInfo = ftSearch?.FullTextSearchString;
+
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
