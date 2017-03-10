@@ -167,6 +167,12 @@ namespace BL.Logic.SystemServices.FullTextSearch
             boolQry.Add(textQry, Occur.MUST);
             boolQry.Add(clientQry, Occur.MUST);
 
+            if (filter.ParentObjectId.HasValue)
+            {
+                var parentIdQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_ID, filter.ParentObjectId.Value, filter.ParentObjectId.Value, true, true);
+                boolQry.Add(parentIdQry, Occur.MUST);
+            }
+
             if (filter.ParentObjectType.HasValue)
             {
                 var parentQry = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)filter.ParentObjectType.Value, (int)filter.ParentObjectType.Value, true, true);
