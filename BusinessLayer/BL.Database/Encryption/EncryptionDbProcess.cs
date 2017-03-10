@@ -284,10 +284,10 @@ namespace BL.Database.Encryption
 
         private void ReadDetailsAboutCertificate(InternalEncryptionCertificate item)
         {
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate begin " + item.Certificate.Count().ToString(), @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate begin " + item.Certificate.Count().ToString(), @"C:\TEMPLOGS\sign.log");
 
             var file = Path.Combine(GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid() + ".tmp");
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate " + file, @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate " + file, @"C:\TEMPLOGS\sign.log");
             try
             {
                 //Если в X509Certificate2 передавать byte[] он все ровно его сохранит на диск и не факт что удалит
@@ -296,10 +296,10 @@ namespace BL.Database.Encryption
                     fs.Write(item.Certificate, 0, item.Certificate.Length);
                     fs.Flush();
                 }
-                FileLogger.AppendTextToFile("File on disc "+File.Exists(file), @"C:\sign.log");
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate FileStream Write ", @"C:\sign.log");
+                FileLogger.AppendTextToFile("File on disc "+File.Exists(file), @"C:\TEMPLOGS\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate FileStream Write ", @"C:\TEMPLOGS\sign.log");
                 var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\TEMPLOGS\sign.log");
 
                 item.Thumbprint = certificate.Thumbprint;
                 item.NotBefore = certificate.NotBefore;
@@ -307,14 +307,14 @@ namespace BL.Database.Encryption
             }
             catch (CryptographicException e)
             {
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate1 " + e.Message, @"C:\sign.log", e);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate1 " + e.Message, @"C:\TEMPLOGS\sign.log", e);
 
                 throw e;
 
             }
             catch (Exception e)
             {
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate2 " + e.Message, @"C:\sign.log", e);
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " ReadDetailsAboutCertificate2 " + e.Message, @"C:\TEMPLOGS\sign.log", e);
 
                 throw e;
             }
@@ -326,7 +326,7 @@ namespace BL.Database.Encryption
 
         private void AddCertificateInWindowsCertificateStores(InternalEncryptionCertificate item)
         {
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + "AddCertificateInWindowsCertificateStores begin", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + "AddCertificateInWindowsCertificateStores begin", @"C:\TEMPLOGS\sign.log");
 
             var file = Path.Combine(GetTempPath(), "DMS-CERTIFICATE-" + Guid.NewGuid() + ".tmp");
             try
@@ -354,7 +354,7 @@ namespace BL.Database.Encryption
             {
                 File.Delete(file);
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() +" AddCertificateInWindowsCertificateStores end ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() +" AddCertificateInWindowsCertificateStores end ", @"C:\TEMPLOGS\sign.log");
 
         }
 
@@ -510,7 +510,7 @@ namespace BL.Database.Encryption
 
         private void InitJVM()
         {
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " InitJVM begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " InitJVM begin ", @"C:\TEMPLOGS\sign.log");
 
             string installDir = string.Empty;
             if (IntPtr.Size == 4)
@@ -533,7 +533,7 @@ namespace BL.Database.Encryption
                 {
                     IntPtr cnstring = GetCNString();
                     string[] certs = StringFromNativeUtf8(cnstring).Split('|');
-                    FileLogger.AppendTextToFile(DateTime.Now.ToString() + " СЕРТИФИКАТЫ " + StringFromNativeUtf8(cnstring), @"C:\sign.log");
+                    FileLogger.AppendTextToFile(DateTime.Now.ToString() + " СЕРТИФИКАТЫ " + StringFromNativeUtf8(cnstring), @"C:\TEMPLOGS\sign.log");
 
                     SetSilentMode("null".ToCharArray());//не выводить никаких сообщений во всплывающих окнах (для операций сервера)
                 }
@@ -566,7 +566,7 @@ namespace BL.Database.Encryption
         public string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign)
         {
             //return dataToSign;
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign begin ", @"C:\TEMPLOGS\sign.log");
             var res = string.Empty;
 
             try
@@ -629,14 +629,14 @@ namespace BL.Database.Encryption
             {
                 throw ex;
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign end ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSign end ", @"C:\TEMPLOGS\sign.log");
             return res;
         }
 
         public bool VerifyCertificateSign(IContext ctx, string dataToSign, string sign)
         {
             //return true;
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign begin ", @"C:\TEMPLOGS\sign.log");
             var res = false;
             try
             {
@@ -657,14 +657,14 @@ namespace BL.Database.Encryption
             {
                 throw ex;
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign end ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSign end ", @"C:\TEMPLOGS\sign.log");
             return res;
         }
 
         public byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf)
         {
             //return pdf;
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf begin ", @"C:\TEMPLOGS\sign.log");
             byte[] res = null;
 
             try
@@ -673,10 +673,10 @@ namespace BL.Database.Encryption
                 certificate.Password = certificatePassword;
 
                 UnZipCertificate(certificate);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf UnZipCertificate ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf UnZipCertificate ", @"C:\TEMPLOGS\sign.log");
 
                 ReadDetailsAboutCertificate(certificate);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf ReadDetailsAboutCertificate ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf ReadDetailsAboutCertificate ", @"C:\TEMPLOGS\sign.log");
 
                 AddCertificateInWindowsCertificateStores(certificate);
 
@@ -742,7 +742,7 @@ namespace BL.Database.Encryption
             {
                 throw ex;
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf end ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetCertificateSignPdf end ", @"C:\TEMPLOGS\sign.log");
 
             return res;
         }
@@ -750,7 +750,7 @@ namespace BL.Database.Encryption
         public bool VerifyCertificateSignPdf(byte[] pdf)
         {
             //return true;
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSignPdf begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSignPdf begin ", @"C:\TEMPLOGS\sign.log");
             int res = -1;
 
             try
@@ -791,7 +791,7 @@ namespace BL.Database.Encryption
             {
 
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSignPdf end ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " VerifyCertificateSignPdf end ", @"C:\TEMPLOGS\sign.log");
             return res == 0;
         }
         #endregion

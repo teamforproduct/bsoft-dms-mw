@@ -28,11 +28,12 @@ namespace BL.CrossCutting.Helpers
                 try
                 {
                     System.IO.FileInfo ff = new System.IO.FileInfo(FilePath);
-                    if (ff.Exists)
+                    if (!ff.Exists)
                     {
+                        //ff.Create();
                     }
                 }
-                catch
+                catch (Exception e)
                 {
 
                 }
@@ -46,7 +47,7 @@ namespace BL.CrossCutting.Helpers
                         sw.WriteLine(ex.StackTrace);
                     }
                 }
-                catch
+                catch (Exception e)
                 {
                 }
                 finally
@@ -54,7 +55,7 @@ namespace BL.CrossCutting.Helpers
                     sw.Close();
                 }
             }
-            catch
+            catch (Exception e)
             {
             }
         }

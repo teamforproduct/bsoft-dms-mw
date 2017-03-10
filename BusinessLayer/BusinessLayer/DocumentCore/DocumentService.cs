@@ -19,6 +19,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.FullTextSearch;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore
 {
@@ -50,14 +51,19 @@ namespace BL.Logic.DocumentCore
         {
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
             {
-
-//                var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "417757 file", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
+                FileLogger.AppendTextToFile($"", @"C:\TEMPLOGS\fulltext.log");
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** StartSearchIDInLucena ", @"C:\TEMPLOGS\fulltext.log");
+                //                var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "417757 file", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
 
                 filter.FullTextSearchSearch.FullTextSearchId
                     = DmsResolver.Current.Get<IFullTextSearchService>()
                     .SearchItemParentId(ctx, filter.FullTextSearchSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Documents, Accesses = ctx.CurrentPositionsIdList.ToList()});
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchId.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             }
             var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
+            if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** We have result: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString) && !filter.FullTextSearchSearch.IsDontSaveSearchQueryLog && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>()

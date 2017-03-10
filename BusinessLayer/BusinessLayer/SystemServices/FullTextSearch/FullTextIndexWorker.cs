@@ -15,6 +15,7 @@ using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 using BL.Model.SystemCore;
 using BL.Model.Exception;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -334,7 +335,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var sort = new Sort(SortField.FIELD_SCORE, new SortField(FIELD_PARENT_ID, SortField.INT, true));
 
             var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN, sort);
-           //var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN);
+            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry.ToString()}'", @"C:\TEMPLOGS\fulltext.log");
+            //var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN);
             if (qryRes.TotalHits >= MAX_DOCUMENT_COUNT_RETURN)
                 throw new SystemFullTextTooManyResults(text);
             var res = qryRes.ScoreDocs./*Where(x => x.Score > 1).*/OrderByDescending(x => x.Score).AsParallel()
@@ -349,6 +351,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     FeatureId = Convert.ToInt32(rdoc.luc.Get(FIELD_FEATURE_ID)),
                     Score = rdoc.doc.Score
                 }).ToList();
+            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' FetchRowsFromLucena: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+
             return res;
         }
 

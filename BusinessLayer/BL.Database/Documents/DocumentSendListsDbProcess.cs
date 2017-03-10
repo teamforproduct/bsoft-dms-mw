@@ -15,6 +15,7 @@ using LinqKit;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.Dictionary;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.Common;
 
 namespace BL.Database.Documents
 {
@@ -25,7 +26,18 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentRestrictedSendList(dbContext, ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } }).FirstOrDefault();
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } });
+                var res = qry.Select(y => new FrontDocumentRestrictedSendList
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    PositionId = y.PositionId,
+                    PositionName = y.Position.Name,
+                    PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
+                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    DepartmentName = y.Position.Department.Name,
+                }).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
@@ -35,7 +47,39 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentRestrictedSendList(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Select(y => new FrontDocumentRestrictedSendList
+                                 {
+                                     Id = y.Id,
+                                     DocumentId = y.DocumentId,
+                                     PositionId = y.PositionId,
+                                     PositionName = y.Position.Name,
+                                     PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
+                                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                                     AccessLevelName = y.AccessLevel.Name,
+                                     DepartmentName = y.Position.Department.Name,
+                                 }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<AutocompleteItem> GetRestrictedSendListsForAutocomplete(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Select(x => new AutocompleteItem
+                {
+                    Id = x.Position.Id,
+                    Name = x.Position.ExecutorAgentId.HasValue ? x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null) : "##l@Message:PositionIsVacant@l##",
+                    Details = new List<string>
+                    {
+                        x.Position.Name,
+                        x.Position.Department.FullPath + " " + x.Position.Department.Name,
+                    },
+                }).ToList();
                 transaction.Complete();
                 return res;
             }

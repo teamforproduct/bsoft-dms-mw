@@ -26,6 +26,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Database.Documents
 {
@@ -200,9 +201,12 @@ namespace BL.Database.Documents
 
                         var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                         var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
+                        FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IDsFromDB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+
                         docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
                             //.OrderBy(x => x.Index)
                             .Select(x => x.DocId).ToList();
+                        FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
 
                         if (paging.IsOnlyCounter ?? true)
                         {
@@ -520,7 +524,7 @@ namespace BL.Database.Documents
 
                 res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any() ? 0 : res.SendLists.Max(x => x.Stage);
 
-                res.RestrictedSendLists = CommonQueries.GetDocumentRestrictedSendList(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                res.RestrictedSendLists = DmsResolver.Current.Get<IDocumentSendListsDbProcess>().GetRestrictedSendLists(ctx, documentId);
 
                 res.DocumentTags = CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = ctx.CurrentPositionsIdList });
 

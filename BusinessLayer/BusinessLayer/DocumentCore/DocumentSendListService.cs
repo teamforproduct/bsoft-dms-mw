@@ -11,6 +11,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Logic.Common;
+using BL.Model.Common;
 
 namespace BL.Logic.DocumentCore
 {
@@ -33,6 +34,11 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId)
         {
             return _documentDb.GetRestrictedSendLists(context, documentId);
+        }
+
+        public IEnumerable<AutocompleteItem> GetRestrictedSendListsForAutocomplete(IContext context, int documentId)
+        {
+            return _documentDb.GetRestrictedSendListsForAutocomplete(context, documentId);
         }
         #endregion DocumentRestrictedSendLists
 

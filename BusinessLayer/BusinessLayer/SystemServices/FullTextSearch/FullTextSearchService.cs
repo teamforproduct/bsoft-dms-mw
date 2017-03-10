@@ -13,6 +13,7 @@ using BL.Logic.Settings;
 using BL.Model.SystemCore;
 using BL.Logic.AdminCore.Interfaces;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -232,7 +233,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var tempRes = new List<List<FullTextSearchResult>>();
             foreach (var word in words)
             {
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{word}' StartProcessingWord ", @"C:\TEMPLOGS\fulltext.log");
+
                 var r = SearchItemsInternal(ctx, word, filter).ToList();
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{word}' FinishProcessingWord : {r.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+
                 if (!r.Any()) return res;
                 tempRes.Add(r);
             }
@@ -247,7 +252,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 res = res.Join(sRes, a => new {a.ParentId, a.ParentObjectType},
                     b => new {b.ParentId, b.ParentObjectType}, (a, b) => a).ToList();
             }
-
+            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' JoinWords: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             return res;
         }
 

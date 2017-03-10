@@ -2797,7 +2797,7 @@ namespace BL.Database.Common
         #endregion
 
         #region RestrictedSendLists
-        public static IEnumerable<FrontDocumentRestrictedSendList> GetDocumentRestrictedSendList(DmsContext dbContext, IContext ctx, FilterDocumentRestrictedSendList filter)
+        public static IQueryable<DocumentRestrictedSendLists> GetDocumentRestrictedSendListQuery(DmsContext dbContext, IContext ctx, FilterDocumentRestrictedSendList filter)
         {
             var sendListDb = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -2821,17 +2821,7 @@ namespace BL.Database.Common
                 }
 
             }
-            return sendListDb.Select(y => new FrontDocumentRestrictedSendList
-            {
-                Id = y.Id,
-                DocumentId = y.DocumentId,
-                PositionId = y.PositionId,
-                PositionName = y.Position.Name,
-                PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                AccessLevelName = y.AccessLevel.Name,
-                DepartmentName = y.Position.Department.Name,
-            }).ToList();
+            return sendListDb;
         }
         #endregion
 
@@ -3150,7 +3140,7 @@ namespace BL.Database.Common
                     {
                         if (isUseCertificateSign && (newSubscription?.CertificateId).HasValue)
                         {
-                            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash GetDocumentCertificateSign ", @"C:\sign.log");
+                            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash GetDocumentCertificateSign ", @"C:\TEMPLOGS\sign.log");
                             document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, newSubscription.CertificateId.Value, newSubscription.CertificatePassword);
                         }
                         else
@@ -3243,7 +3233,7 @@ namespace BL.Database.Common
                     }
                 }
                 document.Subscriptions = subscriptions;
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash CertificateSignPdfFileIdentity ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash CertificateSignPdfFileIdentity ", @"C:\TEMPLOGS\sign.log");
 
                 document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword);
             }
@@ -3252,7 +3242,7 @@ namespace BL.Database.Common
             {
                 throw new DocumentFileWasChangedExternally();
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash end ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash end ", @"C:\TEMPLOGS\sign.log");
 
             return document;
         }
@@ -3481,7 +3471,7 @@ namespace BL.Database.Common
 
         public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword)
         {
-            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf begin ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf begin ", @"C:\TEMPLOGS\sign.log");
 
             var fileStore = DmsResolver.Current.Get<IFileStore>();
             var pdf = GetDocumentCertificateSignPdf(dbContext, ctx, doc);
@@ -3528,18 +3518,18 @@ namespace BL.Database.Common
 
             var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
 
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\TEMPLOGS\sign.log");
 
             if (ordInDoc == -1)
             {
                 att.Version = 1;
                 att.OrderInDocument = operationDb.GetNextFileOrderNumber(ctx, att.DocumentId);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetNextFileOrderNumber ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetNextFileOrderNumber ", @"C:\TEMPLOGS\sign.log");
             }
             else
             {
                 att.Version = operationDb.GetFileNextVersion(ctx, att.DocumentId, ordInDoc);
-                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetFileNextVersion ", @"C:\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf GetFileNextVersion ", @"C:\TEMPLOGS\sign.log");
 
                 att.OrderInDocument = ordInDoc;
             }
@@ -3548,10 +3538,10 @@ namespace BL.Database.Common
             att.LastChangeUserId = ctx.CurrentAgentId;
 
             fileStore.SaveFile(ctx, att);
-            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf SaveFile ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf SaveFile ", @"C:\TEMPLOGS\sign.log");
 
             operationDb.AddNewFileOrVersion(ctx, att);
-            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\TEMPLOGS\sign.log");
 
             return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };
         }
