@@ -3675,9 +3675,14 @@ namespace BL.Database.Common
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 
         }
+        public static void ModifyDocumentAccessesStatistics(DmsContext dbContext, IContext ctx, int documentId)
+        {
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId);
+
+        }
         #endregion
 
-        #region Certificates
+            #region Certificates
         public static IQueryable<EncryptionCertificates> GetCertificatesQuery(DmsContext dbContext, IContext ctx, FilterEncryptionCertificate filter)
         {
             var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();

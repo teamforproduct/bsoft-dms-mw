@@ -192,12 +192,7 @@ namespace BL.Database.Documents
                     #endregion groupCount
                     {
 
-                        //var qry2 = dbContext.DocumentAccessesSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
-                        //    .GroupBy(x => x.DocumentId)
-                        //    //.Where(x => x.Any(z => z.IsFavourite));
-                        //    .Select(x => new { x.Key, c1 = x.Max(z => z.IsFavourite ? 1 : 0), c2 = x.Max(z => z.IsInWork ? 1 : 0)});
-                        //var tem2 = qry2.GroupBy(x=>true).Select(x=>new { c0 = x.Count(), c1 = x.Sum(y => y.c1), c2 = x.Sum(y => y.c2) }).FirstOrDefault();
-                        //var tem1 = qry2.ToList();
+
 
                         var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                         var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
@@ -211,6 +206,7 @@ namespace BL.Database.Documents
                         if (paging.IsOnlyCounter ?? true)
                         {
                             paging.TotalItemsCount = docIds.Count();
+                            paging.Counters = new UICounters { Counter1 = 0, Counter2 = 333, Counter3 = 999999 };
                         }
                         if (paging.IsOnlyCounter ?? false)
                         {
@@ -284,6 +280,34 @@ namespace BL.Database.Documents
                     {
                         if (paging.IsOnlyCounter ?? true)
                         {
+                            var qryAcc = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                                .Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
+                                .GroupBy(x => x.DocumentId)
+                                .Select(x => new
+                                {
+                                    DocumentId = x.Key,
+                                    CountFavourite = x.Max(z => z.IsFavourite ? 1 : 0),
+                                    CountNewEvents = x.Max(z => (z.CountNewEvents ?? 0) > 0 ? 1 : 0),
+                                    CountWaits = x.Max(z => (z.CountWaits ?? 0) > 0 ? 1 : 0),
+                                })
+                                .GroupBy(x => true)
+                                .Select(x => new
+                                {
+                                    Count = x.Count(),
+                                    CountFavourite = x.Sum(y => y.CountFavourite),
+                                    CountNewEvents = x.Sum(y => y.CountNewEvents),
+                                    CountWaits = x.Sum(y => y.CountWaits),
+                                });
+                            var counts = qryAcc.FirstOrDefault();
+                            paging.TotalItemsCount = counts?.Count;
+                            paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
+
+                            //var qry2 = dbContext.DocumentAccessesSet.Where(filterAccessPositionsContains)
+                            //    .GroupBy(x => x.DocumentId)
+                            //    //.Where(x => x.Any(z => z.IsFavourite));
+                            //    .Select(x => new { x.Key, c1 = x.Max(z => z.IsFavourite ? 1 : 0), c2 = x.Max(z => z.IsInWork ? 1 : 0)});
+                            //var tem2 = qry2.GroupBy(x=>true).Select(x=>new { c0 = x.Count(), c1 = x.Sum(y => y.c1), c2 = x.Sum(y => y.c2) }).FirstOrDefault();
+                            //var tem1 = qry2.ToList();
 
                             //var counts = qry.GroupBy(x => true)
                             //    .Select(x => new
@@ -299,7 +323,6 @@ namespace BL.Database.Documents
                             //    }).FirstOrDefault();
                             //paging.TotalItemsCount = counts?.CountAll;
                             //paging.Counters = new UICounters { Counter1 = counts?.CountNewEvent, Counter2 = counts?.CountWait, Counter3 = counts?.CountFavourite };
-                            paging.TotalItemsCount = qry.Count();
                         }
                         if (paging.IsOnlyCounter ?? false)
                         {

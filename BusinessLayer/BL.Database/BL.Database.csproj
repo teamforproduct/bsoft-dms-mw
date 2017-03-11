@@ -638,6 +638,10 @@
     <Compile Include="Migrations\201703092054185_PrepareForChart.Designer.cs">
       <DependentUpon>201703092054185_PrepareForChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703111901174_DocumentAccesses.cs" />
+    <Compile Include="Migrations\201703111901174_DocumentAccesses.Designer.cs">
+      <DependentUpon>201703111901174_DocumentAccesses.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -977,6 +981,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703092054185_PrepareForChart.resx">
       <DependentUpon>201703092054185_PrepareForChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703111901174_DocumentAccesses.resx">
+      <DependentUpon>201703111901174_DocumentAccesses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

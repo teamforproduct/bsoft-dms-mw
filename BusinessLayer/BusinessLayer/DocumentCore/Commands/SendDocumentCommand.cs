@@ -59,9 +59,9 @@ namespace BL.Logic.DocumentCore.Commands
                     {
                         docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendList, _context, Model[i]);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        res.Add(i, e.Message);
+                        res.Add(i, ((ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message));
                         break;
                     }
                 }
