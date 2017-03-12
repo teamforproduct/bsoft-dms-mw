@@ -1800,7 +1800,10 @@ namespace BL.Database.Common
                     DocumentId = acc.DocumentId,
                     IsFavourite = acc.IsFavourite,
                     AccessLevelId = acc.AccessLevelId,
-                    AccessLevelName = acc.AccessLevel.Name
+                    AccessLevelName = acc.AccessLevel.Name,
+                    CountNewEvents = acc.CountNewEvents,
+                    CountWaits = acc.CountWaits,
+                    OverDueCountWaits = acc.OverDueCountWaits,
                 });
         }
 

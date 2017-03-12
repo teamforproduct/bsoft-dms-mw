@@ -12,5 +12,9 @@ namespace BL.Model.DocumentCore.FrontModel
         public string AccessLevelName { get; set; }
         public bool IsInWork { get; set; }
         public bool IsFavourite { get; set; }
+        public int? CountNewEvents { get; set; }
+        public int? CountWaits { get; set; }
+        public int? OverDueCountWaits { get; set; }
+        public DateTime? MinDueDate { get; set; }
     }
 }
