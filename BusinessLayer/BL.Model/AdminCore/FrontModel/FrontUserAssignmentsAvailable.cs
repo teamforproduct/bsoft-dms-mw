@@ -61,17 +61,17 @@ namespace BL.Model.AdminCore.FrontModel
         /// <summary>
         /// Количество непрочитанных событий
         /// </summary>
-        public int NewEventsCount { get; set; }
+        public int? NewEventsCount { get; set; }
 
         /// <summary>
         /// Количество контролей
         /// </summary>
-        public int ControlsCount { get; set; }
+        public int? ControlsCount { get; set; }
 
         /// <summary>
         /// Количество просроченных контролей
         /// </summary>
-        public int OverdueControlsCount { get; set; }
+        public int? OverdueControlsCount { get; set; }
 
         /// <summary>
         /// Минимальная контрольная дата  

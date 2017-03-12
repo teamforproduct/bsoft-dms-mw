@@ -173,7 +173,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         public DocumentActionsModel GetDocumentSendListActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -233,7 +232,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         public DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int? documentId, int? id = null)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -306,7 +304,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         public DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -378,6 +375,102 @@ namespace BL.Database.Documents
 
         #endregion DocumentAction   
 
+        #region Get
+
+        public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { EventId = new List<int> { eventId } })
+                    .Select(x => new FrontDocumentEvent
+                    {
+                        Id = x.Id,
+                        DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
+                        DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
+                        DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
+                        ReadAgentId = x.ReadAgentId,
+                        ReadAgentName = x.ReadAgent.Name,
+                        ReadDate = x.ReadAgentId.HasValue ? x.ReadDate : null,
+                        SourceAgentId = x.SourceAgentId,
+                        SourceAgentName = x.SourceAgent.Name,
+                        TargetAgentId = x.TargetAgentId,
+                        TargetAgentName = x.TargetAgent.Name,
+                        TargetPositionId = x.TargetPositionId,
+                        SourcePositionId = x.SourcePositionId,
+                        SourcePositionExecutorAgentId = x.SourcePositionExecutorAgentId,
+                        TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
+                        SourcePositionName = x.SourcePosition.Name,
+                        TargetPositionName = x.TargetPosition.Name,
+                        IsAvailableWithinTask = x.IsAvailableWithinTask,
+                        PaperPlanAgentName = x.PaperPlanAgent.Name,
+                        PaperSendAgentName = x.PaperSendAgent.Name,
+                        PaperRecieveAgentName = x.PaperRecieveAgent.Name,
+                        LastChangeDate = x.LastChangeDate
+                    }).FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetDocumentEvents(ctx, dbContext, filter, paging).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetDocumentWaits(dbContext, filter, ctx, paging).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetDocumentSubscriptions(dbContext, filter, ctx, paging).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetDocumentWorkGroup(dbContext, ctx, filter).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+        public IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetInternalDocumentAccesses(dbContext, ctx, documentId);
+                transaction.Complete();
+                return res;
+            }
+        }
+        public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = CommonQueries.GetInternalPositionsInfo(dbContext, ctx, positionIds);
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        #endregion Get  
+
         #region DocumentMainLogic  
 
         public void AddDocumentWaits(IContext ctx, InternalDocument document)
@@ -397,10 +490,13 @@ namespace BL.Database.Documents
                     var waitDb = ModelConverter.GetDbDocumentWaits(document.Waits).ToList();
                     dbContext.DocumentWaitsSet.AddRange(waitDb);
                     dbContext.SaveChanges();
+                    CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList()));
+                    dbContext.SaveChanges();
                     waitDb.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.OnEvent.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
                 CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
+
 
                 transaction.Complete();
 
@@ -449,6 +545,9 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     dbContext.SaveChanges();
                 }
+
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, wait.DocumentId, CommonQueries.GetEventsSourceTarget(wait.OnEvent));
+                dbContext.SaveChanges();
 
                 transaction.Complete();
 
@@ -575,6 +674,8 @@ namespace BL.Database.Documents
                         entry.Property(x => x.CertificatePositionExecutorTypeId).IsModified = true;
                     }
                     dbContext.SaveChanges();
+                    CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList()));
+                    dbContext.SaveChanges();
                     if (subscription != null)
                         CommonQueries.AddFullTextCashInfo(ctx, dbContext, subscription.Id, EnumObjects.DocumentSubscriptions, EnumOperationType.Update);
                     CommonQueries.AddFullTextCashInfo(ctx, dbContext, offEvent.Id, EnumObjects.DocumentEvents, EnumOperationType.Update);
@@ -627,6 +728,8 @@ namespace BL.Database.Documents
                 subscriptionDb.DoneEventId = eventDb.Id;
 
                 dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
+                dbContext.SaveChanges();
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Events.ToList()));
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCashInfo(ctx, dbContext, eventDb.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew);
                 CommonQueries.AddFullTextCashInfo(ctx, dbContext, subscriptionDb.Id, EnumObjects.DocumentSubscriptions, EnumOperationType.AddNew);
@@ -960,6 +1063,8 @@ namespace BL.Database.Documents
                     var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
                     dbContext.DocumentEventsSet.AddRange(eventsDb);
                     dbContext.SaveChanges();
+                    CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Events.ToList()));
+                    dbContext.SaveChanges();
                     eventsDb.ToList().ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
                 CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
@@ -969,80 +1074,6 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetDocumentEventQuery(ctx, dbContext, new FilterDocumentEvent { EventId = new List<int> { eventId } })
-                    .Select(x => new FrontDocumentEvent
-                    {
-                        Id = x.Id,
-                        DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
-                        DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
-                        DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
-                        ReadAgentId = x.ReadAgentId,
-                        ReadAgentName = x.ReadAgent.Name,
-                        ReadDate = x.ReadAgentId.HasValue ? x.ReadDate : null,
-                        SourceAgentId = x.SourceAgentId,
-                        SourceAgentName = x.SourceAgent.Name,
-                        TargetAgentId = x.TargetAgentId,
-                        TargetAgentName = x.TargetAgent.Name,
-                        TargetPositionId = x.TargetPositionId,
-                        SourcePositionId = x.SourcePositionId,
-                        SourcePositionExecutorAgentId = x.SourcePositionExecutorAgentId,
-                        TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
-                        SourcePositionName = x.SourcePosition.Name,
-                        TargetPositionName = x.TargetPosition.Name,
-                        IsAvailableWithinTask = x.IsAvailableWithinTask,
-                        PaperPlanAgentName = x.PaperPlanAgent.Name,
-                        PaperSendAgentName = x.PaperSendAgent.Name,
-                        PaperRecieveAgentName = x.PaperRecieveAgent.Name,
-                        LastChangeDate = x.LastChangeDate
-                    }).FirstOrDefault();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetDocumentEvents(ctx, dbContext, filter, paging).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetDocumentWaits(dbContext, filter, ctx, paging).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetDocumentSubscriptions(dbContext, filter, ctx, paging).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetDocumentWorkGroup(dbContext, ctx, filter).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
 
         public IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model)
         {
@@ -1065,6 +1096,8 @@ namespace BL.Database.Documents
                 var res = qry.Select(x => new InternalDocumentEvent
                 {
                     Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    TargetPositionId = x.TargetPositionId,
                     ClientId = x.ClientId,
                     EntityTypeId = x.EntityTypeId,
                 }).ToList();
@@ -1087,8 +1120,22 @@ namespace BL.Database.Documents
                     entry.Property(x => x.ReadDate).IsModified = true;
                 }
                 dbContext.SaveChanges();
+                eventList.ToList().ForEach(x=> CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, x.DocumentId, CommonQueries.GetEventsSourceTarget(x)));
+                dbContext.SaveChanges();
+                eventList.Where(x=> x.TargetPositionId.HasValue).ToList().ForEach(x=> CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, x.DocumentId, x.TargetPositionId.Value));
                 transaction.Complete();
             }
+        }
+
+        public void ModifyDocumentAccessesStatistics(IContext ctx, int? documentId = null, List<int> positionId = null)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, documentId, positionId);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+
         }
 
         public void MarkDocumentEventAsReadAuto(IContext ctx)
@@ -1102,25 +1149,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<InternalDocumentAccess> GetDocumentAccesses(IContext ctx, int documentId)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetInternalDocumentAccesses(dbContext, ctx, documentId);
-                transaction.Complete();
-                return res;
-            }
-        }
 
-        public IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(IContext ctx, List<int> positionIds)
-        {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-            {
-                var res = CommonQueries.GetInternalPositionsInfo(dbContext, ctx, positionIds);
-                transaction.Complete();
-                return res;
-            }
-        }
 
         public void ChangeIsFavouriteAccess(IContext context, InternalDocumentAccess docAccess)
         {
@@ -1340,6 +1369,10 @@ namespace BL.Database.Documents
                     }
 
                 }
+
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, 
+                    CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList())
+                    .Concat(CommonQueries.GetEventsSourceTarget(document.Events.ToList())).ToList());
 
                 CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
@@ -1616,7 +1649,6 @@ namespace BL.Database.Documents
         #endregion DocumentMainLogic 
 
         #region DocumentLink    
-
         public InternalDocument AddDocumentLinkPrepare(IContext context, AddDocumentLink model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1647,7 +1679,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
         public InternalDocument DeleteDocumentLinkPrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1691,9 +1722,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
-
-
         public void AddDocumentLink(IContext context, InternalDocument model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1754,7 +1782,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public void DeleteDocumentLink(IContext context, InternalDocument model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1784,7 +1811,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         #endregion DocumentLink     
 
         #region DocumentSendList    
@@ -1904,7 +1930,6 @@ namespace BL.Database.Documents
                 return docRes;
             }
         }
-
         public IEnumerable<int> AddDocumentRestrictedSendList(IContext context, IEnumerable<InternalDocumentRestrictedSendList> model)
         {
             List<int> res;
@@ -1918,10 +1943,9 @@ namespace BL.Database.Documents
             }
             return res;
         }
-
         public IEnumerable<InternalDocumentRestrictedSendList> AddByStandartSendListDocumentRestrictedSendListPrepare(IContext context, ModifyDocumentRestrictedSendListByStandartSendList model)
         {
-            
+
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
 
@@ -1939,7 +1963,6 @@ namespace BL.Database.Documents
                 return items;
             }
         }
-
         public InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1957,7 +1980,6 @@ namespace BL.Database.Documents
                 return item;
             }
         }
-
         public void DeleteDocumentRestrictedSendList(IContext context, int restSendListId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -1971,7 +1993,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> paperEvents = null)
         {
             List<int> res = null;
@@ -2009,7 +2030,6 @@ namespace BL.Database.Documents
             }
             return res;
         }
-
         public IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)
         {
             //TODO DELETE!!!!
@@ -2040,7 +2060,6 @@ namespace BL.Database.Documents
                 return items;
             }
         }
-
         public void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2054,7 +2073,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public void ModifyDocumentSendList(IContext context, InternalDocumentSendList sendList, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> addPaperEvents = null, IEnumerable<int?> delPaperEvents = null)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2123,7 +2141,6 @@ namespace BL.Database.Documents
 
             }
         }
-
         public InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2153,7 +2170,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
         public void DeleteDocumentSendList(IContext context, int sendListId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2168,7 +2184,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2196,7 +2211,6 @@ namespace BL.Database.Documents
                 return docRes;
             }
         }
-
         public void ChangeDocumentSendListStage(IContext context, IEnumerable<InternalDocumentSendList> model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2222,7 +2236,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public InternalDocument LaunchDocumentSendListItemPrepare(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2273,8 +2286,6 @@ namespace BL.Database.Documents
 
             }
         }
-
-
         #endregion DocumentSendList     
 
         #region DocumentSavedFilter
@@ -2394,7 +2405,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         public void ModifyDocumentTask(IContext context, InternalDocument document)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2411,7 +2421,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public void DeleteDocumentTask(IContext context, int itemId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2427,7 +2436,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public InternalDocument ModifyDocumentTaskPrepare(IContext context, int? id, BaseModifyDocumentTask model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2457,7 +2465,6 @@ namespace BL.Database.Documents
         #endregion DocumentTasks
 
         #region DocumentPapers
-
         public InternalDocument DeleteDocumentPaperPrepare(IContext context, int paperId)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2493,7 +2500,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         public InternalDocument EventDocumentPaperPrepare(IContext context, PaperList filters, bool isCalcPreLastPaperEvent = false)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2557,7 +2563,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
         public InternalDocument ModifyDocumentPaperPrepare(IContext context, int? id, BaseModifyDocumentPaper model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2606,7 +2611,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
         public IEnumerable<int> AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> papers)
         {
             List<int> res = new List<int>();
@@ -2635,7 +2639,6 @@ namespace BL.Database.Documents
             }
             return res;
         }
-
         public void ModifyDocumentPaper(IContext context, InternalDocumentPaper item)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2656,7 +2659,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public void DeleteDocumentPaper(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2672,7 +2674,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2692,7 +2693,6 @@ namespace BL.Database.Documents
             }
 
         }
-
         public void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2713,7 +2713,6 @@ namespace BL.Database.Documents
 
             }
         }
-
         public void SendDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> papers)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2731,10 +2730,8 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                 }
                 transaction.Complete();
-
             }
         }
-
         public void RecieveDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> papers)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2755,7 +2752,6 @@ namespace BL.Database.Documents
 
             }
         }
-
         public void CancelPlanDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> papers)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2784,7 +2780,6 @@ namespace BL.Database.Documents
                 transaction.Complete();
             }
         }
-
         public IEnumerable<InternalDocumentPaper> PlanDocumentPaperFromSendListPrepare(IContext context, int idSendList)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2819,7 +2814,6 @@ namespace BL.Database.Documents
 
             }
         }
-
         public InternalDocument PlanDocumentPaperEventPrepare(IContext context, List<int> paperIds)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2860,7 +2854,6 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-
         public void PlanDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> papers)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -2879,6 +2872,8 @@ namespace BL.Database.Documents
                         entry.Property(e => e.LastPaperEventId).IsModified = true;
                         entry.Property(e => e.LastChangeUserId).IsModified = true;
                         entry.Property(e => e.LastChangeDate).IsModified = true;
+                        dbContext.SaveChanges();
+                        CommonQueries.ModifyDocumentAccessesStatistics(dbContext, context, paper.DocumentId, CommonQueries.GetEventsSourceTarget(paper.LastPaperEvent));
                         dbContext.SaveChanges();
                     }
                 }

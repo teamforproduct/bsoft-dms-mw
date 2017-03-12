@@ -305,11 +305,11 @@ namespace BL.Database.Documents
                             //var qry2 = dbContext.DocumentAccessesSet.Where(filterAccessPositionsContains)
                             //    .GroupBy(x => x.DocumentId)
                             //    //.Where(x => x.Any(z => z.IsFavourite));
-                            //    .Select(x => new { x.Key, c1 = x.Max(z => z.IsFavourite ? 1 : 0), c2 = x.Max(z => z.IsInWork ? 1 : 0)});
-                            //var tem2 = qry2.GroupBy(x=>true).Select(x=>new { c0 = x.Count(), c1 = x.Sum(y => y.c1), c2 = x.Sum(y => y.c2) }).FirstOrDefault();
+                            //    .Select(x => new { x.Key, c1 = x.Max(z => z.IsFavourite ? 1 : 0), c2 = x.Max(z => z.IsInWork ? 1 : 0) });
+                            //var tem2 = qry2.GroupBy(x => true).Select(x => new { c0 = x.Count(), c1 = x.Sum(y => y.c1), c2 = x.Sum(y => y.c2) }).FirstOrDefault();
                             //var tem1 = qry2.ToList();
 
-                            //var counts = qry.GroupBy(x => true)
+                            //var counts1 = qry.GroupBy(x => true)
                             //    .Select(x => new
                             //    {
                             //        //CountAll = x.Count(),
@@ -455,7 +455,6 @@ namespace BL.Database.Documents
                 return docs;
             }
         }
-
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
@@ -1598,6 +1597,9 @@ namespace BL.Database.Documents
                         dbContext.SaveChanges();
                     }
                 }
+                dbContext.SaveChanges();
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id);
+                dbContext.SaveChanges();
                 CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
                 CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Events.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.AddNew);
                 transaction.Complete();
@@ -1668,6 +1670,8 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
                 }
 
+                dbContext.SaveChanges();
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
                 transaction.Complete();
 

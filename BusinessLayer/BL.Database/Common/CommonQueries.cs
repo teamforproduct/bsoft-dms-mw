@@ -1979,7 +1979,7 @@ namespace BL.Database.Common
             eventFilterContains = tasks.Select(x => x.Id).Aggregate(eventFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
             var taskFactRespEx = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
-                    .Where(x=>x.OnWait.Any(y=>!y.OffEventId.HasValue))
+                    .Where(x => x.OnWait.Any(y => !y.OffEventId.HasValue))
                     .Select(x => new FrontDocumentTask
                     {
                         Id = x.TaskId.Value,
@@ -2003,7 +2003,7 @@ namespace BL.Database.Common
 
 
             var sendListFilterContains = PredicateBuilder.False<DocumentSendLists>();
-            sendListFilterContains = tasks.Select(x => x.Id).Aggregate(sendListFilterContains,  (current, value) => current.Or(e => e.TaskId == value).Expand());
+            sendListFilterContains = tasks.Select(x => x.Id).Aggregate(sendListFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
             var taskPlanRespEx = dbContext.DocumentSendListsSet.Where(sendListFilterContains).Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
                                 .Select(x => new FrontDocumentTask
@@ -2029,7 +2029,7 @@ namespace BL.Database.Common
 
             tasks.ForEach(x =>
             {
-                FrontDocumentTask taskExecutor = taskFactRespEx.OrderByDescending(y=>y.Id).FirstOrDefault(y => y.Id == x.Id);
+                FrontDocumentTask taskExecutor = taskFactRespEx.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
                 if (taskExecutor == null) taskExecutor = taskFactContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
                 if (taskExecutor == null) taskExecutor = taskPlanRespEx.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
                 if (taskExecutor == null) taskExecutor = taskPlanContr.OrderByDescending(y => y.Id).FirstOrDefault(y => y.Id == x.Id);
@@ -2538,7 +2538,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return qry.Where(x=>x.PositionId.HasValue).Select(x => new FrontDictionaryPosition
+            return qry.Where(x => x.PositionId.HasValue).Select(x => new FrontDictionaryPosition
             {
                 Id = x.PositionId.Value,
                 Name = x.Position.Name,
@@ -3639,7 +3639,7 @@ namespace BL.Database.Common
             var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                 .Where(x => x.DocumentId == documentId /*&& x.IsAvailableWithinTask*/ );
             if (taskId.HasValue)
-                qry0 = qry0.Where(x=>x.TaskId == taskId);
+                qry0 = qry0.Where(x => x.TaskId == taskId);
             else
                 qry0 = qry0.Where(x => x.TaskId.HasValue);
             var qry1 = qry0.GroupBy(x => new { x.TaskId, x.SourcePositionId, x.TargetPositionId })
@@ -3675,14 +3675,74 @@ namespace BL.Database.Common
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 
         }
-        public static void ModifyDocumentAccessesStatistics(DmsContext dbContext, IContext ctx, int documentId)
+
+        public static List<int> GetEventsSourceTarget(InternalDocumentEvent events)
         {
-            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId);
+            return GetEventsSourceTarget(new List<InternalDocumentEvent> { events });
+        }
+        public static List<int> GetEventsSourceTarget(List<InternalDocumentEvent> events)
+        {
+            var res = events.Where(x => x.SourcePositionId.HasValue).Select(x => x.SourcePositionId.Value).
+                Concat(events.Where(x => x.TargetPositionId.HasValue).Select(x => x.TargetPositionId.Value)).Distinct().ToList();
+            return res;
+        }
+        public static void ModifyDocumentAccessesStatistics(DmsContext dbContext, IContext ctx, int documentId, int positionId)
+        {
+            ModifyDocumentAccessesStatistics(dbContext, ctx, documentId, new List<int> { positionId });
+        }
+        public static void ModifyDocumentAccessesStatistics(DmsContext dbContext, IContext ctx, int? documentId = null, List<int> positionId = null)
+        {
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId);
+            if (documentId.HasValue)
+            {
+                qry = qry.Where(x => x.DocumentId == documentId);
+            }
+            if (positionId?.Count() > 0)
+            {
+                var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+                filterAccessPositionContains = positionId.Aggregate(filterAccessPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                qry = qry.Where(filterAccessPositionContains);
+            }
+            var qryStat = qry.Select(x => new
+            {
+                Access = x,
+                EventCounts = x.Document.Events.GroupBy(y => true)
+                    .Select(y => new
+                    {
+                        CountNewEvents = y.Count(z => !z.ReadDate.HasValue && z.TargetPositionId.HasValue
+                                && z.TargetPositionId != z.SourcePositionId && z.TargetPositionId == x.PositionId),
+                    }).FirstOrDefault(),
+                WaitCounts = x.Document.Waits.GroupBy(y => true)
+                    .Select(y => new
+                    {
+                        CountWaits = y.Count(z => !z.OffEventId.HasValue
+                                && (z.OnEvent.SourcePositionId != x.PositionId || z.OnEvent.TargetPositionId != x.PositionId)),
+                        OverDueCountWaits = y.Count(z => !z.OffEventId.HasValue && z.DueDate.HasValue && z.DueDate.Value < DateTime.UtcNow
+                                && (z.OnEvent.SourcePositionId != x.PositionId || z.OnEvent.TargetPositionId != x.PositionId)),
+                        MinDueDate = y.Where(z => !z.OffEventId.HasValue && z.DueDate.HasValue
+                                && (z.OnEvent.SourcePositionId != x.PositionId || z.OnEvent.TargetPositionId != x.PositionId)).Min(z => z.DueDate),
+                    }).FirstOrDefault(),
+            }
+            )
+            .Where(x => ((x.Access.CountNewEvents ?? 0) != ((int?)x.EventCounts.CountNewEvents ?? 0)) ||
+                        ((x.Access.CountWaits ?? 0) != ((int?)x.WaitCounts.CountWaits ?? 0)) ||
+                        ((x.Access.OverDueCountWaits ?? 0) != ((int?)x.WaitCounts.OverDueCountWaits ?? 0)) ||
+                        ((x.Access.MinDueDate) != x.WaitCounts.MinDueDate)
+            );
+            var stat = qryStat.ToList();
+            stat.ForEach(x =>
+            {
+                x.Access.CountNewEvents = x.EventCounts?.CountNewEvents != 0 ? x.EventCounts?.CountNewEvents : (int?)null;
+                x.Access.CountWaits = x.WaitCounts?.CountWaits != 0 ? x.WaitCounts?.CountWaits : (int?)null;
+                x.Access.OverDueCountWaits = x.WaitCounts?.OverDueCountWaits != 0 ? x.WaitCounts?.OverDueCountWaits : (int?)null;
+                x.Access.MinDueDate = x.WaitCounts?.MinDueDate;
+            });
 
         }
         #endregion
 
-            #region Certificates
+        #region Certificates
         public static IQueryable<EncryptionCertificates> GetCertificatesQuery(DmsContext dbContext, IContext ctx, FilterEncryptionCertificate filter)
         {
             var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();

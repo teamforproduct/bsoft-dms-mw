@@ -75,7 +75,9 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
             if (ctx == null) return;
             _docOperDb.MarkDocumentEventAsReadAuto(ctx);
-             // Clear trash documents.
+            _docOperDb.ModifyDocumentAccessesStatistics(ctx);
+
+            // Clear trash documents.
             try
             {
                 var ids = _sysDb.GetDocumentIdsForClearTrashDocuments(ctx,md.TimeForClearTrashDocuments);

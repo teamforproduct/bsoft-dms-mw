@@ -148,11 +148,9 @@ namespace BL.Database.Admins
                 catch { };
 
                 var positions = res.Select(s => s.RolePositionId).ToList();
-
                 var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
                 filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
-
                 var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
                                 .GroupBy(x=>x.PositionId)
                                 .Select(x => new
@@ -164,7 +162,6 @@ namespace BL.Database.Admins
                                     MinDueDate = x.Min(y => y.MinDueDate),
                                 });
                 var access = accessQry.ToList();
-
                 res.ForEach(x =>
                 {
                     var stat = access.Where(y => y.PositionId == x.RolePositionId).FirstOrDefault();
@@ -275,58 +272,80 @@ namespace BL.Database.Admins
                 }
                 catch { };
 
-                var positionList = res.Select(s => s.PositionId).ToList();
-
-                var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-                filterNewEventTargetPositionContains = positionList.Aggregate(filterNewEventTargetPositionContains,
-                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-
-                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
-                                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
-                                .Where(filterNewEventTargetPositionContains)
-                                .GroupBy(g => g.TargetPositionId)
-                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
-                var newevnt = neweventQry.ToList();
-
-                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
-                filterOnEventPositionsContains = positionList.Aggregate(filterOnEventPositionsContains,
-                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
-
-                var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
-                                .Where(x => !x.OffEventId.HasValue)
-                                .Where(filterOnEventPositionsContains)
-                                .GroupBy(y => new
-                                {
-                                    y.OnEvent.SourcePositionId,
-                                    y.OnEvent.TargetPositionId,
-                                    // IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
-                                    // DueDate = DbFunctions.TruncateTime(y.DueDate),
-                                })
+                var positions = res.Select(s => s.PositionId).ToList();
+                var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+                filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
+                                .GroupBy(x => x.PositionId)
                                 .Select(x => new
                                 {
-                                    Pos = x.Key,
-                                    ControlsCount = x.Count(),
-                                    OverdueControlsCount = x.Where(y => y.DueDate.HasValue && y.DueDate.Value < DateTime.UtcNow).Count(),
-                                    MinDueDate = x.Where(y => y.DueDate.HasValue).Min(y => y.DueDate),
-                                })
-                                ;
-                var wait = waitQry.ToList();
-
-                //res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
+                                    PositionId = x.Key,
+                                    CountNewEvents = x.Sum(y => y.CountNewEvents),
+                                    CountWaits = x.Sum(y => y.CountWaits),
+                                    OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
+                                    MinDueDate = x.Min(y => y.MinDueDate),
+                                });
+                var access = accessQry.ToList();
                 res.ForEach(x =>
                 {
-                    x.NewEventsCount = newevnt.Where(y => y.PosID == x.PositionId).Select(y => y.EvnCnt).FirstOrDefault();
-                    var t = wait.Where(y => y.Pos.SourcePositionId == x.PositionId || y.Pos.TargetPositionId == x.PositionId).GroupBy(y => 1)
-                        .Select(y => new
-                        {
-                            MinDueDate = y.Min(z => z.MinDueDate),
-                            ControlsCount = y.Sum(z => z.ControlsCount),
-                            OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
-                        }).FirstOrDefault();
-                    x.MinDueDate = t?.MinDueDate;
-                    x.ControlsCount = t?.ControlsCount ?? 0;
-                    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
+                    var stat = access.Where(y => y.PositionId == x.PositionId).FirstOrDefault();
+                    x.NewEventsCount = stat?.CountNewEvents;
+                    x.ControlsCount = stat?.CountWaits;
+                    x.OverdueControlsCount = stat?.OverDueCountWaits;
+                    x.MinDueDate = stat?.MinDueDate;
                 });
+
+                //var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                //filterNewEventTargetPositionContains = positionList.Aggregate(filterNewEventTargetPositionContains,
+                //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                //var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                //                .Where(filterNewEventTargetPositionContains)
+                //                .GroupBy(g => g.TargetPositionId)
+                //                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                //var newevnt = neweventQry.ToList();
+
+                //var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                //filterOnEventPositionsContains = positionList.Aggregate(filterOnEventPositionsContains,
+                //    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
+
+                //var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //                .Where(x => !x.OffEventId.HasValue)
+                //                .Where(filterOnEventPositionsContains)
+                //                .GroupBy(y => new
+                //                {
+                //                    y.OnEvent.SourcePositionId,
+                //                    y.OnEvent.TargetPositionId,
+                //                    // IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
+                //                    // DueDate = DbFunctions.TruncateTime(y.DueDate),
+                //                })
+                //                .Select(x => new
+                //                {
+                //                    Pos = x.Key,
+                //                    ControlsCount = x.Count(),
+                //                    OverdueControlsCount = x.Where(y => y.DueDate.HasValue && y.DueDate.Value < DateTime.UtcNow).Count(),
+                //                    MinDueDate = x.Where(y => y.DueDate.HasValue).Min(y => y.DueDate),
+                //                })
+                //                ;
+                //var wait = waitQry.ToList();
+
+                ////res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
+                //res.ForEach(x =>
+                //{
+                //    x.NewEventsCount = newevnt.Where(y => y.PosID == x.PositionId).Select(y => y.EvnCnt).FirstOrDefault();
+                //    var t = wait.Where(y => y.Pos.SourcePositionId == x.PositionId || y.Pos.TargetPositionId == x.PositionId).GroupBy(y => 1)
+                //        .Select(y => new
+                //        {
+                //            MinDueDate = y.Min(z => z.MinDueDate),
+                //            ControlsCount = y.Sum(z => z.ControlsCount),
+                //            OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
+                //        }).FirstOrDefault();
+                //    x.MinDueDate = t?.MinDueDate;
+                //    x.ControlsCount = t?.ControlsCount ?? 0;
+                //    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
+                //});
 
                 transaction.Complete();
                 return res;
