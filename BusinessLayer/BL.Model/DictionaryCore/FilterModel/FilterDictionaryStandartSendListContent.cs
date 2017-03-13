@@ -1,6 +1,7 @@
 ﻿using BL.Model.Common;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -29,6 +30,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Задача
         /// </summary>
         public string Task { get; set; }
+        /// <summary>
+        /// Задача
+        /// </summary>
+        [IgnoreDataMember]
+        public string TaskExact { get; set; }
         /// <summary>
         /// Название типа рассылки
         /// </summary>
