@@ -6715,7 +6715,7 @@ namespace BL.Database.Dictionaries
         {
             var sendLists = GetStandartSendLists(context, filter as FilterDictionaryStandartSendList, paging);
 
-            var res = sendLists.GroupBy(x => new { x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix })
+            var res = sendLists.GroupBy(x => new { x.PositionId, x.PositionName, x.PositionExecutorName, x.PositionExecutorTypeSuffix, x.DepartmentIndex, x.DepartmentName })
                  .OrderBy(x => x.Key.PositionName)
                  .Select(x => new FrontMainDictionaryStandartSendList()
                  {
@@ -6723,6 +6723,8 @@ namespace BL.Database.Dictionaries
                      Name = x.Key.PositionName,
                      ExecutorName = x.Key.PositionExecutorName,
                      ExecutorTypeSuffix = x.Key.PositionExecutorTypeSuffix,
+                     DepartmentIndex = x.Key.DepartmentIndex,
+                     DepartmentName = x.Key.DepartmentName,
                      SendLists = x.OrderBy(y => y.Name).ToList()
                  });
 
@@ -6763,7 +6765,9 @@ namespace BL.Database.Dictionaries
                     PositionId = x.PositionId,
                     PositionName = x.Position.Name,
                     PositionExecutorName = x.Position.ExecutorAgent.Name,
-                    PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix
+                    PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix,
+                    DepartmentIndex = x.Position.Department.Code,
+                    DepartmentName = x.Position.Department.Name,
                 }).ToList();
 
                 transaction.Complete();
