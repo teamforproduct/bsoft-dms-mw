@@ -108,9 +108,7 @@ namespace BL.Database.Documents
                 var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
                 filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
 
-                var filterNewEventContains = PredicateBuilder.New<DocumentEvents>();
-                filterNewEventContains = ctx.CurrentPositionsIdList.Aggregate(filterNewEventContains, (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-                #endregion Position filters for counters preparing
+               #endregion Position filters for counters preparing
 
                 #region Paging
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
@@ -277,6 +275,7 @@ namespace BL.Database.Documents
                     {
                         if ((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter ?? true))
                         {
+                            //CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, 345);
                             if (!(paging.IsCalculateAddCounter ?? false))
                             {
                                 paging.TotalItemsCount = qry.Count();

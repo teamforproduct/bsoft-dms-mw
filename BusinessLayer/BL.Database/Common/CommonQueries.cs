@@ -492,9 +492,9 @@ namespace BL.Database.Common
         #endregion
 
         #region Events
-        public static IQueryable<DocumentEvents> GetDocumentEventQuery(IContext ctx, DmsContext dbContext, FilterDocumentEvent filter, bool isVerifyAccessLevel = true)
+        public static IQueryable<DocumentEvents> GetDocumentEventQuery(IContext ctx, DmsContext dbContext, FilterDocumentEvent filter)
         {
-            var qrys = GetDocumentEventQueryWithoutUnion(ctx, dbContext, filter, isVerifyAccessLevel);
+            var qrys = GetDocumentEventQueryWithoutUnion(ctx, dbContext, filter);
             var res = qrys.First();
             foreach (var qry in qrys.Skip(1).ToList())
             {
@@ -575,7 +575,7 @@ namespace BL.Database.Common
         }
 
 
-        public static List<IQueryable<DocumentEvents>> GetDocumentEventQueryWithoutUnion(IContext ctx, DmsContext dbContext, FilterDocumentEvent filter, bool isVerifyAccessLevel = true)
+        public static List<IQueryable<DocumentEvents>> GetDocumentEventQueryWithoutUnion(IContext ctx, DmsContext dbContext, FilterDocumentEvent filter)
         {
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
@@ -610,7 +610,10 @@ namespace BL.Database.Common
                 {
                     if (filter.IsNew.Value)
                     {
-                        qry = qry.Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId);
+                        var filteTargetPositionIdContains = PredicateBuilder.False<DocumentEvents>();
+                        filteTargetPositionIdContains = ctx.CurrentPositionsAccessLevel.Aggregate(filteTargetPositionIdContains, 
+                            (current, value) => current.Or(e => e.TargetPositionId == value.Key && e.Document.Accesses.Any(x=>x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+                        qry = qry.Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId).Where(filteTargetPositionIdContains);
                     }
                     //else
                     //{
@@ -778,21 +781,20 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
-                filterContains = isVerifyAccessLevel
-                    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
-                    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
-                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
+                //var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                //filterContains = isVerifyAccessLevel
+                //    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
+                //    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                //qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
 
                 var filterPositionContains = PredicateBuilder.False<DocumentEvents>();
-                filterPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterPositionContains,
-                    (current, value) => current.Or(e =>
-                        e.TargetPositionId == value
-                        || e.SourcePositionId == value).Expand());
+                filterPositionContains = ctx.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
+                    (current, value) => current.Or(e => (e.TargetPositionId == value.Key || e.SourcePositionId == value.Key)
+                    && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
 
-                var filterTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
-                filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                //var filterTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                //filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
+                //    (current, value) => current.Or(e => e.PositionId == value).Expand());
 
                 res.Add(qry/*.Where(x => !x.IsAvailableWithinTask)*/.Where(filterPositionContains));
                 //res.Add(qry.Where(x => x.IsAvailableWithinTask && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
@@ -1279,9 +1281,9 @@ namespace BL.Database.Common
         #endregion
 
         #region Waits
-        public static IQueryable<DocumentWaits> GetDocumentWaitQuery(IContext ctx, DmsContext dbContext, FilterDocumentWait filter, bool isVerifyAccessLevel = true)
+        public static IQueryable<DocumentWaits> GetDocumentWaitQuery(IContext ctx, DmsContext dbContext, FilterDocumentWait filter)
         {
-            var qrys = GetDocumentWaitQueryWithoutUnion(ctx, dbContext, filter, isVerifyAccessLevel);
+            var qrys = GetDocumentWaitQueryWithoutUnion(ctx, dbContext, filter);
             var res = qrys.First();
             foreach (var qry in qrys.Skip(1).ToList())
             {
@@ -1290,7 +1292,7 @@ namespace BL.Database.Common
             return res;
         }
 
-        public static List<IQueryable<DocumentWaits>> GetDocumentWaitQueryWithoutUnion(IContext ctx, DmsContext dbContext, FilterDocumentWait filter, bool isVerifyAccessLevel = true)
+        public static List<IQueryable<DocumentWaits>> GetDocumentWaitQueryWithoutUnion(IContext ctx, DmsContext dbContext, FilterDocumentWait filter)
         {
             var qry = dbContext.DocumentWaitsSet.AsQueryable();
 
@@ -1337,6 +1339,7 @@ namespace BL.Database.Common
 
                 if (filter.IsOpened.HasValue)
                 {
+                    //qry = qry.Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId).Where(filteTargetPositionIdrContains);
                     if (filter.IsOpened.Value)
                     {
                         qry = qry.Where(x => !x.OffEventId.HasValue);
@@ -1538,15 +1541,17 @@ namespace BL.Database.Common
 
             if (ctx != null && !ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
-                filterContains = isVerifyAccessLevel
-                    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
-                    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
-                qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
+                //var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                //filterContains = isVerifyAccessLevel
+                //    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
+                //    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                //qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
 
                 var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
-                filterOnEventPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventPositionsContains,
-                    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+                filterOnEventPositionsContains = ctx.CurrentPositionsAccessLevel.Aggregate(filterOnEventPositionsContains,
+                    (current, value) => current.Or(e => (e.OnEvent.TargetPositionId == value.Key || e.OnEvent.SourcePositionId == value.Key)
+                                                && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+
                 if (filter?.IsMyControl ?? false)
                 {
                     res.Add(qry.Where(filterOnEventPositionsContains));
