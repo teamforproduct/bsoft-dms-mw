@@ -103,7 +103,7 @@ namespace BL.Database.Documents
 
                 #region Position filters for counters preparing
                 var filterAccessPositionsContains = PredicateBuilder.False<DocumentAccesses>();
-                filterAccessPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterAccessPositionsContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                filterAccessPositionsContains = ctx.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionsContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand());
 
                 var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
                 filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());

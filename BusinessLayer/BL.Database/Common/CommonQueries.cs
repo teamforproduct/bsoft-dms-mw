@@ -794,8 +794,8 @@ namespace BL.Database.Common
                 filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-                res.Add(qry.Where(x => !x.IsAvailableWithinTask).Where(filterPositionContains));
-                res.Add(qry.Where(x => x.IsAvailableWithinTask && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
+                res.Add(qry/*.Where(x => !x.IsAvailableWithinTask)*/.Where(filterPositionContains));
+                //res.Add(qry.Where(x => x.IsAvailableWithinTask && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
 
                 //qry = qry.Where(x => !x.IsAvailableWithinTask).Where(filterPositionContains)
                 //         .Concat(qry.Where(x => x.IsAvailableWithinTask && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
@@ -1556,8 +1556,8 @@ namespace BL.Database.Common
                     var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
                     filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
-                    res.Add(qry.Where(x => !x.OnEvent.IsAvailableWithinTask).Where(filterOnEventPositionsContains));
-                    res.Add(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+                    res.Add(qry./*Where(x => !x.OnEvent.IsAvailableWithinTask).*/Where(filterOnEventPositionsContains));
+                    //res.Add(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
                 }
             }
             else
@@ -3720,11 +3720,11 @@ namespace BL.Database.Common
                     .Select(y => new
                     {
                         CountWaits = y.Count(z => !z.OffEventId.HasValue
-                                && (z.OnEvent.SourcePositionId != x.PositionId || z.OnEvent.TargetPositionId != x.PositionId)),
+                                && (z.OnEvent.SourcePositionId == x.PositionId || z.OnEvent.TargetPositionId == x.PositionId)),
                         OverDueCountWaits = y.Count(z => !z.OffEventId.HasValue && z.DueDate.HasValue && z.DueDate.Value < DateTime.UtcNow
-                                && (z.OnEvent.SourcePositionId != x.PositionId || z.OnEvent.TargetPositionId != x.PositionId)),
+                                && (z.OnEvent.SourcePositionId == x.PositionId || z.OnEvent.TargetPositionId == x.PositionId)),
                         MinDueDate = y.Where(z => !z.OffEventId.HasValue && z.DueDate.HasValue
-                                && (z.OnEvent.SourcePositionId != x.PositionId || z.OnEvent.TargetPositionId != x.PositionId)).Min(z => z.DueDate),
+                                && (z.OnEvent.SourcePositionId == x.PositionId || z.OnEvent.TargetPositionId == x.PositionId)).Min(z => z.DueDate),
                     }).FirstOrDefault(),
             }
             )
