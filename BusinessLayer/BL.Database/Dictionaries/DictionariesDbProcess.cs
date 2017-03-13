@@ -6533,7 +6533,7 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.TargetPositionId == filter.TargetPositionId);
                 }
 
-                if (filter.TargetPositionId.HasValue)
+                if (filter.TargetAgentId.HasValue)
                 {
                     qry = qry.Where(x => x.TargetAgentId == filter.TargetAgentId);
                 }
@@ -6542,6 +6542,11 @@ namespace BL.Database.Dictionaries
                 {
                     qry = CommonFilterUtilites.GetWhereExpressions(filter.Task)
                         .Aggregate(qry, (current, task) => current.Where(x => x.Task.Contains(task)));
+                }
+
+                if (!string.IsNullOrEmpty(filter.TaskExact))
+                {
+                    qry = qry.Where(x => x.Task == filter.TaskExact);
                 }
 
 
