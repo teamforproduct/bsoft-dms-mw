@@ -275,31 +275,39 @@ namespace BL.Database.Documents
                     else
                     #endregion groupCount
                     {
-                        if (paging.IsOnlyCounter ?? true)
+                        if ((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter ?? true))
                         {
-                            var qryAcc = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                                .Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
-                                .GroupBy(x => x.DocumentId)
-                                .Select(x => new
-                                {
-                                    DocumentId = x.Key,
-                                    CountFavourite = x.Max(z => z.IsFavourite ? 1 : 0),
-                                    CountNewEvents = x.Max(z => (z.CountNewEvents ?? 0) > 0 ? 1 : 0),
-                                    CountWaits = x.Max(z => (z.CountWaits ?? 0) > 0 ? 1 : 0),
-                                })
-                                .GroupBy(x => true)
-                                .Select(x => new
-                                {
-                                    Count = x.Count(),
-                                    CountFavourite = x.Sum(y => y.CountFavourite),
-                                    CountNewEvents = x.Sum(y => y.CountNewEvents),
-                                    CountWaits = x.Sum(y => y.CountWaits),
-                                });
-                            var counts = qryAcc.FirstOrDefault();
-                            paging.TotalItemsCount = counts?.Count;
-                            paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
+                            if (!(paging.IsCalculateAddCounter ?? false))
+                            {
+                                paging.TotalItemsCount = qry.Count();
+                            }
+                            else
+                            {
+                                var qryAcc = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                                    .Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
+                                    .GroupBy(x => x.DocumentId)
+                                    .Select(x => new
+                                    {
+                                        DocumentId = x.Key,
+                                        CountFavourite = x.Max(z => z.IsFavourite ? 1 : 0),
+                                        CountNewEvents = x.Max(z => (z.CountNewEvents ?? 0) > 0 ? 1 : 0),
+                                        CountWaits = x.Max(z => (z.CountWaits ?? 0) > 0 ? 1 : 0),
+                                    })
+                                    .GroupBy(x => true)
+                                    .Select(x => new
+                                    {
+                                        Count = x.Count(),
+                                        CountFavourite = x.Sum(y => y.CountFavourite),
+                                        CountNewEvents = x.Sum(y => y.CountNewEvents),
+                                        CountWaits = x.Sum(y => y.CountWaits),
+                                    });
+                                var counts = qryAcc.FirstOrDefault();
+                                paging.TotalItemsCount = (paging.IsOnlyCounter ?? true) ? counts?.Count : (int?)null;
+                                if (paging.IsCalculateAddCounter ?? true)
+                                    paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
+                            }
                         }
-                        if (paging.IsOnlyCounter ?? false)
+                        if ((paging.IsOnlyCounter ?? false) || (paging.IsCalculateAddCounter ?? false))
                         {
                             docs = new List<FrontDocument>();
                         }

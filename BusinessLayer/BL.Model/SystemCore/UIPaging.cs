@@ -37,6 +37,13 @@ namespace BL.Model.SystemCore
         /// </summary>
         public bool? IsOnlyCounter { get; set; }
         /// <summary>
+        /// Пагинация. Вернет дополнительные счетчики если = true
+        /// Вернет дополнительные счетчики и данные если = null
+        /// Вернет только данные если = false
+        /// По умолчанию null
+        /// </summary>
+        public bool? IsCalculateAddCounter { get; set; }
+        /// <summary>
         /// Второстепенные счетчики
         /// </summary>
         [XmlIgnore]
