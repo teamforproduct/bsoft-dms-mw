@@ -397,6 +397,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    filter.IsChecked = null;
                     res = Tree.Get(flatList, filter);
                 }
                 else
@@ -563,6 +564,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    filter.IsChecked = null;
                     res = Tree.Get(flatList, filter);
                 }
                 else
@@ -743,6 +745,7 @@ namespace BL.Logic.AdminCore
                 if (safeList.Count > 0)
                 {
                     flatList.RemoveAll(r => !safeList.Contains(r.TreeId));
+                    filter.IsChecked = null;
                     res = Tree.Get(flatList, filter);
                 }
                 else
