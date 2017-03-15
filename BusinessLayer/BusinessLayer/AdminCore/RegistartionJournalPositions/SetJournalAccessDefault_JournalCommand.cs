@@ -22,7 +22,7 @@ namespace BL.Logic.AdminCore
             using (var transaction = Transactions.GetTransaction())
             {
 
-                _adminDb.DeleteRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { PositionIDs = new List<int> { Model.PositionId } });
+                _adminDb.DeleteRegistrationJournalPositions(_context, new FilterAdminRegistrationJournalPosition() { RegistrationJournalIDs = new List<int> { Model.JournalId } });
 
                 //SetRegistrationJournalPositionByDepartment(new ModifyAdminRegistrationJournalPositionByDepartment
                 //{
