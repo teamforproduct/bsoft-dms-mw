@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
-            filter.IsChecked = false;
+            filter.IsChecked = null;
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

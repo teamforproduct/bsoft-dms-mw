@@ -103,6 +103,7 @@
     <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessAll_JournalCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessByCompany_JournalCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessByDepartment_JournalCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessDefault_JournalCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\BaseRolePermissionCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\SetRolePermissionByAccessTypeCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleCommand.cs" />

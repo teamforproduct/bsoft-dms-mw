@@ -19,7 +19,7 @@ namespace BL.Model.AdminCore.FilterModel
         /// Отмечнено
         /// </summary>
         [IgnoreDataMember]
-        public bool IsChecked { get; set; }
+        public bool? IsChecked { get; set; }
 
     }
 }

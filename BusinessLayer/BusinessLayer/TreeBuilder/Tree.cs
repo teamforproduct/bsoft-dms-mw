@@ -133,7 +133,7 @@ namespace BL.Logic.TreeBuilder
 
                     var addToSafeList = true;
 
-                    if (existsNameFilter & addToSafeList)
+                    if (existsNameFilter && addToSafeList)
                     {
                         if (!string.IsNullOrEmpty(searchText))
                         {
@@ -143,12 +143,12 @@ namespace BL.Logic.TreeBuilder
                         else addToSafeList = false;
                     }
 
-                    if (existsCheckFilter & addToSafeList)
+                    if (existsCheckFilter && addToSafeList)
                     {
-                        addToSafeList = item.IsChecked ?? false;
+                        addToSafeList = item.IsChecked == filter.IsChecked;
                     }
 
-                    if (existsIdFilter & addToSafeList)
+                    if (existsIdFilter && addToSafeList)
                     {
                         addToSafeList = filter.DicIDs.Any(x=>x.Key == (EnumObjects)item.ObjectId && x.Value.Contains(item.Id));
                     }

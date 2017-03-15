@@ -129,9 +129,9 @@ namespace BL.Logic.AdminCore
                 case EnumAdminActions.SetJournalAccessByCompany_Position:
                     cmd = DmsResolver.Current.Get<SetJournalAccessByCompany_PositionCommand>();
                     break;
-                //case EnumAdminActions.SetJournalAccessDefault_Journal:
-                //    cmd = DmsResolver.Current.Get<SetJournalAccessDefault_JournalCommand>();
-                //    break;
+                case EnumAdminActions.SetJournalAccessDefault_Journal:
+                    cmd = DmsResolver.Current.Get<SetJournalAccessDefault_JournalCommand>();
+                    break;
                 case EnumAdminActions.SetJournalAccessDefault_Position:
                     cmd = DmsResolver.Current.Get<SetJournalAccessDefault_PositionCommand>();
                     break;

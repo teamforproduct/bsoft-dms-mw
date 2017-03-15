@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminSubordinationTree();
-            filter.IsChecked = false;
+            filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);

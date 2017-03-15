@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTree();
-            filter.IsChecked = false;
+            filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetPositionsByJournalDIP(ctx, Id, filter);
@@ -118,21 +118,21 @@ namespace DMS_WebAPI.ControllersV3.Journals
         }
 
 
-        ///// <summary>
-        ///// Устанавливает доступ по умолчанию
-        ///// </summary>
-        ///// <param name="model"></param>
-        ///// <returns></returns>
-        //[HttpPut]
-        //[Route(Features.Positions + "/SetDefault")]
-        //public IHttpActionResult SetDefault([FromBody]SetJournalAccessDefault_Journal model)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessDefault_Journal, model);
-        //    var res = new JsonResult(tmpItem, this);
-        //    res.SpentTime = stopWatch;
-        //    return res;
-        //}
+        /// <summary>
+        /// Устанавливает доступ по умолчанию
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Positions + "/SetDefault")]
+        public IHttpActionResult SetDefault([FromBody]SetJournalAccessDefault_Journal model)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessDefault_Journal, model);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
         /// <summary>
         /// Разрешает/запрещает должности выполнять рассылку для всех должностей организации

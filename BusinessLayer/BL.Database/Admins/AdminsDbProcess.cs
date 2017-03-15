@@ -851,7 +851,7 @@ namespace BL.Database.Admins
             {
                 var roleFilter = new FilterAdminRole();
 
-                if (filter.IsChecked)
+                if (filter.IsChecked ?? false)
                 {
                     roleFilter.PositionIDs = filter.PositionIDs;
                 }

@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
-            filter.IsChecked = false;
+            filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
