@@ -918,6 +918,21 @@ namespace DMS_WebAPI.Utilities
         {
             return _webDb.GetControlQuestions();
         }
+
+        public async Task SwitchOffFingerprint(IContext context, Item model)
+        {
+            var user = await GetUserAsync(context, model.Id);
+
+            if (user == null) throw new UserIsNotDefined();
+
+            user.IsFingerprintEnabled = false;
+            user.LastChangeDate = DateTime.UtcNow;
+
+            var result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded) throw new DatabaseError();
+        }
+
         #endregion
 
         public IEnumerable<AspNetUserContexts> GetUserContexts(FilterAspNetUserContext filter)
