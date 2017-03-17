@@ -1120,9 +1120,9 @@ namespace BL.Database.Documents
                     entry.Property(x => x.ReadDate).IsModified = true;
                 }
                 dbContext.SaveChanges();
-                eventList.ToList().ForEach(x=> CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, x.DocumentId, CommonQueries.GetEventsSourceTarget(x)));
+                eventList.ToList().ForEach(x => CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, x.DocumentId, CommonQueries.GetEventsSourceTarget(x)));
                 dbContext.SaveChanges();
-                eventList.Where(x=> x.TargetPositionId.HasValue).ToList().ForEach(x=> CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, x.DocumentId, x.TargetPositionId.Value));
+                eventList.Where(x => x.TargetPositionId.HasValue).ToList().ForEach(x => CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, x.DocumentId, x.TargetPositionId.Value));
                 transaction.Complete();
             }
         }
@@ -1370,9 +1370,13 @@ namespace BL.Database.Documents
 
                 }
 
-                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, 
-                    CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList())
-                    .Concat(CommonQueries.GetEventsSourceTarget(document.Events.ToList())).ToList());
+                var list = CommonQueries.GetEventsSourceTarget(sendList.StartEvent);
+                if (document?.Waits?.Any() ?? false)
+                    list = list.Concat(CommonQueries.GetEventsSourceTarget(document?.Waits?.Select(x => x.OnEvent).ToList())).ToList();
+                if (document?.Events?.Any() ?? false)
+                    list = list.Concat(CommonQueries.GetEventsSourceTarget(document?.Events?.ToList())).ToList();
+
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, list);
 
                 //CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();

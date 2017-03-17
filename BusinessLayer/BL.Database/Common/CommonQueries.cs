@@ -3686,10 +3686,11 @@ namespace BL.Database.Common
 
         public static List<int> GetEventsSourceTarget(InternalDocumentEvent events)
         {
-            return GetEventsSourceTarget(new List<InternalDocumentEvent> { events });
+            return events != null ? GetEventsSourceTarget(new List<InternalDocumentEvent> { events }): null;
         }
         public static List<int> GetEventsSourceTarget(List<InternalDocumentEvent> events)
         {
+            if (!(events?.Any() ?? false)) return null;
             var res = events.Where(x => x.SourcePositionId.HasValue).Select(x => x.SourcePositionId.Value).
                 Concat(events.Where(x => x.TargetPositionId.HasValue).Select(x => x.TargetPositionId.Value)).Distinct().ToList();
             return res;
