@@ -494,7 +494,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                     waitDb.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.OnEvent.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
-                CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
+                //CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
 
 
@@ -546,7 +546,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                 }
 
-                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, wait.DocumentId, CommonQueries.GetEventsSourceTarget(wait.OnEvent));
+                CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, wait.DocumentId, CommonQueries.GetEventsSourceTarget(wait.ParentWait.OnEvent));
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -1067,7 +1067,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                     eventsDb.ToList().ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
-                CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
+                //CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
                 transaction.Complete();
 
@@ -1374,7 +1374,7 @@ namespace BL.Database.Documents
                     CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList())
                     .Concat(CommonQueries.GetEventsSourceTarget(document.Events.ToList())).ToList());
 
-                CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
+                //CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
 
                 transaction.Complete();
