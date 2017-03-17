@@ -2563,6 +2563,9 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
             //var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
+            var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+            filterAccessPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionContains,
+                (current, value) => current.Or(e => (e.PositionId == value.Key && e.AccessLevelId >= value.Value)).Expand());
 
             var items = CommonQueries.GetDocumentQuery(dbContext, context)
                     .Where(x => x.LinkId == linkId)
@@ -2584,7 +2587,10 @@ namespace BL.Database.Common
                             ExecutorPositionName = y.ExecutorPosition.Name,
                             ExecutorPositionExecutorAgentId = y.ExecutorPositionExecutorAgentId,
                             ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.ExecutorPositionExecutorType.Suffix != null ? " (" + y.ExecutorPositionExecutorType.Suffix + ")" : null),
-                            Links = y.LinksDocuments.OrderBy(z => z.LastChangeDate)
+                            Links = y.LinksDocuments
+                                    .Where(z=>z.Document.Accesses.AsQueryable().Any(filterAccessPositionContains))
+                                    .Where(z =>z.ParentDocument.Accesses.AsQueryable().Any(filterAccessPositionContains))
+                                    .OrderBy(z => z.LastChangeDate)
                                     .Select(z => new FrontDocumentLink
                                     {
                                         Id = z.Id,
