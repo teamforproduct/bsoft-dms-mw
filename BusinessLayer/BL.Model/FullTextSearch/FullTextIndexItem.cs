@@ -42,6 +42,11 @@ namespace BL.Model.FullTextSearch
         public string ObjectText { get; set; }
 
         /// <summary>
+        /// Date which should be added to full text search, data should convert in to string correctly
+        /// </summary>
+        public List<DateTime?> ObjectTextAddDateTime { get; set; }
+
+        /// <summary>
         /// ID of the client
         /// </summary>
         public int ClientId { get; set; }

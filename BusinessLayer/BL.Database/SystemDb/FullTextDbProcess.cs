@@ -9,6 +9,8 @@ using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using EntityFramework.Extensions;
+using System.Data.Entity.SqlServer;
+using System;
 
 namespace BL.Database.SystemDb
 {
@@ -559,8 +561,10 @@ namespace BL.Database.SystemDb
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentEmployees,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                     ObjectText = x.Main.PersonnelNumber + " " + x.Main.Description + " " + x.Main.Agent.Name + " "
-                    + x.Main.Agent.AgentPeople.FullName + " " + x.Main.Agent.AgentPeople.BirthDate + " " + " " + x.Main.Agent.AgentPeople.TaxCode
-                    + x.Main.Agent.AgentPeople.PassportDate + " " + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText
+                    + x.Main.Agent.AgentPeople.FullName + " " + x.Main.Agent.AgentPeople.TaxCode + " "
+                    //+ x.Main.Agent.AgentPeople.BirthDate + " " + x.Main.Agent.AgentPeople.PassportDate + " " 
+                    + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText,
+                    ObjectTextAddDateTime = new List<DateTime?> { x.Main.Agent.AgentPeople.BirthDate , x.Main.Agent.AgentPeople.PassportDate }
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
@@ -916,7 +920,7 @@ namespace BL.Database.SystemDb
 
                 {
                     var moduleId = Modules.GetId(Modules.Company); var featureId = Features.GetId(Features.ContactPersons);
-                    var qryRes= qry.Where(x=>x.Main.Agent.AgentCompany != null)
+                    var qryRes= qry.Where(x=>x.Main.AgentCompanyId.HasValue)
                     .Select(x => new FullTextIndexItem
                     {
                         ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,

@@ -55,13 +55,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 System.IO.Directory.CreateDirectory(dir);
                 Directory directory = FSDirectory.Open(dir);
-                Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_30);
+                Analyzer analyzer = new CaseInsensitiveWhitespaceAnalyzer();
                 IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
                 writer.Commit();
                 writer.Dispose();
             }
             _directory = FSDirectory.Open(dir);
-            _analyzer = new StandardAnalyzer(Version.LUCENE_30);
+            _analyzer = new CaseInsensitiveWhitespaceAnalyzer();
             _indexReader = IndexReader.Open(_directory, true); // only searching, so read-only=true
             _searcher = new IndexSearcher(_indexReader);
         }
@@ -109,7 +109,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             featureId.SetIntValue(item.FeatureId);
             doc.Add(featureId);
 
-            doc.Add(new Field(FIELD_BODY, item.ObjectText ?? "", Field.Store.NO, Field.Index.ANALYZED));
+            var objectText = item.ObjectText ?? "";
+            if (item.ObjectTextAddDateTime?.Any() ?? false)
+                item.ObjectTextAddDateTime.ForEach(x => { if (x.HasValue) objectText = objectText + " " + x.Value.ToString("dd.MM.yyyy"); } );
+
+            doc.Add(new Field(FIELD_BODY, objectText, Field.Store.NO, Field.Index.ANALYZED));
             doc.Add(new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), Field.Store.NO, Field.Index.ANALYZED));
 
             var securCodes = (item.Access == null || item.Access.All(x => x == 0)) ? NO_RULES_VALUE : "v" + string.Join("v", item.Access.Where(x => x != 0).ToList()) + "v";
@@ -239,7 +243,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
 
-            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer) {AllowLeadingWildcard = true};
+            var parser = new QueryParser(Version.LUCENE_30, FIELD_BODY, _analyzer) { AllowLeadingWildcard = true };
             var textQry = parser.Parse(qryString);
             var clientQry = new TermQuery(new Term(FIELD_CLIENT_ID, clientId.ToString()));
 
@@ -258,7 +262,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             NumericRangeQuery<int> moduleQry = null;
             if (!string.IsNullOrEmpty(filter.Module))
             {
-                moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module),  Modules.GetId(filter.Module), true, true);
+                moduleQry = NumericRangeQuery.NewIntRange(FIELD_MODULE_ID, Modules.GetId(filter.Module), Modules.GetId(filter.Module), true, true);
             }
 
             NumericRangeQuery<int> featureQry = null;
@@ -273,11 +277,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 var currDat = (int)DateTime.Now.ToOADate();
                 fromDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
-                
+
 
                 var maxDate = (int)DateTime.Now.AddYears(20).ToOADate();
                 toDat = NumericRangeQuery.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
-                
+
             }
 
             if (filter.Accesses != null && filter.Accesses.Any())
@@ -294,7 +298,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                 if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                 if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                searchResult.AddRange(GetQueryResult(text,boolQry));
+                searchResult.AddRange(GetQueryResult(text, boolQry));
 
                 foreach (var access in filter.Accesses)
                 {
@@ -309,7 +313,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                     if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                     if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                    searchResult.AddRange(GetQueryResult(text,boolQry));
+                    searchResult.AddRange(GetQueryResult(text, boolQry));
                 }
                 return searchResult;
             }
@@ -325,7 +329,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 if (featureQry != null) boolQry.Add(featureQry, Occur.MUST);
                 if (fromDat != null) boolQry.Add(fromDat, Occur.MUST);
                 if (toDat != null) boolQry.Add(toDat, Occur.MUST);
-                searchResult.AddRange(GetQueryResult(text,boolQry));
+                searchResult.AddRange(GetQueryResult(text, boolQry));
                 return searchResult;
             }
         }
@@ -340,12 +344,12 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (qryRes.TotalHits >= MAX_DOCUMENT_COUNT_RETURN)
                 throw new SystemFullTextTooManyResults(text);
             var res = qryRes.ScoreDocs./*Where(x => x.Score > 1).*/OrderByDescending(x => x.Score).AsParallel()
-                .Select(doc => new {doc, luc = _searcher.Doc(doc.Doc)})
+                .Select(doc => new { doc, luc = _searcher.Doc(doc.Doc) })
                 .Select(rdoc => new FullTextSearchResult
                 {
                     ParentId = Convert.ToInt32(rdoc.luc.Get(FIELD_PARENT_ID)),
-                    ParentObjectType = (EnumObjects) Convert.ToInt32(rdoc.luc.Get(FIELD_PARENT_TYPE)),
-                    ObjectType = (EnumObjects) Convert.ToInt32(rdoc.luc.Get(FIELD_OBJECT_TYPE)),
+                    ParentObjectType = (EnumObjects)Convert.ToInt32(rdoc.luc.Get(FIELD_PARENT_TYPE)),
+                    ObjectType = (EnumObjects)Convert.ToInt32(rdoc.luc.Get(FIELD_OBJECT_TYPE)),
                     ObjectId = Convert.ToInt32(rdoc.luc.Get(FIELD_OBJECT_ID)),
                     ModuleId = Convert.ToInt32(rdoc.luc.Get(FIELD_MODULE_ID)),
                     FeatureId = Convert.ToInt32(rdoc.luc.Get(FIELD_FEATURE_ID)),
