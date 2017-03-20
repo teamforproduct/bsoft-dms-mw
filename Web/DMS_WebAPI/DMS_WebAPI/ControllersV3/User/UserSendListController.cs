@@ -14,15 +14,15 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.SendLists
+namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
     /// Списки рассылки
     /// </summary>
     [Authorize]
-    [DimanicAuthorize]
-    [RoutePrefix(ApiPrefix.V3 + Modules.SendList)]
-    public class SendListInfoController : ApiController
+    //![DimanicAuthorize]
+    [RoutePrefix(ApiPrefix.V3 + Modules.User)]
+    public class UserSendListController : ApiController
     {
         Stopwatch stopWatch = new Stopwatch();
 
@@ -35,14 +35,14 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="sorting">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Info + "/Main")]
+        [Route(Features.SendLists + "/Main")]
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainStandartSendLists(ctx, ftSearch, filter, paging, sorting);
+            var tmpItems = tmpService.GetMainUserStandartSendLists(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -55,14 +55,14 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Info + "/{Id:int}")]
+        [Route(Features.SendLists + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryStandartSendList))]
         public IHttpActionResult Get(int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetStandartSendList(ctx, Id);
+            var tmpItem = tmpService.GetUserStandartSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Info)]
+        [Route(Features.SendLists)]
         public IHttpActionResult Post([FromBody]AddStandartSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Info)]
+        [Route(Features.SendLists)]
         public IHttpActionResult Put([FromBody]ModifyStandartSendList model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Info + "/{Id:int}")]
+        [Route(Features.SendLists + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();

@@ -6711,6 +6711,12 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => filter.PositionID == x.PositionId);
                 }
+
+                if (filter.AgentId != null)
+                {
+                    var now = DateTime.UtcNow;
+                    qry = qry.Where(x => x.Position.PositionExecutors.AsQueryable().Any(y => y.IsActive && y.StartDate < now && y.EndDate > now &&  y.AgentId == filter.AgentId));
+                }
             }
 
             return qry;

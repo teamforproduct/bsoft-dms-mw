@@ -40,6 +40,7 @@
         public const string Plan = "Plan";
         public const string Positions = "Positions";
         public const string Roles = "Roles";
+        public const string SendLists = "SendLists";
         public const string SendRules = "SendRules";
         public const string Sessions = "Sessions";
         public const string Settings = "Settings";
@@ -154,6 +155,7 @@
                 case OnlineUsers:           res = 1620; break;
                 case Accounts:              res = 1630; break;
                 case Banks:                 res = 1640; break;
+                case SendLists:              res = 1650; break;
 
                 default: throw new System.Exception();
             }
