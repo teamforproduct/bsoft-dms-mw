@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainStandartSendLists(ctx, ftSearch, filter, paging, sorting);
+            var tmpItems = tmpService.GetMainUserStandartSendLists(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryStandartSendList(ctx, Id);
+            var tmpItem = tmpService.GetUserStandartSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

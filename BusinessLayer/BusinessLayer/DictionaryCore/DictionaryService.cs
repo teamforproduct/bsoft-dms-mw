@@ -1043,9 +1043,14 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryStandartSendListContents
 
         #region DictionaryStandartSendLists
-        public FrontDictionaryStandartSendList GetDictionaryStandartSendList(IContext context, int id)
+        public FrontDictionaryStandartSendList GetStandartSendList(IContext context, int id)
         {
             return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } }, null).FirstOrDefault();
+        }
+
+        public FrontDictionaryStandartSendList GetUserStandartSendList(IContext context, int id)
+        {
+            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } , AgentId = context.CurrentAgentId }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
@@ -1056,6 +1061,15 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting)
         {
             return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
+        }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting)
+        {
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
+            filter.AgentId = context.CurrentAgentId;
+
+            return GetMainStandartSendLists(context, ftSearch, filter, paging, sorting);
         }
 
         #endregion DictionaryStandartSendList

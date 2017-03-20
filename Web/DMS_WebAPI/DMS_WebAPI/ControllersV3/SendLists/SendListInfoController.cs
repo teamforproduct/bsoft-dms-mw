@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryStandartSendList(ctx, Id);
+            var tmpItem = tmpService.GetStandartSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;
