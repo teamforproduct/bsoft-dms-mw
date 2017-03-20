@@ -326,6 +326,7 @@ namespace BL.Database.SystemDb
                 Paging.Set(ref qryT, paging);
 
                 var res = qryT.ToList();
+                for (int i = 0; i < res.Count(); i++) res[i].Index = i;
                 transaction.Complete();
                 return res;
             }

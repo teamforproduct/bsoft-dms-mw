@@ -19,5 +19,9 @@ namespace BL.Model.SystemCore.FrontModel
         /// Признак, собственной строки поиска
         /// </summary>
         public bool IsOwn { get; set; }
+        /// <summary>
+        /// Номер по порядку
+        /// </summary>
+        public int Index { get; set; }
     }
 }
