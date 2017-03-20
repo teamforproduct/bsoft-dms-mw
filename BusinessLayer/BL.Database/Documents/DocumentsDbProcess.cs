@@ -1104,7 +1104,7 @@ namespace BL.Database.Documents
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
-                //                entry.Property(x => x.DocumentSubjectId).IsModified = true;
+                entry.Property(x => x.DocumentSubject).IsModified = true;
                 entry.Property(x => x.Description).IsModified = true;
                 entry.Property(x => x.SenderAgentId).IsModified = true;
                 entry.Property(x => x.SenderAgentPersonId).IsModified = true;

@@ -508,7 +508,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryDepartments,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryDepartments,
-                    ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.Code
+                    ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.FullPath
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
