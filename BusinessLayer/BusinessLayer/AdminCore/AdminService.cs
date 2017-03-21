@@ -87,6 +87,11 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetEmployeeForContext(context, userId);
         }
 
+        public void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model)
+        {
+            _dictDb.SetAgentUserUserName(context, new InternalDictionaryAgentUser { UserName = model.NewUserName });
+        }
+
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return _adminDb.GetPositionsByUser(employee);

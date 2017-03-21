@@ -13,22 +13,14 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentUser()
         { }
 
-        public InternalDictionaryAgentUser(ModifyDictionaryAgentUser model)
-        {
-            Id = model.Id;
-            LanguageId = model.LanguageId;
-            UserId = model.UserId;
-            Login = model.Login;
-            IsActive = model.IsActive;
-        }
-
         public InternalDictionaryAgentUser(InternalDictionaryAgentEmployee model)
         {
             Id = model.Id;
             IsActive = model.IsActive;
             LanguageId = model.LanguageId;
             UserId = model.UserId;
-            Login = model.Login;
+            UserName = model.UserName;
+            UserEmail = model.UserEmail;
             LastChangeDate = model.LastChangeDate;
             LastChangeUserId = model.LastChangeUserId;
         }
@@ -44,6 +36,8 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         public string UserId { get; set; }
 
+        public string UserName { get; set; }
+
         /// <summary>
         /// Признак активности
         /// </summary>
@@ -52,7 +46,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением
         /// </summary>
-        public string Login { get; set; }
+        public string UserEmail { get; set; }
 
     }
 }

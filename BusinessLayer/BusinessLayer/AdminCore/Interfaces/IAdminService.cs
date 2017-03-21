@@ -28,6 +28,8 @@ namespace BL.Logic.AdminCore.Interfaces
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetEmployeeForContext(IContext context, string userId);
+
+        void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model);
         #endregion
 
         #region [+] Verify ...

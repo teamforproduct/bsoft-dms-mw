@@ -68,6 +68,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);
         void SetAgentUserLastPositionChose(IContext context, InternalDictionaryAgentUser User);
         void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserName(IContext context, InternalDictionaryAgentUser User);
         #endregion
 
         #region DictionaryAgentAddress

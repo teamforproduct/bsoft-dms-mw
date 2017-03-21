@@ -22,6 +22,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public string UserId { get; set; }
 
         /// <summary>
+        /// Связь с WEB - USER - Login
+        /// </summary>
+        [IgnoreDataMember]
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Имейл, на который высылается письмо с приглашением
         /// </summary>
         [Required]

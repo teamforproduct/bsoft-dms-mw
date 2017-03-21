@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace BL.Model.Users
 {
@@ -14,6 +9,11 @@ namespace BL.Model.Users
         /// </summary>
         public string NewEmail { get; set; }
 
-        
+
+        /// <summary>
+        /// Новый логин
+        /// </summary>
+        [IgnoreDataMember]
+        public string NewUserName { get; set; }
     }
 }
