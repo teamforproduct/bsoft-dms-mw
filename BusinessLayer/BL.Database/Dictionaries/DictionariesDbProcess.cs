@@ -1051,6 +1051,7 @@ namespace BL.Database.Dictionaries
                     {
                         Id = y.Id,
                         PositionName = y.Position.Name,
+                        DepartmentIndex = y.Position.Department.Code,
                         DepartmentName = y.Position.Department.Name,
                         PositionExecutorTypeSuffix = y.PositionExecutorType.Suffix
                     }).ToList(),
@@ -5549,6 +5550,7 @@ namespace BL.Database.Dictionaries
                     AgentName = x.Agent.Name,
                     PositionName = x.Position.Name,
                     PositionFullName = x.Position.FullName,
+                    DepartmentIndex = x.Position.Department.Code,
                     DepartmentName = x.Position.Department.Name,
                     AccessLevelName = x.AccessLevel.Name,
                     PositionExecutorTypeName = x.PositionExecutorType.Name,
@@ -5747,9 +5749,19 @@ namespace BL.Database.Dictionaries
                 // Исключение списка сотрудников
                 if (filter.NotContainsAgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.True<DictionaryPositionExecutors>();
                     filterContains = filter.NotContainsAgentIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.AgentId != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка должностей
+                if (filter.NotContainsPositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DictionaryPositionExecutors>();
+                    filterContains = filter.NotContainsPositionIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.PositionId != value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -5765,7 +5777,7 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Тоько активные/неактивные
-                if (filter.IsActive != null)
+                if (filter.IsActive.HasValue)
                 {
                     qry = qry.Where(x => filter.IsActive == x.IsActive);
                 }
@@ -5786,6 +5798,10 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(x => x.StartDate <= filter.EndDate);
                 }
 
+                if (filter.ExistExecutorAgentInPositions.HasValue && filter.ExistExecutorAgentInPositions.Value)
+                {
+                    qry = qry.Where(x => x.Position.ExecutorAgentId.HasValue);
+                }
 
                 if (filter.AccessLevelIDs?.Count > 0)
                 {

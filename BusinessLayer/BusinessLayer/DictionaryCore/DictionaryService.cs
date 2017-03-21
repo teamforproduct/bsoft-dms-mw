@@ -1050,7 +1050,7 @@ namespace BL.Logic.DictionaryCore
 
         public FrontDictionaryStandartSendList GetUserStandartSendList(IContext context, int id)
         {
-            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id } , AgentId = context.CurrentAgentId }, null).FirstOrDefault();
+            return _dictDb.GetStandartSendLists(context, new FilterDictionaryStandartSendList { IDs = new List<int> { id }, AgentId = context.CurrentAgentId }, null).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter)
@@ -1069,7 +1069,37 @@ namespace BL.Logic.DictionaryCore
 
             filter.AgentId = context.CurrentAgentId;
 
-            return GetMainStandartSendLists(context, ftSearch, filter, paging, sorting);
+            var res = GetMainStandartSendLists(context, ftSearch, filter, paging, sorting);
+
+            //res = res.ToList();
+
+            // Добавляю должности, у которых еще нет типовых списков, но за которых пользователю разрешено работать
+            var l = _dictDb.GetPositionExecutors(context, new FilterDictionaryPositionExecutor
+            {
+                AgentIDs = new List<int> { context.CurrentAgentId },
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow,
+                ExistExecutorAgentInPositions = true,
+                IsActive = true,
+                NotContainsPositionIDs = res.Select(x => x.Id).ToList()
+            }).ToList();
+
+            if (l.Count() > 0)
+            {
+                res = res.Concat(l.Select(x => new FrontMainDictionaryStandartSendList
+                {
+                    Id = x.PositionId,
+                    Name = x.PositionName,
+                    ExecutorName = x.AgentName,
+                    ExecutorTypeSuffix = x.PositionExecutorTypeSuffix,
+                    DepartmentIndex = x.DepartmentIndex,
+                    DepartmentName = x.DepartmentName,
+                }));
+
+                res = res.OrderBy(x => x.Name).ToList();
+            }
+
+            return res;
         }
 
         #endregion DictionaryStandartSendList
@@ -1231,7 +1261,7 @@ namespace BL.Logic.DictionaryCore
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryDepartments, list);
 
                 list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
-                if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryPositions, list                    );
+                if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryPositions, list);
 
                 list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Employee });
 
