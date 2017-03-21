@@ -89,7 +89,7 @@ namespace BL.Logic.AdminCore
 
         public void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model)
         {
-            _dictDb.SetAgentUserUserName(context, new InternalDictionaryAgentUser { UserName = model.NewUserName });
+            _dictDb.SetAgentUserUserName(context, new InternalDictionaryAgentUser { Id = model.Id, UserName = model.NewUserName });
         }
 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
