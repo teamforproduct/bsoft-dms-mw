@@ -685,7 +685,7 @@ namespace BL.Model.Exception
 
     public class DictionaryAddressTypeNotUnique : DmsExceptions
     {
-        public DictionaryAddressTypeNotUnique() : base() { }
+        public DictionaryAddressTypeNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
         public DictionaryAddressTypeNotUnique(System.Exception ex) : base(ex) { }
     }
 

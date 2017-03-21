@@ -32,9 +32,9 @@ namespace BL.Logic.DictionaryCore
             if (TypeModelIs<ModifyAgentAddress>())
             { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentAddress>().Id }; }
 
-            var spr = _dictDb.GetAgentAddresses(_context, filter);
+            var spr = _dictDb.GetAgentAddresses(_context, filter).FirstOrDefault();
 
-            if (spr.Count() != 0) throw new DictionaryAddressTypeNotUnique();
+            if (spr != null) throw new DictionaryAddressTypeNotUnique(spr.AddressType.Name);
 
             //2
 
@@ -48,9 +48,9 @@ namespace BL.Logic.DictionaryCore
             if (TypeModelIs<ModifyAgentAddress>())
             { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentAddress>().Id }; }
 
-            spr = _dictDb.GetAgentAddresses(_context, filter);
+            spr = _dictDb.GetAgentAddresses(_context, filter).FirstOrDefault();
 
-            if (spr.Count() != 0) throw new DictionaryAddressNameNotUnique(Model.PostCode, Model.Address);
+            if (spr != null) throw new DictionaryAddressNameNotUnique(Model.PostCode, Model.Address);
 
 
             return true;

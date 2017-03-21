@@ -89,7 +89,9 @@ namespace BL.Logic.AdminCore
 
         public void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model)
         {
-            _dictDb.SetAgentUserUserName(context, new InternalDictionaryAgentUser { Id = model.Id, UserName = model.NewUserName });
+            var user = new InternalDictionaryAgentUser { Id = model.Id, UserName = model.NewUserName };
+            CommonDocumentUtilities.SetLastChange(context, user);
+            _dictDb.SetAgentUserUserName(context, user);
         }
 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)

@@ -1394,6 +1394,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentUsersSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.UserName).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCashInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAgentUsers, EnumOperationType.Update);
