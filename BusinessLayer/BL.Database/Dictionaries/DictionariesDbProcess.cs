@@ -435,8 +435,6 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                UpdateAgentName(context, people.Id, people);
-
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(context, people);
 
                 dbContext.DictionaryAgentPeopleSet.Attach(dbModel);
