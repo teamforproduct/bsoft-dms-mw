@@ -43,6 +43,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Департамент
         /// </summary>
+        public string DepartmentIndex { get; set; }
+
+        /// <summary>
+        /// Департамент
+        /// </summary>
         public string DepartmentName { get; set; }
 
         /// <summary>

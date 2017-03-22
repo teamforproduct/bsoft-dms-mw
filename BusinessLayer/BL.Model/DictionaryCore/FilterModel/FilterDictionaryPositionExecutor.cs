@@ -29,6 +29,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         [IgnoreDataMember]
         public List<int> NotContainsAgentIDs { get; set; }
 
+        /// <summary>
+        /// Исключение должностей
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> NotContainsPositionIDs { get; set; }
 
         /// <summary>
         /// Дата начала исполнения должности
@@ -41,6 +46,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public DateTime? EndDate { get { return _EndDate; } set { _EndDate = value.ToUTC(); } }
         private DateTime? _EndDate;
+
+        [IgnoreDataMember]
+        public bool? ExistExecutorAgentInPositions { get; set; }
 
         /// <summary>
         /// Тип исполнения
