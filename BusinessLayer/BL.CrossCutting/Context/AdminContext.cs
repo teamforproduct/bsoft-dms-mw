@@ -98,6 +98,11 @@ namespace BL.CrossCutting.Context
             _currentPositionId = position;
         }
 
+        public List<string> GetAccessFilterForFullText(string addFilter)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsAdmin => true;
         public LicenceInfo ClientLicence { get; set; }
 

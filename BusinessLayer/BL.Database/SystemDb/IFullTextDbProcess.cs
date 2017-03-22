@@ -15,5 +15,6 @@ namespace BL.Database.SystemDb
         IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects objectType, bool isDeepUpdate, bool IsDirectFilter, int? idBeg, int? idEnd);
         void FullTextIndexDeleteProcessed(IContext ctx, IEnumerable<int> processedIds, bool deleteSimilarObject = false);
         void FullTextIndexDeleteCash(IContext ctx, int deleteBis);
+        Dictionary<int, int> GetRanges(IContext ctx, EnumObjects obj, int rangeCount);
     }
 }

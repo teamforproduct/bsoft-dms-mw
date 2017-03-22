@@ -30,11 +30,11 @@ namespace BL.Logic.SystemCore
 
                 // Получаю список ид из полнотекста
                 var ftList = new List<int>();
-
+                bool IsNotAll;
                 if (IsUseParentId)
-                    ftList = tmpService.SearchItemParentId(context, searchFilter.FullTextSearchString, ftsFilter);
+                    ftList = tmpService.SearchItemParentId(out IsNotAll, context, searchFilter.FullTextSearchString, ftsFilter);
                 else
-                    ftList = tmpService.SearchItemId(context, searchFilter.FullTextSearchString, ftsFilter);
+                    ftList = tmpService.SearchItemId(out IsNotAll, context, searchFilter.FullTextSearchString, ftsFilter);
 
                 // Если полнотекст ничего не нашел...
                 if (!ftList.Any()) return new List<MainFront>();

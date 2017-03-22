@@ -54,22 +54,37 @@ namespace BL.Logic.DocumentCore
                 FileLogger.AppendTextToFile($"", @"C:\TEMPLOGS\fulltext.log");
                 FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** StartSearchIDInLucena ", @"C:\TEMPLOGS\fulltext.log");
                 //                var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "417757 file", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
-
-                filter.FullTextSearchSearch.FullTextSearchId
-                    = DmsResolver.Current.Get<IFullTextSearchService>()
-                    .SearchItemParentId(ctx, filter.FullTextSearchSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Documents, Accesses = ctx.CurrentPositionsIdList.ToList()});
-                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchId.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                var addFilter = ((filter?.Document?.IsInWork ?? false) ? FullTextFilterTypes.IsInWork : FullTextFilterTypes.NoFilter)
+                                + ((filter?.Document?.IsFavourite ?? false) ? FullTextFilterTypes.IsFavourite : FullTextFilterTypes.NoFilter)
+                                + ((filter?.Event?.IsNew ?? false) ? FullTextFilterTypes.IsEventNew : FullTextFilterTypes.NoFilter)
+                                + ((filter?.Wait?.IsOpened ?? false) ? FullTextFilterTypes.IsWaitOpened : FullTextFilterTypes.NoFilter);
+                var fullTextSearchFilter = new FullTextSearchFilter
+                {
+                    IsNotSplitText = true,
+                    Module = Modules.Documents,
+                    Accesses = ctx.GetAccessFilterForFullText(addFilter),
+                    Filters = ((filter?.Document?.TagId?.Any() ?? false)
+                                ? filter.Document.TagId.Select(y => $"{y}{FullTextFilterTypes.Tag}").ToList()
+                                : new List<string>())
+                                .Concat
+                                ((filter?.Document?.SimultaneousAccessPositionId?.Any() ?? false)
+                                ? filter.Document.SimultaneousAccessPositionId.Select(y => $"{y}{FullTextFilterTypes.WorkGroupPosition}").ToList()
+                                : new List<string>()).ToList(),
+                };
+                bool IsNotAll;
+                filter.FullTextSearchSearch.FullTextSearchResult = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(out IsNotAll, ctx, filter.FullTextSearchSearch.FullTextSearchString, fullTextSearchFilter);
+                filter.FullTextSearchSearch.IsNotAll = IsNotAll;
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchResult.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             }
             var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
                 FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** We have result: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
-
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString) && !filter.FullTextSearchSearch.IsDontSaveSearchQueryLog && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>()
                     .AddSearchQueryLog(ctx, new InternalSearchQueryLog
                     {
-                        ModuleId = Modules.GetId(Modules.Documents),                        
+                        ModuleId = Modules.GetId(Modules.Documents),
                         SearchQueryText = filter?.FullTextSearchSearch?.FullTextSearchString,
                     });
             }

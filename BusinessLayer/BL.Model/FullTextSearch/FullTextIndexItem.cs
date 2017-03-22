@@ -7,7 +7,7 @@ namespace BL.Model.FullTextSearch
     /// <summary>
     /// Model that describe one elements in FullText index and operation with it.
     /// </summary>
-    public class FullTextIndexItem
+    public class FullTextIndexItem : ICloneable
     {
         
         /// <summary>
@@ -30,6 +30,9 @@ namespace BL.Model.FullTextSearch
         /// 
         /// </summary>
         public EnumObjects ParentObjectType { get; set; }
+        /// <summary>
+        /// Id for filtering
+        /// </summary>
         public int FilterId { get; set; }
         /// <summary>
         /// type of operation add/delete/update
@@ -40,6 +43,10 @@ namespace BL.Model.FullTextSearch
         /// Text which should be added to full text search
         /// </summary>
         public string ObjectText { get; set; }
+        /// <summary>
+        /// Additional filters
+        /// </summary>
+        public string Filter { get; set; }
 
         /// <summary>
         /// Date which should be added to full text search, data should convert in to string correctly
@@ -63,7 +70,7 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Доступы
         /// </summary>
-        public List<int> Access { get; set; }
+        public List<FullTextIndexItemAccessInfo> Access { get; set; }
         /// <summary>
         /// Актуальность записи с
         /// </summary>
@@ -72,5 +79,13 @@ namespace BL.Model.FullTextSearch
         /// Актуальность записи по
         /// </summary>
         public DateTime? DateTo { get; set; }
+        /// <summary>
+        /// Клонирует объект
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

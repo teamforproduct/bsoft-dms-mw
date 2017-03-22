@@ -27,6 +27,7 @@ using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.DependencyInjection;
+using System.Text.RegularExpressions;
 
 namespace BL.Database.Documents
 {
@@ -108,7 +109,7 @@ namespace BL.Database.Documents
                 var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
                 filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
 
-               #endregion Position filters for counters preparing
+                #endregion Position filters for counters preparing
 
                 #region Paging
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
@@ -151,7 +152,7 @@ namespace BL.Database.Documents
                     }
                     #endregion IncomingIds
                 }
-                else if (filter?.FullTextSearchSearch?.FullTextSearchId != null)
+                else if (filter?.FullTextSearchSearch?.FullTextSearchResult != null)
                 {
                     #region FullTextSearchDocumentId
                     #region groupCount
@@ -189,26 +190,34 @@ namespace BL.Database.Documents
                     else
                     #endregion groupCount
                     {
-                        var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
-                        var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
-                        FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IDsFromDB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                        //var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
+                        //var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
+                        //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IDsFromDB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                        //docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i).Select(x => x.DocId).ToList();
+                        //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
 
-                        docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
-                            //.OrderBy(x => x.Index)
-                            .Select(x => x.DocId).ToList();
-                        FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
-
-                        if (paging.IsOnlyCounter ?? true)
+                        if (((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter ?? true)) && !filter.FullTextSearchSearch.IsNotAll)
                         {
-                            paging.TotalItemsCount = docIds.Count();
-                            paging.Counters = new UICounters { Counter1 = 0, Counter2 = 333, Counter3 = 999999 };
+                            var ftDocs = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId).Select(x => string.Join(" ", x.Select(y => y.Security))).ToList();
+                            var accF = ctx.GetAccessFilterForFullText($".{FullTextFilterTypes.IsFavourite}..");
+                            var accN = ctx.GetAccessFilterForFullText($"..{FullTextFilterTypes.IsEventNew}.");
+                            var accC = ctx.GetAccessFilterForFullText($"...{FullTextFilterTypes.IsWaitOpened}");
+
+                            paging.TotalItemsCount = ftDocs.Count();
+                            paging.Counters = new UICounters
+                            {
+                                Counter1 = ftDocs.Count(x=> accF.Any(y=> Regex.IsMatch(x,y))),
+                                Counter2 = ftDocs.Count(x => accN.Any(y => Regex.IsMatch(x, y))),
+                                Counter3 = ftDocs.Count(x => accC.Any(y => Regex.IsMatch(x, y))),
+                            };
                         }
-                        if (paging.IsOnlyCounter ?? false)
+                        if ((paging.IsOnlyCounter ?? false) || (paging.IsCalculateAddCounter ?? false))
                         {
                             docs = new List<FrontDocument>();
                         }
                         else
                         {
+                            var docIds = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId).Select(x => x.Key).OrderByDescending(x => x).ToList();
                             if (!paging.IsAll)
                             {
                                 docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
@@ -301,7 +310,7 @@ namespace BL.Database.Documents
                                         CountWaits = x.Sum(y => y.CountWaits),
                                     });
                                 var counts = qryAcc.FirstOrDefault();
-                                paging.TotalItemsCount = (paging.IsOnlyCounter ?? true) ? counts?.Count : (int?)null;
+                                paging.TotalItemsCount = (paging.IsOnlyCounter ?? true) ? counts?.Count : null;
                                 if (paging.IsCalculateAddCounter ?? true)
                                     paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
                             }
@@ -408,7 +417,7 @@ namespace BL.Database.Documents
                                             DocumentId = x.Key,
                                             IsFavourite = x.Any(y => y.IsFavourite),
                                             IsInWork = x.Any(y => y.IsInWork),
-                                            NewEventCount = x.Sum(y=>y.CountNewEvents),
+                                            NewEventCount = x.Sum(y => y.CountNewEvents),
                                             //CountWaits = x.Sum(y => y.CountWaits),
                                             //OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
                                         }).ToList();
@@ -1051,10 +1060,7 @@ namespace BL.Database.Documents
                     }
                 dbContext.SaveChanges();
                 //TODO Papers
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddNew);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Events.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.AddNew);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Files.Select(x => x.Id).ToList(), EnumObjects.DocumentFiles, EnumOperationType.AddNew);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, sendListsDb.Select(x => x.Id).ToList(), EnumObjects.DocumentSendLists, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddFull);
                 transaction.Complete();
 
             }
@@ -1137,7 +1143,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
 
                 CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1198,7 +1204,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.DeleteFull);
                 transaction.Complete();
 
             }
@@ -1399,7 +1405,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1590,8 +1596,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
                 CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Events.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }

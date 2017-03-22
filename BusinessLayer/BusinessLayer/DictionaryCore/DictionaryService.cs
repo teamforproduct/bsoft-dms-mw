@@ -887,12 +887,12 @@ namespace BL.Logic.DictionaryCore
                 var ftDict = new Dictionary<EnumObjects, List<int>>();
                 var depList = new List<int>();
                 var cmpList = new List<int>();
-
+                bool IsNotAll;
                 // Если включен поиск по журналам
                 if (searchInJournals)
                 {
                     // ищу только в журналах
-                    var journals = service.SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    var journals = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Journal });
 
                     // отделы только из найденных журналов
@@ -903,11 +903,11 @@ namespace BL.Logic.DictionaryCore
                 }
                 else
                 {
-                    depList = service.SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    depList = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Department });
 
                     // Получаю список ид из полнотекста
-                    cmpList = service.SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    cmpList = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                         new FullTextSearchFilter { Module = Modules.Org });
                 }
 
@@ -1222,18 +1222,18 @@ namespace BL.Logic.DictionaryCore
                 var service = DmsResolver.Current.Get<IFullTextSearchService>();
                 var ftDict = new Dictionary<EnumObjects, List<int>>();
                 var list = new List<int>();
-
+                bool IsNotAll;
                 // Получаю список ид из полнотекста
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Org });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Org });
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, list);
 
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Department });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Department });
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryDepartments, list);
 
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryPositions, list                    );
 
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Employee });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Employee });
 
                 if (list.Count > 0)
                 {
