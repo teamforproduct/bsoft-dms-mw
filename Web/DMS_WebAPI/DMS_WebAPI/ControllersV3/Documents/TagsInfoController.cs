@@ -44,6 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainTags(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
+            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }
