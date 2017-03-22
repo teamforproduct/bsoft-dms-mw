@@ -5,19 +5,15 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Назначения пользователя-сотрудника
+    /// Пользователь. Назначения
     /// Пользователь-сотрудник может работать в системе если назначен хотя бы на одну должность в текущем интервале времени
     /// Пользователь-сотрудник может одновременно занимать должность и исполнять обязанноти другой должности или реферировать
     /// </summary>
@@ -46,6 +42,27 @@ namespace DMS_WebAPI.ControllersV3.User
             res.SpentTime = stopWatch;
             return res;
         }
+
+        /// <summary>
+        /// Возвращает список назначений для текущего пользователя (должность - интервал назначения, количество новых событий)
+        /// Пользоателю может быть назначено исполнение обязанностей другой должности
+        /// </summary>
+        /// <returns>список должностей</returns>
+        [HttpGet]
+        [Route(Features.Assignments + "/Available")]
+        [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
+        public IHttpActionResult GetAvailableShort()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetAvailablePositionsDialog(context);
+            var res = new JsonResult(tmpItems, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        
 
         /// <summary>
         /// Возвращает список назначений, от которых пользователь сейчас работатет.

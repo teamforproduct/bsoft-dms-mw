@@ -19,13 +19,18 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using BL.CrossCutting.Helpers.CashService;
+using BL.Model.Constants;
 
 namespace BL.Database.SystemDb
 {
     public class SystemDbProcess : CoreDb.CoreDb, ISystemDbProcess
     {
-        public SystemDbProcess()
+        private readonly ICacheService _casheService;
+
+        public SystemDbProcess(ICacheService casheService)
         {
+            _casheService = casheService;
         }
 
         public void InitializerDatabase(IContext ctx)
@@ -262,11 +267,9 @@ namespace BL.Database.SystemDb
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
-
-
-
                 transaction.Complete();
-
+                _casheService.RefreshKey(context, SettingConstants.PERMISSION_CASHE_KEY);
+                _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
             }
 
         }
@@ -310,21 +313,33 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<string> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        public IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter);
 
-                var qryT = qry.Select(x => x.SearchQueryText).Distinct();
+                var qryT = qry.GroupBy(x => x.SearchQueryText).Select(x => new FrontSearchQueryLog { SearchQueryText = x.Key, IsOwn = x.Any(y => y.LastChangeUserId == context.CurrentAgentId) });
 
-                qry = qry.OrderBy(x => x.SearchQueryText.Length).ThenBy(x => x.SearchQueryText);
+                qryT = qryT.OrderByDescending(x => x.IsOwn).ThenBy(x => x.SearchQueryText.Length).ThenBy(x => x.SearchQueryText);
 
-                Paging.Set(ref qry, paging);
+                Paging.Set(ref qryT, paging);
 
                 var res = qryT.ToList();
+                for (int i = 0; i < res.Count(); i++) res[i].Index = i;
                 transaction.Complete();
                 return res;
+            }
+        }
+
+        public void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter).Where(x => x.LastChangeUserId == context.CurrentAgentId);
+                dbContext.SystemSearchQueryLogsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
             }
         }
 
@@ -423,6 +438,10 @@ namespace BL.Database.SystemDb
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.OneSearchQueryTextParts)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.SearchQueryText.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
+                }
+                if (!string.IsNullOrEmpty(filter.SearchQueryTextExact))
+                {
+                    qry = qry.Where(x => x.SearchQueryText == filter.SearchQueryTextExact);
                 }
             }
             return qry;
@@ -936,14 +955,6 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(context, dbContext, filter);
-
-                var actions = qry.Select(x => x.Id).ToList();
-
-                //if (actions.Count() > 0)
-                //{
-                //    dbContext.AdminRoleActionsSet.Where(x => actions.Contains(x.ActionId)).Delete();
-                //}
-
                 qry.Delete();
 
                 transaction.Complete();
@@ -981,9 +992,10 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.SystemActionsSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
+                _casheService.RefreshKey(context, SettingConstants.ACTION_CASHE_KEY);
             }
         }
 
@@ -1592,7 +1604,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
-                var res = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
                                     && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
                                         || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
@@ -1692,7 +1704,7 @@ namespace BL.Database.SystemDb
                     closedSendLists = closedSendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                                     .Where(x => x.Document.IsLaunchPlan && !x.StartEventId.HasValue);
 
                 if (documentId.HasValue)
@@ -1749,7 +1761,7 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(
                         x =>
                             !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() &&

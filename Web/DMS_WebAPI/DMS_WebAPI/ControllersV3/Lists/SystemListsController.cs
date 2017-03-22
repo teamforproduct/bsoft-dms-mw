@@ -1,5 +1,4 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
@@ -18,11 +17,10 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.System
+namespace DMS_WebAPI.ControllersV3.Lists
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Системные справочники и типы. Для вызова апи требуется авторизация (доступ для авторизованных пользователей не ограничивается) 
+    /// Системные справочники и типы.
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]
@@ -319,21 +317,6 @@ namespace DMS_WebAPI.ControllersV3.System
             return new JsonResult(tmpItems, this);
         }
 
-        /// <summary>
-        /// Возвращает историю поисковых запросов 
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route(Features.SearchQueries)]
-        [ResponseType(typeof(List<string>))]
-        public IHttpActionResult Get([FromUri] FilterSystemSearchQueryLog filter, UIPaging paging)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ILogger>();
-            var tmpItems = tmpService.GetSystemSearchQueryLogs(ctx, filter, paging);
-            return new JsonResult(tmpItems, this);
-        }
+       
     }
 }

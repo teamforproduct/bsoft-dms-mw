@@ -1,7 +1,6 @@
-﻿using System;
+﻿using DMS_WebAPI.Areas.HelpPage.ModelDescriptions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace DMS_WebAPI.Areas.HelpPage.App_Start
 {
@@ -10,6 +9,7 @@ namespace DMS_WebAPI.Areas.HelpPage.App_Start
         public static string GetOrderedName(string Name) =>
             Name
             .Replace("FullTextSearchString", "AAA")
+            .Replace("IsDontSaveSearchQueryLog", "AAB")
             .Replace("NotContainsIDs", "AAC")
             .Replace("IDs", "AAB")
             .Replace("Id", "AAB")
@@ -25,6 +25,38 @@ namespace DMS_WebAPI.Areas.HelpPage.App_Start
             .Replace("IsOnlyCounter", "ZZD")
             .Replace("Sort", "ZZE");
 
+        public static string GetParametrs(IList<ParameterDescription> parametrs, string dlm = ", ", bool InBrackets = true, bool MarkRequired = true)
+        {
+            var text = string.Empty;
 
+            if (parametrs == null) return text;
+
+            foreach (var item in parametrs
+                            .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
+                            .ThenBy(x => GetOrderedName(x.Name)))
+            {
+                var itemName = item.Name;
+                if (MarkRequired && item.Annotations.Any(x => x.Documentation == "Required"))
+                {
+                    itemName = "<b>" + itemName + "</b>";
+                }
+                if (MarkRequired) text = text + (text == string.Empty ? string.Empty : dlm) + GetTooltip(itemName, item.Documentation);
+                else text = text + (text == string.Empty ? string.Empty : dlm) + itemName;
+            }
+
+            if (InBrackets && !string.IsNullOrEmpty(text))
+            {
+                text = "(" + text + ")";
+            }
+
+            return text;
+        }
+
+        private static string GetTooltip(string text, string tooltip)
+        {
+            if (string.IsNullOrEmpty(tooltip)) return text;
+
+            return "<span data-toggle=\"tooltip\" title=" + tooltip.Replace(" ", "&ensp;") + ">" + text + "</span>";
+        }
     }
 }

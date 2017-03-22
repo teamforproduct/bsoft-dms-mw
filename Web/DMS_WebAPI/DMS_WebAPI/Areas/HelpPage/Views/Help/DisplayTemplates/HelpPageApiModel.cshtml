@@ -1,5 +1,6 @@
 @using System.Web.Http
 @using System.Web.Http.Description
+@using DMS_WebAPI.Areas.HelpPage
 @using DMS_WebAPI.Areas.HelpPage.Models
 @using DMS_WebAPI.Areas.HelpPage.ModelDescriptions
 @model HelpPageApiModel
@@ -7,7 +8,7 @@
 @{
     ApiDescription description = Model.ApiDescription;
 }
-<h1>@description.HttpMethod.Method @description.RelativePath</h1>
+<h1>@description.HttpMethod.Method @description.GetFriendlyName()</h1>
 <div>
   <p>@description.Documentation</p>
 

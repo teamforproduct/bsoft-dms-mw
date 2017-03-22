@@ -12,57 +12,96 @@
 
 }
 
-@if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName == "Lists")
+@*@if (@Model.Key.ControllerName.Contains("Info") || @Model.Key.ControllerName == "Lists")
 {
     <h1 id="@Model.Key.ControllerName.Replace("Info", "")">  @Model.Key.ControllerName.Replace("Info", "")</h1>
 }
 @if (@Model.Key.ControllerName == "Settings")
 {
     <h1 id="System">System</h1>
-}
-<h2 id="@Model.Key.ControllerName">@Model.Key.ControllerName</h2>
+}*@
+@*<h2 id="@Model.Key.ControllerName">@Model.Key.ControllerName</h2>*@
 @if (!String.IsNullOrEmpty(controllerDocumentation))
 {
-    <p>@controllerDocumentation</p>
+    <h2 id="@Model.Key.ControllerName">@controllerDocumentation</h2>
 }
+
+@if (!Model.Key.ControllerType.CustomAttributes.Any(x => x.AttributeType.Name == "DimanicAuthorizeAttribute"))
+{
+  <div class="access_unlimited">
+    <span data-container="body" data-toggle="popover"
+          data-placement="bottom" data-trigger="hover"
+          data-content="Для вызова API нужна только авторизация"><strong>Доступ не ограничен </strong> </span>
+  </div>
+}
+
 <table class="help-page-table">
   @*<thead>
-    <tr><th>API</th><th>Description</th></tr>
-  </thead>*@
+      <tr><th>API</th><th>Description</th></tr>
+    </thead>*@
   <tbody>
     @foreach (var api in Model)
     {
         <tr>
           <td class="api-name">
-            <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">@api.HttpMethod.Method @api.RelativePath</a>
-            @if ("POST,PUT".Contains(@api.HttpMethod.Method))
-            {
-              HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
-              var text = string.Empty;
+            @{
+                HelpPageApiModel apiModel = GlobalConfiguration.Configuration.GetHelpPageApiModel(api.GetFriendlyId());
+                var text = string.Empty;
+                var curMethod = api.HttpMethod.Method;
 
-              if (apiModel.RequestBodyParameters != null)
-              {
-                foreach (var item in apiModel.RequestBodyParameters
-                        .OrderBy(x => x.Annotations.Any(y => y.Documentation == "Required") ? 0 : 1)
-                        .ThenBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                if ("GET" == @curMethod)
                 {
-                  var itemName = item.Name;
-                  if (item.Annotations.Any(x => x.Documentation == "Required"))
+                  if (apiModel.ResourceProperties != null && apiModel.ResourceProperties.Count > 0)
                   {
-                    itemName = "<b>" + itemName + "</b>";
+
+                        <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
+                           data-container="body" data-toggle="popover"
+                           title="Возвращает" data-placement="right" data-trigger="hover"
+                           data-content=@foreach (var item in apiModel.ResourceProperties.OrderBy(x => DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetOrderedName(x.Name)))
+                           {
+                             @Html.Raw(item.Name + "&ensp;");
+                           }>
+                          @api.HttpMethod.Method @api.GetFriendlyName()
+                        </a>
+                        @*<a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })"
+                           data-container="body" data-toggle="popover"
+                           title="Возвращает" data-placement="right" data-trigger="hover"
+                           data-content=@DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetParametrs(apiModel.ResourceProperties, "&ensp;", false, false)>
+                          @api.HttpMethod.Method @api.GetFriendlyName()
+                        </a>*@
+
                   }
-                  text = text + (text == string.Empty ? string.Empty : ", ") + itemName;
+                  else
+                  {
+                        <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                          @api.HttpMethod.Method @api.GetFriendlyName()
+                        </a>
+                  }
+
+                  @Html.Raw(DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetParametrs(apiModel.UriParameters));
+
                 }
 
-                if (!string.IsNullOrEmpty(text))
+                else if ("POST,PUT".Contains(@api.HttpMethod.Method))
                 {
-                  text = "(" + text + ")";
 
-                  @Html.Raw(text);
+                    <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                      @api.HttpMethod.Method @api.GetFriendlyName()
+                    </a>
+
+                  if (apiModel.RequestBodyParameters != null)
+                  { 
+                    @Html.Raw(DMS_WebAPI.Areas.HelpPage.App_Start.Helper.GetParametrs(apiModel.RequestBodyParameters));
+                  }
 
                 }
+                else
+                {
+                    <a href="@Url.Action("Api", "Help", new { apiId = api.GetFriendlyId() })">
+                      @api.HttpMethod.Method @api.GetFriendlyName()
+                    </a>
+                }
 
-              }
 
             }
 
@@ -79,6 +118,7 @@
             }
           </td>
         </tr>
-    }
+                }
   </tbody>
 </table>
+

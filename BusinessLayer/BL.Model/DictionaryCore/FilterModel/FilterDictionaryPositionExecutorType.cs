@@ -6,7 +6,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// <summary>
     /// Фильтры FilterDictionaryPositionExecutorType
     /// </summary>
-    public class FilterDictionaryPositionExecutorType : DictionaryBaseFilterParameters
+    public class FilterDictionaryPositionExecutorType : BaseFilterNameIsActive
     {
 
         /// <summary>

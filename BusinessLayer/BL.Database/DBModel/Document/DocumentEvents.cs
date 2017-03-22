@@ -17,11 +17,17 @@ namespace BL.Database.DBModel.Document
             this.DoneSubscription = new HashSet<DocumentSubscriptions>();
             this.StartSendList = new HashSet<DocumentSendLists>();
             this.CloseSendList = new HashSet<DocumentSendLists>();
-            //this.EventReaders = new HashSet<DocumentEventReaders>();
+            this.EventAccesses = new HashSet<DocumentEventAccesses>();
+            this.EventAccessGroups = new HashSet<DocumentEventAccessGroups>();
+            this.Files = new HashSet<DocumentFiles>();
             this.ChildEvents = new HashSet<DocumentEvents>();
         }
 
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         [Index("IX_ReadDate", 3)]
         [Index("IX_DocumentId",1)]
         public int DocumentId { get; set; }
@@ -57,7 +63,8 @@ namespace BL.Database.DBModel.Document
         [Index("IX_ReadDate", 1)]
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
-
+        public bool IsChanged { get; set; }
+        public bool IsDeleted { get; set; }
         public Nullable<int> PaperId { get; set; }
         public Nullable<int> SendListId { get; set; }
         public Nullable<int> ParentEventId { get; set; }
@@ -112,8 +119,12 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSendLists> StartSendList { get; set; }
         [ForeignKey("CloseEventId")]
         public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
-        //        [ForeignKey("EventId")]
-        //        public virtual ICollection<DocumentEventReaders> EventReaders { get; set; }
+        [ForeignKey("EventId")]
+        public virtual ICollection<DocumentEventAccesses> EventAccesses { get; set; }
+        [ForeignKey("EventId")]
+        public virtual ICollection<DocumentEventAccessGroups> EventAccessGroups { get; set; }
+        [ForeignKey("EventId")]
+        public virtual ICollection<DocumentFiles> Files { get; set; }
 
         [ForeignKey("PaperId")]
         public virtual DocumentPapers Paper { get; set; }

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterCustomDictionaryType : DictionaryBaseFilterParameters
+    public class FilterCustomDictionaryType : BaseFilterCodeName
     {
-        public string Code { get; set; }
-
-        public string CodeExact { get; set; }
+        /// <summary>
+        /// Сужение по активности элементов
+        /// </summary>
+        public bool? IsActive { get; set; }
     }
 }

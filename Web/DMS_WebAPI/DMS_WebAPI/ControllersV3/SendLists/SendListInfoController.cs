@@ -1,22 +1,18 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.SystemCore;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-
-using BL.Model.Common;
-using System.Web;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.DictionaryCore.FrontMainModel;
 using System.Diagnostics;
-using BL.Model.FullTextSearch;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.SendLists
 {
@@ -36,16 +32,17 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
+        /// <param name="sorting">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainStandartSendLists(ctx, ftSearch, filter, paging);
+            var tmpItems = tmpService.GetMainStandartSendLists(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -65,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryStandartSendList(ctx, Id);
+            var tmpItem = tmpService.GetStandartSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
             res.SpentTime = stopWatch;
             return res;

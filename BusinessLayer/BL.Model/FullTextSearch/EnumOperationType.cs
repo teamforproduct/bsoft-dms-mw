@@ -21,7 +21,12 @@
         Delete = 2,
 
         /// <summary>
-        /// add/update all information about document (include SendLists, Files etc.)
+        /// add all information about document (include SendLists, Files etc.)
+        /// </summary>
+        AddFull = 5,
+
+        /// <summary>
+        /// update all information about document (include SendLists, Files etc.)
         /// </summary>
         UpdateFull = 3,
 

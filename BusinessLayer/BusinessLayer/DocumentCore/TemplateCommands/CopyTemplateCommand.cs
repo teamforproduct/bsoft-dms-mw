@@ -89,7 +89,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 _operationDb.AddTemplateDocumentPapers(_context, _templateDoc.Papers);
                 _templateDoc.Files.ToList().ForEach(x =>
                 {
-                    var newFile = CommonDocumentUtilities.GetNewTemplateAttachedFile(x);
+                    var newFile = CommonDocumentUtilities.GetNewTemplateAttachedFile(_context,x);
                     newFile.DocumentId = _templateDoc.Id;
                     CommonDocumentUtilities.SetLastChange(_context, newFile);
                     _fStore.CopyFile(_context, x, newFile);

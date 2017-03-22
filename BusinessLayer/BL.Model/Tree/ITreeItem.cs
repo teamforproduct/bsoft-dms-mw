@@ -40,7 +40,7 @@ namespace BL.Model.Tree
         /// <summary>
         /// Лист или группа. У листьев нет наследников
         /// </summary>
-        bool? IsList { get; set; }
+        bool? IsLeaf { get; set; }
 
         /// <summary>
         /// Уровень вложенности элемента

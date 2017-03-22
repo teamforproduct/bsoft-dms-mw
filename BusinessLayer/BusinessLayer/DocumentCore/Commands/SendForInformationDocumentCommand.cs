@@ -94,7 +94,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             if (Model.TargetPositionId.HasValue)
             {
-                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
+                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             }
 
             _document.Subscriptions = null;

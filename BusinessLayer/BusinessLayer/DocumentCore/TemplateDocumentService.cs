@@ -16,6 +16,7 @@ using BL.Logic.Common;
 using BL.Model.Exception;
 using BL.Model.SystemCore.FrontModel;
 using BL.Model.FullTextSearch;
+using BL.Logic.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
@@ -54,18 +55,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext context, FullTextSearch ftSearch, FilterTemplateDocument filter, UIPaging paging)
         {
-            var newFilter = new FilterTemplateDocument();
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                // TODO FullTextSearch in TemplateDocument
-                //newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryTag, ftSearch.FullTextSearchString);
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-            return _templateDb.GetMainTemplateDocument(context, newFilter, paging);
+            return FTS.Get(context, Modules.Templates, ftSearch, filter, paging, null, _templateDb.GetMainTemplateDocument, _templateDb.GetTemplateDocumentIDs);
         }
 
         public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)

@@ -19,13 +19,13 @@ namespace BL.Logic.DictionaryCore
                 CommonDocumentUtilities.SetLastChange(_context, item);
                 int agent =_dictDb.AddAgentEmployee(_context, item);
 
-                if ((item.Login ?? string.Empty) != string.Empty)
+                if ((item.UserEmail ?? string.Empty) != string.Empty)
                 {
                     var contact = new InternalDictionaryContact()
                     {
                         AgentId = agent,
                         ContactTypeId = _dictDb.GetContactsTypeId(_context, EnumContactTypes.MainEmail),
-                        Value = item.Login,
+                        Value = item.UserEmail,
                         IsActive = true
                     };
                     CommonDocumentUtilities.SetLastChange(_context, contact);

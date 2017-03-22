@@ -22,6 +22,7 @@ namespace BL.Database.Admins.Interfaces
         Employee GetEmployeeForContext(IContext ctx, string userId);
 
         IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext ctx, int agentId, List<int> PositionIDs);
+        IEnumerable<FrontUserAssignmentsAvailable> GetAvailablePositionsList(IContext ctx, int agentId, List<int> PositionIDs);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
@@ -39,7 +40,9 @@ namespace BL.Database.Admins.Interfaces
         int GetRoleByCode(IContext context, Roles item);
         InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
+        IEnumerable<ListItem> GetMainRoles(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
         IEnumerable<FrontAdminRole> GetRoles(IContext context, FilterAdminRole filter);
+        List<int> GetRoleIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion
 
 

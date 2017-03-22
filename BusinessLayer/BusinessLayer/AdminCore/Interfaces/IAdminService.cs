@@ -24,9 +24,12 @@ namespace BL.Logic.AdminCore.Interfaces
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
         IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext context, List<int> PositionIDs = null);
+        IEnumerable<FrontUserAssignmentsAvailableGroup> GetAvailablePositionsDialog(IContext context, List<int> PositionIDs = null);
         Dictionary<int, int> GetCurrentPositionsAccessLevel(IContext context);
 
         Employee GetEmployeeForContext(IContext context, string userId);
+
+        void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model);
         #endregion
 
         #region [+] Verify ...
@@ -76,9 +79,9 @@ namespace BL.Logic.AdminCore.Interfaces
         IEnumerable<ITreeItem> GetPositionsByJournalDIP(IContext context, int journalId, FilterTree filter);
         #endregion
 
-        IEnumerable<FrontPermission> GetUserPermissions(IContext context);
+        IEnumerable<FrontPermission> GetUserPermissions(IContext context, FilterPermissionsAccess filter = null);
         IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter);
-        FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext = true, List<int> permissionIDs = null, int? actionId = null);
+        FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext = true, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null);
         bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter);
     }
 }

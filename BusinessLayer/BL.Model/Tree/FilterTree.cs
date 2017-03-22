@@ -39,6 +39,12 @@ namespace BL.Model.Tree
         public string Name { get; set; }
 
         /// <summary>
+        /// Сужение по списку Id
+        /// </summary>
+        [IgnoreDataMember]
+        public Dictionary<EnumObjects, List<int>> DicIDs { get; set; }
+
+        /// <summary>
         /// Только активные
         /// </summary>
         public bool? IsActive { get; set; }
@@ -51,6 +57,7 @@ namespace BL.Model.Tree
         /// <summary>
         /// Удаляет ветви, которые не содержат листов типа указанного объекта
         /// </summary>
+        [IgnoreDataMember]
         public List<EnumObjects> RemoveEmptyBranchesByObject { get; set; }
     }
 }

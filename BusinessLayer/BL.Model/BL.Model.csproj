@@ -89,6 +89,8 @@
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissions.cs" />
     <Compile Include="AdminCore\FilterModel\FilterDIPAdminUserRole.cs" />
     <Compile Include="AdminCore\FrontModel\FrontAdminEmployeeDepartments.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontUserAssignmentsAvailableGroup.cs" />
+    <Compile Include="AdminCore\FrontModel\FrontUserAssignmentsAvailable.cs" />
     <Compile Include="AdminCore\FrontModel\FrontFeature.cs" />
     <Compile Include="AdminCore\FrontModel\FrontPermissionValue.cs" />
     <Compile Include="AdminCore\FrontModel\FrontModule.cs" />
@@ -122,7 +124,6 @@
     <Compile Include="AdminCore\Actions\AddUser.cs" />
     <Compile Include="AdminCore\AdminLanguageInfo.cs" />
     <Compile Include="AdminCore\AdminAccessInfo.cs" />
-    <Compile Include="AdminCore\FilterModel\AdminBaseFilterParameters.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRole.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminSubordination.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRoleAction.cs" />
@@ -145,7 +146,15 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguageValue.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalSystemPermission.cs" />
+    <Compile Include="Common\BaseFilterCodeName.cs" />
+    <Compile Include="Common\BaseFilterName.cs" />
+    <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
     <Compile Include="Common\ItemCheck.cs" />
+    <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="Enums\EnumEntityTypes.cs" />
+    <Compile Include="SystemCore\FrontModel\FrontSearchQueryLog.cs" />
+    <Compile Include="SystemCore\UISorting.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterAgentFavourite.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontUserFavorites.cs" />
@@ -174,10 +183,10 @@
     <Compile Include="SystemCore\Filters\FilterSystemSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalSearchQueryLog.cs" />
     <Compile Include="SystemCore\InternalModel\InternalPermissions.cs" />
-    <Compile Include="AdminCore\InternalModel\InternalUserRole.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminUserRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSubordination.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleAction.cs" />
-    <Compile Include="AdminCore\InternalModel\InternalRole.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminRole.cs" />
     <Compile Include="AdminCore\InternalModel\InternalPositionRole.cs" />
     <Compile Include="AdminCore\WebUser\AddWebUser.cs" />
     <Compile Include="ClearTrashDocuments\ClearTrashDocumentsSettings.cs" />
@@ -192,7 +201,7 @@
     <Compile Include="Common\Period.cs" />
     <Compile Include="Constants\SettingConstants.cs" />
     <Compile Include="Converter.cs" />
-    <Compile Include="DictionaryCore\FilterModel\DictionaryBaseFilterParameters.cs" />
+    <Compile Include="Common\BaseFilterNameIsActive.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionary.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterCustomDictionaryType.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAddressType.cs" />

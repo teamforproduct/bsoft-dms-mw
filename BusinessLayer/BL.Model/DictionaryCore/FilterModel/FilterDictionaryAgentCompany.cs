@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// фильтр юридических лиц
     /// </summary>
-    public class FilterDictionaryAgentCompany : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentCompany : BaseFilterNameIsActive
     {
         /// <summary>
         /// Полное имя
@@ -17,21 +18,20 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// ИНН
         /// </summary>
         public string TaxCode { get; set; }
+        [IgnoreDataMember]
         public string TaxCodeExact { get; set; }
         /// <summary>
         /// ОКПО
         /// </summary>
         public string OKPOCode { get; set; }
+        [IgnoreDataMember]
         public string OKPOCodeExact { get; set; }
         /// <summary>
         /// Номер свидетельства НДС
         /// </summary>
         public string VATCode { get; set; }
+        [IgnoreDataMember]
         public string VATCodeExact { get; set; }
 
-        /// <summary>
-        /// Первая буква наименования
-        /// </summary>
-        public char FirstChar { get; set; }
     }
 }

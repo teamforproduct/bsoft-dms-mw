@@ -12,6 +12,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.CrossCutting.Helpers;
+using BL.Model.FullTextSearch;
 
 namespace BL.Database.Documents
 {
@@ -31,7 +32,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(
                             x =>
                                 x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
@@ -73,6 +74,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             PdfCreated = x.IsPdfCreated??false,
                             LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue
                         }).FirstOrDefault();
@@ -88,12 +91,14 @@ namespace BL.Database.Documents
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
+                                        ClientId = x.ClientId,
+                                        EntityTypeId = x.EntityTypeId,
                                         ExecutorPositionId = x.ExecutorPositionId
                                     }).FirstOrDefault();
 
                 if (doc == null) return null;
 
-                doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId && x.Version == version && x.OrderNumber == orderNumber)
                         .Where(x => !x.IsDeleted)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
@@ -101,6 +106,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.fl.Id,
+                            ClientId = x.fl.ClientId,
+                            EntityTypeId = x.fl.EntityTypeId,
                             Date = x.fl.Date,
                             Name = x.fl.Name,
                             DocumentId = x.fl.DocumentId,
@@ -132,12 +139,14 @@ namespace BL.Database.Documents
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
+                                        ClientId = x.ClientId,
+                                        EntityTypeId = x.EntityTypeId,
                                         ExecutorPositionId = x.ExecutorPositionId
                                     }).FirstOrDefault();
 
                 if (doc == null) return null;
 
-                doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(
                             x => x.DocumentId == documentId && x.OrderNumber == orderNumber)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
@@ -145,6 +154,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.fl.Id,
+                            ClientId = x.fl.ClientId,
+                            EntityTypeId = x.fl.EntityTypeId,
                             Date = x.fl.Date,
                             Name = x.fl.Name,
                             Extension = x.fl.Extension,
@@ -170,6 +181,8 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
                         IsRegistered = x.IsRegistered,
                         DocumentFiles = x.Files.Where(y => y.IsMainVersion).Where(y => !y.IsDeleted)
@@ -177,6 +190,8 @@ namespace BL.Database.Documents
                         new InternalDocumentAttachedFile
                         {
                             Id = y.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             Name = y.Name,
                             Extension = y.Extension,
                             ExecutorPositionId = y.ExecutorPositionId,
@@ -221,6 +236,7 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.AddNew);
                 transaction.Complete();
                 return fl.Id;
             }
@@ -262,11 +278,15 @@ namespace BL.Database.Documents
                 entry.Property(x => x.IsWorkedOut).IsModified = true;
                 entry.Property(x => x.IsMainVersion).IsModified = true;
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
+                dbContext.SaveChanges();
                 if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
                 {
-                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                    var dbEvents = ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList();
+                    dbContext.DocumentEventsSet.AddRange(dbEvents);
+                    dbContext.SaveChanges();
+                    dbEvents.ForEach(x=> CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
-                dbContext.SaveChanges();
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -280,6 +300,8 @@ namespace BL.Database.Documents
                .Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
                     ExecutorPositionId = x.ExecutorPositionId,
                     Name = x.Name,
                     Extension = x.Extension,
@@ -321,13 +343,17 @@ namespace BL.Database.Documents
                     entry.Property(x => x.Name).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    dbContext.SaveChanges();
+                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.DocumentFiles, EnumOperationType.Update);
                 }
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
                 if (docFileEvents != null && docFileEvents.Any(x => x.Id == 0))
                 {
-                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFileEvents.Where(x => x.Id == 0)).ToList());
+                    var dbEvents = ModelConverter.GetDbDocumentEvents(docFileEvents.Where(x => x.Id == 0)).ToList();
+                    dbContext.DocumentEventsSet.AddRange(dbEvents);
+                    dbContext.SaveChanges();
+                    dbEvents.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
-                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -341,12 +367,14 @@ namespace BL.Database.Documents
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
                         IsRegistered = x.IsRegistered,
                         ExecutorPositionId = x.ExecutorPositionId,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
-                var docFileQry = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var docFileQry = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument).AsQueryable();
 
                 if (flIdent.Version.HasValue)
@@ -357,6 +385,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
                             ExecutorPositionId = x.ExecutorPositionId,
                             Name = x.Name,
                             Extension = x.Extension,
@@ -381,11 +411,14 @@ namespace BL.Database.Documents
             {
                 if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
                 {
-                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
+                    var dbEvents = ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList();
+                    dbContext.DocumentEventsSet.AddRange(dbEvents);
+                    dbContext.SaveChanges();
+                    dbEvents.ForEach(x => CommonQueries.AddFullTextCashInfo(ctx, dbContext, x.Id, EnumObjects.DocumentEvents, EnumOperationType.AddNew));
                 }
 
                 var docFileQry = dbContext.DocumentFilesSet
-                                        .Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                                        .Where(x => x.ClientId == ctx.CurrentClientId)
                                         .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
                                         .AsQueryable();
 
@@ -401,7 +434,6 @@ namespace BL.Database.Documents
                         Id = fileId,
                         IsDeleted = true,
                     };
-
                     dbContext.DocumentFilesSet.Attach(file);
                     var entry = dbContext.Entry(file);
 
@@ -413,8 +445,8 @@ namespace BL.Database.Documents
                     {
                         entry.Property(x => x.IsDeleted).IsModified = true;
                     }
+                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, fileId, EnumObjects.DocumentFiles, EnumOperationType.Delete);
                 }
-
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -425,9 +457,9 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var res = -1;
-                if (dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
+                if (dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
                 {
-                    res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
+                    res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
                             .Where(x => !x.IsDeleted)
                             .Select(x => x.OrderNumber)
                             .First();
@@ -441,7 +473,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId).OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault() + 1;
                 transaction.Complete();
                 return res;
@@ -452,7 +484,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DocumentFilesSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).OrderByDescending(x => x.Version).Select(x => x.Version).FirstOrDefault() + 1;
+                var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).OrderByDescending(x => x.Version).Select(x => x.Version).FirstOrDefault() + 1;
                 transaction.Complete();
                 return res;
             }

@@ -17,7 +17,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsForDocument { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
         public int DocumentTypeId { get; set; }
-        public int? DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         public string Description { get; set; }
         public int? RegistrationJournalId { get; set; }
         public int? SenderAgentId { get; set; }
@@ -56,7 +56,7 @@ namespace BL.Model.DocumentCore.InternalModel
             IsForDocument = model.IsForDocument;
             DocumentDirection = model.DocumentDirection;
             DocumentTypeId = model.DocumentTypeId;
-            DocumentSubjectId = model.DocumentSubjectId;
+            DocumentSubject = model.DocumentSubject;
             Description = model.Description;
             RegistrationJournalId = model.RegistrationJournalId;
             SenderAgentId = model.SenderAgentId;

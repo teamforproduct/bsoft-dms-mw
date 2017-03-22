@@ -26,16 +26,17 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns>сервер</returns>
         [HttpPost]
         [Route(Features.Info + "/FullTextReindex")]
-        public IHttpActionResult FullTextReindex([FromBody]Item model)
+        public IHttpActionResult FullTextReindex()
         {
+            var ctxUser = DmsResolver.Current.Get<UserContexts>().Get();
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-            var clientServer = dbProc.GetClientServer(model.Id);
+            var clientServer = dbProc.GetClientServer(ctxUser.CurrentClientId);
             DatabaseModel srv = dbProc.GetServer(clientServer.ServerId);
             srv.ClientId = clientServer.ClientId;
             var ctx = new AdminContext(srv);
             var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
             ftService.ReindexDatabase(ctx);
-            return new JsonResult(new FrontAdminServer { Id = model.Id }, this);
+            return new JsonResult(new FrontAdminServer { Id = ctx.CurrentClientId }, this);
         }
 
     }

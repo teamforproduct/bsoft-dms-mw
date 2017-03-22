@@ -1,9 +1,4 @@
-﻿using BL.Model.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -20,6 +15,18 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string PositionExecutorName { get; set; }
 
         public string PositionExecutorTypeSuffix { get; set; }
+
+        /// <summary>
+        /// Отдел
+        /// </summary>
+        [IgnoreDataMember]
+        public string DepartmentName { get; set; }
+
+        /// <summary>
+        /// Отдел. Код
+        /// </summary>
+        [IgnoreDataMember]
+        public string DepartmentIndex { get; set; }
 
         //public virtual IEnumerable<FrontDictionaryStandartSendListContent> StandartSendListContents { get; set; }
     }

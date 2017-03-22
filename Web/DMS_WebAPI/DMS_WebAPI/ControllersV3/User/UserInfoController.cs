@@ -28,7 +28,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен. Информация о себе всегда доступна
+    /// Пользователь. Информация о себе всегда доступна
     /// Контекст пользователя (Все пользователя являются сотрудниками, но у сотрудника может быть выключена возможность авторизации)
     /// </summary>
     [Authorize]
@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.User
         }
 
         /// <summary>
-        /// Корректирует реквизиты сотрудника
+        /// Корректирует реквизиты пользователя
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

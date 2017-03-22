@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
 
-            DocRestSendList = CommonDocumentUtilities.GetNewDocumentRestrictedSendList(_context, Model);
+            DocRestSendList = CommonDocumentUtilities.GetNewDocumentRestrictedSendList(_context, (int)EnumEntytiTypes.Document, Model);
 
             var restrictedSendLists = _document.RestrictedSendLists.ToList();
             restrictedSendLists.Add(DocRestSendList);

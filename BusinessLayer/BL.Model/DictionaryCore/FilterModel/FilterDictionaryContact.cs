@@ -1,15 +1,13 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// фильтр контактов
     /// </summary>
-    public class FilterDictionaryContact : DictionaryBaseFilterParameters
+    public class FilterDictionaryContact : BaseFilterNameIsActive
     {
 
         /// <summary>
@@ -20,6 +18,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// не содержит агентов 
         /// </summary>
+        [IgnoreDataMember]
         public List<int> NotContainsAgentIDs { get; set; }
         
         /// <summary>
@@ -40,6 +39,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// контакт (по равенству)
         /// </summary>
+        [IgnoreDataMember]
         public string ContactExact { get; set; }
     }
 }

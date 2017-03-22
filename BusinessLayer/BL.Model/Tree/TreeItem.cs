@@ -51,7 +51,7 @@ namespace BL.Model.Tree
         /// <summary>
         /// Лист или группа. У листьев нет наследников
         /// </summary>
-        public bool? IsList { get; set; }
+        public bool? IsLeaf { get; set; }
 
         /// <summary>
         /// Отмечен.

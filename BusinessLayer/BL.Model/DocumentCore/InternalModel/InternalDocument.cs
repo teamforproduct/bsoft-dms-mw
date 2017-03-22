@@ -66,10 +66,11 @@ namespace BL.Model.DocumentCore.InternalModel
         /// ИД Документа
         /// </summary>
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         /// <summary>
-        /// ИД Тематики документа
-        /// </summary>
-        public int? DocumentSubjectId { get; set; }
+        /// Тематика документа
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Краткое содержание
         /// </summary>
@@ -100,7 +101,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumDocumentAccesses? AccessLevel { get; set; }
 
         public int TemplateDocumentId { get; set; }
-        public int ExecutorPositionId { get; set; }
+        public int? ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
         public int? ExecutorPositionExecutorTypeId { get; set; }
         public DateTime CreateDate { get; set; }
@@ -115,7 +116,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsLaunchPlan { get; set; }
         public bool IsHard { get; set; }
         public EnumDocumentDirections DocumentDirection { get; set; }
-        public int DocumentTypeId { get; set; }
+        public int? DocumentTypeId { get; set; }
 
         public bool IsFavourite { get; set; }
         public bool IsInWork { get; set; }

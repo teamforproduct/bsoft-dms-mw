@@ -24,8 +24,7 @@ namespace BL.Database.DBModel.Admin
         [MaxLength(2000)]
         public string Description { get; set; }
         public int? RoleTypeId { get; set; }
-        //        public int PositionId { get; set; }
-        //        public int AccessLevelId { get; set; }
+
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

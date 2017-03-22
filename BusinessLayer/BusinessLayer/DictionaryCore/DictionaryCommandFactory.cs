@@ -297,10 +297,10 @@ namespace BL.Logic.DictionaryCore
                 // Исполнители
                 #region DictionaryPositionExecutors
                 case EnumDictionaryActions.AddExecutor:
-                    cmd = DmsResolver.Current.Get<AddDictionaryPositionExecutorCommand>();
+                    cmd = DmsResolver.Current.Get<AddPositionExecutorCommand>();
                     break;
                 case EnumDictionaryActions.ModifyExecutor:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryPositionExecutorCommand>();
+                    cmd = DmsResolver.Current.Get<ModifyPositionExecutorCommand>();
                     break;
                 case EnumDictionaryActions.DeleteExecutor:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryPositionExecutorCommand>();

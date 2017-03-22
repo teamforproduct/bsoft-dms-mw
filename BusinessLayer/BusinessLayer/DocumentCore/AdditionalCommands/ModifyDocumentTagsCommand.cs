@@ -38,18 +38,23 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             _admin.VerifyAccess(_context, CommandType);
-
-            DocTags = new InternalDocumentTag
+            _document = _operationDb.ModifyDocumentTagsPrepare(_context, Model.DocumentId);
+            if (_document == null)
             {
-                DocumentId = Model.DocumentId,
-                Tags = Model.Tags
-            };
-
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             return true;
         }
 
         public override object Execute()
         {
+            DocTags = new InternalDocumentTag
+            {
+                ClientId = _context.CurrentClientId,
+                EntityTypeId = _document.EntityTypeId,
+                DocumentId = Model.DocumentId,
+                Tags = Model.Tags
+            };
             CommonDocumentUtilities.SetLastChange(_context, DocTags);
             _operationDb.ModifyDocumentTags(_context, DocTags);
             return null;

@@ -10,8 +10,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Настройки нотификации об изменениях в системе
+    /// Пользователь. Настройки нотификации об изменениях в системе
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

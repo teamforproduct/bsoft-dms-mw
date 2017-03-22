@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -6,7 +8,7 @@ namespace BL.Model.DictionaryCore.FilterModel
     /// Фильтры FilterDictionaryDepartment
     /// </summary>
     // В этой модели целесообразно все поля, объявленные простыми типами, делать Nullable, чтобы при формировании Where можно было проверить на if != null
-    public class FilterDictionaryDepartment : DictionaryBaseFilterParameters
+    public class FilterDictionaryDepartment : BaseFilterNameIsActive
     {
 
         /// <summary>
@@ -23,6 +25,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по компании, которая представляет этот отдел
         /// </summary>
         public List<int> CompanyIDs { get; set; }
+
+        /// <summary>
+        /// Сужение по компании, которая представляет этот отдел
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> JournalIDs { get; set; }
 
         /// <summary>
         /// Руководитель подразделения

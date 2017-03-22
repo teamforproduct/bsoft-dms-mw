@@ -1159,7 +1159,7 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemUIElements>();
 
-            items.Add(new SystemUIElements { Id = 2, Order = 10, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "DocumentSubject", TypeCode = "select", Description = "Тематика документа", Label = "Тематика документа", Hint = "Выберите из словаря тематику документа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryDocumentSubjects", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "DocumentSubjectId", ValueDescriptionFieldCode = "DocumentSubjectName", Format = null });
+            items.Add(new SystemUIElements { Id = 2, Order = 10, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "DocumentSubject", TypeCode = "textarea", Description = "Тематика документа", Label = "Тематика документа", Hint = "Введите тематику документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "DocumentSubject", ValueDescriptionFieldCode = "DocumentSubject", Format = null });
             items.Add(new SystemUIElements { Id = 3, Order = 20, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Description", TypeCode = "textarea", Description = "Краткое содержание", Label = "Краткое содержание", Hint = "Введите краткое содержание", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
             items.Add(new SystemUIElements { Id = 4, Order = 30, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgent", TypeCode = "select", Description = "Контрагент, от которого получен документ", Label = "Организация", Hint = "Выберите из словаря контрагента, от которого получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
             items.Add(new SystemUIElements { Id = 5, Order = 40, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgentPerson", TypeCode = "select", Description = "Контактное лицо в организации", Label = "Контакт", Hint = "Выберите из словаря контактное лицо в организации, от которой получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'AgentCompanyId' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
@@ -1402,7 +1402,7 @@ namespace BL.Database.DatabaseContext
             return new DictionarySendTypes()
             {
                 Id = (int)id,
-                Code = null,
+                Code = id.ToString().Replace("SendFor", ""),
                 Name = name,
                 IsImportant = isImportant,
                 SubordinationTypeId = subordinationTypeId,
@@ -1512,11 +1512,28 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryPositionExecutorTypes>();
 
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Personal, Code = EnumPositionExecutionTypes.Personal.ToString(), Name = "##l@PositionExecutionTypes:Personal@l##", Suffix = "##l@PositionExecutionTypes:Personal@l.Suffix##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.IO, Code = EnumPositionExecutionTypes.IO.ToString(), Name = "##l@PositionExecutionTypes:IO@l##", Suffix = "##l@PositionExecutionTypes:IO.Suffix@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryPositionExecutorTypes { Id = (int)EnumPositionExecutionTypes.Referent, Code = EnumPositionExecutionTypes.Referent.ToString(), Name = "##l@PositionExecutionTypes:Referent@l##", Suffix = "##l@PositionExecutionTypes:Referent.Suffix@l##", IsActive = true, LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Personal));
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.IO));
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Referent));
 
             return items;
+        }
+
+        private static DictionaryPositionExecutorTypes GetDictionaryPositionExecutorType(EnumPositionExecutionTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string suffix = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Suffix");
+            return new DictionaryPositionExecutorTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                Description = description,
+                Suffix= suffix,
+                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
+                LastChangeDate = DateTime.UtcNow,
+            };
         }
 
         public static List<DictionaryLinkTypes> GetDictionaryLinkTypes()

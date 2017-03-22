@@ -88,6 +88,10 @@
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\DateExtensions.cs" />
+    <Compile Include="Helpers\CashService\CacheBaseThreadSafe.cs" />
+    <Compile Include="Helpers\CashService\CacheService.cs" />
+    <Compile Include="Helpers\CashService\CasheBase.cs" />
+    <Compile Include="Helpers\CashService\ICacheService.cs" />
     <Compile Include="Helpers\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />

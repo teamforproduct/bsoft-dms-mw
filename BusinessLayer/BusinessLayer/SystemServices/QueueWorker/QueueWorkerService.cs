@@ -18,7 +18,7 @@ namespace BL.Logic.SystemServices.QueueWorker
 
         protected override void InitializeServers()
         {
-            foreach (var keyValuePair in _serverContext)
+            foreach (var keyValuePair in ServerContext)
             {
                 try
                 {
@@ -26,7 +26,7 @@ namespace BL.Logic.SystemServices.QueueWorker
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, "Could not start QueueWorkerService for server", ex);
+                    Logger.Error(keyValuePair.Value, "Could not start QueueWorkerService for server", ex);
                 }
             }
         }

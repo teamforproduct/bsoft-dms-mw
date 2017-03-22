@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using System.Diagnostics;
 using BL.Model.SystemCore;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
@@ -28,17 +29,18 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <summary>
         /// Возвращает список типов адресов
         /// </summary>
+        /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontAddressType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAddressType filter)
+        public IHttpActionResult Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryAddressType filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryAddressTypes(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryAddressTypes(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

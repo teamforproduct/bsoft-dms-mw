@@ -3,13 +3,14 @@ using BL.Model.Enums;
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterDictionaryPositionExecutor
     /// </summary>
-    public class FilterDictionaryPositionExecutor : DictionaryBaseFilterParameters
+    public class FilterDictionaryPositionExecutor : BaseFilterNameIsActive
     {
 
         /// <summary>
@@ -25,8 +26,14 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Исключение сотрудников
         /// </summary>
+        [IgnoreDataMember]
         public List<int> NotContainsAgentIDs { get; set; }
 
+        /// <summary>
+        /// Исключение должностей
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> NotContainsPositionIDs { get; set; }
 
         /// <summary>
         /// Дата начала исполнения должности
@@ -39,6 +46,9 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public DateTime? EndDate { get { return _EndDate; } set { _EndDate = value.ToUTC(); } }
         private DateTime? _EndDate;
+
+        [IgnoreDataMember]
+        public bool? ExistExecutorAgentInPositions { get; set; }
 
         /// <summary>
         /// Тип исполнения

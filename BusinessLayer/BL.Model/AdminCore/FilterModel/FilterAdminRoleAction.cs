@@ -1,15 +1,12 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.AdminCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterAdminRoleAction
     /// </summary>
-    public class FilterAdminRoleAction: AdminBaseFilterParameters
+    public class FilterAdminRoleAction: BaseFilter
     {
 
         /// <summary>

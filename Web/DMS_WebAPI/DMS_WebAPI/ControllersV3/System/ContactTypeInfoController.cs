@@ -12,11 +12,12 @@ using System.Collections.Generic;
 using BL.Model.Common;
 using System.Diagnostics;
 using BL.Model.SystemCore;
+using BL.Model.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
     /// <summary>
-    /// Адреса юридического лица
+    /// Типы контактов
     /// </summary>
     [Authorize]
     [DimanicAuthorize]
@@ -28,17 +29,18 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <summary>
         /// Возвращает список типов контактов
         /// </summary>
-        /// <param name="filter">параметры фильтрации</param>
+        /// <param name="ftSearch"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryContactType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryContactType filter)
+        public IHttpActionResult Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryContactType filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryContactTypes(ctx, filter);
+            var tmpItems = tmpService.GetMainDictionaryContactTypes(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
             return res;

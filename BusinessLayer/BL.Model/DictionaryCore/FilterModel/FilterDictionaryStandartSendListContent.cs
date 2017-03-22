@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BL.Model.Common;
 using BL.Model.Enums;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// фильтр содержания типовой рассылки
     /// </summary>
-    public class FilterDictionaryStandartSendListContent : DictionaryBaseFilterParameters
+    public class FilterDictionaryStandartSendListContent : BaseFilterNameIsActive
     {
         /// <summary>
         /// список типовых рассылок
@@ -29,6 +30,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Задача
         /// </summary>
         public string Task { get; set; }
+        /// <summary>
+        /// Задача
+        /// </summary>
+        [IgnoreDataMember]
+        public string TaskExact { get; set; }
         /// <summary>
         /// Название типа рассылки
         /// </summary>

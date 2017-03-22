@@ -1,26 +1,15 @@
-﻿using System;
+﻿using BL.Model.Common;
 using System.Collections.Generic;
-using BL.Model.Enums;
-using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
     ///Фильтр для шаблонов документов
     /// </summary>
-    public class FilterTemplateDocument
+    public class FilterTemplateDocument : BaseFilter
     {
-        /// <summary>
-        /// Массив ИД шаблонов документов
-        /// </summary>
-        public List<int> IDs { get; set; }
-        /// <summary>
-        /// Массив ИД документов полученного из полнотекстового поиска
-        /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
-        public List<int> FullTextSearchDocumentId { get; set; }
         /// <summary>
         /// Массив ИД направлений документов
         /// </summary>
@@ -30,9 +19,9 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> DocumentTypeId { get; set; }
         /// <summary>
-        /// Массив ИД тематик документов
+        /// Отрывок тематики документа
         /// </summary>
-        public List<int> DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Отрывок названия
         /// </summary>

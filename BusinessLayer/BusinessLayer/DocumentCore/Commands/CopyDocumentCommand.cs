@@ -71,8 +71,8 @@ namespace BL.Logic.DocumentCore.Commands
             CommonDocumentUtilities.SetSendListAtrributesForNewDocument(_context, _document.SendLists, true);
             CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context,null, EnumEventTypes.AddNewDocument, null, "Copy");
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, null, EnumEventTypes.AddNewDocument, null, "Copy");
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document);
 
             // prepare file list in Document. It will save it with document in DB
             var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalDocumentAttachedFile>();
@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.Commands
                 x.ExecutorPositionId = _document.ExecutorPositionId;
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
                 x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
-                var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(x);
+                var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(_context,x);
                 toCopy.Add(newDoc, x);
             });
 

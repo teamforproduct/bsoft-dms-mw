@@ -19,7 +19,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Auth
 {
     /// <summary>
-    /// Управление авторизацией сотрудников-пользователей
+    /// Авторизация. Управление авторизацией сотрудников-пользователей
     /// </summary>
     [Authorize]
     [DimanicAuthorize]
@@ -189,6 +189,28 @@ namespace DMS_WebAPI.ControllersV3.Auth
             return new JsonResult(null, this);
         }
 
+
+        /// <summary>
+        /// Выключает безопасный вход (fingerprint) указанному пользователю
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Info + "/SwitchOffFingerprint")]
+        public async Task<IHttpActionResult> SwitchOffFingerprint([FromBody]Item model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.SwitchOffFingerprint(ctx, model);
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
 
     }
 }

@@ -43,6 +43,10 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _document = _operationDb.SelfAffixSigningDocumentPrepare(_context, Model.DocumentId);
+            if (_document == null)
+            {
+                throw new DocumentNotFoundOrUserHasNoAccess();
+            }
             //_docWait = _document?.Waits.FirstOrDefault();
             //throw new CouldNotPerformOperation();
             //_operationDb.ControlOffSendListPrepare(_context, _document);
@@ -63,12 +67,14 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _document.Events = new List<InternalDocumentEvent> { CommonDocumentUtilities.GetNewDocumentEvent(_context, _document.Id, EnumEventTypes.AffixSigning, Model.EventDate, Model.Description, null, null, false,
+            _document.Events = new List<InternalDocumentEvent> { CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AffixSigning, Model.EventDate, Model.Description, null, null, false,
               _context.CurrentPositionId, null, _context.CurrentPositionId) };
 
             var subscription = new InternalDocumentSubscription
             {
                 DocumentId = _document.Id,
+                ClientId = _document.ClientId,
+                EntityTypeId = _document.EntityTypeId,
                 SubscriptionStates = CommonDocumentUtilities.SubscriptionStatesForAction[CommandType],
                 Description = Model.VisaText,
                 SigningType = Model.SigningType,

@@ -1,10 +1,6 @@
 ﻿using BL.Model.Common;
-using BL.Model.Extensions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -12,18 +8,28 @@ namespace BL.Model.DictionaryCore.FrontModel
     {
 
         /// <summary>
-        /// Код подразделения
+        /// Исполнитель
         /// </summary>
         public int? ExecutorId { get; set; }
 
         /// <summary>
-        /// Код подразделения
+        /// Исполнитель
         /// </summary>
         public string ExecutorName { get; set; }
 
 
         /// <summary>
-        /// Код подразделения
+        /// Отдел
+        /// </summary>
+        public string DepartmentName { get; set; }
+
+        /// <summary>
+        /// Отдел. Код
+        /// </summary>
+        public string DepartmentIndex { get; set; }
+
+        /// <summary>
+        /// Тип исполнения
         /// </summary>
         public string ExecutorTypeSuffix { get; set; }
 

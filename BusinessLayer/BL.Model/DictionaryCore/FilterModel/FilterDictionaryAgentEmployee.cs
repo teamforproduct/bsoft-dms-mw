@@ -2,16 +2,14 @@
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// фильтр сотрудников
     /// </summary>
-    public class FilterDictionaryAgentEmployee : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgentEmployee : BaseFilterNameIsActive
     {
 
         /// <summary>
@@ -32,6 +30,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// ИНН
         /// </summary>
+        [IgnoreDataMember]
         public string TaxCodeExact { get; set; }
 
         /// <summary>
@@ -47,17 +46,17 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// </summary>
         public bool? IsMale { get; set; }
 
-        /// <summary>
-        /// Первая буква наименования
-        /// </summary>
-        public char FirstChar { get; set; }
-
         public string FullName { get; set; }
 
+        [IgnoreDataMember]
         public string FirstNameExact { get; set; }
+        [IgnoreDataMember]
         public string LastNameExact { get; set; }
+        [IgnoreDataMember]
         public string PassportSerialExact { get; set; }
+        [IgnoreDataMember]
         public int? PassportNumberExact { get; set; }
+        [IgnoreDataMember]
         public DateTime? BirthDateExact { get { return _BirthDateExact; } set { _BirthDateExact = value.ToUTC(); } }
         private DateTime? _BirthDateExact;
 

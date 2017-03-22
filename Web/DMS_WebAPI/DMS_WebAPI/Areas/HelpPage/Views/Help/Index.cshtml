@@ -6,10 +6,14 @@
 @model Collection<ApiDescription>
 
 @{
-    ViewBag.Title = "API.V2 Help Page";
+    ViewBag.Title = "API.V3 Help Page";
 
     // Group APIs by controller
-    ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
+    ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model
+        .Where(x => x.ActionDescriptor.ControllerDescriptor.ControllerType.Namespace.Contains("ControllersV3."))
+        .OrderBy(x => x.ActionDescriptor.ControllerDescriptor.ControllerType.Namespace)
+        .ThenBy(g => g.ActionDescriptor.ControllerDescriptor.ControllerName.Replace("Info", "AAA_Info").Replace(".Lists", ".AA_Lists").Replace(".User", ".WW_User").Replace(".System", ".ZZ_System"))
+        .ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
 }
 
 <link type="text/css" href="~/Areas/HelpPage/HelpPage.css" rel="stylesheet" />
@@ -31,9 +35,18 @@
         </div>
     </section>
     <section class="content-wrapper main-content clear-fix">
-        @foreach (var group in apiGroups.Where(g=>g.Key.ControllerType.FullName.Contains("Controllers.")).OrderBy(g=>g.Key.ControllerName))
+        @foreach (var group in apiGroups)
         {
             @Html.DisplayFor(m => group, "ApiGroup")
         }
     </section>
 </div>
+
+<script>
+  $(document).ready(function () {
+    $('[data-toggle="popover"]').popover();
+  });
+  $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>

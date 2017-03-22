@@ -14,10 +14,10 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.Banks
+namespace DMS_WebAPI.ControllersV3.CustomDictionaries
 {
     /// <summary>
-    /// Элементы пользовательского справочника
+    /// Пользовательские справочники. Элементы
     /// </summary>
     [Authorize]
     [DimanicAuthorize]
@@ -33,11 +33,12 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
+        /// <param name="sorting">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Contents + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetWithPositions(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterCustomDictionary();
@@ -45,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging);
+            var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;

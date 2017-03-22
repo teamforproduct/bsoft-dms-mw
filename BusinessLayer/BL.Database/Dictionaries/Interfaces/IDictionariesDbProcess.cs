@@ -23,6 +23,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgent(IContext context, int agentId);
         FrontDictionaryAgentUser GetAgentUser(IContext context, int id);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
+        IEnumerable<AutocompleteItem> GetAgentExternalList(IContext context, UIPaging paging);
         bool ExistsAgents(IContext context, FilterDictionaryAgent filter);
         #endregion DictionaryAgents
 
@@ -33,16 +34,16 @@ namespace BL.Database.Dictionaries.Interfaces
 
         #region DictionaryAgentPerson
 
+        int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         void UpdateAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         void DeleteAgentPerson(IContext context, int id);
-        int AddAgentPerson(IContext context, InternalDictionaryAgentPerson person);
         bool ExistsAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
-        //FrontDictionaryAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<FrontContactPersons> GetAgentPersonsWithContacts(IContext context, FilterDictionaryAgentPerson filter);
-        IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
-        IEnumerable<ListItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
+        IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetAgentPersonIDs(IContext context, IBaseFilter filter, UISorting sorting);
+        IEnumerable<AutocompleteItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<InternalDictionaryAgentPerson> GetInternalAgentPersons(IContext context, FilterDictionaryAgentPerson filter);
-        FrontAgentPerson GetAgentPerson(IContext context, int id);
+        IEnumerable<FrontAgentPerson> GetAgentPerson(IContext context, FilterDictionaryAgentPerson filter);
         #endregion DictionaryAgentPerson
 
         #region DictionaryAgentEmployee
@@ -52,7 +53,8 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentEmployee(IContext context, InternalDictionaryAgentEmployee employee);
         bool ExistsAgentEmployees(IContext context, FilterDictionaryAgentEmployee filter);
         FrontAgentEmployee GetAgentEmployee(IContext context, int id);
-        IEnumerable<FrontMainAgentEmployee> GetAgentEmployeesMain(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
+        IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetAgentEmployeeIDs(IContext context, IBaseFilter filter, UISorting sorting);
         int GetAgentEmployeePersonnelNumber(IContext context);
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
         #endregion DictionaryAgentEmployee
@@ -66,6 +68,7 @@ namespace BL.Database.Dictionaries.Interfaces
         void SetAgentUserLanguage(IContext context, InternalDictionaryAgentUser User);
         void SetAgentUserLastPositionChose(IContext context, InternalDictionaryAgentUser User);
         void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserName(IContext context, InternalDictionaryAgentUser User);
         #endregion
 
         #region DictionaryAgentAddress
@@ -98,9 +101,10 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void UpdateAgentCompany(IContext context, InternalDictionaryAgentCompany company);
         void DeleteAgentCompanies(IContext context, List<int> list);
-        FrontAgentCompany GetAgentCompany(IContext context, int id);
-        IEnumerable<ListItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
-        IEnumerable<FrontMainAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        IEnumerable<AutocompleteItem> GetAgentCompanyList(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        IEnumerable<FrontAgentCompany> GetAgentCompanies(IContext context, FilterDictionaryAgentCompany filter, UIPaging paging);
+        IEnumerable<FrontMainAgentCompany> GetMainAgentCompanies(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetAgentCompanyIDs(IContext context, IBaseFilter filter, UISorting sorting);
         bool ExistsAgentCompanies(IContext context, FilterDictionaryAgentCompany filter);
         #endregion DictionaryAgentCompanies
 
@@ -110,7 +114,9 @@ namespace BL.Database.Dictionaries.Interfaces
         void DeleteAgentBank(IContext context, int id);
         bool ExistsAgentBanks(IContext context, FilterDictionaryAgentBank filter);
         FrontAgentBank GetAgentBank(IContext context, int id);
-        IEnumerable<FrontMainAgentBank> GetAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
+        IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetAgentBankIDs(IContext context, IBaseFilter filter, UISorting sorting);
+        IEnumerable<AutocompleteItem> GetShortListAgentBanks(IContext context, FilterDictionaryAgentBank filter, UIPaging paging);
         #endregion DictionaryAgentBanks
 
         #region DictionaryAgentAccounts
@@ -155,11 +161,12 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsDictionaryDepartment(IContext context, FilterDictionaryDepartment filter);
         InternalDictionaryDepartment GetDepartment(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<InternalDictionaryDepartment> GetInternalDepartments(IContext context, FilterDictionaryDepartment filter);
-
+        List<int> GetDepartmentIDs(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartment> GetDepartments(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForStaffList(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<FrontDictionaryDepartmentTreeItem> GetDepartmentsForRegistrationJournals(IContext context, FilterDictionaryDepartment filter);
-        IEnumerable<TreeItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<AutocompleteItem> GetShortListDepartments(IContext context, FilterDictionaryDepartment filter);
+        IEnumerable<TreeItem> GetDepartmentsTree(IContext context, FilterDictionaryDepartment filter);
         IEnumerable<TreeItem> GetDepartmentsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryDepartment filter);
         IEnumerable<TreeItem> GetDepartmentsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryDepartment filter);
         IEnumerable<TreeItem> GetDepartmentsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryDepartment filter);
@@ -188,7 +195,8 @@ namespace BL.Database.Dictionaries.Interfaces
         int AddDocumentType(IContext context, InternalDictionaryDocumentType docType);
         IEnumerable<ListItem> GetShortListDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
         IEnumerable<InternalDictionaryDocumentType> GetInternalDictionaryDocumentTypes(IContext context, FilterDictionaryDocumentType filter);
-        IEnumerable<FrontDictionaryDocumentType> GetDocumentTypes(IContext context, FilterDictionaryDocumentType filter, UIPaging paging);
+        IEnumerable<FrontDictionaryDocumentType> GetMainDocumentTypes(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetDocumentTypeIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion DictionaryDocumentTypes
 
         #region DictionaryEventTypes
@@ -217,7 +225,10 @@ namespace BL.Database.Dictionaries.Interfaces
         IEnumerable<FrontDictionaryPosition> GetPositions(IContext context, FilterDictionaryPosition filter);
         IEnumerable<int> GetPositionIDs(IContext context, FilterDictionaryPosition filter);
         IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext context, FilterDictionaryPosition filter);
-        IEnumerable<TreeItem> GetPositionsShortList(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<AutocompleteItem> GetShortListPositionsExecutor(IContext context, FilterDictionaryPosition filter);
+
+        IEnumerable<AutocompleteItem> GetShortListPositions(IContext context, FilterDictionaryPosition filter);
+        IEnumerable<TreeItem> GetPositionsTree(IContext context, FilterDictionaryPosition filter);
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryPosition filter);
@@ -236,6 +247,8 @@ namespace BL.Database.Dictionaries.Interfaces
         bool ExistsPositionExecutor(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<InternalDictionaryPositionExecutor> GetInternalPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter);
+        List<int> GetPositionExecutorsIDs(IContext context, FilterDictionaryPositionExecutor filter);
+        IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, UIPaging paging);
         IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext context, FilterDictionaryPositionExecutor filter);
         IEnumerable<FrontDictionaryPositionExecutorExtended> GetPositionExecutorsDIPUserRoles(IContext context, FilterDictionaryPositionExecutor filter);
         #endregion DictionaryPositionExecutors
@@ -252,11 +265,12 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal docType);
         void DeleteRegistrationJournal(IContext context, int id);
         bool ExistsDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<InternalDictionaryRegistrationJournal> GetInternalDictionaryRegistrationJournal(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter, UIPaging paging);
+        IEnumerable<InternalDictionaryRegistrationJournal> GetInternalRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetRegistrationJournalIDs(IContext context, IBaseFilter filter, UISorting sorting);
         IEnumerable<TreeItem> GetRegistrationJournalsForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryRegistrationJournal filter);
         IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
-        IEnumerable<TreeItem> GetRegistrationJournalsShortList(IContext context, FilterDictionaryRegistrationJournal filter);
+        IEnumerable<AutocompleteItem> GetShortListRegistrationJournals(IContext context, FilterDictionaryRegistrationJournal filter);
         #endregion DictionaryRegistrationJournals
 
         #region [+] DictionaryAgentClientCompanies ...
@@ -264,10 +278,11 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateAgentOrg(IContext context, InternalDictionaryAgentOrg docType);
         void DeleteAgentOrg(IContext context, List<int> list);
         bool ExistsAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        List<int> GetAgentOrgIDs(IContext context, FilterDictionaryAgentOrg filter);
         InternalDictionaryAgentOrg GetInternalAgentOrg(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<FrontDictionaryAgentClientCompany> GetAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForStaffList(IContext context, FilterDictionaryAgentOrg filter);
-        IEnumerable<TreeItem> GetAgentOrgsShortList(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<TreeItem> GetShortListAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForDIPSubordinations(IContext context, int sourcePositionId, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentOrgsForDIPJournalAccess(IContext context, int journalId, FilterDictionaryAgentOrg filter);
         IEnumerable<TreeItem> GetAgentClientCompaniesForDIPRJournalPositions(IContext context, int positionId, FilterDictionaryAgentOrg filter);
@@ -297,6 +312,8 @@ namespace BL.Database.Dictionaries.Interfaces
         void UpdateStandartSendList(IContext context, InternalDictionaryStandartSendList list);
         void DeleteStandartSendList(IContext context, int id);
         IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext context, FilterDictionaryStandartSendList filter, UIPaging paging);
+        IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetStandartSendListIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion DictionaryStandartSendList
 
         #region DictionarySubordinationTypes
@@ -305,14 +322,15 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion DictionarySubordinationTypes
 
         #region DictionaryTags
-        IEnumerable<ListItem> GetTagList(IContext ctx, FilterDictionaryTag filter, UIPaging paging);
-        FrontTag GetTag(IContext ctx, int id);
-        IEnumerable<InternalDictionaryTag> GetInternalTags(IContext context, FilterDictionaryTag filter);
-        IEnumerable<FrontMainTag> GetMainTags(IContext context, FilterDictionaryTag filter, UIPaging paging);
-        int DocsWithTagCount(IContext context, int tagId);
         int AddTag(IContext context, InternalDictionaryTag model);
         void UpdateTag(IContext context, InternalDictionaryTag model);
         void DeleteTag(IContext context, int id);
+        IEnumerable<FrontTag> GetTag(IContext ctx, FilterDictionaryTag filter);
+        IEnumerable<ListItem> GetTagList(IContext ctx, FilterDictionaryTag filter, UIPaging paging);
+        IEnumerable<InternalDictionaryTag> GetInternalTags(IContext context, FilterDictionaryTag filter);
+        IEnumerable<FrontMainTag> GetMainTags(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetTagIDs(IContext context, IBaseFilter filter, UISorting sorting);
+        int DocsWithTagCount(IContext context, int tagId);
         #endregion DictionaryTags
 
         #region Admins
@@ -322,10 +340,8 @@ namespace BL.Database.Dictionaries.Interfaces
         #endregion
 
         #region CustomDictionaryTypes
-        void UpdateCustomDictionaryType(IContext context, InternalCustomDictionaryType model);
-
         int AddCustomDictionaryType(IContext context, InternalCustomDictionaryType model);
-
+        void UpdateCustomDictionaryType(IContext context, InternalCustomDictionaryType model);
         void DeleteCustomDictionaryType(IContext context, int id);
 
         IEnumerable<InternalCustomDictionaryType> GetInternalCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
@@ -333,25 +349,30 @@ namespace BL.Database.Dictionaries.Interfaces
         //FrontCustomDictionaryType GetCustomDictionaryTypeWithCustomDictionaries(IContext context, int id);
 
         IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext context, FilterCustomDictionaryType filter);
+
+        IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetCustomDictionaryTypeIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion CustomDictionaryTypes
 
         #region CustomDictionaries
-        void UpdateCustomDictionary(IContext context, InternalCustomDictionary model);
-
         int AddCustomDictionary(IContext context, InternalCustomDictionary model);
-
+        void UpdateCustomDictionary(IContext context, InternalCustomDictionary model);
         void DeleteCustomDictionary(IContext context, int id);
 
         IEnumerable<InternalCustomDictionary> GetInternalCustomDictionarys(IContext context, FilterCustomDictionary filter);
 
-        IEnumerable<FrontCustomDictionary> GetCustomDictionaries(IContext context, FilterCustomDictionary filter, UIPaging paging);
+        IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting);
+        List<int> GetCustomDictionarieIDs(IContext context, IBaseFilter filter, UISorting sorting);
         #endregion CustomDictionaries
 
+
+        #region FavouriteList
         IEnumerable<int> GetFavouriteList(IContext context, string module, string feature);
         int AddAgentFavourite(IContext context, InternalAgentFavourite model);
         void AddAgentFavourites(IContext context, IEnumerable<InternalAgentFavourite> list);
         void UpdateAgentFavourite(IContext context, InternalAgentFavourite model);
         void DeleteAgentFavourite(IContext context, FilterAgentFavourite filter);
         IEnumerable<InternalAgentFavourite> GetInternalAgentFavourite(IContext context, FilterAgentFavourite filter);
+        #endregion
     }
 }

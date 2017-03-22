@@ -7,13 +7,13 @@ namespace DMS_WebAPI.Utilities
 {
     /// <summary>
     /// Очищает устаревшие пользовательские контексты из коллекции UserContexts методом RemoveByTimeout
-    /// Пользовательский контекст удаляется если не используется 1 минуту
+    /// Пользовательский контекст удаляется если не используется 1 минуту 
     /// </summary>
     public class UserContextsWorkerService
     {
         private Task _initializeThread;
         private Timer _timer;
-        private int _USER_CONTEXT_TIMEOUT_MIN = 1;
+        private int _USER_CONTEXT_TIMEOUT_MIN = 60;//14*24*60; // 14 дней
         public UserContextsWorkerService()
         {
         }

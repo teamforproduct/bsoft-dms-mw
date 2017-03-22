@@ -1,15 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -18,7 +13,7 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.DocumentTemlates
+namespace DMS_WebAPI.ControllersV3.DocumentTemplates
 {
     /// <summary>
     /// Шаблоны документов. Рассылка.

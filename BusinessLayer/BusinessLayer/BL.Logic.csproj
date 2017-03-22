@@ -67,13 +67,57 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LinqKit, Version=1.1.7.2, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\LinqKit.1.1.7.2\lib\net461\LinqKit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Thirdparty\Lucene\Lucene.Net.dll</HintPath>
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Analyzers, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Analyzers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.FastVectorHighlighter, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.FastVectorHighlighter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Highlighter, Version=2.3.2.1, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Highlighter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Memory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Memory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Queries, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Queries.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Regex, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Regex.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.SimpleFacetedSearch, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.SimpleFacetedSearch.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.Snowball, Version=2.0.0.1, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.Snowball.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Lucene.Net.Contrib.SpellChecker, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\Web\DMS_WebAPI\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.SpellChecker.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\..\Web\DMS_WebAPI\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
@@ -103,6 +147,7 @@
     <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessAll_JournalCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessByCompany_JournalCommand.cs" />
     <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessByDepartment_JournalCommand.cs" />
+    <Compile Include="AdminCore\RegistartionJournalPositions\SetJournalAccessDefault_JournalCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\BaseRolePermissionCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\SetRolePermissionByAccessTypeCommand.cs" />
     <Compile Include="AdminCore\RolePermissions\SetRolePermissionByModuleCommand.cs" />
@@ -198,13 +243,13 @@
     <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
     <Compile Include="DictionaryCore\DocumentType\BaseDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddUserPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\PositionExecutors\AddDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\AddPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\BaseUserPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteUserPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\DeleteDictionaryPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\PositionExecutors\BaseDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\BasePositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\ModifyUserPositionExecutorCommand.cs" />
-    <Compile Include="DictionaryCore\PositionExecutors\ModifyDictionaryPositionExecutorCommand.cs" />
+    <Compile Include="DictionaryCore\PositionExecutors\ModifyPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\AddDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\DeleteDictionaryAgentClientCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentClientCompany\ModifyDictionaryAgentClientCompanyCommand.cs" />
@@ -264,6 +309,7 @@
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
     <Compile Include="Settings\SettingsFactory.cs" />
+    <Compile Include="SystemCore\FullTextSearch.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
     <Compile Include="SystemCore\SystemCommandFactory.cs" />
@@ -374,6 +420,7 @@
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
     <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
+    <Compile Include="SystemServices\FullTextSearch\CaseInsensitiveWhitespaceAnalyzer.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextIndexWorker.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextSearchService.cs" />
     <Compile Include="Logging\Logger.cs" />
@@ -427,7 +474,9 @@
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="FullTextSearch\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

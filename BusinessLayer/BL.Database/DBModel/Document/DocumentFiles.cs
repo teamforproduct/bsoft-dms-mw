@@ -10,10 +10,15 @@ namespace BL.Database.DBModel.Document
     public class DocumentFiles
     {
         public int Id { get; set; }
-        
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
+
         [Index("IX_DocumentNameExtensionVersion", 1, IsUnique = true)]
         [Index("IX_DocumentOrderNumberVersion", 1, IsUnique = true)]
         public int DocumentId { get; set; }
+        public int? EventId { get; set; }
 
         [MaxLength(2000)]
         [Index("IX_DocumentNameExtensionVersion", 2, IsUnique = true)]
@@ -47,7 +52,7 @@ namespace BL.Database.DBModel.Document
         [MaxLength(2000)]
         public string Description { get; set; }
         public bool IsMainVersion { get; set; }
-        public int ExecutorPositionId { get; set; }
+        public int? ExecutorPositionId { get; set; }
 
         [Column("ExecutorPositionExeAgentId")]
         public int ExecutorPositionExecutorAgentId { get; set; }
@@ -66,6 +71,8 @@ namespace BL.Database.DBModel.Document
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
+        [ForeignKey("EventId")]
+        public virtual DocumentEvents Event { get; set; }
 
         [ForeignKey("ExecutorPositionId")]
         public virtual DictionaryPositions ExecutorPosition { get; set; }

@@ -14,7 +14,7 @@ using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
-namespace DMS_WebAPI.ControllersV3.Licences
+namespace DMS_WebAPI.ControllersV3.Companies
 {
     /// <summary>
     /// Юридические лица
@@ -32,16 +32,17 @@ namespace DMS_WebAPI.ControllersV3.Licences
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
         /// <param name="paging"></param>
+        /// <param name="sorting">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentCompany>))]
-        public IHttpActionResult GetWithPositions([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainAgentCompanies(ctx, ftSearch, filter, paging);
+            var tmpItems = tmpService.GetMainAgentCompanies(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;

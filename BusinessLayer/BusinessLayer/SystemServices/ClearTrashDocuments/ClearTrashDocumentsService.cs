@@ -32,14 +32,14 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
         protected override void InitializeServers()
         {
-            foreach (var keyValuePair in _serverContext)
+            foreach (var keyValuePair in ServerContext)
             {
                 try
                 {
                     var ftsSetting = new ClearTrashDocumentsSettings
                     {
-                        TimeToUpdate = _settings.GetClearTrashDocumentsTimeoutMinute(keyValuePair.Value),
-                        TimeForClearTrashDocuments = _settings.GetClearTrashDocumentsTimeoutMinuteForClear(keyValuePair.Value),
+                        TimeToUpdate = Settings.GetClearTrashDocumentsTimeoutMinute(keyValuePair.Value),
+                        TimeForClearTrashDocuments = Settings.GetClearTrashDocumentsTimeoutMinuteForClear(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
                     };
                     var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
@@ -47,7 +47,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(keyValuePair.Value, "Could not start clear trash documents for server", ex);
+                    Logger.Error(keyValuePair.Value, "Could not start clear trash documents for server", ex);
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
         private Timer GetTimer(ClearTrashDocumentsSettings key)
         {
             Timer res = null;
-            lock (_lockObjectTimer)
+            lock (LockObjectTimer)
             {
                 if (_timers.ContainsKey(key))
                     res = _timers[key];
@@ -75,7 +75,9 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
             if (ctx == null) return;
             _docOperDb.MarkDocumentEventAsReadAuto(ctx);
-             // Clear trash documents.
+            _docOperDb.ModifyDocumentAccessesStatistics(ctx);
+
+            // Clear trash documents.
             try
             {
                 var ids = _sysDb.GetDocumentIdsForClearTrashDocuments(ctx,md.TimeForClearTrashDocuments);
@@ -90,19 +92,19 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ctx, $"ClearTrashDocumentsService cannot process Document Id={id} ", ex);
+                        Logger.Error(ctx, $"ClearTrashDocumentsService cannot process Document Id={id} ", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Could not process clear trash documents", ex);
+                Logger.Error(ctx, "Could not process clear trash documents", ex);
             }
 
             // CLEAR unused PDF copy of the files and their previews. 
             try
             {
-                var pdfFilePeriod = _settings.GetClearOldPdfCopiesInDay(ctx);
+                var pdfFilePeriod = Settings.GetClearOldPdfCopiesInDay(ctx);
                 var fileTodelete = _docFileDb.GetOldPdfForAttachedFiles(ctx, pdfFilePeriod);
                 foreach (var file in fileTodelete)
                 {
@@ -113,7 +115,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             }
             catch (Exception ex)
             {
-                _logger.Error(ctx, "Could not process clear trash documents", ex);
+                Logger.Error(ctx, "Could not process clear trash documents", ex);
             }
 
             tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite);//start new iteration of the timer

@@ -16,7 +16,7 @@ using BL.Model.SystemCore;
 namespace DMS_WebAPI.ControllersV3.Banks
 {
     /// <summary>
-    /// Контакты банка
+    /// Банки. Контакты
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

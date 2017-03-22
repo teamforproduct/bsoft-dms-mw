@@ -51,6 +51,25 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
+        /// Возвращает ограничительный список по ИД документа для автокомплита
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{Id:int}/" + Features.AccessList+"/ListForAutocomplete")]
+        [ResponseType(typeof(List<AutocompleteItem>))]
+        public IHttpActionResult GetByDocumentIdListForAutocomplete(int Id)
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+            var items = docProc.GetRestrictedSendListsForAutocomplete(ctx, Id);
+            var res = new JsonResult(items, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
         /// Возвращает запись ограничительного списка по ИД
         /// </summary>
         /// <param name="Id">ИД ограничительного списка</param>
@@ -78,11 +97,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.AccessList)]
         public IHttpActionResult Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentRestrictedSendList, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return GetById(tmpItem);
         }
 
         /// <summary>

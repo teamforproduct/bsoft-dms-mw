@@ -8,6 +8,10 @@ namespace BL.Database.DBModel.Document
     public partial class DocumentRestrictedSendLists
     {
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         [Index("IX_DocumentPosition", 1, IsUnique = true)]
         public int DocumentId { get; set; }
         [Index("IX_DocumentPosition", 2, IsUnique = true)]

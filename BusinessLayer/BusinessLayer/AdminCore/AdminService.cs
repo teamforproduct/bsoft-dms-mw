@@ -1,37 +1,31 @@
 ﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
+using BL.Database.Dictionaries.Interfaces;
+using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemCore;
+using BL.Logic.TreeBuilder;
 using BL.Model.AdminCore;
-using BL.Model.Common;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
-using BL.Model.Database;
+using BL.Model.AdminCore.InternalModel;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
+using BL.Model.Tree;
 using BL.Model.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BL.Model.Tree;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Logic.TreeBuilder;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.CrossCutting.Extensions;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.AdminCore.InternalModel;
-using System.Transactions;
-using BL.Database.Common;
-using BL.Model.SystemCore;
-using BL.Database.SystemDb;
-using BL.Model.SystemCore.FrontModel;
-using BL.Model.SystemCore.Filters;
-using BL.CrossCutting.Helpers;
-using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.FullTextSearch;
 
 namespace BL.Logic.AdminCore
 {
@@ -93,6 +87,13 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetEmployeeForContext(context, userId);
         }
 
+        public void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model)
+        {
+            var user = new InternalDictionaryAgentUser { Id = model.Id, UserName = model.NewUserName };
+            CommonDocumentUtilities.SetLastChange(context, user);
+            _dictDb.SetAgentUserUserName(context, user);
+        }
+
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return _adminDb.GetPositionsByUser(employee);
@@ -128,124 +129,22 @@ namespace BL.Logic.AdminCore
             return res;
         }
 
-
-        #region [+] Verify ...
-
-        /// <summary>
-        /// Проверка доступа к должностям для текущего пользователя
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="isThrowExeception"></param>
-        /// <param name="context"></param>
-        public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
+        // Диалог выбора должностей
+        public IEnumerable<FrontUserAssignmentsAvailableGroup> GetAvailablePositionsDialog(IContext context, List<int> PositionIDs = null)
         {
-            if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
+            var list = _adminDb.GetAvailablePositionsList(context, context.CurrentAgentId, PositionIDs);
 
-            var data = GetAccInfo(context);
-            var res = false;
-            if (model.UserId == 0)
-            {
-                model.UserId = context.CurrentAgentId;
-            }
-            if (model.PositionsIdList == null || model.PositionsIdList.Count == 0)
-            {
-                model.PositionsIdList = context.CurrentPositionsIdList;
-            }
-
-            if (model.DocumentActionId.HasValue)
-            {
-                if (model.IsPositionFromContext)
+            var res = list.GroupBy(x => new { x.ExecutorTypeId, x.ExecutorTypeDescription })
+                .OrderBy(x => x.Key.ExecutorTypeId)
+                .Select(x => new FrontUserAssignmentsAvailableGroup
                 {
-                    model.PositionId = context.CurrentPositionId;
-                }
+                    ExecutorTypeId = x.Key.ExecutorTypeId,
+                    ExecutorTypeDescription = x.Key.ExecutorTypeDescription,
+                    Assignments = x.OrderBy(y => y.PositionName).ToList(),
+                });
 
-                var actionId = model.DocumentActionId;
-                if (!data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
-                    return true; //если экшина в таблице нет или на него не назначен пермишен, то разрешаем
-
-                while (!res && actionId.HasValue && data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
-                {
-                    //var qry = data.ActionAccess
-                    //    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
-                    //    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
-                    ////var t = qry.Where(x => x.Act.Id == actionId.Value
-                    ////                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
-                    ////                        //&& x.Role.PositionId == 5516
-                    ////                        ).ToList();
-                    //// test it really good!
-                    //res = qry.Any(x => x.Act.Id == actionId.Value
-                    //    && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
-                    //    && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                    //    && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
-                    //    );
-                    var filter = GetFilterPermissionsAccessByContext(context, model.PositionId.HasValue, null, actionId.Value);
-                    res = _adminDb.ExistsPermissionsAccess(context, filter);
-                    if (!res)
-                    {
-                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
-                    }
-                }
-            }
-            else
-            {
-                var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new { URole = u, PR = r });
-
-                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.AgentId == model.UserId).Select(x => x.PR.PositionId)).Any();
-            }
-            if (!res && isThrowExeception)
-            {
-                if (model.DocumentActionId == null)
-                { throw new AccessIsDenied(); }
-                else
-                {
-                    string actionName = string.Empty;
-                    var a = data.Actions.Where(x => x.Id == model.DocumentActionId).FirstOrDefault();
-
-                    if (a != null)
-                    {
-                        actionName = a.Description;
-                    }
-
-                    throw new ActionIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
-                }
-            }
             return res;
-
         }
-
-        public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-
-
-        public bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumSystemActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifySubordination(IContext context, VerifySubordination model)
-        {
-            return _adminDb.VerifySubordination(context, model);
-        }
-
-        #endregion`
 
         #region [+] Role ...
         //public FrontAdminPositionRole GetAdminRole(IContext context, int id)
@@ -255,20 +154,7 @@ namespace BL.Logic.AdminCore
 
         public IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
         {
-            var newFilter = new FilterAdminRole();
-
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
-            {
-                //newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.AdminRoles, ftSearch.FullTextSearchString);
-                newFilter.Name = ftSearch.FullTextSearchString;
-            }
-            else
-            {
-                newFilter = filter;
-            }
-
-
-            return _adminDb.GetListRoles(context, newFilter, paging);
+            return FTS.Get(context, Modules.Role, ftSearch, filter, paging, null, _adminDb.GetMainRoles, _adminDb.GetRoleIDs);
         }
 
         public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)
@@ -575,7 +461,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList ?? true) continue;
+                if (item.IsLeaf ?? true) continue;
 
                 SetCheckForDepartmentsAndCompaniesDIPSubordinations((List<TreeItem>)item.Childs);
 
@@ -761,7 +647,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList ?? true) continue;
+                if (item.IsLeaf ?? true) continue;
 
                 SetCheckForDepartmentsAndCompaniesDIPJournalAccess((List<TreeItem>)item.Childs);
 
@@ -923,7 +809,7 @@ namespace BL.Logic.AdminCore
 
             foreach (var item in tree)
             {
-                if (item.IsList ?? true) continue;
+                if (item.IsLeaf ?? true) continue;
 
                 SetCheckForDepartmentsAndCompaniesDIPRJournalPositions((List<TreeItem>)item.Childs);
 
@@ -975,10 +861,11 @@ namespace BL.Logic.AdminCore
         }
         #endregion
 
-        public IEnumerable<FrontPermission> GetUserPermissions(IContext context)
+        #region [+] Permissions ...
+        public IEnumerable<FrontPermission> GetUserPermissions(IContext context, FilterPermissionsAccess filter = null)
         {
 
-            return _adminDb.GetUserPermissionsAccess(context, GetFilterPermissionsAccessByContext(context, false));
+            return _adminDb.GetUserPermissionsAccess(context, filter ?? GetFilterPermissionsAccessByContext(context, false));
         }
 
         public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)
@@ -986,7 +873,7 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetRolePermissions(context, filter);
         }
 
-        public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null)
+        public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null)
         {
             var res = new FilterPermissionsAccess();
             res.UserId = context.CurrentAgentId;
@@ -1000,6 +887,7 @@ namespace BL.Logic.AdminCore
             }
             res.ActionId = actionId;
             res.PermissionIDs = permissionIDs;
+            res.ModuleId = moduleId;
             return res;
         }
 
@@ -1007,5 +895,126 @@ namespace BL.Logic.AdminCore
         {
             return _adminDb.ExistsPermissionsAccess(context, filter);
         }
+
+        #region [+] Verify ...
+
+        /// <summary>
+        /// Проверка доступа к должностям для текущего пользователя
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="isThrowExeception"></param>
+        /// <param name="context"></param>
+        public bool VerifyAccess(IContext context, VerifyAccess model, bool isThrowExeception = true)
+        {
+            if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
+
+            var data = GetAccInfo(context);
+            var res = false;
+            if (model.UserId == 0)
+            {
+                model.UserId = context.CurrentAgentId;
+            }
+            if (model.PositionsIdList == null || model.PositionsIdList.Count == 0)
+            {
+                model.PositionsIdList = context.CurrentPositionsIdList;
+            }
+
+            if (model.DocumentActionId.HasValue)
+            {
+                if (model.IsPositionFromContext)
+                {
+                    model.PositionId = context.CurrentPositionId;
+                }
+
+                var actionId = model.DocumentActionId;
+                if (!data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
+                    return true; //если экшина в таблице нет или на него не назначен пермишен, то разрешаем
+
+                while (!res && actionId.HasValue && data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
+                {
+                    //var qry = data.ActionAccess
+                    //    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
+                    //    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
+                    ////var t = qry.Where(x => x.Act.Id == actionId.Value
+                    ////                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                    ////                        //&& x.Role.PositionId == 5516
+                    ////                        ).ToList();
+                    //// test it really good!
+                    //res = qry.Any(x => x.Act.Id == actionId.Value
+                    //    && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
+                    //    && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
+                    //    && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
+                    //    );
+                    var filter = GetFilterPermissionsAccessByContext(context, model.PositionId.HasValue, null, actionId.Value);
+                    res = _adminDb.ExistsPermissionsAccess(context, filter);
+                    if (!res)
+                    {
+                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
+                    }
+                }
+            }
+            else
+            {
+                var qry = data.UserRoles.Join(data.PositionRoles, ur => ur.RoleId, r => r.RoleId, (u, r) => new { URole = u, PR = r });
+
+                res = !model.PositionsIdList.Except(qry.Where(x => x.URole.AgentId == model.UserId).Select(x => x.PR.PositionId)).Any();
+            }
+            if (!res && isThrowExeception)
+            {
+                if (model.DocumentActionId == null)
+                { throw new AccessIsDenied(); }
+                else
+                {
+                    string actionName = string.Empty;
+                    var a = data.Actions.Where(x => x.Id == model.DocumentActionId).FirstOrDefault();
+
+                    if (a != null)
+                    {
+                        actionName = a.Description;
+                    }
+
+                    throw new ActionIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                }
+            }
+            return res;
+
+        }
+
+        public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
+        }
+
+        public bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
+        }
+
+        public bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
+        }
+
+
+
+        public bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
+        }
+
+        public bool VerifyAccess(IContext context, EnumSystemActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        {
+            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
+        }
+
+        public bool VerifySubordination(IContext context, VerifySubordination model)
+        {
+            return _adminDb.VerifySubordination(context, model);
+        }
+
+        #endregion`
+
+
+        #endregion
     }
 }

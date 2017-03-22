@@ -194,10 +194,10 @@ namespace DMS_WebAPI.Utilities
         {
 
             string userId = string.Empty;
-            string userName = FormUserName(model.Login, context.CurrentClientId);
+            model.UserName = FormUserName(model.Login, context.CurrentClientId);
 
             // Проверяю не используется ли логин
-            if (ExistsUser(userName)) throw new UserNameAlreadyExists(model.Login);
+            if (ExistsUser(model.UserName)) throw new UserNameAlreadyExists(model.Login);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -594,13 +594,15 @@ namespace DMS_WebAPI.Utilities
 
             var userContext = userContexts.Get();
 
+            model.NewUserName = FormUserName(model.NewEmail, userContext.CurrentClientId);
+
             // VerifyAccessCommand
             var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangeLogin, userContext, model.Id);
+            admService.ChangeLoginAgentUser(userContext, model);
 
             var user = GetUser(userContext, model.Id);
 
-            user.UserName = FormUserName(model.NewEmail, userContext.CurrentClientId);//  model.NewEmail.UserNameFormatByClientId(userContext.CurrentClientId);
+            user.UserName = model.NewUserName;
             user.Email = model.NewEmail;
             user.IsEmailConfirmRequired = model.IsVerificationRequired;
             user.LastChangeDate = DateTime.UtcNow;
@@ -918,6 +920,21 @@ namespace DMS_WebAPI.Utilities
         {
             return _webDb.GetControlQuestions();
         }
+
+        public async Task SwitchOffFingerprint(IContext context, Item model)
+        {
+            var user = await GetUserAsync(context, model.Id);
+
+            if (user == null) throw new UserIsNotDefined();
+
+            user.IsFingerprintEnabled = false;
+            user.LastChangeDate = DateTime.UtcNow;
+
+            var result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded) throw new DatabaseError();
+        }
+
         #endregion
 
         public IEnumerable<AspNetUserContexts> GetUserContexts(FilterAspNetUserContext filter)

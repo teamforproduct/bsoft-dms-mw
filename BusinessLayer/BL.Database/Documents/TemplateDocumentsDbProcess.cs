@@ -19,6 +19,7 @@ using BL.Model.SystemCore;
 using System;
 using BL.CrossCutting.Helpers;
 using BL.Database.Helper;
+using BL.Model.Common;
 
 namespace BL.Database.Documents
 {
@@ -52,12 +53,9 @@ namespace BL.Database.Documents
                         (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
-                if (filter.DocumentSubjectId?.Count() > 0)
+                if (!String.IsNullOrEmpty(filter.DocumentSubject))
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
-                    filterContains = filter.DocumentSubjectId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentSubjectId == value).Expand());
-                    qry = qry.Where(filterContains);
+                    qry = qry.Where(x => x.Description.Contains(filter.DocumentSubject));
                 }
                 if (filter.RegistrationJournalId?.Count() > 0)
                 {
@@ -133,11 +131,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging)
+        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sotring)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter);
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter as FilterTemplateDocument);
 
                 qry = qry.OrderByDescending(x => x.Name);
 
@@ -167,13 +165,29 @@ namespace BL.Database.Documents
             }
         }
 
+        public List<int> GetTemplateDocumentIDs(IContext ctx, IBaseFilter filter, UISorting sotring)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetTemplateDocumentQuery(ctx, dbContext, filter as FilterTemplateDocument);
+
+                qry = qry.OrderByDescending(x => x.Name);
+
+                //if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainTemplateDocument>();
+
+                var res = qry.Select(x => x.Id).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId)
         {
             int templateDocumentId = 0;
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 templateDocumentId =
-                    dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Where(x => x.Id == documentId)
+                    dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == documentId)
                         .Select(x => x.TemplateDocumentId)
                         .FirstOrDefault();
 
@@ -203,8 +217,7 @@ namespace BL.Database.Documents
                             DocumentTypeId = x.DocumentTypeId,
                             DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
-                            DocumentSubjectId = x.DocumentSubjectId,
-                            DocumentSubjectName = x.DocumentSubject.Name,
+                            DocumentSubject = x.DocumentSubject,
                             RegistrationJournalId = x.RegistrationJournalId,
                             RegistrationJournalName = x.RegistrationJournal.Name,
                             SenderAgentId = x.SenderAgentId,
@@ -236,7 +249,7 @@ namespace BL.Database.Documents
                     IsForDocument = template.IsForDocument,
                     DocumentDirectionId = (int)template.DocumentDirection,
                     DocumentTypeId = template.DocumentTypeId,
-                    DocumentSubjectId = template.DocumentSubjectId,
+                    DocumentSubject = template.DocumentSubject,
                     Description = template.Description,
                     RegistrationJournalId = template.RegistrationJournalId,
                     SenderAgentId = template.SenderAgentId,
@@ -261,7 +274,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.DictionaryDocumentType,
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, newTemplate.Id, EnumObjects.DictionaryDocumentType,
                     template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
 
 
@@ -290,7 +303,7 @@ namespace BL.Database.Documents
                         IsForDocument = x.IsForDocument,
                         DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                         DocumentTypeId = x.DocumentTypeId,
-                        DocumentSubjectId = x.DocumentSubjectId,
+                        DocumentSubject = x.DocumentSubject,
                         Description = x.Description,
                         RegistrationJournalId = x.RegistrationJournalId,
                         SenderAgentId = x.SenderAgentId,
@@ -333,6 +346,8 @@ namespace BL.Database.Documents
                 doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateAttachedFile
                     {
+                        ClientId = x.Document.ClientId,
+                        EntityTypeId = x.Document.EntityTypeId,
                         DocumentId = x.DocumentId,
                         Extension = x.Extention,
                         Name = x.Name,
@@ -400,7 +415,7 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentsSet.Remove(ddt);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocument, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(context, dbContext, ddt.Id, EnumObjects.TemplateDocument, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -410,7 +425,7 @@ namespace BL.Database.Documents
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 //TODO: Уточнить безнес-логику, в каких случаях можно менять/удалять шаблон документа
-                var count = dbContext.DocumentsSet.Where(x => x.TemplateDocument.ClientId == ctx.CurrentClientId).Count(x => x.TemplateDocumentId == template.Id);
+                var count = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Count(x => x.TemplateDocumentId == template.Id);
                 transaction.Complete();
                 return count == 0;
             }
@@ -588,7 +603,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentSendList, template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, newTemplate.Id, EnumObjects.TemplateDocumentSendList, template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
                 transaction.Complete();
                 return newTemplate.Id;
             }
@@ -603,7 +618,7 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentSendList, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, ddt.Id, EnumObjects.TemplateDocumentSendList, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -978,7 +993,7 @@ namespace BL.Database.Documents
                 entity.State = entityState;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, newTemplate.Id, EnumObjects.TemplateDocumentTask,
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, newTemplate.Id, EnumObjects.TemplateDocumentTask,
                     template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
                 transaction.Complete();
                 return newTemplate.Id;
@@ -1006,7 +1021,7 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentTasksSet.Remove(ddt);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.TemplateDocumentTask, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, ddt.Id, EnumObjects.TemplateDocumentTask, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -1324,7 +1339,7 @@ namespace BL.Database.Documents
                 dbContext.TemplateDocumentFilesSet.Add(fl);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(dbContext, fl.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.AddNew);
                 docFile.Id = fl.Id;
                 transaction.Complete();
                 return fl.Id;
@@ -1339,6 +1354,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalTemplateAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.Document.ClientId,
+                            EntityTypeId = x.Document.EntityTypeId,
                             DocumentId = x.DocumentId,
                             OrderInDocument = x.OrderNumber,
                             Type = (EnumFileTypes)x.TypeId,
@@ -1370,7 +1387,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
 
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -1386,7 +1403,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
 
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -1400,6 +1417,8 @@ namespace BL.Database.Documents
                         .Select(x => new InternalTemplateAttachedFile
                         {
                             Id = x.Id,
+                            ClientId = x.Document.ClientId,
+                            EntityTypeId = x.Document.EntityTypeId,
                             DocumentId = x.DocumentId,
                             OrderInDocument = x.OrderNumber
                         }).FirstOrDefault();
@@ -1415,7 +1434,7 @@ namespace BL.Database.Documents
                     dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(
                         x => x.Id == id));
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(dbContext, id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }

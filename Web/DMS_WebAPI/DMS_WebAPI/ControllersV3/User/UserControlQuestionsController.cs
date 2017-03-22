@@ -19,8 +19,7 @@ using System.Threading.Tasks;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Контрольный вопрос и ответ
+    /// Пользователь. Контрольный вопрос и ответ
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

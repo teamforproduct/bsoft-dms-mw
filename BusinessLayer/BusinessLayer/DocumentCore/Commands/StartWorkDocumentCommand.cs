@@ -46,9 +46,9 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model.DocumentId);
-            _docAccess = _document?.Accesses.FirstOrDefault();
+            _docAccess = _document?.Accesses.FirstOrDefault(x=>x.PositionId.HasValue);
             if (_docAccess == null
-                || !CanBeDisplayed(_docAccess.PositionId)
+                || !CanBeDisplayed(_docAccess.PositionId.Value)
                 )
             {
                 throw new CouldNotPerformOperation();
@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _docAccess.IsInWork = true;
             CommonDocumentUtilities.SetLastChange(_context, _docAccess);
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.SetInWork, Model.EventDate, Model.Description);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SetInWork, Model.EventDate, Model.Description);
             _operationDb.ChangeIsInWorkAccess(_context, _document);
             return null;
         }

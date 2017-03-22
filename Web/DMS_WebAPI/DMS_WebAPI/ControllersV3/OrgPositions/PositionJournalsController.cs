@@ -14,7 +14,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.OrgPositions
 {
     /// <summary>
-    /// Журналы регистрации документов. Устанавливает доступ должности просматривать и регистрировать документы в журналах регистрации
+    /// Должности. Журналы регистрации документов. Устанавливает доступ должности просматривать и регистрировать документы в журналах регистрации
     /// По умолчанию должность может просматривать и регистрировать документы во всех журналах своего отдела 
     /// </summary>
     [Authorize]
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTree();
-            filter.IsChecked = false;
+            filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRegistrationJournalPositionsDIP(ctx, Id, filter);

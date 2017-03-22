@@ -24,7 +24,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Не запонять!!!
         /// Признак первоначальный пункт
         /// </summary>
-        [XmlIgnore]
         [IgnoreDataMember]
         public bool IsInitial { get; set; }
     }

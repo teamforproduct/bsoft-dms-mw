@@ -21,8 +21,7 @@ using BL.Model.EncryptionCore.IncomingModel;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Ключи ЕЦП
+    /// Пользователь. Ключи ЕЦП
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]

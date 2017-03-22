@@ -15,7 +15,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.OrgPositions
 {
     /// <summary>
-    /// Правила рассылки документов.
+    /// Должности. Правила рассылки документов.
     /// Регулирование правил рассылки документов от отдной должности к другой.
     /// Рассылка бывает двух типов: для исполнения и для сведения.
     /// Этот функционал по умолчанию выключен для нового клиента, рассылка по-умолчанию устанавливается на все должности. 
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminSubordinationTree();
-            filter.IsChecked = false;
+            filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);

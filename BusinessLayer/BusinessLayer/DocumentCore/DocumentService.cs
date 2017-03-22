@@ -19,6 +19,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.FullTextSearch;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore
 {
@@ -48,21 +49,28 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging, EnumGroupCountType? groupCountType = null)
         {
-            if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch))
+            if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
             {
-                filter.Document.FullTextSearchDocumentId
+                FileLogger.AppendTextToFile($"", @"C:\TEMPLOGS\fulltext.log");
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** StartSearchIDInLucena ", @"C:\TEMPLOGS\fulltext.log");
+                //                var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "417757 file", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
+
+                filter.FullTextSearchSearch.FullTextSearchId
                     = DmsResolver.Current.Get<IFullTextSearchService>()
-                    .SearchItemParentId(ctx, filter.Document.FullTextSearch, new FullTextSearchFilter { ModuleId = Modules.GetId(Modules.Documents) });
+                    .SearchItemParentId(ctx, filter.FullTextSearchSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Documents, Accesses = ctx.CurrentPositionsIdList.ToList()});
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchId.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             }
             var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
-            if (!string.IsNullOrEmpty(filter?.Document?.FullTextSearch) && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
+            if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
+                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** We have result: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+
+            if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString) && !filter.FullTextSearchSearch.IsDontSaveSearchQueryLog && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>()
                     .AddSearchQueryLog(ctx, new InternalSearchQueryLog
                     {
-                        ModuleId = Modules.GetId(Modules.Documents),
-                        FeatureId = Features.GetId(Features.Info),
-                        SearchQueryText = filter?.Document?.FullTextSearch,
+                        ModuleId = Modules.GetId(Modules.Documents),                        
+                        SearchQueryText = filter?.FullTextSearchSearch?.FullTextSearchString,
                     });
             }
             return res;
@@ -70,7 +78,6 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             var doc = _documentDb.GetDocument(ctx, documentId);
             doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
             doc.SendLists = null;
@@ -103,25 +110,21 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentEvent(ctx, eventId);
         }
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentEvents(ctx, filter, paging);
         }
 
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentWaits(ctx, filter, paging);
         }
 
         public IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(ctx, EnumDocumentActions.ViewDocument, false);
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
         }
 
@@ -173,13 +176,11 @@ namespace BL.Logic.DocumentCore
         #region DocumentPapers
         public FrontDocumentPaper GetDocumentPaper(IContext context, int itemId)
         {
-            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument, false);
             return _documentDb.GetDocumentPaper(context, itemId);
         }
 
         public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging)
         {
-            _adminService.VerifyAccess(context, EnumDocumentActions.ViewDocument, false);
             return _documentDb.GetDocumentPapers(context, filter, paging);
         }
 

@@ -13,6 +13,10 @@ namespace BL.Database.DBModel.Document
         }
 
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         [Index("IX_DocumentNameOrderNumber", 1, IsUnique = true)]
         public int DocumentId { get; set; }
         [MaxLength(400)]

@@ -10,6 +10,7 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
+    //TODO DELETE!!!!
     public class AddByStandartSendListDocumentSendListCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
@@ -44,7 +45,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _admin.VerifyAccess(_context, CommandType);
 
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);            
-            Model.IsInitial = (_context is AdminContext) || _context.CurrentPositionsIdList.Contains(_document.ExecutorPositionId);
+            //Model.IsInitial = (_context is AdminContext) || _context.CurrentPositionsIdList.Contains(_document.ExecutorPositionId);
 
             DocSendLists = _operationDb.AddByStandartSendListDocumentSendListPrepare(_context, Model);  //TODO так нельзя!!!
 

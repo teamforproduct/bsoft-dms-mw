@@ -1,8 +1,4 @@
 ﻿using BL.Model.Common;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.Enums;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {

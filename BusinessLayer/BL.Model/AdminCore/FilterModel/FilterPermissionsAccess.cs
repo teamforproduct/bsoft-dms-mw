@@ -32,6 +32,11 @@ namespace BL.Model.AdminCore.FilterModel
         /// Массив ИД должностей, для проверки
         /// </summary>
         public List<int> PositionsIdList { get; set; }
+        /// <summary>
+        /// Код модуля
+        /// </summary>
+        public int? ModuleId { get; set; }
+
 
     }
 }

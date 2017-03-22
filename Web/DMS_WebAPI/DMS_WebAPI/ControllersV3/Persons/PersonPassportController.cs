@@ -13,7 +13,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.Persons
 {
     /// <summary>
-    /// Паспортные данные физ. лица
+    /// Физические лица. Паспортные данные
     /// </summary>
     [Authorize]
     [DimanicAuthorize]

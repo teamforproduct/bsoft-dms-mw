@@ -1,26 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Common;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр типов адресов
     /// </summary>
-    public class FilterDictionaryAddressType : DictionaryBaseFilterParameters
+    public class FilterDictionaryAddressType : BaseFilterCodeNameIsActive
     {
-        /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
+        [IgnoreDataMember]
+        public string CodeName { get; set; }
 
-        /// <summary>
-        /// Сужение по краткому наименованию
-        /// </summary>
-        public string Code { get; set; }
-
-        /// <summary>
-        /// Сужение по краткому наименованию
-        /// </summary>
-        public string CodeExact { get; set; }
-        
     }
 }

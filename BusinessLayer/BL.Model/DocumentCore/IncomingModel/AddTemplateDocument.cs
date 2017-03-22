@@ -36,9 +36,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int DocumentTypeId { get; set; }
         /// <summary>
-        /// ИД Тематика документа
+        /// Тематика документа
         /// </summary>
-        public int? DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Описания документа
         /// </summary>

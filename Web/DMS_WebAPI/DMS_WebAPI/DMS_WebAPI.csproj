@@ -313,9 +313,12 @@
     <Compile Include="ControllersV3\Employees\EmployeePassportController.cs" />
     <Compile Include="ControllersV3\Employees\EmployeeRolesController.cs" />
     <Compile Include="ControllersV3\Journals\JournalPositionsController.cs" />
-    <Compile Include="ControllersV3\OrgPositions\PersonPassportController.cs" />
+    <Compile Include="ControllersV3\Persons\PersonPassportController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionRolesController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionJournalsController.cs" />
+    <Compile Include="ControllersV3\System\SystemSearchQueriesController.cs" />
+    <Compile Include="ControllersV3\User\UserSendListContentsController.cs" />
+    <Compile Include="ControllersV3\User\UserSendListController.cs" />
     <Compile Include="ControllersV3\User\UserFavoritesController.cs" />
     <Compile Include="ControllersV3\User\UserNotificationsController.cs" />
     <Compile Include="ControllersV3\User\UserPositionExecutorsController.cs" />
@@ -353,8 +356,8 @@
     <Compile Include="ControllersV3\User\UserContactsController.cs" />
     <Compile Include="ControllersV3\User\UserAssignmentsController.cs" />
     <Compile Include="ControllersV3\System\SystemToolsController.cs" />
-    <Compile Include="ControllersV3\System\SystemListsController.cs" />
-    <Compile Include="ControllersV3\Lists\ListsController.cs" />
+    <Compile Include="ControllersV3\Lists\SystemListsController.cs" />
+    <Compile Include="ControllersV3\Lists\DictionaryListsController.cs" />
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="ControllersV3\Utilities\WebPartialViewController.cs" />
     <Compile Include="Controllers\Clients\ClientsController.cs" />
@@ -460,6 +463,10 @@
     <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.cs" />
     <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.Designer.cs">
       <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703062044277_PositionExecutorTypes_Description.cs" />
+    <Compile Include="Migrations\201703062044277_PositionExecutorTypes_Description.Designer.cs">
+      <DependentUpon>201703062044277_PositionExecutorTypes_Description.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -652,6 +659,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702161918125_AspNetUserContexts.resx">
       <DependentUpon>201702161918125_AspNetUserContexts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703062044277_PositionExecutorTypes_Description.resx">
+      <DependentUpon>201703062044277_PositionExecutorTypes_Description.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using BL.Model.Common;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтры FilterDictionaryPosition
     /// </summary>
-    public class FilterDictionaryPosition : DictionaryBaseFilterParameters
+    public class FilterDictionaryPosition : BaseFilterNameIsActive
     {
  
         /// <summary>
@@ -57,5 +57,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Сужение по списку вышестоящих элементов
         /// </summary>
         public List<int> ParentIDs { get; set; }
+
+        /// <summary>
+        /// Не показывать вакантные должности
+        /// </summary>
+        public bool? IsHideVacated { get; set; }
     }
 }

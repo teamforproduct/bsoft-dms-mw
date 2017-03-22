@@ -1,22 +1,12 @@
-﻿using System.Collections.Generic;
-using BL.Model.Enums;
+﻿using BL.Model.Common;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     /// <summary>
     /// Фильтр словаря агентов
     /// </summary>
-    public class FilterDictionaryAgent : DictionaryBaseFilterParameters
+    public class FilterDictionaryAgent : BaseFilterNameIsActive
     {
-        /// <summary>
-        /// Строка, для полнотекстового поиска
-        /// </summary>
-        public string FullTextSearchString { get; set; }
-
-        /// <summary>
-        /// Первая буква наименования
-        /// </summary>
-        public char FirstChar { get; set; }
 
     }
 }

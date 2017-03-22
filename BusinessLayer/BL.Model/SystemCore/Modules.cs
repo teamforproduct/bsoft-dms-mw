@@ -38,6 +38,8 @@ namespace BL.Model.SystemCore
         {
             int res = 0;
 
+            if (string.IsNullOrEmpty(Name)) return res;
+
             switch (Name)
             {
                 case List:                  res = 100; break;

@@ -1,6 +1,4 @@
-﻿using BL.Model.Common;
-using BL.Model.DictionaryCore.IncomingModel;
-using System;
+﻿using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -19,9 +17,10 @@ namespace BL.Model.DictionaryCore.InternalModel
 
             #region [+] AgentUser ...
             UserId = model.UserId;
+            UserName = model.UserName;
             //Login = model.Login;
             //PasswordHash = model.PasswordHash;
-            Login = model.Login;
+            UserEmail = model.Login;
             Phone = model.Phone;
             #endregion
 
@@ -92,9 +91,14 @@ namespace BL.Model.DictionaryCore.InternalModel
         public string UserId { get; set; }
 
         /// <summary>
+        /// WEB - USER  Login
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// Имейл, на который высылается письмо с приглашением
         /// </summary>
-        public string Login { get; set; }
+        public string UserEmail { get; set; }
 
         /// <summary>
         /// Номер мобильного телефона

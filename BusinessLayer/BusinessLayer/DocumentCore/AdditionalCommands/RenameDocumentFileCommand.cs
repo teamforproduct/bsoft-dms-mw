@@ -91,7 +91,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 CommonDocumentUtilities.SetLastChange(_context, file);
             }
 
-            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model.DocumentId, EnumEventTypes.RanameDocumentFile, null, oldName + "." + extension, Model.FileName + "." + extension);
+            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.RanameDocumentFile, null, oldName + "." + extension, Model.FileName + "." + extension);
 
             _operationDb.RenameFile(_context, _document.DocumentFiles, events);
 

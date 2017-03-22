@@ -30,13 +30,6 @@ namespace BL.Model.DocumentCore.Filters
         /// Работает только если в DocumentId передан один ID
         /// </summary>
         public bool AllLinkedDocuments { get; set; }
-
-        /// <summary>
-        /// Массив ИД документов полученного из полнотекстового поиска
-        /// </summary>
-        [XmlIgnore]
-        [IgnoreDataMember]
-        public List<int> FullTextSearchDocumentId { get; set; }
         /// <summary>
         /// Массив ИД шаблонов документов
         /// </summary>
@@ -60,9 +53,9 @@ namespace BL.Model.DocumentCore.Filters
         public DateTime? CreateToDate { get { return _CreateToDate; } set { _CreateToDate = value.ToUTC(); } }
         private DateTime? _CreateToDate;
         /// <summary>
-        /// Массив ИД тематик документов
+        /// Отрывок тематики документа
         /// </summary>
-        public List<int> DocumentSubjectId { get; set; }
+        public string DocumentSubject { get; set; }
         /// <summary>
         /// Отрывок краткого содержания
         /// </summary>
@@ -189,7 +182,7 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Содержит строку для поиска по полнотекстовому поиску. 
         /// </summary>
-        public string FullTextSearch { get; set; }
+        //public string FullTextSearch { get; set; }
 
         /// <summary>
         /// Фильтр по динамическим свойствам

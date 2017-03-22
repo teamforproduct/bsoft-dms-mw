@@ -13,8 +13,7 @@ using System.Web.Http.Description;
 namespace DMS_WebAPI.ControllersV3.User
 {
     /// <summary>
-    /// !!! Доступ не ограничен.
-    /// Часто выбираемые элементы. 
+    /// Пользователь. Часто выбираемые элементы. 
     /// </summary>
     [Authorize]
     //![DimanicAuthorize]
@@ -41,11 +40,6 @@ namespace DMS_WebAPI.ControllersV3.User
             res.SpentTime = stopWatch;
             return res;
         }
-
-
-
-
-
 
         ///// <summary>
         ///// Возвращает отпечаток по Id

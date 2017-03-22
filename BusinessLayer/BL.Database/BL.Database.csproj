@@ -194,7 +194,8 @@
     <Compile Include="DBModel\Dictionary\DictionaryRegistrationJournalAccessTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySubscriptionStates.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
-    <Compile Include="DBModel\Document\DocumentEventReaders_DELETE.cs" />
+    <Compile Include="DBModel\Document\DocumentEventAccessGroups.cs" />
+    <Compile Include="DBModel\Document\DocumentEventAccesses.cs" />
     <Compile Include="DBModel\Document\DocumentPaperLists.cs" />
     <Compile Include="DBModel\Document\DocumentPapers.cs" />
     <Compile Include="DBModel\Document\DocumentSubscriptions.cs" />
@@ -261,6 +262,7 @@
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Common\CommonQueries.cs" />
+    <Compile Include="Documents\IDocumentSendListService.cs" />
     <Compile Include="Encryption\EncryptionDbProcess.cs" />
     <Compile Include="Encryption\Interfaces\IEncryptionDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />
@@ -576,6 +578,74 @@
     <Compile Include="Migrations\201702171651227_TemplateDocumentAccesses.Designer.cs">
       <DependentUpon>201702171651227_TemplateDocumentAccesses.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702221703052_FullTextIndexCashClientId.cs" />
+    <Compile Include="Migrations\201702221703052_FullTextIndexCashClientId.Designer.cs">
+      <DependentUpon>201702221703052_FullTextIndexCashClientId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051818576_ExecutorPositionIdNulable.cs" />
+    <Compile Include="Migrations\201703051818576_ExecutorPositionIdNulable.Designer.cs">
+      <DependentUpon>201703051818576_ExecutorPositionIdNulable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051833105_AccessPositionIdNulable.cs" />
+    <Compile Include="Migrations\201703051833105_AccessPositionIdNulable.Designer.cs">
+      <DependentUpon>201703051833105_AccessPositionIdNulable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051909351_CompanyInDoc.cs" />
+    <Compile Include="Migrations\201703051909351_CompanyInDoc.Designer.cs">
+      <DependentUpon>201703051909351_CompanyInDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051940144_EntityTypeId.cs" />
+    <Compile Include="Migrations\201703051940144_EntityTypeId.Designer.cs">
+      <DependentUpon>201703051940144_EntityTypeId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051944323_EntityTypeId1.cs" />
+    <Compile Include="Migrations\201703051944323_EntityTypeId1.Designer.cs">
+      <DependentUpon>201703051944323_EntityTypeId1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051946052_DocumentEventAccessesSet.cs" />
+    <Compile Include="Migrations\201703051946052_DocumentEventAccessesSet.Designer.cs">
+      <DependentUpon>201703051946052_DocumentEventAccessesSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051951163_DocumentTypeFK.cs" />
+    <Compile Include="Migrations\201703051951163_DocumentTypeFK.Designer.cs">
+      <DependentUpon>201703051951163_DocumentTypeFK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703052114115_minorChange.cs" />
+    <Compile Include="Migrations\201703052114115_minorChange.Designer.cs">
+      <DependentUpon>201703052114115_minorChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703052116329_AccessTypeId.cs" />
+    <Compile Include="Migrations\201703052116329_AccessTypeId.Designer.cs">
+      <DependentUpon>201703052116329_AccessTypeId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703052118275_EventAccessId.cs" />
+    <Compile Include="Migrations\201703052118275_EventAccessId.Designer.cs">
+      <DependentUpon>201703052118275_EventAccessId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703062029133_EventAccessIdFix.cs" />
+    <Compile Include="Migrations\201703062029133_EventAccessIdFix.Designer.cs">
+      <DependentUpon>201703062029133_EventAccessIdFix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703062044489_PositionExecutorTypes_Description.cs" />
+    <Compile Include="Migrations\201703062044489_PositionExecutorTypes_Description.Designer.cs">
+      <DependentUpon>201703062044489_PositionExecutorTypes_Description.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703072124112_DocumentSubjectIdDel.cs" />
+    <Compile Include="Migrations\201703072124112_DocumentSubjectIdDel.Designer.cs">
+      <DependentUpon>201703072124112_DocumentSubjectIdDel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703092054185_PrepareForChart.cs" />
+    <Compile Include="Migrations\201703092054185_PrepareForChart.Designer.cs">
+      <DependentUpon>201703092054185_PrepareForChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703111901174_DocumentAccesses.cs" />
+    <Compile Include="Migrations\201703111901174_DocumentAccesses.Designer.cs">
+      <DependentUpon>201703111901174_DocumentAccesses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703210407599_Add-UserName.cs" />
+    <Compile Include="Migrations\201703210407599_Add-UserName.Designer.cs">
+      <DependentUpon>201703210407599_Add-UserName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -870,6 +940,57 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702171651227_TemplateDocumentAccesses.resx">
       <DependentUpon>201702171651227_TemplateDocumentAccesses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702221703052_FullTextIndexCashClientId.resx">
+      <DependentUpon>201702221703052_FullTextIndexCashClientId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051818576_ExecutorPositionIdNulable.resx">
+      <DependentUpon>201703051818576_ExecutorPositionIdNulable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051833105_AccessPositionIdNulable.resx">
+      <DependentUpon>201703051833105_AccessPositionIdNulable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051909351_CompanyInDoc.resx">
+      <DependentUpon>201703051909351_CompanyInDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051940144_EntityTypeId.resx">
+      <DependentUpon>201703051940144_EntityTypeId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051944323_EntityTypeId1.resx">
+      <DependentUpon>201703051944323_EntityTypeId1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051946052_DocumentEventAccessesSet.resx">
+      <DependentUpon>201703051946052_DocumentEventAccessesSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051951163_DocumentTypeFK.resx">
+      <DependentUpon>201703051951163_DocumentTypeFK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703052114115_minorChange.resx">
+      <DependentUpon>201703052114115_minorChange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703052116329_AccessTypeId.resx">
+      <DependentUpon>201703052116329_AccessTypeId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703052118275_EventAccessId.resx">
+      <DependentUpon>201703052118275_EventAccessId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703062029133_EventAccessIdFix.resx">
+      <DependentUpon>201703062029133_EventAccessIdFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703062044489_PositionExecutorTypes_Description.resx">
+      <DependentUpon>201703062044489_PositionExecutorTypes_Description.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703072124112_DocumentSubjectIdDel.resx">
+      <DependentUpon>201703072124112_DocumentSubjectIdDel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703092054185_PrepareForChart.resx">
+      <DependentUpon>201703092054185_PrepareForChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703111901174_DocumentAccesses.resx">
+      <DependentUpon>201703111901174_DocumentAccesses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703210407599_Add-UserName.resx">
+      <DependentUpon>201703210407599_Add-UserName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

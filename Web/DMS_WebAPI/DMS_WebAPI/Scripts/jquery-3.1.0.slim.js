@@ -1842,7 +1842,7 @@ Expr = Sizzle.selectors = {
 										node.nodeType === 1 ) &&
 										++diff ) {
 
-										// Cache the index of each encountered element
+										// CacheBaseThreadSafe the index of each encountered element
 										if ( useCache ) {
 											outerCache = node[ expando ] || (node[ expando ] = {});
 
@@ -2182,7 +2182,7 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 		soFar.length :
 		soFar ?
 			Sizzle.error( selector ) :
-			// Cache the tokens
+			// CacheBaseThreadSafe the tokens
 			tokenCache( selector, groups ).slice( 0 );
 };
 
@@ -2585,7 +2585,7 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 			}
 		}
 
-		// Cache the compiled function
+		// CacheBaseThreadSafe the compiled function
 		cached = compilerCache( selector, matcherFromGroupMatchers( elementMatchers, setMatchers ) );
 
 		// Save selector and tokenization

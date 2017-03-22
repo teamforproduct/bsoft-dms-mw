@@ -8,6 +8,8 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentEvent : LastChangeInfo, IReports
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public EnumEventTypes EventType { get; set; }
         //public EnumImportanceEventTypes ImportanceEventType { get; set; }

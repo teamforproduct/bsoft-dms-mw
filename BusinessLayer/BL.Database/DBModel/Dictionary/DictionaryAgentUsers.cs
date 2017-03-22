@@ -18,15 +18,15 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(128)]
         [Index("IX_UserId", 1, IsUnique = true)]
         public string UserId { get; set; }
+
+        [MaxLength(256)]
+        //[Index("IX_UserName", 1, IsUnique = true)]
+        public string UserName { get; set; }
+
         public int LanguageId { get; set; }
         [MaxLength(2000)]
         public string LastPositionChose { get; set; }
         public bool IsSendEMail { get; set; }
-        /// <summary>
-        /// Определяет может ли пользователь войти в систему
-        /// </summary>
-        [Obsolete("Этот флаг лишний. В WEB-базе есть дубль", true)]
-        public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 

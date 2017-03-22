@@ -35,7 +35,7 @@ namespace BL.Logic.TreeBuilder
 
             }
 
-            if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true))
+            if ((filter?.Name ?? string.Empty) != string.Empty || (filter?.IsChecked ?? false == true) || filter?.DicIDs?.Count > 0)
             {
                 var safeList = new List<string>();
 
@@ -120,6 +120,7 @@ namespace BL.Logic.TreeBuilder
             {
                 var existsNameFilter = !string.IsNullOrEmpty(filter.Name);
                 var existsCheckFilter = filter.IsChecked.HasValue;
+                var existsIdFilter = filter.DicIDs?.Count>0;
 
                 string[] arrName = null;
 
@@ -130,9 +131,9 @@ namespace BL.Logic.TreeBuilder
                 {
                     var searchText = item.SearchText;
 
-                    var addToSafeList = true; 
+                    var addToSafeList = true;
 
-                    if (existsNameFilter & addToSafeList)
+                    if (existsNameFilter && addToSafeList)
                     {
                         if (!string.IsNullOrEmpty(searchText))
                         {
@@ -142,9 +143,14 @@ namespace BL.Logic.TreeBuilder
                         else addToSafeList = false;
                     }
 
-                    if (existsCheckFilter & addToSafeList)
+                    if (existsCheckFilter && addToSafeList)
                     {
-                        addToSafeList = item.IsChecked ?? false;
+                        addToSafeList = item.IsChecked == filter.IsChecked;
+                    }
+
+                    if (existsIdFilter && addToSafeList)
+                    {
+                        addToSafeList = filter.DicIDs.Any(x=>x.Key == (EnumObjects)item.ObjectId && x.Value.Contains(item.Id));
                     }
 
                     if (addToSafeList) safeList.AddRange(item.Path.Split('/'));
@@ -203,7 +209,7 @@ namespace BL.Logic.TreeBuilder
         {
             foreach (var item in tree)
             {
-                if (item.IsList ?? false) continue;
+                if (item.IsLeaf ?? false) continue;
 
                 RemoveEmptyBranches(item.Childs);
 
@@ -216,7 +222,7 @@ namespace BL.Logic.TreeBuilder
 
         }
 
-        private static bool ExistsLists(IEnumerable<ITreeItem> list) => list.Select(x => x.IsList == true).Any();
+        private static bool ExistsLists(IEnumerable<ITreeItem> list) => list.Select(x => x.IsLeaf == true).Any();
 
 
     }

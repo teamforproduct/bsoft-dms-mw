@@ -23,16 +23,21 @@ using BL.CrossCutting.Helpers;
 using BL.Model.Common;
 using BL.Model.SystemCore;
 using BL.Database.Helper;
-using BL.Database.DBModel.System;
-using System.Linq.Expressions;
+using BL.CrossCutting.Context;
+using BL.Database.DBModel.Document;
+using BL.CrossCutting.Helpers.CashService;
+using BL.Model.Constants;
+using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Database.Admins
 {
     public class AdminsDbProcess : CoreDb.CoreDb, IAdminsDbProcess
     {
+        private readonly ICacheService _casheService;
 
-        public AdminsDbProcess()
+        public AdminsDbProcess(ICacheService casheService)
         {
+            _casheService = casheService;
         }
 
         #region [+] General ...
@@ -142,94 +147,211 @@ namespace BL.Database.Admins
                 }
                 catch { };
 
-                var roleList = res.Select(s => s.RolePositionId).ToList();
+                var positions = res.Select(s => s.RolePositionId).ToList();
+                var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+                filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
+                                .GroupBy(x=>x.PositionId)
+                                .Select(x => new
+                                {
+                                    PositionId = x.Key,
+                                    CountNewEvents = x.Sum(y=>y.CountNewEvents),
+                                    CountWaits = x.Sum(y=>y.CountWaits),
+                                    OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
+                                    MinDueDate = x.Min(y => y.MinDueDate),
+                                });
+                var access = accessQry.ToList();
+                res.ForEach(x =>
+                {
+                    var stat = access.Where(y => y.PositionId == x.RolePositionId).FirstOrDefault();
+                    x.NewEventsCount = stat?.CountNewEvents;
+                    x.ControlsCount = stat?.CountWaits;
+                    x.OverdueControlsCount = stat?.OverDueCountWaits;
+                    x.MinDueDate = stat?.MinDueDate;
+                });
 
-                var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-                filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
-                    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                
+                //var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                //filterNewEventTargetPositionContains = positions.Aggregate(filterNewEventTargetPositionContains,
+                //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-                var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-                                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
-                                .Where(filterNewEventTargetPositionContains)
-                                .GroupBy(g => g.TargetPositionId)
-                                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
-                var newevnt = neweventQry.ToList();
+                //var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                //                .Where(filterNewEventTargetPositionContains)
+                //                .GroupBy(g => g.TargetPositionId)
+                //                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                //var newevnt = neweventQry.ToList();
 
-                res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
+                //var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                //filterOnEventPositionsContains = positions.Aggregate(filterOnEventPositionsContains,
+                //    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
 
-                //TODO
-                //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
+                //var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //                .Where(x => !x.OffEventId.HasValue)
+                //                .Where(filterOnEventPositionsContains)
+                //                .GroupBy(y => new
+                //                {
+                //                    y.OnEvent.SourcePositionId, y.OnEvent.TargetPositionId,
+                //                   // IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
+                //                   // DueDate = DbFunctions.TruncateTime(y.DueDate),
+                //                })
+                //                .Select(x => new
+                //                {
+                //                    Pos = x.Key,
+                //                    ControlsCount = x.Count(),
+                //                    OverdueControlsCount = x.Where(y => y.DueDate.HasValue && y.DueDate.Value < DateTime.UtcNow).Count(),
+                //                    MinDueDate = x.Where(y => y.DueDate.HasValue).Min(y => y.DueDate),
+                //                })
+                //                ;
+                //var wait = waitQry.ToList();
+
+                ////res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
+                //res.ForEach(x =>
                 //{
-                //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
-                //}
+                //    x.NewEventsCount = newevnt.Where(y => y.PosID == x.RolePositionId).Select(y => y.EvnCnt).FirstOrDefault();
+                //    var t = wait.Where(y => y.Pos.SourcePositionId == x.RolePositionId || y.Pos.TargetPositionId == x.RolePositionId).GroupBy(y => 1)
+                //        .Select(y => new
+                //        {
+                //            MinDueDate = y.Min(z => z.MinDueDate),
+                //            ControlsCount = y.Sum(z => z.ControlsCount),
+                //            OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
+                //        }).FirstOrDefault();
+                //    x.MinDueDate = t?.MinDueDate;
+                //    x.ControlsCount = t?.ControlsCount ?? 0;
+                //    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
+                //});
+                
                 transaction.Complete();
                 return res;
             }
         }
 
-        //public IEnumerable<FrontAdminUserRole> GetPositionsByUser(IContext ctx, FilterAdminUserRole filter)
-        //{
-        //    using (var dbContext = new DmsContext(ctx))
-        //    using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
-        //        if (filter.IDs?.Count > 0)
-        //        {
-        //            var filterContains = PredicateBuilder.False<AdminUserRoles>();
-        //            filterContains = filter.IDs.Aggregate(filterContains,
-        //                (current, value) => current.Or(e => e.Id == value).Expand());
+        public IEnumerable<FrontUserAssignmentsAvailable> GetAvailablePositionsList(IContext ctx, int agentId, List<int> PositionIDs)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
 
-        //            qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
-        //        }
-        //        if (filter.UserIDs?.Count > 0)
-        //        {
-        //            var filterContains = PredicateBuilder.False<AdminUserRoles>();
-        //            filterContains = filter.UserIDs.Aggregate(filterContains,
-        //                (current, value) => current.Or(e => e.UserId == value).Expand());
+                var now = DateTime.UtcNow;
+                DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
-        //            qry = qry.Where(x => x.Role.UserRoles.AsQueryable().Any(filterContains));
-        //        }
-        //        if (filter.RoleIDs?.Count > 0)
-        //        {
-        //            var filterContains = PredicateBuilder.False<AdminPositionRoles>();
-        //            filterContains = filter.RoleIDs.Aggregate(filterContains,
-        //                (current, value) => current.Or(e => e.RoleId == value).Expand());
+                if (PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
 
-        //            qry = qry.Where(filterContains);
-        //        }
+                    filterContains = PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
 
-        //        var res = qry.Select(x => new FrontAdminUserRole
-        //        {
-        //            RolePositionId = x.PositionId,
-        //            RolePositionName = x.Position.Name,
-        //            RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name
-        //        }).Distinct().ToList();
+                    qry = qry.Where(filterContains);
+                }
 
-        //        var roleList = res.Select(s => s.RolePositionId).ToList();
+                qry = qry.Where(x => x.AgentId == agentId && x.Position.ExecutorAgentId.HasValue && x.IsActive && now >= x.StartDate && now <= x.EndDate);
 
-        //        var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
-        //        filterNewEventTargetPositionContains = roleList.Aggregate(filterNewEventTargetPositionContains,
-        //            (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+                var res = qry.Select(x => new FrontUserAssignmentsAvailable
+                {
+                    PositionId = x.PositionId,
+                    PositionName = x.Position.Name,
+                    DepartmentName = x.Position.Department.Name,
+                    ExecutorName =  (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
+                    ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte [] { } : x.Position.ExecutorAgent.Image),
+                    ExecutorTypeId = x.PositionExecutorType.Id,
+                    ExecutorTypeDescription =  x.PositionExecutorType.Description,
+                }).ToList();
 
-        //        var neweventQry = dbContext.DocumentEventsSet.Where(x => x.Document.TemplateDocument.ClientId == ctx.CurrentClientId)
-        //                        .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
-        //                        .Where(filterNewEventTargetPositionContains)
-        //                        .GroupBy(g => g.TargetPositionId)
-        //                        .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
-        //        var newevnt = neweventQry.ToList();
+                //IsLastChosen
+                try
+                {
+                    var lastPositionChose =
+                        dbContext.DictionaryAgentUsersSet.Where(x => x.Id == agentId)
+                        .Select(x => x.LastPositionChose).FirstOrDefault()
+                        .Split(',').Select(n => Convert.ToInt32(n)).ToArray();
 
-        //        res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; return r; }).ToList();
+                    res.Where(x => lastPositionChose.Contains(x.PositionId)).ToList().ForEach(x => x.IsLastChosen = true);
+                }
+                catch { };
 
-        //        //TODO
-        //        //foreach (var rn in res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => new { rs = r, ne = e }))
-        //        //{
-        //        //    rn.rs.NewEventsCount = rn.ne.EvnCnt;
-        //        //}
-        //        transaction.Complete();
-        //        return res;
-        //    }
-        //}
+                var positions = res.Select(s => s.PositionId).ToList();
+                var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+                filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value).Expand());
+                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
+                                .GroupBy(x => x.PositionId)
+                                .Select(x => new
+                                {
+                                    PositionId = x.Key,
+                                    CountNewEvents = x.Sum(y => y.CountNewEvents),
+                                    CountWaits = x.Sum(y => y.CountWaits),
+                                    OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
+                                    MinDueDate = x.Min(y => y.MinDueDate),
+                                });
+                var access = accessQry.ToList();
+                res.ForEach(x =>
+                {
+                    var stat = access.Where(y => y.PositionId == x.PositionId).FirstOrDefault();
+                    x.NewEventsCount = stat?.CountNewEvents;
+                    x.ControlsCount = stat?.CountWaits;
+                    x.OverdueControlsCount = stat?.OverDueCountWaits;
+                    x.MinDueDate = stat?.MinDueDate;
+                });
+
+                //var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                //filterNewEventTargetPositionContains = positionList.Aggregate(filterNewEventTargetPositionContains,
+                //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                //var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
+                //                .Where(filterNewEventTargetPositionContains)
+                //                .GroupBy(g => g.TargetPositionId)
+                //                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
+                //var newevnt = neweventQry.ToList();
+
+                //var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                //filterOnEventPositionsContains = positionList.Aggregate(filterOnEventPositionsContains,
+                //    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
+
+                //var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //                .Where(x => !x.OffEventId.HasValue)
+                //                .Where(filterOnEventPositionsContains)
+                //                .GroupBy(y => new
+                //                {
+                //                    y.OnEvent.SourcePositionId,
+                //                    y.OnEvent.TargetPositionId,
+                //                    // IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
+                //                    // DueDate = DbFunctions.TruncateTime(y.DueDate),
+                //                })
+                //                .Select(x => new
+                //                {
+                //                    Pos = x.Key,
+                //                    ControlsCount = x.Count(),
+                //                    OverdueControlsCount = x.Where(y => y.DueDate.HasValue && y.DueDate.Value < DateTime.UtcNow).Count(),
+                //                    MinDueDate = x.Where(y => y.DueDate.HasValue).Min(y => y.DueDate),
+                //                })
+                //                ;
+                //var wait = waitQry.ToList();
+
+                ////res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
+                //res.ForEach(x =>
+                //{
+                //    x.NewEventsCount = newevnt.Where(y => y.PosID == x.PositionId).Select(y => y.EvnCnt).FirstOrDefault();
+                //    var t = wait.Where(y => y.Pos.SourcePositionId == x.PositionId || y.Pos.TargetPositionId == x.PositionId).GroupBy(y => 1)
+                //        .Select(y => new
+                //        {
+                //            MinDueDate = y.Min(z => z.MinDueDate),
+                //            ControlsCount = y.Sum(z => z.ControlsCount),
+                //            OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
+                //        }).FirstOrDefault();
+                //    x.MinDueDate = t?.MinDueDate;
+                //    x.ControlsCount = t?.ControlsCount ?? 0;
+                //    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
+                //});
+
+                transaction.Complete();
+                return res;
+            }
+        }
+ 
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return null;
@@ -309,7 +431,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                AdminRoleTypes dbModel = AdminModelConverter.GetDbRoleType(context, model);
+                var dbModel = AdminModelConverter.GetDbRoleType(context, model);
                 dbContext.AdminRolesTypesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
@@ -318,44 +440,22 @@ namespace BL.Database.Admins
             }
         }
 
-        //public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRoleAction> roleActions)
-        //{
-        //    using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        // Классификатор роли
-        //        var roleType = AddRoleType(context, new InternalAdminRoleType() { Code = code, Name = name });
-
-        //        // Новая роль со ссылкой на классификатор ролей.
-        //        var roleId = AddRole(context, new InternalAdminRole() { RoleTypeId = roleType, Name = name });
-
-        //        var rp = new List<AdminRolePermissions>();
-
-        //        // Указание ид роли для предложенных действий
-        //        foreach (var item in roleActions)
-        //        {
-        //            rp.Add(new AdminRolePermissions() { PermissionId = item.PermissionId, RoleId = roleId });
-        //        }
-
-        //        // Запись списка соответствий роль-действие
-        //        dbContext.AdminRolePermissionsSet.AddRange(rp);
-        //        dbContext.SaveChanges();
-        //        transaction.Complete();
-        //        return roleId;
-        //    }
-        //}
-
         public int AddRole(IContext context, InternalAdminRole model)
         {
+            int res;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                AdminRoles dbModel = AdminModelConverter.GetDbRole(context, model);
+                var dbModel = AdminModelConverter.GetDbRole(context, model);
                 dbContext.AdminRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
                 transaction.Complete();
-                return dbModel.Id;
+                res = dbModel.Id;
             }
+            _casheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
+            return res;
         }
+
         public void UpdateRole(IContext context, InternalAdminRole model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -366,15 +466,13 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
         }
+
         public void DeleteRole(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                // Uses
-
-
-                // Used By
                 dbContext.AdminRolePermissionsSet.Where(x => x.RoleId == id).Delete();
                 dbContext.AdminPositionRolesSet.Where(x => x.RoleId == id).Delete();
                 dbContext.AdminUserRolesSet.Where(x => x.RoleId == id).Delete();
@@ -405,6 +503,26 @@ namespace BL.Database.Admins
             }
         }
 
+        public IEnumerable<ListItem> GetMainRoles(IContext context, IBaseFilter filter, UIPaging paging, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRolesQuery(context, dbContext, filter as FilterAdminRole);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
+
+                var res = qry.Select(x => new ListItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
@@ -420,6 +538,22 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     Name = x.Name,
                 }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+        //Func<IContext, IBaseFilter, UISorting, List<int>> IdsFunc,
+        public List<int> GetRoleIDs(IContext context, IBaseFilter filter, UISorting sorting)
+        {
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetRolesQuery(context, dbContext, filter as FilterAdminRole);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                //if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<int>();
+
+                var res = qry.Select(x => x.Id).ToList();
                 transaction.Complete();
                 return res;
             }
@@ -512,10 +646,13 @@ namespace BL.Database.Admins
 
 
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminRoles>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -714,7 +851,7 @@ namespace BL.Database.Admins
             {
                 var roleFilter = new FilterAdminRole();
 
-                if (filter.IsChecked)
+                if (filter.IsChecked ?? false)
                 {
                     roleFilter.PositionIDs = filter.PositionIDs;
                 }
@@ -760,10 +897,13 @@ namespace BL.Database.Admins
             {
 
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminPositionRoles>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -808,15 +948,18 @@ namespace BL.Database.Admins
         #region [+] UserRole ...
         public int AddUserRole(IContext context, InternalAdminUserRole model)
         {
+            int res;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                AdminUserRoles dbModel = AdminModelConverter.GetDbUserRole(context, model);
+                var dbModel = AdminModelConverter.GetDbUserRole(context, model);
                 dbContext.AdminUserRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
                 transaction.Complete();
-                return dbModel.Id;
+                res = dbModel.Id;
             }
+            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
+            return res;
         }
 
         public void AddUserRoles(IContext context, IEnumerable<InternalAdminUserRole> models)
@@ -828,6 +971,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
 
         public void UpdateUserRole(IContext context, InternalAdminUserRole model)
@@ -840,6 +984,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
 
         public void DeleteUserRole(IContext context, int id)
@@ -851,6 +996,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
         public void DeleteUserRoles(IContext context, FilterAdminUserRole filter)
         {
@@ -951,10 +1097,13 @@ namespace BL.Database.Admins
             if (filter != null)
             {
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminUserRoles>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1276,12 +1425,14 @@ namespace BL.Database.Admins
 
             if (filter != null)
             {
-
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminSubordinations>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1515,10 +1666,13 @@ namespace BL.Database.Admins
             if (filter != null)
             {
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminRegistrationJournalPositions>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1574,6 +1728,7 @@ namespace BL.Database.Admins
 
         public int AddRolePermission(IContext context, InternalAdminRolePermission model)
         {
+            int res;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = AdminModelConverter.GetDbRolePermission(context, model);
@@ -1581,8 +1736,10 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
                 transaction.Complete();
-                return dbModel.Id;
+                res = dbModel.Id;
             }
+            _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+            return res;
         }
 
         public void AddRolePermissions(IContext context, IEnumerable<InternalAdminRolePermission> models)
@@ -1594,6 +1751,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
         }
 
 
@@ -1615,23 +1773,24 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+            _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
         }
 
 
-
-
         private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext context, DmsContext dbContext, FilterAdminRolePermissions filter)
-        {
+        { //TODO change to cashe
             var qry = dbContext.AdminRolePermissionsSet.AsQueryable();
 
             if (filter != null)
             {
-
                 // Список первичных ключей
-                if (filter.IDs?.Count > 0)
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.False<AdminRolePermissions>();
-
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1687,98 +1846,207 @@ namespace BL.Database.Admins
             }
         }
 
-        private IQueryable<SystemPermissions> GetPermissionsAccessQuery(IContext context, DmsContext dbContext, FilterPermissionsAccess filter)
+
+        private void VerifyAdminSecurityCash(IContext context)
+        {
+            var admCtx = new AdminContext(context);
+            if (!_casheService.Exists(context, SettingConstants.PERMISSION_CASHE_KEY))
+            {
+                _casheService.AddOrUpdateCasheData(context, SettingConstants.PERMISSION_CASHE_KEY, () =>
+                {
+                    using (var dbCtx = new DmsContext(admCtx))
+                    {
+                        return dbCtx.SystemPermissionsSet.Select(x => new InternalSystemPermission
+                        {
+                            Id = x.Id,
+                            AccessTypeId = x.AccessTypeId,
+                            FeatureCode = x.Feature.Code,
+                            FeatureId = x.FeatureId,
+                            FeatureOrder = x.Feature.Order,
+                            ModuleCode = x.Module.Code,
+                            ModuleId = x.ModuleId,
+                            ModuleOrder = x.Module.Order,
+                            AccessTypeCode = x.AccessType.Code,
+                            AccessTypeOrder = x.AccessType.Order
+                        }).ToList();
+                    }
+                });
+            }
+
+            if (!_casheService.Exists(context, SettingConstants.ACTION_CASHE_KEY))
+            {
+                _casheService.AddOrUpdateCasheData(context, SettingConstants.ACTION_CASHE_KEY, () =>
+                {
+                    using (var dbCtx = new DmsContext(admCtx))
+                    {
+                        return dbCtx.SystemActionsSet.Select(x => new InternalSystemAction
+                        {
+                            Id = x.Id,
+                            Description = x.Description,
+                            PermissionId = x.PermissionId,
+                            Code = x.Code,
+                            API = x.API,
+                            Category = x.Category,
+                            GrantId = x.GrantId,
+                            IsVisible = x.IsVisible,
+                            IsGrantable = x.IsGrantable,
+                            IsGrantableByRecordId = x.IsGrantableByRecordId,
+                            IsVisibleInMenu = x.IsVisibleInMenu,
+                            ObjectId = (EnumObjects)x.ObjectId
+                        }).ToList();
+                    }
+                });
+            }
+
+            if (!_casheService.Exists(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY))
+            {
+                _casheService.AddOrUpdateCasheData(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY, () =>
+                {
+                    using (var dbCtx = new DmsContext(admCtx))
+                    {
+                        return dbCtx.AdminRolePermissionsSet.Select(x => new InternalAdminRolePermission
+                        {
+                            Id = x.Id,
+                            RoleId = x.RoleId,
+                            PermissionId = x.PermissionId,
+                            LastChangeDate = x.LastChangeDate,
+                            LastChangeUserId = x.LastChangeUserId
+                        }).ToList();
+                    }
+                });
+            }
+
+            if (!_casheService.Exists(context, SettingConstants.ADMIN_ROLE_CASHE_KEY))
+            {
+                _casheService.AddOrUpdateCasheData(context, SettingConstants.ADMIN_ROLE_CASHE_KEY, () =>
+                {
+                    using (var dbCtx = new DmsContext(admCtx))
+                    {
+                        return dbCtx.AdminRolesSet.Select(x => new InternalAdminRole
+                        {
+                            Id = x.Id,
+                            LastChangeDate = x.LastChangeDate,
+                            LastChangeUserId = x.LastChangeUserId,
+                            Name = x.Name,
+                            Description = x.Description,
+                            RoleTypeId = x.RoleTypeId
+                        }).ToList();
+                    }
+                });
+            }
+            if (!_casheService.Exists(context, SettingConstants.USER_ROLE_CASHE_KEY))
+            {
+                _casheService.AddOrUpdateCasheData(context, SettingConstants.USER_ROLE_CASHE_KEY, () =>
+                {
+                    using (var dbCtx = new DmsContext(admCtx))
+                    {
+                        return dbCtx.AdminUserRolesSet.Select(x => new InternalAdminUserRole
+                        {
+                            Id = x.Id,
+                            RoleId = x.RoleId,
+                            PositionExecutorId = x.PositionExecutorId
+                        }).ToList();
+                    }
+                });
+            }
+            if (!_casheService.Exists(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY))
+            {
+                _casheService.AddOrUpdateCasheData(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY, () =>
+                {
+                    using (var dbCtx = new DmsContext(admCtx))
+                    {
+                        return dbCtx.DictionaryPositionExecutorsSet.Select(x => new InternalDictionaryPositionExecutor
+                        {
+                            Id = x.Id,
+                            Description = x.Description,
+                            AccessLevelId = x.AccessLevelId,
+                            EndDate = x.EndDate,
+                            AgentId = x.AgentId,
+                            PositionId = x.PositionId,
+                            IsActive = x.IsActive,
+                            StartDate = x.StartDate,
+                            PositionExecutorTypeId = x.PositionExecutorTypeId
+                        }).ToList();
+                    }
+                });
+            }
+        }
+
+        private List<InternalSystemPermission> GetPermissionsAccessQuery(IContext context, FilterPermissionsAccess filter)
         {
             if (filter == null)
                 return null;
-            Expression<Func<AdminRolePermissions, bool>> filterRoles = PredicateBuilder.False<AdminRolePermissions>();
-            if (filter.RoleIDs?.Count() > 0)
+            VerifyAdminSecurityCash(context);
+
+            var permiss = _casheService.GetData(context, SettingConstants.PERMISSION_CASHE_KEY) as List<InternalSystemPermission>;
+            var adminPermiss = _casheService.GetData(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRolePermission>;
+            var adminRole = _casheService.GetData(context, SettingConstants.ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRole>;
+            var userRole = _casheService.GetData(context, SettingConstants.USER_ROLE_CASHE_KEY) as List<InternalAdminUserRole>;
+            var dictPos = _casheService.GetData(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY) as List<InternalDictionaryPositionExecutor>;
+
+            if (permiss == null || adminPermiss == null || adminRole == null || userRole == null || dictPos == null) throw new KeyNotFoundException();
+
+            var fltRoles = userRole.AsQueryable();
+            if (filter.RoleIDs!=null && filter.RoleIDs.Any())
             {
-                filterRoles = filter.RoleIDs.Aggregate(filterRoles, 
-                    (current, value) => current.Or(e => e.RoleId == value).Expand());
-            }
-            else
-            {
-                filterRoles = PredicateBuilder.True<AdminRolePermissions>();
+                fltRoles = fltRoles.Where(x => filter.RoleIDs.Contains(x.RoleId));
             }
 
-                Expression<Func<AdminUserRoles, bool>> filterPositions = PredicateBuilder.False<AdminUserRoles>();
-            if (filter.PositionsIdList == null)
-            {
-                filterPositions = PredicateBuilder.True<AdminUserRoles>();
-            }
-            else if (!filter.PositionsIdList.Any())
-            {
-                filterPositions = PredicateBuilder.False<AdminUserRoles>();
-            }
-            else
-            {
-                filterPositions = filter.PositionsIdList.Aggregate(filterPositions,
-                    (current, value) => current.Or(e => e.PositionExecutor.PositionId == value).Expand());
-            }
             var now = DateTime.UtcNow;
-            var qry = dbContext.SystemPermissionsSet.Where(x => x.RolePermissions.AsQueryable()
-                .Where(filterRoles)
-                .Any(y => y.Role.UserRoles.AsQueryable()
-                            .Where(z => z.PositionExecutor.AgentId == filter.UserId
-                            && z.PositionExecutor.IsActive
-                            && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate)
-                            .Where(filterPositions)
-                            .Any()));
-            if (filter.PermissionIDs?.Count() > 0)
+
+            var dictFlt =dictPos.Where(x => x.AgentId == filter.UserId && x.IsActive && now >= x.StartDate && now <= x.EndDate);
+            if (filter.PositionsIdList!=null && filter.PositionsIdList.Any())
             {
-                var filterContains = PredicateBuilder.False<SystemPermissions>();
-                filterContains = filter.PermissionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
-                qry = qry.Where(filterContains);
+                dictFlt = dictFlt.Where(x => filter.PositionsIdList.Contains(x.PositionId));
             }
+
+            var fltPermiss = permiss.AsQueryable();
+            if (filter.PermissionIDs!=null && filter.PermissionIDs.Any())
+            {
+                fltPermiss = fltPermiss.Where(x => filter.PermissionIDs.Contains(x.Id));
+            }
+            if (filter.ModuleId.HasValue)
+            {
+                fltPermiss = fltPermiss.Where(x => x.ModuleId == filter.ModuleId.Value);
+            }
+
+            var qry = fltPermiss.Join(adminPermiss, p => p.Id, a => a.PermissionId, (p, a) => new { perm = p, admPerm = a })
+                .Join(adminRole, p => p.admPerm.RoleId, r => r.Id, (a, r) => new { a.perm, a.admPerm, admRole = r })
+                .Join(fltRoles, a => a.admRole.Id, u => u.RoleId, (a, u) => new { a.perm, a.admPerm, a.admRole, usrRole = u })
+                .Join(dictFlt, a => a.usrRole.PositionExecutorId, d => d.Id, (a, d) => new { a.perm, a.admPerm, a.admRole, a.usrRole, dPos = d });
+
             if (filter.ActionId.HasValue)
             {
-                qry = qry.Where(x => x.Actions.Any(z => z.Id == filter.ActionId.Value));
+                var act = _casheService.GetData(context, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
+                if (act == null) throw new KeyNotFoundException();
+                var fltAct = act.Where(x => x.Id == filter.ActionId.Value && x.PermissionId.HasValue).Select(x=>x.PermissionId).Distinct().ToList();
+                qry.Where(x => fltAct.Contains(x.perm.Id));
             }
-            return qry;
+
+            return qry.Select(x=>x.perm).Distinct().ToList();
         }
 
         public bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetPermissionsAccessQuery(context, dbContext, filter);
 
-                var res = qry.Any();
+            var qry = GetPermissionsAccessQuery(context, filter);
 
-                transaction.Complete();
-
-                return res;
-            }
+            return qry.Any();
         }
 
         public IEnumerable<FrontPermission> GetUserPermissionsAccess(IContext context, FilterPermissionsAccess filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetPermissionsAccessQuery(context, dbContext, filter);
-                //var qry = dbContext.SystemPermissionsSet.AsQueryable();
-                //var now = DateTime.UtcNow;
-                //// в основе доступов лежат актуальные назначения (IsActive, StartDate, EndDate) суженные до должностей, за которые сотрудник работает в данный момент
-                //qry = qry.Where(x => x.RolePermissions.Any(y => y.Role.UserRoles.Any(
-                //    z => z.PositionExecutor.AgentId == context.CurrentAgentId
-                //    && z.PositionExecutor.IsActive
-                //    && now >= z.PositionExecutor.StartDate && now <= z.PositionExecutor.EndDate
-                //    && context.CurrentPositionsIdList.Contains(z.PositionExecutor.PositionId))));
+                var qry = GetPermissionsAccessQuery(context, filter);
 
-                qry = qry.OrderBy(x => x.Feature.Order).ThenBy(x => x.AccessType.Order);
+                qry = qry.OrderBy(x => x.FeatureOrder).ThenBy(x => x.AccessTypeOrder).ToList();
 
-                var res = qry.Select(x => new FrontPermission
+            return qry.Select(x => new FrontPermission
                 {
-                    Module = x.Module.Code,
-                    Feature = x.Feature.Code,
-                    AccessType = x.AccessType.Code
+                    Module = x.ModuleCode,
+                    Feature = x.FeatureCode,
+                    AccessType = x.AccessTypeCode
                 }).ToList();
 
-                transaction.Complete();
-                return res;
-            }
         }
 
         public IEnumerable<FrontModule> GetRolePermissions(IContext context, FilterAdminRolePermissionsDIP filter)

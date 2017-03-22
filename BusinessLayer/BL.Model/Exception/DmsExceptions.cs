@@ -152,10 +152,10 @@ namespace BL.Model.Exception
         public UserCouldNotBeDeleted(System.Exception ex) : base(ex) { }
     }
 
-    public class UserUserPositionExecutorIsIncorrect : DmsExceptions
+    public class UserPositionExecutorIsIncorrect : DmsExceptions
     {
-        public UserUserPositionExecutorIsIncorrect() : base() { }
-        public UserUserPositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
+        public UserPositionExecutorIsIncorrect() : base() { }
+        public UserPositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
     public class RoleNameAlreadyExists : DmsExceptions
@@ -685,7 +685,7 @@ namespace BL.Model.Exception
 
     public class DictionaryAddressTypeNotUnique : DmsExceptions
     {
-        public DictionaryAddressTypeNotUnique() : base() { }
+        public DictionaryAddressTypeNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
         public DictionaryAddressTypeNotUnique(System.Exception ex) : base(ex) { }
     }
 
@@ -968,13 +968,26 @@ namespace BL.Model.Exception
         public EncryptionCertificateHasExpired() : base() { }
         public EncryptionCertificateHasExpired(System.Exception ex) : base(ex) { }
     }
+
     public class EncryptionCertificatePrivateKeyСanNotBeExported : DmsExceptions
     {
         public EncryptionCertificatePrivateKeyСanNotBeExported() : base() { }
         public EncryptionCertificatePrivateKeyСanNotBeExported(System.Exception ex) : base(ex) { }
     }
 
-
+    /// <summary>
+    /// Ошибка возникает, если в полнотекстовом поиске введена комбинация, возвращающая много результатов
+    /// </summary>
+    public class SystemFullTextTooManyResults : DmsExceptions
+    {
+        public SystemFullTextTooManyResults(string word) : base() { Parameters = new List<string> { word }; }
+        public SystemFullTextTooManyResults(System.Exception ex) : base(ex) { }
+    }
+    public class WrongCasheKey : DmsExceptions
+    {
+        public WrongCasheKey() : base() { }
+        public WrongCasheKey(System.Exception ex) : base(ex) { }
+    }
 
     //public class LockoutAgentUser : DmsExceptions
     //{

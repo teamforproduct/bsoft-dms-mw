@@ -12,29 +12,28 @@ namespace BL.Logic.SystemServices
 {
     public abstract class BaseSystemWorkerService: ISystemWorkerService, IDisposable
     {
-        protected readonly ISettings _settings;
-        protected readonly ILogger _logger;
-        private object _lockObjectContext;
-        protected object _lockObjectTimer;
-        protected readonly Dictionary<string, AdminContext> _serverContext;
-        private Task _initializeThread;
+        protected readonly ISettings Settings;
+        protected readonly ILogger Logger;
+        private readonly object _lockObjectContext;
+        protected object LockObjectTimer;
+        protected readonly Dictionary<string, AdminContext> ServerContext;
 
         public BaseSystemWorkerService(ISettings settings, ILogger logger)
         {
             _lockObjectContext = new object();
-            _lockObjectTimer = new object();
-            _serverContext = new Dictionary<string, AdminContext>();
-            _settings = settings;
-            _logger = logger;
+            LockObjectTimer = new object();
+            ServerContext = new Dictionary<string, AdminContext>();
+            Settings = settings;
+            Logger = logger;
         }
 
         public void Initialize(IEnumerable<DatabaseModel> dbList)
         {
-            _serverContext.Clear();
+          ServerContext.Clear();
 
-          dbList.Select(x => new AdminContext(x)).ToList().ForEach(x => _serverContext.Add(CommonSystemUtilities.GetServerKey(x), x));
+          dbList.Select(x => new AdminContext(x)).ToList().ForEach(x => ServerContext.Add(CommonSystemUtilities.GetServerKey(x), x));
 
-            _initializeThread = Task.Factory.StartNew(InitializeServers);
+          Task.Factory.StartNew(InitializeServers);
         }
 
         protected abstract void InitializeServers();
@@ -44,8 +43,8 @@ namespace BL.Logic.SystemServices
             AdminContext res = null;
             lock (_lockObjectContext)
             {
-                if (_serverContext.ContainsKey(key))
-                    res = _serverContext[key];
+                if (ServerContext.ContainsKey(key))
+                    res = ServerContext[key];
             }
             return res;
         }

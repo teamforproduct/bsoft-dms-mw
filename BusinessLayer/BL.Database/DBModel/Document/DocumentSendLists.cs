@@ -14,6 +14,10 @@ namespace BL.Database.DBModel.Document
             this.PaperEvents = new HashSet<DocumentEvents>();
         }
         public int Id { get; set; }
+        [Index("IX_ClientId", 1)]
+        public int ClientId { get; set; }
+        [Index("IX_EntityTypeId", 1)]
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int? StageTypeId { get; set; }
         public int Stage { get; set; }

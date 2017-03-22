@@ -7,6 +7,8 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentWait : LastChangeInfo, IReports
     {
         public int Id { get; set; }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int? ParentId { get; set; }
         public int? ParentOnEventId { get; set; }

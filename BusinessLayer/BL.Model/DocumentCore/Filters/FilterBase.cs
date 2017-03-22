@@ -6,6 +6,10 @@
     public class FilterBase
     {
         /// <summary>
+        /// Модель полнотекстового фильтра
+        /// </summary>
+        public FullTextSearch.FullTextSearch FullTextSearchSearch { get; set; }
+        /// <summary>
         /// Фильтра по документам
         /// </summary>
         public FilterDocument Document { get; set; }

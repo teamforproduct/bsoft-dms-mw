@@ -1,8 +1,6 @@
-﻿using BL.Model.AdminCore.FrontModel;
-using BL.Model.Common;
+﻿using BL.Model.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using System;
-using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
