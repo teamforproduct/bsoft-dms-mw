@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -9,8 +10,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
     {
         void Dispose();
         void ReindexDatabase(IContext ctx);
-        List<FullTextSearchResult> SearchItems(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter);
-        List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter);
-        List<int> SearchItemId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter);
+        List<FullTextSearchResult> SearchItems(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null);
+        List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null);
+        List<int> SearchItemId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null);
     }
 }

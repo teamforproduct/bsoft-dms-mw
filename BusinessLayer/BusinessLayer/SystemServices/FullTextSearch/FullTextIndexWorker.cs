@@ -158,7 +158,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _searcher = new IndexSearcher(_indexReader);
         }
 
-        public IEnumerable<FullTextSearchResult> SearchItems(out bool IsNotAll, string text, int clientId, FullTextSearchFilter filter)
+        public IEnumerable<FullTextSearchResult> SearchItems(out bool IsNotAll, string text, int clientId, FullTextSearchFilter filter, UIPaging paging = null)
         {
             var searchResult = new List<FullTextSearchResult>();
             var boolQry = new BooleanQuery();
@@ -186,7 +186,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             if (filter.Filters != null && filter.Filters.Any())
             {
-                var localParser = new QueryParser(Version.LUCENE_30, FIELD_FILTERS, _analyzer);
+                var localParser = new QueryParser(Version.LUCENE_30, FIELD_FILTERS, _analyzer) { AllowLeadingWildcard = true };
                 var boolLocalQry = new BooleanQuery();
                 foreach (var item in filter.Filters)
                 {
@@ -243,14 +243,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             #endregion boolFilter
 
-            searchResult = GetQueryResult(out IsNotAll, text, boolQry, boolFilter);
+            searchResult = GetQueryResult(out IsNotAll, text, boolQry, boolFilter, paging);
 
             return searchResult;
         }
 
-        private List<FullTextSearchResult> GetQueryResult(out bool IsNotAll, string text, BooleanQuery boolQry, BooleanFilter boolFilter)
+        private List<FullTextSearchResult> GetQueryResult(out bool IsNotAll, string text, BooleanQuery boolQry, BooleanFilter boolFilter, UIPaging paging)
         {
-            var sort = new Sort(SortField.FIELD_SCORE, new SortField(FIELD_PARENT_ID, SortField.INT, true));
+            var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortField.INT, true));
 
             var qryRes = _searcher.Search(boolQry, boolFilter, MAX_DOCUMENT_COUNT_RETURN, sort);
             FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry.ToString()}'", @"C:\TEMPLOGS\fulltext.log");
@@ -259,8 +259,23 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 IsNotAll = true;
             else
                 IsNotAll = false;
-            var res = qryRes.ScoreDocs./*Where(x => x.Score > 1).*/OrderByDescending(x => x.Score).AsParallel()
-                .Select(doc => new { doc, luc = _searcher.Doc(doc.Doc) })
+            List<int> lucDocs;
+            if (IsNotAll && ((paging.IsOnlyCounter ?? false) || (paging.IsCalculateAddCounter ?? false)))
+                return new List<FullTextSearchResult>();
+            if (IsNotAll && paging !=null && !(paging.IsOnlyCounter ?? false) && !(paging.IsCalculateAddCounter ?? false) && qryRes.ScoreDocs.All(x=>x is FieldDoc))
+            {
+                lucDocs = qryRes.ScoreDocs.Select(x => new { doc = (int)(((FieldDoc)x).fields[0]), luc = x.Doc })
+                    .GroupBy(x=>x.doc).OrderByDescending(x=>x.Key)
+                    .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize)
+                    .SelectMany(x=>x.Select(y=>y.luc)).ToList();
+        //        qryDocs = qryDocs.Where(x => lucDocsWithPaging.Contains(x.Doc)).ToList();
+            }
+            else
+            {
+                lucDocs = qryRes.ScoreDocs.Select(x=>x.Doc).ToList();
+            }
+            var res = lucDocs.AsParallel()
+                .Select(doc => new { doc, luc = _searcher.Doc(doc) })
                 .Select(rdoc => new FullTextSearchResult
                 {
                     ParentId = Convert.ToInt32(rdoc.luc.Get(FIELD_PARENT_ID)),
@@ -271,7 +286,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     FeatureId = Convert.ToInt32(rdoc.luc.Get(FIELD_FEATURE_ID)),
                     Security = rdoc.luc.Get(FIELD_SECURITY),
                     Filters = rdoc.luc.Get(FIELD_FILTERS),
-                    Score = rdoc.doc.Score
+                    //Score = rdoc.doc.Score
                 }).ToList();
             FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' FetchRowsFromLucena: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
 

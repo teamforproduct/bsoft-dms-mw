@@ -158,8 +158,11 @@ namespace BL.Database.Documents
                     #region groupCount
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
-                        var docTags = dbContext.DocumentTagsSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId))
-                            .Select(x => new InternalDocumentTag { DocumentId = x.DocumentId, TagId = x.TagId }).ToList();
+                        var docTags = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
+                            .Select(x => string.Join(" ", x.Select(y => y.Filters)))
+                            .Select(x => x.Split(' ').Where(y => !string.IsNullOrEmpty(y) && y[y.Length - 1].ToString() == FullTextFilterTypes.Tag)
+                                        .Select(y => y.Substring(0, y.Length - 1)).Distinct().ToList())
+                            .SelectMany(x => x).GroupBy(x => x).Select(x => new { Id = x.Key, Count = x.Count() }).ToList();
                         var tagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
                         {
                             TagId = x.Id,
@@ -169,13 +172,16 @@ namespace BL.Database.Documents
                             Name = x.Name,
                             IsSystem = !x.PositionId.HasValue,
                         }).ToList();
-                        tagCounters.ForEach(x => x.DocCount = docTags.Where(y => y.TagId == x.TagId && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());
+                        tagCounters.ForEach(x => x.DocCount = docTags.Where(y => y.Id == x.TagId.ToString()).Select(y => y.Count).FirstOrDefault());
                         docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x => x.DocCount > 0).ToList() } };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
-                        var docPositions = dbContext.DocumentAccessesSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId))
-                            .Select(x => new InternalDocumentAccess { DocumentId = x.DocumentId, PositionId = x.PositionId }).ToList();
+                        var docPositions = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
+                            .Select(x => string.Join(" ", x.Select(y => y.Filters)))
+                            .Select(x => x.Split(' ').Where(y => !string.IsNullOrEmpty(y) && y[y.Length - 1].ToString() == FullTextFilterTypes.WorkGroupPosition)
+                                        .Select(y => y.Substring(0, y.Length - 1)).Distinct().ToList())
+                            .SelectMany(x => x).GroupBy(x => x).Select(x => new { Id = x.Key, Count = x.Count() }).ToList();
                         var positionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDictionaryPosition
                         {
                             Id = x.Id,
@@ -185,7 +191,8 @@ namespace BL.Database.Documents
                             DepartmentName = x.Department.Name,
                             ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
                         }).ToList();
-                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.PositionId == x.Id && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count()); docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
+                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.Id == x.Id.ToString()).Select(y => y.Count).FirstOrDefault());
+                        docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
                     }
                     else
                     #endregion groupCount
@@ -196,7 +203,7 @@ namespace BL.Database.Documents
                         //docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i).Select(x => x.DocId).ToList();
                         //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
 
-                        if (((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter ?? true)) && !filter.FullTextSearchSearch.IsNotAll)
+                        if (((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter.HasValue)) && !filter.FullTextSearchSearch.IsNotAll)
                         {
                             var ftDocs = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId).Select(x => string.Join(" ", x.Select(y => y.Security))).ToList();
                             var accF = ctx.GetAccessFilterForFullText($".{FullTextFilterTypes.IsFavourite}..");
@@ -206,9 +213,9 @@ namespace BL.Database.Documents
                             paging.TotalItemsCount = ftDocs.Count();
                             paging.Counters = new UICounters
                             {
-                                Counter1 = ftDocs.Count(x=> accF.Any(y=> Regex.IsMatch(x,y))),
-                                Counter2 = ftDocs.Count(x => accN.Any(y => Regex.IsMatch(x, y))),
-                                Counter3 = ftDocs.Count(x => accC.Any(y => Regex.IsMatch(x, y))),
+                                Counter1 = ftDocs.Count(x => accF.Any(y => Regex.IsMatch($" {x} ", $" {y} "))),
+                                Counter2 = ftDocs.Count(x => accN.Any(y => Regex.IsMatch($" {x} ", $" {y} "))),
+                                Counter3 = ftDocs.Count(x => accC.Any(y => Regex.IsMatch($" {x} ", $" {y} "))),
                             };
                         }
                         if ((paging.IsOnlyCounter ?? false) || (paging.IsCalculateAddCounter ?? false))
@@ -282,7 +289,7 @@ namespace BL.Database.Documents
                     else
                     #endregion groupCount
                     {
-                        if ((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter ?? true))
+                        if ((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter.HasValue))
                         {
                             //CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, 345);
                             if (!(paging.IsCalculateAddCounter ?? false))

@@ -58,21 +58,29 @@ namespace BL.Logic.DocumentCore
                                 + ((filter?.Document?.IsFavourite ?? false) ? FullTextFilterTypes.IsFavourite : FullTextFilterTypes.NoFilter)
                                 + ((filter?.Event?.IsNew ?? false) ? FullTextFilterTypes.IsEventNew : FullTextFilterTypes.NoFilter)
                                 + ((filter?.Wait?.IsOpened ?? false) ? FullTextFilterTypes.IsWaitOpened : FullTextFilterTypes.NoFilter);
+                var filtersWG = (filter?.Document?.SimultaneousAccessPositionId?.Any() ?? false)
+                                ? filter.Document.SimultaneousAccessPositionId.Select(y => $"{y}{FullTextFilterTypes.WorkGroupPosition}").ToList()
+                                : new List<string>();
+                if (groupCountType.HasValue && groupCountType.Value == EnumGroupCountType.Positions && !filtersWG.Any())
+                {
+                    filtersWG.Add($"*{FullTextFilterTypes.WorkGroupPosition}");
+                }
+                var filtersTags = (filter?.Document?.TagId?.Any() ?? false)
+                                ? filter.Document.TagId.Select(y => $"{y}{FullTextFilterTypes.Tag}").ToList()
+                                : new List<string>();
+                if (groupCountType.HasValue && groupCountType.Value == EnumGroupCountType.Tags && !filtersTags.Any())
+                {
+                    filtersTags.Add($"*{FullTextFilterTypes.Tag}");
+                }
                 var fullTextSearchFilter = new FullTextSearchFilter
                 {
                     IsNotSplitText = true,
                     Module = Modules.Documents,
                     Accesses = ctx.GetAccessFilterForFullText(addFilter),
-                    Filters = ((filter?.Document?.TagId?.Any() ?? false)
-                                ? filter.Document.TagId.Select(y => $"{y}{FullTextFilterTypes.Tag}").ToList()
-                                : new List<string>())
-                                .Concat
-                                ((filter?.Document?.SimultaneousAccessPositionId?.Any() ?? false)
-                                ? filter.Document.SimultaneousAccessPositionId.Select(y => $"{y}{FullTextFilterTypes.WorkGroupPosition}").ToList()
-                                : new List<string>()).ToList(),
+                    Filters = filtersTags.Concat(filtersWG).ToList(),
                 };
                 bool IsNotAll;
-                filter.FullTextSearchSearch.FullTextSearchResult = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(out IsNotAll, ctx, filter.FullTextSearchSearch.FullTextSearchString, fullTextSearchFilter);
+                filter.FullTextSearchSearch.FullTextSearchResult = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(out IsNotAll, ctx, filter.FullTextSearchSearch.FullTextSearchString, fullTextSearchFilter, paging);
                 filter.FullTextSearchSearch.IsNotAll = IsNotAll;
                 FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchResult.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             }

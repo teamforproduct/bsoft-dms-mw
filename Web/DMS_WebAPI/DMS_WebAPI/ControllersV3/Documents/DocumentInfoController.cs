@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocuments(ctx, model ?? new FilterBase(), new UIPaging(), EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
+            var items = docProc.GetDocuments(ctx, model ?? new FilterBase(), new UIPaging { IsOnlyCounter = true}, EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
             var res = new JsonResult(items, this);
             res.SpentTime = stopWatch;
             return res;
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocuments(ctx, model?? new FilterBase(), new UIPaging(), EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
+            var items = docProc.GetDocuments(ctx, model?? new FilterBase(), new UIPaging { IsOnlyCounter = true }, EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
             var res = new JsonResult(items, this);
             res.SpentTime = stopWatch;
             return res;

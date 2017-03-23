@@ -200,40 +200,40 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
                       
         }
-        public List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter)
+        public List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null)
         {
             ReindexBeforeSearch(ctx);
             List<int> res = null;
             if (filter.IsNotSplitText)
             {
-                res = SearchItemsInternal(out IsNotAll, ctx, text, filter).Select(x => x.ParentId).Distinct().ToList();
+                res = SearchItemsInternal(out IsNotAll, ctx, text, filter, paging).Select(x => x.ParentId).Distinct().ToList();
             }
             else
             {
-                res = SearchItemsByDetail(out IsNotAll, ctx, text, filter).Select(x => x.ParentId).Distinct().ToList();
+                res = SearchItemsByDetail(out IsNotAll, ctx, text, filter, paging).Select(x => x.ParentId).Distinct().ToList();
             }
             return res;
         }
-        public List<int> SearchItemId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter)
+        public List<int> SearchItemId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null)
         {
             ReindexBeforeSearch(ctx);
-            return SearchItemsByDetail(out IsNotAll, ctx, text, filter).Select(x => x.ObjectId).ToList();
+            return SearchItemsByDetail(out IsNotAll, ctx, text, filter, paging).Select(x => x.ObjectId).ToList();
         }
-        public List<FullTextSearchResult> SearchItems(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter)
+        public List<FullTextSearchResult> SearchItems(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null)
         {
             ReindexBeforeSearch(ctx);
-            return SearchItemsInternal(out IsNotAll, ctx, text, filter).ToList();
+            return SearchItemsInternal(out IsNotAll, ctx, text, filter, paging).ToList();
         }
-        private IEnumerable<FullTextSearchResult> SearchItemsInternal(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter)
+        private IEnumerable<FullTextSearchResult> SearchItemsInternal(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging )
         {
             var admService = DmsResolver.Current.Get<IAdminService>();
             int? moduleId = (filter?.Module == null) ? (int?)null : Modules.GetId(filter?.Module);
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
                         .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
-            var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.CurrentClientId, filter).Where(x => perm.Contains(x.FeatureId));
+            var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.CurrentClientId, filter, paging).Where(x => perm.Contains(x.FeatureId));
             return res;
         }
-        private IEnumerable<FullTextSearchResult> SearchItemsByDetail(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter)
+        private IEnumerable<FullTextSearchResult> SearchItemsByDetail(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging)
         {
             IsNotAll = false;
             var words = text.Split(' ').Where(x=>!string.IsNullOrEmpty(x)).OrderBy(x=>x.Length);
@@ -245,7 +245,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{word}' StartProcessingWord ", @"C:\TEMPLOGS\fulltext.log");
                 var IsNotAllLocal = false;
-                var r = SearchItemsInternal(out IsNotAllLocal, ctx, word, filter).ToList();
+                var r = SearchItemsInternal(out IsNotAllLocal, ctx, word, filter, paging).ToList();
                 IsNotAll = IsNotAll || IsNotAllLocal;
                 FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{word}' FinishProcessingWord : {r.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
                 if (!r.Any()) return res;

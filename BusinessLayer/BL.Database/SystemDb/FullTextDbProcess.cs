@@ -329,7 +329,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentTags,
+                    ObjectId = x.Main.TagId, //!!!сервисные цели
+                    ObjectType = EnumObjects.DocumentTags,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     ObjectText = x.Main.Tag.Name
                 });
