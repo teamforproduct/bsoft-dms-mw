@@ -10,7 +10,8 @@ using BL.CrossCutting.DependencyInjection;
 using System.Web.Http.Description;
 using System.Collections.Generic;
 using BL.Model.Common;
-using System.Diagnostics;
+using System.Threading.Tasks;
+using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.Companies
@@ -23,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.Companies
     [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyAddressesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список адресов
         /// </summary>
@@ -34,18 +33,19 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [HttpGet]
         [Route("{Id:int}/" + Features.Addresses)]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterDictionaryAgentAddress();
-            filter.AgentIDs = new List<int> { Id };
-
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            {
+                if (filter == null) filter = new FilterDictionaryAgentAddress();
+                filter.AgentIDs = new List<int> { Id };
+
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -56,14 +56,20 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [HttpGet]
         [Route(Features.Addresses + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            {
+                return Get(ctx, Id);
+            });
+        }
+
+        public IHttpActionResult Get(IContext ctx, int Id)
+        {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentAddress(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -74,11 +80,14 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Addresses)]
-        public IHttpActionResult Post([FromBody]AddAgentAddress model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentAddress model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddCompanyAddress, model);
-            return Get(tmpItem);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            {
+                var tmpItem = Action.Execute(EnumDictionaryActions.AddCompanyAddress, model);
+                return Get(ctx, tmpItem);
+            });
         }
 
         /// <summary>
@@ -88,11 +97,15 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Addresses)]
-        public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentAddress model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyCompanyAddress, model);
-            return Get(model.Id);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            {
+                Action.Execute(EnumDictionaryActions.ModifyCompanyAddress, model);
+                return Get(ctx, model.Id);
+
+            });
         }
 
         /// <summary>
@@ -102,14 +115,16 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Addresses + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteCompanyAddress, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            {
+                Action.Execute(EnumDictionaryActions.DeleteCompanyAddress, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

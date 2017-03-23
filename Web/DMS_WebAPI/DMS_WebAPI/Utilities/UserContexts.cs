@@ -29,32 +29,6 @@ namespace DMS_WebAPI.Utilities
 
         private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
 
-        ///// <summary>
-        ///// Gets setting value by its name.
-        ///// </summary>
-        ///// <returns>Typed setting value.</returns>
-        //public IContext GetByLanguage()
-        //{
-        //    string token = TokenLower;
-
-        //    if (!Contains(token)) throw new UserUnauthorized();
-
-        //    var contextValue = _casheContexts[token];
-        //    try
-        //    {
-        //        var ctx = (IContext)contextValue.StoreObject;
-
-        //        var request_ctx = new UserContext(ctx);
-        //        request_ctx.SetCurrentPosition(null);
-        //        return request_ctx;
-        //    }
-        //    catch (InvalidCastException invalidCastException)
-        //    {
-        //        throw new Exception();
-        //    }
-        //}
-
-
 
         public IQueryable<FrontSystemSession> GetContextListQuery()
         {

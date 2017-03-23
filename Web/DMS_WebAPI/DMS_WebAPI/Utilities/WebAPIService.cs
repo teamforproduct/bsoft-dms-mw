@@ -75,14 +75,6 @@ namespace DMS_WebAPI.Utilities
 
         public ApplicationUser GetUser(IContext context, int agentId)
         {
-            //var dbWeb = new WebAPIDbProcess();
-
-            //var client = dbWeb.GetClient(clientCode);
-
-            //var db = dbWeb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
-
-            //var ctx = new AdminContext(db);
-
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             var userId = tmpService.GetDictionaryAgentUserId(context, agentId);
@@ -136,14 +128,6 @@ namespace DMS_WebAPI.Utilities
 
         public async Task<ApplicationUser> GetUserAsync(IContext context, int agentId)
         {
-            //var dbWeb = new WebAPIDbProcess();
-
-            //var client = dbWeb.GetClient(clientCode);
-
-            //var db = dbWeb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
-
-            //var ctx = new AdminContext(db);
-
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var userId = tmpService.GetDictionaryAgentUserId(context, agentId);
 

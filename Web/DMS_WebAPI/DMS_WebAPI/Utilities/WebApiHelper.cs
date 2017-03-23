@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
+using BL.CrossCutting.Interfaces;
 using JsonResult = DMS_WebAPI.Results.JsonResult;
 
 namespace DMS_WebAPI.Utilities
@@ -23,11 +24,11 @@ namespace DMS_WebAPI.Utilities
         /// <param name="action"></param>
         /// <param name="addittionalParameters"></param>
         /// <returns></returns>
-        public static async Task<IHttpActionResult> SafeExecuteAsync(this ApiController ctrl, ModelStateDictionary state, Func<IHttpActionResult> action, object addittionalParameters = null)
+        public static Task<IHttpActionResult> SafeExecuteAsync(this ApiController ctrl, ModelStateDictionary state, IContext context, Func<IContext, IHttpActionResult> action, object addittionalParameters = null)
         {
             try
             {
-                return await Task.Factory.StartNew(() => ExecuteAction(action, addittionalParameters));
+                return Task.Factory.StartNew(() => ExecuteAction(context, action, addittionalParameters));
             }
             catch (Exception ex)
             {
@@ -45,14 +46,14 @@ namespace DMS_WebAPI.Utilities
         /// <param name="addittionalParameters"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IHttpActionResult ExecuteAction(Func<IHttpActionResult> action, object addittionalParameters)
+        public static IHttpActionResult ExecuteAction(IContext context, Func<IContext, IHttpActionResult> action, object addittionalParameters)
         {
             try
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                var ret = action();
+                var ret = action(context);
                 stopWatch.Stop();
                 var res = ret as JsonResult;
                 if (res != null)
