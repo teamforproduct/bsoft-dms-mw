@@ -5523,14 +5523,23 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, EnumSortPositionExecutors sort = EnumSortPositionExecutors.StartDate_PositionExecutorType)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                // DMS-367 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
-                qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorType.Id);
+                switch (sort)
+                {
+                    case EnumSortPositionExecutors.StartDate_PositionExecutorType:
+                        // DMS-367 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                        qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorType.Id);
+                        break;
+                    case EnumSortPositionExecutors.PositionExecutorType_ExecutorName:
+                        qry = qry.OrderBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                        break;
+                }
+
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 

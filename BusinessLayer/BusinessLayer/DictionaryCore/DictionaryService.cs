@@ -750,7 +750,7 @@ namespace BL.Logic.DictionaryCore
             // Если запрашиваются назначения должности, к которой текущий пользователь НЕ имеет отношение
             if (!myPositions.Any(x => x.PositionId == positionId)) return new List<FrontDictionaryPositionExecutor>();
 
-            return _dictDb.GetPositionExecutors(context, filter);
+            return _dictDb.GetPositionExecutors(context, filter, EnumSortPositionExecutors.PositionExecutorType_ExecutorName);
         }
 
         // Возвращает актуальные назначения текущего пользователя
