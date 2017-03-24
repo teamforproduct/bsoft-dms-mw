@@ -6761,7 +6761,7 @@ namespace BL.Database.Dictionaries
                 if (filter.AgentId != null)
                 {
                     var now = DateTime.UtcNow;
-                    qry = qry.Where(x => x.Position.PositionExecutors.AsQueryable().Any(y => y.IsActive && y.StartDate < now && y.EndDate > now &&  y.AgentId == filter.AgentId));
+                    qry = qry.Where(x => x.Position.PositionExecutors.AsQueryable().Any(y => y.IsActive && y.StartDate < now && y.EndDate > now && y.AgentId == filter.AgentId));
                 }
             }
 
@@ -7601,13 +7601,14 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.TypeIDs?.Count > 0)
+                if (filter.TypeId.HasValue)
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
-                    filterContains = filter.TypeIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
+                    //var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    //filterContains = filter.TypeIDs.Aggregate(filterContains,
+                    //    (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
 
-                    qry = qry.Where(filterContains);
+                    //qry = qry.Where(filterContains);
+                    qry = qry.Where(x => x.DictionaryTypeId == filter.TypeId);
                 }
 
 
