@@ -24,6 +24,14 @@ namespace DMS_WebAPI.ControllersV3.Companies
     [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyAddressesController : ApiController
     {
+        private IHttpActionResult GetById(IContext ctx, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список адресов
         /// </summary>
@@ -35,14 +43,13 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
                 if (filter == null) filter = new FilterDictionaryAgentAddress();
                 filter.AgentIDs = new List<int> { Id };
 
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
+                var tmpItems = tmpService.GetAgentAddresses(context, filter);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
@@ -58,19 +65,10 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                return Get(ctx, Id);
+                return GetById(context, Id);
             });
-        }
-
-        public IHttpActionResult Get(IContext ctx, int Id)
-        {
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
         }
 
         /// <summary>
@@ -82,11 +80,10 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentAddress model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
                 var tmpItem = Action.Execute(EnumDictionaryActions.AddCompanyAddress, model);
-                return Get(ctx, tmpItem);
+                return GetById(context, tmpItem);
             });
         }
 
@@ -99,11 +96,10 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentAddress model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
                 Action.Execute(EnumDictionaryActions.ModifyCompanyAddress, model);
-                return Get(ctx, model.Id);
+                return GetById(context, model.Id);
 
             });
         }
@@ -117,8 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.Addresses + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return await this.SafeExecuteAsync(ModelState, ctx, context =>
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
                 Action.Execute(EnumDictionaryActions.DeleteCompanyAddress, Id);
                 var tmpItem = new FrontDeleteModel(Id);

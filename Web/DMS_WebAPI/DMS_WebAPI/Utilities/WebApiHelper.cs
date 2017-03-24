@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using JsonResult = DMS_WebAPI.Results.JsonResult;
 
@@ -24,10 +25,11 @@ namespace DMS_WebAPI.Utilities
         /// <param name="action"></param>
         /// <param name="addittionalParameters"></param>
         /// <returns></returns>
-        public static Task<IHttpActionResult> SafeExecuteAsync(this ApiController ctrl, ModelStateDictionary state, IContext context, Func<IContext, IHttpActionResult> action, object addittionalParameters = null)
+        public static Task<IHttpActionResult> SafeExecuteAsync(this ApiController ctrl, ModelStateDictionary state, Func<IContext, IHttpActionResult> action, object addittionalParameters = null)
         {
             try
             {
+                var context = DmsResolver.Current.Get<UserContexts>().Get();
                 return Task.Factory.StartNew(() => ExecuteAction(context, action, addittionalParameters));
             }
             catch (Exception ex)
