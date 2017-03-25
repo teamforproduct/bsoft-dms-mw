@@ -6648,8 +6648,15 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
+
                     TargetExecutorName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
+                    ImageByteArray = x.TargetPosition.ExecutorAgent.Image,
                     TargetExecutorTypeSuffix = x.TargetPosition.ExecutorType.Suffix,
+
+                    TargetDepartmentIndex = x.TargetPosition.Department.Code,
+                    TargetDepartmentName = x.TargetPosition.Department.Name,
+
+
                     AccessLevelName = x.AccessLevel.Name,
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
