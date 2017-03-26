@@ -1211,7 +1211,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.DeleteFull);
+                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
                 transaction.Complete();
 
             }

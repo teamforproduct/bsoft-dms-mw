@@ -40,9 +40,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 worker.AddNewItem(itm);
             }
         }
-        private void ReindexDocument(IContext ctx, IFullTextIndexWorker worker, EnumObjects objectType, int idFrom, int idTo)
+        private void ReindexDocument(IContext ctx, IFullTextIndexWorker worker, EnumObjects objectType, bool IsDirectFilter, EnumOperationType operType, int idFrom, int idTo)
         {
-            var data = _systemDb.FullTextIndexPrepareNew(ctx, objectType, true, true, idFrom, idTo);
+            var data = _systemDb.FullTextIndexPrepareNew(ctx, objectType, true, IsDirectFilter, idFrom, idTo);
             foreach (var doc in data.GroupBy(x => x.ParentObjectId)
                                     .Select(x => new { Id = x.Key, Main = x.First(y => y.ObjectType == objectType), Detail = x.Where(y => y.ObjectType != objectType).ToList() })
                                     .ToList())
@@ -50,23 +50,27 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var accesses = doc.Detail.Where(x => x.ObjectType == EnumObjects.DocumentAccesses).ToList();
                 var dataItem = new List<FullTextIndexItem>();
                 var filterWorkGroup = string.Join(" ", accesses.Select(x => x.ObjectId.ToString() + FullTextFilterTypes.WorkGroupPosition));
-                var filterTags = string.Join(" ", doc.Detail.Where(x=>x.ObjectType == EnumObjects.DocumentTags).Select(x => x.ObjectId.ToString() + FullTextFilterTypes.Tag));
+                var filterTags = string.Join(" ", doc.Detail.Where(x => x.ObjectType == EnumObjects.DocumentTags).Select(x => x.ObjectId.ToString() + FullTextFilterTypes.Tag));
                 foreach (var acc in accesses)
                 {
                     var dataItemAcc = (FullTextIndexItem)doc.Main.Clone();
-                    var details = doc.Detail.Where(x => x.Access == null || !x.Access.Any() || x.Access.Select(y=>y.Key).Contains(acc.ObjectId))
+                    var details = doc.Detail.Where(x => x.Access == null || !x.Access.Any() || x.Access.Select(y => y.Key).Contains(acc.ObjectId))
                         .Select(x => x.ObjectText + x.ObjectTextAddDateTime.ListToString()).ToList();
-                    dataItemAcc.Access = new List<FullTextIndexItemAccessInfo> { new FullTextIndexItemAccessInfo { Key = acc.ObjectId, Info = acc.Filter} };
+                    dataItemAcc.Access = new List<FullTextIndexItemAccessInfo> { new FullTextIndexItemAccessInfo { Key = acc.ObjectId, Info = acc.Filter } };
                     dataItemAcc.ObjectText = doc.Main.ObjectText + doc.Main.ObjectTextAddDateTime.ListToString() + string.Join(" ", details);
-                    dataItemAcc.ObjectText = string.Join(" ",dataItemAcc.ObjectText.Split(' ').Where(x=>x.Length>1).Distinct().OrderBy(x=>x));
+                    dataItemAcc.ObjectText = string.Join(" ", dataItemAcc.ObjectText.Split(' ').Where(x => x.Length > 1).Distinct().OrderBy(x => x));
                     dataItemAcc.ObjectTextAddDateTime = null;
                     dataItem.Add(dataItemAcc);
                 }
                 var dataItemGroups = dataItem.GroupBy(x => x.ObjectText).Select(x => new { doc = x.First(), acc = x.Select(y => y.Access).SelectMany(y => y).ToList() }).ToList();
                 dataItemGroups.ForEach(x => { x.doc.Access = x.acc; x.doc.Filter = filterWorkGroup + " " + filterTags; });
-                dataItem  = dataItemGroups.Select(x=>x.doc).ToList();
+                dataItem = dataItemGroups.Select(x => x.doc).ToList();
+                if (operType == EnumOperationType.Update)
+                    dataItem.Select(x => x.ParentObjectId).Distinct().ToList()
+                        .ForEach(x => worker.DeleteItem(new FullTextIndexItem { ObjectId = x, ObjectType = EnumObjects.Documents }));
                 foreach (var itm in dataItem)
                 {
+
                     worker.AddNewItem(itm);
                 }
             }
@@ -101,31 +105,31 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var md = _timers.Keys.First(x => x.DatabaseKey == dbKey);
             if (md == null) return;
             var tmr = GetTimer(md);
-            while (_stopTimersList.Contains(tmr)) Thread.Sleep(10);            
+            while (_stopTimersList.Contains(tmr)) Thread.Sleep(10);
             tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
             _stopTimersList.Add(tmr); // to avoid additional raise of timer event
 
             var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
             systemSetting.Value = false.ToString();
-            Settings.SaveSetting(ctx, systemSetting);            
+            Settings.SaveSetting(ctx, systemSetting);
             worker.StartUpdate();//initiate the update of FT
             try
             {
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
-                var objToProcess = _systemDb.ObjectToReindex();                
+                var objToProcess = _systemDb.ObjectToReindex();
                 worker.DeleteAllDocuments(ctx.CurrentClientId);//delete all current document before reindexing
                 var tskList = new List<Action>();
                 foreach (var obj in objToProcess)
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
-                    if (!itmsCount.Any() || itmsCount.All(x=>x == 0)) continue;
+                    if (!itmsCount.Any() || itmsCount.All(x => x == 0)) continue;
                     if (obj == EnumObjects.Documents)
                     {
-                        var ranges = _systemDb.GetRanges(ctx, obj, _MAX_ENTITY_FOR_THREAD/100);
+                        var ranges = _systemDb.GetRanges(ctx, obj, _MAX_ENTITY_FOR_THREAD / 100);
                         foreach (var range in ranges)//.Where(x=>x.Key>400000).ToList())
-                            tskList.Add(() => { ReindexDocument(ctx, worker, obj, range.Key, range.Value); });
+                            tskList.Add(() => { ReindexDocument(ctx, worker, obj, true, EnumOperationType.AddNew,range.Key, range.Value); });
                     }
-                    else if(itmsCount.Count > 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
+                    else if (itmsCount.Count > 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
                     {
                         tskList.Add(() => { ReindexObject(ctx, worker, obj); });
                     }
@@ -138,10 +142,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
                             var @fromIndex = indFrom;
                             tskList.Add(() => { ReindexBigObject(ctx, worker, obj, @fromIndex, indTo); });
                             indFrom = indTo + 1;
-                        } while (indFrom< itmsCount[0]);
+                        } while (indFrom < itmsCount[0]);
                     }
                 }
-                Parallel.Invoke(new ParallelOptions() {MaxDegreeOfParallelism = 4},tskList.ToArray());
+                Parallel.Invoke(new ParallelOptions() { MaxDegreeOfParallelism = 4 }, tskList.ToArray());
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId); //delete cash in case we just processed all that documents
                 systemSetting.Value = true.ToString();//set indicator that full text for the client available
                 Settings.SaveSetting(ctx, systemSetting);
@@ -189,7 +193,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var admCtx = new AdminContext(ctx);
                 SinchronizeServer(admCtx);
             }
-            catch 
+            catch (Exception ex)
             {
                 // ignored
             }
@@ -198,7 +202,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _stopTimersList.Remove(tmr);
                 tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the time      
             }
-                      
+
         }
         public List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null)
         {
@@ -224,7 +228,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             ReindexBeforeSearch(ctx);
             return SearchItemsInternal(out IsNotAll, ctx, text, filter, paging).ToList();
         }
-        private IEnumerable<FullTextSearchResult> SearchItemsInternal(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging )
+        private IEnumerable<FullTextSearchResult> SearchItemsInternal(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging)
         {
             var admService = DmsResolver.Current.Get<IAdminService>();
             int? moduleId = (filter?.Module == null) ? (int?)null : Modules.GetId(filter?.Module);
@@ -236,7 +240,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private IEnumerable<FullTextSearchResult> SearchItemsByDetail(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging)
         {
             IsNotAll = false;
-            var words = text.Split(' ').Where(x=>!string.IsNullOrEmpty(x)).OrderBy(x=>x.Length);
+            var words = text.Split(' ').Where(x => !string.IsNullOrEmpty(x)).OrderBy(x => x.Length);
             var res = new List<FullTextSearchResult>();
             var worker = GetWorker(ctx);
             if (worker == null) return res;
@@ -250,15 +254,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{word}' FinishProcessingWord : {r.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
                 if (!r.Any()) return res;
                 tempRes.Add(r);
-            }            
+            }
             tempRes.RemoveAll(x => !x.Any());
             if (!tempRes.Any()) return res;
             res = tempRes.First();
             tempRes.Remove(res);
             foreach (var sRes in tempRes)
             {
-                res = res.Join(sRes, a => new {a.ParentId, a.ParentObjectType},
-                    b => new {b.ParentId, b.ParentObjectType}, (a, b) => a).ToList();
+                res = res.Join(sRes, a => new { a.ParentId, a.ParentObjectType },
+                    b => new { b.ParentId, b.ParentObjectType }, (a, b) => a).ToList();
             }
             FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' JoinWords: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             return res;
@@ -325,50 +329,45 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     try
                     {
-                        switch (item.OperationType)
+                        if (item.OperationType == EnumOperationType.Delete)
+                            worker.DeleteItem(new FullTextIndexItem { ObjectId = item.ObjectId, ObjectType = item.ObjectType });
+                        else
                         {
-                            case EnumOperationType.AddNew:
-                                var toAdd = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false, null, currCashId);
-                                foreach (var itmAdd in toAdd)
+                            var items = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, (item.OperationType == EnumOperationType.AddFull || item.OperationType == EnumOperationType.UpdateFull), false, item.Id, item.Id);
+                            if (items.Any(x => x.ParentObjectType == EnumObjects.Documents))
+                            {
+                                items.Where(x => x.ParentObjectType == EnumObjects.Documents).Select(x => x.ParentObjectId).Distinct().ToList()
+                                    .ForEach(x => ReindexDocument(ctx, worker, EnumObjects.Documents, true, EnumOperationType.Update, x, x));
+                                items = items.Where(x => x.ParentObjectType != EnumObjects.Documents);
+                            }
+                            if (items.Any(x => x.ParentObjectType != EnumObjects.Documents))
+                                switch (item.OperationType)
                                 {
-                                    worker.AddNewItem(itmAdd);
+                                    case EnumOperationType.AddNew:
+                                        foreach (var itm in items)
+                                        {
+                                            worker.AddNewItem(itm);
+                                        }
+                                        break;
+                                    case EnumOperationType.Update:
+                                        foreach (var itm in items)
+                                        {
+                                            worker.UpdateItem(itm);
+                                        }
+                                        break;
+                                    case EnumOperationType.AddFull:
+                                        foreach (var itm in items)
+                                        {
+                                            worker.AddNewItem(itm);
+                                        }
+                                        break;
+                                    case EnumOperationType.UpdateFull: //TODO DELETE FULL!!!!!
+                                        foreach (var itm in items)
+                                        {
+                                            worker.UpdateItem(itm);
+                                        }
+                                        break;
                                 }
-                                break;
-                            case EnumOperationType.Update:
-                                var toUpd = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false, null, currCashId);
-                                foreach (var itmUpd in toUpd)
-                                {
-                                    worker.UpdateItem(itmUpd);
-                                }
-                                break;
-                            case EnumOperationType.Delete:
-                                var toDelete = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, false, false,null, currCashId);
-                                foreach (var itmDel in toDelete)
-                                {
-                                    worker.DeleteItem(itmDel);
-                                }
-                                break;
-                            case EnumOperationType.AddFull:
-                                var toAddFull = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, true, false, null, currCashId);
-                                foreach (var itmAdd in toAddFull)
-                                {
-                                    worker.AddNewItem(itmAdd);
-                                }
-                                break;
-                            case EnumOperationType.UpdateFull: //TODO DELETE FULL!!!!!
-                                var toUpdFull = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, true, false, null, currCashId);
-                                foreach (var itmUpd in toUpdFull)
-                                {
-                                    worker.UpdateItem(itmUpd);
-                                }
-                                break;
-                            case EnumOperationType.DeleteFull:
-                                var toDeleteFull = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, true, false, null, currCashId);
-                                foreach (var itmDel in toDeleteFull)
-                                {
-                                    worker.DeleteItem(itmDel);
-                                }
-                                break;
                         }
                         processedIds.Add(item.Id);
                     }
@@ -418,7 +417,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 Logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
                 Logger.Error(ctx, ex, "Could not sinchronize fulltextsearch indexes");
             }
-            tmr.Change(md.TimeToUpdate*60000, Timeout.Infinite); //start new iteration of the timer
+            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
         public override void Dispose()
         {

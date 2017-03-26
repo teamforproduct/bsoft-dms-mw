@@ -11,6 +11,7 @@ using BL.Model.SystemCore;
 using EntityFramework.Extensions;
 using System.Data.Entity.SqlServer;
 using System;
+using BL.Database.DBModel.System;
 
 namespace BL.Database.SystemDb
 {
@@ -21,6 +22,28 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentClientId) ? dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId).Max(x => x.Id) : 0;
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FullTextIndexCash> GetFullTextIndexCash(IContext ctx, FilterFullTextIndexCash filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId);
+                if (filter != null)
+                {
+                    if (filter?.IdFrom != null)
+                        qry = qry.Where(x => x.Id >= filter.IdFrom);
+                    if (filter?.IdTo != null)
+                        qry = qry.Where(x => x.Id <= filter.IdTo);
+                    if (filter?.ObjectId != 0)
+                        qry = qry.Where(x => x.ObjectId == filter.ObjectId);
+                    if (filter?.ObjectType != 0)
+                        qry = qry.Where(x => x.ObjectType == filter.ObjectType);
+                }
+                var res = qry.ToList();
                 transaction.Complete();
                 return res;
             }
