@@ -154,6 +154,7 @@
     <Compile Include="Common\AutocompleteItem.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />
     <Compile Include="FullTextSearch\FilterFullTextIndexCash.cs" />
+    <Compile Include="Enums\EnumSortPositionExecutors.cs" />
     <Compile Include="FullTextSearch\FullTextIndexItemAccessInfo.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSearchQueryLog.cs" />
     <Compile Include="SystemCore\FullTextFilterTypes.cs" />

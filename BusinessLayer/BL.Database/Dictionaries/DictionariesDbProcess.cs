@@ -5523,14 +5523,23 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter)
+        public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext context, FilterDictionaryPositionExecutor filter, EnumSortPositionExecutors sort = EnumSortPositionExecutors.StartDate_PositionExecutorType)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(context, dbContext, filter);
 
-                // DMS-367 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
-                qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorType.Id);
+                switch (sort)
+                {
+                    case EnumSortPositionExecutors.StartDate_PositionExecutorType:
+                        // DMS-367 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                        qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorType.Id);
+                        break;
+                    case EnumSortPositionExecutors.PositionExecutorType_ExecutorName:
+                        qry = qry.OrderBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                        break;
+                }
+
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
@@ -6639,8 +6648,15 @@ namespace BL.Database.Dictionaries
                     AccessLevelId = x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     TargetPositionName = x.TargetPosition.Name,
+
                     TargetExecutorName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
+                    ImageByteArray = x.TargetPosition.ExecutorAgent.Image,
                     TargetExecutorTypeSuffix = x.TargetPosition.ExecutorType.Suffix,
+
+                    TargetDepartmentIndex = x.TargetPosition.Department.Code,
+                    TargetDepartmentName = x.TargetPosition.Department.Name,
+
+
                     AccessLevelName = x.AccessLevel.Name,
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
@@ -6752,7 +6768,7 @@ namespace BL.Database.Dictionaries
                 if (filter.AgentId != null)
                 {
                     var now = DateTime.UtcNow;
-                    qry = qry.Where(x => x.Position.PositionExecutors.AsQueryable().Any(y => y.IsActive && y.StartDate < now && y.EndDate > now &&  y.AgentId == filter.AgentId));
+                    qry = qry.Where(x => x.Position.PositionExecutors.AsQueryable().Any(y => y.IsActive && y.StartDate < now && y.EndDate > now && y.AgentId == filter.AgentId));
                 }
             }
 
@@ -7592,13 +7608,14 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.TypeIDs?.Count > 0)
+                if (filter.TypeId.HasValue)
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
-                    filterContains = filter.TypeIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
+                    //var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    //filterContains = filter.TypeIDs.Aggregate(filterContains,
+                    //    (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
 
-                    qry = qry.Where(filterContains);
+                    //qry = qry.Where(filterContains);
+                    qry = qry.Where(x => x.DictionaryTypeId == filter.TypeId);
                 }
 
 

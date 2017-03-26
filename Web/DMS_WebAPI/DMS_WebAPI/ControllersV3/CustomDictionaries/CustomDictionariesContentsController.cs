@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterCustomDictionary();
-            filter.TypeIDs = new List<int> { Id };
+            filter.TypeId =  Id;
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();

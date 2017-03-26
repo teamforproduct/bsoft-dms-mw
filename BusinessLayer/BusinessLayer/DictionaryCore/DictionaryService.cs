@@ -120,7 +120,7 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging, UISorting sorting)
         {
             return FTS.Get(context, Modules.Employee, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs
-               //, new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
+               , new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
                );
         }
 
@@ -750,7 +750,7 @@ namespace BL.Logic.DictionaryCore
             // Если запрашиваются назначения должности, к которой текущий пользователь НЕ имеет отношение
             if (!myPositions.Any(x => x.PositionId == positionId)) return new List<FrontDictionaryPositionExecutor>();
 
-            return _dictDb.GetPositionExecutors(context, filter);
+            return _dictDb.GetPositionExecutors(context, filter, EnumSortPositionExecutors.PositionExecutorType_ExecutorName);
         }
 
         // Возвращает актуальные назначения текущего пользователя
@@ -1168,6 +1168,7 @@ namespace BL.Logic.DictionaryCore
         {
             return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting,
                 _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs,
+                new FullTextSearchFilter { Module = Modules.CustomDictionaries, ParentObjectId = filter.TypeId },
                 IsUseParentId: false);
         }
 
