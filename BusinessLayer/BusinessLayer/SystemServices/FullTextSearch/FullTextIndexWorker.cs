@@ -74,21 +74,21 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             if (_writer == null) return;
 
-            var qry1 = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
-            var qry2 = NumericRangeQuery.NewIntRange(FIELD_PARENT_ID, item.ObjectId, item.ObjectId, true, true);
+            var qry1 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
+            var qry2 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_ID, item.ObjectId, item.ObjectId, true, true);
             var bQuery = new BooleanQuery();
             bQuery.Add(qry1, Occur.MUST);
             bQuery.Add(qry2, Occur.MUST);
             _writer.DeleteDocuments(bQuery);
-
-            qry1 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
-            qry2 = NumericRangeQuery.NewIntRange(FIELD_OBJECT_ID, item.ObjectId, item.ObjectId, true, true);
-            bQuery = new BooleanQuery();
-            bQuery.Add(qry1, Occur.MUST);
-            bQuery.Add(qry2, Occur.MUST);
-            _writer.DeleteDocuments(bQuery);
-
-
+            if (item.OperationType == EnumOperationType.Delete)
+            {
+                qry1 = NumericRangeQuery.NewIntRange(FIELD_PARENT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
+                qry2 = NumericRangeQuery.NewIntRange(FIELD_PARENT_ID, item.ObjectId, item.ObjectId, true, true);
+                bQuery = new BooleanQuery();
+                bQuery.Add(qry1, Occur.MUST);
+                bQuery.Add(qry2, Occur.MUST);
+                _writer.DeleteDocuments(bQuery);
+            }
         }
 
         public void AddNewItem(FullTextIndexItem item)

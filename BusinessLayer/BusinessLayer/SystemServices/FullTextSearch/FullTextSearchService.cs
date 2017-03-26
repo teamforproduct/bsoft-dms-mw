@@ -330,7 +330,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     try
                     {
                         if (item.OperationType == EnumOperationType.Delete)
-                            worker.DeleteItem(new FullTextIndexItem { ObjectId = item.ObjectId, ObjectType = item.ObjectType });
+                            worker.DeleteItem(new FullTextIndexItem { ObjectId = item.ObjectId, ObjectType = item.ObjectType, OperationType = EnumOperationType.Delete });
                         else
                         {
                             var items = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, (item.OperationType == EnumOperationType.AddFull || item.OperationType == EnumOperationType.UpdateFull), false, item.Id, item.Id);
