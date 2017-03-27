@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DocumentCore.FrontModel;
@@ -11,7 +12,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.CrossCutting.Interfaces;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {

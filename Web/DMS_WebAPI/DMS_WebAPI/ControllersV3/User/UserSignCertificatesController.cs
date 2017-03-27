@@ -1,22 +1,17 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.EncryptionCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.EncryptionCore.Filters;
+using BL.Model.EncryptionCore.FrontModel;
+using BL.Model.EncryptionCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using System.Diagnostics;
-using BL.Model.Common;
-using BL.Model.EncryptionCore.FrontModel;
-using BL.Model.EncryptionCore.Filters;
-using BL.Model.SystemCore;
-using BL.Logic.EncryptionCore.Interfaces;
 using System.Web;
-using BL.Model.EncryptionCore.IncomingModel;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
