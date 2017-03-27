@@ -31,8 +31,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentSavedFilterController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список всех сохраненных фильтров документов
         /// </summary>
@@ -42,12 +40,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             var items = docProc.GetSavedFilters(ctx, new FilterDocumentSavedFilter { IsOnlyCurrentUser = false });
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,12 +56,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
         public IHttpActionResult GetOnlyCurrentUser()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             var items = docProc.GetSavedFilters(ctx, new FilterDocumentSavedFilter { IsOnlyCurrentUser = true});
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -79,12 +73,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentSavedFilter))]
         public IHttpActionResult GetById(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
             var item = docProc.GetSavedFilter(ctx, Id);
             var res = new JsonResult(item, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -97,10 +89,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters)]
         public IHttpActionResult Post([FromBody]AddDocumentSavedFilter model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddSavedFilter, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -113,10 +103,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters)]
         public IHttpActionResult Put([FromBody]ModifyDocumentSavedFilter model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifySavedFilter, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -129,11 +117,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteSavedFilter, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         

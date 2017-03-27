@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Список сотрудников
         /// </summary>
@@ -40,13 +38,11 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<FrontMainAgentEmployee>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainAgentEmployees(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -61,12 +57,10 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(FrontAgentEmployee))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryAgentEmployee(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -79,7 +73,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
 
@@ -97,7 +90,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = contexts.Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
@@ -118,13 +110,11 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
             webSeevice.DeleteUserEmployee(ctx, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -139,11 +129,9 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/DeleteImage/{Id:int}")]
         public IHttpActionResult DeleteImage([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteAgentImage, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

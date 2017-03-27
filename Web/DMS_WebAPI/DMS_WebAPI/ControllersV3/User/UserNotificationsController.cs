@@ -17,8 +17,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserNotificationsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает настройки нотификации
         /// </summary>
@@ -28,11 +26,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontNotifications))]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = new FrontNotifications { EMailForNotifications = "t@t.t", IsSendEMail = true };
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -45,7 +41,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Notifications)]
         public IHttpActionResult Put([FromBody]ChangeNotifications model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             return Get();
         }

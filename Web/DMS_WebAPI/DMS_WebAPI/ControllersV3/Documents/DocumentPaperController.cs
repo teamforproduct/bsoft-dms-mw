@@ -31,8 +31,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPaperController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список бумажных носителей
         /// </summary>
@@ -44,12 +42,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentPaper>))]
         public IHttpActionResult Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetDocumentPapers(ctx, filter, paging);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -63,12 +59,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentPaper))]
         public IHttpActionResult GetById(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var item = docProc.GetDocumentPaper(ctx, Id);
             var res = new JsonResult(item, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -81,10 +75,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Papers)]
         public IHttpActionResult Post([FromBody]AddDocumentPaper model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentPaper, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -97,10 +89,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Papers)]
         public IHttpActionResult Put([FromBody]ModifyDocumentPaper model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentPaper, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -113,11 +103,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Papers + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteDocumentPaper, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -131,12 +119,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public IHttpActionResult Actions([FromUri]int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ICommandService>();
             var items = docProc.GetDocumentPaperActions(ctx, Id);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -149,10 +135,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult MarkOwnerDocumentPaper([FromBody]MarkOwnerDocumentPaper model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.MarkOwnerDocumentPaper, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -165,10 +149,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.MarkСorruptionDocumentPaper, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -181,10 +163,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult PlanDocumentPaperEvent([FromBody]List<PlanMovementPaper> model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.PlanDocumentPaperEvent, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -197,10 +177,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]List<int> model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -213,10 +191,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult SendDocumentPaperEvent([FromBody]List<int> model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -229,10 +205,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]List<int> model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -245,10 +219,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult RecieveDocumentPaperEvent([FromBody]List<int> model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

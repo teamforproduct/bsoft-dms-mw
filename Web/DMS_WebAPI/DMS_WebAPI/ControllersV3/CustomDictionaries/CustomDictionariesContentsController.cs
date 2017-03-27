@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
     [RoutePrefix(ApiPrefix.V3 + Modules.CustomDictionaries)]
     public class CustomDictionariesContentsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список элементов пользовательского справочника
         /// </summary>
@@ -40,7 +38,6 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionary>))]
         public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterCustomDictionary();
             filter.TypeIDs = new List<int> { Id };
 
@@ -49,7 +46,6 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
             var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -64,12 +60,10 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(FrontCustomDictionary))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetCustomDictionary(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -82,7 +76,6 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Contents)]
         public IHttpActionResult Post([FromBody]AddCustomDictionary model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionary, model);
             return Get(tmpItem);
         }
@@ -96,7 +89,6 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Contents)]
         public IHttpActionResult Put([FromBody]ModifyCustomDictionary model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyCustomDictionary, model);
             return Get(model.Id);
         }
@@ -110,11 +102,9 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Contents + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteCustomDictionary, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

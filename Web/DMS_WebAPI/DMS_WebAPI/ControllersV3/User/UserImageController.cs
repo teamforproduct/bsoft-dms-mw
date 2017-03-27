@@ -22,8 +22,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserImageController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
 
         /// <summary>
         /// Возвращает аватарку
@@ -34,13 +32,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryAgentUserPicture(ctx, ctx.CurrentAgentId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -65,12 +61,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Image)]
         public IHttpActionResult Delete()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             Action.Execute(EnumDictionaryActions.DeleteAgentImage, ctx.CurrentAgentId);
             var tmpItem = new FrontDeleteModel(ctx.CurrentAgentId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

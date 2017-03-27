@@ -29,8 +29,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentWaitController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список контролей
         /// </summary>
@@ -41,7 +39,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentWait>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (model == null) model = new IncomingBase();
             if (model.Filter == null) model.Filter = new FilterBase();
             if (model.Paging == null) model.Paging = new UIPaging();
@@ -51,7 +48,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var items = docProc.GetDocumentWaits(ctx, model.Filter, model.Paging);
             var res = new JsonResult(items, this);
             res.Paging = model.Paging;
-            res.SpentTime = stopWatch;
             return res;
         }        
 
@@ -65,12 +61,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentWait))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var item = docProc.GetDocumentEvent(ctx, Id);
             var res = new JsonResult(item, this);
-            res.SpentTime = stopWatch;
             return res;
         }   
 
@@ -83,10 +77,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlOn")]
         public IHttpActionResult ControlOn([FromBody]ControlOn model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -99,10 +91,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/AskPostponeDueDate")]
         public IHttpActionResult AskPostponeDueDate([FromBody]AskPostponeDueDate model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AskPostponeDueDate, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -115,10 +105,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/MarkExecution")]
         public IHttpActionResult MarkExecution([FromBody]SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.MarkExecution, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -133,10 +121,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/CancelPostponeDueDate")]
         public IHttpActionResult CancelPostponeDueDate([FromBody]SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.CancelPostponeDueDate, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -149,10 +135,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/RejectResult")]
         public IHttpActionResult RejectResult([FromBody]SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.RejectResult, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -165,10 +149,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/AcceptResult")]
         public IHttpActionResult AcceptResult([FromBody]ControlOff model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AcceptResult, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -181,10 +163,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/CancelExecution")]
         public IHttpActionResult CancelExecution([FromBody]ControlOff model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.CancelExecution, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -199,10 +179,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlOff")]
         public IHttpActionResult ControlOff([FromBody]ControlOff model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ControlOff, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -216,10 +194,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlChange")]
         public IHttpActionResult ControlChange([FromBody]ControlChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ControlChange, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -232,10 +208,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/SendForExecutionChange")]
         public IHttpActionResult SendForExecutionChange([FromBody]ControlChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.SendForExecutionChange, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -247,10 +221,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/SendForResponsibleExecutionChange")]
         public IHttpActionResult SendForResponsibleExecutionChange([FromBody]ControlChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.SendForResponsibleExecutionChange, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -263,10 +235,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlTargetChange")]
         public IHttpActionResult ControlTargetChange([FromBody]ControlTargetChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ControlTargetChange, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

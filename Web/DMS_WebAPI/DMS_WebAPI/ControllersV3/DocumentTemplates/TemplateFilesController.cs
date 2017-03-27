@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateFilesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список файлов
         /// </summary>
@@ -38,7 +36,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontTemplateAttachedFile>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTemplateAttachedFile();
             filter.TemplateId =  Id ;
 
@@ -46,7 +43,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItems = tmpService.GetTemplateAttachedFiles(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -62,12 +58,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public IHttpActionResult Get(int Id)
         {
             //TODO PDF
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItem = tmpService.GetTemplateAttachedFile(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -80,7 +74,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Files)]
         public IHttpActionResult Post([FromUri]AddTemplateAttachedFile model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
             model.FileName = file.FileName;
@@ -99,7 +92,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Files)]
         public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             //if (HttpContext.Current.Request.Files.Count > 0)
             //{
             //    HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -111,7 +103,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             var tmpService = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = (FrontTemplateAttachedFile)tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, ctx, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -124,11 +115,9 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Files + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteTemplateAttachedFile, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

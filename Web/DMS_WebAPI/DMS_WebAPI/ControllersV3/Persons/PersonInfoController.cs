@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.Persons
     [RoutePrefix(ApiPrefix.V3 + Modules.Person)]
     public class PersonInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Список физических лиц
         /// </summary>
@@ -39,13 +37,11 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [ResponseType(typeof(List<FrontMainAgentPerson>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainAgentPersons(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,12 +56,10 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [ResponseType(typeof(FrontMainAgentPerson))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentPerson(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -78,7 +72,6 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentPerson model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentPerson, model);
             return Get(tmpItem);
         }
@@ -92,7 +85,6 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentPerson model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAgentPerson, model);
             return Get(model.Id);
         }
@@ -106,11 +98,9 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteAgentPerson, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

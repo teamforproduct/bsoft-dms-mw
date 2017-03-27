@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserPositionExecutorsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список исполнителей должности (только текущие, актуальные назначения)
         /// Только должности, к которые исполняет текущий пользователь
@@ -38,12 +36,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetUserPositionExecutors(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -58,12 +54,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryPositionExecutor(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -76,7 +70,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Positions/" + Features.Executors)]
         public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddUserPositionExecutor, ctx, model);
@@ -92,7 +85,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Positions/" + Features.Executors)]
         public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.ModifyUserPositionExecutor, ctx, model);
@@ -108,14 +100,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Positions/" + Features.Executors + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteUserPositionExecutor, ctx, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
 
         }

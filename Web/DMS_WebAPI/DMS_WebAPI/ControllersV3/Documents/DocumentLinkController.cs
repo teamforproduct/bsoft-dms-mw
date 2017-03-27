@@ -29,8 +29,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentLinkController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список ИД связанных документов по ИД документа TODO зачем нужно?
         /// </summary>
@@ -41,12 +39,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<int>))]
         public IHttpActionResult GetIdsByDocumentId(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetLinkedDocumentIds(ctx, Id);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,10 +56,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<int>))]
         public IHttpActionResult Post([FromBody]AddDocumentLink model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return GetIdsByDocumentId(model.DocumentId);
         }
 
@@ -76,10 +70,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Links + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteDocumentLink, Id);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

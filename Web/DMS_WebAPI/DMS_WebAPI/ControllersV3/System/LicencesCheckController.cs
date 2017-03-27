@@ -18,9 +18,6 @@ namespace DMS_WebAPI.ControllersV3.System
     [RoutePrefix(ApiPrefix.V3 + Modules.Licences)]
     public class LicencesCheckController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
-
         /// <summary>
         /// Проверка лицензии
         /// </summary>
@@ -30,7 +27,6 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontSystemLicencesInfo))]
         public IHttpActionResult VerifyLicences()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
             var tmpItem = new FrontSystemLicencesInfo
             {
@@ -39,7 +35,6 @@ namespace DMS_WebAPI.ControllersV3.System
                 Message = "Успех, работаем на V3", //TODO 
             };
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
     [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
     public class BankInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Список банков
         /// </summary>
@@ -39,13 +37,11 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(List<FrontMainAgentBank>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainAgentBanks(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,12 +56,10 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(FrontAgentBank))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentBank(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -78,7 +72,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentBank model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentBank, model);
             return Get(tmpItem);
         }
@@ -92,7 +85,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentBank model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAgentBank, model);
             return Get(model.Id);
         }
@@ -106,11 +98,9 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteAgentBank, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

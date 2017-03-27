@@ -22,8 +22,6 @@ namespace DMS_WebAPI.ControllersV3.System
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class TempFileStorageController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает файл из временного хранилища
         /// </summary>
@@ -34,7 +32,6 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontFile))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
 
 
             var tmpService = DmsResolver.Current.Get<ITempStorageService>();
@@ -47,7 +44,6 @@ namespace DMS_WebAPI.ControllersV3.System
             };
 
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,7 +55,6 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.TempFileStorage)]
         public IHttpActionResult Post()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
 
             byte[] buffer = new byte[file.ContentLength];
@@ -81,12 +76,10 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.TempFileStorage + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpService = DmsResolver.Current.Get<ITempStorageService>();
             tmpService.ExtractStoreObject(Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
     }

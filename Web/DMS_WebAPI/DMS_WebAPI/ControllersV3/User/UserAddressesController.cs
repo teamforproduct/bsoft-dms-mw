@@ -23,9 +23,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAddressesController : ApiController
     {
-
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список адресов
         /// </summary>
@@ -36,7 +33,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentAddress filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
             if (filter == null) filter = new FilterDictionaryAgentAddress();
@@ -45,7 +41,6 @@ namespace DMS_WebAPI.ControllersV3.User
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,12 +54,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentAddress(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -77,7 +70,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses)]
         public IHttpActionResult Post([FromBody]BaseAgentAddress model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var address = new AddAgentAddress(model);
             address.AgentId = ctx.CurrentAgentId;
@@ -94,7 +86,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses)]
         public IHttpActionResult Put([FromBody]ModifyUserAddress model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var address = new ModifyAgentAddress(model);
             address.AgentId = ctx.CurrentAgentId;
@@ -111,11 +102,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteEmployeeAddress, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
 
         }

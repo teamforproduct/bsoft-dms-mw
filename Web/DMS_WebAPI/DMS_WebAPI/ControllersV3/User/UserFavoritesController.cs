@@ -21,8 +21,6 @@ namespace DMS_WebAPI.ControllersV3.User
     public class UserFavoritesController : ApiController
     {
 
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список часто выбираемых элементов
         /// </summary>
@@ -32,12 +30,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontUserFavorites))]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetUserFavourites(ctx);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -51,12 +47,10 @@ namespace DMS_WebAPI.ControllersV3.User
         //[ResponseType(typeof(InternalAgentFavourite))]
         //public IHttpActionResult Get(int Id)
         //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
         //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
         //    var webService = DmsResolver.Current.Get<WebAPIService>();
         //    var tmpItem = webService.  fgGetUserFingerprint(Id);
         //    var res = new JsonResult(tmpItem, this);
-        //    res.SpentTime = stopWatch;
         //    return res;
         //}
 
@@ -70,12 +64,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites + "/Bulk")]
         public IHttpActionResult PostBulk([FromBody]FrontUserFavorites model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.SetUserFavoritesBulk(ctx, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -88,12 +80,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites)]
         public IHttpActionResult Post([FromBody]AddAgentFavourite model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.SetUserFavorite(ctx, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -106,12 +96,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.DeleteUserFingerprint(Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
 
         }

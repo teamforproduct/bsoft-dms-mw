@@ -22,8 +22,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionJournalsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список журналов регистрации с пычками
         /// </summary>
@@ -35,14 +33,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterTree filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRegistrationJournalPositionsDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -57,14 +53,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterTree filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRegistrationJournalPositionsDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -77,10 +71,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/Set")]
         public IHttpActionResult Set([FromBody] SetJournalAccess model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccess, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -93,10 +85,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetByDepartment")]
         public IHttpActionResult SetByDepartment([FromBody] SetJournalAccessByDepartment_Position model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByDepartment_Position, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -109,10 +99,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetByCompany")]
         public IHttpActionResult SetByCompany([FromBody] SetJournalAccessByCompany_Position model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByCompany_Position, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -126,10 +114,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetDefault")]
         public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessDefault_Position, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -142,10 +128,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetAll")]
         public IHttpActionResult SetAll([FromBody] SetJournalAccessAll_Position model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessAll_Position, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -158,10 +142,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.DuplicateJournalAccess_Position, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

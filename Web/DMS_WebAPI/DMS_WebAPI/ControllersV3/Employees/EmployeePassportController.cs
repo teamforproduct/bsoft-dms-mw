@@ -20,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeePassportController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает паспортные данные сотрудника
         /// </summary>
@@ -32,12 +30,10 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentPeoplePassport(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -50,7 +46,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Passport)]
         public IHttpActionResult Put([FromBody]ModifyAgentPeoplePassport model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, model);
             return Get(model.Id);
         }

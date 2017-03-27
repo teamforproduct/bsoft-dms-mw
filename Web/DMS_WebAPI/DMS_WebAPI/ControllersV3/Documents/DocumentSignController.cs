@@ -29,8 +29,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentSignController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список подписей
         /// </summary>
@@ -42,13 +40,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSubscription>))]
         public IHttpActionResult Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetDocumentSubscriptions(ctx, filter, paging);
             var res = new JsonResult(items, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
         
@@ -61,10 +57,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult RejectSigning(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.RejectSigning, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -76,10 +70,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult RejectVisaing(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.RejectVisaing, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -91,10 +83,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult RejectАgreement(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.RejectАgreement, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -106,10 +96,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult RejectАpproval(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.RejectАpproval, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -122,10 +110,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult WithdrawSigning(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.WithdrawSigning, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -137,10 +123,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult WithdrawVisaing(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.WithdrawVisaing, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -152,10 +136,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult WithdrawАgreement(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.WithdrawАgreement, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -167,10 +149,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult WithdrawАpproval(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.WithdrawАpproval, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -183,10 +163,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult AffixSigning(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AffixSigning, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -198,10 +176,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult AffixVisaing(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AffixVisaing, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -213,10 +189,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult AffixАgreement(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AffixАgreement, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -228,10 +202,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult AffixАpproval(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.AffixАpproval, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -244,10 +216,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public IHttpActionResult SelfAffixSigning(SelfAffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.SelfAffixSigning, model);
             var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -261,10 +231,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public IHttpActionResult VerifySigning([FromBody]Item model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.VerifySigning, model.Id);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

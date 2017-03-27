@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionSendRulesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список должностей с пычками
         /// </summary>
@@ -38,14 +36,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,14 +56,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = null;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -80,10 +74,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/Set")]
         public IHttpActionResult Set([FromBody] SetSubordination model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordination, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -96,10 +88,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetByDepartment")]
         public IHttpActionResult SetByDepartment([FromBody] SetSubordinationByDepartment model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByDepartment, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -112,10 +102,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetByCompany")]
         public IHttpActionResult SetByCompany([FromBody] SetSubordinationByCompany model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByCompany, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -129,10 +117,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetDefault")]
         public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetDefaultSubordination, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -145,10 +131,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetAll")]
         public IHttpActionResult SetAll([FromBody] SetSubordinations model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetAllSubordination, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -161,10 +145,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.DuplicateSubordinations, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

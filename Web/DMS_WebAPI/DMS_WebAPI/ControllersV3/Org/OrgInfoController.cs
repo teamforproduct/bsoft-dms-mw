@@ -26,9 +26,6 @@ namespace DMS_WebAPI.ControllersV3.Org
     [RoutePrefix(ApiPrefix.V3 + Modules.Org)]
     public class OrgInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
-
         /// <summary>
         /// Возвращает штатное расписание. Компании -> Отделы -> Должности -> Исполнители
         /// </summary>
@@ -40,12 +37,10 @@ namespace DMS_WebAPI.ControllersV3.Org
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryStaffList filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetStaffList(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,12 +54,10 @@ namespace DMS_WebAPI.ControllersV3.Org
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryAgentClientCompanies(ctx, filter);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -78,12 +71,10 @@ namespace DMS_WebAPI.ControllersV3.Org
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryAgentClientCompany(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -96,7 +87,6 @@ namespace DMS_WebAPI.ControllersV3.Org
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAgentClientCompany model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentClientCompany, model);
             return Get(tmpItem);
         }
@@ -110,7 +100,6 @@ namespace DMS_WebAPI.ControllersV3.Org
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentClientCompany model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAgentClientCompany, model);
             return Get(model.Id);
         }
@@ -124,11 +113,9 @@ namespace DMS_WebAPI.ControllersV3.Org
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteAgentClientCompany, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

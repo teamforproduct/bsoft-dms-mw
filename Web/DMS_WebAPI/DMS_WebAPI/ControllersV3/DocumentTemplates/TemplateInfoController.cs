@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список шаблонов документов
         /// </summary>
@@ -38,12 +36,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontMainTemplateDocument>))]
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterTemplateDocument filter, UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItems = tmpService.GetMainTemplateDocument(ctx, ftSearch, filter, paging);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -58,13 +54,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(FrontTemplateDocument))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItem = tmpService.GetTemplateDocument(ctx, Id);
             var metaData = tmpService.GetModifyMetaData(ctx, tmpItem);
             var res = new JsonResult(tmpItem, metaData, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -77,7 +71,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddTemplateDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocument, model);
             return Get(tmpItem);
         }
@@ -91,7 +84,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info + "/Duplicate")]
         public IHttpActionResult Duplicate([FromBody]Item model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.CopyTemplateDocument, model.Id);
             return Get(tmpItem);
         }
@@ -105,7 +97,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ModifyTemplateDocument, model);
             return Get(model.Id);
         }
@@ -119,11 +110,9 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteTemplateDocument, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

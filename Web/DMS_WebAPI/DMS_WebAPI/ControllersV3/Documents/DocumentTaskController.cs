@@ -31,8 +31,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentTaskController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список задач
         /// </summary>
@@ -44,12 +42,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTask>))]
         public IHttpActionResult Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
             var items = docProc.GetTasks(ctx, filter, paging);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -63,12 +59,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentTask))]
         public IHttpActionResult GetById(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
             var item = docProc.GetDocumentTask(ctx, Id);
             var res = new JsonResult(item, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -81,10 +75,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks)]
         public IHttpActionResult Post([FromBody]AddDocumentTask model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -97,10 +89,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks)]
         public IHttpActionResult Put([FromBody]ModifyDocumentTask model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTask, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -113,11 +103,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteDocumentTask, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         

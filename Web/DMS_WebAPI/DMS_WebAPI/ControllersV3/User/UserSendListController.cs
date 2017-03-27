@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserSendListController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Список заголовков списков рассылки
         /// </summary>
@@ -39,13 +37,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainUserStandartSendLists(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,12 +55,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontDictionaryStandartSendList))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetUserStandartSendList(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -77,7 +71,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SendLists)]
         public IHttpActionResult Post([FromBody]AddStandartSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddStandartSendList, model);
             return Get(tmpItem);
         }
@@ -91,7 +84,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SendLists)]
         public IHttpActionResult Put([FromBody]ModifyStandartSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyStandartSendList, model);
             return Get(model.Id);
         }
@@ -105,11 +97,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SendLists + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteStandartSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

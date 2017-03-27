@@ -20,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserSessionsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает историю подключений
         /// </summary>
@@ -33,7 +31,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
@@ -42,7 +39,6 @@ namespace DMS_WebAPI.ControllersV3.User
             filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -57,7 +53,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontSystemSession))]
         public IHttpActionResult GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
@@ -67,7 +62,6 @@ namespace DMS_WebAPI.ControllersV3.User
             filter.IsOnlyActive = true;
             var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

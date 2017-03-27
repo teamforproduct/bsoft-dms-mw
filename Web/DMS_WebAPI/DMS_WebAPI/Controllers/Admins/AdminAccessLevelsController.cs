@@ -11,8 +11,6 @@ namespace DMS_WebAPI.Controllers.Admins
     [Authorize]
     public class AdminAccessLevelsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Получение словаря уровней доступа
         /// </summary>

@@ -21,8 +21,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentTagController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список тегов по ИД документа
         /// </summary>
@@ -33,12 +31,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTag>))]
         public IHttpActionResult GetByDocumentId(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTagService>();
             var items = docProc.GetTags(ctx, Id);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -51,10 +47,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tags)]
         public IHttpActionResult Post([FromBody]ModifyDocumentTags model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

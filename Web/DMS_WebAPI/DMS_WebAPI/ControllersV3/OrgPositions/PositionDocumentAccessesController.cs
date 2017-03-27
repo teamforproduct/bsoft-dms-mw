@@ -17,8 +17,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionDocumentAccessesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Заменяет должность по документу
         /// </summary>
@@ -28,10 +26,8 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.DocumentAccesses)]
         public IHttpActionResult ChangePosition([FromBody]ChangePosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ChangePosition, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

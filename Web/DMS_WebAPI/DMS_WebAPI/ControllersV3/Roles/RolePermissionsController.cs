@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RolePermissionsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает действия роли
         /// </summary>
@@ -37,7 +35,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [ResponseType(typeof(List<FrontModule>))]
         public IHttpActionResult Get([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             //if (filter == null) filter = new FilterAdminRole();
             //filter.PositionIDs = new List<int> { Id };
             //filter.IsChecked = true;
@@ -45,7 +42,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = true });
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,7 +55,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [ResponseType(typeof(List<FrontModule>))]
         public IHttpActionResult GetEdit([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             //if (filter == null) filter = new FilterAdminRole();
             //filter.PositionIDs = new List<int> { Id };
             //filter.IsChecked = false;
@@ -67,7 +62,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = false });
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -80,7 +74,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/Set")]
         public IHttpActionResult Set([FromBody] SetRolePermission model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermission, model);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -93,7 +86,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             }).FirstOrDefault();
 
             var res = new JsonResult(tmpItems?.Features.FirstOrDefault(), this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -106,7 +98,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/SetByAccessType")]
         public IHttpActionResult Set([FromBody] SetRolePermissionByModuleAccessType model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleAccessType, model);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -119,7 +110,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             }).FirstOrDefault();
 
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -132,7 +122,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/SetByFeature")]
         public IHttpActionResult Set([FromBody] SetRolePermissionByModuleFeature model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleFeature, model);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -145,7 +134,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             }).FirstOrDefault();
 
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -158,7 +146,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/SetByModule")]
         public IHttpActionResult Set([FromBody] SetRolePermissionByModule model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModule, model);
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -171,7 +158,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             });
 
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

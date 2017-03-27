@@ -22,8 +22,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAssignmentsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список назначений для текущего пользователя (должность - интервал назначения, количество новых событий)
         /// Пользоателю может быть назначено исполнение обязанностей другой должности
@@ -34,12 +32,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public IHttpActionResult Assignments()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var context = DmsResolver.Current.Get<UserContexts>().Get();// (keepAlive: false);
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositions(context);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -53,12 +49,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
         public IHttpActionResult GetAvailableShort()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositionsDialog(context);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -76,12 +70,10 @@ namespace DMS_WebAPI.ControllersV3.User
             //var context = DmsResolver.Current.Get<UserContexts>().Get();
             //return new JsonResult(, this);
 
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetAvailablePositions(context, context.CurrentPositionsIdList);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

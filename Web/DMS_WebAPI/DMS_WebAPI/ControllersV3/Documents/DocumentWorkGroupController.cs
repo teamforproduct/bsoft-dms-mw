@@ -29,8 +29,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentWorkGroupController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список рабочей группы
         /// </summary>
@@ -42,12 +40,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetDocumentWorkGroup(ctx, filter, paging);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -62,12 +58,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentAccess>))]
         public IHttpActionResult Get([FromUri] FilterDocumentAccess filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetDocumentAccesses(ctx, filter, paging);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

@@ -23,8 +23,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateAccessesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список
         /// </summary>
@@ -36,7 +34,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontTemplateDocumentAccess>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentAccess filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTemplateDocumentAccess();
             filter.TemplateId =  Id ;
 
@@ -44,7 +41,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItems = tmpService.GetTemplateDocumentAccesses(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,12 +55,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(FrontTemplateDocumentAccess))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItem = tmpService.GetTemplateDocumentAccess(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -77,7 +71,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Accesses)]
         public IHttpActionResult Post([FromBody]AddTemplateDocumentAccess model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentAccess, model);
             return Get(tmpItem);
         }
@@ -91,7 +84,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Accesses)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentAccess model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentAccess, model);
             return Get(model.Id);
         }
@@ -105,11 +97,9 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Accesses + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteTemplateDocumentAccess, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

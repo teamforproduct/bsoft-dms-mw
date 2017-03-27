@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeRolesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает роли пользователя с пычками
         /// </summary>
@@ -38,14 +36,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,7 +56,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetCurrent([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
             filter.StartDate = DateTime.UtcNow;
@@ -69,7 +64,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -84,7 +78,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = null;
             //filter.StartDate = DateTime.UtcNow;
@@ -93,7 +86,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -108,7 +100,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult GetCurrentEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = null;
             filter.StartDate = DateTime.UtcNow;
@@ -117,7 +108,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -130,10 +120,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Roles + "/Set")]
         public IHttpActionResult Set([FromBody] SetUserRole model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetUserRole, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -146,10 +134,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Roles + "/SetByAssignment")]
         public IHttpActionResult SetByDepartment([FromBody] ItemCheck model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumAdminActions.SetUserRoleByAssignment, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

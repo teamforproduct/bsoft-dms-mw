@@ -23,8 +23,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplatePapersController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список бумажных носителей
         /// </summary>
@@ -36,7 +34,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontTemplateDocumentPaper>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentPaper filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTemplateDocumentPaper();
             filter.TemplateId =  Id ;
 
@@ -44,7 +41,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItems = tmpService.GetTemplateDocumentPapers(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -59,12 +55,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(FrontTemplateDocumentPaper))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
             var tmpItem = tmpService.GetTemplateDocumentPaper(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -77,7 +71,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Papers)]
         public IHttpActionResult Post([FromBody]AddTemplateDocumentPaper model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentPaper, model);
             return Get(tmpItem);
         }
@@ -91,7 +84,6 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Papers)]
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentPaper model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentPaper, model);
             return Get(model.Id);
         }
@@ -105,11 +97,9 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Papers + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteTemplateDocumentPaper, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

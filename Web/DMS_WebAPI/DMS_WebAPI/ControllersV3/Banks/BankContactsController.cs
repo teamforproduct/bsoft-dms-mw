@@ -23,8 +23,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
     [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
     public class BankContactsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список контактов
         /// </summary>
@@ -36,7 +34,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryContact filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryContact();
             filter.AgentIDs = new List<int> { Id };
 
@@ -44,7 +41,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentContacts(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -58,12 +54,10 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentContact(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -76,7 +70,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Contacts)]
         public IHttpActionResult Post([FromBody]AddAgentContact model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddBankContact, model);
             return Get(tmpItem);
         }
@@ -90,7 +83,6 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Contacts)]
         public IHttpActionResult Put([FromBody]ModifyAgentContact model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyBankContact, model);
             return Get(model.Id);
         }
@@ -104,11 +96,9 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Contacts + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteBankContact, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
 
         }

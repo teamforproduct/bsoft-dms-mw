@@ -23,8 +23,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RolePositionsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список должностей
         /// </summary>
@@ -37,7 +35,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPosition filter, UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPosition();
             filter.RoleIDs = new List<int> { Id };
 
@@ -45,7 +42,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetPositionList(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
     }

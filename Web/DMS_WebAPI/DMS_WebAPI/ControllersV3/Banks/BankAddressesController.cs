@@ -25,13 +25,14 @@ namespace DMS_WebAPI.ControllersV3.Banks
     public class BankAddressesController : ApiController
     {
 
-        private IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext context, int Id)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
+            var tmpItem = tmpService.GetAgentAddress(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
+
         /// <summary>
         /// Возвращает список адресов
         /// </summary>

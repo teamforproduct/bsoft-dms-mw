@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список отделов. 
         /// Отделы могут подчиняться вышестоящим отделам и всегда подчинены организации 
@@ -37,12 +35,10 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [ResponseType(typeof(List<FrontDictionaryDepartment>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryDepartments(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -56,12 +52,10 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [ResponseType(typeof(FrontDictionaryDepartment))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryDepartment(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -74,7 +68,6 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddDepartment model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddDepartment, model);
             return Get(tmpItem);
         }
@@ -88,7 +81,6 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyDepartment model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyDepartment, model);
             return Get(model.Id);
         }
@@ -102,11 +94,9 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteDepartment, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

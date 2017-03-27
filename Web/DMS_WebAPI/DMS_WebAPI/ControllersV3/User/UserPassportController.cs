@@ -20,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserPassportController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает паспортные данные пользователя
         /// </summary>
@@ -31,12 +29,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentPeoplePassport(ctx, ctx.CurrentAgentId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -49,7 +45,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Passport)]
         public IHttpActionResult Put([FromBody]AddAgentPeoplePassport model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpModel = new ModifyAgentPeoplePassport()
             {

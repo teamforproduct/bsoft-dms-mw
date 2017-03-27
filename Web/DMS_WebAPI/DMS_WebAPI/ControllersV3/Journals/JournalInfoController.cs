@@ -27,9 +27,6 @@ namespace DMS_WebAPI.ControllersV3.Journals
     [RoutePrefix(ApiPrefix.V3 + Modules.Journal)]
     public class JournalInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
-
         /// <summary>
         /// Возвращает список журналов сгруппированных по отделам и компаниям (дерево Компании-Отделы-Журналы). 
         /// </summary>
@@ -42,12 +39,10 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<TreeItem>))]
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter, [FromUri]bool? searchInJournals = false)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetRegistrationJournalsFilter(ctx, searchInJournals ?? false,  ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -64,12 +59,10 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
         public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainRegistrationJournals(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -85,12 +78,10 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetRegistrationJournals(ctx, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -104,12 +95,10 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(FrontDictionaryRegistrationJournal))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetRegistrationJournal(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -122,7 +111,6 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddRegistrationJournal model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddRegistrationJournal, model);
             return Get(tmpItem);
         }
@@ -136,7 +124,6 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyRegistrationJournal model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyRegistrationJournal, model);
             return Get(model.Id);
         }
@@ -150,11 +137,9 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteRegistrationJournal, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

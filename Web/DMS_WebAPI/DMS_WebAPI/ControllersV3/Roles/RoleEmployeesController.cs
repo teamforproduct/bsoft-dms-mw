@@ -20,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RoleEmployeesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список сотрудников
         /// </summary>
@@ -34,7 +32,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [ResponseType(typeof(List<ListItem>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryAgentEmployee();
             filter.RoleIDs = new List<int> { Id };
 
@@ -42,7 +39,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentEmployeeList(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
     }

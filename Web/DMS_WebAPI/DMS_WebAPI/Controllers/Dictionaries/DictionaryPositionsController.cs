@@ -19,8 +19,6 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     public class DictionaryPositionsController : ApiController
     {
 
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает записи из словаря "Должности"
         /// </summary>

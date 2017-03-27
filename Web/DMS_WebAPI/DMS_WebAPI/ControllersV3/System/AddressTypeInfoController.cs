@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.System
     [RoutePrefix(ApiPrefix.V3 + Modules.AddressType)]
     public class AddressTypeInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список типов адресов
         /// </summary>
@@ -37,12 +35,10 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(List<FrontAddressType>))]
         public IHttpActionResult Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryAddressType filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryAddressTypes(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -56,12 +52,10 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryAddressType(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -74,7 +68,6 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddAddressType model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAddressType, model);
             return Get(tmpItem);
         }
@@ -88,7 +81,6 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAddressType model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyAddressType, model);
             return Get(model.Id);
         }
@@ -102,11 +94,9 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteAddressType, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
 
         }

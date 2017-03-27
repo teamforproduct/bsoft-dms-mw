@@ -23,8 +23,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserContactsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список контактов
         /// </summary>
@@ -35,7 +33,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public IHttpActionResult Get([FromUri] FilterDictionaryContact filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
             if (filter == null) filter = new FilterDictionaryContact();
@@ -44,7 +41,6 @@ namespace DMS_WebAPI.ControllersV3.User
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetAgentContacts(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -58,12 +54,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetAgentContact(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -76,7 +70,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Contacts)]
         public IHttpActionResult Post([FromBody]BaseAgentContact model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var contact = new AddAgentContact(model);
             contact.AgentId = ctx.CurrentAgentId;
@@ -93,7 +86,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Contacts)]
         public IHttpActionResult Put([FromBody]ModifyUserContact model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var contact = new ModifyAgentContact(model);
             contact.AgentId = ctx.CurrentAgentId;
@@ -110,11 +102,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Contacts + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteEmployeeContact, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

@@ -26,9 +26,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionExecutorsController : ApiController
     {
-
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список назначений
         /// </summary>
@@ -40,7 +37,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.PositionIDs = new List<int> { Id };
 
@@ -48,7 +44,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -63,7 +58,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
             filter.PositionIDs = new List<int> { Id };
@@ -75,7 +69,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -89,12 +82,10 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetDictionaryPositionExecutor(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -107,7 +98,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Executors)]
         public IHttpActionResult Post([FromBody]AddPositionExecutor model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddExecutor, model);
             return Get(tmpItem);
         }
@@ -121,7 +111,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Executors)]
         public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyExecutor, model);
             return Get(model.Id);
         }
@@ -135,11 +124,9 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Executors + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteExecutor, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
 
         }

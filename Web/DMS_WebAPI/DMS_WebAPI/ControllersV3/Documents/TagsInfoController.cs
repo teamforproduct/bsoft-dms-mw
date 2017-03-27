@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.Tags
     [RoutePrefix(ApiPrefix.V3 + Modules.Tags)]
     public class TagsInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Теги
         /// </summary>
@@ -39,13 +37,11 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [ResponseType(typeof(List<FrontMainTag>))]
         public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetMainTags(ctx, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,12 +56,10 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [ResponseType(typeof(FrontTag))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = tmpService.GetTag(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -78,7 +72,6 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddTag model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDictionaryActions.AddTag, model);
             return Get(tmpItem);
         }
@@ -92,7 +85,6 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyTag model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.ModifyTag, model);
             return Get(model.Id);
         }
@@ -106,11 +98,9 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDictionaryActions.DeleteTag, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

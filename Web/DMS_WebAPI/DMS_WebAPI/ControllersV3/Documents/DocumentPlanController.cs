@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPlanController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список пунктов плана по ИД документа
         /// </summary>
@@ -36,12 +34,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSendList>))]
         public IHttpActionResult GetByDocumentId(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             var items = docProc.GetSendLists(ctx, Id);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -55,12 +51,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentSendList))]
         public IHttpActionResult GetById(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             var item = docProc.GetSendList(ctx, Id);
             var res = new JsonResult(item, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -73,10 +67,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public IHttpActionResult Post([FromBody]AddDocumentSendList model)
         {
-            //if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
             //var res = new JsonResult(tmpItem, this);
-            //res.SpentTime = stopWatch;
             return GetById(tmpItem);
         }
 
@@ -89,12 +81,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan+"/AddStage")]
         public IHttpActionResult AddStage([FromBody]ModifyDocumentSendListStage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, ctx, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -107,10 +97,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public IHttpActionResult Put([FromBody]ModifyDocumentSendList model)
         {
-//            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentSendList, model);
             //var res = new JsonResult(tmpItem, this);
-            //res.SpentTime = stopWatch;
             return GetById(model.Id);
         }
 
@@ -123,11 +111,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteDocumentSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -140,10 +126,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/DeleteStage")]
         public IHttpActionResult DeleteStage([FromUri]ModifyDocumentSendListStage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteDocumentSendListStage, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
         /// <summary>
@@ -156,12 +140,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public IHttpActionResult Actions([FromUri]int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ICommandService>();
             var items = docProc.GetDocumentSendListActions(ctx, Id);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -175,12 +157,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             var items = docProc.GetAdditinalLinkedDocumentSendLists(ctx, model);
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -193,12 +173,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan+ "/LaunchItem")]
         public IHttpActionResult LaunchItem([FromBody]Item model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var aplan = DmsResolver.Current.Get<IAutoPlanService>();
             aplan.ManualRunAutoPlan(ctx, model.Id, null);
             var res = new JsonResult(model.Id, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -211,10 +189,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult LaunchPlan([FromBody]Item model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.LaunchPlan, model.Id);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -227,10 +203,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult StopPlan([FromBody]Item model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.StopPlan, model.Id);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

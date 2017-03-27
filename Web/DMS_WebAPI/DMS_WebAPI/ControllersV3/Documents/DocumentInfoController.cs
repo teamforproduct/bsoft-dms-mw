@@ -33,8 +33,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список документов
         /// </summary>
@@ -46,7 +44,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocument>))]
         public IHttpActionResult PostGetList([FromBody]IncomingBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (model == null) model = new IncomingBase();
             if (model.Filter == null) model.Filter = new FilterBase();
             if (model.Paging == null) model.Paging = new UIPaging();
@@ -55,7 +52,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var items = docProc.GetDocuments(ctx, model.Filter, model.Paging);
             var res = new JsonResult(items, this);
             res.Paging = model.Paging;
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -70,12 +66,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTag>))]
         public IHttpActionResult PostGetGroupCountTags([FromBody]FilterBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var items = docProc.GetDocuments(ctx, model ?? new FilterBase(), new UIPaging(), EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
             var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -93,7 +87,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
             //TODO ASYNC AWAIT
             //return await this.SafeExecuteAsync(ModelState, () =>
             //{
-                if (!stopWatch.IsRunning) stopWatch.Restart();
                 var uCtx = DmsResolver.Current.Get<UserContexts>();
                 var ctx = uCtx.Get();
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -103,7 +96,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
                         .FirstOrDefault()?
                         .DocumentWorkGroup;
                 var res = new JsonResult(items, this);
-                res.SpentTime = stopWatch;
                 return res;
            // });
         }
@@ -118,13 +110,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocument))]
         public IHttpActionResult Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var item = docProc.GetDocument(ctx, Id);
             var metaData = docProc.GetModifyMetaData(ctx, item);
             var res = new JsonResult(item, metaData, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -138,12 +128,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontReport))]
         public IHttpActionResult GetReportRegistrationCardDocument(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -157,12 +145,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontReport))]
         public IHttpActionResult GetReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, ctx, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -175,7 +161,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(bool))]
         public IHttpActionResult VerifyPdf()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
             var tmpItem = false;
@@ -195,7 +180,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 tmpItem = false;
             }
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -208,7 +192,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info)]
         public IHttpActionResult Post([FromBody]AddDocumentByTemplateDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocument, model, model.CurrentPositionId);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
@@ -224,7 +207,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocument, model);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
@@ -240,11 +222,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info + "/{Id:int}")]
         public IHttpActionResult Delete(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.DeleteDocument, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -257,7 +237,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public IHttpActionResult CopyDocument([FromBody]CopyDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
@@ -276,10 +255,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult RegisterDocument([FromBody]RegisterDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var tmpItem = Action.Execute(EnumDocumentActions.RegisterDocument, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -293,12 +270,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontRegistrationFullNumber))]
         public IHttpActionResult GetNextRegisterDocumentNumber([FromUri]RegisterDocument model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
             var docProc = DmsResolver.Current.Get<IDocumentService>();
             var tmpItem = docProc.GetNextRegisterDocumentNumber(ctx, model);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -312,12 +287,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public IHttpActionResult Actions([FromUri]int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ICommandService>();
             var tmpItem = docProc.GetDocumentActions(ctx, Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -330,10 +303,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult StartWork(ChangeWorkStatus model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.StartWork, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -346,10 +317,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult FinishWork(ChangeWorkStatus model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.FinishWork, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -366,10 +335,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public IHttpActionResult ChangeExecutor(ChangeExecutor model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             Action.Execute(EnumDocumentActions.ChangeExecutor, model);
             var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 

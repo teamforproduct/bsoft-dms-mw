@@ -27,8 +27,6 @@ namespace DMS_WebAPI.ControllersV3.User
     public class UserControlQuestionController : ApiController
     {
 
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает контрольный вопрос и ответ
         /// </summary>
@@ -37,7 +35,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var user = webService.GetUser(ctx, ctx.CurrentAgentId);
@@ -47,7 +44,6 @@ namespace DMS_WebAPI.ControllersV3.User
                 QuestionId = user.ControlQuestionId ?? -1,
                 Answer = user.ControlAnswer
             }, this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -60,7 +56,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.ChangeControlQuestion(model);
