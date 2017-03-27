@@ -7,6 +7,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -30,7 +31,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.AddressTypes)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAddressType filter)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAddressType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -48,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.ContactTypes)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryContactType filter)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryContactType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -66,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Agents)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -86,7 +87,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Banks)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -106,7 +107,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Companies)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -125,7 +126,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Departments)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryDepartment filter)
+        public async Task<IHttpActionResult> GetListDepartments([FromUri] FilterDictionaryDepartment filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -144,7 +145,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.DocumentTypes)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -163,7 +164,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Employees)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -183,7 +184,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         //[HttpGet]
         //[Route(Features.Executors)]
         //[ResponseType(typeof(List<AutocompleteItem>))]
-        //public IHttpActionResult GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
+        //public async Task<IHttpActionResult> GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
         //{
         //    if (!stopWatch.IsRunning) stopWatch.Restart();
         //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -203,7 +204,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Journals)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri]FilterDictionaryRegistrationJournal filter)
+        public async Task<IHttpActionResult> GetList([FromUri]FilterDictionaryRegistrationJournal filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -222,7 +223,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Persons)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -241,7 +242,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Positions)]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult GetList([FromUri]FilterDictionaryPosition filter)
+        public async Task<IHttpActionResult> GetList([FromUri]FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -259,7 +260,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Positions+ "/Executor")]
         [ResponseType(typeof(List<AutocompleteItem>))]
-        public IHttpActionResult PositionsExecutors([FromUri]FilterDictionaryPosition filter)
+        public async Task<IHttpActionResult> PositionsExecutors([FromUri]FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -278,7 +279,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Tags)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -296,7 +297,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.OnlineUsers)]
         [ResponseType(typeof(List<int>))]
-        public IHttpActionResult GetOnlineUsers()
+        public async Task<IHttpActionResult> GetOnlineUsers()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();// (keepAlive: false);

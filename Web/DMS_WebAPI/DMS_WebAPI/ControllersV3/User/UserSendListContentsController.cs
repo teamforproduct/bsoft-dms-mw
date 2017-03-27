@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SendLists +  "/{Id:int}/" + Features.Contents)]
         [ResponseType(typeof(List<FrontDictionaryStandartSendListContent>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryStandartSendListContent filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryStandartSendListContent filter)
         {
             if (filter == null) filter = new FilterDictionaryStandartSendListContent();
             filter.StandartSendListId = new List<int> { Id };
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.SendLists + "/" + Features.Contents)]
-        public IHttpActionResult Post([FromBody]AddStandartSendListContent model)
+        public async Task<IHttpActionResult> Post([FromBody]AddStandartSendListContent model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddStandartSendListContent, model);
             return GetById(context, tmpItem);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendLists + "/" + Features.Contents)]
-        public IHttpActionResult Put([FromBody]ModifyStandartSendListContent model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyStandartSendListContent model)
         {
             Action.Execute(EnumDictionaryActions.ModifyStandartSendListContent, model);
             return GetById(context, model.Id);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.SendLists + "/" + Features.Contents + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteStandartSendListContent, Id);
             var tmpItem = new FrontDeleteModel(Id);

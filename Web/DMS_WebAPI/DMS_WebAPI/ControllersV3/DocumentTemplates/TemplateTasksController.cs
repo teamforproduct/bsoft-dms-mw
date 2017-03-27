@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route("{Id:int}/" + Features.Tasks)]
         [ResponseType(typeof(List<FrontTemplateDocumentTask>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
         {
             if (filter == null) filter = new FilterTemplateDocumentTask();
             filter.TemplateId =  Id ;
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Tasks)]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentTask model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentTask model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentTask, model);
             return GetById(context, tmpItem);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Tasks)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentTask model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentTask model)
         {
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentTask, model);
             return GetById(context, model.Id);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Tasks + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteTemplateDocumentTask, Id);
             var tmpItem = new FrontDeleteModel(Id);

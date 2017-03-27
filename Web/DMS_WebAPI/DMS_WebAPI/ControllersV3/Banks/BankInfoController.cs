@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentBank>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAgentBank model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentBank model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentBank, model);
             return GetById(context, tmpItem);
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentBank model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentBank model)
         {
             Action.Execute(EnumDictionaryActions.ModifyAgentBank, model);
             return GetById(context, model.Id);
@@ -104,7 +104,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteAgentBank, Id);
             var tmpItem = new FrontDeleteModel(Id);

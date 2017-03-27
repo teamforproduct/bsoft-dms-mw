@@ -8,6 +8,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -32,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
+        public async Task<IHttpActionResult> Get([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
         {
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
@@ -53,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
         {
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
@@ -72,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/Set")]
-        public IHttpActionResult Set([FromBody] SetAdminPositionRole model)
+        public async Task<IHttpActionResult> Set([FromBody] SetAdminPositionRole model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetPositionRole, model);
             var res = new JsonResult(tmpItem, this);
@@ -87,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
+        public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.DuplicatePositionRoles, model);
             var res = new JsonResult(tmpItem, this);

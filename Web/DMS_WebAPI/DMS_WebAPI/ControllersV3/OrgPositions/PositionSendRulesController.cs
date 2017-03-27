@@ -8,6 +8,7 @@ using BL.Model.Tree;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -33,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.SendRules)]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
+        public async Task<IHttpActionResult> Get([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = true;
@@ -53,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.SendRules + "/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id, [FromUri] FilterAdminSubordinationTree filter)
         {
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = null;
@@ -71,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/Set")]
-        public IHttpActionResult Set([FromBody] SetSubordination model)
+        public async Task<IHttpActionResult> Set([FromBody] SetSubordination model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordination, model);
             var res = new JsonResult(tmpItem, this);
@@ -85,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetByDepartment")]
-        public IHttpActionResult SetByDepartment([FromBody] SetSubordinationByDepartment model)
+        public async Task<IHttpActionResult> SetByDepartment([FromBody] SetSubordinationByDepartment model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByDepartment, model);
             var res = new JsonResult(tmpItem, this);
@@ -99,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetByCompany")]
-        public IHttpActionResult SetByCompany([FromBody] SetSubordinationByCompany model)
+        public async Task<IHttpActionResult> SetByCompany([FromBody] SetSubordinationByCompany model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByCompany, model);
             var res = new JsonResult(tmpItem, this);
@@ -114,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetDefault")]
-        public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
+        public async Task<IHttpActionResult> SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetDefaultSubordination, model);
             var res = new JsonResult(tmpItem, this);
@@ -128,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/SetAll")]
-        public IHttpActionResult SetAll([FromBody] SetSubordinations model)
+        public async Task<IHttpActionResult> SetAll([FromBody] SetSubordinations model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetAllSubordination, model);
             var res = new JsonResult(tmpItem, this);
@@ -142,7 +143,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendRules + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
+        public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.DuplicateSubordinations, model);
             var res = new JsonResult(tmpItem, this);

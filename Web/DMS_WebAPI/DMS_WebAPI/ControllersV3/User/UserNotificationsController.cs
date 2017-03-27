@@ -3,6 +3,7 @@ using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Notifications)]
         [ResponseType(typeof(FrontNotifications))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = new FrontNotifications { EMailForNotifications = "t@t.t", IsSendEMail = true };
@@ -38,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Notifications)]
-        public IHttpActionResult Put([FromBody]ChangeNotifications model)
+        public async Task<IHttpActionResult> Put([FromBody]ChangeNotifications model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             return Get();

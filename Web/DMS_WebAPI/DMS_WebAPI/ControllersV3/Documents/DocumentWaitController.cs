@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [Route(Features.Waits + "/Main")]
         [ResponseType(typeof(List<FrontDocumentWait>))]
-        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
             if (model == null) model = new IncomingBase();
             if (model.Filter == null) model.Filter = new FilterBase();
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Waits + "/ControlOn")]
-        public IHttpActionResult ControlOn([FromBody]ControlOn model)
+        public async Task<IHttpActionResult> ControlOn([FromBody]ControlOn model)
         {
             Action.Execute(EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
             var res = new JsonResult(true, this);
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/AskPostponeDueDate")]
-        public IHttpActionResult AskPostponeDueDate([FromBody]AskPostponeDueDate model)
+        public async Task<IHttpActionResult> AskPostponeDueDate([FromBody]AskPostponeDueDate model)
         {
             Action.Execute(EnumDocumentActions.AskPostponeDueDate, model);
             var res = new JsonResult(true, this);
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/MarkExecution")]
-        public IHttpActionResult MarkExecution([FromBody]SendEventMessage model)
+        public async Task<IHttpActionResult> MarkExecution([FromBody]SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.MarkExecution, model);
             var res = new JsonResult(true, this);
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/CancelPostponeDueDate")]
-        public IHttpActionResult CancelPostponeDueDate([FromBody]SendEventMessage model)
+        public async Task<IHttpActionResult> CancelPostponeDueDate([FromBody]SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.CancelPostponeDueDate, model);
             var res = new JsonResult(true, this);
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/RejectResult")]
-        public IHttpActionResult RejectResult([FromBody]SendEventMessage model)
+        public async Task<IHttpActionResult> RejectResult([FromBody]SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.RejectResult, model);
             var res = new JsonResult(true, this);
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/AcceptResult")]
-        public IHttpActionResult AcceptResult([FromBody]ControlOff model)
+        public async Task<IHttpActionResult> AcceptResult([FromBody]ControlOff model)
         {
             Action.Execute(EnumDocumentActions.AcceptResult, model);
             var res = new JsonResult(true, this);
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/CancelExecution")]
-        public IHttpActionResult CancelExecution([FromBody]ControlOff model)
+        public async Task<IHttpActionResult> CancelExecution([FromBody]ControlOff model)
         {
             Action.Execute(EnumDocumentActions.CancelExecution, model);
             var res = new JsonResult(true, this);
@@ -179,7 +179,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/ControlOff")]
-        public IHttpActionResult ControlOff([FromBody]ControlOff model)
+        public async Task<IHttpActionResult> ControlOff([FromBody]ControlOff model)
         {
             Action.Execute(EnumDocumentActions.ControlOff, model);
             var res = new JsonResult(true, this);
@@ -194,7 +194,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/ControlChange")]
-        public IHttpActionResult ControlChange([FromBody]ControlChange model)
+        public async Task<IHttpActionResult> ControlChange([FromBody]ControlChange model)
         {
             Action.Execute(EnumDocumentActions.ControlChange, model);
             var res = new JsonResult(true, this);
@@ -208,7 +208,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/SendForExecutionChange")]
-        public IHttpActionResult SendForExecutionChange([FromBody]ControlChange model)
+        public async Task<IHttpActionResult> SendForExecutionChange([FromBody]ControlChange model)
         {
             Action.Execute(EnumDocumentActions.SendForExecutionChange, model);
             var res = new JsonResult(true, this);
@@ -221,7 +221,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/SendForResponsibleExecutionChange")]
-        public IHttpActionResult SendForResponsibleExecutionChange([FromBody]ControlChange model)
+        public async Task<IHttpActionResult> SendForResponsibleExecutionChange([FromBody]ControlChange model)
         {
             Action.Execute(EnumDocumentActions.SendForResponsibleExecutionChange, model);
             var res = new JsonResult(true, this);
@@ -235,7 +235,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/ControlTargetChange")]
-        public IHttpActionResult ControlTargetChange([FromBody]ControlTargetChange model)
+        public async Task<IHttpActionResult> ControlTargetChange([FromBody]ControlTargetChange model)
         {
             Action.Execute(EnumDocumentActions.ControlTargetChange, model);
             var res = new JsonResult(true, this);

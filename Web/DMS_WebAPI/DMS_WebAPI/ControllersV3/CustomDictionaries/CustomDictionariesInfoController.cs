@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(List<FrontCustomDictionaryType>))]
-        public IHttpActionResult Get([FromUri]FilterCustomDictionaryType filter)
+        public async Task<IHttpActionResult> Get([FromUri]FilterCustomDictionaryType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddCustomDictionaryType model)
+        public async Task<IHttpActionResult> Post([FromBody]AddCustomDictionaryType model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionaryType, model);
             return GetById(context, tmpItem);
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyCustomDictionaryType model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyCustomDictionaryType model)
         {
             Action.Execute(EnumDictionaryActions.ModifyCustomDictionaryType, model);
             return GetById(context, model.Id);
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteCustomDictionaryType, Id);
             var tmpItem = new FrontDeleteModel(Id);

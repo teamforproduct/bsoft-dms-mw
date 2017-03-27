@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentAccessListController : ApiController
     {
-        public IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext ctx, int Id)
         {
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             var item = docProc.GetRestrictedSendList(ctx, Id);

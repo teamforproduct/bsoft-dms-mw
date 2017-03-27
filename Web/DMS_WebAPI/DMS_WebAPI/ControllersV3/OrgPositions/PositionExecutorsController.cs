@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Executors)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.PositionIDs = new List<int> { Id };
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Executors + "/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Executors)]
-        public IHttpActionResult Post([FromBody]AddPositionExecutor model)
+        public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddExecutor, model);
             return GetById(context, tmpItem);
@@ -118,7 +118,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Executors)]
-        public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
         {
             Action.Execute(EnumDictionaryActions.ModifyExecutor, model);
             return GetById(context, model.Id);
@@ -131,7 +131,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Executors + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteExecutor, Id);
             var tmpItem = new FrontDeleteModel(Id);

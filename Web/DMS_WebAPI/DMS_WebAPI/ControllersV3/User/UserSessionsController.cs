@@ -6,6 +6,7 @@ using BL.Model.SystemCore.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -29,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions)]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
@@ -51,7 +52,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions + "/Current")]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();

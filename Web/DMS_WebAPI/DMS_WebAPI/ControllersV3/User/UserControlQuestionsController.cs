@@ -4,6 +4,7 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.User
@@ -23,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpGet]
         [Route(Features.ControlQuestion)]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ControlQuestion)]
-        public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();

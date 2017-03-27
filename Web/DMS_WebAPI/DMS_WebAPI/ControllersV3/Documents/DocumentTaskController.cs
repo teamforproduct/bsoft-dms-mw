@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Tasks + "/Main")]
         [ResponseType(typeof(List<FrontDocumentTask>))]
-        public IHttpActionResult Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
@@ -73,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Tasks)]
-        public IHttpActionResult Post([FromBody]AddDocumentTask model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentTask model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный пункт плана</returns>
         [HttpPut]
         [Route(Features.Tasks)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentTask model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentTask model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTask, model);
             var res = new JsonResult(tmpItem, this);
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Tasks + "/{Id:int}")]
-        public IHttpActionResult Delete(int Id)
+        public async Task<IHttpActionResult> Delete(int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteDocumentTask, Id);
             var tmpItem = new FrontDeleteModel(Id);

@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         [HttpGet]
         [Route("{Id:int}/" + Features.Addresses)]
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
         {
             if (filter == null) filter = new FilterDictionaryAgentAddress();
             filter.AgentIDs = new List<int> { Id };
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Addresses)]
-        public IHttpActionResult Post([FromBody]AddAgentAddress model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentAddress model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddClientCompanyAddress, model);
             return GetById(context, tmpItem);
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Addresses)]
-        public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentAddress model)
         {
             Action.Execute(EnumDictionaryActions.ModifyClientCompanyAddress, model);
             return GetById(context, model.Id);
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Addresses + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteClientCompanyAddress, Id);
             var tmpItem = new FrontDeleteModel(Id);

@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Admins)]
-        public IHttpActionResult Post([FromBody]AddAdminDepartmentAdmin model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAdminDepartmentAdmin model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.AddDepartmentAdmin, model);
             return GetById(context, tmpItem);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Admins + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumAdminActions.DeleteDepartmentAdmin, Id);
             var tmpItem = new FrontDeleteModel(Id);

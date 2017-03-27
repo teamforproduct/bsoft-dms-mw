@@ -9,6 +9,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -32,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Permissions)]
         [ResponseType(typeof(List<FrontModule>))]
-        public IHttpActionResult Get([FromUri] int Id)
+        public async Task<IHttpActionResult> Get([FromUri] int Id)
         {
             //if (filter == null) filter = new FilterAdminRole();
             //filter.PositionIDs = new List<int> { Id };
@@ -52,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Permissions + "/Edit")]
         [ResponseType(typeof(List<FrontModule>))]
-        public IHttpActionResult GetEdit([FromUri] int Id)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id)
         {
             //if (filter == null) filter = new FilterAdminRole();
             //filter.PositionIDs = new List<int> { Id };
@@ -71,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/Set")]
-        public IHttpActionResult Set([FromBody] SetRolePermission model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermission model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermission, model);
 
@@ -95,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/SetByAccessType")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByModuleAccessType model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModuleAccessType model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleAccessType, model);
 
@@ -119,7 +120,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/SetByFeature")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByModuleFeature model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModuleFeature model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleFeature, model);
 
@@ -143,7 +144,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/SetByModule")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByModule model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModule model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModule, model);
 

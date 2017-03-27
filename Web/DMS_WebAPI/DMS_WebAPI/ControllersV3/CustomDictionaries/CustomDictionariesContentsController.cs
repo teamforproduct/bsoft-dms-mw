@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route("{Id:int}/" + Features.Contents + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             if (filter == null) filter = new FilterCustomDictionary();
             filter.TypeIDs = new List<int> { Id };
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Contents)]
-        public IHttpActionResult Post([FromBody]AddCustomDictionary model)
+        public async Task<IHttpActionResult> Post([FromBody]AddCustomDictionary model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionary, model);
             return GetById(context, tmpItem);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Contents)]
-        public IHttpActionResult Put([FromBody]ModifyCustomDictionary model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyCustomDictionary model)
         {
             Action.Execute(EnumDictionaryActions.ModifyCustomDictionary, model);
             return GetById(context, model.Id);
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Contents + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteCustomDictionary, Id);
             var tmpItem = new FrontDeleteModel(Id);

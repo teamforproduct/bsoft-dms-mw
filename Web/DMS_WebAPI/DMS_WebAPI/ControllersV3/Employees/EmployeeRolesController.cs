@@ -10,6 +10,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -33,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> Get([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
@@ -53,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles+ "/Current")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetCurrent([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> GetCurrent([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
@@ -75,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = null;
@@ -97,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Current/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetCurrentEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> GetCurrentEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = null;
@@ -117,7 +118,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/Set")]
-        public IHttpActionResult Set([FromBody] SetUserRole model)
+        public async Task<IHttpActionResult> Set([FromBody] SetUserRole model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetUserRole, model);
             var res = new JsonResult(tmpItem, this);
@@ -131,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/SetByAssignment")]
-        public IHttpActionResult SetByDepartment([FromBody] ItemCheck model)
+        public async Task<IHttpActionResult> SetByDepartment([FromBody] ItemCheck model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetUserRoleByAssignment, model);
             var res = new JsonResult(tmpItem, this);

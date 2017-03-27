@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddPosition model)
+        public async Task<IHttpActionResult> Post([FromBody]AddPosition model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
             return GetById(context, tmpItem);
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyPosition model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyPosition model)
         {
             Action.Execute(EnumDictionaryActions.ModifyPosition, model);
             return GetById(context, model.Id);
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeletePosition, Id);
             var tmpItem = new FrontDeleteModel(Id);
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info + "/Order")]
-        public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
+        public async Task<IHttpActionResult> SetOrder([FromBody]ModifyPositionOrder model)
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();

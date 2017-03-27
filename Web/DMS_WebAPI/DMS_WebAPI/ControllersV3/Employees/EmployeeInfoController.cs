@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentEmployee>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAgentEmployeeUser model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentEmployeeUser model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentEmployee model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentEmployee model)
         {
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = contexts.Get();
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/DeleteImage/{Id:int}")]
-        public IHttpActionResult DeleteImage([FromUri] int Id)
+        public async Task<IHttpActionResult> DeleteImage([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteAgentImage, Id);
             var tmpItem = new FrontDeleteModel(Id);

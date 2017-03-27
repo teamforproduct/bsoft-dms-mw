@@ -8,6 +8,7 @@ using BL.Model.SystemCore.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -29,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(FrontDictionarySettingType))]
-        public IHttpActionResult Get([FromUri] FilterSystemSetting filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemSetting filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
@@ -46,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns>FrontAdminPositionRole</returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]List<ModifySystemSetting> model)
+        public async Task<IHttpActionResult> Put([FromBody]List<ModifySystemSetting> model)
         {
             var tmpItem = Action.Execute(EnumSystemActions.SetSetting, model);
             var res = new JsonResult(tmpItem, this);

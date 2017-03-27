@@ -6,6 +6,7 @@ using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.System
@@ -25,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns>сервер</returns>
         [HttpPost]
         [Route(Features.Info + "/FullTextReindex")]
-        public IHttpActionResult FullTextReindex()
+        public async Task<IHttpActionResult> FullTextReindex()
         {
             var ctxUser = DmsResolver.Current.Get<UserContexts>().Get();
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();

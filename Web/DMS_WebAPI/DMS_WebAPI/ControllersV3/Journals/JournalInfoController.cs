@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [HttpGet]
         [Route(Features.Info + "/Filters")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter, [FromUri]bool? searchInJournals = false)
+        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter, [FromUri]bool? searchInJournals = false)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddRegistrationJournal model)
+        public async Task<IHttpActionResult> Post([FromBody]AddRegistrationJournal model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddRegistrationJournal, model);
             return GetById(context, tmpItem);
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyRegistrationJournal model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyRegistrationJournal model)
         {
             Action.Execute(EnumDictionaryActions.ModifyRegistrationJournal, model);
             return GetById(context, model.Id);
@@ -143,7 +143,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteRegistrationJournal, Id);
             var tmpItem = new FrontDeleteModel(Id);

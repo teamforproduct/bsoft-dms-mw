@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Contacts)]
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryContact filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryContact filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Contacts)]
-        public IHttpActionResult Post([FromBody]BaseAgentContact model)
+        public async Task<IHttpActionResult> Post([FromBody]BaseAgentContact model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var contact = new AddAgentContact(model);
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Contacts)]
-        public IHttpActionResult Put([FromBody]ModifyUserContact model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyUserContact model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var contact = new ModifyAgentContact(model);
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Contacts + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteEmployeeContact, Id);
             var tmpItem = new FrontDeleteModel(Id);

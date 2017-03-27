@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SignCertificates)]
         [ResponseType(typeof(List<FrontEncryptionCertificate>))]
-        public IHttpActionResult Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
         {
             if (paging == null) paging = new UIPaging();
 
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.SignCertificates)]
-        public IHttpActionResult Post([FromBody]AddEncryptionCertificate model)
+        public async Task<IHttpActionResult> Post([FromBody]AddEncryptionCertificate model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SignCertificates)]
-        public IHttpActionResult Put([FromBody]ModifyEncryptionCertificate model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyEncryptionCertificate model)
         {
             Action.Execute(EnumEncryptionActions.ModifyEncryptionCertificate, model);
             return Get(model.Id);
@@ -109,7 +109,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.SignCertificates + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumEncryptionActions.DeleteEncryptionCertificate, Id);
             var tmpItem = new FrontDeleteModel(Id);

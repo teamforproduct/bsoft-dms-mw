@@ -3,6 +3,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.System
@@ -23,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/IsSendAllForExecution")]
-        public IHttpActionResult IsSendAllForExecution()
+        public async Task<IHttpActionResult> IsSendAllForExecution()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -40,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/IsSendAllForInforming")]
-        public IHttpActionResult IsSendAllForInforming()
+        public async Task<IHttpActionResult> IsSendAllForInforming()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -55,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/IsDigitalSignatureIsUseCertificateSign")]
-        public IHttpActionResult IsDigitalSignatureIsUseCertificateSign()
+        public async Task<IHttpActionResult> IsDigitalSignatureIsUseCertificateSign()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -70,7 +71,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/IsDigitalSignatureIsUseInternalSign")]
-        public IHttpActionResult IsDigitalSignatureIsUseInternalSign()
+        public async Task<IHttpActionResult> IsDigitalSignatureIsUseInternalSign()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -85,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/FulltextRefreshTimeout")]
-        public IHttpActionResult GetFulltextRefreshTimeout()
+        public async Task<IHttpActionResult> GetFulltextRefreshTimeout()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -100,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/AutoplanTimeout")]
-        public IHttpActionResult GetAutoplanTimeoutMinute()
+        public async Task<IHttpActionResult> GetAutoplanTimeoutMinute()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -115,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/ClearTrashDocumentsTimeout")]
-        public IHttpActionResult GetClearTrashDocumentsTimeoutMinute()
+        public async Task<IHttpActionResult> GetClearTrashDocumentsTimeoutMinute()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();
@@ -130,7 +131,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/ClearTrashDocumentsTimeoutMinuteForClear")]
-        public IHttpActionResult GetClearTrashDocumentsTimeoutMinuteForClear()
+        public async Task<IHttpActionResult> GetClearTrashDocumentsTimeoutMinuteForClear()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISettings>();

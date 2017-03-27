@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route("Positions/{Id:int}/" + Features.Executors)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route("Positions/" + Features.Executors)]
-        public IHttpActionResult Post([FromBody]AddPositionExecutor model)
+        public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route("Positions/" + Features.Executors)]
-        public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route("Positions/" + Features.Executors + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();

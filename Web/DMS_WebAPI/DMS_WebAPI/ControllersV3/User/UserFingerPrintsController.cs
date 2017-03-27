@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Fingerprints)]
         [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
-        public IHttpActionResult Get([FromUri] FilterAspNetUserFingerprint filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterAspNetUserFingerprint filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Fingerprints)]
-        public IHttpActionResult Post([FromBody]AddAspNetUserFingerprint model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAspNetUserFingerprint model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Fingerprints)]
-        public IHttpActionResult Put([FromBody]ModifyAspNetUserFingerprint model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserFingerprint model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -112,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Fingerprints + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.DeleteUserFingerprint(Id);
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Fingerprints + "/Enabled")]
         [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
-        public IHttpActionResult GetEnabled()
+        public async Task<IHttpActionResult> GetEnabled()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
@@ -147,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Fingerprints + "/Enabled")]
-        public IHttpActionResult SetEnabled([FromBody]ModifyAspNetUserFingerprintEnabled model)
+        public async Task<IHttpActionResult> SetEnabled([FromBody]ModifyAspNetUserFingerprintEnabled model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 

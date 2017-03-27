@@ -7,6 +7,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -28,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route("{Id:int}/"+Features.Tags)]
         [ResponseType(typeof(List<FrontDocumentTag>))]
-        public IHttpActionResult GetByDocumentId(int Id)
+        public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentTagService>();
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Tags)]
-        public IHttpActionResult Post([FromBody]ModifyDocumentTags model)
+        public async Task<IHttpActionResult> Post([FromBody]ModifyDocumentTags model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);

@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Papers + "/Main")]
         [ResponseType(typeof(List<FrontDocumentPaper>))]
-        public IHttpActionResult Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Papers)]
-        public IHttpActionResult Post([FromBody]AddDocumentPaper model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentPaper model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentPaper, model, model.CurrentPositionId);
             var res = new JsonResult(tmpItem, this);
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Papers)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentPaper model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentPaper model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentPaper, model);
             var res = new JsonResult(tmpItem, this);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Papers + "/{Id:int}")]
-        public IHttpActionResult Delete(int Id)
+        public async Task<IHttpActionResult> Delete(int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteDocumentPaper, Id);
             var tmpItem = new FrontDeleteModel(Id);
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route("{Id:int}/" + Features.Papers + "/Actions")]
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
-        public IHttpActionResult Actions([FromUri]int Id)
+        public async Task<IHttpActionResult> Actions([FromUri]int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<ICommandService>();
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/MarkOwner")]
         [HttpPut]
-        public IHttpActionResult MarkOwnerDocumentPaper([FromBody]MarkOwnerDocumentPaper model)
+        public async Task<IHttpActionResult> MarkOwnerDocumentPaper([FromBody]MarkOwnerDocumentPaper model)
         {
             Action.Execute(EnumDocumentActions.MarkOwnerDocumentPaper, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/MarkСorruption")]
         [HttpPut]
-        public IHttpActionResult MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
+        public async Task<IHttpActionResult> MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
         {
             Action.Execute(EnumDocumentActions.MarkСorruptionDocumentPaper, model);
             var res = new JsonResult(null, this);
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/Plan")]
         [HttpPut]
-        public IHttpActionResult PlanDocumentPaperEvent([FromBody]List<PlanMovementPaper> model)
+        public async Task<IHttpActionResult> PlanDocumentPaperEvent([FromBody]List<PlanMovementPaper> model)
         {
             Action.Execute(EnumDocumentActions.PlanDocumentPaperEvent, model);
             var res = new JsonResult(null, this);
@@ -177,7 +177,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/CancelPlan")]
         [HttpPut]
-        public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]List<int> model)
+        public async Task<IHttpActionResult> CancelPlanDocumentPaperEvent([FromBody]List<int> model)
         {
             Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
@@ -191,7 +191,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/Send")]
         [HttpPut]
-        public IHttpActionResult SendDocumentPaperEvent([FromBody]List<int> model)
+        public async Task<IHttpActionResult> SendDocumentPaperEvent([FromBody]List<int> model)
         {
             Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
@@ -205,7 +205,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/CancelSend")]
         [HttpPut]
-        public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]List<int> model)
+        public async Task<IHttpActionResult> CancelSendDocumentPaperEvent([FromBody]List<int> model)
         {
             Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);
@@ -219,7 +219,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Papers + "/Recieve")]
         [HttpPut]
-        public IHttpActionResult RecieveDocumentPaperEvent([FromBody]List<int> model)
+        public async Task<IHttpActionResult> RecieveDocumentPaperEvent([FromBody]List<int> model)
         {
             Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperId = model });
             var res = new JsonResult(null, this);

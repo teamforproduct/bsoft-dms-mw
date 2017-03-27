@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(FrontAgentEmployeeUser))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentUser model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentUser model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var contexts = DmsResolver.Current.Get<UserContexts>();
@@ -126,7 +126,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Permissions)]
         [ResponseType(typeof(List<FrontPermission>))]
-        public IHttpActionResult GetPermissions()
+        public async Task<IHttpActionResult> GetPermissions()
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
@@ -147,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.AuthLog)]
         [ResponseType(typeof(List<FrontSystemSession>))]
-        public IHttpActionResult Get( [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get( [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
@@ -170,7 +170,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ChangeLogin)]
-        public IHttpActionResult ChangeLogin([FromBody]ChangeLogin model)
+        public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLogin model)
         {
             throw new NotImplementedException();
         }
@@ -266,7 +266,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route("Logout")]
-        public IHttpActionResult Logout()
+        public async Task<IHttpActionResult> Logout()
         {
             DmsResolver.Current.Get<UserContexts>().Remove();
 

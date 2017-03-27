@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryDocumentType>))]
-        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddDocumentType model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentType model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddDocumentType, model);
             return GetById(context, tmpItem);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentType model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentType model)
         {
             Action.Execute(EnumDictionaryActions.ModifyDocumentType, model);
             return GetById(context, model.Id);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteDocumentType, Id);
             var tmpItem = new FrontDeleteModel(Id);

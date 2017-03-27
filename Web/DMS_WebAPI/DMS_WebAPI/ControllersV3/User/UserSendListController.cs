@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SendLists + "/Main")]
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.SendLists)]
-        public IHttpActionResult Post([FromBody]AddStandartSendList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddStandartSendList model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddStandartSendList, model);
             return Get(tmpItem);
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendLists)]
-        public IHttpActionResult Put([FromBody]ModifyStandartSendList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyStandartSendList model)
         {
             Action.Execute(EnumDictionaryActions.ModifyStandartSendList, model);
             return Get(model.Id);
@@ -104,7 +104,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.SendLists + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteStandartSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);

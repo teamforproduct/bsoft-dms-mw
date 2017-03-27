@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddStandartSendList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddStandartSendList model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddStandartSendList, model);
             return GetById(context, tmpItem);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyStandartSendList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyStandartSendList model)
         {
             Action.Execute(EnumDictionaryActions.ModifyStandartSendList, model);
             return GetById(context, model.Id);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteStandartSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);

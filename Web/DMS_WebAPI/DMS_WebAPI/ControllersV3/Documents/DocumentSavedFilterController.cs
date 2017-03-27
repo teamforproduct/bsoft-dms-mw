@@ -40,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.SavedFilters + "/All")]
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.SavedFilters+"/CurrentUser")]
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
-        public IHttpActionResult GetOnlyCurrentUser()
+        public async Task<IHttpActionResult> GetOnlyCurrentUser()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.SavedFilters)]
-        public IHttpActionResult Post([FromBody]AddDocumentSavedFilter model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentSavedFilter model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddSavedFilter, model);
             var res = new JsonResult(tmpItem, this);
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный пункт плана</returns>
         [HttpPut]
         [Route(Features.SavedFilters)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentSavedFilter model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentSavedFilter model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.ModifySavedFilter, model);
             var res = new JsonResult(tmpItem, this);
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.SavedFilters + "/{Id:int}")]
-        public IHttpActionResult Delete(int Id)
+        public async Task<IHttpActionResult> Delete(int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteSavedFilter, Id);
             var tmpItem = new FrontDeleteModel(Id);

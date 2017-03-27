@@ -6,6 +6,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -29,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Assignments + "/Current")]
         [ResponseType(typeof(List<FrontUserAssignments>))]
-        public IHttpActionResult Assignments()
+        public async Task<IHttpActionResult> Assignments()
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();// (keepAlive: false);
             var tmpService = DmsResolver.Current.Get<IAdminService>();
@@ -46,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Assignments + "/Available")]
         [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
-        public IHttpActionResult GetAvailableShort()
+        public async Task<IHttpActionResult> GetAvailableShort()
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
@@ -64,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Assignments)]
         [ResponseType(typeof(List<FrontUserAssignments>))]
-        public IHttpActionResult GetAssignments()
+        public async Task<IHttpActionResult> GetAssignments()
         {
             //var context = DmsResolver.Current.Get<UserContexts>().Get();
             //return new JsonResult(, this);
@@ -84,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Assignments)]
-        public IHttpActionResult Assignments([FromBody]List<int> positionsIdList)
+        public async Task<IHttpActionResult> Assignments([FromBody]List<int> positionsIdList)
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             var context = userContexts.Get();

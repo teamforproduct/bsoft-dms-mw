@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryContactType>))]
-        public IHttpActionResult Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryContactType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryContactType filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddContactType model)
+        public async Task<IHttpActionResult> Post([FromBody]AddContactType model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddContactType, model);
             return GetById(context, tmpItem);
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyContactType model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyContactType model)
         {
             Action.Execute(EnumDictionaryActions.ModifyContactType, model);
             return GetById(context, model.Id);
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteContactType, Id);
             var tmpItem = new FrontDeleteModel(Id);

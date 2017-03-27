@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(List<FrontDictionaryDepartment>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryDepartment filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryDepartment filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddDepartment model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDepartment model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddDepartment, model);
             return GetById(context, tmpItem);
@@ -87,7 +87,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyDepartment model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDepartment model)
         {
             Action.Execute(EnumDictionaryActions.ModifyDepartment, model);
             return GetById(context, model.Id);
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteDepartment, Id);
             var tmpItem = new FrontDeleteModel(Id);

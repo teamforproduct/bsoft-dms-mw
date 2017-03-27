@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IAdminService>();
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAdminRole model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAdminRole model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.AddRole, model);
             return GetById(context, tmpItem);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAdminRole model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAdminRole model)
         {
             Action.Execute(EnumAdminActions.ModifyRole, model);
             return GetById(context, model.Id);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumAdminActions.DeleteRole, Id);
             var tmpItem = new FrontDeleteModel(Id);

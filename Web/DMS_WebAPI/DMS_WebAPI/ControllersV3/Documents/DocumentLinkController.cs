@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [Route(Features.Links)]
         [ResponseType(typeof(List<int>))]
-        public IHttpActionResult Post([FromBody]AddDocumentLink model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentLink model)
         {
             Action.Execute(EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Links + "/{Id:int}")]
-        public IHttpActionResult Delete(int Id)
+        public async Task<IHttpActionResult> Delete(int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteDocumentLink, Id);
             var res = new JsonResult(null, this);

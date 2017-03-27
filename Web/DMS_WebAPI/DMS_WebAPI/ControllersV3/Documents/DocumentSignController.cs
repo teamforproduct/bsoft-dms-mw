@@ -9,6 +9,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -31,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Signs)]
         [ResponseType(typeof(List<FrontDocumentSubscription>))]
-        public IHttpActionResult Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -48,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectSigning")]
         [HttpPut]
-        public IHttpActionResult RejectSigning(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectSigning(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.RejectSigning, model);
             var res = new JsonResult(true, this);
@@ -61,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectVisaing")]
         [HttpPut]
-        public IHttpActionResult RejectVisaing(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectVisaing(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.RejectVisaing, model);
             var res = new JsonResult(true, this);
@@ -74,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectАgreement")]
         [HttpPut]
-        public IHttpActionResult RejectАgreement(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectАgreement(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.RejectАgreement, model);
             var res = new JsonResult(true, this);
@@ -87,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectАpproval")]
         [HttpPut]
-        public IHttpActionResult RejectАpproval(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectАpproval(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.RejectАpproval, model);
             var res = new JsonResult(true, this);
@@ -101,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawSigning")]
         [HttpPut]
-        public IHttpActionResult WithdrawSigning(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawSigning(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.WithdrawSigning, model);
             var res = new JsonResult(true, this);
@@ -114,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawVisaing")]
         [HttpPut]
-        public IHttpActionResult WithdrawVisaing(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawVisaing(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.WithdrawVisaing, model);
             var res = new JsonResult(true, this);
@@ -127,7 +128,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawАgreement")]
         [HttpPut]
-        public IHttpActionResult WithdrawАgreement(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawАgreement(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.WithdrawАgreement, model);
             var res = new JsonResult(true, this);
@@ -140,7 +141,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawАpproval")]
         [HttpPut]
-        public IHttpActionResult WithdrawАpproval(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawАpproval(SendEventMessage model)
         {
             Action.Execute(EnumDocumentActions.WithdrawАpproval, model);
             var res = new JsonResult(true, this);
@@ -154,7 +155,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixSigning")]
         [HttpPut]
-        public IHttpActionResult AffixSigning(AffixSigning model)
+        public async Task<IHttpActionResult> AffixSigning(AffixSigning model)
         {
             Action.Execute(EnumDocumentActions.AffixSigning, model);
             var res = new JsonResult(true, this);
@@ -167,7 +168,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixVisaing")]
         [HttpPut]
-        public IHttpActionResult AffixVisaing(AffixSigning model)
+        public async Task<IHttpActionResult> AffixVisaing(AffixSigning model)
         {
             Action.Execute(EnumDocumentActions.AffixVisaing, model);
             var res = new JsonResult(true, this);
@@ -180,7 +181,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixАgreement")]
         [HttpPut]
-        public IHttpActionResult AffixАgreement(AffixSigning model)
+        public async Task<IHttpActionResult> AffixАgreement(AffixSigning model)
         {
             Action.Execute(EnumDocumentActions.AffixАgreement, model);
             var res = new JsonResult(true, this);
@@ -193,7 +194,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixАpproval")]
         [HttpPut]
-        public IHttpActionResult AffixАpproval(AffixSigning model)
+        public async Task<IHttpActionResult> AffixАpproval(AffixSigning model)
         {
             Action.Execute(EnumDocumentActions.AffixАpproval, model);
             var res = new JsonResult(true, this);
@@ -207,7 +208,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/SelfAffixSigning")]
         [HttpPost]
-        public IHttpActionResult SelfAffixSigning(SelfAffixSigning model)
+        public async Task<IHttpActionResult> SelfAffixSigning(SelfAffixSigning model)
         {
             Action.Execute(EnumDocumentActions.SelfAffixSigning, model);
             var res = new JsonResult(true, this);
@@ -222,7 +223,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [DimanicAuthorize("R")]
         [Route(Features.Signs + "/VerifySigning")]
         [HttpPost]
-        public IHttpActionResult VerifySigning([FromBody]Item model)
+        public async Task<IHttpActionResult> VerifySigning([FromBody]Item model)
         {
             Action.Execute(EnumDocumentActions.VerifySigning, model.Id);
             var res = new JsonResult(null, this);

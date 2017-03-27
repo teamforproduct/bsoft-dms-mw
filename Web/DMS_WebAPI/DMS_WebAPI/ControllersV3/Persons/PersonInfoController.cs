@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainAgentPerson>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAgentPerson model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentPerson model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentPerson, model);
             return GetById(context, tmpItem);
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentPerson model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentPerson model)
         {
             Action.Execute(EnumDictionaryActions.ModifyAgentPerson, model);
             return GetById(context, model.Id);
@@ -104,7 +104,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteAgentPerson, Id);
             var tmpItem = new FrontDeleteModel(Id);

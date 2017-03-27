@@ -4,6 +4,7 @@ using BL.Model.SystemCore;
 using BL.Model.SystemCore.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -24,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpGet]
         [Route("Check")]
         [ResponseType(typeof(FrontSystemLicencesInfo))]
-        public IHttpActionResult VerifyLicences()
+        public async Task<IHttpActionResult> VerifyLicences()
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
             var tmpItem = new FrontSystemLicencesInfo

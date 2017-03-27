@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route("{Id:int}/" + Features.Files)]
         [ResponseType(typeof(List<FrontTemplateAttachedFile>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
         {
             if (filter == null) filter = new FilterTemplateAttachedFile();
             filter.TemplateId =  Id ;
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public IHttpActionResult Post([FromUri]AddTemplateAttachedFile model)
+        public async Task<IHttpActionResult> Post([FromUri]AddTemplateAttachedFile model)
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
@@ -98,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateAttachedFile model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateAttachedFile model)
         {
             //if (HttpContext.Current.Request.Files.Count > 0)
             //{
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Files + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteTemplateAttachedFile, Id);
             var tmpItem = new FrontDeleteModel(Id);

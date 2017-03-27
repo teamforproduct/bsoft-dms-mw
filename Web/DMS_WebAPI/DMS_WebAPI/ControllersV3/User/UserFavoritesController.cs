@@ -6,6 +6,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -27,7 +28,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Favorites + "/Bulk")]
         [ResponseType(typeof(FrontUserFavorites))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -44,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.User
         //[HttpGet]
         //[Route(Features.Favorites + "/{Id:int}")]
         //[ResponseType(typeof(InternalAgentFavourite))]
-        //public IHttpActionResult Get(int Id)
+        //public async Task<IHttpActionResult> Get(int Id)
         //{
         //    var ctx = DmsResolver.Current.Get<UserContexts>().Get();
         //    var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -61,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Favorites + "/Bulk")]
-        public IHttpActionResult PostBulk([FromBody]FrontUserFavorites model)
+        public async Task<IHttpActionResult> PostBulk([FromBody]FrontUserFavorites model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -77,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Favorites)]
-        public IHttpActionResult Post([FromBody]AddAgentFavourite model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentFavourite model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -93,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Favorites + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.DeleteUserFingerprint(Id);

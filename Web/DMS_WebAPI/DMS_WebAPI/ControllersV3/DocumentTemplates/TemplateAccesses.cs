@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route("{Id:int}/" + Features.Accesses)]
         [ResponseType(typeof(List<FrontTemplateDocumentAccess>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentAccess filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentAccess filter)
         {
             if (filter == null) filter = new FilterTemplateDocumentAccess();
             filter.TemplateId =  Id ;
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Accesses)]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentAccess model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentAccess model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentAccess, model);
             return GetById(context, tmpItem);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Accesses)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentAccess model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentAccess model)
         {
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentAccess, model);
             return GetById(context, model.Id);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Accesses + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteTemplateDocumentAccess, Id);
             var tmpItem = new FrontDeleteModel(Id);

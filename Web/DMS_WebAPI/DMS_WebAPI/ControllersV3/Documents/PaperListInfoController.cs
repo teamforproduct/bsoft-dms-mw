@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDocumentPaperList>))]
-        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDocumentPaperList filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDocumentPaperList filter, [FromUri]UIPaging paging)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Info + "/{Id:int}/ReportRegisterTransmissionDocuments")]
         [ResponseType(typeof(FrontReport))]
-        public IHttpActionResult GetReportRegisterTransmissionDocuments(int Id)
+        public async Task<IHttpActionResult> GetReportRegisterTransmissionDocuments(int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddDocumentPaperList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentPaperList model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyDocumentPaperList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentPaperList model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentPaperList, model);
             var res = new JsonResult(tmpItem, this);
@@ -124,7 +124,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete(int Id)
+        public async Task<IHttpActionResult> Delete(int Id)
         {
             Action.Execute(EnumDocumentActions.DeleteDocumentPaperList, Id);
             var tmpItem = new FrontDeleteModel(Id);
@@ -139,7 +139,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Info + "/CancelPlan")]
         [HttpPut]
-        public IHttpActionResult CancelPlanDocumentPaperEvent([FromBody]int Id)
+        public async Task<IHttpActionResult> CancelPlanDocumentPaperEvent([FromBody]int Id)
         {
             Action.Execute(EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperListId = Id });
             var res = new JsonResult(null, this);
@@ -153,7 +153,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Info + "/Send")]
         [HttpPut]
-        public IHttpActionResult SendDocumentPaperEvent([FromBody]int Id)
+        public async Task<IHttpActionResult> SendDocumentPaperEvent([FromBody]int Id)
         {
             Action.Execute(EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperListId = Id });
             var res = new JsonResult(null, this);
@@ -167,7 +167,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Info + "/CancelSend")]
         [HttpPut]
-        public IHttpActionResult CancelSendDocumentPaperEvent([FromBody]int Id)
+        public async Task<IHttpActionResult> CancelSendDocumentPaperEvent([FromBody]int Id)
         {
             Action.Execute(EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperListId = Id });
             var res = new JsonResult(null, this);
@@ -181,7 +181,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Info + "/Recieve")]
         [HttpPut]
-        public IHttpActionResult RecieveDocumentPaperEvent([FromBody]int Id)
+        public async Task<IHttpActionResult> RecieveDocumentPaperEvent([FromBody]int Id)
         {
             Action.Execute(EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperListId = Id });
             var res = new JsonResult(null, this);

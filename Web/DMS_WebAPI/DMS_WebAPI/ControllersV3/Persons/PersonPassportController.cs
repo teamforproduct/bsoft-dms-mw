@@ -52,7 +52,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Passport)]
-        public IHttpActionResult Put([FromBody]ModifyAgentPeoplePassport model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentPeoplePassport model)
         {
             Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, model);
             return GetById(context, model.Id);

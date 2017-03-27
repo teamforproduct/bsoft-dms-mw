@@ -6,6 +6,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using System;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -29,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpGet]
         [Route(Features.TempFileStorage + "/{Id:int}")]
         [ResponseType(typeof(FrontFile))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
 
 
@@ -52,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpPost]
         [Route(Features.TempFileStorage)]
-        public IHttpActionResult Post()
+        public async Task<IHttpActionResult> Post()
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
 
@@ -73,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.TempFileStorage + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var tmpService = DmsResolver.Current.Get<ITempStorageService>();
             tmpService.ExtractStoreObject(Id);

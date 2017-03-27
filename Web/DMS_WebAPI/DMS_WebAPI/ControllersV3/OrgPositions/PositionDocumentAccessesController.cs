@@ -3,6 +3,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.OrgPositions
@@ -23,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.DocumentAccesses)]
-        public IHttpActionResult ChangePosition([FromBody]ChangePosition model)
+        public async Task<IHttpActionResult> ChangePosition([FromBody]ChangePosition model)
         {
             Action.Execute(EnumDocumentActions.ChangePosition, model);
             var res = new JsonResult(null, this);

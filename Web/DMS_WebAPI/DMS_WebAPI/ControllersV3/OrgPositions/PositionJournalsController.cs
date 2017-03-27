@@ -7,6 +7,7 @@ using BL.Model.Tree;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -30,7 +31,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Journals)]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterTree filter)
+        public async Task<IHttpActionResult> Get([FromUri] int Id, [FromUri] FilterTree filter)
         {
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = true;
@@ -50,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Journals+ "/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterTree filter)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id, [FromUri] FilterTree filter)
         {
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = null;
@@ -68,7 +69,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/Set")]
-        public IHttpActionResult Set([FromBody] SetJournalAccess model)
+        public async Task<IHttpActionResult> Set([FromBody] SetJournalAccess model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccess, model);
             var res = new JsonResult(tmpItem, this);
@@ -82,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetByDepartment")]
-        public IHttpActionResult SetByDepartment([FromBody] SetJournalAccessByDepartment_Position model)
+        public async Task<IHttpActionResult> SetByDepartment([FromBody] SetJournalAccessByDepartment_Position model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByDepartment_Position, model);
             var res = new JsonResult(tmpItem, this);
@@ -96,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetByCompany")]
-        public IHttpActionResult SetByCompany([FromBody] SetJournalAccessByCompany_Position model)
+        public async Task<IHttpActionResult> SetByCompany([FromBody] SetJournalAccessByCompany_Position model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByCompany_Position, model);
             var res = new JsonResult(tmpItem, this);
@@ -111,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetDefault")]
-        public IHttpActionResult SetDefault([FromBody] ModifyAdminDefaultByPosition model)
+        public async Task<IHttpActionResult> SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessDefault_Position, model);
             var res = new JsonResult(tmpItem, this);
@@ -125,7 +126,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/SetAll")]
-        public IHttpActionResult SetAll([FromBody] SetJournalAccessAll_Position model)
+        public async Task<IHttpActionResult> SetAll([FromBody] SetJournalAccessAll_Position model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessAll_Position, model);
             var res = new JsonResult(tmpItem, this);
@@ -139,7 +140,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Journals + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
+        public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.DuplicateJournalAccess_Position, model);
             var res = new JsonResult(tmpItem, this);

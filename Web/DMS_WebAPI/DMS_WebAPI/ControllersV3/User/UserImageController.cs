@@ -8,6 +8,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -29,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Image)]
         [ResponseType(typeof(FrontAgentEmployeeUser))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
 
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
@@ -46,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Image)]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentImage model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDictionaryAgentImage model)
         {
             throw new NotImplementedException();
         }
@@ -58,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Image)]
-        public IHttpActionResult Delete()
+        public async Task<IHttpActionResult> Delete()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             Action.Execute(EnumDictionaryActions.DeleteAgentImage, ctx.CurrentAgentId);

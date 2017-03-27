@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Passport)]
-        public IHttpActionResult Put([FromBody]AddAgentPeoplePassport model)
+        public async Task<IHttpActionResult> Put([FromBody]AddAgentPeoplePassport model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpModel = new ModifyAgentPeoplePassport()

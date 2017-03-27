@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryStaffList filter)
+        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryStaffList filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryAgentOrg filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryAgentOrg filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -93,7 +93,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAgentClientCompany model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentClientCompany model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentClientCompany, model);
             return GetById(context, tmpItem);
@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentClientCompany model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentClientCompany model)
         {
             Action.Execute(EnumDictionaryActions.ModifyAgentClientCompany, model);
             return GetById(context, model.Id);
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             Action.Execute(EnumDictionaryActions.DeleteAgentClientCompany, Id);
             var tmpItem = new FrontDeleteModel(Id);

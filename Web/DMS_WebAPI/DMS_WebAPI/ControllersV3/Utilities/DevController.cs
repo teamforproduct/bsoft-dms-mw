@@ -5,6 +5,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -26,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [HttpGet]
         [Route("Test")]
         [ResponseType(typeof(string))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
             var res = new JsonResult("Hello, world!", this);
             return res;
@@ -38,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns>FrontAdminPositions</returns>
         [HttpGet]
         [Route("Version")]
-        public IHttpActionResult GetVersion()
+        public async Task<IHttpActionResult> GetVersion()
         {
             var tmpItems = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return new JsonResult(tmpItems, this);
@@ -50,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpGet]
         [Route("Request")]
-        public IHttpActionResult GetRequest()
+        public async Task<IHttpActionResult> GetRequest()
         {
             return new JsonResult(HttpContext.Current.Request, this);
         }
@@ -61,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshPermissions")]
-        public IHttpActionResult RefreshPermissions()
+        public async Task<IHttpActionResult> RefreshPermissions()
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
@@ -78,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemActions")]
-        public IHttpActionResult RefreshSystemActions()
+        public async Task<IHttpActionResult> RefreshSystemActions()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
@@ -93,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemObjects")]
-        public IHttpActionResult RefreshSystemObjects()
+        public async Task<IHttpActionResult> RefreshSystemObjects()
         {
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ISystemService>();
@@ -108,7 +109,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpGet]
         [Route("SessionsCount")]
-        public IHttpActionResult GetUserContextsCount()
+        public async Task<IHttpActionResult> GetUserContextsCount()
         {
             var count = DmsResolver.Current.Get<UserContexts>().Count;
             return new JsonResult(count, this);
@@ -120,7 +121,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpGet]
         [Route("FullTextIndexPrepareNew")]
-        public IHttpActionResult Test()
+        public async Task<IHttpActionResult> Test()
         {
             //TODO REMOVE
             var cxt = DmsResolver.Current.Get<UserContexts>().Get();

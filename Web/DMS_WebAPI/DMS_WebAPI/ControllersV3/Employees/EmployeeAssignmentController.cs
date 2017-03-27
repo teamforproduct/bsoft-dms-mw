@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Assignments)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.AgentIDs = new List<int> { Id };
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Assignments + "/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route(Features.Assignments + "/Position/{Id:int}/Roles")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetPositionRoles(int Id, [FromUri] FilterAdminRole filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetPositionRoles(int Id, [FromUri] FilterAdminRole filter, [FromUri]UIPaging paging)
         {
             if (filter == null) filter = new FilterAdminRole();
 
@@ -128,7 +128,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Assignments)]
-        public IHttpActionResult Post([FromBody]AddPositionExecutor model)
+        public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -143,7 +143,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Assignments)]
-        public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -158,7 +158,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Assignments + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
