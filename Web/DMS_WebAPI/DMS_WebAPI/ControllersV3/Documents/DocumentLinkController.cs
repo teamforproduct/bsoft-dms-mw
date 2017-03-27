@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
@@ -6,6 +7,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -19,6 +21,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentLinkController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var items = docProc.GetLinkedDocumentIds(context, Id);
+            var res = new JsonResult(items, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список ИД связанных документов по ИД документа TODO зачем нужно?
         /// </summary>
@@ -27,13 +37,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route("{Id:int}/"+Features.Links)]
         [ResponseType(typeof(List<int>))]
-        public IHttpActionResult GetIdsByDocumentId(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetLinkedDocumentIds(ctx, Id);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -48,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             Action.Execute(EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
             var res = new JsonResult(null, this);
-            return GetIdsByDocumentId(model.DocumentId);
+            return GetById(context, model.DocumentId);
         }
 
         /// <summary>

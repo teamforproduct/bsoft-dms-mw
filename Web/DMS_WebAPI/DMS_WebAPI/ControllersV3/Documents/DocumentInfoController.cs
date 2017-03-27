@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.EncryptionCore.Interfaces;
 using BL.Model.Common;
@@ -17,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -31,6 +33,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentInfoController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var item = docProc.GetDocument(context, Id);
+            var metaData = docProc.GetModifyMetaData(context, item);
+            var res = new JsonResult(item, metaData, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список документов
         /// </summary>
@@ -106,14 +117,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDocument))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var item = docProc.GetDocument(ctx, Id);
-            var metaData = docProc.GetModifyMetaData(ctx, item);
-            var res = new JsonResult(item, metaData, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -192,8 +201,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocument, model, model.CurrentPositionId);
             //var res = new JsonResult(tmpItem, this);
-            //res.SpentTime = stopWatch;
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -208,7 +216,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocument, model);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
-            return Get(model.Id);
+            return GetById(context, model.Id);
         }
 
         /// <summary>
@@ -238,7 +246,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             var tmpItem = Action.Execute(EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
             //var res = new JsonResult(tmpItem, this);
             //res.SpentTime = stopWatch;
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>

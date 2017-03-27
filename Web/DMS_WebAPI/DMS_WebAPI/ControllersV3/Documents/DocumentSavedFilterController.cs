@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Filters;
@@ -9,6 +10,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -22,6 +24,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentSavedFilterController : ApiController
     {
+
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
+            var item = docProc.GetSavedFilter(context, Id);
+            var res = new JsonResult(item, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список всех сохраненных фильтров документов
         /// </summary>
@@ -62,13 +73,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.SavedFilters + "/{Id:int}")]
         [ResponseType(typeof(FrontDocumentSavedFilter))]
-        public IHttpActionResult GetById(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var item = docProc.GetSavedFilter(ctx, Id);
-            var res = new JsonResult(item, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>

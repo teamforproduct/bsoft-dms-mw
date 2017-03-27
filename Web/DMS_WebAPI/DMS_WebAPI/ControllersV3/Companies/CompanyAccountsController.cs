@@ -24,10 +24,10 @@ namespace DMS_WebAPI.ControllersV3.Companies
     [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyAccountsController : ApiController
     {
-        private IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext context, int Id)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentAccount(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryAgentAccount(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }

@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Filters;
@@ -9,6 +10,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -22,6 +24,14 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateAccessesController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpItem = tmpService.GetTemplateDocumentAccess(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список
         /// </summary>
@@ -52,13 +62,12 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route(Features.Accesses + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocumentAccess))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentAccess(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -71,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public IHttpActionResult Post([FromBody]AddTemplateDocumentAccess model)
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentAccess, model);
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -84,7 +93,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public IHttpActionResult Put([FromBody]ModifyTemplateDocumentAccess model)
         {
             Action.Execute(EnumDocumentActions.ModifyTemplateDocumentAccess, model);
-            return Get(model.Id);
+            return GetById(context, model.Id);
         }
 
         /// <summary>

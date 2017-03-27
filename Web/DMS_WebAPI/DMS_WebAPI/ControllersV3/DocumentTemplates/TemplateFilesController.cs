@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Common;
@@ -10,6 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -24,6 +26,15 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplateFilesController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            //TODO PDF
+            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpItem = tmpService.GetTemplateAttachedFile(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список файлов
         /// </summary>
@@ -54,14 +65,12 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateAttachedFile))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            //TODO PDF
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateAttachedFile(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -79,7 +88,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             model.FileType = file.ContentType;
 
             var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateAttachedFile, model);
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>

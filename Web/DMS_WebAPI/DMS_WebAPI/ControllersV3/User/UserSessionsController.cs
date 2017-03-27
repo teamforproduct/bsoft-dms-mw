@@ -19,6 +19,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserSessionsController : ApiController
     {
+
         /// <summary>
         /// Возвращает историю подключений
         /// </summary>

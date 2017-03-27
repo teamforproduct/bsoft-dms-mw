@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
@@ -6,6 +7,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -19,6 +21,14 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserPassportController : ApiController
     {
+        private IHttpActionResult GetById(IContext context)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetAgentPeoplePassport(context, context.CurrentAgentId);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает паспортные данные пользователя
         /// </summary>
@@ -26,13 +36,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Passport)]
         [ResponseType(typeof(FrontAgentPeoplePassport))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentPeoplePassport(ctx, ctx.CurrentAgentId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context);
+            });
         }
 
         /// <summary>
@@ -54,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.User
                 PassportText = model.PassportText
             };
             Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, tmpModel);
-            return Get();
+            return GetById(context);
         }
 
     }

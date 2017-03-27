@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -10,6 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,6 +25,14 @@ namespace DMS_WebAPI.ControllersV3.System
     [RoutePrefix(ApiPrefix.V3 + Modules.AddressType)]
     public class AddressTypeInfoController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryAddressType(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список типов адресов
         /// </summary>
@@ -49,13 +59,12 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentContact))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAddressType(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -68,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Post([FromBody]AddAddressType model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddAddressType, model);
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -81,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.System
         public IHttpActionResult Put([FromBody]ModifyAddressType model)
         {
             Action.Execute(EnumDictionaryActions.ModifyAddressType, model);
-            return Get(model.Id);
+            return GetById(context, model.Id);
         }
 
         /// <summary>

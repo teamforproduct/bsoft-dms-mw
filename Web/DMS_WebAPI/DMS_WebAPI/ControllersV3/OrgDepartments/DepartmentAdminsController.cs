@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.IncomingModel;
@@ -8,6 +9,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -21,6 +23,14 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentAdminsController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetDepartmentAdmins(context, Id);
+            var res = new JsonResult(tmpItems, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список администраторов (сотрудников)
         /// </summary>
@@ -29,13 +39,12 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [HttpGet]
         [Route("{Id:int}/" + Features.Admins)]
         [ResponseType(typeof(List<FrontAdminEmployeeDepartments>))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetDepartmentAdmins(ctx, Id);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -48,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         public IHttpActionResult Post([FromBody]AddAdminDepartmentAdmin model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.AddDepartmentAdmin, model);
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>

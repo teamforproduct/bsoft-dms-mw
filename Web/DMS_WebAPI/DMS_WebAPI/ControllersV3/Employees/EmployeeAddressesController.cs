@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -9,6 +10,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -22,6 +24,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeAddressesController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetAgentAddress(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список адресов
         /// </summary>
@@ -51,13 +61,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route(Features.Addresses + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -70,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         public IHttpActionResult Post([FromBody]AddAgentAddress model)
         {
             var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, model);
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -83,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         public IHttpActionResult Put([FromBody]ModifyAgentAddress model)
         {
             Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, model);
-            return Get(model.Id);
+            return GetById(context, model.Id);
         }
 
         /// <summary>

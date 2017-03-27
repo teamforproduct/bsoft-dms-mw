@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.Common;
@@ -10,6 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,6 +25,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentPlanController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+            var item = docProc.GetSendList(context, Id);
+            var res = new JsonResult(item, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает список пунктов плана по ИД документа
         /// </summary>
@@ -48,13 +58,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Plan + "/{Id:int}")]
         [ResponseType(typeof(FrontDocumentSendList))]
-        public IHttpActionResult GetById(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            var item = docProc.GetSendList(ctx, Id);
-            var res = new JsonResult(item, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -68,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
             //var res = new JsonResult(tmpItem, this);
-            return GetById(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -98,7 +107,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentSendList, model);
             //var res = new JsonResult(tmpItem, this);
-            return GetById(model.Id);
+            return GetById(context, model.Id);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
@@ -10,6 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,6 +25,14 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RoleInfoController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.GetAdminRole(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Список ролей
         /// </summary>
@@ -52,13 +62,12 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontAdminRole))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetAdminRole(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -71,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         public IHttpActionResult Post([FromBody]AddAdminRole model)
         {
             var tmpItem = Action.Execute(EnumAdminActions.AddRole, model);
-            return Get(tmpItem);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -84,7 +93,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         public IHttpActionResult Put([FromBody]ModifyAdminRole model)
         {
             Action.Execute(EnumAdminActions.ModifyRole, model);
-            return Get(model.Id);
+            return GetById(context, model.Id);
         }
 
         /// <summary>
