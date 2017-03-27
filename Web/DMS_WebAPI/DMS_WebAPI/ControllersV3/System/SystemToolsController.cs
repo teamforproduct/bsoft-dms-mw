@@ -1,7 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.FullTextSearch;
-using BL.Model.Common;
 using BL.Model.Database;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
