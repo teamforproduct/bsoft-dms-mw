@@ -145,7 +145,14 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
-
+                // Исключение списка ИД процессов
+                if (filter.NotContainsLinkId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DBModel.Document.Documents>();
+                    filterContains = filter.NotContainsLinkId.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.LinkId != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
                 if (filter.DocumentFromDate.HasValue)
                 {
                     qry = qry.Where(x => (x.RegistrationDate ?? x.CreateDate) >= filter.DocumentFromDate.Value);

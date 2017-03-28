@@ -26,6 +26,11 @@ namespace BL.Model.DocumentCore.Filters
         public List<int> NotContainsDocumentId { get; set; }
 
         /// <summary>
+        /// Массив ИД процессов исключения
+        /// </summary>
+        public List<int> NotContainsLinkId { get; set; }
+
+        /// <summary>
         /// Отобрать по связанным документам
         /// Работает только если в DocumentId передан один ID
         /// </summary>
