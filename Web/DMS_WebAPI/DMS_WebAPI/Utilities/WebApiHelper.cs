@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using JsonResult = DMS_WebAPI.Results.JsonResult;
 using ModelStateDictionary = System.Web.Http.ModelBinding.ModelStateDictionary;
@@ -39,6 +40,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception ex)
             {
+                FileLogger.AppendTextToSiteErrors($"SafeExecuteAsync: Message={ex.Message}  STACK={ex.StackTrace}" );
                 throw ex;
             }
         }
@@ -69,6 +71,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception ex)
             {
+                FileLogger.AppendTextToSiteErrors($"ExecuteAction: Message={ex.Message}  STACK={ex.StackTrace}");
                 throw ex;
                 //  return PrepareResponse(ex.Message, 422);
             }
