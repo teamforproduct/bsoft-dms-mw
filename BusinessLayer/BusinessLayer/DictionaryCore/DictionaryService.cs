@@ -922,7 +922,7 @@ namespace BL.Logic.DictionaryCore
 
             var res = Tree.Get(flatList, filter);
 
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res.Any())
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res != null && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.Journal, ftSearch?.FullTextSearchString);
             }
@@ -1279,7 +1279,7 @@ namespace BL.Logic.DictionaryCore
 
             var res = Tree.Get(flatList, filter);
 
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res.Any())
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res != null && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.Org, ftSearch?.FullTextSearchString);
             }

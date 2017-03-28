@@ -44,11 +44,11 @@ namespace DMS_WebAPI
 #endif
 
 
-//#if !DEBUG
+#if !DEBUG
             // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
-//#endif
+#endif
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{
@@ -59,19 +59,19 @@ namespace DMS_WebAPI
             //mailService.Initialize(dbs);
 
 
-//#if !DEBUG
+#if !DEBUG
             //TODO
             // Полнотекстовый поиск
            var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
            indexService.Initialize(dbs);
-//#endif
+#endif
 
 
-//#if !DEBUG
+#if !DEBUG
             //TODO
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
-//#endif
+#endif
 #if !DEBUG
             //TODO
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
