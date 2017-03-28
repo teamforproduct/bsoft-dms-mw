@@ -111,15 +111,15 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Settings + "/FulltextRowLimit")]
-        public IHttpActionResult GetFulltextRowLimit()
+        public async Task<IHttpActionResult> GetFulltextRowLimit()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetFulltextRowLimit(cxt);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetFulltextRowLimit(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -172,6 +172,5 @@ namespace DMS_WebAPI.ControllersV3.System
                 return res;
             });
         }
-
     }
 }

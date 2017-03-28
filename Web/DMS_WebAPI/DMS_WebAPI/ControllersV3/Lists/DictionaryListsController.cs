@@ -7,9 +7,12 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.CrossCutting.Context;
+using DMS_WebAPI.Models;
 
 namespace DMS_WebAPI.ControllersV3.Lists
 {
@@ -70,18 +73,28 @@ namespace DMS_WebAPI.ControllersV3.Lists
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Agents)]
-        [ResponseType(typeof(List<AutocompleteItem>))]
-        public async Task<IHttpActionResult> GetList([FromUri]UIPaging paging)
+        [ResponseType(typeof (List<AutocompleteItem>))]
+        public async Task<IHttpActionResult> GetList([FromUri] UIPaging paging)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
+
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel) param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAgentExternal(context, paging);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new
+                    {
+                        FavouriteIDs =tmpService.GetFavouriteList(context, tmpItems, currMf.ModuleName, currMf.FeatureName)
+                    };
                 var res = new JsonResult(tmpItems, metaData, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -95,15 +108,21 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAgentBanks(context, filter, paging);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -117,15 +136,21 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentCompanyList(context, filter, paging);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -138,14 +163,20 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetListDepartments([FromUri] FilterDictionaryDepartment filter)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDepartmentsShortList(context, filter);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -180,37 +211,22 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentEmployeeList(context, filter, paging);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, mf);
         }
-
-        ///// <summary>
-        ///// Исполнители должностей
-        ///// </summary>
-        ///// <param name="filter"></param>
-        ///// <param name="paging"></param>
-        ///// <returns></returns>
-        //[HttpGet]
-        //[Route(Features.Executors)]
-        //[ResponseType(typeof(List<AutocompleteItem>))]
-        //public async Task<IHttpActionResult> GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
-        //{
-        //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    return await this.SafeExecuteAsync(ModelState, (context, param) => {
-        //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-        //    var tmpItems = tmpService.GetShortListPositionExecutors(context, filter, paging);
-        //    var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
-        //    var res = new JsonResult(tmpItems, metaData, this);
-        //    res.SpentTime = stopWatch;
-        //    return res;});
-        //}
 
         /// <summary>
         /// Журналы
@@ -226,7 +242,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetRegistrationJournalsShortList(context, filter);
-                //var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                //var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
@@ -243,15 +259,21 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAgentPersons(context, filter, paging);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -264,14 +286,20 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri]FilterDictionaryPosition filter)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetPositionsShortList(context, filter);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -284,14 +312,20 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> PositionsExecutors([FromUri]FilterDictionaryPosition filter)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetPositionsExecutorShortList(context, filter);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -305,15 +339,21 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
         {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetTagList(context, filter, paging);
-                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, mf);
         }
 
         /// <summary>
@@ -330,11 +370,12 @@ namespace DMS_WebAPI.ControllersV3.Lists
 
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var cSess = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
-                var tmpItems = tmpService.GetOnlineUsers(context, sesions);
+                var tmpItems = tmpService.GetOnlineUsers(context, cSess);
                 var res = new JsonResult(tmpItems, this);
                 return res;
-            });
+            }, sesions);
         }
     }
 }

@@ -77,13 +77,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTag>))]
         public async Task<IHttpActionResult> PostGetGroupCountTags([FromBody]FilterBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocuments(ctx, model ?? new FilterBase(), new UIPaging { IsOnlyCounter = true}, EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
-            var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging { IsOnlyCounter = true }, EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -97,13 +97,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> PostGetGroupCountPositions([FromBody]FilterBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocuments(ctx, model?? new FilterBase(), new UIPaging { IsOnlyCounter = true }, EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
-            var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging { IsOnlyCounter = true }, EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
         /// <summary>
