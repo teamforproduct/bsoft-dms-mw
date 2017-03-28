@@ -40,7 +40,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception ex)
             {
-                FileLogger.AppendTextToSiteErrors($"SafeExecuteAsync: Message={ex.Message}  STACK={ex.StackTrace}" );
+                FileLogger.AppendTextToFile($"SafeExecuteAsync: Message={ex.Message}  STACK={ex.StackTrace}", "C:\\err.txt" );
                 throw ex;
             }
         }
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception ex)
             {
-                FileLogger.AppendTextToSiteErrors($"ExecuteAction: Message={ex.Message}  STACK={ex.StackTrace}");
+                FileLogger.AppendTextToFile($"ExecuteAction: Message={ex.Message}  STACK={ex.StackTrace}", "C:\\err.txt");
                 throw ex;
                 //  return PrepareResponse(ex.Message, 422);
             }

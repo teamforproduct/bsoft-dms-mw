@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
@@ -79,13 +80,18 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(FrontAgentEmployeeUser))]
-        public async Task<IHttpActionResult> Get()
+        public IHttpActionResult Get()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                return GetById(context);
-            });
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            return GetById(context);
         }
+        //public async Task<IHttpActionResult> Get()
+        //{
+        //    return await this.SafeExecuteAsync(null, (context, param) =>
+        //    {
+        //        return GetById(context);
+        //    });
+        //}
 
         /// <summary>
         /// Корректирует реквизиты пользователя
@@ -94,33 +100,31 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentUser model)
+        public IHttpActionResult Put([FromBody]ModifyAgentUser model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var contexts = DmsResolver.Current.Get<UserContexts>();
-                var webSeevice = DmsResolver.Current.Get<WebAPIService>();
-                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var context = contexts.Get();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-                var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
+            var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
 
-                employee.ImageId = model.ImageId;
-                employee.LanguageId = model.LanguageId;
+            employee.ImageId = model.ImageId;
+            employee.LanguageId = model.LanguageId;
 
-                employee.Name = model.Name;
-                employee.FirstName = model.FirstName;
-                employee.MiddleName = model.MiddleName;
-                employee.LastName = model.LastName;
-                employee.TaxCode = model.TaxCode;
-                employee.IsMale = model.IsMale;
-                employee.BirthDate = model.BirthDate;
+            employee.Name = model.Name;
+            employee.FirstName = model.FirstName;
+            employee.MiddleName = model.MiddleName;
+            employee.LastName = model.LastName;
+            employee.TaxCode = model.TaxCode;
+            employee.IsMale = model.IsMale;
+            employee.BirthDate = model.BirthDate;
 
-                webSeevice.UpdateUserEmployee(context, employee);
+            webSeevice.UpdateUserEmployee(context, employee);
 
-                contexts.UpdateLanguageId(employee.Id, model.LanguageId);
+            contexts.UpdateLanguageId(employee.Id, model.LanguageId);
 
-                return GetById(context);
-            });
+            return GetById(context);
         }
 
         /// <summary>
@@ -191,7 +195,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var contexts = (UserContexts) param;
+                var contexts = (UserContexts)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItem = tmpService.SetAgentUserLanguage(context, model.LanguageCode);
                 contexts.UpdateLanguageId(context.CurrentAgentId, tmpItem);
@@ -240,7 +244,7 @@ namespace DMS_WebAPI.ControllersV3.User
                 return new JsonResult(ModelState, false, this);
             }
 
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,model.NewPassword);
+            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)
             {
