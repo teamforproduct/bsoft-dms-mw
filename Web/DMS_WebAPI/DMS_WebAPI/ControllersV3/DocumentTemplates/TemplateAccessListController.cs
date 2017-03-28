@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route("{Id:int}/" + Features.AccessList)]
         [ResponseType(typeof(List<FrontTemplateDocumentRestrictedSendList>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentRestrictedSendList filter)
-        {return await this.SafeExecuteAsync(ModelState, context =>
+        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
             if (filter == null) filter = new FilterTemplateDocumentRestrictedSendList();
             filter.TemplateId =  Id ;
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(FrontTemplateDocumentRestrictedSendList))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpPost]
         [Route(Features.AccessList)]
         public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentRestrictedSendList model)
-        {return await this.SafeExecuteAsync(ModelState, context =>
+        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentRestrictedSendList, model);
             return GetById(context, tmpItem);});
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpPut]
         [Route(Features.AccessList)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentRestrictedSendList model)
-        {return await this.SafeExecuteAsync(ModelState, context =>
+        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
             Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList, model);
             return GetById(context, model.Id);});
@@ -106,7 +106,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpDelete]
         [Route(Features.AccessList + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
-        {return await this.SafeExecuteAsync(ModelState, context =>
+        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
             Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);

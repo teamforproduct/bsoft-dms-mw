@@ -43,19 +43,19 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Files)]
-        [ResponseType(typeof(List<FrontTemplateAttachedFile>))]
+        [ResponseType(typeof (List<FrontTemplateAttachedFile>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
-               {
-                   if (filter == null) filter = new FilterTemplateAttachedFile();
-                   filter.TemplateId = Id;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                if (filter == null) filter = new FilterTemplateAttachedFile();
+                filter.TemplateId = Id;
 
-                   var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-                   var tmpItems = tmpService.GetTemplateAttachedFiles(context, filter);
-                   var res = new JsonResult(tmpItems, this);
-                   return res;
-               });
+                var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+                var tmpItems = tmpService.GetTemplateAttachedFiles(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 
@@ -66,10 +66,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateAttachedFile))]
+        [ResponseType(typeof (FrontTemplateAttachedFile))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -82,19 +82,18 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Post([FromUri]AddTemplateAttachedFile model)
+        public async Task<IHttpActionResult> Post([FromUri] AddTemplateAttachedFile model)
         {
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
-            model.PostedFileData = file;
-            model.FileName = file.FileName;
-            model.FileType = file.ContentType;
-
-            //TODO ASYNC
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var file = (HttpPostedFile) param;
+                model.PostedFileData = file;
+                model.FileName = file.FileName;
+                model.FileType = file.ContentType;
+
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateAttachedFile, model);
                 return GetById(context, tmpItem);
-            });
+            }, HttpContext.Current.Request.Files[0]);
         }
 
         /// <summary>
@@ -104,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateAttachedFile model)
+        public async Task<IHttpActionResult> Put([FromBody] ModifyTemplateAttachedFile model)
         {
             //if (HttpContext.Current.Request.Files.Count > 0)
             //{
@@ -113,10 +112,12 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             //    model.FileName = file.FileName;
             //    model.FileType = file.ContentType;
             //}
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDocumentService>();
-                var tmpItem = (FrontTemplateAttachedFile)tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, context, model);
+                var tmpItem =
+                    (FrontTemplateAttachedFile)
+                        tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, context, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -131,13 +132,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Files + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
-               {
-                   Action.Execute(context, EnumDocumentActions.DeleteTemplateAttachedFile, Id);
-                   var tmpItem = new FrontDeleteModel(Id);
-                   var res = new JsonResult(tmpItem, this);
-                   return res;
-               });
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteTemplateAttachedFile, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

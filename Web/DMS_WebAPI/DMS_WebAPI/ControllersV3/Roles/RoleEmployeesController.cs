@@ -35,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
             if (filter == null) filter = new FilterDictionaryAgentEmployee();
             filter.RoleIDs = new List<int> { Id };
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentEmployeeList(context, filter, paging);

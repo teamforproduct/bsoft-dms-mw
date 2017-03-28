@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public async Task<IHttpActionResult> Assignments()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetAvailablePositions(context);
@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
         public async Task<IHttpActionResult> GetAvailableShort()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetAvailablePositionsDialog(context);
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public async Task<IHttpActionResult> GetAssignments()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetAvailablePositions(context, context.CurrentPositionsIdList);
@@ -90,20 +90,19 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Assignments([FromBody]List<int> positionsIdList)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var userContexts = DmsResolver.Current.Get<UserContexts>();
+                var userContexts = (UserContexts)param;
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
 
-                //TODO ASYNC
                 //TODO Здесь необходима проверка на то, что список должностей из доступных
                 userContexts.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
                 //context.CurrentPositionsIdList = positionsIdList;
                 //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
 
                 return new JsonResult(null, this);
-            });
+            }, DmsResolver.Current.Get<UserContexts>());
         }
 
 

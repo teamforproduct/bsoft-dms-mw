@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [ResponseType(typeof(List<FrontMainTag>))]
         public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                    var tmpItems = tmpService.GetMainTags(context, ftSearch, filter, paging, sorting);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [ResponseType(typeof(FrontTag))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddTag model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDictionaryActions.AddTag, model);
                    return GetById(context, tmpItem);
@@ -98,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyTag model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDictionaryActions.ModifyTag, model);
                    return GetById(context, model.Id);
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDictionaryActions.DeleteTag, Id);
                    var tmpItem = new FrontDeleteModel(Id);

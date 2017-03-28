@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [ResponseType(typeof(List<FrontDictionaryDepartment>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryDepartment filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryDepartments(context, filter);
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [ResponseType(typeof(FrontDictionaryDepartment))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddDepartment model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddDepartment, model);
                 return GetById(context, tmpItem);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDepartment model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyDepartment, model);
                 return GetById(context, model.Id);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteDepartment, Id);
                 var tmpItem = new FrontDeleteModel(Id);

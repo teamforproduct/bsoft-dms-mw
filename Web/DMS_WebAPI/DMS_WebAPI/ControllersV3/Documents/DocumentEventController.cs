@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentEvent>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (model == null) model = new IncomingBase();
                 if (model.Filter == null) model.Filter = new FilterBase();
@@ -60,7 +60,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentEvent))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
                 var item = docProc.GetDocumentEvent(context, Id);
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public async Task<IHttpActionResult> Actions([FromUri]int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<ICommandService>();
                 var items = docProc.GetDocumentActions(context, Id, Id);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Events + "/MarkAsRead")]
         public async Task<IHttpActionResult> MarkDocumentEventAsRead([FromBody]MarkDocumentEventAsRead model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.MarkDocumentEventAsRead, model);
                 var res = new JsonResult(true, this);
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Events + "/SendMessage")]
         public async Task<IHttpActionResult> SendMessage([FromBody]SendMessage model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.SendMessage, model, model.CurrentPositionId);
                 var res = new JsonResult(true, this);
@@ -131,7 +131,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Events + "/AddNote")]
         public async Task<IHttpActionResult> AddNote([FromBody]AddNote model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AddNote, model, model.CurrentPositionId);
                 var res = new JsonResult(true, this);
@@ -148,7 +148,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Events + "/SendDocument")]
         public async Task<IHttpActionResult> SendDocument([FromBody]List<AddDocumentSendList> model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
                 var docProc = DmsResolver.Current.Get<IDocumentService>();

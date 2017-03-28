@@ -28,14 +28,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info + "/FullTextReindex")]
         public async Task<IHttpActionResult> FullTextReindex()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
                 var clientServer = dbProc.GetClientServer(context.CurrentClientId);
                 DatabaseModel srv = dbProc.GetServer(clientServer.ServerId);
                 srv.ClientId = clientServer.ClientId;
 
-                //TODO ASYNC
                 var ctx = new AdminContext(srv);
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 ftService.ReindexDatabase(ctx);

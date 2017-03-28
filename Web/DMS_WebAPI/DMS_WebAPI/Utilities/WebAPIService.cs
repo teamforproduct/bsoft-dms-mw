@@ -25,14 +25,12 @@ using DMS_WebAPI.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using System.Web;
 
 namespace DMS_WebAPI.Utilities
@@ -851,12 +849,10 @@ namespace DMS_WebAPI.Utilities
             return _webDb.ExistsUserFingerprints(filter);
         }
 
-        public int MergeUserFingerprint(AddAspNetUserFingerprint model)
+        public int MergeUserFingerprint(IContext userContext, AddAspNetUserFingerprint model)
         {
             if (string.IsNullOrEmpty(model.UserId))
             {
-                //TODO ASYNC
-                var userContext = DmsResolver.Current.Get<UserContexts>().Get();
                 var user = GetUser(userContext, userContext.CurrentAgentId);
                 model.UserId = user.Id;
             }
@@ -867,18 +863,15 @@ namespace DMS_WebAPI.Utilities
                 FingerprintExact = model.Fingerprint
             }).FirstOrDefault();
 
-            if (fp == null) return AddUserFingerprint(model);
-            else return fp.Id;
-
+            return fp?.Id ?? AddUserFingerprint(userContext, model);
         }
 
-        public int AddUserFingerprint(AddAspNetUserFingerprint model)
+        public int AddUserFingerprint(IContext userContext, AddAspNetUserFingerprint model)
         {
 
             if (string.IsNullOrEmpty(model.UserId))
             {
                 //TODO ASYNC
-                var userContext = DmsResolver.Current.Get<UserContexts>().Get();
                 var user = GetUser(userContext, userContext.CurrentAgentId);
                 model.UserId = user.Id;
             }

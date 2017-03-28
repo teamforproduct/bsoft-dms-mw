@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAddressType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAddressTypes(context, filter);
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryContactType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListContactTypes(context, filter);
@@ -73,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAgentExternal(context, paging);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentBank filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAgentBanks(context, filter, paging);
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentCompany filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentCompanyList(context, filter, paging);
@@ -138,7 +138,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetListDepartments([FromUri] FilterDictionaryDepartment filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDepartmentsShortList(context, filter);
@@ -159,7 +159,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListDocumentTypes(context, filter, paging);
@@ -180,7 +180,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentEmployeeList(context, filter, paging);
@@ -203,7 +203,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         //public async Task<IHttpActionResult> GetListDepartments([FromUri] FilterDictionaryPositionExecutor filter, [FromUri]UIPaging paging)
         //{
         //    if (!stopWatch.IsRunning) stopWatch.Restart();
-        //    return await this.SafeExecuteAsync(ModelState, context => {
+        //    return await this.SafeExecuteAsync(ModelState, (context, param) => {
         //    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
         //    var tmpItems = tmpService.GetShortListPositionExecutors(context, filter, paging);
         //    var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, ApiPrefix.CurrentModule(), ApiPrefix.CurrentFeature()) };
@@ -222,7 +222,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri]FilterDictionaryRegistrationJournal filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetRegistrationJournalsShortList(context, filter);
@@ -243,7 +243,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentPerson filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAgentPersons(context, filter, paging);
@@ -264,7 +264,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri]FilterDictionaryPosition filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetPositionsShortList(context, filter);
@@ -284,7 +284,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> PositionsExecutors([FromUri]FilterDictionaryPosition filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetPositionsExecutorShortList(context, filter);
@@ -305,7 +305,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryTag filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetTagList(context, filter, paging);
@@ -328,7 +328,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 var tmpItems = tmpService.GetOnlineUsers(context, sesions);

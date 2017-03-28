@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryPositions(context, filter);
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(FrontDictionaryPosition))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddPosition, model);
                 return GetById(context, tmpItem);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyPosition, model);
                 return GetById(context, model.Id);
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeletePosition, Id);
                 var tmpItem = new FrontDeleteModel(Id);
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info + "/Order")]
         public async Task<IHttpActionResult> SetOrder([FromBody]ModifyPositionOrder model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
                 tmpItem.SetPositionOrder(context, model);

@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentWait>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    if (model == null) model = new IncomingBase();
                    if (model.Filter == null) model.Filter = new FilterBase();
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentWait))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlOn")]
         public async Task<IHttpActionResult> ControlOn([FromBody]ControlOn model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
                    var res = new JsonResult(true, this);
@@ -98,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/AskPostponeDueDate")]
         public async Task<IHttpActionResult> AskPostponeDueDate([FromBody]AskPostponeDueDate model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AskPostponeDueDate, model);
                    var res = new JsonResult(true, this);
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/MarkExecution")]
         public async Task<IHttpActionResult> MarkExecution([FromBody]SendEventMessage model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.MarkExecution, model);
                    var res = new JsonResult(true, this);
@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/CancelPostponeDueDate")]
         public async Task<IHttpActionResult> CancelPostponeDueDate([FromBody]SendEventMessage model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelPostponeDueDate, model);
                    var res = new JsonResult(true, this);
@@ -151,7 +151,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/RejectResult")]
         public async Task<IHttpActionResult> RejectResult([FromBody]SendEventMessage model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectResult, model);
                    var res = new JsonResult(true, this);
@@ -168,7 +168,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/AcceptResult")]
         public async Task<IHttpActionResult> AcceptResult([FromBody]ControlOff model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AcceptResult, model);
                    var res = new JsonResult(true, this);
@@ -185,7 +185,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/CancelExecution")]
         public async Task<IHttpActionResult> CancelExecution([FromBody]ControlOff model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelExecution, model);
                    var res = new JsonResult(true, this);
@@ -204,7 +204,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlOff")]
         public async Task<IHttpActionResult> ControlOff([FromBody]ControlOff model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlOff, model);
                    var res = new JsonResult(true, this);
@@ -222,7 +222,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlChange")]
         public async Task<IHttpActionResult> ControlChange([FromBody]ControlChange model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlChange, model);
                    var res = new JsonResult(true, this);
@@ -239,7 +239,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/SendForExecutionChange")]
         public async Task<IHttpActionResult> SendForExecutionChange([FromBody]ControlChange model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SendForExecutionChange, model);
                    var res = new JsonResult(true, this);
@@ -255,7 +255,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/SendForResponsibleExecutionChange")]
         public async Task<IHttpActionResult> SendForResponsibleExecutionChange([FromBody]ControlChange model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SendForResponsibleExecutionChange, model);
                    var res = new JsonResult(true, this);
@@ -272,7 +272,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlTargetChange")]
         public async Task<IHttpActionResult> ControlTargetChange([FromBody]ControlTargetChange model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlTargetChange, model);
                    var res = new JsonResult(true, this);

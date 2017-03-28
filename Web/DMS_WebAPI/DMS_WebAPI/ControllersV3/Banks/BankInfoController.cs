@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(List<FrontMainAgentBank>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryAgentBank filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetMainAgentBanks(context, ftSearch, filter, paging, sorting);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(FrontAgentBank))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentBank model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentBank, model);
                 return GetById(context, tmpItem);
@@ -98,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentBank model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyAgentBank, model);
                 return GetById(context, model.Id);
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteAgentBank, Id);
                 var tmpItem = new FrontDeleteModel(Id);

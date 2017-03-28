@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
             //filter.PositionIDs = new List<int> { Id };
             //filter.IsChecked = true;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = true });
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
             //filter.PositionIDs = new List<int> { Id };
             //filter.IsChecked = false;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = false });
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetRolePermission model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermission, model);
 
@@ -107,7 +107,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/SetByAccessType")]
         public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModuleAccessType model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModuleAccessType, model);
 
@@ -133,7 +133,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/SetByFeature")]
         public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModuleFeature model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModuleFeature, model);
 
@@ -159,7 +159,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Permissions + "/SetByModule")]
         public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModule model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModule, model);
 

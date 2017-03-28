@@ -47,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionary>))]
         public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                    var tmpItems = tmpService.GetMainCustomDictionaryTypes(context, ftSearch, filter, paging, sorting);
@@ -67,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionaryType>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterCustomDictionaryType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                    var tmpItem = tmpService.GetCustomDictionaryTypes(context, filter);
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(FrontCustomDictionaryType))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddCustomDictionaryType model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDictionaryActions.AddCustomDictionaryType, model);
                    return GetById(context, tmpItem);
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyCustomDictionaryType model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDictionaryActions.ModifyCustomDictionaryType, model);
                    return GetById(context, model.Id);
@@ -133,7 +133,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDictionaryActions.DeleteCustomDictionaryType, Id);
                    var tmpItem = new FrontDeleteModel(Id);

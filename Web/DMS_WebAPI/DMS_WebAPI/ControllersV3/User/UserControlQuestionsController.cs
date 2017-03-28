@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context);
             });
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 webService.ChangeControlQuestion(model);

@@ -6,6 +6,7 @@ using BL.Model.SystemCore.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -32,19 +33,19 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontSystemSession))]
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            //TODO ASYNC
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var sessParam = (IQueryable<FrontSystemSession>) param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, sessParam, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
-            });
+            }, sesions);
         }
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();

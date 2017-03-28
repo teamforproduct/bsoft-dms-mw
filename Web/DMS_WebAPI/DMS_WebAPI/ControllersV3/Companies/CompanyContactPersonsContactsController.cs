@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryContact filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (filter == null) filter = new FilterDictionaryContact();
                 filter.AgentIDs = new List<int> { Id };
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.ContactPersons + "/Contacts")]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentContact model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddEmployeeContact, model);
                 return GetById(context, tmpItem);
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.ContactPersons + "/Contacts")]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentContact model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyEmployeeContact, model);
                 return GetById(context, model.Id);
@@ -112,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.ContactPersons + "/Contacts/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteEmployeeContact, Id);
                 var tmpItem = new FrontDeleteModel(Id);

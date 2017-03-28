@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentRestrictedSendList>))]
         public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
                 var items = docProc.GetRestrictedSendLists(context, Id);
@@ -60,7 +60,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetByDocumentIdListForAutocomplete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
                 var items = docProc.GetRestrictedSendListsForAutocomplete(context, Id);
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentRestrictedSendList))]
         public async Task<IHttpActionResult> GetById(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
                 var item = docProc.GetRestrictedSendList(context, Id);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.AccessList)]
         public async Task<IHttpActionResult> Post([FromBody]ModifyDocumentRestrictedSendList model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentRestrictedSendList, model);
                 return GetById(context, tmpItem);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.AccessList + "/ByStandartSendList")]
         public async Task<IHttpActionResult> Post([FromBody]ModifyDocumentRestrictedSendListByStandartSendList model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, model);
                 var res = new JsonResult(null, this);
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.AccessList + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.DeleteDocumentRestrictedSendList, Id);
                 var tmpItem = new FrontDeleteModel(Id);

@@ -47,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<FrontMainAgentEmployee>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetMainAgentEmployees(context, ftSearch, filter, paging, sorting);
@@ -68,7 +68,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(FrontAgentEmployee))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentEmployeeUser model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var webSeevice = DmsResolver.Current.Get<WebAPIService>();
 
@@ -102,16 +102,16 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentEmployee model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webSeevice = DmsResolver.Current.Get<WebAPIService>();
                 webSeevice.UpdateUserEmployee(context, model);
-                //TODO ASYNC
-                var contexts = DmsResolver.Current.Get<UserContexts>();
+
+                var contexts = (UserContexts)param;
                 contexts.UpdateLanguageId(model.Id, model.LanguageId);
 
                 return GetById(context, model.Id);
-            });
+            }, DmsResolver.Current.Get<UserContexts>());
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webSeevice = DmsResolver.Current.Get<WebAPIService>();
                 webSeevice.DeleteUserEmployee(context, Id);
@@ -144,7 +144,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/DeleteImage/{Id:int}")]
         public async Task<IHttpActionResult> DeleteImage([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, Id);
                 var tmpItem = new FrontDeleteModel(Id);

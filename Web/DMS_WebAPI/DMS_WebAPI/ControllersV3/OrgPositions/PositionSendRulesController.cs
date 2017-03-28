@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = true;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetSubordinationsDIP(context, Id, filter);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = null;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetSubordinationsDIP(context, Id, filter);
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetSubordination model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordination, model);
                 var res = new JsonResult(tmpItem, this);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetByDepartment")]
         public async Task<IHttpActionResult> SetByDepartment([FromBody] SetSubordinationByDepartment model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordinationByDepartment, model);
                 var res = new JsonResult(tmpItem, this);
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetByCompany")]
         public async Task<IHttpActionResult> SetByCompany([FromBody] SetSubordinationByCompany model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordinationByCompany, model);
                 var res = new JsonResult(tmpItem, this);
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetDefault")]
         public async Task<IHttpActionResult> SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetDefaultSubordination, model);
                 var res = new JsonResult(tmpItem, this);
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetAll")]
         public async Task<IHttpActionResult> SetAll([FromBody] SetSubordinations model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetAllSubordination, model);
                 var res = new JsonResult(tmpItem, this);
@@ -166,7 +166,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateSubordinations, model);
                 var res = new JsonResult(tmpItem, this);

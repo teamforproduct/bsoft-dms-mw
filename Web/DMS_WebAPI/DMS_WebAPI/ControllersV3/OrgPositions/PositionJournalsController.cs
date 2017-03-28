@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = true;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRegistrationJournalPositionsDIP(context, Id, filter);
@@ -59,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = null;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRegistrationJournalPositionsDIP(context, Id, filter);
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetJournalAccess model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccess, model);
                 var res = new JsonResult(tmpItem, this);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetByDepartment")]
         public async Task<IHttpActionResult> SetByDepartment([FromBody] SetJournalAccessByDepartment_Position model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByDepartment_Position, model);
                 var res = new JsonResult(tmpItem, this);
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetByCompany")]
         public async Task<IHttpActionResult> SetByCompany([FromBody] SetJournalAccessByCompany_Position model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByCompany_Position, model);
                 var res = new JsonResult(tmpItem, this);
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetDefault")]
         public async Task<IHttpActionResult> SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessDefault_Position, model);
                 var res = new JsonResult(tmpItem, this);
@@ -146,7 +146,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/SetAll")]
         public async Task<IHttpActionResult> SetAll([FromBody] SetJournalAccessAll_Position model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessAll_Position, model);
                 var res = new JsonResult(tmpItem, this);
@@ -163,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Journals + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateJournalAccess_Position, model);
                 var res = new JsonResult(tmpItem, this);

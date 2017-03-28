@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [Route(Features.Passport)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentPeoplePassport model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, model);
                 return GetById(context, model.Id);

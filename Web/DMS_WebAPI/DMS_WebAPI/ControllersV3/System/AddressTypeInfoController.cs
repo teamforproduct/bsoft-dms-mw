@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(List<FrontAddressType>))]
         public async Task<IHttpActionResult> Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryAddressType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryAddressTypes(context, ftSearch, filter);
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddAddressType model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAddressType, model);
                 return GetById(context, tmpItem);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAddressType model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyAddressType, model);
                 return GetById(context, model.Id);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteAddressType, Id);
                 var tmpItem = new FrontDeleteModel(Id);

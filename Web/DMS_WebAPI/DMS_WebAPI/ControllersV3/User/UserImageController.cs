@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItem = tmpService.GetDictionaryAgentUserPicture(context, context.CurrentAgentId);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Image)]
         public async Task<IHttpActionResult> Delete()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, context.CurrentAgentId);
                 var tmpItem = new FrontDeleteModel(context.CurrentAgentId);

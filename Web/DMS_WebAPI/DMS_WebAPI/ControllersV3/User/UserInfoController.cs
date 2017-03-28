@@ -18,7 +18,7 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -37,7 +37,6 @@ namespace DMS_WebAPI.ControllersV3.User
     public class UserInfoController : ApiController
     {
 
-        private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
 
         public UserInfoController()
@@ -61,6 +60,7 @@ namespace DMS_WebAPI.ControllersV3.User
                 _userManager = value;
             }
         }
+
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
 
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context);
             });
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentUser model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var contexts = DmsResolver.Current.Get<UserContexts>();
                 var webSeevice = DmsResolver.Current.Get<WebAPIService>();
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontPermission>))]
         public async Task<IHttpActionResult> GetPermissions()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItem = tmpService.GetUserPermissions(context);
@@ -152,20 +152,20 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontSystemSession>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            //TODO ASYNC
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var sessParam = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, sessParam, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 res.Paging = paging;
                 return res;
-            });
+            }, sesions);
         }
 
         /// <summary>
@@ -189,17 +189,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Language")]
         public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
         {
-            //TODO ASYNC
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var contexts = (UserContexts) param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItem = tmpService.SetAgentUserLanguage(context, model.LanguageCode);
                 contexts.UpdateLanguageId(context.CurrentAgentId, tmpItem);
                 var res = new JsonResult(null, this);
                 return res;
-            });
+            }, DmsResolver.Current.Get<UserContexts>());
         }
 
         /// <summary>
@@ -242,8 +240,7 @@ namespace DMS_WebAPI.ControllersV3.User
                 return new JsonResult(ModelState, false, this);
             }
 
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
-                model.NewPassword);
+            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,model.NewPassword);
 
             if (!result.Succeeded)
             {
@@ -276,13 +273,14 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Logout")]
         public async Task<IHttpActionResult> Logout()
         {
-            //TODO ASYNC
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                DmsResolver.Current.Get<UserContexts>().Remove();
 
-            DmsResolver.Current.Get<UserContexts>().Remove();
+                Request.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
-            Request.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
-
-            return new JsonResult(null, this);
+                return new JsonResult(null, this);
+            });
         }
 
 

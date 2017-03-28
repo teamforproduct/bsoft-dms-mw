@@ -280,10 +280,6 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private void Save(IContext val)
-        {
-            _casheContexts.Add(TokenLower, new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
-        }
         private void Save(string token, IContext val)
         {
             _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });

@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocument>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    if (model == null) model = new IncomingBase();
                    if (model.Filter == null) model.Filter = new FilterBase();
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTag>))]
         public async Task<IHttpActionResult> PostGetGroupCountTags([FromBody]FilterBase model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var items = docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging(), EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
@@ -97,8 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> PostGetGroupCountPositions([FromBody]FilterBase model)
         {
-            //TODO ASYNC AWAIT
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
                 var items =
@@ -121,7 +120,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocument))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -137,7 +136,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontReport))]
         public async Task<IHttpActionResult> GetReportRegistrationCardDocument(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, context, Id);
@@ -156,7 +155,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontReport))]
         public async Task<IHttpActionResult> GetReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, context, model);
@@ -174,13 +173,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(bool))]
         public async Task<IHttpActionResult> VerifyPdf()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
-                var tmpItem = false;
+                bool tmpItem;
                 try
                 {
-                    HttpPostedFile file = HttpContext.Current.Request.Files[0];
                     using (var memoryStream = new MemoryStream())
                     {
                         file.InputStream.CopyTo(memoryStream);
@@ -189,8 +189,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                         tmpItem = (bool)encryptionProc.ExecuteAction(EnumEncryptionActions.VerifyPdf, context, model);
                     }
                 }
-                //TODO ASYNC
-                catch (Exception ex)
+                catch (Exception)
                 {
                     tmpItem = false;
                 }
@@ -208,7 +207,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentByTemplateDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocument, model, model.CurrentPositionId);
                 //var res = new JsonResult(tmpItem, this);
@@ -225,7 +224,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocument, model);
                    //var res = new JsonResult(tmpItem, this);
@@ -243,7 +242,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteDocument, Id);
                    var tmpItem = new FrontDeleteModel(Id);
@@ -261,7 +260,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public async Task<IHttpActionResult> CopyDocument([FromBody]CopyDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
                    //var res = new JsonResult(tmpItem, this);
@@ -282,7 +281,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RegisterDocument([FromBody]RegisterDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.RegisterDocument, model, model.CurrentPositionId);
                    var res = new JsonResult(tmpItem, this);
@@ -300,7 +299,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontRegistrationFullNumber))]
         public async Task<IHttpActionResult> GetNextRegisterDocumentNumber([FromUri]RegisterDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var tmpItem = docProc.GetNextRegisterDocumentNumber(context, model);
@@ -319,7 +318,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public async Task<IHttpActionResult> Actions([FromUri]int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<ICommandService>();
                 var tmpItem = docProc.GetDocumentActions(context, Id);
@@ -337,7 +336,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> StartWork(ChangeWorkStatus model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.StartWork, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
@@ -354,7 +353,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> FinishWork(ChangeWorkStatus model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.FinishWork, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
@@ -375,7 +374,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> ChangeExecutor(ChangeExecutor model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ChangeExecutor, model);
                    var res = new JsonResult(null, this);

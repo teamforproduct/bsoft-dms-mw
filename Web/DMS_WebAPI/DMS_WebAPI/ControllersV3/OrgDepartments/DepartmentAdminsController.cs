@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [ResponseType(typeof(List<FrontAdminEmployeeDepartments>))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Admins)]
         public async Task<IHttpActionResult> Post([FromBody]AddAdminDepartmentAdmin model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.AddDepartmentAdmin, model);
                 return GetById(context, tmpItem);
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Admins + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumAdminActions.DeleteDepartmentAdmin, Id);
                 var tmpItem = new FrontDeleteModel(Id);

@@ -50,7 +50,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.PositionIDs = new List<int> { Id };
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
 
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
@@ -95,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Executors)]
         public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddExecutor, model);
                 return GetById(context, tmpItem);
@@ -126,7 +126,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Executors)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyExecutor, model);
                 return GetById(context, model.Id);
@@ -142,7 +142,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Executors + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteExecutor, Id);
                 var tmpItem = new FrontDeleteModel(Id);

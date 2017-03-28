@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryAgentAddress filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (filter == null) filter = new FilterDictionaryAgentAddress();
                 filter.AgentIDs = new List<int> { Id };
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentAddress model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddBankAddress, model);
                 return GetById(context, tmpItem);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentAddress model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyBankAddress, model);
                 return GetById(context, model.Id);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         [Route(Features.Addresses + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteBankAddress, Id);
                 var tmpItem = new FrontDeleteModel(Id);

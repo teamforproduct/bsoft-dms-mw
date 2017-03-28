@@ -34,7 +34,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontNotifications))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, -1);
             });
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Notifications)]
         public async Task<IHttpActionResult> Put([FromBody]ChangeNotifications model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, -1);
             });

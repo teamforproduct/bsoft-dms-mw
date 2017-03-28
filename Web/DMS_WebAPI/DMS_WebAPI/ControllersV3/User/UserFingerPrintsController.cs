@@ -1,6 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
@@ -41,7 +40,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterAspNetUserFingerprint filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 var user = webService.GetUser(context, context.CurrentAgentId);
@@ -49,7 +48,6 @@ namespace DMS_WebAPI.ControllersV3.User
                 if (filter == null) filter = new FilterAspNetUserFingerprint();
                 filter.UserIDs = new List<string> { user.Id };
 
-                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = webService.GetUserFingerprints(filter);
                 var res = new JsonResult(tmpItems, this);
                 return res;
@@ -66,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAspNetUserFingerprint))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -81,12 +79,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Fingerprints)]
         public async Task<IHttpActionResult> Post([FromBody]AddAspNetUserFingerprint model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 var user = webService.GetUser(context, context.CurrentAgentId);
                 model.UserId = user.Id;
-                var tmpItem = webService.AddUserFingerprint(model);
+                var tmpItem = webService.AddUserFingerprint(context, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -100,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Fingerprints)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserFingerprint model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 var user = webService.GetUser(context, context.CurrentAgentId);
@@ -119,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Fingerprints + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 webService.DeleteUserFingerprint(Id);
@@ -139,7 +137,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
         public async Task<IHttpActionResult> GetEnabled()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 var user = webService.GetUser(context, context.CurrentAgentId);
@@ -157,10 +155,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Fingerprints + "/Enabled")]
         public async Task<IHttpActionResult> SetEnabled([FromBody]ModifyAspNetUserFingerprintEnabled model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
-                var user = webService.GetUser(context, context.CurrentAgentId);
                 webService.ChangeFingerprintEnabled(model.Enabled);
                 var res = new JsonResult(null, this);
                 return res;

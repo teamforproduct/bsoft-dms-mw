@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
                    var items = docProc.GetSavedFilters(context, new FilterDocumentSavedFilter { IsOnlyCurrentUser = false });
@@ -60,7 +60,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
         public async Task<IHttpActionResult> GetOnlyCurrentUser()
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
                    var items = docProc.GetSavedFilters(context, new FilterDocumentSavedFilter { IsOnlyCurrentUser = true });
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentSavedFilter))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentSavedFilter model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.AddSavedFilter, model);
                    var res = new JsonResult(tmpItem, this);
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentSavedFilter model)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.ModifySavedFilter, model);
                    var res = new JsonResult(tmpItem, this);
@@ -128,7 +128,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteSavedFilter, Id);
                    var tmpItem = new FrontDeleteModel(Id);

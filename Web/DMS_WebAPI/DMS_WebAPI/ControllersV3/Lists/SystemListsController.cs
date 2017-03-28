@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemAction>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemAction filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemActions(context, filter);
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontAdminAccessLevel>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterAdminAccessLevel filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAdminAccessLevels(context, filter);
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionaryPositionExecutorType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryPositionExecutorTypes(context, filter);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionaryDocumentDirection>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryDocumentDirection filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryDocumentDirections(context, filter);
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionaryEventType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryEventType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryEventTypes(context, filter);
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemFormat>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemFormat filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemFormats(context, filter);
@@ -154,7 +154,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemFormula>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemFormula filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemFormulas(context, filter);
@@ -173,7 +173,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionaryImportanceEventType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryImportanceEventType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryImportanceEventTypes(context, filter);
@@ -192,7 +192,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<InternalAdminLanguage>))]
         public async Task<IHttpActionResult> GetLanguages([FromUri] FilterAdminLanguage filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILanguages>();
                 var tmpItems = tmpService.GetLanguages(filter);
@@ -211,7 +211,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionaryLinkType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryLinkType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryLinkTypes(context, filter);
@@ -230,7 +230,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemObject>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemObject filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemObjects(context, filter);
@@ -249,7 +249,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemPattern>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemPattern filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemPatterns(context, filter);
@@ -268,7 +268,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionaryResultType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryResultType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryResultTypes(context, filter);
@@ -287,7 +287,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontDictionarySendType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionarySendType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionarySendTypes(context, filter);
@@ -307,7 +307,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryStageType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryStageTypes(context, filter);
@@ -325,7 +325,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionarySubordinationType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context =>
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionarySubordinationTypes(context, filter);
@@ -344,7 +344,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemValueType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemValueType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context => 
+            return await this.SafeExecuteAsync(ModelState, (context, param) => 
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemValueTypes(context, filter);
