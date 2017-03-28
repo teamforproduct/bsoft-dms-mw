@@ -38,7 +38,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
         private const string NO_RULES_VALUE = "N";
-        private const int MAX_DOCUMENT_COUNT_RETURN = 100000;//int.MaxValue;
+//        private const int MAX_DOCUMENT_COUNT_RETURN = 100000;//int.MaxValue;
 
         private IndexWriter _writer;
         private readonly Directory _directory;
@@ -252,34 +252,34 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             #endregion boolFilter
 
-            searchResult = GetQueryResult(out IsNotAll, text, boolQry, boolFilter, paging);
+            var rowLimit = filter?.RowLimit ?? int.MaxValue;
+
+            searchResult = GetQueryResult(out IsNotAll, rowLimit, text, boolQry, boolFilter, paging);
 
             return searchResult;
         }
 
-        private List<FullTextSearchResult> GetQueryResult(out bool IsNotAll, string text, BooleanQuery boolQry, BooleanFilter boolFilter, UIPaging paging)
+        private List<FullTextSearchResult> GetQueryResult(out bool IsNotAll, int rowLimit, string text, BooleanQuery boolQry, BooleanFilter boolFilter, UIPaging paging)
         {
-            var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortField.INT, true));
 
-            var qryRes = _searcher.Search(boolQry, boolFilter, MAX_DOCUMENT_COUNT_RETURN, sort);
+            var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortField.INT, true));
+            var qryRes = _searcher.Search(boolQry, boolFilter, rowLimit, sort);
             FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry.ToString()}'", @"C:\TEMPLOGS\fulltext.log");
-            //var qryRes = _searcher.Search(boolQry, null, MAX_DOCUMENT_COUNT_RETURN);
-            if (qryRes.TotalHits >= MAX_DOCUMENT_COUNT_RETURN)
+            if (qryRes.TotalHits >= rowLimit)
                 IsNotAll = true;
             else
                 IsNotAll = false;
             List<int> lucDocs;
-            if (IsNotAll && ((paging.IsOnlyCounter ?? false) || (paging.IsCalculateAddCounter ?? false)))
+            if (IsNotAll && (paging.IsOnlyCounter ?? false))
                 return new List<FullTextSearchResult>();
-            if (IsNotAll && paging !=null && !(paging.IsOnlyCounter ?? false) && !(paging.IsCalculateAddCounter ?? false) && qryRes.ScoreDocs.All(x=>x is FieldDoc))
+            if (IsNotAll && paging !=null && !(paging.IsOnlyCounter ?? false) && qryRes.ScoreDocs.All(x=>x is FieldDoc))
             {
                 lucDocs = qryRes.ScoreDocs.Select(x => new { doc = (int)(((FieldDoc)x).fields[0]), luc = x.Doc })
                     .GroupBy(x=>x.doc).OrderByDescending(x=>x.Key)
                     .Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize)
                     .SelectMany(x=>x.Select(y=>y.luc)).ToList();
-        //        qryDocs = qryDocs.Where(x => lucDocsWithPaging.Contains(x.Doc)).ToList();
             }
-            else
+            else //TODO если не будем комбирировать с фильтрами из БД, то документы без счетчиков можно выбирать согласно пейджингу в любом случаее
             {
                 lucDocs = qryRes.ScoreDocs.Select(x=>x.Doc).ToList();
             }
@@ -298,7 +298,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     //Score = rdoc.doc.Score
                 }).ToList();
             FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' FetchRowsFromLucena: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
-
             return res;
         }
 

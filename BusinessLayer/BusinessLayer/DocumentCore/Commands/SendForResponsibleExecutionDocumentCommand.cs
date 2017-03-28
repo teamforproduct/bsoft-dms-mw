@@ -7,15 +7,19 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
 using BL.Model.AdminCore;
+using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class SendForResponsibleExecutionDocumentCommand : BaseDocumentCommand
     {
+        private readonly IDocumentService _documentServ;
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public SendForResponsibleExecutionDocumentCommand(IDocumentOperationsDbProcess operationDb)
+        public SendForResponsibleExecutionDocumentCommand(IDocumentService documentServ, IDocumentOperationsDbProcess operationDb)
         {
+            _documentServ = documentServ;
             _operationDb = operationDb;
         }
 
@@ -128,6 +132,8 @@ namespace BL.Logic.DocumentCore.Commands
 
 
             _operationDb.SendBySendList(_context, _document);
+
+            _documentServ.CheckIsInWorkForControls(_context, new FilterDocumentAccess { DocumentId = new List<int> { _document.Id } });
 
             return null;
         }

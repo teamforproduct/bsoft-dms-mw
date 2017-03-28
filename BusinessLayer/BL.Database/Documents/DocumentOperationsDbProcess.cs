@@ -71,6 +71,7 @@ namespace BL.Database.Documents
                             PositionId = x.PositionId,
                             IsInWork = x.IsInWork,
                             IsFavourite = x.IsFavourite,
+                            CountWaits = x.CountWaits,
                         }
                         ).ToList();
                     res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
@@ -1179,6 +1180,7 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             ClientId = x.ClientId,
                                             EntityTypeId = x.EntityTypeId,
+                                            DocumentId = x.DocumentId,
                                             IsFavourite = x.IsFavourite,
                                             PositionId = x.PositionId,
                                             IsInWork = x.IsInWork,
@@ -1213,17 +1215,17 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId)
+        public InternalDocument ChangeIsInWorkAccessPrepare(IContext context, ChangeWorkStatus Model)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var acc = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId)
-                    .Where(x => x.DocumentId == documentId && x.PositionId == context.CurrentPositionId)
+                    .Where(x => x.DocumentId == Model.DocumentId && x.PositionId == Model.CurrentPositionId)
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
                         ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
+                        EntityTypeId = x.EntityTypeId,                        
                         Accesses = new List<InternalDocumentAccess>
                                     {
                                         new InternalDocumentAccess
@@ -1231,7 +1233,10 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             ClientId = x.ClientId,
                                             EntityTypeId = x.EntityTypeId,
+                                            DocumentId = x.DocumentId,
                                             IsInWork = x.IsInWork,
+                                            CountWaits = x.CountWaits,  
+                                            PositionId = x.PositionId,                                          
                                         }
                                     }
 

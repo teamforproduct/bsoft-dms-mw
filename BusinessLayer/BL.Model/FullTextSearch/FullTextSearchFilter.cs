@@ -14,5 +14,6 @@ namespace BL.Model.FullTextSearch
         public bool IsOnlyActual { get; set; }
         public List<string> Accesses { get; set; }
         public List<string> Filters { get; set; }
+        public int? RowLimit { get; set; }
     }
 }

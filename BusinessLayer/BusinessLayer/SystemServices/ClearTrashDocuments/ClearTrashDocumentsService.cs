@@ -8,20 +8,23 @@ using BL.Database.SystemDb;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.ClearTrashDocuments;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.SystemServices.ClearTrashDocuments
 {
     public class ClearTrashDocumentsService : BaseSystemWorkerService, IClearTrashDocumentsService
     {
         private readonly Dictionary<ClearTrashDocumentsSettings, Timer> _timers;
+        private readonly IDocumentService _documentServ;
         private ISystemDbProcess _sysDb;
         private ICommandService _cmdService;
         private readonly IDocumentFileDbProcess _docFileDb;
         private readonly IDocumentOperationsDbProcess _docOperDb;        
         private readonly IFileStore _fileStore;
 
-        public ClearTrashDocumentsService(IDocumentOperationsDbProcess docOperDb, ISettings settings, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settings, logger)
+        public ClearTrashDocumentsService(IDocumentService documentServ, IDocumentOperationsDbProcess docOperDb, ISettings settings, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settings, logger)
         {
+            _documentServ = documentServ;
             _sysDb = sysDb;
             _cmdService = cmdService;
             _docFileDb = docFileDb;
@@ -76,6 +79,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             if (ctx == null) return;
             _docOperDb.MarkDocumentEventAsReadAuto(ctx);
             _docOperDb.ModifyDocumentAccessesStatistics(ctx);
+            _documentServ.CheckIsInWorkForControls(ctx, new FilterDocumentAccess());
 
             // Clear trash documents.
             try

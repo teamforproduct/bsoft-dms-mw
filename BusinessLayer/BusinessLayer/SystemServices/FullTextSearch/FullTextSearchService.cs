@@ -127,7 +127,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         var ranges = _systemDb.GetRanges(ctx, obj, _MAX_ENTITY_FOR_THREAD / 100);
                         foreach (var range in ranges)//.Where(x=>x.Key>400000).ToList())
-                            tskList.Add(() => { ReindexDocument(ctx, worker, obj, true, EnumOperationType.AddNew,range.Key, range.Value); });
+                            tskList.Add(() => { ReindexDocument(ctx, worker, obj, true, EnumOperationType.AddNew, range.Key, range.Value); });
                     }
                     else if (itmsCount.Count > 1 || itmsCount[0] <= _MAX_ENTITY_FOR_THREAD)
                     {
@@ -234,6 +234,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             int? moduleId = (filter?.Module == null) ? (int?)null : Modules.GetId(filter?.Module);
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
                         .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
+            if (filter != null)
+                filter.RowLimit = Settings.GetFulltextRowLimit(ctx);
             var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.CurrentClientId, filter, paging).Where(x => perm.Contains(x.FeatureId));
             return res;
         }
@@ -329,46 +331,47 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     try
                     {
-                        if (item.OperationType == EnumOperationType.Delete)
-                            worker.DeleteItem(new FullTextIndexItem { ObjectId = item.ObjectId, ObjectType = item.ObjectType, OperationType = EnumOperationType.Delete });
-                        else
-                        {
-                            var items = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, (item.OperationType == EnumOperationType.AddFull || item.OperationType == EnumOperationType.UpdateFull), false, item.Id, item.Id);
-                            if (items.Any(x => x.ParentObjectType == EnumObjects.Documents))
+                        if (_systemDb.ObjectToReindex().Contains(item.ObjectType))
+                            if (item.OperationType == EnumOperationType.Delete)
+                                worker.DeleteItem(new FullTextIndexItem { ObjectId = item.ObjectId, ObjectType = item.ObjectType });
+                            else
                             {
-                                items.Where(x => x.ParentObjectType == EnumObjects.Documents).Select(x => x.ParentObjectId).Distinct().ToList()
-                                    .ForEach(x => ReindexDocument(ctx, worker, EnumObjects.Documents, true, EnumOperationType.Update, x, x));
-                                items = items.Where(x => x.ParentObjectType != EnumObjects.Documents);
-                            }
-                            if (items.Any(x => x.ParentObjectType != EnumObjects.Documents))
-                                switch (item.OperationType)
+                                var items = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, (item.OperationType == EnumOperationType.AddFull || item.OperationType == EnumOperationType.UpdateFull), false, item.Id, item.Id);
+                                if (items.Any(x => x.ParentObjectType == EnumObjects.Documents))
                                 {
-                                    case EnumOperationType.AddNew:
-                                        foreach (var itm in items)
-                                        {
-                                            worker.AddNewItem(itm);
-                                        }
-                                        break;
-                                    case EnumOperationType.Update:
-                                        foreach (var itm in items)
-                                        {
-                                            worker.UpdateItem(itm);
-                                        }
-                                        break;
-                                    case EnumOperationType.AddFull:
-                                        foreach (var itm in items)
-                                        {
-                                            worker.AddNewItem(itm);
-                                        }
-                                        break;
-                                    case EnumOperationType.UpdateFull: //TODO DELETE FULL!!!!!
-                                        foreach (var itm in items)
-                                        {
-                                            worker.UpdateItem(itm);
-                                        }
-                                        break;
+                                    items.Where(x => x.ParentObjectType == EnumObjects.Documents).Select(x => x.ParentObjectId).Distinct().ToList()
+                                        .ForEach(x => ReindexDocument(ctx, worker, EnumObjects.Documents, true, EnumOperationType.Update, x, x));
+                                    items = items.Where(x => x.ParentObjectType != EnumObjects.Documents);
                                 }
-                        }
+                                if (items.Any(x => x.ParentObjectType != EnumObjects.Documents))
+                                    switch (item.OperationType)
+                                    {
+                                        case EnumOperationType.AddNew:
+                                            foreach (var itm in items)
+                                            {
+                                                worker.AddNewItem(itm);
+                                            }
+                                            break;
+                                        case EnumOperationType.Update:
+                                            foreach (var itm in items)
+                                            {
+                                                worker.UpdateItem(itm);
+                                            }
+                                            break;
+                                        case EnumOperationType.AddFull:
+                                            foreach (var itm in items)
+                                            {
+                                                worker.AddNewItem(itm);
+                                            }
+                                            break;
+                                        case EnumOperationType.UpdateFull: //TODO DELETE FULL!!!!!
+                                            foreach (var itm in items)
+                                            {
+                                                worker.UpdateItem(itm);
+                                            }
+                                            break;
+                                    }
+                            }
                         processedIds.Add(item.Id);
                     }
                     catch (Exception ex)

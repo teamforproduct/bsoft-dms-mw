@@ -9,16 +9,20 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
+using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.DocumentCore.Commands
 {
     public class SendForControlDocumentCommand : BaseDocumentCommand
     {
+        private readonly IDocumentService _documentServ;
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public SendForControlDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
+        public SendForControlDocumentCommand(IDocumentService documentServ, IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
         {
+            _documentServ = documentServ;
             _documentDb = documentDb;
             _operationDb = operationDb;
         }
@@ -135,6 +139,7 @@ namespace BL.Logic.DocumentCore.Commands
             //if (_document.IsLaunchPlan)
             //    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
+            _documentServ.CheckIsInWorkForControls(_context, new FilterDocumentAccess { DocumentId = new List<int> { _document.Id } });
 
             return null;
         }

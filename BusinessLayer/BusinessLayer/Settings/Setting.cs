@@ -261,6 +261,9 @@ namespace BL.Logic.Settings
         public bool GetFulltextWasInitialized(IContext ctx) =>
              GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
 
+        public int GetFulltextRowLimit(IContext ctx) =>
+            GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT);
+
         public string GetFileStorePath(IContext ctx) =>
              GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.IRF_DMS_FILESTORE_PATH);
 
