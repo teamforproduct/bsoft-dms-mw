@@ -895,11 +895,14 @@ namespace BL.Logic.DictionaryCore
                     var journals = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Journal });
 
-                    // отделы только из найденных журналов
-                    depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
+                    if (journals?.Count > 0)
+                    {
+                        // отделы только из найденных журналов
+                        depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
 
-                    // организации только из найденных отделов
-                    cmpList = _dictDb.GetAgentOrgIDs(context, new FilterDictionaryAgentOrg { DepartmentIDs = depList });
+                        // организации только из найденных отделов
+                        cmpList = _dictDb.GetAgentOrgIDs(context, new FilterDictionaryAgentOrg { DepartmentIDs = depList });
+                    }
                 }
                 else
                 {
