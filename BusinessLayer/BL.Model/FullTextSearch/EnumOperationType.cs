@@ -30,9 +30,5 @@
         /// </summary>
         UpdateFull = 3,
 
-        /// <summary>
-        /// delete full information about the object and his child
-        /// </summary>
-        DeleteFull = 4
     }
 }

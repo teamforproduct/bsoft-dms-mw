@@ -11,6 +11,7 @@ using BL.Model.SystemCore;
 using EntityFramework.Extensions;
 using System.Data.Entity.SqlServer;
 using System;
+using BL.Database.DBModel.System;
 
 namespace BL.Database.SystemDb
 {
@@ -21,6 +22,28 @@ namespace BL.Database.SystemDb
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentClientId) ? dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId).Max(x => x.Id) : 0;
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public IEnumerable<FullTextIndexCash> GetFullTextIndexCash(IContext ctx, FilterFullTextIndexCash filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId);
+                if (filter != null)
+                {
+                    if (filter?.IdFrom != null)
+                        qry = qry.Where(x => x.Id >= filter.IdFrom);
+                    if (filter?.IdTo != null)
+                        qry = qry.Where(x => x.Id <= filter.IdTo);
+                    if (filter?.ObjectId != 0)
+                        qry = qry.Where(x => x.ObjectId == filter.ObjectId);
+                    if (filter?.ObjectType != 0)
+                        qry = qry.Where(x => x.ObjectType == filter.ObjectType);
+                }
+                var res = qry.ToList();
                 transaction.Complete();
                 return res;
             }
@@ -98,9 +121,50 @@ namespace BL.Database.SystemDb
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.Documents,
                     ObjectText = (x.Main.RegistrationNumber != null ? (x.Main.RegistrationNumberPrefix ?? "") + x.Main.RegistrationNumber + (x.Main.RegistrationNumberSuffix ?? "") : "#" + x.Main.Id) + " "
                                 + x.Main.RegistrationJournal.Name + " " + x.Main.RegistrationJournal.Department.Name + " "
-                                + x.Main.TemplateDocument.DocumentType.Name + " " + x.Main.Description + " "
+                                + x.Main.TemplateDocument.DocumentType.Name + " " + x.Main.Description + " " + x.Main.DocumentSubject + " "
                                 + x.Main.ExecutorPositionExecutorAgent.Name + " "
                                 + x.Main.SenderAgent.Name + " " + x.Main.SenderAgentPerson.Agent.Name + " " + x.Main.SenderNumber + " "+ x.Main.Addressee
+                });
+                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
+                return res;
+            } },
+            { EnumObjects.DocumentAccesses, (ctx,dbContext,filterType) =>
+            {
+                var res = new List<FullTextQueryPrepare>();
+                var qry = dbContext.DocumentAccessesSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Select(x=>new { Main = x, FilterId = 0});
+
+                switch (filterType)
+                {
+                    case EnamFilterType.Main:
+                        qry = qry.Where(x=>false);
+                        break;
+                    case EnamFilterType.Slave:
+                        break;
+                    default:
+                        throw new WrongParameterTypeError();
+                }
+
+                var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Accesses);
+                var qryRes= qry.Select(x => new FullTextIndexItem
+                {
+                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ObjectId = x.Main.PositionId.HasValue? x.Main.PositionId.Value : 0,
+                    ObjectType = EnumObjects.DocumentAccesses,    //!!!сервисные цели
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
+                    Filter = (x.Main.PositionId.HasValue
+                                ? (x.Main.AccessLevelId == (int)EnumAccessLevels.PersonallyAndIOAndReferents 
+                                    ?  FullTextFilterTypes.AccessPosition30
+                                    : x.Main.AccessLevelId == (int)EnumAccessLevels.PersonallyAndReferents
+                                        ? FullTextFilterTypes.AccessPosition20
+                                        : FullTextFilterTypes.AccessPosition10
+                                  )
+                                : FullTextFilterTypes.NoFilter)
+                        + ((x.Main.IsInWork) ? FullTextFilterTypes.IsInWork:FullTextFilterTypes.NoFilter)
+                        + ((x.Main.IsFavourite) ? FullTextFilterTypes.IsFavourite:FullTextFilterTypes.NoFilter)
+                        + ((x.Main.CountNewEvents.HasValue && x.Main.CountNewEvents.Value>0) ? FullTextFilterTypes.IsEventNew:FullTextFilterTypes.NoFilter)
+                        + ((x.Main.CountWaits.HasValue && x.Main.CountWaits.Value>0) ? FullTextFilterTypes.IsWaitOpened:FullTextFilterTypes.NoFilter)
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
@@ -115,6 +179,7 @@ namespace BL.Database.SystemDb
                 switch (filterType)
                 {
                     case EnamFilterType.Main:
+                        qry = qry.Where(x=>false);
                         break;
                     case EnamFilterType.Slave:
                         break;
@@ -140,10 +205,9 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = //x.Main.Task.TaskAccesses.Where(y=>x.Main.IsAvailableWithinTask).Select(y=>y.PositionId)
-                             //   .Concat(new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId??0 })
-                                new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId??0 }.Distinct().ToList(),
-                    ObjectText = x.Main.Description + " " + x.Main.AddDescription + " " + x.Main.Task.Task + " "
+                    Access = new List<int> { x.Main.TargetPositionId ?? 0,   x.Main.SourcePositionId ?? 0 }.Distinct()
+                                .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
+                    ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
                     + x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
                     + x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
 
@@ -161,6 +225,7 @@ namespace BL.Database.SystemDb
                 switch (filterType)
                 {
                     case EnamFilterType.Main:
+                        qry = qry.Where(x=>false);
                         break;
                     case EnamFilterType.Slave:
                         break;
@@ -192,7 +257,8 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSendLists,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId }.Where(y=>!x.Main.IsInitial).Distinct().ToList(),
+                    Access = new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId }.Where(y=>!x.Main.IsInitial).Distinct()
+                    .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
                     ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
                     + x.Main.SourcePosition.Name + " "+ x.Main.SourcePosition.ExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
                     + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
@@ -211,6 +277,7 @@ namespace BL.Database.SystemDb
                 switch (filterType)
                 {
                     case EnamFilterType.Main:
+                        qry = qry.Where(x=>false);
                         break;
                     case EnamFilterType.Slave:
                         break;
@@ -224,7 +291,8 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentFiles,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = new List<int> { x.Main.ExecutorPositionId??0}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct().ToList(),
+                    Access = new List<int> { x.Main.ExecutorPositionId??0}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct()
+                    .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.Extension + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -240,6 +308,7 @@ namespace BL.Database.SystemDb
                 switch (filterType)
                 {
                     case EnamFilterType.Main:
+                        qry = qry.Where(x=>false);
                         break;
                     case EnamFilterType.Slave:
                         break;
@@ -258,34 +327,6 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-            { EnumObjects.DocumentWaits, (ctx,dbContext,filterType) =>
-            {
-                var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentWaitsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
-                            .Select(x=>new { Main = x, FilterId = 0});
-
-                switch (filterType)
-                {
-                    case EnamFilterType.Main:
-                        break;
-                    case EnamFilterType.Slave:
-                        break;
-                    default:
-                        throw new WrongParameterTypeError();
-                }
-
-                var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Waits);
-                var qryRes= qry.Select(x => new FullTextIndexItem
-                {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentWaits,
-                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    ObjectText = x.Main.TargetDescription
-                });
-                res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
-                return res;
-            } },
             { EnumObjects.DocumentTags, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
@@ -296,6 +337,7 @@ namespace BL.Database.SystemDb
                 switch (filterType)
                 {
                     case EnamFilterType.Main:
+                        qry = qry.Where(x=>false);
                         break;
                     case EnamFilterType.Slave:
                         break;
@@ -310,7 +352,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentTags,
+                    ObjectId = x.Main.TagId, //!!!сервисные цели
+                    ObjectType = EnumObjects.DocumentTags,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     ObjectText = x.Main.Tag.Name
                 });
@@ -356,9 +399,9 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocument,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.TemplateDocument,
-                    Access = x.Main.Accesses.Select(y=>y.PositionId.Value).ToList(),
+                    Access = x.Main.Accesses.Where(y=>y.PositionId.HasValue).Select(y=>new FullTextIndexItemAccessInfo {Key = y.PositionId.Value }).ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.RegistrationJournal.Name + " " + x.Main.RegistrationJournal.Department.Name + " "
-                                + x.Main.DocumentType.Name + " " + x.Main.Description + " "
+                                + x.Main.DocumentType.Name + " " + x.Main.Description + " " + x.Main.DocumentSubject + " "
                                 + x.Main.SenderAgent.Name + " " + x.Main.SenderAgentPerson.Agent.Name + x.Main.Addressee
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -560,7 +603,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentEmployees,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
-                    ObjectText = x.Main.PersonnelNumber + " " + x.Main.Description + " " + x.Main.Agent.Name + " "
+                    ObjectText = x.Main.PersonnelNumber + " " + x.Main.Description + " " + x.Main.Agent.Name + " " + x.Main.Agent.AgentUser.UserName + " "
                     + x.Main.Agent.AgentPeople.FullName + " " + x.Main.Agent.AgentPeople.TaxCode + " "
                     //+ x.Main.Agent.AgentPeople.BirthDate + " " + x.Main.Agent.AgentPeople.PassportDate + " " 
                     + x.Main.Agent.AgentPeople.PassportNumber + " " + x.Main.Agent.AgentPeople.PassportSerial + " " + x.Main.Agent.AgentPeople.PassportText,
@@ -1359,12 +1402,12 @@ namespace BL.Database.SystemDb
         {
             {EnumObjects.Documents, new List<FullTextDeepUpdateItemQuery>
                 {
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentAccesses, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentTags, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentFiles, FilterType = EnamFilterType.Slave },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSubscriptions, FilterType = EnamFilterType.Slave },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentWaits, FilterType = EnamFilterType.Slave },
             }
             },
             {EnumObjects.DictionaryDepartments, new List<FullTextDeepUpdateItemQuery>
@@ -1517,6 +1560,26 @@ namespace BL.Database.SystemDb
             return res;
         }
 
+        public Dictionary<int, int> GetRanges(IContext ctx, EnumObjects objectType, int rangeCount)
+        {
+            var res = new Dictionary<int, int>();
+            //res = new Dictionary<int, int>() { { 417885, 417885 }};
+            //return res;
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qrys = FullTextIndexItemQuery[objectType](ctx, dbContext);
+                if (qrys?.Any() ?? false)
+                {
+                    var resTmp = qrys.First().Query.OrderBy(x => x.ObjectId).Select(x => x.ObjectId).ToList()
+                        .Select((x, i) => new { ObjectId = x, Group = i / rangeCount }).GroupBy(x => x.Group)
+                        .Select(x => new { min = x.Min(y => y.ObjectId), max = x.Max(y => y.ObjectId) }).ToList();
+                    res = resTmp.ToDictionary(y => y.min, y => y.max);
+                }
+                transaction.Complete();
+            }
+            return res;
+        }
+
         // перепостраивает поисковый индекс для указанного документа
         public IEnumerable<FullTextIndexItem> FullTextIndexPrepareNew(IContext ctx, EnumObjects objectType, bool isDeepUpdate, bool IsDirectFilter, int? idBeg, int? idEnd)
         {
@@ -1533,24 +1596,29 @@ namespace BL.Database.SystemDb
                 foreach (var qry in qrys)
                 {
                     if (idBeg.HasValue || idEnd.HasValue)
+                    {
+                        if (!idBeg.HasValue) idBeg = int.MinValue;
+                        if (!idEnd.HasValue) idEnd = int.MaxValue;
+
                         if (qry.FilterType == EnamFilterType.Main)
                         {
                             qry.Query = IsDirectFilter
-                                ? qry.Query.Where(x => (!idBeg.HasValue || x.ObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value))
-                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
+                                ? qry.Query.Where(x => (x.ObjectId >= idBeg.Value) && (x.ObjectId <= idEnd.Value))
+                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
                         }
                         else if (qry.FilterType == EnamFilterType.Slave)
                         {
                             qry.Query = IsDirectFilter
-                                ? qry.Query.Where(x => (!idBeg.HasValue || x.ParentObjectId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value))
-                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
+                                ? qry.Query.Where(x => (x.ParentObjectId >= idBeg.Value) && (x.ParentObjectId <= idEnd.Value))
+                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
                         }
                         else
                         {
                             qry.Query = IsDirectFilter
-                                ? qry.Query.Where(x => (!idBeg.HasValue || x.FilterId >= idBeg.Value) && (!idEnd.HasValue || x.ObjectId <= idEnd.Value))
-                                : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (!idBeg.HasValue || y.Id >= idBeg.Value) && (!idEnd.HasValue || y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
+                                ? qry.Query.Where(x => (x.FilterId >= idBeg.Value) && (x.FilterId <= idEnd.Value))
+                                : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
                         }
+                    }
                     res.AddRange(qry.Query.ToList());
                 }
                 transaction.Complete();
@@ -1588,5 +1656,7 @@ namespace BL.Database.SystemDb
                 transaction.Complete();
             }
         }
+
+
     }
 }

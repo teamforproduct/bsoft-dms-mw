@@ -47,10 +47,9 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionary>))]
         public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                if (filter == null) filter = new FilterCustomDictionary();
-                filter.TypeIDs = new List<int> { Id };
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            if (filter == null) filter = new FilterCustomDictionary();
+            filter.TypeId =  Id;
 
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetMainCustomDictionaries(context, ftSearch, filter, paging, sorting);

@@ -18,8 +18,19 @@ namespace BL.Model.DocumentCore.Filters
         public List<int> AccessLevelId { get; set; }
 
         /// <summary>
+        /// Массив ИД должностей
+        /// </summary>
+        public List<int> AccessPositionId { get; set; }
+
+        /// <summary>
         /// Признак в работе
         /// </summary>
         public bool? IsInWork { get; set; } // should be true by default
+
+        /// <summary>
+        /// Признак фаварита
+        /// </summary>
+        public bool? IsFavourite { get; set; } // should be true by default
+
     }
 }

@@ -42,7 +42,7 @@ namespace BL.Database.Common
     internal static class CommonQueries
     {
         #region Documents
-        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<FrontDocumentAccess> userAccesses = null, bool? isVerifyExecutorPosition = null, bool isVerifyAccessLevel = true, bool isVerifyIsInWork = false)
+        public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(DmsContext dbContext, IContext ctx, IQueryable<DocumentAccesses> userAccesses = null, bool? isVerifyExecutorPosition = null, bool isVerifyAccessLevel = true, bool isVerifyIsInWork = false)
         {
             var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
@@ -96,38 +96,18 @@ namespace BL.Database.Common
 
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(IContext ctx, DmsContext dbContext, FilterDocument filter, bool isVerifyAccessLevel = true)
         {
-            IQueryable<FrontDocumentAccess> acc = null;
+            IQueryable<DocumentAccesses> acc = null;
 
             #region Filter access
             if (filter != null && (filter.IsInWork.HasValue || filter.IsFavourite.HasValue || filter.AccessLevelId?.Count() > 0))
             {
-                acc = GetDocumentAccesses(ctx, dbContext, false, true, isVerifyAccessLevel);
-                if (filter.IsInWork.HasValue)
+                acc = GetDocumentAccessesQuery(ctx, dbContext, new FilterDocumentAccess
                 {
-                    acc = acc.Where(x => x.IsInWork == filter.IsInWork);
-                }
-
-                if (filter.IsFavourite.HasValue)
-                {
-                    acc = acc.Where(x => x.IsFavourite == filter.IsFavourite);
-                }
-
-                if (filter.AccessLevelId?.Count() > 0)
-                {
-                    var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
-                    filterContains = filter.AccessLevelId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.AccessLevelId == value).Expand());
-
-                    acc = acc.Where(filterContains);
-                }
-                if (filter.AccessPositionId?.Count() > 0)
-                {
-                    var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
-                    filterContains = filter.AccessPositionId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.PositionId == value).Expand());
-
-                    acc = acc.Where(filterContains);
-                }
+                    IsInWork = filter?.IsInWork,
+                    IsFavourite = filter?.IsFavourite,
+                    AccessLevelId = filter?.AccessLevelId,
+                    AccessPositionId = filter?.AccessPositionId,
+                }, false, true, isVerifyAccessLevel);
             }
             #endregion Filter access
 
@@ -165,7 +145,14 @@ namespace BL.Database.Common
 
                     qry = qry.Where(filterContains);
                 }
-
+                // Исключение списка ИД процессов
+                if (filter.NotContainsLinkId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<DBModel.Document.Documents>();
+                    filterContains = filter.NotContainsLinkId.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.LinkId != value).Expand());
+                    qry = qry.Where(filterContains);
+                }
                 if (filter.DocumentFromDate.HasValue)
                 {
                     qry = qry.Where(x => (x.RegistrationDate ?? x.CreateDate) >= filter.DocumentFromDate.Value);
@@ -1781,7 +1768,7 @@ namespace BL.Database.Common
         #endregion
 
         #region Accesses
-        public static IQueryable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, DmsContext dbContext, bool isAll = false, bool isAddClientFilter = true, bool isVerifyAccessLevel = false)
+        public static IQueryable<DocumentAccesses> GetDocumentAccessesQuery(IContext ctx, DmsContext dbContext, FilterDocumentAccess filter, bool isAll = false, bool isAddClientFilter = true, bool isVerifyAccessLevel = false)
         {
             var qry = dbContext.DocumentAccessesSet.AsQueryable();
             if (isAddClientFilter)
@@ -1796,20 +1783,42 @@ namespace BL.Database.Common
                     : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
                 qry = qry.Where(filterContains);
             }
-            return
-                qry.Select(acc => new FrontDocumentAccess
+            if (filter != null)
+            {
+                if (filter.DocumentId?.Count() > 0)
                 {
-                    Id = acc.Id,
-                    PositionId = acc.PositionId,
-                    IsInWork = acc.IsInWork,
-                    DocumentId = acc.DocumentId,
-                    IsFavourite = acc.IsFavourite,
-                    AccessLevelId = acc.AccessLevelId,
-                    AccessLevelName = acc.AccessLevel.Name,
-                    CountNewEvents = acc.CountNewEvents,
-                    CountWaits = acc.CountWaits,
-                    OverDueCountWaits = acc.OverDueCountWaits,
-                });
+                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    filterContains = filter.DocumentId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.AccessLevelId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    filterContains = filter.AccessLevelId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.AccessLevelId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.IsInWork.HasValue)
+                {
+                    qry = qry.Where(x => x.IsInWork == filter.IsInWork);
+                }
+                if (filter.IsFavourite.HasValue)
+                {
+                    qry = qry.Where(x => x.IsFavourite == filter.IsFavourite);
+                }
+                if (filter.AccessPositionId?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    filterContains = filter.AccessPositionId.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+            }
+            return qry;
         }
 
         public static IEnumerable<DocumentAccesses> GetDbDocumentAccesses(DmsContext dbContext, IContext ctx, IEnumerable<InternalDocumentAccess> docAccesses, int documentId)
@@ -2840,9 +2849,9 @@ namespace BL.Database.Common
         #endregion
 
         #region FullText
-        public static void AddFullTextCashInfo(IContext ctx, DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
+        public static void AddFullTextCacheInfo(IContext ctx, DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
         {
-            var cashInfo = new FullTextIndexCash
+            var cacheInfo = new FullTextIndexCash
             {
                 ObjectId = objectId,
                 ObjectType = (int)objType,
@@ -2851,13 +2860,13 @@ namespace BL.Database.Common
             };
 
 
-            dbContext.FullTextIndexCashSet.Add(cashInfo);
+            dbContext.FullTextIndexCashSet.Add(cacheInfo);
 
             dbContext.SaveChanges();
 
         }
 
-        public static void AddFullTextCashInfo(IContext ctx, DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
+        public static void AddFullTextCacheInfo(IContext ctx, DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
         {
             if (objectId == null || !objectId.Any()) return;
             var cashInfos = objectId.Select(x =>

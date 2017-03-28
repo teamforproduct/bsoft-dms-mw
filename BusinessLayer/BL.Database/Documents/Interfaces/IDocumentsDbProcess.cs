@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Reports.FrontModel;
 using BL.Model.Enums;
+using BL.Database.DBModel.Document;
 
 namespace BL.Database.Documents.Interfaces
 {
@@ -67,7 +68,7 @@ namespace BL.Database.Documents.Interfaces
         #endregion DocumentPaperLists   
 
         #region DocumentAccesses
-
+        IEnumerable<InternalDocumentAccess> CheckIsInWorkForControlsPrepare(IContext ctx, FilterDocumentAccess filter);
         IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging);
 
         #endregion DocumentAccesses

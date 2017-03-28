@@ -1,10 +1,12 @@
 ﻿using BL.Model.Common;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
     public class FilterCustomDictionary : BaseFilterCodeNameIsActive
     {
-        public List<int> TypeIDs { get; set; }
+        [IgnoreDataMember]
+        public int? TypeId { get; set; }
     }
 }

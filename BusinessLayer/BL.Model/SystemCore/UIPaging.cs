@@ -23,7 +23,11 @@ namespace BL.Model.SystemCore
         /// </summary>
         [XmlIgnore]
         public int? TotalItemsCount { get; set; }
-
+        /// <summary>
+        /// Признак того, что фуллтекст вернул не все записи из-за ограничений и счетчики считаться не будут
+        /// </summary>
+        [XmlIgnore]
+        public bool? IsNotAll { get; set; } = false;
         /// <summary>
         /// Пагинация. Вернуть все данные не применяя пейджинга
         /// По умолчанию false

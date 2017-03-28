@@ -120,7 +120,7 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging, UISorting sorting)
         {
             return FTS.Get(context, Modules.Employee, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs
-               //, new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
+               , new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
                );
         }
 
@@ -750,7 +750,7 @@ namespace BL.Logic.DictionaryCore
             // Если запрашиваются назначения должности, к которой текущий пользователь НЕ имеет отношение
             if (!myPositions.Any(x => x.PositionId == positionId)) return new List<FrontDictionaryPositionExecutor>();
 
-            return _dictDb.GetPositionExecutors(context, filter);
+            return _dictDb.GetPositionExecutors(context, filter, EnumSortPositionExecutors.PositionExecutorType_ExecutorName);
         }
 
         // Возвращает актуальные назначения текущего пользователя
@@ -887,27 +887,30 @@ namespace BL.Logic.DictionaryCore
                 var ftDict = new Dictionary<EnumObjects, List<int>>();
                 var depList = new List<int>();
                 var cmpList = new List<int>();
-
+                bool IsNotAll;
                 // Если включен поиск по журналам
                 if (searchInJournals)
                 {
                     // ищу только в журналах
-                    var journals = service.SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    var journals = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Journal });
 
-                    // отделы только из найденных журналов
-                    depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
+                    if (journals?.Count > 0)
+                    {
+                        // отделы только из найденных журналов
+                        depList.AddRange(_dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment { JournalIDs = journals }));
 
-                    // организации только из найденных отделов
-                    cmpList = _dictDb.GetAgentOrgIDs(context, new FilterDictionaryAgentOrg { DepartmentIDs = depList });
+                        // организации только из найденных отделов
+                        cmpList = _dictDb.GetAgentOrgIDs(context, new FilterDictionaryAgentOrg { DepartmentIDs = depList });
+                    }
                 }
                 else
                 {
-                    depList = service.SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    depList = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                     new FullTextSearchFilter { Module = Modules.Department });
 
                     // Получаю список ид из полнотекста
-                    cmpList = service.SearchItemParentId(context, ftSearch.FullTextSearchString,
+                    cmpList = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
                         new FullTextSearchFilter { Module = Modules.Org });
                 }
 
@@ -922,7 +925,7 @@ namespace BL.Logic.DictionaryCore
 
             var res = Tree.Get(flatList, filter);
 
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res.Any())
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res != null && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.Journal, ftSearch?.FullTextSearchString);
             }
@@ -1168,6 +1171,7 @@ namespace BL.Logic.DictionaryCore
         {
             return FTS.Get(context, Modules.CustomDictionaries, ftSearch, filter, paging, sorting,
                 _dictDb.GetMainCustomDictionaries, _dictDb.GetCustomDictionarieIDs,
+                new FullTextSearchFilter { Module = Modules.CustomDictionaries, ParentObjectId = filter.TypeId },
                 IsUseParentId: false);
         }
 
@@ -1252,18 +1256,18 @@ namespace BL.Logic.DictionaryCore
                 var service = DmsResolver.Current.Get<IFullTextSearchService>();
                 var ftDict = new Dictionary<EnumObjects, List<int>>();
                 var list = new List<int>();
-
+                bool IsNotAll;
                 // Получаю список ид из полнотекста
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Org });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Org });
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryAgentClientCompanies, list);
 
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Department });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Department });
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryDepartments, list);
 
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
                 if (list.Count > 0) ftDict.Add(EnumObjects.DictionaryPositions, list);
 
-                list = service.SearchItemParentId(context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Employee });
+                list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Employee });
 
                 if (list.Count > 0)
                 {
@@ -1278,7 +1282,7 @@ namespace BL.Logic.DictionaryCore
 
             var res = Tree.Get(flatList, filter);
 
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res.Any())
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && (!ftSearch?.IsDontSaveSearchQueryLog ?? false) && res != null && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.Org, ftSearch?.FullTextSearchString);
             }

@@ -31,5 +31,9 @@ namespace BL.Model.FullTextSearch
 
         public int FeatureId { get; set; }
 
+        public string Security { get; set; }
+
+        public string Filters { get; set; }
+
     }
 }

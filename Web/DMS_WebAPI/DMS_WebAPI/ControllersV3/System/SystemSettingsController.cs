@@ -110,6 +110,23 @@ namespace DMS_WebAPI.ControllersV3.System
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Route(Features.Settings + "/FulltextRowLimit")]
+        public IHttpActionResult GetFulltextRowLimit()
+        {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ISettings>();
+            var tmpItem = tmpService.GetFulltextRowLimit(cxt);
+            var res = new JsonResult(tmpItem, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+        /// <summary>
+        /// Возвращает значение настройки: 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         [Route(Features.Settings + "/AutoplanTimeout")]
         public async Task<IHttpActionResult> GetAutoplanTimeoutMinute()
         {

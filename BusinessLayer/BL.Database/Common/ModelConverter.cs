@@ -30,6 +30,8 @@ namespace BL.Database.Common
                     DocumentDirectionId = (int)document.DocumentDirection,
                     Description = document.Description,
                     IsRegistered = document.IsRegistered,
+                    IsLaunchPlan = document.IsLaunchPlan,
+                    LinkId = document.LinkId,
                     RegistrationJournalId = document.RegistrationJournalId,
                     RegistrationNumberSuffix = document.RegistrationNumberSuffix,
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,

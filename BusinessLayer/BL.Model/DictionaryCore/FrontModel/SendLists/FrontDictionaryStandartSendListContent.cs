@@ -1,9 +1,6 @@
 ﻿using BL.Model.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -63,20 +60,39 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string SendTypeName { get; set; }
         
         /// <summary>
-        /// Название должности получателя
+        /// Получатель. Название должности
         /// </summary>
         public string TargetPositionName { get; set; }
-        
+
         /// <summary>
-        /// ФИО получателя
+        /// Получатель. ФИО
         /// </summary>
         public string TargetExecutorName { get; set; }
 
         /// <summary>
-        /// Суффикс типа исполнения
+        /// Получатель. Аватарка
+        /// </summary>
+        public string TargetExecutorImage { get { return Converter.ToBase64String(imageByteArray); } }
+
+        [IgnoreDataMember]
+        public byte[] ImageByteArray { set { imageByteArray = value; } }
+        private byte[] imageByteArray;
+
+        /// <summary>
+        /// Получатель. Суффикс типа исполнения
         /// </summary>
         public string TargetExecutorTypeSuffix { get; set; }
 
+        /// <summary>
+        /// Получатель. Индекс отдела
+        /// </summary>
+        public string TargetDepartmentIndex { get; set; }
+
+        /// <summary>
+        /// Получатель. Наименование отдела
+        /// </summary>
+        public string TargetDepartmentName { get; set; }
+        
         /// <summary>
         /// Название уровня доступа
         /// </summary>

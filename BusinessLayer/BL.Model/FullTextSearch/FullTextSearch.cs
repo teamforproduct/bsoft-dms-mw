@@ -23,5 +23,15 @@ namespace BL.Model.FullTextSearch
         /// </summary>
         [IgnoreDataMember]
         public List<int> FullTextSearchId { get; set; }
+        /// <summary>
+        /// Массив документов полученного из полнотекстового поиска
+        /// </summary>
+        [IgnoreDataMember]
+        public List<FullTextSearchResult> FullTextSearchResult { get; set; }
+        /// <summary>
+        /// Признак того, что полнотекст вернул не все результаты запроса из-за ограничений
+        /// </summary>
+        [IgnoreDataMember]
+        public bool IsNotAll { get; set; }        
     }
 }

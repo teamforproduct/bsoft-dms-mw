@@ -27,6 +27,7 @@ using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.DependencyInjection;
+using System.Text.RegularExpressions;
 
 namespace BL.Database.Documents
 {
@@ -108,7 +109,7 @@ namespace BL.Database.Documents
                 var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
                 filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
 
-               #endregion Position filters for counters preparing
+                #endregion Position filters for counters preparing
 
                 #region Paging
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
@@ -151,14 +152,17 @@ namespace BL.Database.Documents
                     }
                     #endregion IncomingIds
                 }
-                else if (filter?.FullTextSearchSearch?.FullTextSearchId != null)
+                else if (filter?.FullTextSearchSearch?.FullTextSearchResult != null)
                 {
                     #region FullTextSearchDocumentId
                     #region groupCount
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
-                        var docTags = dbContext.DocumentTagsSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId))
-                            .Select(x => new InternalDocumentTag { DocumentId = x.DocumentId, TagId = x.TagId }).ToList();
+                        var docTags = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
+                            .Select(x => string.Join(" ", x.Select(y => y.Filters)))
+                            .Select(x => x.Split(' ').Where(y => !string.IsNullOrEmpty(y) && y[y.Length - 1].ToString() == FullTextFilterTypes.Tag)
+                                        .Select(y => y.Substring(0, y.Length - 1)).Distinct().ToList())
+                            .SelectMany(x => x).GroupBy(x => x).Select(x => new { Id = x.Key, Count = x.Count() }).ToList();
                         var tagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
                         {
                             TagId = x.Id,
@@ -168,13 +172,16 @@ namespace BL.Database.Documents
                             Name = x.Name,
                             IsSystem = !x.PositionId.HasValue,
                         }).ToList();
-                        tagCounters.ForEach(x => x.DocCount = docTags.Where(y => y.TagId == x.TagId && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count());
-                        docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x => x.DocCount > 0).ToList() } };
+                        tagCounters.ForEach(x => x.DocCount = docTags.Where(y => y.Id == x.TagId.ToString()).Select(y => y.Count).FirstOrDefault());
+                        docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x => x.DocCount > 0).OrderBy(x=>x.Name).ToList() } };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
-                        var docPositions = dbContext.DocumentAccessesSet.Where(x => qry.Select(y => y.Id).Contains(x.DocumentId))
-                            .Select(x => new InternalDocumentAccess { DocumentId = x.DocumentId, PositionId = x.PositionId }).ToList();
+                        var docPositions = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
+                            .Select(x => string.Join(" ", x.Select(y => y.Filters)))
+                            .Select(x => x.Split(' ').Where(y => !string.IsNullOrEmpty(y) && y[y.Length - 1].ToString() == FullTextFilterTypes.WorkGroupPosition)
+                                        .Select(y => y.Substring(0, y.Length - 1)).Distinct().ToList())
+                            .SelectMany(x => x).GroupBy(x => x).Select(x => new { Id = x.Key, Count = x.Count() }).ToList();
                         var positionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDictionaryPosition
                         {
                             Id = x.Id,
@@ -184,31 +191,43 @@ namespace BL.Database.Documents
                             DepartmentName = x.Department.Name,
                             ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
                         }).ToList();
-                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.PositionId == x.Id && filter.FullTextSearchSearch.FullTextSearchId.Contains(y.DocumentId)).Count()); docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).ToList() } };
+                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.Id == x.Id.ToString()).Select(y => y.Count).FirstOrDefault());
+                        docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).OrderBy(x=>x.ExecutorAgentName).ToList() } };
                     }
                     else
                     #endregion groupCount
                     {
-                        var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
-                        var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
-                        FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IDsFromDB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                        //var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
+                        //var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
+                        //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IDsFromDB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                        //docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i).Select(x => x.DocId).ToList();
+                        //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
 
-                        docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
-                            //.OrderBy(x => x.Index)
-                            .Select(x => x.DocId).ToList();
-                        FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
-
-                        if (paging.IsOnlyCounter ?? true)
+                        if ((paging.IsOnlyCounter ?? true) && !filter.FullTextSearchSearch.IsNotAll)  
                         {
-                            paging.TotalItemsCount = docIds.Count();
-                            paging.Counters = new UICounters { Counter1 = 0, Counter2 = 333, Counter3 = 999999 };
+                            var ftDocs = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId);
+                            paging.TotalItemsCount = ftDocs.Count();
+                            if (paging.IsCalculateAddCounter ?? false)
+                            {
+                                var ftDocsAdd = ftDocs.Select(x => string.Join(" ", x.Select(y => y.Security))).ToList();
+                                var accF = ctx.GetAccessFilterForFullText($".{FullTextFilterTypes.IsFavourite}..");
+                                var accN = ctx.GetAccessFilterForFullText($"..{FullTextFilterTypes.IsEventNew}.");
+                                var accC = ctx.GetAccessFilterForFullText($"...{FullTextFilterTypes.IsWaitOpened}");
+                                paging.Counters = new UICounters
+                                {
+                                    Counter1 = ftDocsAdd.Count(x => accF.Any(y => Regex.IsMatch($" {x} ", $" {y} "))),
+                                    Counter2 = ftDocsAdd.Count(x => accN.Any(y => Regex.IsMatch($" {x} ", $" {y} "))),
+                                    Counter3 = ftDocsAdd.Count(x => accC.Any(y => Regex.IsMatch($" {x} ", $" {y} "))),
+                                };
+                            }
                         }
-                        if (paging.IsOnlyCounter ?? false)
+                        if (paging.IsOnlyCounter ?? false )
                         {
                             docs = new List<FrontDocument>();
                         }
                         else
                         {
+                            var docIds = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId).Select(x => x.Key).OrderByDescending(x => x).ToList();
                             if (!paging.IsAll)
                             {
                                 docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
@@ -252,7 +271,7 @@ namespace BL.Database.Documents
                             IsSystem = !x.PositionId.HasValue,
                             DocCount = x.Documents.Count(y => qryT.Select(z => z.Id).Contains(y.DocumentId))
                         }).Where(x => x.DocCount > 0);
-                        var tagCounters = qryTagCounters.ToList();
+                        var tagCounters = qryTagCounters.OrderBy(x => x.Name).ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
@@ -267,15 +286,14 @@ namespace BL.Database.Documents
                             ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
                             DocCount = x.DocumentAccesses.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
                         }).Where(x => x.DocCount > 0);
-                        var positionCounters = qryPositionCounters.ToList();
+                        var positionCounters = qryPositionCounters.OrderBy(x => x.ExecutorAgentName).ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters } };
                     }
                     else
                     #endregion groupCount
                     {
-                        if ((paging.IsOnlyCounter ?? true) || (paging.IsCalculateAddCounter ?? true))
+                        if (paging.IsOnlyCounter ?? true)
                         {
-                            //CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, 345);
                             if (!(paging.IsCalculateAddCounter ?? false))
                             {
                                 paging.TotalItemsCount = qry.Count();
@@ -284,16 +302,13 @@ namespace BL.Database.Documents
                             {
                                 var qryAcc = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                                     .Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
-                                    .GroupBy(x => x.DocumentId)
-                                    .Select(x => new
+                                    .GroupBy(x => x.DocumentId).Select(x => new
                                     {
                                         DocumentId = x.Key,
                                         CountFavourite = x.Max(z => z.IsFavourite ? 1 : 0),
                                         CountNewEvents = x.Max(z => (z.CountNewEvents ?? 0) > 0 ? 1 : 0),
                                         CountWaits = x.Max(z => (z.CountWaits ?? 0) > 0 ? 1 : 0),
-                                    })
-                                    .GroupBy(x => true)
-                                    .Select(x => new
+                                    }).GroupBy(x => true).Select(x => new
                                     {
                                         Count = x.Count(),
                                         CountFavourite = x.Sum(y => y.CountFavourite),
@@ -301,12 +316,11 @@ namespace BL.Database.Documents
                                         CountWaits = x.Sum(y => y.CountWaits),
                                     });
                                 var counts = qryAcc.FirstOrDefault();
-                                paging.TotalItemsCount = (paging.IsOnlyCounter ?? true) ? counts?.Count : (int?)null;
-                                if (paging.IsCalculateAddCounter ?? true)
-                                    paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
+                                paging.TotalItemsCount = counts?.Count;
+                                paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
                             }
                         }
-                        if ((paging.IsOnlyCounter ?? false) || (paging.IsCalculateAddCounter ?? false))
+                        if (paging.IsOnlyCounter ?? false)
                         {
                             docs = new List<FrontDocument>();
                         }
@@ -397,18 +411,13 @@ namespace BL.Database.Documents
 
                     docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
-
-                    var filterDocumentIdContains = PredicateBuilder.False<FrontDocumentAccess>();
-                    filterDocumentIdContains = docs.Select(x => x.Id).Aggregate(filterDocumentIdContains, (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                    var acc = CommonQueries.GetDocumentAccesses(ctx, dbContext)
-                                        .Where(filterDocumentIdContains).GroupBy(x => x.DocumentId)
+                    var acc = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, new FilterDocumentAccess { DocumentId = docs.Select(x => x.Id).ToList()} ).GroupBy(x => x.DocumentId)
                                         .Select(x => new
                                         {
                                             DocumentId = x.Key,
                                             IsFavourite = x.Any(y => y.IsFavourite),
                                             IsInWork = x.Any(y => y.IsInWork),
-                                            NewEventCount = x.Sum(y=>y.CountNewEvents),
+                                            NewEventCount = x.Sum(y => y.CountNewEvents),
                                             //CountWaits = x.Sum(y => y.CountWaits),
                                             //OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
                                         }).ToList();
@@ -451,7 +460,20 @@ namespace BL.Database.Documents
             {
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId);
 
-                var accs = CommonQueries.GetDocumentAccesses(ctx, dbContext).Where(x => x.DocumentId == documentId).ToList();
+                var accs = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, null).Where(x => x.DocumentId == documentId)
+                    .Select(acc => new FrontDocumentAccess
+                    {
+                        Id = acc.Id,
+                        PositionId = acc.PositionId,
+                        IsInWork = acc.IsInWork,
+                        DocumentId = acc.DocumentId,
+                        IsFavourite = acc.IsFavourite,
+                        AccessLevelId = acc.AccessLevelId,
+                        AccessLevelName = acc.AccessLevel.Name,
+                        CountNewEvents = acc.CountNewEvents,
+                        CountWaits = acc.CountWaits,
+                        OverDueCountWaits = acc.OverDueCountWaits,
+                    }).ToList();
 
                 var res = qry.Select(doc => new FrontDocument
                 {
@@ -1051,10 +1073,7 @@ namespace BL.Database.Documents
                     }
                 dbContext.SaveChanges();
                 //TODO Papers
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddNew);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Events.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.AddNew);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Files.Select(x => x.Id).ToList(), EnumObjects.DocumentFiles, EnumOperationType.AddNew);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, sendListsDb.Select(x => x.Id).ToList(), EnumObjects.DocumentSendLists, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddFull);
                 transaction.Complete();
 
             }
@@ -1087,6 +1106,8 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
+                        DocumentId = x.DocumentId,
+                        PositionId = x.PositionId,
                         AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
                         IsInWork = x.IsInWork,
                     }).ToList();
@@ -1137,7 +1158,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
 
                 CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1198,7 +1219,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
                 transaction.Complete();
 
             }
@@ -1399,7 +1420,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1590,8 +1611,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
                 CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.Update);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, doc.Events.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1782,38 +1802,24 @@ namespace BL.Database.Documents
 
         #region DocumentAccesses
 
+        public IEnumerable<InternalDocumentAccess> CheckIsInWorkForControlsPrepare(IContext ctx, FilterDocumentAccess filter)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, filter, true)
+                    .Where(x=>!x.IsInWork && x.CountWaits > 0 );
+
+                var res = qry.Select(x=>new InternalDocumentAccess { DocumentId = x.DocumentId, PositionId = x.PositionId}).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filter, UIPaging paging)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-
-                var qry = CommonQueries.GetDocumentAccesses(ctx, dbContext);
-
-                if (filter != null)
-                {
-                    if (filter.DocumentId?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
-                        filterContains = filter.DocumentId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.AccessLevelId?.Count() > 0)
-                    {
-                        var filterContains = PredicateBuilder.False<FrontDocumentAccess>();
-                        filterContains = filter.AccessLevelId.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.AccessLevelId == value).Expand());
-
-                        qry = qry.Where(filterContains);
-                    }
-
-                    if (filter.IsInWork.HasValue)
-                    {
-                        qry = qry.Where(x => x.IsInWork == filter.IsInWork);
-                    }
-                }
+                var qry = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, filter);
                 qry = qry.OrderByDescending(x => x.DocumentId);
                 if (paging != null)
                 {
@@ -1821,17 +1827,14 @@ namespace BL.Database.Documents
                     {
                         paging.TotalItemsCount = qry.Count();
                     }
-
                     if (paging.IsOnlyCounter ?? false)
                     {
                         return new List<FrontDocumentAccess>();
                     }
-
                     if (!paging.IsAll)
                     {
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
-
                         qry = qry.Skip(() => skip).Take(() => take);
                     }
                 }
@@ -1839,7 +1842,19 @@ namespace BL.Database.Documents
                 {
                     throw new WrongAPIParameters();
                 }
-                var res = qry.ToList();
+                var res = qry.Select(acc => new FrontDocumentAccess
+                    {
+                        Id = acc.Id,
+                        PositionId = acc.PositionId,
+                        IsInWork = acc.IsInWork,
+                        DocumentId = acc.DocumentId,
+                        IsFavourite = acc.IsFavourite,
+                        AccessLevelId = acc.AccessLevelId,
+                        AccessLevelName = acc.AccessLevel.Name,
+                        CountNewEvents = acc.CountNewEvents,
+                        CountWaits = acc.CountWaits,
+                        OverDueCountWaits = acc.OverDueCountWaits,
+                    }).ToList();
                 transaction.Complete();
                 return res;
             }

@@ -6,6 +6,7 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using System;
+using BL.Model.Enums;
 
 namespace BL.CrossCutting.Context
 {
@@ -169,6 +170,16 @@ namespace BL.CrossCutting.Context
             _currentPositionId = position;
         }
 
+        public List<string> GetAccessFilterForFullText(string addFilter)
+        {
+            return CurrentPositionsAccessLevel
+                        .Select(x => $"{x.Key}{FullTextFilterTypes.AccessPosition30}{addFilter}")
+                        .Concat(CurrentPositionsAccessLevel.Where(x => x.Value <= (int)EnumAccessLevels.PersonallyAndReferents)
+                        .Select(x => $"{x.Key}{FullTextFilterTypes.AccessPosition20}{addFilter}"))
+                        .Concat(CurrentPositionsAccessLevel.Where(x => x.Value <= (int)EnumAccessLevels.Personally)
+                        .Select(x => $"{x.Key}{FullTextFilterTypes.AccessPosition10}{addFilter}"))
+                        .ToList();
+        }
 
         public bool IsAdmin => false;
 

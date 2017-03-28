@@ -14,8 +14,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumDocumentAccesses AccessLevel { get; set; }
         public bool IsInWork { get; set; }
         public bool IsFavourite { get; set; }
-
-      //  public InternalDocumentEvent DocumentEvent { get; set; }
+        public int? CountWaits { get; set; }
+        //  public InternalDocumentEvent DocumentEvent { get; set; }
 
     }
 }

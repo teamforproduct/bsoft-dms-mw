@@ -32,7 +32,7 @@ namespace BL.Database.Documents.Interfaces
         void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList);
         void MarkDocumentEventAsReadAuto(IContext ctx);
         void ModifyDocumentAccessesStatistics(IContext ctx, int? documentId = null, List<int> positionId = null);
-        InternalDocument ChangeIsInWorkAccessPrepare(IContext context, int documentId);
+        InternalDocument ChangeIsInWorkAccessPrepare(IContext context, ChangeWorkStatus Model);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);
         InternalDocument ControlOffDocumentPrepare(IContext context, int eventId);
         InternalDocument SelfAffixSigningDocumentPrepare(IContext ctx, int documentId);

@@ -46,6 +46,7 @@ namespace BL.Logic.DocumentCore.Interfaces
 
         #region DocumentAccesses
         IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filters, UIPaging paging);
+        void CheckIsInWorkForControls(IContext ctx, FilterDocumentAccess filter);
         #endregion DocumentAccess
     }
 }

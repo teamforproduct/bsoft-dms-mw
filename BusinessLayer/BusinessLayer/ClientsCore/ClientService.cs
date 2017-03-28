@@ -102,7 +102,7 @@ namespace BL.Logic.ClientCore
             items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH));
             items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT));
             items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
-
+            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT));
 
             items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE));
             items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE));

@@ -90,7 +90,11 @@ namespace BL.Logic.Settings
                     res.ValueType = EnumValueTypes.Bool;
                     res.SettingTypeId = 2;
                     break;
-
+                case EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT:
+                    res.Value = "100000";
+                    res.ValueType = EnumValueTypes.Number;
+                    res.SettingTypeId = 2;
+                    break;
 
                 case EnumSystemSettings.IRF_DMS_FILESTORE_PATH:
                     res.Value = @"D:\FULLTEXT_INDEXES";

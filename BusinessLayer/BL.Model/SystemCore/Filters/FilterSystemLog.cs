@@ -2,6 +2,7 @@
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.SystemCore.Filters
 {
@@ -56,5 +57,10 @@ namespace BL.Model.SystemCore.Filters
         /// Отрывок описания исключения
         /// </summary>
         public string LogException { get; set; }
+        /// <summary>
+        /// Поисковая фраза для полнотекстового поиска
+        /// </summary>
+        [IgnoreDataMember]
+        public string FullTextSearchString { get; set; }
     }
 }

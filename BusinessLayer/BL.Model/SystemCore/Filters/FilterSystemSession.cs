@@ -1,6 +1,7 @@
 ﻿using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.SystemCore.Filters
 {
@@ -35,6 +36,11 @@ namespace BL.Model.SystemCore.Filters
         /// Дополнительная информация лога
         /// </summary>
         public string LoginLogInfo { get; set; }
+        /// <summary>
+        /// Поисковая фраза для полнотекстового поиска
+        /// </summary>
+        [IgnoreDataMember]
+        public string FullTextSearchString { get; set; }
 
     }
 }

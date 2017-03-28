@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BL.Model.FullTextSearch;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -15,8 +16,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         void DeleteItem(FullTextIndexItem item);
         void UpdateItem(FullTextIndexItem item);
 
-        IEnumerable<FullTextSearchResult> SearchItems(string text, int clientId, FullTextSearchFilter filter);
-        IEnumerable<FullTextSearchResult> SearchItems2(string text, int clientId, FullTextSearchFilter filter);
+        IEnumerable<FullTextSearchResult> SearchItems(out bool IsNotAll, string text, int clientId, FullTextSearchFilter filter, UIPaging paging = null);
 
         void DeleteAllDocuments(int clientId);
     }

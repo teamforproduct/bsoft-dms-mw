@@ -38,6 +38,7 @@ namespace BL.CrossCutting.Interfaces
         string GetFulltextDatastorePath(IContext ctx);
 
         int GetFulltextRefreshTimeout(IContext ctx);
+        int GetFulltextRowLimit(IContext ctx);        
 
         bool GetFulltextWasInitialized(IContext ctx);
 
