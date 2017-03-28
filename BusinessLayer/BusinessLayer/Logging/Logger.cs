@@ -88,6 +88,13 @@ namespace BL.Logic.Logging
                                     .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
+                    if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+                    {
+                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
+                                    .Aggregate(filterContains, (current, value) => current.Or(e => (e.LoginLogInfo +" "+ e.Name).Contains(value)).Expand());
+                        qry = qry.Where(filterContains);
+                    }
                     qry = qry.OrderByDescending(x => x.CreateDate);
                 }
                 if (paging != null)
@@ -122,7 +129,7 @@ namespace BL.Logic.Logging
                         ExecutorAgentName = filter?.ExecutorAgentName,
                         LogDateFrom = filter?.CreateDateFrom,
                         LogDateTo = filter?.CreateDateTo,
-                        Message = filter?.LoginLogInfo,
+                        FullTextSearchString = filter?.FullTextSearchString,
                     }, paging).Select(x => new FrontSystemSession
                     {
                         CreateDate = x.LogDate,

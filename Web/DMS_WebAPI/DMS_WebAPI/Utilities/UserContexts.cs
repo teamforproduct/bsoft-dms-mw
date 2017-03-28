@@ -60,6 +60,7 @@ namespace DMS_WebAPI.Utilities
         {
             var res = _casheContexts.AsQueryable()
                 .Where(x => x.Value.StoreObject is IContext)
+                .Where(x=> x.Value.LastUsage > DateTime.UtcNow.AddMinutes(-1))
                 .Select(x => new FrontSystemSession
                 {
                     //Token = x.Key,

@@ -518,6 +518,14 @@ namespace BL.Database.SystemDb
                 {
                     qry = qry.Where(x => x.LogDate <= filter.LogDateTo.Value);
                 }
+                if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+                {
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => (e.Message +" "+e.Agent.Name).Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+
                 if (!String.IsNullOrEmpty(filter.Message))
                 {
                     var filterContains = PredicateBuilder.False<SystemLogs>();
