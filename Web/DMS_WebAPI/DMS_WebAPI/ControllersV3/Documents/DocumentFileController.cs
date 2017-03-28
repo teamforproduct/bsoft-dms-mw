@@ -9,6 +9,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -23,7 +24,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentFileController : ApiController
     {
-        //TODO ASYNC
 
         /// <summary>
         /// Возвращает список файлов
@@ -34,19 +34,22 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [DimanicAuthorize("R")]
         [Route(Features.Files + "/Main")]
         [ResponseType(typeof(List<FrontDocumentAttachedFile>))]
-        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
+            //TODO ASYNC
             if (model == null) model = new IncomingBase();
             if (model.Filter == null) model.Filter = new FilterBase();
             if (model.Paging == null) model.Paging = new UIPaging();
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var items = docProc.GetDocumentFiles(ctx, model.Filter, model.Paging);
-            var res = new JsonResult(items, this);
-            res.Paging = model.Paging;
-            return res;
-        }        
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+                var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
+                var res = new JsonResult(items, this);
+                res.Paging = model.Paging;
+                return res;
+            });
+        }
 
         /// <summary>
         /// Возвращает файл по ИД TODO переделать параметр
@@ -56,13 +59,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
         [ResponseType(typeof(FrontDocumentAttachedFile))]
-        public IHttpActionResult Get([FromUri]FilterDocumentFileIdentity Id)
+        public async Task<IHttpActionResult> Get([FromUri]FilterDocumentFileIdentity Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var item = docProc.GetUserFile(ctx, Id);
-            var res = new JsonResult(item, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+                var item = docProc.GetUserFile(context, Id);
+                var res = new JsonResult(item, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -73,13 +78,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Pdf")]
         [ResponseType(typeof(FrontDocumentAttachedFile))]
-        public IHttpActionResult GetPdf([FromUri]FilterDocumentFileIdentity Id)
+        public async Task<IHttpActionResult> GetPdf([FromUri]FilterDocumentFileIdentity Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var item = docProc.GetUserFilePdf(ctx, Id);
-            var res = new JsonResult(item, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+                var item = docProc.GetUserFilePdf(context, Id);
+                var res = new JsonResult(item, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -90,13 +97,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Preview")]
         [ResponseType(typeof(FrontDocumentAttachedFile))]
-        public IHttpActionResult GetPreview([FromUri]FilterDocumentFileIdentity Id)
+        public async Task<IHttpActionResult> GetPreview([FromUri]FilterDocumentFileIdentity Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var item = docProc.GetUserFilePreview(ctx, Id);
-            var res = new JsonResult(item, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+                var item = docProc.GetUserFilePreview(context, Id);
+                var res = new JsonResult(item, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -106,16 +115,20 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public IHttpActionResult Post([FromUri]AddDocumentFile model)
+        public async Task<IHttpActionResult> Post([FromUri]AddDocumentFile model)
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
             model.IsUseMainNameFile = false;
-            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            //TODO ASYNC
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -124,17 +137,22 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Files+ "/AddUseMainNameFile")]
-        public IHttpActionResult PostAddUseMainNameFile([FromUri]AddDocumentFile model)
+        [Route(Features.Files + "/AddUseMainNameFile")]
+        public async Task<IHttpActionResult> PostAddUseMainNameFile([FromUri]AddDocumentFile model)
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
             model.IsUseMainNameFile = true;
-            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+
+            //TODO ASYNC
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -144,11 +162,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/ChangeDescription")]
-        public IHttpActionResult Put([FromBody]ModifyDocumentFile model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentFile model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentFile, model,model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentFile, model, model.CurrentPositionId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -158,11 +179,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/Rename")]
-        public IHttpActionResult RenameFile([FromBody]ModifyDocumentFile model)
+        public async Task<IHttpActionResult> RenameFile([FromBody]ModifyDocumentFile model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.RenameDocumentFile, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.RenameDocumentFile, model, model.CurrentPositionId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 
@@ -173,11 +197,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/AcceptVersion")]
-        public IHttpActionResult AcceptVersion([FromBody]ChangeWorkOutDocumentFile model)
+        public async Task<IHttpActionResult> AcceptVersion([FromBody]ChangeWorkOutDocumentFile model)
         {
-            Action.Execute(EnumDocumentActions.AcceptDocumentFile, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.AcceptDocumentFile, model);
+                var res = new JsonResult(true, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -187,11 +214,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/AcceptMainVersion")]
-        public IHttpActionResult AcceptMainVersion([FromBody]ChangeWorkOutDocumentFile model)
+        public async Task<IHttpActionResult> AcceptMainVersion([FromBody]ChangeWorkOutDocumentFile model)
         {
-            Action.Execute(EnumDocumentActions.AcceptMainVersionDocumentFile, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.AcceptMainVersionDocumentFile, model);
+                var res = new JsonResult(true, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -201,11 +231,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/RejectVersion")]
-        public IHttpActionResult RejectVersion([FromBody]ChangeWorkOutDocumentFile model)
+        public async Task<IHttpActionResult> RejectVersion([FromBody]ChangeWorkOutDocumentFile model)
         {
-            Action.Execute(EnumDocumentActions.RejectDocumentFile, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.RejectDocumentFile, model);
+                var res = new JsonResult(true, this);
+                return res;
+            });
         }
 
 
@@ -217,11 +250,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Files)]
-        public IHttpActionResult Delete([FromUri]FilterDocumentFileIdentity model)
+        public async Task<IHttpActionResult> Delete([FromUri]FilterDocumentFileIdentity model)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentFile, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentFile, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -230,12 +266,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Files+ "/DeleteFileVersion")]
-        public IHttpActionResult DeleteFileVersion([FromUri]FilterDocumentFileIdentity model)
+        [Route(Features.Files + "/DeleteFileVersion")]
+        public async Task<IHttpActionResult> DeleteFileVersion([FromUri]FilterDocumentFileIdentity model)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentFileVersion, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersion, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -245,11 +284,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Files + "/DeleteFileVersionRecord")]
-        public IHttpActionResult DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
+        public async Task<IHttpActionResult> DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentFileVersionRecord, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionRecord, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -260,13 +302,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route("{Id:int}/" + Features.Files + "/Actions")]
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
-        public IHttpActionResult ActionsByDocument([FromUri]int Id)
+        public async Task<IHttpActionResult> ActionsByDocument([FromUri]int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<ICommandService>();
-            var items = docProc.GetDocumentFileActions(ctx, Id);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<ICommandService>();
+                var items = docProc.GetDocumentFileActions(context, Id);
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -275,15 +319,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Files+"/{Id:int}" + "/Actions")]
+        [Route(Features.Files + "/{Id:int}" + "/Actions")]
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
-        public IHttpActionResult ActionsByFile([FromUri]int Id)
+        public async Task<IHttpActionResult> ActionsByFile([FromUri]int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<ICommandService>();
-            var items = docProc.GetDocumentFileActions(ctx, null, Id);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<ICommandService>();
+                var items = docProc.GetDocumentFileActions(context, null, Id);
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
 

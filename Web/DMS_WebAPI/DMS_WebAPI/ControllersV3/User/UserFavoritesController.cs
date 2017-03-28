@@ -30,11 +30,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontUserFavorites))]
         public async Task<IHttpActionResult> Get()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetUserFavourites(ctx);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetUserFavourites(context);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         ///// <summary>
@@ -64,11 +66,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites + "/Bulk")]
         public async Task<IHttpActionResult> PostBulk([FromBody]FrontUserFavorites model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.SetUserFavoritesBulk(ctx, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                tmpService.SetUserFavoritesBulk(context, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -80,11 +84,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentFavourite model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.SetUserFavorite(ctx, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                tmpService.SetUserFavorite(context, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -96,12 +102,14 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.DeleteUserFingerprint(Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
-
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                webService.DeleteUserFingerprint(Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

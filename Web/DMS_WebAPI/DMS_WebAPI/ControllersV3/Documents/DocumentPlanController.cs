@@ -39,15 +39,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/"+Features.Plan)]
+        [Route("{Id:int}/" + Features.Plan)]
         [ResponseType(typeof(List<FrontDocumentSendList>))]
         public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            var items = docProc.GetSendLists(ctx, Id);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+                   var items = docProc.GetSendLists(context, Id);
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -75,9 +77,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentSendList model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
-            //var res = new JsonResult(tmpItem, this);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
+                   //var res = new JsonResult(tmpItem, this);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -86,14 +91,16 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Plan+"/AddStage")]
+        [Route(Features.Plan + "/AddStage")]
         public async Task<IHttpActionResult> AddStage([FromBody]ModifyDocumentSendListStage model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var tmpItem = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, ctx, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentService>();
+                   var tmpItem = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, context, model);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -105,9 +112,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentSendList model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentSendList, model);
-            //var res = new JsonResult(tmpItem, this);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentSendList, model);
+                   //var res = new JsonResult(tmpItem, this);
+                   return GetById(context, model.Id);
+               });
         }
 
         /// <summary>
@@ -119,10 +129,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentSendList, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteDocumentSendList, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -134,9 +147,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/DeleteStage")]
         public async Task<IHttpActionResult> DeleteStage([FromUri]ModifyDocumentSendListStage model)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentSendListStage, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteDocumentSendListStage, model);
+                   var res = new JsonResult(null, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Возвращает меню по ИД документа для работы с планами 
@@ -144,15 +160,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/" + Features.Plan+ "/Actions")]
+        [Route("{Id:int}/" + Features.Plan + "/Actions")]
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public async Task<IHttpActionResult> Actions([FromUri]int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<ICommandService>();
-            var items = docProc.GetDocumentSendListActions(ctx, Id);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<ICommandService>();
+                   var items = docProc.GetDocumentSendListActions(context, Id);
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -165,11 +183,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocument>))]
         public async Task<IHttpActionResult> AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-            var items = docProc.GetAdditinalLinkedDocumentSendLists(ctx, model);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+                   var items = docProc.GetAdditinalLinkedDocumentSendLists(context, model);
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -178,14 +198,16 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model">ИД пункта плана</param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Plan+ "/LaunchItem")]
+        [Route(Features.Plan + "/LaunchItem")]
         public async Task<IHttpActionResult> LaunchItem([FromBody]Item model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var aplan = DmsResolver.Current.Get<IAutoPlanService>();
-            aplan.ManualRunAutoPlan(ctx, model.Id, null);
-            var res = new JsonResult(model.Id, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var aplan = DmsResolver.Current.Get<IAutoPlanService>();
+                   aplan.ManualRunAutoPlan(context, model.Id, null);
+                   var res = new JsonResult(model.Id, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -197,9 +219,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> LaunchPlan([FromBody]Item model)
         {
-            Action.Execute(EnumDocumentActions.LaunchPlan, model.Id);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.LaunchPlan, model.Id);
+                   var res = new JsonResult(null, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -211,9 +236,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> StopPlan([FromBody]Item model)
         {
-            Action.Execute(EnumDocumentActions.StopPlan, model.Id);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.StopPlan, model.Id);
+                   var res = new JsonResult(null, this);
+                   return res;
+               });
         }
 
     }

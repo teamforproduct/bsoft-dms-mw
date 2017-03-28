@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
@@ -17,6 +18,13 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserNotificationsController : ApiController
     {
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpItem = new FrontNotifications { EMailForNotifications = "t@t.t", IsSendEMail = true };
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
         /// <summary>
         /// Возвращает настройки нотификации
         /// </summary>
@@ -26,10 +34,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontNotifications))]
         public async Task<IHttpActionResult> Get()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = new FrontNotifications { EMailForNotifications = "t@t.t", IsSendEMail = true };
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, -1);
+            });
         }
 
         /// <summary>
@@ -41,8 +49,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Notifications)]
         public async Task<IHttpActionResult> Put([FromBody]ChangeNotifications model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, -1);
+            });
         }
 
     }

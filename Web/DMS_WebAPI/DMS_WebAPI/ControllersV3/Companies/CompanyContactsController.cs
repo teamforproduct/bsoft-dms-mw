@@ -43,14 +43,16 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(List<FrontDictionaryAgentContact>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryContact filter)
         {
-            if (filter == null) filter = new FilterDictionaryContact();
-            filter.AgentIDs = new List<int> { Id };
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                if (filter == null) filter = new FilterDictionaryContact();
+                filter.AgentIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentContacts(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetAgentContacts(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.Contacts+ "/{Id:int}")]
+        [Route(Features.Contacts + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryAgentContact))]
         public async Task<IHttpActionResult> Get(int Id)
         {
@@ -78,8 +80,11 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.Contacts)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentContact model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddCompanyContact, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddCompanyContact, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -91,8 +96,11 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [Route(Features.Contacts)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentContact model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyCompanyContact, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyCompanyContact, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -101,13 +109,16 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Contacts+ "/{Id:int}")]
+        [Route(Features.Contacts + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteCompanyContact, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteCompanyContact, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
 
         }
     }

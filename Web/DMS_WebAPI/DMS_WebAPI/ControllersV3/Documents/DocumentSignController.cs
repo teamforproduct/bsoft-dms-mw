@@ -34,14 +34,16 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSubscription>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentSubscriptions(ctx, filter, paging);
-            var res = new JsonResult(items, this);
-            res.Paging = paging;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentService>();
+                   var items = docProc.GetDocumentSubscriptions(context, filter, paging);
+                   var res = new JsonResult(items, this);
+                   res.Paging = paging;
+                   return res;
+               });
         }
-        
+
         /// <summary>
         /// Регистрирует отклонение подписания
         /// </summary>
@@ -51,9 +53,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectSigning(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.RejectSigning, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отклонение визирования
@@ -64,9 +69,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectVisaing(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.RejectVisaing, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectVisaing, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отклонение согласования
@@ -77,9 +85,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectАgreement(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.RejectАgreement, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectАgreement, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отклонение утверждения
@@ -90,9 +101,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectАpproval(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.RejectАpproval, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectАpproval, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -104,9 +118,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawSigning(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.WithdrawSigning, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отозыв визирования
@@ -117,9 +134,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawVisaing(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.WithdrawVisaing, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawVisaing, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отозыв согласования
@@ -130,9 +150,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawАgreement(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.WithdrawАgreement, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawАgreement, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отозыв утверждения
@@ -143,9 +166,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawАpproval(SendEventMessage model)
         {
-            Action.Execute(EnumDocumentActions.WithdrawАpproval, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawАpproval, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -157,9 +183,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixSigning(AffixSigning model)
         {
-            Action.Execute(EnumDocumentActions.AffixSigning, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует визирование
@@ -170,9 +199,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixVisaing(AffixSigning model)
         {
-            Action.Execute(EnumDocumentActions.AffixVisaing, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixVisaing, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует согласование
@@ -183,9 +215,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixАgreement(AffixSigning model)
         {
-            Action.Execute(EnumDocumentActions.AffixАgreement, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixАgreement, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует утверждение
@@ -196,9 +231,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixАpproval(AffixSigning model)
         {
-            Action.Execute(EnumDocumentActions.AffixАpproval, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixАpproval, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -210,9 +248,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public async Task<IHttpActionResult> SelfAffixSigning(SelfAffixSigning model)
         {
-            Action.Execute(EnumDocumentActions.SelfAffixSigning, model);
-            var res = new JsonResult(true, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -225,9 +266,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public async Task<IHttpActionResult> VerifySigning([FromBody]Item model)
         {
-            Action.Execute(EnumDocumentActions.VerifySigning, model.Id);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.VerifySigning, model.Id);
+                   var res = new JsonResult(null, this);
+                   return res;
+               });
         }
 
     }

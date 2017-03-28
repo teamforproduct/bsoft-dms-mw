@@ -47,12 +47,14 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionary>))]
         public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainCustomDictionaryTypes(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                   var tmpItems = tmpService.GetMainCustomDictionaryTypes(context, ftSearch, filter, paging, sorting);
+                   var res = new JsonResult(tmpItems, this);
+                   res.Paging = paging;
+                   return res;
+               });
         }
 
         /// <summary>
@@ -65,11 +67,13 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionaryType>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterCustomDictionaryType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetCustomDictionaryTypes(ctx, filter);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                   var tmpItem = tmpService.GetCustomDictionaryTypes(context, filter);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -97,8 +101,11 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddCustomDictionaryType model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionaryType, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDictionaryActions.AddCustomDictionaryType, model);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -110,8 +117,11 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyCustomDictionaryType model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyCustomDictionaryType, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDictionaryActions.ModifyCustomDictionaryType, model);
+                   return GetById(context, model.Id);
+               });
         }
 
         /// <summary>
@@ -123,10 +133,13 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteCustomDictionaryType, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDictionaryActions.DeleteCustomDictionaryType, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

@@ -33,11 +33,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentWorkGroup(ctx, filter, paging);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentService>();
+                   var items = docProc.GetDocumentWorkGroup(context, filter, paging);
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -47,15 +49,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="paging">Пейджинг</param>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.WorkGroups+ "/Access")]
+        [Route(Features.WorkGroups + "/Access")]
         [ResponseType(typeof(List<FrontDocumentAccess>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDocumentAccess filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentAccesses(ctx, filter, paging);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentService>();
+                   var items = docProc.GetDocumentAccesses(context, filter, paging);
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
     }

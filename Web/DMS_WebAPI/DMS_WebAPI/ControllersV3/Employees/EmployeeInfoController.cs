@@ -47,12 +47,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<FrontMainAgentEmployee>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainAgentEmployees(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetMainAgentEmployees(context, ftSearch, filter, paging, sorting);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            });
         }
 
 
@@ -81,12 +83,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentEmployeeUser model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var webSeevice = DmsResolver.Current.Get<WebAPIService>();
 
-            var tmpItem = webSeevice.AddUserEmployee(ctx, model);
+                   var tmpItem = webSeevice.AddUserEmployee(context, model);
 
-            return GetById(context, tmpItem);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -98,15 +102,16 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentEmployee model)
         {
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
-            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+                webSeevice.UpdateUserEmployee(context, model);
+                //TODO ASYNC
+                var contexts = DmsResolver.Current.Get<UserContexts>();
+                contexts.UpdateLanguageId(model.Id, model.LanguageId);
 
-            webSeevice.UpdateUserEmployee(ctx, model);
-
-            contexts.UpdateLanguageId(model.Id, model.LanguageId);
-
-            return GetById(context, model.Id);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -118,12 +123,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
-            webSeevice.DeleteUserEmployee(ctx, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+                webSeevice.DeleteUserEmployee(context, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 
@@ -137,10 +144,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/DeleteImage/{Id:int}")]
         public async Task<IHttpActionResult> DeleteImage([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteAgentImage, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 

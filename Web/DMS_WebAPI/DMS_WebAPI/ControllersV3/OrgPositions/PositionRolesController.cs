@@ -38,11 +38,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = true;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetPositionRolesDIP(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -59,11 +62,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = null;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetPositionRolesDIP(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -75,9 +81,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Roles + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetAdminPositionRole model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetPositionRole, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetPositionRole, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 
@@ -90,9 +99,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Roles + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.DuplicatePositionRoles, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicatePositionRoles, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

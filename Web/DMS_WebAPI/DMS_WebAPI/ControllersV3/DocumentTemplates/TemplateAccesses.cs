@@ -43,14 +43,16 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontTemplateDocumentAccess>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentAccess filter)
         {
-            if (filter == null) filter = new FilterTemplateDocumentAccess();
-            filter.TemplateId =  Id ;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   if (filter == null) filter = new FilterTemplateDocumentAccess();
+                   filter.TemplateId = Id;
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentAccesses(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+                   var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+                   var tmpItems = tmpService.GetTemplateDocumentAccesses(context, filter);
+                   var res = new JsonResult(tmpItems, this);
+                   return res;
+               });
         }
 
 
@@ -79,8 +81,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Accesses)]
         public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentAccess model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentAccess, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentAccess, model);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -92,8 +97,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Accesses)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentAccess model)
         {
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentAccess, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentAccess, model);
+                   return GetById(context, model.Id);
+               });
         }
 
         /// <summary>
@@ -105,10 +113,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Accesses + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentAccess, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentAccess, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

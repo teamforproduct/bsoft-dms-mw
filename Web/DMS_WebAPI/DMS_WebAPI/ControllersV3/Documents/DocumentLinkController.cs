@@ -35,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/"+Features.Links)]
+        [Route("{Id:int}/" + Features.Links)]
         [ResponseType(typeof(List<int>))]
         public async Task<IHttpActionResult> Get(int Id)
         {
@@ -55,9 +55,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<int>))]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentLink model)
         {
-            Action.Execute(EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
-            var res = new JsonResult(null, this);
-            return GetById(context, model.DocumentId);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
+                   var res = new JsonResult(null, this);
+                   return GetById(context, model.DocumentId);
+               });
         }
 
         /// <summary>
@@ -69,9 +72,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Links + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentLink, Id);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteDocumentLink, Id);
+                   var res = new JsonResult(null, this);
+                   return res;
+               });
         }
 
     }

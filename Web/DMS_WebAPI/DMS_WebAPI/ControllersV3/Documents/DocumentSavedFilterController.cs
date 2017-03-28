@@ -42,11 +42,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
         public async Task<IHttpActionResult> Get()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var items = docProc.GetSavedFilters(ctx, new FilterDocumentSavedFilter { IsOnlyCurrentUser = false });
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
+                   var items = docProc.GetSavedFilters(context, new FilterDocumentSavedFilter { IsOnlyCurrentUser = false });
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -54,15 +56,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route(Features.SavedFilters+"/CurrentUser")]
+        [Route(Features.SavedFilters + "/CurrentUser")]
         [ResponseType(typeof(List<FrontDocumentSavedFilter>))]
         public async Task<IHttpActionResult> GetOnlyCurrentUser()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
-            var items = docProc.GetSavedFilters(ctx, new FilterDocumentSavedFilter { IsOnlyCurrentUser = true});
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentFiltersService>();
+                   var items = docProc.GetSavedFilters(context, new FilterDocumentSavedFilter { IsOnlyCurrentUser = true });
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -90,9 +94,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentSavedFilter model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.AddSavedFilter, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddSavedFilter, model);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -104,9 +111,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentSavedFilter model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.ModifySavedFilter, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifySavedFilter, model);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -118,11 +128,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.SavedFilters + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteSavedFilter, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteSavedFilter, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
-        
+
     }
 }

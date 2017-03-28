@@ -45,12 +45,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontDictionaryDocumentType>))]
         public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainDictionaryDocumentTypes(ctx, ftSearch, filter, paging, sorting);
+            var tmpItems = tmpService.GetMainDictionaryDocumentTypes(context, ftSearch, filter, paging, sorting);
             var res = new JsonResult(tmpItems, this);
-            return res;
+            return res;});
         }
 
 
@@ -78,9 +78,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentType model)
-        {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddDocumentType, model);
-            return GetById(context, tmpItem);
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
+            var tmpItem = Action.Execute(context, EnumDictionaryActions.AddDocumentType, model);
+            return GetById(context, tmpItem);});
         }
 
         /// <summary>
@@ -91,9 +92,10 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentType model)
-        {
-            Action.Execute(EnumDictionaryActions.ModifyDocumentType, model);
-            return GetById(context, model.Id);
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
+            Action.Execute(context, EnumDictionaryActions.ModifyDocumentType, model);
+            return GetById(context, model.Id);});
         }
 
         /// <summary>
@@ -104,11 +106,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
-        {
-            Action.Execute(EnumDictionaryActions.DeleteDocumentType, Id);
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
+            Action.Execute(context, EnumDictionaryActions.DeleteDocumentType, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            return res;
+            return res;});
         }
 
     }

@@ -26,11 +26,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsSendAllForExecution")]
         public async Task<IHttpActionResult> IsSendAllForExecution()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetSubordinationsSendAllForExecution(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetSubordinationsSendAllForExecution(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -43,11 +45,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsSendAllForInforming")]
         public async Task<IHttpActionResult> IsSendAllForInforming()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetSubordinationsSendAllForInforming(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetSubordinationsSendAllForInforming(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -58,11 +62,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsDigitalSignatureIsUseCertificateSign")]
         public async Task<IHttpActionResult> IsDigitalSignatureIsUseCertificateSign()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetDigitalSignatureIsUseCertificateSign(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetDigitalSignatureIsUseCertificateSign(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -73,11 +79,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsDigitalSignatureIsUseInternalSign")]
         public async Task<IHttpActionResult> IsDigitalSignatureIsUseInternalSign()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetDigitalSignatureIsUseInternalSign(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetDigitalSignatureIsUseInternalSign(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -88,11 +96,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/FulltextRefreshTimeout")]
         public async Task<IHttpActionResult> GetFulltextRefreshTimeout()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetFulltextRefreshTimeout(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetFulltextRefreshTimeout(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -103,11 +113,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/AutoplanTimeout")]
         public async Task<IHttpActionResult> GetAutoplanTimeoutMinute()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetAutoplanTimeoutMinute(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetAutoplanTimeoutMinute(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -118,11 +130,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/ClearTrashDocumentsTimeout")]
         public async Task<IHttpActionResult> GetClearTrashDocumentsTimeoutMinute()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinute(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinute(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -133,11 +147,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/ClearTrashDocumentsTimeoutMinuteForClear")]
         public async Task<IHttpActionResult> GetClearTrashDocumentsTimeoutMinuteForClear()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISettings>();
-            var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinuteForClear(cxt);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinuteForClear(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

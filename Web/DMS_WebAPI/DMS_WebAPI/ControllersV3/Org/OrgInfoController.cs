@@ -46,11 +46,13 @@ namespace DMS_WebAPI.ControllersV3.Org
         [ResponseType(typeof(List<TreeItem>))]
         public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryStaffList filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetStaffList(ctx, ftSearch, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetStaffList(context, ftSearch, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -63,11 +65,13 @@ namespace DMS_WebAPI.ControllersV3.Org
         [ResponseType(typeof(FrontDictionaryAgentClientCompany))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryAgentOrg filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentClientCompanies(ctx, filter);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItem = tmpService.GetDictionaryAgentClientCompanies(context, filter);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -95,8 +99,11 @@ namespace DMS_WebAPI.ControllersV3.Org
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentClientCompany model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentClientCompany, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentClientCompany, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -108,8 +115,11 @@ namespace DMS_WebAPI.ControllersV3.Org
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentClientCompany model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyAgentClientCompany, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyAgentClientCompany, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -121,10 +131,13 @@ namespace DMS_WebAPI.ControllersV3.Org
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteAgentClientCompany, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteAgentClientCompany, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

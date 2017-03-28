@@ -53,17 +53,19 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Passport)]
         public async Task<IHttpActionResult> Put([FromBody]AddAgentPeoplePassport model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpModel = new ModifyAgentPeoplePassport()
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Id = ctx.CurrentAgentId,
-                PassportDate = model.PassportDate,
-                PassportNumber = model.PassportNumber,
-                PassportSerial = model.PassportSerial,
-                PassportText = model.PassportText
-            };
-            Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, tmpModel);
-            return GetById(context);
+                var tmpModel = new ModifyAgentPeoplePassport()
+                {
+                    Id = context.CurrentAgentId,
+                    PassportDate = model.PassportDate,
+                    PassportNumber = model.PassportNumber,
+                    PassportSerial = model.PassportSerial,
+                    PassportText = model.PassportText
+                };
+                Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, tmpModel);
+                return GetById(context);
+            });
         }
 
     }

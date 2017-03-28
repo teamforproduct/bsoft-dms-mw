@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -17,6 +18,18 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserControlQuestionController : ApiController
     {
+        private IHttpActionResult GetById(IContext context)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var user = webService.GetUser(context, context.CurrentAgentId);
+            var res = new JsonResult(new FrontAspNetUserControlQuestion
+            {
+                Question = user.ControlQuestion?.Name,
+                QuestionId = user.ControlQuestionId ?? -1,
+                Answer = user.ControlAnswer
+            }, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает контрольный вопрос и ответ
@@ -26,16 +39,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public async Task<IHttpActionResult> Get()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var user = webService.GetUser(ctx, ctx.CurrentAgentId);
-            var res = new JsonResult(new FrontAspNetUserControlQuestion
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Question = user.ControlQuestion?.Name,
-                QuestionId = user.ControlQuestionId ?? -1,
-                Answer = user.ControlAnswer
-            }, this);
-            return res;
+                return GetById(context);
+            });
         }
 
         /// <summary>
@@ -47,10 +54,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeControlQuestion(model);
-            return Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                webService.ChangeControlQuestion(model);
+                return GetById(context);
+            });
         }
 
     }

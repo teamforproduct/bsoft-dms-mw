@@ -64,10 +64,9 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(FrontDictionaryAgentAccount))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                return GetById(ctx, Id);
+                return GetById(context, Id);
             });
         }
 
@@ -82,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentAccount, model);
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentAccount, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -98,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.ModifyAgentAccount, model);
+                Action.Execute(context, EnumDictionaryActions.ModifyAgentAccount, model);
                 return GetById(context, model.Id);
             });
         }
@@ -114,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.DeleteAgentAccount, Id);
+                Action.Execute(context, EnumDictionaryActions.DeleteAgentAccount, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

@@ -27,15 +27,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/"+Features.Tags)]
+        [Route("{Id:int}/" + Features.Tags)]
         [ResponseType(typeof(List<FrontDocumentTag>))]
         public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentTagService>();
-            var items = docProc.GetTags(ctx, Id);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentTagService>();
+                var items = docProc.GetTags(context, Id);
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -47,9 +49,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tags)]
         public async Task<IHttpActionResult> Post([FromBody]ModifyDocumentTags model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

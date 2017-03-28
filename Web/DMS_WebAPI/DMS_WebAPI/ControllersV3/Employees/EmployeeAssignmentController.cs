@@ -49,11 +49,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.AgentIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
             var res = new JsonResult(tmpItems, this);
-            return res;
+            return res;});
         }
 
         /// <summary>
@@ -75,11 +76,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
             filter.IsActive = true;
 
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
             var res = new JsonResult(tmpItems, this);
-            return res;
+            return res;});
         }
 
         /// <summary>
@@ -98,11 +100,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
 
             filter.PositionIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetListRoles(ctx,  filter, paging);
+            var tmpItems = tmpService.GetListRoles(context,   filter, paging);
             var res = new JsonResult(tmpItems, this);
-            return res;
+            return res;});
         }
 
         /// <summary>
@@ -129,11 +132,11 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpPost]
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, ctx, model);
-            return GetById(context, tmpItem);
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context,  model);
+            return GetById(context, tmpItem);});
         }
 
         /// <summary>
@@ -144,11 +147,11 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpPut]
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, ctx, model);
-            return GetById(context, model.Id);
+            tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, context, model);
+            return GetById(context, model.Id);});
         }
 
         /// <summary>
@@ -159,14 +162,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpDelete]
         [Route(Features.Assignments + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, ctx, Id);
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            return res;
+            return res;});
 
         }
     }

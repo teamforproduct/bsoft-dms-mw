@@ -32,8 +32,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontFile))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-
-
+            //TODO ASYNC
             var tmpService = DmsResolver.Current.Get<ITempStorageService>();
             var img = tmpService.GetStoreObject(Id) as string;
 
@@ -56,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.System
         public async Task<IHttpActionResult> Post()
         {
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
-
+            //TODO ASYNC
             byte[] buffer = new byte[file.ContentLength];
             file.InputStream.Read(buffer, 0, file.ContentLength);
             var fileContent = Convert.ToBase64String(buffer);
@@ -75,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpDelete]
         [Route(Features.TempFileStorage + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
-        {
+        {//TODO ASYNC
             var tmpService = DmsResolver.Current.Get<ITempStorageService>();
             tmpService.ExtractStoreObject(Id);
             var tmpItem = new FrontDeleteModel(Id);

@@ -46,14 +46,16 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontTemplateAttachedFile>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
         {
-            if (filter == null) filter = new FilterTemplateAttachedFile();
-            filter.TemplateId =  Id ;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   if (filter == null) filter = new FilterTemplateAttachedFile();
+                   filter.TemplateId = Id;
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateAttachedFiles(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+                   var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+                   var tmpItems = tmpService.GetTemplateAttachedFiles(context, filter);
+                   var res = new JsonResult(tmpItems, this);
+                   return res;
+               });
         }
 
 
@@ -87,8 +89,12 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             model.FileName = file.FileName;
             model.FileType = file.ContentType;
 
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateAttachedFile, model);
-            return GetById(context, tmpItem);
+            //TODO ASYNC
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateAttachedFile, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -107,11 +113,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             //    model.FileName = file.FileName;
             //    model.FileType = file.ContentType;
             //}
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDocumentService>();
-            var tmpItem = (FrontTemplateAttachedFile)tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, ctx, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDocumentService>();
+                var tmpItem = (FrontTemplateAttachedFile)tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, context, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -123,10 +131,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Files + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteTemplateAttachedFile, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplateAttachedFile, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

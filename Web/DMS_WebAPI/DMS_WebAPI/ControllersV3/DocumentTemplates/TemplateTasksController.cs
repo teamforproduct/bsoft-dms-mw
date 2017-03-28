@@ -44,13 +44,15 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentTask filter)
         {
             if (filter == null) filter = new FilterTemplateDocumentTask();
-            filter.TemplateId =  Id ;
+            filter.TemplateId = Id;
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentTasks(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+                var tmpItems = tmpService.GetTemplateDocumentTasks(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 
@@ -79,8 +81,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Tasks)]
         public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentTask model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentTask, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentTask, model);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -92,8 +97,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Tasks)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentTask model)
         {
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentTask, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentTask, model);
+                   return GetById(context, model.Id);
+               });
         }
 
         /// <summary>
@@ -105,10 +113,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Tasks + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentTask, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentTask, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

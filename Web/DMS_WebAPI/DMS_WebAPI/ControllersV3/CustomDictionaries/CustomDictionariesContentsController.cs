@@ -47,15 +47,17 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [ResponseType(typeof(List<FrontCustomDictionary>))]
         public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (filter == null) filter = new FilterCustomDictionary();
-            filter.TypeIDs = new List<int> { Id };
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                if (filter == null) filter = new FilterCustomDictionary();
+                filter.TypeIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            return res;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetMainCustomDictionaries(context, ftSearch, filter, paging, sorting);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            });
         }
 
 
@@ -84,8 +86,11 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Contents)]
         public async Task<IHttpActionResult> Post([FromBody]AddCustomDictionary model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionary, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddCustomDictionary, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -97,8 +102,11 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Contents)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyCustomDictionary model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyCustomDictionary, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyCustomDictionary, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -110,10 +118,13 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [Route(Features.Contents + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteCustomDictionary, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteCustomDictionary, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

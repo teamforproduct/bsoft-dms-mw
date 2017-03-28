@@ -48,11 +48,13 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<TreeItem>))]
         public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter, [FromUri]bool? searchInJournals = false)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournalsFilter(ctx, searchInJournals ?? false,  ftSearch, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetRegistrationJournalsFilter(context, searchInJournals ?? false, ftSearch, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -68,11 +70,13 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainRegistrationJournals(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetMainRegistrationJournals(context, ftSearch, filter, paging, sorting);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -87,11 +91,13 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetRegistrationJournals(ctx, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetRegistrationJournals(context, filter, paging, sorting);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -119,8 +125,11 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddRegistrationJournal model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddRegistrationJournal, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddRegistrationJournal, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -132,8 +141,11 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyRegistrationJournal model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyRegistrationJournal, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyRegistrationJournal, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -145,10 +157,13 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteRegistrationJournal, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteRegistrationJournal, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

@@ -32,12 +32,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public async Task<IHttpActionResult> Get()
         {
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentUserPicture(ctx, ctx.CurrentAgentId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItem = tmpService.GetDictionaryAgentUserPicture(context, context.CurrentAgentId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -61,11 +62,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Image)]
         public async Task<IHttpActionResult> Delete()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            Action.Execute(EnumDictionaryActions.DeleteAgentImage, ctx.CurrentAgentId);
-            var tmpItem = new FrontDeleteModel(ctx.CurrentAgentId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, context.CurrentAgentId);
+                var tmpItem = new FrontDeleteModel(context.CurrentAgentId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

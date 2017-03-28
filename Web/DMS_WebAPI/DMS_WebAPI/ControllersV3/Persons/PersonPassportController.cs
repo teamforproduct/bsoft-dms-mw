@@ -54,8 +54,11 @@ namespace DMS_WebAPI.ControllersV3.Persons
         [Route(Features.Passport)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentPeoplePassport model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, model);
+                return GetById(context, model.Id);
+            });
         }
 
     }

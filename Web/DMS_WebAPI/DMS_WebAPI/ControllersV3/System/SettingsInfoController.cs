@@ -32,11 +32,13 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontDictionarySettingType))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemSetting filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemSettings(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemSettings(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 
@@ -49,9 +51,12 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]List<ModifySystemSetting> model)
         {
-            var tmpItem = Action.Execute(EnumSystemActions.SetSetting, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumSystemActions.SetSetting, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

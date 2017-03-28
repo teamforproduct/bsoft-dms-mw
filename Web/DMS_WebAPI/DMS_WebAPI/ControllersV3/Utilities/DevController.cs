@@ -64,13 +64,14 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("RefreshPermissions")]
         public async Task<IHttpActionResult> RefreshPermissions()
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                tmpService.RefreshModuleFeature(context);
 
-            tmpService.RefreshModuleFeature(ctx);
-
-            var res = new JsonResult(null, this);
-            return res;
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -81,11 +82,13 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("RefreshSystemActions")]
         public async Task<IHttpActionResult> RefreshSystemActions()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            tmpService.RefreshSystemActions(cxt);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                tmpService.RefreshSystemActions(context);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -96,11 +99,13 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("RefreshSystemObjects")]
         public async Task<IHttpActionResult> RefreshSystemObjects()
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            tmpService.RefreshSystemObjects(cxt);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                tmpService.RefreshSystemObjects(context);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -124,10 +129,12 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         public async Task<IHttpActionResult> Test()
         {
             //TODO REMOVE
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            //ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, true, true, 0, 1000);
-            return new JsonResult(null, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                //ftService.FullTextIndexPrepareNew(context, EnumObjects.Documents, true, true, 0, 1000);
+                return new JsonResult(null, this);
+            });
         }
 
     }

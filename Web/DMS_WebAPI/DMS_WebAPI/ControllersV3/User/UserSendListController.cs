@@ -47,12 +47,14 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainUserStandartSendLists(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetMainUserStandartSendLists(context, ftSearch, filter, paging, sorting);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            });
         }
 
         /// <summary>
@@ -80,8 +82,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SendLists)]
         public async Task<IHttpActionResult> Post([FromBody]AddStandartSendList model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddStandartSendList, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddStandartSendList, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -93,8 +98,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SendLists)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyStandartSendList model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyStandartSendList, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyStandartSendList, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -106,10 +114,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SendLists + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteStandartSendList, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteStandartSendList, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

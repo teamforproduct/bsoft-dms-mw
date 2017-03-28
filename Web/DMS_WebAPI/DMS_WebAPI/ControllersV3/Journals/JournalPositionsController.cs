@@ -36,11 +36,14 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = null;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionsByJournalDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetPositionsByJournalDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -56,11 +59,14 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             if (filter == null) filter = new FilterTree();
             filter.IsChecked = true;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionsByJournalDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetPositionsByJournalDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -72,9 +78,12 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Positions + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetJournalAccess model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccess, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccess, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -86,9 +95,12 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Positions + "/SetByDepartment")]
         public async Task<IHttpActionResult> SetByDepartment([FromBody] SetJournalAccessByDepartment_Journal model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByDepartment_Journal, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByDepartment_Journal, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -100,9 +112,12 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Positions + "/SetByCompany")]
         public async Task<IHttpActionResult> SetByCompany([FromBody] SetJournalAccessByCompany_Journal model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessByCompany_Journal, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByCompany_Journal, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 
@@ -115,9 +130,12 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Positions + "/SetDefault")]
         public async Task<IHttpActionResult> SetDefault([FromBody]SetJournalAccessDefault_Journal model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessDefault_Journal, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessDefault_Journal, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -129,9 +147,12 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Positions + "/SetAll")]
         public async Task<IHttpActionResult> SetAll([FromBody]SetJournalAccessAll_Journal model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetJournalAccessAll_Journal, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessAll_Journal, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -143,9 +164,12 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Positions + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody] DuplicateJournalAccess model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.DuplicateJournalAccess_Journal, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateJournalAccess_Journal, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

@@ -27,15 +27,17 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontSystemLicencesInfo))]
         public async Task<IHttpActionResult> VerifyLicences()
         {
-            var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
-            var tmpItem = new FrontSystemLicencesInfo
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                MessageLevelTypes = EnumMessageLevelTypes.Green,
-                MessageLevelTypesName = EnumMessageLevelTypes.Green.ToString(),
-                Message = "Успех, работаем на V3", //TODO 
-            };
-            var res = new JsonResult(tmpItem, this);
-            return res;
+                var tmpItem = new FrontSystemLicencesInfo
+                {
+                    MessageLevelTypes = EnumMessageLevelTypes.Green,
+                    MessageLevelTypesName = EnumMessageLevelTypes.Green.ToString(),
+                    Message = "Успех, работаем на V3", //TODO 
+                };
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 

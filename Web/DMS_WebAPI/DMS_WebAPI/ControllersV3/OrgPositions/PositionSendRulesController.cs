@@ -38,11 +38,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = true;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetSubordinationsDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -58,11 +61,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             if (filter == null) filter = new FilterAdminSubordinationTree();
             filter.IsChecked = null;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetSubordinationsDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetSubordinationsDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -74,9 +80,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetSubordination model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetSubordination, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordination, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -88,9 +97,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetByDepartment")]
         public async Task<IHttpActionResult> SetByDepartment([FromBody] SetSubordinationByDepartment model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByDepartment, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordinationByDepartment, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -102,9 +114,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetByCompany")]
         public async Task<IHttpActionResult> SetByCompany([FromBody] SetSubordinationByCompany model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetSubordinationByCompany, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordinationByCompany, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 
@@ -117,9 +132,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetDefault")]
         public async Task<IHttpActionResult> SetDefault([FromBody] ModifyAdminDefaultByPosition model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetDefaultSubordination, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetDefaultSubordination, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -131,9 +149,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/SetAll")]
         public async Task<IHttpActionResult> SetAll([FromBody] SetSubordinations model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.SetAllSubordination, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetAllSubordination, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -145,9 +166,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.SendRules + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.DuplicateSubordinations, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateSubordinations, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

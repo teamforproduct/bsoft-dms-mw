@@ -45,11 +45,13 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryPositions(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -77,8 +79,11 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddPosition model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddPosition, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -90,8 +95,11 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyPosition model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyPosition, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyPosition, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -103,10 +111,13 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeletePosition, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeletePosition, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -118,11 +129,13 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Info + "/Order")]
         public async Task<IHttpActionResult> SetOrder([FromBody]ModifyPositionOrder model)
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            tmpItem.SetPositionOrder(cxt, model);
-            var res = new JsonResult(model.Order, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+                tmpItem.SetPositionOrder(context, model);
+                var res = new JsonResult(model.Order, this);
+                return res;
+            });
         }
 
 

@@ -35,11 +35,13 @@ namespace DMS_WebAPI.ControllersV3.Roles
             if (filter == null) filter = new FilterDictionaryPosition();
             filter.RoleIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetPositionList(context, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
     }
 }

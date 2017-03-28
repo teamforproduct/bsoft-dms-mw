@@ -26,9 +26,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.DocumentAccesses)]
         public async Task<IHttpActionResult> ChangePosition([FromBody]ChangePosition model)
         {
-            Action.Execute(EnumDocumentActions.ChangePosition, model);
-            var res = new JsonResult(null, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDocumentActions.ChangePosition, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
     }

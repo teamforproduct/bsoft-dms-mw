@@ -32,15 +32,19 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontSystemSession))]
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
+            //TODO ASYNC
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
-            var tmpService = DmsResolver.Current.Get<ILogger>();
-            if (filter == null) filter = new FilterSystemSession();
-            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ILogger>();
+                if (filter == null) filter = new FilterSystemSession();
+                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
+                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -55,15 +59,18 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
-            var tmpService = DmsResolver.Current.Get<ILogger>();
-            if (filter == null) filter = new FilterSystemSession();
-            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
-            filter.IsOnlyActive = true;
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ILogger>();
+                if (filter == null) filter = new FilterSystemSession();
+                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
+                filter.IsOnlyActive = true;
+                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 

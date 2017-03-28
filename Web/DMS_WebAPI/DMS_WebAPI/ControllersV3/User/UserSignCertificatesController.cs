@@ -46,11 +46,13 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             if (paging == null) paging = new UIPaging();
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IEncryptionService>();
-            var tmpItems = tmpService.GetCertificates(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IEncryptionService>();
+                var tmpItems = tmpService.GetCertificates(context, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -81,12 +83,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SignCertificates)]
         public async Task<IHttpActionResult> Post([FromBody]AddEncryptionCertificate model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
-            model.AgentId = ctx.CurrentAgentId;
-            var tmpItem = Action.Execute(EnumEncryptionActions.AddEncryptionCertificate, model);
-            return Get(tmpItem);
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                model.AgentId = context.CurrentAgentId;
+                var tmpItem = Action.Execute(context, EnumEncryptionActions.AddEncryptionCertificate, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -98,8 +103,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SignCertificates)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyEncryptionCertificate model)
         {
-            Action.Execute(EnumEncryptionActions.ModifyEncryptionCertificate, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumEncryptionActions.ModifyEncryptionCertificate, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -111,10 +119,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SignCertificates + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumEncryptionActions.DeleteEncryptionCertificate, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumEncryptionActions.DeleteEncryptionCertificate, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

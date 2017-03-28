@@ -42,15 +42,16 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryAgentAddress filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                if (filter == null) filter = new FilterDictionaryAgentAddress();
+                filter.AgentIDs = new List<int> { context.CurrentAgentId };
 
-            if (filter == null) filter = new FilterDictionaryAgentAddress();
-            filter.AgentIDs = new List<int> { ctx.CurrentAgentId };
-
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentAddresses(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetAgentAddresses(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -78,11 +79,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Post([FromBody]BaseAgentAddress model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var address = new AddAgentAddress(model);
-            address.AgentId = ctx.CurrentAgentId;
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddEmployeeAddress, address);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var address = new AddAgentAddress(model);
+                address.AgentId = context.CurrentAgentId;
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddEmployeeAddress, address);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -94,11 +97,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyUserAddress model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var address = new ModifyAgentAddress(model);
-            address.AgentId = ctx.CurrentAgentId;
-            Action.Execute(EnumDictionaryActions.ModifyEmployeeAddress, address);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var address = new ModifyAgentAddress(model);
+                address.AgentId = context.CurrentAgentId;
+                Action.Execute(context, EnumDictionaryActions.ModifyEmployeeAddress, address);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -110,11 +115,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteEmployeeAddress, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
-
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteEmployeeAddress, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

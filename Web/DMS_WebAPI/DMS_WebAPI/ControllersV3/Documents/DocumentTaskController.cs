@@ -43,11 +43,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTask>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
-            var items = docProc.GetTasks(ctx, filter, paging);
-            var res = new JsonResult(items, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
+                   var items = docProc.GetTasks(context, filter, paging);
+                   var res = new JsonResult(items, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -75,9 +77,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentTask model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -89,9 +94,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentTask model)
         {
-            var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTask, model);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTask, model);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -103,11 +111,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            Action.Execute(EnumDocumentActions.DeleteDocumentTask, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteDocumentTask, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
-        
+
     }
 }

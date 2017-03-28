@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentRestrictedSendList, model);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentRestrictedSendList, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, model);
+                Action.Execute(context, EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDocumentActions.DeleteDocumentRestrictedSendList, Id);
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentRestrictedSendList, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

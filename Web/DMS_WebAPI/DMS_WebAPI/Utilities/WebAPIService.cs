@@ -855,6 +855,7 @@ namespace DMS_WebAPI.Utilities
         {
             if (string.IsNullOrEmpty(model.UserId))
             {
+                //TODO ASYNC
                 var userContext = DmsResolver.Current.Get<UserContexts>().Get();
                 var user = GetUser(userContext, userContext.CurrentAgentId);
                 model.UserId = user.Id;
@@ -876,6 +877,7 @@ namespace DMS_WebAPI.Utilities
 
             if (string.IsNullOrEmpty(model.UserId))
             {
+                //TODO ASYNC
                 var userContext = DmsResolver.Current.Get<UserContexts>().Get();
                 var user = GetUser(userContext, userContext.CurrentAgentId);
                 model.UserId = user.Id;

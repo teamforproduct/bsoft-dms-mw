@@ -45,12 +45,14 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetMainRoles(ctx, ftSearch, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetMainRoles(context, ftSearch, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            });
         }
 
 
@@ -79,8 +81,11 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddAdminRole model)
         {
-            var tmpItem = Action.Execute(EnumAdminActions.AddRole, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.AddRole, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -92,8 +97,11 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAdminRole model)
         {
-            Action.Execute(EnumAdminActions.ModifyRole, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumAdminActions.ModifyRole, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -105,10 +113,13 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumAdminActions.DeleteRole, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumAdminActions.DeleteRole, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

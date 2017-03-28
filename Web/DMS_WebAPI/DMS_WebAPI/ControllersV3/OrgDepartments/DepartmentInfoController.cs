@@ -44,11 +44,13 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [ResponseType(typeof(List<FrontDictionaryDepartment>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryDepartment filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryDepartments(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryDepartments(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -76,8 +78,11 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddDepartment model)
         {
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddDepartment, model);
-            return GetById(context, tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddDepartment, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -89,8 +94,11 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDepartment model)
         {
-            Action.Execute(EnumDictionaryActions.ModifyDepartment, model);
-            return GetById(context, model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyDepartment, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -102,10 +110,13 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            Action.Execute(EnumDictionaryActions.DeleteDepartment, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteDepartment, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }
