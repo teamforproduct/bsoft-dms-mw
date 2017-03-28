@@ -1073,7 +1073,7 @@ namespace BL.Database.Documents
                     }
                 dbContext.SaveChanges();
                 //TODO Papers
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddFull);
                 transaction.Complete();
 
             }
@@ -1158,7 +1158,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
 
                 CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1219,7 +1219,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.Documents, EnumOperationType.Delete);
                 transaction.Complete();
 
             }
@@ -1420,7 +1420,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1611,7 +1611,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
                 CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }

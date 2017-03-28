@@ -494,7 +494,7 @@ namespace BL.Database.Documents
                     CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList()));
                     dbContext.SaveChanges();
                 }
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 dbContext.SaveChanges();
 
 
@@ -545,7 +545,7 @@ namespace BL.Database.Documents
 
                 CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, wait.DocumentId, CommonQueries.GetEventsSourceTarget(wait.ParentWait.OnEvent));
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, wait.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, wait.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -567,7 +567,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.TargetDescription).IsModified = true;
                 entry.Property(x => x.AttentionDate).IsModified = true;
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, wait.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, wait.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
 
                 transaction.Complete();
 
@@ -673,7 +673,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                     CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList()));
                     dbContext.SaveChanges();
-                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                    CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                     transaction.Complete();
                 }
             }
@@ -727,7 +727,7 @@ namespace BL.Database.Documents
                 CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id, CommonQueries.GetEventsSourceTarget(document.Events.ToList()));
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
 
                 transaction.Complete();
 
@@ -1063,7 +1063,7 @@ namespace BL.Database.Documents
                 }
                 //CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1376,7 +1376,7 @@ namespace BL.Database.Documents
 
                 //CommonQueries.ModifyDocumentTaskAccesses(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1434,7 +1434,7 @@ namespace BL.Database.Documents
                         x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == model.DocumentId)
                         .Where(filterContains);
-                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, rngToDelete.Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.Delete);
+                    CommonQueries.AddFullTextCacheInfo(ctx, dbContext, rngToDelete.Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.Delete);
                     dbContext.DocumentTagsSet.RemoveRange(rngToDelete);
                 }
 
@@ -1453,7 +1453,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentTagsSet.AddRange(newDictionaryTags);
 
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, newDictionaryTags.Where(x => x.Id != 0).Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newDictionaryTags.Where(x => x.Id != 0).Select(x => x.Id).ToList(), EnumObjects.DocumentTags, EnumOperationType.AddNew);
 
                 transaction.Complete();
             }
@@ -2012,7 +2012,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                     dbContext.SaveChanges();
                     res = sendListsDb.Select(x => x.Id).ToList();
-                    CommonQueries.AddFullTextCashInfo(context, dbContext, res, EnumObjects.DocumentSendLists, EnumOperationType.AddNew);
+                    CommonQueries.AddFullTextCacheInfo(context, dbContext, res, EnumObjects.DocumentSendLists, EnumOperationType.AddNew);
                 }
                 if (paperEvents?.Any() ?? false)
                 {
@@ -2021,7 +2021,7 @@ namespace BL.Database.Documents
                     var paperEventsDb = ModelConverter.GetDbDocumentEvents(listPaperEvent).ToList();
                     dbContext.DocumentEventsSet.AddRange(paperEventsDb);
                     dbContext.SaveChanges();
-                    CommonQueries.AddFullTextCashInfo(context, dbContext, paperEventsDb.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.Update);
+                    CommonQueries.AddFullTextCacheInfo(context, dbContext, paperEventsDb.Select(x => x.Id).ToList(), EnumObjects.DocumentEvents, EnumOperationType.Update);
 
                 }
 
@@ -2134,7 +2134,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                 }
 
-                CommonQueries.AddFullTextCashInfo(context, dbContext, sendList.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, sendList.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }

@@ -15,7 +15,7 @@ namespace BL.Logic.Settings
     {
 
         #region [+] Управление настройками ...
-        private readonly Dictionary<string, object> _casheSettings = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _cacheSettings = new Dictionary<string, object>();
 
         /// <summary>
         /// Gets setting value by its name.
@@ -29,7 +29,7 @@ namespace BL.Logic.Settings
         {
             string settingName = setting.ToString();
 
-            if (!_casheSettings.ContainsKey(MakeKey(settingName, ctx)))
+            if (!_cacheSettings.ContainsKey(MakeKey(settingName, ctx)))
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
                 var val = db.GetSettingValue(ctx, new FilterSystemSetting { Key = settingName });
@@ -37,10 +37,10 @@ namespace BL.Logic.Settings
                 {
                     throw new ConfigurationErrorsException(string.Format("Configuration parameter {0} is not specified in configuration file.", settingName));
                 }
-                _casheSettings.Add(MakeKey(settingName, ctx), val);
+                _cacheSettings.Add(MakeKey(settingName, ctx), val);
             }
 
-            var settingValue = _casheSettings[MakeKey(settingName, ctx)];
+            var settingValue = _cacheSettings[MakeKey(settingName, ctx)];
             try
             {
                 return (T)((IConvertible)settingValue).ToType(typeof(T), null);
@@ -61,7 +61,7 @@ namespace BL.Logic.Settings
         /// <returns>Typed setting value or default value.</returns>
         private T GetSetting<T>(IContext ctx, string settingName, T defaulValue) where T : IConvertible
         {
-            if (!_casheSettings.ContainsKey(MakeKey(settingName, ctx)))
+            if (!_cacheSettings.ContainsKey(MakeKey(settingName, ctx)))
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
                 var val = db.GetSettingValue(ctx, new FilterSystemSetting { Key = settingName });
@@ -69,12 +69,12 @@ namespace BL.Logic.Settings
                 {
                     return defaulValue;
                 }
-                _casheSettings.Add(MakeKey(settingName, ctx), val);
+                _cacheSettings.Add(MakeKey(settingName, ctx), val);
             }
 
             try
             {
-                var settingValue = _casheSettings[MakeKey(settingName, ctx)];
+                var settingValue = _cacheSettings[MakeKey(settingName, ctx)];
                 return (T)((IConvertible)settingValue).ToType(typeof(T), null);
             }
             catch (InvalidCastException)
@@ -99,7 +99,7 @@ namespace BL.Logic.Settings
             string casheKey = MakeKey(settingKey, ctx);
 
             // Если нет в _casheSettings...
-            if (!_casheSettings.ContainsKey(casheKey))
+            if (!_cacheSettings.ContainsKey(casheKey))
             {
                 var db = DmsResolver.Current.Get<ISystemDbProcess>();
                 // ... вычитываю из базы
@@ -119,7 +119,7 @@ namespace BL.Logic.Settings
 
             }
 
-            var settingValue = _casheSettings[casheKey];
+            var settingValue = _cacheSettings[casheKey];
             return (T)((IConvertible)settingValue).ToType(typeof(T), null);
         }
 
@@ -131,13 +131,13 @@ namespace BL.Logic.Settings
             string casheKey = MakeKey(settingKey, ctx);
 
             // Если нет в _casheSettings...
-            if (!_casheSettings.ContainsKey(casheKey))
+            if (!_cacheSettings.ContainsKey(casheKey))
             {
                 // ... записываю val в _casheSettings
                 MergeCasheSettings(ctx, defaulValue);
             }
 
-            var settingValue = _casheSettings[casheKey];
+            var settingValue = _cacheSettings[casheKey];
             return (T)((IConvertible)settingValue).ToType(typeof(T), null);
         }
 
@@ -157,29 +157,29 @@ namespace BL.Logic.Settings
 
         private void MergeCasheSettings(IContext ctx, InternalSystemSetting setting)
         {
-            if (_casheSettings.ContainsKey(MakeKey(setting.Key, ctx)))
+            if (_cacheSettings.ContainsKey(MakeKey(setting.Key, ctx)))
             {
-                _casheSettings[MakeKey(setting.Key, ctx)] = GetTypedValue(setting.Value, setting.ValueType);
+                _cacheSettings[MakeKey(setting.Key, ctx)] = GetTypedValue(setting.Value, setting.ValueType);
             }
             else
             {
-                _casheSettings.Add(MakeKey(setting.Key, ctx), GetTypedValue(setting.Value, setting.ValueType));
+                _cacheSettings.Add(MakeKey(setting.Key, ctx), GetTypedValue(setting.Value, setting.ValueType));
             }
         }
 
         public void ClearCache(IContext ctx)
         {
             var mask = "_" + ctx.CurrentDB.Address + "_" + ctx.CurrentDB.DefaultDatabase + "_" + ctx.CurrentAgentId;
-            var keyLst = _casheSettings.Keys.Where(x => x.Contains(mask));
+            var keyLst = _cacheSettings.Keys.Where(x => x.Contains(mask));
             foreach (var k in keyLst)
             {
-                _casheSettings.Remove(k);
+                _cacheSettings.Remove(k);
             }
         }
 
         public void TotalClear()
         {
-            _casheSettings.Clear();
+            _cacheSettings.Clear();
         }
 
         private string MakeKey(string key, IContext ctx)

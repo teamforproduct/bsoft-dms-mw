@@ -33,11 +33,11 @@ namespace BL.Database.Admins
 {
     public class AdminsDbProcess : CoreDb.CoreDb, IAdminsDbProcess
     {
-        private readonly ICacheService _casheService;
+        private readonly ICacheService _cacheService;
 
         public AdminsDbProcess(ICacheService casheService)
         {
-            _casheService = casheService;
+            _cacheService = casheService;
         }
 
         #region [+] General ...
@@ -452,7 +452,7 @@ namespace BL.Database.Admins
                 transaction.Complete();
                 res = dbModel.Id;
             }
-            _casheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
             return res;
         }
 
@@ -466,7 +466,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
-            _casheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
         }
 
         public void DeleteRole(IContext context, int id)
@@ -958,7 +958,7 @@ namespace BL.Database.Admins
                 transaction.Complete();
                 res = dbModel.Id;
             }
-            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
             return res;
         }
 
@@ -971,7 +971,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
-            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
 
         public void UpdateUserRole(IContext context, InternalAdminUserRole model)
@@ -984,7 +984,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
-            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
 
         public void DeleteUserRole(IContext context, int id)
@@ -996,7 +996,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
-            _casheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
         public void DeleteUserRoles(IContext context, FilterAdminUserRole filter)
         {
@@ -1738,7 +1738,7 @@ namespace BL.Database.Admins
                 transaction.Complete();
                 res = dbModel.Id;
             }
-            _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
             return res;
         }
 
@@ -1751,7 +1751,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
-            _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
         }
 
 
@@ -1773,7 +1773,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
-            _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+            _cacheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
         }
 
 
@@ -1850,9 +1850,9 @@ namespace BL.Database.Admins
         private void VerifyAdminSecurityCash(IContext context)
         {
             var admCtx = new AdminContext(context);
-            if (!_casheService.Exists(context, SettingConstants.PERMISSION_CASHE_KEY))
+            if (!_cacheService.Exists(context, SettingConstants.PERMISSION_CASHE_KEY))
             {
-                _casheService.AddOrUpdateCasheData(context, SettingConstants.PERMISSION_CASHE_KEY, () =>
+                _cacheService.AddOrUpdateCasheData(context, SettingConstants.PERMISSION_CASHE_KEY, () =>
                 {
                     using (var dbCtx = new DmsContext(admCtx))
                     {
@@ -1873,9 +1873,9 @@ namespace BL.Database.Admins
                 });
             }
 
-            if (!_casheService.Exists(context, SettingConstants.ACTION_CASHE_KEY))
+            if (!_cacheService.Exists(context, SettingConstants.ACTION_CASHE_KEY))
             {
-                _casheService.AddOrUpdateCasheData(context, SettingConstants.ACTION_CASHE_KEY, () =>
+                _cacheService.AddOrUpdateCasheData(context, SettingConstants.ACTION_CASHE_KEY, () =>
                 {
                     using (var dbCtx = new DmsContext(admCtx))
                     {
@@ -1898,9 +1898,9 @@ namespace BL.Database.Admins
                 });
             }
 
-            if (!_casheService.Exists(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY))
+            if (!_cacheService.Exists(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY))
             {
-                _casheService.AddOrUpdateCasheData(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY, () =>
+                _cacheService.AddOrUpdateCasheData(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY, () =>
                 {
                     using (var dbCtx = new DmsContext(admCtx))
                     {
@@ -1916,9 +1916,9 @@ namespace BL.Database.Admins
                 });
             }
 
-            if (!_casheService.Exists(context, SettingConstants.ADMIN_ROLE_CASHE_KEY))
+            if (!_cacheService.Exists(context, SettingConstants.ADMIN_ROLE_CASHE_KEY))
             {
-                _casheService.AddOrUpdateCasheData(context, SettingConstants.ADMIN_ROLE_CASHE_KEY, () =>
+                _cacheService.AddOrUpdateCasheData(context, SettingConstants.ADMIN_ROLE_CASHE_KEY, () =>
                 {
                     using (var dbCtx = new DmsContext(admCtx))
                     {
@@ -1934,9 +1934,9 @@ namespace BL.Database.Admins
                     }
                 });
             }
-            if (!_casheService.Exists(context, SettingConstants.USER_ROLE_CASHE_KEY))
+            if (!_cacheService.Exists(context, SettingConstants.USER_ROLE_CASHE_KEY))
             {
-                _casheService.AddOrUpdateCasheData(context, SettingConstants.USER_ROLE_CASHE_KEY, () =>
+                _cacheService.AddOrUpdateCasheData(context, SettingConstants.USER_ROLE_CASHE_KEY, () =>
                 {
                     using (var dbCtx = new DmsContext(admCtx))
                     {
@@ -1949,9 +1949,9 @@ namespace BL.Database.Admins
                     }
                 });
             }
-            if (!_casheService.Exists(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY))
+            if (!_cacheService.Exists(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY))
             {
-                _casheService.AddOrUpdateCasheData(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY, () =>
+                _cacheService.AddOrUpdateCasheData(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY, () =>
                 {
                     using (var dbCtx = new DmsContext(admCtx))
                     {
@@ -1978,11 +1978,11 @@ namespace BL.Database.Admins
                 return null;
             VerifyAdminSecurityCash(context);
 
-            var permiss = _casheService.GetData(context, SettingConstants.PERMISSION_CASHE_KEY) as List<InternalSystemPermission>;
-            var adminPermiss = _casheService.GetData(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRolePermission>;
-            var adminRole = _casheService.GetData(context, SettingConstants.ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRole>;
-            var userRole = _casheService.GetData(context, SettingConstants.USER_ROLE_CASHE_KEY) as List<InternalAdminUserRole>;
-            var dictPos = _casheService.GetData(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY) as List<InternalDictionaryPositionExecutor>;
+            var permiss = _cacheService.GetData(context, SettingConstants.PERMISSION_CASHE_KEY) as List<InternalSystemPermission>;
+            var adminPermiss = _cacheService.GetData(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRolePermission>;
+            var adminRole = _cacheService.GetData(context, SettingConstants.ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRole>;
+            var userRole = _cacheService.GetData(context, SettingConstants.USER_ROLE_CASHE_KEY) as List<InternalAdminUserRole>;
+            var dictPos = _cacheService.GetData(context, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY) as List<InternalDictionaryPositionExecutor>;
 
             if (permiss == null || adminPermiss == null || adminRole == null || userRole == null || dictPos == null) throw new KeyNotFoundException();
 
@@ -2017,7 +2017,7 @@ namespace BL.Database.Admins
 
             if (filter.ActionId.HasValue)
             {
-                var act = _casheService.GetData(context, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
+                var act = _cacheService.GetData(context, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
                 if (act == null) throw new KeyNotFoundException();
                 var fltAct = act.Where(x => x.Id == filter.ActionId.Value && x.PermissionId.HasValue).Select(x=>x.PermissionId).Distinct().ToList();
                 qry.Where(x => fltAct.Contains(x.perm.Id));

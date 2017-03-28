@@ -2849,9 +2849,9 @@ namespace BL.Database.Common
         #endregion
 
         #region FullText
-        public static void AddFullTextCashInfo(IContext ctx, DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
+        public static void AddFullTextCacheInfo(IContext ctx, DmsContext dbContext, int objectId, EnumObjects objType, EnumOperationType operationType)
         {
-            var cashInfo = new FullTextIndexCash
+            var cacheInfo = new FullTextIndexCash
             {
                 ObjectId = objectId,
                 ObjectType = (int)objType,
@@ -2860,13 +2860,13 @@ namespace BL.Database.Common
             };
 
 
-            dbContext.FullTextIndexCashSet.Add(cashInfo);
+            dbContext.FullTextIndexCashSet.Add(cacheInfo);
 
             dbContext.SaveChanges();
 
         }
 
-        public static void AddFullTextCashInfo(IContext ctx, DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
+        public static void AddFullTextCacheInfo(IContext ctx, DmsContext dbContext, List<int> objectId, EnumObjects objType, EnumOperationType operationType)
         {
             if (objectId == null || !objectId.Any()) return;
             var cashInfos = objectId.Select(x =>

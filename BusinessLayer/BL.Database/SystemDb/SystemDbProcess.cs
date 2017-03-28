@@ -26,11 +26,11 @@ namespace BL.Database.SystemDb
 {
     public class SystemDbProcess : CoreDb.CoreDb, ISystemDbProcess
     {
-        private readonly ICacheService _casheService;
+        private readonly ICacheService _cacheService;
 
         public SystemDbProcess(ICacheService casheService)
         {
-            _casheService = casheService;
+            _cacheService = casheService;
         }
 
         public void InitializerDatabase(IContext ctx)
@@ -268,8 +268,8 @@ namespace BL.Database.SystemDb
                     dbContext.SaveChanges();
                 }
                 transaction.Complete();
-                _casheService.RefreshKey(context, SettingConstants.PERMISSION_CASHE_KEY);
-                _casheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+                _cacheService.RefreshKey(context, SettingConstants.PERMISSION_CASHE_KEY);
+                _cacheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
             }
 
         }
@@ -1003,7 +1003,7 @@ namespace BL.Database.SystemDb
                 dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
-                _casheService.RefreshKey(context, SettingConstants.ACTION_CASHE_KEY);
+                _cacheService.RefreshKey(context, SettingConstants.ACTION_CASHE_KEY);
             }
         }
 

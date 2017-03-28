@@ -236,7 +236,7 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
                 return fl.Id;
             }
@@ -285,7 +285,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
                 }
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull); 
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull); 
                 transaction.Complete();
             }
         }
@@ -354,7 +354,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                 }
                 if (documentId.HasValue)
-                    CommonQueries.AddFullTextCashInfo(ctx, dbContext, documentId.Value, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                    CommonQueries.AddFullTextCacheInfo(ctx, dbContext, documentId.Value, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -447,7 +447,7 @@ namespace BL.Database.Documents
                     }
                 }
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCashInfo(ctx, dbContext, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }

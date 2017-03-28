@@ -146,7 +146,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                 }
                 Parallel.Invoke(new ParallelOptions() { MaxDegreeOfParallelism = 4 }, tskList.ToArray());
-                _systemDb.FullTextIndexDeleteCash(ctx, currCashId); //delete cash in case we just processed all that documents
+                _systemDb.FullTextIndexDeleteCash(ctx, currCashId); //delete cache in case we just processed all that documents
                 systemSetting.Value = true.ToString();//set indicator that full text for the client available
                 Settings.SaveSetting(ctx, systemSetting);
                 md.IsFullTextInitialized = true;
@@ -325,9 +325,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             try
             {
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
-                var cashList = _systemDb.FullTextIndexToUpdate(ctx, currCashId);
+                var cacheList = _systemDb.FullTextIndexToUpdate(ctx, currCashId);
 
-                foreach (var item in cashList)
+                foreach (var item in cacheList)
                 {
                     try
                     {
@@ -376,7 +376,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error(ctx, ex, $"FullTextService cannot process item. CashID={item.Id} Type={item.ParentObjectId} ObjectId={item.ObjectId}");
+                        Logger.Error(ctx, ex, $"FullTextService cannot process item. CacheID={item.Id} Type={item.ParentObjectId} ObjectId={item.ObjectId}");
                     }
                 }
 
@@ -388,7 +388,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             catch (Exception ex)
             {
-                Logger.Error(ctx, "FullTextService raise an exception when process cash. ", ex);
+                Logger.Error(ctx, "FullTextService raise an exception when process cache. ", ex);
             }
             finally
             {

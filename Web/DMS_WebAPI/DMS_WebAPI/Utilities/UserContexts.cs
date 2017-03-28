@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Utilities
     /// </summary>
     public class UserContexts //: IDisposable
     {
-        private readonly Dictionary<string, StoreInfo> _casheContexts = new Dictionary<string, StoreInfo>();
+        private readonly Dictionary<string, StoreInfo> _cacheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
         private const int _TIME_OUT_MIN = 15;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
@@ -58,7 +58,7 @@ namespace DMS_WebAPI.Utilities
 
         public IQueryable<FrontSystemSession> GetContextListQuery()
         {
-            var res = _casheContexts.AsQueryable()
+            var res = _cacheContexts.AsQueryable()
                 .Where(x => x.Value.StoreObject is IContext)
                 .Where(x=> x.Value.LastUsage > DateTime.UtcNow.AddMinutes(-1))
                 .Select(x => new FrontSystemSession
@@ -298,12 +298,12 @@ namespace DMS_WebAPI.Utilities
         /// <exception cref="ArgumentException"></exception>
         public void UpdateChangePasswordRequired(string userId, bool IsChangePasswordRequired)
         {
-            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 try
                 {
-                    ((IContext)(_casheContexts[key].StoreObject)).IsChangePasswordRequired = IsChangePasswordRequired;
+                    ((IContext)(_cacheContexts[key].StoreObject)).IsChangePasswordRequired = IsChangePasswordRequired;
                 }
                 catch { }
             }
@@ -311,16 +311,16 @@ namespace DMS_WebAPI.Utilities
 
         private void Save(IContext val)
         {
-            _casheContexts.Add(TokenLower, new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
+            _cacheContexts.Add(TokenLower, new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
         private void Save(string token, IContext val)
         {
-            _casheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
+            _cacheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
 
         public void VerifyLicence(int clientId, IEnumerable<DatabaseModel> dbs)
         {
-            var clientUsers = _casheContexts
+            var clientUsers = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
                     .Where(x => x.CurrentClientId == clientId);
 
@@ -336,7 +336,7 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var qry = _casheContexts
+                var qry = _cacheContexts
                    .Select(x => (IContext)x.Value.StoreObject)
                    .Where(x => x.CurrentClientId == clientId)
                    .Select(x => x.CurrentEmployee.UserId)
@@ -374,9 +374,9 @@ namespace DMS_WebAPI.Utilities
 
             var ctx = GetInternal(token);
             var logger = DmsResolver.Current.Get<ILogger>();
-            logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, _casheContexts[token].LastUsage);
+            logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, _cacheContexts[token].LastUsage);
             // удаляю пользовательский контекст из коллекции
-            _casheContexts.Remove(token);
+            _cacheContexts.Remove(token);
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.DeleteUserContext(token);
@@ -392,7 +392,7 @@ namespace DMS_WebAPI.Utilities
         public void SaveLogContextsLastUsage()
         {
             var logger = DmsResolver.Current.Get<ILogger>();
-            _casheContexts.Where(x => (x.Value.StoreObject is IContext) && ((IContext)x.Value.StoreObject).LoginLogId.HasValue).ToList()
+            _cacheContexts.Where(x => (x.Value.StoreObject is IContext) && ((IContext)x.Value.StoreObject).LoginLogId.HasValue).ToList()
             .ForEach(x =>
                 {
                     var ctx = (x.Value.StoreObject as IContext);
@@ -407,7 +407,7 @@ namespace DMS_WebAPI.Utilities
         public void RemoveByTimeout()
         {
             var now = DateTime.UtcNow;
-            var keys = _casheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
+            var keys = _cacheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 Remove(key);
@@ -421,7 +421,7 @@ namespace DMS_WebAPI.Utilities
         public void RemoveByAgentId(int agentId)
         {
             var now = DateTime.UtcNow;
-            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 Remove(key);
@@ -435,7 +435,7 @@ namespace DMS_WebAPI.Utilities
         public void RemoveByUserId(string userId)
         {
             var now = DateTime.UtcNow;
-            var keys = _casheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 Remove(key);
@@ -462,7 +462,7 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var qry = _casheContexts
+                var qry = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
                     .Where(x => x.CurrentClientId == clientId)
                     .Select(x => x.CurrentEmployee.UserId)
@@ -496,7 +496,7 @@ namespace DMS_WebAPI.Utilities
 
         public void UpdateLanguageId(int agentId, int languageId)
         {
-            var contexts = _casheContexts
+            var contexts = _cacheContexts
                         .Select(x => (IContext)x.Value.StoreObject)
                         .Where(x => x.CurrentEmployee.AgentId == agentId).ToList();
 
@@ -511,22 +511,22 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         public void Clear()
         {
-            _casheContexts.Clear();
+            _cacheContexts.Clear();
         }
 
-        private bool Contains(string token) => _casheContexts.ContainsKey(token);
+        private bool Contains(string token) => _cacheContexts.ContainsKey(token);
 
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
         public int Count
         {
-            get { return _casheContexts.Count; }
+            get { return _cacheContexts.Count; }
         }
 
         private IContext GetInternal(string token)
         {
-            var storeInfo = _casheContexts[token];
+            var storeInfo = _cacheContexts[token];
 
             try
             {
@@ -541,12 +541,12 @@ namespace DMS_WebAPI.Utilities
 
         private void KeepAlive(string token)
         {
-            if (!_casheContexts.ContainsKey(token))
+            if (!_cacheContexts.ContainsKey(token))
             {
                 throw new UserUnauthorized();
             }
 
-            var storeInfo = _casheContexts[token];
+            var storeInfo = _cacheContexts[token];
             // KeepAlive: Продление жизни пользовательского контекста
             storeInfo.LastUsage = DateTime.UtcNow;
         }
