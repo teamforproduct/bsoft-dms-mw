@@ -388,7 +388,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="agentId"></param>
         public void RemoveByAgentId(int agentId)
         {
-            var now = DateTime.UtcNow;
             var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
@@ -402,7 +401,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userId"></param>
         public void RemoveByUserId(string userId)
         {
-            var now = DateTime.UtcNow;
             var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
@@ -454,12 +452,8 @@ namespace DMS_WebAPI.Utilities
                 {
                     throw licenceError as LicenceExceededNumberOfConnectedUsers;
                 }
-                else
-                {
-                    context.ClientLicence.LicenceError = licenceError;
-                }
+                context.ClientLicence.LicenceError = licenceError;
             }
-
         }
 
         public void UpdateLanguageId(int agentId, int languageId)
@@ -537,7 +531,5 @@ namespace DMS_WebAPI.Utilities
                 SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
             }
         }
-
-
     }
 }

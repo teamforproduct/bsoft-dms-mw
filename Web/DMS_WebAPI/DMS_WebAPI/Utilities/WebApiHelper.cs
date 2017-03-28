@@ -29,7 +29,7 @@ namespace DMS_WebAPI.Utilities
         {
             try
             {
-                if (!state.IsValid)
+                if (state !=null && !state.IsValid)
                 {
                     return Task.Factory.StartNew(() => PrepareResponse("Incoming model not valid. ModelState: " + state, (int)HttpStatusCode.BadRequest));
                 }
