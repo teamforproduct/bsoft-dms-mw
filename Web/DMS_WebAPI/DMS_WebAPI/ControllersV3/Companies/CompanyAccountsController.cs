@@ -1,18 +1,18 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using BL.Model.Common;
 using System.Threading.Tasks;
-using BL.CrossCutting.Interfaces;
-using BL.Model.SystemCore;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Companies
 {
@@ -24,10 +24,10 @@ namespace DMS_WebAPI.ControllersV3.Companies
     [RoutePrefix(ApiPrefix.V3 + Modules.Company)]
     public class CompanyAccountsController : ApiController
     {
-        private IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext context, int Id)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentAccount(ctx, Id);
+            var tmpItem = tmpService.GetDictionaryAgentAccount(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -43,7 +43,8 @@ namespace DMS_WebAPI.ControllersV3.Companies
         [ResponseType(typeof(List<FrontDictionaryAgentAccount>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryAgentAccount filter)
         {
-            return await this.SafeExecuteAsync(ModelState, context => { 
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
                 if (filter == null) filter = new FilterDictionaryAgentAccount();
                 filter.AgentIDs = new List<int> { Id };
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -60,13 +61,12 @@ namespace DMS_WebAPI.ControllersV3.Companies
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Accounts + "/{Id:int}")]
-        [ResponseType(typeof (FrontDictionaryAgentAccount))]
+        [ResponseType(typeof(FrontDictionaryAgentAccount))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                return GetById(ctx, Id);
+                return GetById(context, Id);
             });
         }
 
@@ -81,8 +81,8 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                var tmpItem = Action.Execute(EnumDictionaryActions.AddAgentAccount, model);
-                return GetById(context,tmpItem);
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentAccount, model);
+                return GetById(context, tmpItem);
             });
         }
 
@@ -97,8 +97,8 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.ModifyAgentAccount, model);
-                return GetById(context,model.Id);
+                Action.Execute(context, EnumDictionaryActions.ModifyAgentAccount, model);
+                return GetById(context, model.Id);
             });
         }
 
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.DeleteAgentAccount, Id);
+                Action.Execute(context, EnumDictionaryActions.DeleteAgentAccount, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

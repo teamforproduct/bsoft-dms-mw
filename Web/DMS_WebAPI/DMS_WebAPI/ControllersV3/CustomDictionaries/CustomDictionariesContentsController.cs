@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -10,7 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -24,7 +25,13 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
     [RoutePrefix(ApiPrefix.V3 + Modules.CustomDictionaries)]
     public class CustomDictionariesContentsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetCustomDictionary(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список элементов пользовательского справочника
@@ -38,19 +45,19 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route("{Id:int}/" + Features.Contents + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionary filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (filter == null) filter = new FilterCustomDictionary();
-            filter.TypeIDs = new List<int> { Id };
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                if (filter == null) filter = new FilterCustomDictionary();
+                filter.TypeIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainCustomDictionaries(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetMainCustomDictionaries(context, ftSearch, filter, paging, sorting);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            });
         }
 
 
@@ -62,15 +69,12 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route(Features.Contents + "/{Id:int}")]
         [ResponseType(typeof(FrontCustomDictionary))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetCustomDictionary(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -80,11 +84,13 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Contents)]
-        public IHttpActionResult Post([FromBody]AddCustomDictionary model)
+        public async Task<IHttpActionResult> Post([FromBody]AddCustomDictionary model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddCustomDictionary, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddCustomDictionary, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -94,11 +100,13 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Contents)]
-        public IHttpActionResult Put([FromBody]ModifyCustomDictionary model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyCustomDictionary model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyCustomDictionary, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyCustomDictionary, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -108,14 +116,15 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Contents + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteCustomDictionary, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteCustomDictionary, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

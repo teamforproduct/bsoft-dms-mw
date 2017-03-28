@@ -1,9 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -17,7 +18,12 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserNotificationsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpItem = new FrontNotifications { EMailForNotifications = "t@t.t", IsSendEMail = true };
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает настройки нотификации
@@ -26,14 +32,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Notifications)]
         [ResponseType(typeof(FrontNotifications))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = new FrontNotifications { EMailForNotifications = "t@t.t", IsSendEMail = true };
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, -1);
+            });
         }
 
         /// <summary>
@@ -43,11 +47,12 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Notifications)]
-        public IHttpActionResult Put([FromBody]ChangeNotifications model)
+        public async Task<IHttpActionResult> Put([FromBody]ChangeNotifications model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            return Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, -1);
+            });
         }
 
     }

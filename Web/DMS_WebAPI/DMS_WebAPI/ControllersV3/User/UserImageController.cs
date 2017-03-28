@@ -8,7 +8,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -22,8 +22,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserImageController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
 
         /// <summary>
         /// Возвращает аватарку
@@ -32,16 +30,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Image)]
         [ResponseType(typeof(FrontAgentEmployeeUser))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentUserPicture(ctx, ctx.CurrentAgentId);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItem = tmpService.GetDictionaryAgentUserPicture(context, context.CurrentAgentId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -51,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Image)]
-        public IHttpActionResult Put([FromBody]ModifyDictionaryAgentImage model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyDictionaryAgentImage model)
         {
             throw new NotImplementedException();
         }
@@ -63,15 +60,15 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Image)]
-        public IHttpActionResult Delete()
+        public async Task<IHttpActionResult> Delete()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            Action.Execute(EnumDictionaryActions.DeleteAgentImage, ctx.CurrentAgentId);
-            var tmpItem = new FrontDeleteModel(ctx.CurrentAgentId);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, context.CurrentAgentId);
+                var tmpItem = new FrontDeleteModel(context.CurrentAgentId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

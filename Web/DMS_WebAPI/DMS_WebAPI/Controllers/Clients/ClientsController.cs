@@ -1,13 +1,9 @@
-﻿
-using BL.Model.Enums;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.ClientCore.Interfaces;
+using BL.Model.AdminCore.Clients;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
-using BL.CrossCutting.DependencyInjection;
-using System.Collections.Generic;
-using System.Web.Http.Description;
-using BL.Model.AdminCore.Clients;
-using BL.Logic.ClientCore.Interfaces;
 
 namespace DMS_WebAPI.Controllers.Admins
 {

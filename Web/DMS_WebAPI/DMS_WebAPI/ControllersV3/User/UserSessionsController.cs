@@ -6,7 +6,7 @@ using BL.Model.SystemCore.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -20,7 +20,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserSessionsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Возвращает историю подключений
@@ -31,19 +30,21 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions)]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
+            //TODO ASYNC
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
-            var tmpService = DmsResolver.Current.Get<ILogger>();
-            if (filter == null) filter = new FilterSystemSession();
-            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ILogger>();
+                if (filter == null) filter = new FilterSystemSession();
+                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
+                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -55,20 +56,21 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions + "/Current")]
         [ResponseType(typeof(FrontSystemSession))]
-        public IHttpActionResult GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
             var sesions = ctxs.GetContextListQuery();
-            var tmpService = DmsResolver.Current.Get<ILogger>();
-            if (filter == null) filter = new FilterSystemSession();
-            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
-            filter.IsOnlyActive = true;
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ILogger>();
+                if (filter == null) filter = new FilterSystemSession();
+                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
+                filter.IsOnlyActive = true;
+                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 

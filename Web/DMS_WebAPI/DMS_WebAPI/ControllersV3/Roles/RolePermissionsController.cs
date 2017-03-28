@@ -8,8 +8,8 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RolePermissionsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает действия роли
         /// </summary>
@@ -35,18 +33,19 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Permissions)]
         [ResponseType(typeof(List<FrontModule>))]
-        public IHttpActionResult Get([FromUri] int Id)
+        public async Task<IHttpActionResult> Get([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             //if (filter == null) filter = new FilterAdminRole();
             //filter.PositionIDs = new List<int> { Id };
             //filter.IsChecked = true;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = true });
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = true });
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -57,18 +56,19 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Permissions + "/Edit")]
         [ResponseType(typeof(List<FrontModule>))]
-        public IHttpActionResult GetEdit([FromUri] int Id)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             //if (filter == null) filter = new FilterAdminRole();
             //filter.PositionIDs = new List<int> { Id };
             //filter.IsChecked = false;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = false });
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP { RoleId = Id, IsChecked = false });
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -78,23 +78,24 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/Set")]
-        public IHttpActionResult Set([FromBody] SetRolePermission model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermission model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermission, model);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermission, model);
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP {
-                RoleId = model.RoleId,
-                IsChecked = false,
-                Module = model.Module,
-                Feature = model.Feature,
-            }).FirstOrDefault();
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
+                {
+                    RoleId = model.RoleId,
+                    IsChecked = false,
+                    Module = model.Module,
+                    Feature = model.Feature,
+                }).FirstOrDefault();
 
-            var res = new JsonResult(tmpItems?.Features.FirstOrDefault(), this);
-            res.SpentTime = stopWatch;
-            return res;
+                var res = new JsonResult(tmpItems?.Features.FirstOrDefault(), this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -104,23 +105,23 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/SetByAccessType")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByModuleAccessType model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModuleAccessType model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleAccessType, model);
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                RoleId = model.RoleId,
-                IsChecked = false,
-                Module = model.Module,
-            }).FirstOrDefault();
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModuleAccessType, model);
 
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
+                {
+                    RoleId = model.RoleId,
+                    IsChecked = false,
+                    Module = model.Module,
+                }).FirstOrDefault();
+
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -130,23 +131,23 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/SetByFeature")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByModuleFeature model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModuleFeature model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModuleFeature, model);
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                RoleId = model.RoleId,
-                IsChecked = false,
-                Module = model.Module,
-            }).FirstOrDefault();
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModuleFeature, model);
 
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
+                {
+                    RoleId = model.RoleId,
+                    IsChecked = false,
+                    Module = model.Module,
+                }).FirstOrDefault();
+
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -156,23 +157,23 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Permissions + "/SetByModule")]
-        public IHttpActionResult Set([FromBody] SetRolePermissionByModule model)
+        public async Task<IHttpActionResult> Set([FromBody] SetRolePermissionByModule model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetRolePermissionByModule, model);
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetRolePermissions(ctx, new FilterAdminRolePermissionsDIP
+            return await this.SafeExecuteAsync(ModelState, context =>
             {
-                RoleId = model.RoleId,
-                IsChecked = false,
-                Module = model.Module,
-            });
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModule, model);
 
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
+                {
+                    RoleId = model.RoleId,
+                    IsChecked = false,
+                    Module = model.Module,
+                });
+
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
@@ -10,7 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -24,7 +25,13 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RoleInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItem = tmpService.GetAdminRole(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Список ролей
@@ -36,16 +43,16 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetMainRoles(ctx, ftSearch, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetMainRoles(context, ftSearch, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            });
         }
 
 
@@ -57,15 +64,12 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontAdminRole))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetAdminRole(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -75,11 +79,13 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddAdminRole model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAdminRole model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.AddRole, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.AddRole, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -89,11 +95,13 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAdminRole model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAdminRole model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumAdminActions.ModifyRole, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumAdminActions.ModifyRole, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -103,14 +111,15 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumAdminActions.DeleteRole, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumAdminActions.DeleteRole, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

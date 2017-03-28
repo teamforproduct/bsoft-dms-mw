@@ -1,20 +1,21 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.AdminCore.FilterModel;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
 using System;
-using BL.Model.Common;
-using System.Diagnostics;
-using BL.Model.AdminCore.FilterModel;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.SystemCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Employees
 {
@@ -26,8 +27,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeAssignmentsController : ApiController
     {
-
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryPositionExecutor(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список назначений сотрудника (история назначений)
@@ -38,18 +44,17 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Assignments)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.AgentIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return res;});
         }
 
         /// <summary>
@@ -61,9 +66,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Assignments + "/Current")]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
-        public IHttpActionResult GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
+        public async Task<IHttpActionResult> GetCurrent(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
 
             filter.AgentIDs = new List<int> { Id };
@@ -72,12 +76,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
             filter.IsActive = true;
 
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositionExecutors(ctx, filter);
+            var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return res;});
         }
 
         /// <summary>
@@ -90,19 +94,18 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route(Features.Assignments + "/Position/{Id:int}/Roles")]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult GetPositionRoles(int Id, [FromUri] FilterAdminRole filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetPositionRoles(int Id, [FromUri] FilterAdminRole filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminRole();
 
             filter.PositionIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetListRoles(ctx,  filter, paging);
+            var tmpItems = tmpService.GetListRoles(context,   filter, paging);
             var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return res;});
         }
 
         /// <summary>
@@ -113,15 +116,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route(Features.Assignments + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryPositionExecutor(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -131,13 +131,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Assignments)]
-        public IHttpActionResult Post([FromBody]AddPositionExecutor model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, ctx, model);
-            return Get(tmpItem);
+            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context,  model);
+            return GetById(context, tmpItem);});
         }
 
         /// <summary>
@@ -147,13 +146,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Assignments)]
-        public IHttpActionResult Put([FromBody]ModifyPositionExecutor model)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, ctx, model);
-            return Get(model.Id);
+            tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, context, model);
+            return GetById(context, model.Id);});
         }
 
         /// <summary>
@@ -163,17 +161,15 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Assignments + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
-        {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
+        {return await this.SafeExecuteAsync(ModelState, context =>
+            {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, ctx, Id);
+            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return res;});
 
         }
     }

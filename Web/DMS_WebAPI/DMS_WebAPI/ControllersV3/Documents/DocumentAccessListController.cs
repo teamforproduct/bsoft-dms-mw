@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DocumentCore.FrontModel;
@@ -11,7 +12,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.CrossCutting.Interfaces;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentAccessListController : ApiController
     {
-        public IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext ctx, int Id)
         {
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             var item = docProc.GetRestrictedSendList(ctx, Id);
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                var tmpItem = Action.Execute(EnumDocumentActions.AddDocumentRestrictedSendList, model);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentRestrictedSendList, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, model);
+                Action.Execute(context, EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDocumentActions.DeleteDocumentRestrictedSendList, Id);
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentRestrictedSendList, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

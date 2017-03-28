@@ -1,17 +1,14 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using BL.Model.Common;
-using System.Diagnostics;
-using BL.Model.SystemCore;
+using System.Threading.Tasks;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Roles
 {
@@ -23,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RolePositionsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список должностей
         /// </summary>
@@ -35,18 +30,18 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Positions)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryPosition filter, UIPaging paging)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPosition filter, UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryPosition();
             filter.RoleIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetPositionList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetPositionList(context, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
     }
 }

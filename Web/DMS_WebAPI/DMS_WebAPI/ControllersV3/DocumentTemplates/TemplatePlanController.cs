@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Filters;
@@ -9,7 +10,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,7 +24,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
     public class TemplatePlanController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+            var tmpItem = tmpService.GetTemplateDocumentSendList(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список рассылок
@@ -34,18 +41,18 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route("{Id:int}/" + Features.Plan)]
         [ResponseType(typeof(List<FrontTemplateDocumentSendList>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterTemplateDocumentSendList filter)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentSendList filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterTemplateDocumentSendList();
-            filter.TemplateId =  Id ;
+            filter.TemplateId = Id;
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentSendLists(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+                var tmpItems = tmpService.GetTemplateDocumentSendLists(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 
@@ -57,15 +64,12 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route(Features.Plan + "/{Id:int}")]
         [ResponseType(typeof(FrontTemplateDocumentSendList))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentSendList(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -75,11 +79,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Plan)]
-        public IHttpActionResult Post([FromBody]AddTemplateDocumentSendList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.AddTemplateDocumentSendList, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentSendList, model);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -89,11 +95,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Plan)]
-        public IHttpActionResult Put([FromBody]ModifyTemplateDocumentSendList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ModifyTemplateDocumentSendList, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentSendList, model);
+                   return GetById(context, model.Id);
+               });
         }
 
         /// <summary>
@@ -103,14 +111,15 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Plan + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.DeleteTemplateDocumentSendList, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentSendList, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

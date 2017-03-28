@@ -14,6 +14,7 @@ using BL.Model.SystemCore.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -36,12 +37,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Actions)]
         [ResponseType(typeof(List<FrontSystemAction>))]
-        public IHttpActionResult Get([FromUri] FilterSystemAction filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemAction filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemActions(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemActions(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -53,13 +56,15 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.AccessLevels)]
         [ResponseType(typeof(List<FrontAdminAccessLevel>))]
-        public IHttpActionResult Get([FromUri] FilterAdminAccessLevel filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterAdminAccessLevel filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAdminAccessLevels(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetAdminAccessLevels(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 
@@ -71,12 +76,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.AssignmentTypes)]
         [ResponseType(typeof(List<FrontDictionaryPositionExecutorType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryPositionExecutorType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPositionExecutorType filter)
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositionExecutorTypes(cxt, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryPositionExecutorTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -88,12 +95,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.DocumentDirections)]
         [ResponseType(typeof(List<FrontDictionaryDocumentDirection>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryDocumentDirection filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryDocumentDirection filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryDocumentDirections(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryDocumentDirections(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -105,12 +114,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.EventTypes)]
         [ResponseType(typeof(List<FrontDictionaryEventType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryEventType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryEventType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryEventTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryEventTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -122,12 +133,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Formats)]
         [ResponseType(typeof(List<FrontSystemFormat>))]
-        public IHttpActionResult Get([FromUri] FilterSystemFormat filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemFormat filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemFormats(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemFormats(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -139,12 +152,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Formulas)]
         [ResponseType(typeof(List<FrontSystemFormula>))]
-        public IHttpActionResult Get([FromUri] FilterSystemFormula filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemFormula filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemFormulas(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemFormulas(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -156,12 +171,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.ImportanceEventTypes)]
         [ResponseType(typeof(List<FrontDictionaryImportanceEventType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryImportanceEventType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryImportanceEventType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryImportanceEventTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryImportanceEventTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -173,12 +190,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Languages)]
         [ResponseType(typeof(List<InternalAdminLanguage>))]
-        public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
+        public async Task<IHttpActionResult> GetLanguages([FromUri] FilterAdminLanguage filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ILanguages>();
-            var tmpItems = tmpService.GetLanguages(filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ILanguages>();
+                var tmpItems = tmpService.GetLanguages(filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -190,12 +209,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.LinkTypes)]
         [ResponseType(typeof(List<FrontDictionaryLinkType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryLinkType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryLinkType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryLinkTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryLinkTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -207,12 +228,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Objects)]
         [ResponseType(typeof(List<FrontSystemObject>))]
-        public IHttpActionResult Get([FromUri] FilterSystemObject filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemObject filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemObjects(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemObjects(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -224,12 +247,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Patterns)]
         [ResponseType(typeof(List<FrontSystemPattern>))]
-        public IHttpActionResult Get([FromUri] FilterSystemPattern filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemPattern filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemPatterns(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemPatterns(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -241,12 +266,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.ResultTypes)]
         [ResponseType(typeof(List<FrontDictionaryResultType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryResultType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryResultType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryResultTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryResultTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -258,12 +285,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.SendTypes)]
         [ResponseType(typeof(List<FrontDictionarySendType>))]
-        public IHttpActionResult Get([FromUri] FilterDictionarySendType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionarySendType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionarySendTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionarySendTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -276,12 +305,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.StageTypes)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryStageType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryStageType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryStageTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryStageTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
         /// <summary>
@@ -292,12 +323,14 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.SubordinationTypes)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult Get([FromUri] FilterDictionarySubordinationType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionarySubordinationType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionarySubordinationTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionarySubordinationTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
 
@@ -309,14 +342,15 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.ValueTypes)]
         [ResponseType(typeof(List<FrontSystemValueType>))]
-        public IHttpActionResult Get([FromUri] FilterSystemValueType filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterSystemValueType filter)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var tmpItems = tmpService.GetSystemValueTypes(ctx, filter);
-            return new JsonResult(tmpItems, this);
+            return await this.SafeExecuteAsync(ModelState, context => 
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                var tmpItems = tmpService.GetSystemValueTypes(context, filter);
+                return new JsonResult(tmpItems, this);
+            });
         }
 
-       
     }
 }

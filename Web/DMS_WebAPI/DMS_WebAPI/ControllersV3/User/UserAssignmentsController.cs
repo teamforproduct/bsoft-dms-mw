@@ -6,7 +6,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -22,8 +22,6 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserAssignmentsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список назначений для текущего пользователя (должность - интервал назначения, количество новых событий)
         /// Пользоателю может быть назначено исполнение обязанностей другой должности
@@ -32,15 +30,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Assignments + "/Current")]
         [ResponseType(typeof(List<FrontUserAssignments>))]
-        public IHttpActionResult Assignments()
+        public async Task<IHttpActionResult> Assignments()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var context = DmsResolver.Current.Get<UserContexts>().Get();// (keepAlive: false);
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAvailablePositions(context);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetAvailablePositions(context);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -51,18 +49,18 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Assignments + "/Available")]
         [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
-        public IHttpActionResult GetAvailableShort()
+        public async Task<IHttpActionResult> GetAvailableShort()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAvailablePositionsDialog(context);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetAvailablePositionsDialog(context);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
-        
+
 
         /// <summary>
         /// Возвращает список назначений, от которых пользователь сейчас работатет.
@@ -71,18 +69,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Assignments)]
         [ResponseType(typeof(List<FrontUserAssignments>))]
-        public IHttpActionResult GetAssignments()
+        public async Task<IHttpActionResult> GetAssignments()
         {
-            //var context = DmsResolver.Current.Get<UserContexts>().Get();
-            //return new JsonResult(, this);
-
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var context = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetAvailablePositions(context, context.CurrentPositionsIdList);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetAvailablePositions(context, context.CurrentPositionsIdList);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -93,19 +88,22 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Assignments)]
-        public IHttpActionResult Assignments([FromBody]List<int> positionsIdList)
+        public async Task<IHttpActionResult> Assignments([FromBody]List<int> positionsIdList)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-            var context = userContexts.Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
 
-            //TODO Здесь необходима проверка на то, что список должностей из доступных
-            userContexts.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
-            //context.CurrentPositionsIdList = positionsIdList;
-            //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
+                //TODO ASYNC
+                //TODO Здесь необходима проверка на то, что список должностей из доступных
+                userContexts.SetUserPositions(context.CurrentEmployee.Token, positionsIdList);
+                //context.CurrentPositionsIdList = positionsIdList;
+                //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
 
-            return new JsonResult(null, this);
+                return new JsonResult(null, this);
+            });
         }
 
 

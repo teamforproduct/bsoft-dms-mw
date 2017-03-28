@@ -1,11 +1,8 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.CrossCutting.DependencyInjection;
-using System.Collections.Generic;
+﻿using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using DMS_WebAPI.Results;
+using System.Collections.Generic;
+using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers.Dictionaries
 {

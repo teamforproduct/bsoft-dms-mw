@@ -1,21 +1,16 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Common;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -29,7 +24,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentWaitController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var docProc = DmsResolver.Current.Get<IDocumentService>();
+            var item = docProc.GetDocumentEvent(context, Id);
+            var res = new JsonResult(item, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список контролей
@@ -39,21 +40,21 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [Route(Features.Waits + "/Main")]
         [ResponseType(typeof(List<FrontDocumentWait>))]
-        public IHttpActionResult PostGetList([FromBody]IncomingBase model)
+        public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            if (model == null) model = new IncomingBase();
-            if (model.Filter == null) model.Filter = new FilterBase();
-            if (model.Paging == null) model.Paging = new UIPaging();
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   if (model == null) model = new IncomingBase();
+                   if (model.Filter == null) model.Filter = new FilterBase();
+                   if (model.Paging == null) model.Paging = new UIPaging();
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentWaits(ctx, model.Filter, model.Paging);
-            var res = new JsonResult(items, this);
-            res.Paging = model.Paging;
-            res.SpentTime = stopWatch;
-            return res;
-        }        
+                   var docProc = DmsResolver.Current.Get<IDocumentService>();
+                   var items = docProc.GetDocumentWaits(context, model.Filter, model.Paging);
+                   var res = new JsonResult(items, this);
+                   res.Paging = model.Paging;
+                   return res;
+               });
+        }
 
         /// <summary>
         /// Возвращает контроль по ИД
@@ -63,16 +64,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Waits + "/{Id:int}")]
         [ResponseType(typeof(FrontDocumentWait))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var item = docProc.GetDocumentEvent(ctx, Id);
-            var res = new JsonResult(item, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }   
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
+        }
 
         /// <summary>
         /// Добавляет самокотроль для документа
@@ -81,13 +79,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Waits + "/ControlOn")]
-        public IHttpActionResult ControlOn([FromBody]ControlOn model)
+        public async Task<IHttpActionResult> ControlOn([FromBody]ControlOn model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -97,13 +96,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/AskPostponeDueDate")]
-        public IHttpActionResult AskPostponeDueDate([FromBody]AskPostponeDueDate model)
+        public async Task<IHttpActionResult> AskPostponeDueDate([FromBody]AskPostponeDueDate model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AskPostponeDueDate, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AskPostponeDueDate, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -113,13 +113,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/MarkExecution")]
-        public IHttpActionResult MarkExecution([FromBody]SendEventMessage model)
+        public async Task<IHttpActionResult> MarkExecution([FromBody]SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.MarkExecution, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.MarkExecution, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
 
@@ -131,13 +132,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/CancelPostponeDueDate")]
-        public IHttpActionResult CancelPostponeDueDate([FromBody]SendEventMessage model)
+        public async Task<IHttpActionResult> CancelPostponeDueDate([FromBody]SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.CancelPostponeDueDate, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.CancelPostponeDueDate, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -147,13 +149,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/RejectResult")]
-        public IHttpActionResult RejectResult([FromBody]SendEventMessage model)
+        public async Task<IHttpActionResult> RejectResult([FromBody]SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.RejectResult, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectResult, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -163,13 +166,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/AcceptResult")]
-        public IHttpActionResult AcceptResult([FromBody]ControlOff model)
+        public async Task<IHttpActionResult> AcceptResult([FromBody]ControlOff model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AcceptResult, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AcceptResult, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -179,13 +183,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/CancelExecution")]
-        public IHttpActionResult CancelExecution([FromBody]ControlOff model)
+        public async Task<IHttpActionResult> CancelExecution([FromBody]ControlOff model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.CancelExecution, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.CancelExecution, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
 
@@ -197,13 +202,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/ControlOff")]
-        public IHttpActionResult ControlOff([FromBody]ControlOff model)
+        public async Task<IHttpActionResult> ControlOff([FromBody]ControlOff model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ControlOff, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ControlOff, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
 
@@ -214,13 +220,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/ControlChange")]
-        public IHttpActionResult ControlChange([FromBody]ControlChange model)
+        public async Task<IHttpActionResult> ControlChange([FromBody]ControlChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ControlChange, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ControlChange, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -230,13 +237,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/SendForExecutionChange")]
-        public IHttpActionResult SendForExecutionChange([FromBody]ControlChange model)
+        public async Task<IHttpActionResult> SendForExecutionChange([FromBody]ControlChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.SendForExecutionChange, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.SendForExecutionChange, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Изменяет параметры контроля направлен для исполнения(отв. исполнитель)
@@ -245,13 +253,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/SendForResponsibleExecutionChange")]
-        public IHttpActionResult SendForResponsibleExecutionChange([FromBody]ControlChange model)
+        public async Task<IHttpActionResult> SendForResponsibleExecutionChange([FromBody]ControlChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.SendForResponsibleExecutionChange, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.SendForResponsibleExecutionChange, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -261,13 +270,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Waits + "/ControlTargetChange")]
-        public IHttpActionResult ControlTargetChange([FromBody]ControlTargetChange model)
+        public async Task<IHttpActionResult> ControlTargetChange([FromBody]ControlTargetChange model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.ControlTargetChange, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+               {
+                   Action.Execute(context, EnumDocumentActions.ControlTargetChange, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
 

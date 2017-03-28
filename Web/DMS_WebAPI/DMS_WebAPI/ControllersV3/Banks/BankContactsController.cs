@@ -1,18 +1,18 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using BL.Model.Common;
 using System.Threading.Tasks;
-using BL.CrossCutting.Interfaces;
-using BL.Model.SystemCore;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Banks
 {
@@ -24,10 +24,10 @@ namespace DMS_WebAPI.ControllersV3.Banks
     [RoutePrefix(ApiPrefix.V3 + Modules.Bank)]
     public class BankContactsController : ApiController
     {
-        private IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext context, int Id)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentContact(ctx, Id);
+            var tmpItem = tmpService.GetAgentContact(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -47,6 +47,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
             {
                 if (filter == null) filter = new FilterDictionaryContact();
                 filter.AgentIDs = new List<int> { Id };
+
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentContacts(context, filter);
                 var res = new JsonResult(tmpItems, this);
@@ -81,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                var tmpItem = Action.Execute(EnumDictionaryActions.AddBankContact, model);
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddBankContact, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -97,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.ModifyBankContact, model);
+                Action.Execute(context, EnumDictionaryActions.ModifyBankContact, model);
                 return GetById(context, model.Id);
             });
         }
@@ -113,11 +114,12 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.DeleteBankContact, Id);
+                Action.Execute(context, EnumDictionaryActions.DeleteBankContact, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
+
         }
     }
 }

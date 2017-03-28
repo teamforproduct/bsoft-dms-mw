@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
@@ -6,7 +7,7 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -20,7 +21,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeePassportController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetAgentPeoplePassport(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает паспортные данные сотрудника
@@ -30,15 +37,12 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route(Features.Passport + "/{Id:int}")]
         [ResponseType(typeof(FrontAgentPeoplePassport))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentPeoplePassport(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -48,11 +52,13 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Passport)]
-        public IHttpActionResult Put([FromBody]ModifyAgentPeoplePassport model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentPeoplePassport model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyAgentPeoplePassport, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, model);
+                return GetById(context, model.Id);
+            });
         }
 
     }

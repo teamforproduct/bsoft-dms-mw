@@ -1,18 +1,18 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using BL.Model.Common;
 using System.Threading.Tasks;
-using BL.CrossCutting.Interfaces;
-using BL.Model.SystemCore;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.Banks
 {
@@ -25,13 +25,14 @@ namespace DMS_WebAPI.ControllersV3.Banks
     public class BankAddressesController : ApiController
     {
 
-        private IHttpActionResult GetById(IContext ctx, int Id)
+        private IHttpActionResult GetById(IContext context, int Id)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetAgentAddress(ctx, Id);
+            var tmpItem = tmpService.GetAgentAddress(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
+
         /// <summary>
         /// Возвращает список адресов
         /// </summary>
@@ -82,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                var tmpItem = Action.Execute(EnumDictionaryActions.AddBankAddress, model);
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddBankAddress, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -98,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.ModifyBankAddress, model);
+                Action.Execute(context, EnumDictionaryActions.ModifyBankAddress, model);
                 return GetById(context, model.Id);
             });
         }
@@ -114,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await this.SafeExecuteAsync(ModelState, context =>
             {
-                Action.Execute(EnumDictionaryActions.DeleteBankAddress, Id);
+                Action.Execute(context, EnumDictionaryActions.DeleteBankAddress, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -122,3 +123,4 @@ namespace DMS_WebAPI.ControllersV3.Banks
         }
     }
 }
+

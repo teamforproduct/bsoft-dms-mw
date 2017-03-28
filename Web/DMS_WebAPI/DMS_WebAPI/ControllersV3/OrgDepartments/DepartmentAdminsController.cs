@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.IncomingModel;
@@ -8,7 +9,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -22,7 +23,13 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
     [RoutePrefix(ApiPrefix.V3 + Modules.Department)]
     public class DepartmentAdminsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            var tmpItems = tmpService.GetDepartmentAdmins(context, Id);
+            var res = new JsonResult(tmpItems, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список администраторов (сотрудников)
@@ -32,16 +39,12 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         [HttpGet]
         [Route("{Id:int}/" + Features.Admins)]
         [ResponseType(typeof(List<FrontAdminEmployeeDepartments>))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetDepartmentAdmins(ctx, Id);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -51,11 +54,13 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Admins)]
-        public IHttpActionResult Post([FromBody]AddAdminDepartmentAdmin model)
+        public async Task<IHttpActionResult> Post([FromBody]AddAdminDepartmentAdmin model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.AddDepartmentAdmin, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.AddDepartmentAdmin, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -65,14 +70,15 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Admins + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumAdminActions.DeleteDepartmentAdmin, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                Action.Execute(context, EnumAdminActions.DeleteDepartmentAdmin, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

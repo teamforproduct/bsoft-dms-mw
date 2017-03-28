@@ -6,7 +6,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -20,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
     public class RoleEmployeesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список сотрудников
         /// </summary>
@@ -32,18 +30,18 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Employees)]
         [ResponseType(typeof(List<ListItem>))]
-        public IHttpActionResult Get(int Id, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDictionaryAgentEmployee();
             filter.RoleIDs = new List<int> { Id };
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetAgentEmployeeList(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, context =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetAgentEmployeeList(context, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
     }
 }
