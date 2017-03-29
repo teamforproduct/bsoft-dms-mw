@@ -31,20 +31,17 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <param name="sorting">"</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.SendLists + "/Main")]
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainUserStandartSendLists(ctx, ftSearch, filter, paging, sorting);
+            var tmpItems = tmpService.GetMainUserStandartSendLists(ctx, ftSearch, filter);
             var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
             res.SpentTime = stopWatch;
             return res;
         }

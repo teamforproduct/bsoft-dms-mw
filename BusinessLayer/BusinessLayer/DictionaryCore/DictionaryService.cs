@@ -1061,26 +1061,54 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetStandartSendLists(context, filter, null);
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting, bool SearchInPositionsOnly = false)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
-            if (SearchInPositionsOnly)
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {
                 if (filter == null) filter = new FilterDictionaryStandartSendList();
-                filter.PositionIDs = new List<int>();
-            }
-            else
-            { }
 
-            return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
+                var tmpService = DmsResolver.Current.Get<IFullTextSearchService>();
+                bool IsNotAll;
+
+                if (SearchInPositionsOnly)
+                {
+                    var positions = tmpService.SearchItemId(out IsNotAll, context, ftSearch.FullTextSearchString, 
+                        new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Info });
+
+                    if (positions?.Count == 0) return new List<FrontMainDictionaryStandartSendList>();
+
+                    filter.PositionIDs = positions;
+                }
+                else
+                {
+                    var ids = tmpService.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
+                        new FullTextSearchFilter { Module = Modules.SendList});
+
+                    if (ids?.Count == 0) return new List<FrontMainDictionaryStandartSendList>();
+
+                    filter.IDs = ids;
+                }
+            }
+
+            var res = _dictDb.GetMainStandartSendLists(context, filter, null, null);
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && !ftSearch.IsDontSaveSearchQueryLog && res != null && res.Any())
+            {
+                DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.SendList, ftSearch?.FullTextSearchString);
+            }
+
+            return res;
+
+            //return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter)
         {
             if (filter == null) filter = new FilterDictionaryStandartSendList();
 
             filter.AgentId = context.CurrentAgentId;
 
-            var res = GetMainStandartSendLists(context, ftSearch, filter, paging, sorting);
+            var res = GetMainStandartSendLists(context, ftSearch, filter);
 
             //res = res.ToList();
 
