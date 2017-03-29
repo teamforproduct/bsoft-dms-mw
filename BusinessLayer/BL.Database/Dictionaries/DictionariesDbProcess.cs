@@ -172,37 +172,6 @@ namespace BL.Database.Dictionaries
                     IsActive = true,
                     ResidentTypeId = x.ResidentTypeId,
                     Description = string.Empty,
-                    //Contacts = x.AgentContacts.Select(y => new FrontDictionaryContact
-                    //{
-                    //    Id = y.Id,
-                    //    AgentId = y.AgentId,
-                    //    Value = y.Contact,
-                    //    IsActive = y.IsActive,
-                    //    Description = y.Description,
-                    //    ContactType = new FrontDictionaryContactType
-                    //    {
-                    //        Id = y.ContactType.Id,
-                    //        Name = y.ContactType.Name,
-                    //        Code = y.ContactType.Code,
-                    //        InputMask = y.ContactType.InputMask,
-                    //        IsActive = y.ContactType.IsActive
-                    //    }
-                    //}),
-                    //Addresses = x.AgentAddresses.Select(z => new FrontDictionaryAgentAddress
-                    //{
-                    //    Id = z.Id,
-                    //    AgentId = z.AgentId,
-                    //    AddressType = new FrontDictionaryAddressType
-                    //    {
-                    //        Id = z.AddressType.Id,
-                    //        Name = z.AddressType.Name,
-                    //        IsActive = z.AddressType.IsActive
-                    //    },
-                    //    PostCode = z.PostCode,
-                    //    Address = z.Address,
-                    //    IsActive = z.IsActive,
-                    //    Description = z.Description
-                    //})
 
                 }).ToList();
 
@@ -1616,7 +1585,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAddressTypesSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.AddNew);
                 addrType.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -1639,7 +1608,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
-                //CommonQueries.AddFullTextCashInfo(dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Update);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1651,7 +1620,7 @@ namespace BL.Database.Dictionaries
             {
                 var ddt = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 dbContext.DictionaryAddressTypesSet.Remove(ddt);
-                //CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, ddt.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -3154,7 +3123,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.Update);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
