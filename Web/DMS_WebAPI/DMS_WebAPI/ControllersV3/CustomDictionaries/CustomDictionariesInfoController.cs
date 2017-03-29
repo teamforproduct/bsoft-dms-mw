@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
