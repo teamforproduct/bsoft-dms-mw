@@ -33,11 +33,12 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// <param name="filter"></param>
         /// <param name="paging"></param>
         /// <param name="sorting">"</param>
+        /// <param name="SearchInPositionsOnly">искать только в должностях</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainDictionaryStandartSendList>))]
-        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting, [FromUri]bool? SearchInPositionsOnly = false)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();

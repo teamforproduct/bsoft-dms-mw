@@ -6760,9 +6760,17 @@ namespace BL.Database.Dictionaries
 
                 }
 
-                if (filter.PositionID != null)
+                if (filter.PositionIDs?.Count > 100)
                 {
-                    qry = qry.Where(x => filter.PositionID == x.PositionId);
+                    qry = qry.Where(x => filter.PositionIDs.Contains(x.PositionId ?? 0));
+                }
+                else if (filter.PositionIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
+                    filterContains = filter.PositionIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.AgentId != null)

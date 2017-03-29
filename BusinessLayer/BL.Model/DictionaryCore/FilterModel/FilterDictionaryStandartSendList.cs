@@ -1,4 +1,5 @@
 ﻿using BL.Model.Common;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
@@ -11,7 +12,8 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Должность
         /// </summary>
-        public int? PositionID { get; set; }
+        [IgnoreDataMember]
+        public List<int> PositionIDs { get; set; }
 
         /// <summary>
         /// Пользователь

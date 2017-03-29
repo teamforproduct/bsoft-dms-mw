@@ -27,7 +27,7 @@ namespace BL.Logic.DictionaryCore
             var filter = new FilterDictionaryStandartSendList()
             {
                 NameExact = Model.Name,
-                PositionID = Model.PositionId ?? 0,
+                PositionIDs = new List<int> { Model.PositionId ?? 0 },
             };
 
             if (TypeModelIs<ModifyStandartSendList>())
