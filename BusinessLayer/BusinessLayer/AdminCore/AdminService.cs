@@ -2,7 +2,7 @@
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
-using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Dictionaries;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
@@ -32,7 +32,7 @@ namespace BL.Logic.AdminCore
     public class AdminService : IAdminService
     {
         private readonly IAdminsDbProcess _adminDb;
-        private readonly IDictionariesDbProcess _dictDb;
+        private readonly DictionariesDbProcess _dictDb;
         private readonly ISystemDbProcess _systemDb;
         private readonly ICommandService _commandService;
 
@@ -40,7 +40,7 @@ namespace BL.Logic.AdminCore
 
         private Dictionary<string, StoreInfo> accList;
 
-        public AdminService(IAdminsDbProcess adminDb, IDictionariesDbProcess dictDb, ISystemDbProcess systemDb, ICommandService commandService)
+        public AdminService(IAdminsDbProcess adminDb, DictionariesDbProcess dictDb, ISystemDbProcess systemDb, ICommandService commandService)
         {
             _adminDb = adminDb;
             _dictDb = dictDb;

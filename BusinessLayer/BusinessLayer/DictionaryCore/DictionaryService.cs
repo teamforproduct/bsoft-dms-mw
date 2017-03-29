@@ -1,7 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Dictionaries;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DictionaryCore.Interfaces;
@@ -29,10 +29,10 @@ namespace BL.Logic.DictionaryCore
 {
     public class DictionaryService : IDictionaryService
     {
-        private readonly IDictionariesDbProcess _dictDb;
+        private readonly DictionariesDbProcess _dictDb;
         private readonly ICommandService _commandService;
 
-        public DictionaryService(IDictionariesDbProcess dictDb, ICommandService commandService)
+        public DictionaryService(DictionariesDbProcess dictDb, ICommandService commandService)
         {
             _dictDb = dictDb;
             _commandService = commandService;

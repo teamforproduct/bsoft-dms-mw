@@ -28,6 +28,7 @@ using BL.Database.DBModel.Document;
 using BL.CrossCutting.Helpers.CashService;
 using BL.Model.Constants;
 using BL.Model.DictionaryCore.InternalModel;
+using BL.Database.Dictionaries;
 
 namespace BL.Database.Admins
 {
@@ -388,7 +389,7 @@ namespace BL.Database.Admins
                 return true;
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+                var dictDb = DmsResolver.Current.Get<DictionariesDbProcess>();
                 var pos = dictDb.GetPositions(context, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions })
                     .Select(x => new { MaxSubordinationTypeId = x.MaxSubordinationTypeId })
                     .FirstOrDefault();

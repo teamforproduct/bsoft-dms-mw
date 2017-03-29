@@ -1,14 +1,15 @@
 ﻿using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Helpers.CashService;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Helper;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.Common;
+using BL.Model.Constants;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontMainModel;
 using BL.Model.DictionaryCore.FrontModel;
@@ -24,12 +25,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using BL.Model.Constants;
-using BL.CrossCutting.Helpers.CashService;
 
 namespace BL.Database.Dictionaries
 {
-    public class DictionariesDbProcess : CoreDb.CoreDb, IDictionariesDbProcess
+    public class DictionariesDbProcess : CoreDb.CoreDb//, IDictionariesDbProcess
     {
         private readonly ICacheService _cacheService;
         public DictionariesDbProcess(ICacheService casheService)
@@ -38,49 +37,6 @@ namespace BL.Database.Dictionaries
         }
 
         #region [+]Agents ...
-
-
-        //public IEnumerable<EnumDictionaryAgentTypes> GetAgentRoles(IContext context, int id)
-        //{
-        //    using (var dbContext = new DmsContext(context))
-        //    {
-        //        List<EnumDictionaryAgentTypes> list = new List<EnumDictionaryAgentTypes>();
-        //        var agent = GetAgent(context, id);
-        //        if (agent.IsBank) { list.Add(EnumDictionaryAgentTypes.isBank); }
-        //        if (agent.IsEmployee) { list.Add(EnumDictionaryAgentTypes.isEmployee); }
-        //        if (agent.IsIndividual) { list.Add(EnumDictionaryAgentTypes.isIndividual); }
-        //        if (agent.IsCompany) { list.Add(EnumDictionaryAgentTypes.isCompany); }
-
-        //        return list;
-        //    }
-        //}
-
-        //public void UpdateAgentRole(IContext context, int id, EnumDictionaryAgentTypes role)
-        //{
-        //    using (var dbContext = new DmsContext(context))
-        //    {
-        //        var agent = GetAgent(context, id);
-        //        var dbModel = new DictionaryAgents
-        //        {
-        //            ClientId = context.CurrentClientId,
-        //            Id = id,
-        //            Name = agent.Name,
-        //            ResidentTypeId = agent.ResidentTypeId,
-        //            IsBank = (role == EnumDictionaryAgentTypes.isBank ? !agent.IsBank : agent.IsBank),
-        //            IsCompany = (role == EnumDictionaryAgentTypes.isCompany ? !agent.IsCompany : agent.IsCompany),
-        //            IsEmployee = (role == EnumDictionaryAgentTypes.isEmployee ? !agent.IsEmployee : agent.IsEmployee),
-        //            IsIndividual = (role == EnumDictionaryAgentTypes.isIndividual ? !agent.IsIndividual : agent.IsIndividual),
-        //            Description = agent.Description,
-        //            LastChangeDate = DateTime.UtcNow,
-        //            LastChangeUserId = context.CurrentAgentId,
-        //            IsActive = agent.IsActive
-        //        };
-        //        dbContext.DictionaryAgentsSet.Attach(dbModel);
-        //        var entity = dbContext.Entry(dbModel);
-        //        entity.State = System.Data.Entity.EntityState.Modified;
-        //        dbContext.SaveChanges();
-        //    }
-        //}
 
         public int AddAgent(IContext context, InternalDictionaryAgent model)
         {
@@ -91,7 +47,6 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentsSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                //CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAgents, EnumOperationType.AddNew);
                 model.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -109,7 +64,6 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                //CommonQueries.AddFullTextCacheInfo(context, dbContext, agent.Id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 transaction.Complete();
             }
         }
@@ -131,7 +85,6 @@ namespace BL.Database.Dictionaries
                 //entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                //CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryAgents, EnumOperationType.Update);
                 transaction.Complete();
             }
 

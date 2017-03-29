@@ -29,7 +29,8 @@ namespace BL.Database.DependencyInjection
         private void RegistrateDocumentProcess()
         {
 
-            Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
+            //Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
+            Bind<DictionariesDbProcess>().ToSelf().InSingletonScope();
             Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
             Bind<IDocumentFileDbProcess>().To<DocumentFileDbProcess>().InSingletonScope();
