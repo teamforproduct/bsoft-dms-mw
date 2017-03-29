@@ -38,20 +38,19 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Fingerprints)]
         [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
-        public async Task<IHttpActionResult> Get([FromUri] FilterAspNetUserFingerprint filter)
+        public IHttpActionResult Get([FromUri] FilterAspNetUserFingerprint filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var user = webService.GetUser(context, context.CurrentAgentId);
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var user = webService.GetUser(context, context.CurrentAgentId);
 
-                if (filter == null) filter = new FilterAspNetUserFingerprint();
-                filter.UserIDs = new List<string> { user.Id };
+            if (filter == null) filter = new FilterAspNetUserFingerprint();
+            filter.UserIDs = new List<string> { user.Id };
 
-                var tmpItems = webService.GetUserFingerprints(filter);
-                var res = new JsonResult(tmpItems, this);
-                return res;
-            });
+            var tmpItems = webService.GetUserFingerprints(filter);
+            var res = new JsonResult(tmpItems, this);
+            return res;
         }
 
         /// <summary>
@@ -62,12 +61,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Fingerprints + "/{Id:int}")]
         [ResponseType(typeof(FrontAspNetUserFingerprint))]
-        public async Task<IHttpActionResult> Get(int Id)
+        public IHttpActionResult Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                return GetById(context, Id);
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            return GetById(context, Id);
         }
 
         /// <summary>
@@ -77,16 +75,15 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Fingerprints)]
-        public async Task<IHttpActionResult> Post([FromBody]AddAspNetUserFingerprint model)
+        public IHttpActionResult Post([FromBody]AddAspNetUserFingerprint model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var user = webService.GetUser(context, context.CurrentAgentId);
-                model.UserId = user.Id;
-                var tmpItem = webService.AddUserFingerprint(context, model);
-                return GetById(context, tmpItem);
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var user = webService.GetUser(context, context.CurrentAgentId);
+            model.UserId = user.Id;
+            var tmpItem = webService.AddUserFingerprint(context, model);
+            return GetById(context, tmpItem);
         }
 
         /// <summary>
@@ -98,14 +95,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Fingerprints)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserFingerprint model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var user = webService.GetUser(context, context.CurrentAgentId);
-                model.UserId = user.Id;
-                webService.UpdateUserFingerprint(model);
-                return GetById(context, model.Id);
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var user = webService.GetUser(context, context.CurrentAgentId);
+            model.UserId = user.Id;
+            webService.UpdateUserFingerprint(model);
+            return GetById(context, model.Id);
         }
 
         /// <summary>
@@ -115,16 +111,15 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Fingerprints + "/{Id:int}")]
-        public async Task<IHttpActionResult> Delete([FromUri] int Id)
+        public IHttpActionResult Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                webService.DeleteUserFingerprint(Id);
-                var tmpItem = new FrontDeleteModel(Id);
-                var res = new JsonResult(tmpItem, this);
-                return res;
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.DeleteUserFingerprint(Id);
+            var tmpItem = new FrontDeleteModel(Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
         }
 
 
@@ -135,15 +130,14 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Fingerprints + "/Enabled")]
         [ResponseType(typeof(List<FrontAspNetUserFingerprint>))]
-        public async Task<IHttpActionResult> GetEnabled()
+        public IHttpActionResult GetEnabled()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var user = webService.GetUser(context, context.CurrentAgentId);
-                var res = new JsonResult(user.IsFingerprintEnabled, this);
-                return res;
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var user = webService.GetUser(context, context.CurrentAgentId);
+            var res = new JsonResult(user.IsFingerprintEnabled, this);
+            return res;
         }
 
         /// <summary>
@@ -153,15 +147,14 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Fingerprints + "/Enabled")]
-        public async Task<IHttpActionResult> SetEnabled([FromBody]ModifyAspNetUserFingerprintEnabled model)
+        public IHttpActionResult SetEnabled([FromBody]ModifyAspNetUserFingerprintEnabled model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                webService.ChangeFingerprintEnabled(model.Enabled);
-                var res = new JsonResult(null, this);
-                return res;
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.ChangeFingerprintEnabled(model.Enabled);
+            var res = new JsonResult(null, this);
+            return res;
         }
     }
 }

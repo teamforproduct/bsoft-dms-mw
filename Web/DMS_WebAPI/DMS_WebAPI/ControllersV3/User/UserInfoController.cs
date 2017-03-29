@@ -82,16 +82,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public IHttpActionResult Get()
         {
+            //!ASYNC
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             return GetById(context);
         }
-        //public async Task<IHttpActionResult> Get()
-        //{
-        //    return await this.SafeExecuteAsync(null, (context, param) =>
-        //    {
-        //        return GetById(context);
-        //    });
-        //}
 
         /// <summary>
         /// Корректирует реквизиты пользователя
@@ -102,6 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentUser model)
         {
+            //!ASYNC
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var context = contexts.Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
@@ -157,19 +152,19 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sesions = ctxs.GetContextListQuery();
+            var sessions = ctxs.GetContextListQuery();
 
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var sessParam = (IQueryable<FrontSystemSession>)param;
+                var pSessions = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, sessParam, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, pSessions, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 res.Paging = paging;
                 return res;
-            }, sesions);
+            }, sessions);
         }
 
         /// <summary>
@@ -213,7 +208,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("SetPassword")]
         public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
         {
-            //TODO ASYNC DONE
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -238,7 +232,6 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ChangePassword)]
         public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordBindingModel model)
         {
-            //TODO ASYNC DONE
             if (!ModelState.IsValid)
             {
                 return new JsonResult(ModelState, false, this);
@@ -275,16 +268,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route("Logout")]
-        public async Task<IHttpActionResult> Logout()
+        public IHttpActionResult Logout()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                DmsResolver.Current.Get<UserContexts>().Remove();
+            DmsResolver.Current.Get<UserContexts>().Remove();
 
-                Request.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+            Request.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
-                return new JsonResult(null, this);
-            });
+            return new JsonResult(null, this);
         }
 
 

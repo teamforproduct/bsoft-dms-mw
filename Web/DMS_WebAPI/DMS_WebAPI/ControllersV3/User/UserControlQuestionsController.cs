@@ -37,12 +37,11 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpGet]
         [Route(Features.ControlQuestion)]
-        public async Task<IHttpActionResult> Get()
+        public IHttpActionResult Get()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                return GetById(context);
-            });
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            return GetById(context);
         }
 
         /// <summary>
@@ -52,14 +51,12 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ControlQuestion)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserControlQuestion model)
+        public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                webService.ChangeControlQuestion(model);
-                return GetById(context);
-            });
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.ChangeControlQuestion(model);
+            return GetById(context);
         }
 
     }
