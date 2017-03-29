@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpGet]
         [Route("Request")]
-        public async Task<IHttpActionResult> GetRequest()
+        public IHttpActionResult GetRequest()
         {
             return new JsonResult(HttpContext.Current.Request, this);
         }
