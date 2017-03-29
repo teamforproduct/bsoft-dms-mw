@@ -1,43 +1,31 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Database.Admins.Interfaces;
+using BL.Database.DatabaseContext;
+using BL.Database.Dictionaries;
+using BL.Database.SystemDb;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.ClientCore.Interfaces;
 using BL.Logic.Common;
-using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Common;
-using BL.Model.Database;
-using BL.Model.Enums;
-using BL.Model.Exception;
-using BL.Model.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Database.Admins.Interfaces;
+using BL.Logic.Settings;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Database.DBModel.System;
-using BL.Model.Constants;
-using BL.Logic.AdminCore;
-using BL.Logic.AdminCore.Interfaces;
-using System.Transactions;
-using BL.Model.SystemCore.InternalModel;
-using BL.Database.DatabaseContext;
-using BL.Logic.Settings;
-using BL.Database.SystemDb;
+using BL.Model.Enums;
 using BL.Model.SystemCore;
+using BL.Model.SystemCore.InternalModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.ClientCore
 {
     public class ClientService : IClientService
     {
         private readonly IAdminsDbProcess _AdminDb;
-        private readonly IDictionariesDbProcess _DictDb;
+        private readonly DictionariesDbProcess _DictDb;
         private readonly ISystemDbProcess _SystemDb;
         //private readonly ICommandService _commandService;
         private readonly IAdminService _AdminService;
 
-        public ClientService(IAdminsDbProcess AdminDb, IDictionariesDbProcess DictionaryDb, IAdminService AdminService, ISystemDbProcess SystemDb)
+        public ClientService(IAdminsDbProcess AdminDb, DictionariesDbProcess DictionaryDb, IAdminService AdminService, ISystemDbProcess SystemDb)
         {
             _AdminDb = AdminDb;
             _AdminService = AdminService;

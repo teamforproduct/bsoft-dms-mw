@@ -14,7 +14,7 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            DictionaryModelVerifying.VerifyDocumentSubject(_context, _dictDb, Model);
+            //DictionaryModelVerifying.VerifyDocumentSubject(_context, _dictDb, Model);
 
             return true;
         }

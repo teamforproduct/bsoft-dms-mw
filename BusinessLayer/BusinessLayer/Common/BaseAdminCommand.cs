@@ -1,10 +1,9 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins.Interfaces;
-using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Dictionaries;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
@@ -21,7 +20,7 @@ namespace BL.Logic.Common
         protected IAdminsDbProcess _adminDb;
         protected ISystemDbProcess _systemDb;
         protected IDictionaryService _dictService;
-        protected IDictionariesDbProcess _dictDb;
+        protected DictionariesDbProcess _dictDb;
         protected ILogger _logger;
 
         public void InitializeCommand(EnumAdminActions action, IContext ctx)
@@ -36,7 +35,7 @@ namespace BL.Logic.Common
             _param = param;
             _adminDb = DmsResolver.Current.Get<IAdminsDbProcess>();
             _adminService = DmsResolver.Current.Get<IAdminService>();
-            _dictDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            _dictDb = DmsResolver.Current.Get<DictionariesDbProcess>();
             _dictService= DmsResolver.Current.Get<IDictionaryService>();
             _systemDb = DmsResolver.Current.Get<ISystemDbProcess>();
             _logger = DmsResolver.Current.Get<ILogger>();

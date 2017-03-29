@@ -15,7 +15,7 @@ using BL.Model.DictionaryCore.FrontMainModel;
 
 namespace BL.Database.Dictionaries.Interfaces
 {
-    public interface IDictionariesDbProcess
+    public interface IDictionariesDbProcess_OLD
     {
         #region DictionaryAgents
         int AddAgent(IContext context, InternalDictionaryAgent addr);

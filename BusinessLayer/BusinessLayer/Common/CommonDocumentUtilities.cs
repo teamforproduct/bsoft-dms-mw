@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Dictionaries;
 using BL.Database.Documents.Interfaces;
+using BL.Database.SystemDb;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using System.Text.RegularExpressions;
-using BL.Model.SystemCore.InternalModel;
-using BL.Model.SystemCore.IncomingModel;
-using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.DocumentCore.Filters;
+using BL.Model.SystemCore.IncomingModel;
+using BL.Model.SystemCore.InternalModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BL.Logic.Common
 {
@@ -934,7 +934,7 @@ namespace BL.Logic.Common
         {
             if (positionId.HasValue)
             {
-                var dict = DmsResolver.Current.Get<IDictionariesDbProcess>();
+                var dict = DmsResolver.Current.Get<DictionariesDbProcess>();
                 return dict.GetExecutorAgentIdByPositionId(context, positionId.Value);
             }
             else
