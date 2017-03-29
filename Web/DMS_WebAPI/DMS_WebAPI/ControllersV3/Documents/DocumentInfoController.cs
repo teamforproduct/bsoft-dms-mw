@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.EncryptionCore.InternalModel;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -50,20 +51,20 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [DimanicAuthorize("R")]
         [Route(Features.Info + "/Main")]
-        [ResponseType(typeof(List<FrontDocument>))]
-        public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
+        [ResponseType(typeof (List<FrontDocument>))]
+        public async Task<IHttpActionResult> PostGetList([FromBody] IncomingBase model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   if (model == null) model = new IncomingBase();
-                   if (model.Filter == null) model.Filter = new FilterBase();
-                   if (model.Paging == null) model.Paging = new UIPaging();
-                   var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var items = docProc.GetDocuments(context, model.Filter, model.Paging);
-                   var res = new JsonResult(items, this);
-                   res.Paging = model.Paging;
-                   return res;
-               });
+            {
+                if (model == null) model = new IncomingBase();
+                if (model.Filter == null) model.Filter = new FilterBase();
+                if (model.Paging == null) model.Paging = new UIPaging();
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetDocuments(context, model.Filter, model.Paging);
+                var res = new JsonResult(items, this);
+                res.Paging = model.Paging;
+                return res;
+            });
         }
 
         /// <summary>
@@ -74,13 +75,16 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [DimanicAuthorize("R")]
         [Route(Features.Info + "/GroupCountTags")]
-        [ResponseType(typeof(List<FrontDocumentTag>))]
-        public async Task<IHttpActionResult> PostGetGroupCountTags([FromBody]FilterBase model)
+        [ResponseType(typeof (List<FrontDocumentTag>))]
+        public async Task<IHttpActionResult> PostGetGroupCountTags([FromBody] FilterBase model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                var items = docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging { IsOnlyCounter = true }, EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags; ;
+                var items =
+                    docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging {IsOnlyCounter = true},
+                        EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags;
+                ;
                 var res = new JsonResult(items, this);
                 return res;
             });
@@ -94,13 +98,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [DimanicAuthorize("R")]
         [Route(Features.Info + "/GroupCountPositions")]
-        [ResponseType(typeof(List<FrontDictionaryPosition>))]
-        public async Task<IHttpActionResult> PostGetGroupCountPositions([FromBody]FilterBase model)
+        [ResponseType(typeof (List<FrontDictionaryPosition>))]
+        public async Task<IHttpActionResult> PostGetGroupCountPositions([FromBody] FilterBase model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                var items = docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging { IsOnlyCounter = true }, EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
+                var items =
+                    docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging {IsOnlyCounter = true},
+                        EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
                 var res = new JsonResult(items, this);
                 return res;
             });
@@ -113,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Документ</returns>
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
-        [ResponseType(typeof(FrontDocument))]
+        [ResponseType(typeof (FrontDocument))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
@@ -129,16 +135,16 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Документ</returns>
         [HttpGet]
         [Route(Features.Info + "/{Id:int}/ReportRegistrationCardDocument")]
-        [ResponseType(typeof(FrontReport))]
+        [ResponseType(typeof (FrontReport))]
         public async Task<IHttpActionResult> GetReportRegistrationCardDocument(int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, context, Id);
-                   var res = new JsonResult(tmpItem, this);
-                   return res;
-               });
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, context, Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -148,16 +154,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/ReportDocumentForDigitalSignature")]
-        [ResponseType(typeof(FrontReport))]
+        [ResponseType(typeof (FrontReport))]
         public async Task<IHttpActionResult> GetReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, context, model);
-                   var res = new JsonResult(tmpItem, this);
-                   return res;
-               });
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, context,model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -166,24 +173,25 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info + "/VerifyPdf")]
-        [ResponseType(typeof(bool))]
+        [ResponseType(typeof (bool))]
         public async Task<IHttpActionResult> VerifyPdf()
         {
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
-
+            var model = new VerifyPdfCertificate();
+            using (var memoryStream = new MemoryStream())
+            {
+                var file = HttpContext.Current.Request.Files[0];
+                file.InputStream.CopyTo(memoryStream);
+                model.ServerPath = HttpContext.Current.Server.MapPath("~/");
+                model.FileData = memoryStream.ToArray();
+            }
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                var md = (VerifyPdfCertificate) param;
                 var encryptionProc = DmsResolver.Current.Get<IEncryptionService>();
                 bool tmpItem;
                 try
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        file.InputStream.CopyTo(memoryStream);
-                        var model = memoryStream.ToArray();
-
-                        tmpItem = (bool)encryptionProc.ExecuteAction(EnumEncryptionActions.VerifyPdf, context, model);
-                    }
+                    tmpItem = (bool) encryptionProc.ExecuteAction(EnumEncryptionActions.VerifyPdf, context, md);
                 }
                 catch (Exception)
                 {
@@ -191,7 +199,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 }
                 var res = new JsonResult(tmpItem, this);
                 return res;
-            });
+            }, model);
         }
 
         /// <summary>
@@ -201,12 +209,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public async Task<IHttpActionResult> Post([FromBody]AddDocumentByTemplateDocument model)
+        public async Task<IHttpActionResult> Post([FromBody] AddDocumentByTemplateDocument model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocument, model, model.CurrentPositionId);
-                //var res = new JsonResult(tmpItem, this);
                 return GetById(context, tmpItem);
             });
         }
@@ -218,15 +225,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный документ</returns>
         [HttpPut]
         [Route(Features.Info)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyDocument model)
+        public async Task<IHttpActionResult> Put([FromBody] ModifyDocument model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocument, model);
-                   //var res = new JsonResult(tmpItem, this);
-                   //res.SpentTime = stopWatch;
-                   return GetById(context, model.Id);
-               });
+            {
+                Action.Execute(context, EnumDocumentActions.ModifyDocument, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -239,12 +245,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> Delete(int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   Action.Execute(context, EnumDocumentActions.DeleteDocument, Id);
-                   var tmpItem = new FrontDeleteModel(Id);
-                   var res = new JsonResult(tmpItem, this);
-                   return res;
-               });
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteDocument, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -254,15 +260,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Добавленный документ</returns>
         [Route(Features.Info + "/Duplicate")]
         [HttpPost]
-        public async Task<IHttpActionResult> CopyDocument([FromBody]CopyDocument model)
+        public async Task<IHttpActionResult> CopyDocument([FromBody] CopyDocument model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
-                   //var res = new JsonResult(tmpItem, this);
-                   //res.SpentTime = stopWatch;
-                   return GetById(context, tmpItem);
-               });
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -275,14 +279,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный документ</returns>
         [Route(Features.Info + "/Register")]
         [HttpPut]
-        public async Task<IHttpActionResult> RegisterDocument([FromBody]RegisterDocument model)
+        public async Task<IHttpActionResult> RegisterDocument([FromBody] RegisterDocument model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.RegisterDocument, model, model.CurrentPositionId);
-                   var res = new JsonResult(tmpItem, this);
-                   return res;
-               });
+            {
+                var tmpItem = Action.Execute(context, EnumDocumentActions.RegisterDocument, model,
+                    model.CurrentPositionId);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -292,16 +297,16 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Обновленный документ</returns>
         [Route(Features.Info + "/GetNextRegisterDocumentNumber")]
         [HttpGet]
-        [ResponseType(typeof(FrontRegistrationFullNumber))]
-        public async Task<IHttpActionResult> GetNextRegisterDocumentNumber([FromUri]RegisterDocument model)
+        [ResponseType(typeof (FrontRegistrationFullNumber))]
+        public async Task<IHttpActionResult> GetNextRegisterDocumentNumber([FromUri] RegisterDocument model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var tmpItem = docProc.GetNextRegisterDocumentNumber(context, model);
-                   var res = new JsonResult(tmpItem, this);
-                   return res;
-               });
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var tmpItem = docProc.GetNextRegisterDocumentNumber(context, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -311,8 +316,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/{Id:int}" + "/Actions")]
-        [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
-        public async Task<IHttpActionResult> Actions([FromUri]int Id)
+        [ResponseType(typeof (List<InternalDictionaryPositionWithActions>))]
+        public async Task<IHttpActionResult> Actions([FromUri] int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -333,11 +338,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> StartWork(ChangeWorkStatus model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   Action.Execute(context, EnumDocumentActions.StartWork, model, model.CurrentPositionId);
-                   var res = new JsonResult(null, this);
-                   return res;
-               });
+            {
+                Action.Execute(context, EnumDocumentActions.StartWork, model, model.CurrentPositionId);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -350,16 +355,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> FinishWork(ChangeWorkStatus model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   Action.Execute(context, EnumDocumentActions.FinishWork, model, model.CurrentPositionId);
-                   var res = new JsonResult(null, this);
-                   return res;
-               });
+            {
+                Action.Execute(context, EnumDocumentActions.FinishWork, model, model.CurrentPositionId);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
-
-
-
-
 
         /// <summary>
         /// Изменяет исполнителя по документу
@@ -371,13 +372,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> ChangeExecutor(ChangeExecutor model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   Action.Execute(context, EnumDocumentActions.ChangeExecutor, model);
-                   var res = new JsonResult(null, this);
-                   return res;
-               });
+            {
+                Action.Execute(context, EnumDocumentActions.ChangeExecutor, model);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
-
 
     }
 }

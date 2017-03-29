@@ -1,5 +1,4 @@
 ﻿using System.Xml.Serialization;
-using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.EncryptionCore.IncomingModel

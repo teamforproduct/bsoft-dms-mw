@@ -264,7 +264,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortField.INT, true));
             var qryRes = _searcher.Search(boolQry, boolFilter, rowLimit, sort);
-            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry.ToString()}'", @"C:\TEMPLOGS\fulltext.log");
+            FileLogger.AppendTextToFile($"{DateTime.Now} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry.ToString()}'", @"C:\TEMPLOGS\fulltext.log");
             if (qryRes.TotalHits >= rowLimit)
                 IsNotAll = true;
             else

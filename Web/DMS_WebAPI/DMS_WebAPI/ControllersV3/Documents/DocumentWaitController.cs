@@ -11,6 +11,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -115,6 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/MarkExecution")]
         public async Task<IHttpActionResult> MarkExecution([FromBody]SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.MarkExecution, model);
@@ -134,6 +136,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/CancelPostponeDueDate")]
         public async Task<IHttpActionResult> CancelPostponeDueDate([FromBody]SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelPostponeDueDate, model);
@@ -151,6 +154,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/RejectResult")]
         public async Task<IHttpActionResult> RejectResult([FromBody]SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectResult, model);
@@ -168,6 +172,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/AcceptResult")]
         public async Task<IHttpActionResult> AcceptResult([FromBody]ControlOff model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AcceptResult, model);
@@ -185,6 +190,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/CancelExecution")]
         public async Task<IHttpActionResult> CancelExecution([FromBody]ControlOff model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelExecution, model);
@@ -204,6 +210,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Waits + "/ControlOff")]
         public async Task<IHttpActionResult> ControlOff([FromBody]ControlOff model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlOff, model);

@@ -54,7 +54,7 @@ namespace BL.Logic.DocumentCore
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
             {
                 FileLogger.AppendTextToFile($"", @"C:\TEMPLOGS\fulltext.log");
-                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** StartSearchIDInLucena ", @"C:\TEMPLOGS\fulltext.log");
+                FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** StartSearchIDInLucena ", @"C:\TEMPLOGS\fulltext.log");
                 //                var testSearch = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(ctx, "417757 file", new FullTextSearchFilter { Module = Modules.Documents, Accesses = new List<int> { 1037, 1041, 1044 } });
                 var addFilter = ((filter?.Document?.IsInWork ?? false) ? FullTextFilterTypes.IsInWork : FullTextFilterTypes.NoFilter)
                                 + ((filter?.Document?.IsFavourite ?? false) ? FullTextFilterTypes.IsFavourite : FullTextFilterTypes.NoFilter)
@@ -85,11 +85,11 @@ namespace BL.Logic.DocumentCore
                 filter.FullTextSearchSearch.FullTextSearchResult = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(out IsNotAll, ctx, filter.FullTextSearchSearch.FullTextSearchString, fullTextSearchFilter, paging);
                 filter.FullTextSearchSearch.IsNotAll = IsNotAll;
                 if (IsNotAll) paging.IsNotAll = IsNotAll;
-                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchResult.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchResult.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             }
             var res = _documentDb.GetDocuments(ctx, filter, paging, groupCountType);
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
-                FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** We have result: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+                FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** We have result: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString) && !filter.FullTextSearchSearch.IsDontSaveSearchQueryLog && !groupCountType.HasValue && !(paging.IsOnlyCounter ?? false) && res.Any())
             {
                 DmsResolver.Current.Get<ILogger>()

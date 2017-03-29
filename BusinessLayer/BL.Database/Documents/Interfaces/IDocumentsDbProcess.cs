@@ -8,14 +8,13 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Reports.FrontModel;
 using BL.Model.Enums;
-using BL.Database.DBModel.Document;
 
 namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentsDbProcess
     {
         void AddDocument(IContext ctx, InternalDocument document);
-        void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign);
+        void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath);
         void DeleteDocument(IContext context, int id);
 
         void GetCountDocuments(IContext ctx, LicenceInfo licence);

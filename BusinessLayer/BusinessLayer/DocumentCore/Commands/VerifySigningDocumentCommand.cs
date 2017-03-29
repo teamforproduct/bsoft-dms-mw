@@ -1,12 +1,8 @@
 ﻿using System.Linq;
 using BL.Logic.Common;
 using BL.Database.Documents.Interfaces;
-using BL.Model.DocumentCore.Actions;
-using BL.Model.DocumentCore.InternalModel;
-using BL.Model.Enums;
+using BL.Model.EncryptionCore.InternalModel;
 using BL.Model.Exception;
-using System;
-using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -14,22 +10,20 @@ namespace BL.Logic.DocumentCore.Commands
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        //private InternalDocumentWait _docWait;
-
         public VerifySigningDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
             _operationDb = operationDb;
         }
 
-        private int Model
+        private VerifySignCertificate Model
         {
             get
             {
-                if (!(_param is int))
+                if (!(_param is VerifySignCertificate))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (int)_param;
+                return (VerifySignCertificate)_param;
             }
         }
 
@@ -42,26 +36,12 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _document = _operationDb.SelfAffixSigningDocumentPrepare(_context, Model);
+            _document = _operationDb.SelfAffixSigningDocumentPrepare(_context, Model.Id);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            //_docWait = _document?.Waits.FirstOrDefault();
-            //throw new CouldNotPerformOperation();
-            //_operationDb.ControlOffSendListPrepare(_context, _document);
-            //_operationDb.ControlOffSubscriptionPrepare(_context, _document);
 
-            //if (Model.CurrentPositionId.HasValue)
-            //{
-            //    _context.SetCurrentPosition(Model.CurrentPositionId.Value);
-            //}
-            //else
-            //{
-            //    _context.SetCurrentPosition(_document.ExecutorPositionId);
-            //}
-
-            //_admin.VerifyAccess(_context, CommandType);
             return true;
         }
 
@@ -69,7 +49,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             var isUseCertificateSign = GetIsUseCertificateSign();
             
-            _operationDb.VerifySigningDocument(_context, Model, GetIsUseInternalSign(), isUseCertificateSign);
+            _operationDb.VerifySigningDocument(_context, Model.Id, GetIsUseInternalSign(), isUseCertificateSign, Model.ServerPath);
             return _document.Id;
         }
 

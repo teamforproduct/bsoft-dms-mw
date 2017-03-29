@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using BL.Model.Enums;
 using System.Collections.Generic;
 using BL.Model.SystemCore.IncomingModel;
-using System.Xml.Serialization;
-using System.Runtime.Serialization;
 using BL.Model.Extensions;
 
 namespace BL.Model.DocumentCore.IncomingModel
@@ -55,6 +52,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int AccessLevelId { get; set; }
 
+        public string ServerPath { get; set; }
         public IEnumerable<ModifyPropertyValue> Properties { get; set; }
     }
 }

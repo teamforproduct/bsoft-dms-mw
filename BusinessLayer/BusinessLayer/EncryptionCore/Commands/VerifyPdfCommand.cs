@@ -1,6 +1,7 @@
 ﻿using BL.Logic.Common;
 using BL.Model.Exception;
 using BL.Database.Encryption.Interfaces;
+using BL.Model.EncryptionCore.InternalModel;
 
 namespace BL.Logic.EncryptionCore.Commands
 {
@@ -14,15 +15,15 @@ namespace BL.Logic.EncryptionCore.Commands
             _encryptiontDb = encryptiontDb;
         }
 
-        private byte[] Model
+        private VerifyPdfCertificate Model
         {
             get
             {
-                if (!(_param is byte[]))
+                if (!(_param is VerifyPdfCertificate))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (byte[])_param;
+                return (VerifyPdfCertificate)_param;
             }
         }
 
@@ -38,7 +39,7 @@ namespace BL.Logic.EncryptionCore.Commands
 
         public override object Execute()
         {
-            return _encryptiontDb.VerifyCertificateSignPdf(Model);
+            return _encryptiontDb.VerifyCertificateSignPdf(Model.FileData, Model.ServerPath);
         }
     }
 }

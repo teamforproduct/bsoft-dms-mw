@@ -96,7 +96,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Waits.ToList().ForEach(x => x.OffEvent = _docWait.OffEvent);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
-            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
+            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
             if (_document.IsLaunchPlan)
                 DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
             return _document.Id;

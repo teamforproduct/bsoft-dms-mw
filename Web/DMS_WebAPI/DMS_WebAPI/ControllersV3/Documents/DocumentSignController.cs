@@ -10,8 +10,10 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.EncryptionCore.InternalModel;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -53,6 +55,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectSigning(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectSigning, model);
@@ -69,6 +72,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectVisaing(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectVisaing, model);
@@ -85,6 +89,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectАgreement(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectАgreement, model);
@@ -101,6 +106,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RejectАpproval(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectАpproval, model);
@@ -118,6 +124,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawSigning(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawSigning, model);
@@ -134,6 +141,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawVisaing(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawVisaing, model);
@@ -150,6 +158,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawАgreement(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawАgreement, model);
@@ -166,6 +175,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawАpproval(SendEventMessage model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawАpproval, model);
@@ -183,6 +193,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixSigning(AffixSigning model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixSigning, model);
@@ -199,6 +210,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixVisaing(AffixSigning model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixVisaing, model);
@@ -215,6 +227,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixАgreement(AffixSigning model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixАgreement, model);
@@ -231,6 +244,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AffixАpproval(AffixSigning model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixАpproval, model);
@@ -248,6 +262,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         public async Task<IHttpActionResult> SelfAffixSigning(SelfAffixSigning model)
         {
+            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model);
@@ -264,14 +279,20 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [DimanicAuthorize("R")]
         [Route(Features.Signs + "/VerifySigning")]
         [HttpPost]
-        public async Task<IHttpActionResult> VerifySigning([FromBody]Item model)
+        public async Task<IHttpActionResult> VerifySigning([FromBody] Item model)
         {
+            var md = new VerifySignCertificate
+            {
+                Id = model.Id,
+                ServerPath = HttpContext.Current.Server.MapPath("~/")
+            };
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   Action.Execute(context, EnumDocumentActions.VerifySigning, model.Id);
-                   var res = new JsonResult(null, this);
-                   return res;
-               });
+            {
+                var mod = (VerifySignCertificate) param;
+                Action.Execute(context, EnumDocumentActions.VerifySigning, mod);
+                var res = new JsonResult(null, this);
+                return res;
+            }, md);
         }
 
     }
