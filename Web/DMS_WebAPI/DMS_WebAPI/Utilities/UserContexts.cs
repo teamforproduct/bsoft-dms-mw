@@ -64,6 +64,8 @@ namespace DMS_WebAPI.Utilities
             string token = TokenLower;
 
             if (!Contains(token)) throw new UserUnauthorized();
+            // TODO добавить восстановление контекста из базы, если нет в коллекции
+            // жизнь контекста должна совпадать с жизнью овиновского токена
 
             var ctx = GetInternal(token);
 
