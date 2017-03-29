@@ -24,7 +24,9 @@ namespace DMS_WebAPI.Results
         Stopwatch _stopwatch; // время выполнения запроса
 
         public UIPaging Paging { set { _paging = value; } }
+
         public Stopwatch SpentTime { set { _stopwatch = value; } }
+
         public JsonResult(object data, ApiController controller)
         {
             _data = data;

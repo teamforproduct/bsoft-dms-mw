@@ -64,7 +64,7 @@ namespace DMS_WebAPI.Models
             return items;
         }
 
-        public static void CheckLanguages()
+        public static void CheckLanguages(string serverPath)
         {
             //var  = GetLabelsFromEnums();
 
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.Models
 
             if (lang == null) throw new Exception("Не установлен язык по умолчанию");
 
-            var d = languages.GetLanguageValues(lang.FileName).Select(x => x.Label).ToList();
+            var d = languages.GetLanguageValues(lang.FileName, serverPath).Select(x => x.Label).ToList();
 
             var toAdd = new List<string>();
             var toRem = new List<string>();

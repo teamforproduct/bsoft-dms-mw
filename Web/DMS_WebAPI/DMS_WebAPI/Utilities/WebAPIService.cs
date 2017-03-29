@@ -417,6 +417,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        //TODO NOT USED
         public string AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
@@ -970,9 +971,6 @@ namespace DMS_WebAPI.Utilities
         {
             return _webDb.GetServerByUser(userId, setUserServer);
         }
-
-
-
 
     }
 }
