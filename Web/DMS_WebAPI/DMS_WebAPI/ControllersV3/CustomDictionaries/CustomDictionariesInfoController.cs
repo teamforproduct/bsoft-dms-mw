@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontCustomDictionary>))]
-        public IHttpActionResult GetMain(int Id, [FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public IHttpActionResult GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterCustomDictionaryType filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
