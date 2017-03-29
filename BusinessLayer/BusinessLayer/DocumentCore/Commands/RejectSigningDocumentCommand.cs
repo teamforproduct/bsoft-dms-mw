@@ -7,9 +7,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
 using BL.CrossCutting.DependencyInjection;
-using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.DocumentCore.Interfaces;
-using System.Transactions;
 using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -103,7 +101,7 @@ namespace BL.Logic.DocumentCore.Commands
             //CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
             using (var transaction = Transactions.GetTransaction())
             {
-                _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
+                _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
                 if (sendList != null)
                 {
                     var docProc = DmsResolver.Current.Get<IDocumentService>();

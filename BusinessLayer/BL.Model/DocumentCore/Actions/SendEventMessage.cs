@@ -1,5 +1,4 @@
 ﻿using System;
-using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Extensions;
 
@@ -24,11 +23,7 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
         private DateTime? _eventDate;
-
-        ///// <summary>
-        ///// Событие доступно в рамках задачи
-        ///// </summary>
-        ///public bool IsAvailableWithinTask { get; set; }
+        public string ServerPath { get; set; }
 
     }
 }

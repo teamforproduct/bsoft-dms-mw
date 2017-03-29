@@ -1,6 +1,4 @@
 ﻿using BL.Model.Enums;
-using BL.Model.Users;
-using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -18,6 +16,6 @@ namespace BL.Model.DocumentCore.Actions
 
         public int? CertificateId { get; set; }
         public string CertificatePassword { get; set; }
-
+        public string ServerPath { get; set; }
     }
 }

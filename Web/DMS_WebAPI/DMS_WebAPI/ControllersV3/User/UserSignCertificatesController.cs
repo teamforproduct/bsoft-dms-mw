@@ -1,22 +1,19 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.EncryptionCore.Interfaces;
+using BL.Model.Common;
+using BL.Model.EncryptionCore.Filters;
+using BL.Model.EncryptionCore.FrontModel;
+using BL.Model.EncryptionCore.IncomingModel;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
 using System.Collections.Generic;
-using System.Diagnostics;
-using BL.Model.Common;
-using BL.Model.EncryptionCore.FrontModel;
-using BL.Model.EncryptionCore.Filters;
-using BL.Model.SystemCore;
-using BL.Logic.EncryptionCore.Interfaces;
+using System.Threading.Tasks;
 using System.Web;
-using BL.Model.EncryptionCore.IncomingModel;
+using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -28,8 +25,13 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserSignCertificatesController : ApiController
     {
-
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IEncryptionService>();
+            var tmpItem = tmpService.GetCertificate(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает список сертификатов
@@ -40,17 +42,17 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SignCertificates)]
         [ResponseType(typeof(List<FrontEncryptionCertificate>))]
-        public IHttpActionResult Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (paging == null) paging = new UIPaging();
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IEncryptionService>();
-            var tmpItems = tmpService.GetCertificates(ctx, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IEncryptionService>();
+                var tmpItems = tmpService.GetCertificates(context, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -61,15 +63,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SignCertificates + "/{Id:int}")]
         [ResponseType(typeof(FrontEncryptionCertificate))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IEncryptionService>();
-            var tmpItem = tmpService.GetCertificate(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -82,15 +81,17 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.SignCertificates)]
-        public IHttpActionResult Post([FromBody]AddEncryptionCertificate model)
+        public async Task<IHttpActionResult> Post([FromBody]AddEncryptionCertificate model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
-            model.AgentId = ctx.CurrentAgentId;
-            var tmpItem = Action.Execute(EnumEncryptionActions.AddEncryptionCertificate, model);
-            return Get(tmpItem);
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                model.AgentId = context.CurrentAgentId;
+                var tmpItem = Action.Execute(context, EnumEncryptionActions.AddEncryptionCertificate, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -100,11 +101,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SignCertificates)]
-        public IHttpActionResult Put([FromBody]ModifyEncryptionCertificate model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyEncryptionCertificate model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumEncryptionActions.ModifyEncryptionCertificate, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumEncryptionActions.ModifyEncryptionCertificate, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -114,14 +117,15 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.SignCertificates + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumEncryptionActions.DeleteEncryptionCertificate, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumEncryptionActions.DeleteEncryptionCertificate, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

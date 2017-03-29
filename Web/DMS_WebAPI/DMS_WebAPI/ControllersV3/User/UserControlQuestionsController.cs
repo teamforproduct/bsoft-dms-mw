@@ -1,20 +1,12 @@
-﻿using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.FrontModel;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.Model.Enums;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.CrossCutting.DependencyInjection;
-using System.Web.Http.Description;
-using System.Collections.Generic;
-using System.Diagnostics;
-using BL.Model.Common;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
+using DMS_WebAPI.Results;
+using DMS_WebAPI.Utilities;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -26,8 +18,18 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserControlQuestionController : ApiController
     {
-
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var user = webService.GetUser(context, context.CurrentAgentId);
+            var res = new JsonResult(new FrontAspNetUserControlQuestion
+            {
+                Question = user.ControlQuestion?.Name,
+                QuestionId = user.ControlQuestionId ?? -1,
+                Answer = user.ControlAnswer
+            }, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает контрольный вопрос и ответ
@@ -37,18 +39,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var user = webService.GetUser(ctx, ctx.CurrentAgentId);
-            var res = new JsonResult(new FrontAspNetUserControlQuestion
-            {
-                Question = user.ControlQuestion?.Name,
-                QuestionId = user.ControlQuestionId ?? -1,
-                Answer = user.ControlAnswer
-            }, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            return GetById(context);
         }
 
         /// <summary>
@@ -60,11 +53,10 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.ChangeControlQuestion(model);
-            return Get();
+            return GetById(context);
         }
 
     }

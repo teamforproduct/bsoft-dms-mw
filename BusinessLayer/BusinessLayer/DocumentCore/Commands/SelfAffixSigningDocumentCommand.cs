@@ -5,7 +5,6 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using System;
 using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -13,8 +12,6 @@ namespace BL.Logic.DocumentCore.Commands
     public class SelfAffixSigningDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentOperationsDbProcess _operationDb;
-
-        //private InternalDocumentWait _docWait;
 
         public SelfAffixSigningDocumentCommand(IDocumentOperationsDbProcess operationDb)
         {
@@ -47,19 +44,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            //_docWait = _document?.Waits.FirstOrDefault();
-            //throw new CouldNotPerformOperation();
-            //_operationDb.ControlOffSendListPrepare(_context, _document);
-            //_operationDb.ControlOffSubscriptionPrepare(_context, _document);
-
-            //if (Model.CurrentPositionId.HasValue)
-            //{
-            //    _context.SetCurrentPosition(Model.CurrentPositionId.Value);
-            //}
-            //else
-            //{
-            //    _context.SetCurrentPosition(_document.ExecutorPositionId);
-            //}
 
             _admin.VerifyAccess(_context, CommandType);
             return true;
@@ -99,7 +83,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };
 
-            _operationDb.SelfAffixSigningDocument(_context, _document, GetIsUseInternalSign(), isUseCertificateSign);
+            _operationDb.SelfAffixSigningDocument(_context, _document, GetIsUseInternalSign(), isUseCertificateSign, Model.ServerPath);
             return _document.Id;
         }
 

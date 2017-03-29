@@ -7,7 +7,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -21,25 +21,23 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentTagController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список тегов по ИД документа
         /// </summary>
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/"+Features.Tags)]
+        [Route("{Id:int}/" + Features.Tags)]
         [ResponseType(typeof(List<FrontDocumentTag>))]
-        public IHttpActionResult GetByDocumentId(int Id)
+        public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentTagService>();
-            var items = docProc.GetTags(ctx, Id);
-            var res = new JsonResult(items, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentTagService>();
+                var items = docProc.GetTags(context, Id);
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -49,13 +47,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Tags)]
-        public IHttpActionResult Post([FromBody]ModifyDocumentTags model)
+        public async Task<IHttpActionResult> Post([FromBody]ModifyDocumentTags model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

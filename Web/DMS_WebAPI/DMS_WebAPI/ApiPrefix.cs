@@ -33,14 +33,11 @@ namespace DMS_WebAPI
             if (param.Length < 2) return null;
 
             int valueParsed;
-            if (Int32.TryParse(param[1], out valueParsed) && param.Length >= 3)
+            if (int.TryParse(param[1], out valueParsed) && param.Length >= 3)
             {
                 return param[2];
             }
-            else
-            {
-                return param[1];
-            }
+            return param[1];
         }
     }
 }

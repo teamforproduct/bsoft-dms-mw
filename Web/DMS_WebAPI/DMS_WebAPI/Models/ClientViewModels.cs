@@ -1,5 +1,4 @@
 ﻿using BL.Model.Enums;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace DMS_WebAPI.Models

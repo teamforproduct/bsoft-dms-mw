@@ -15,7 +15,6 @@ using BL.Model.DocumentCore.IncomingModel;
 using System.Data.Entity;
 using BL.Model.AdminCore;
 using BL.Model.SystemCore;
-using DocumentAccesses = BL.Database.DBModel.Document.DocumentAccesses;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Exception;
 using LinqKit;
@@ -574,7 +573,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void CloseDocumentWait(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
+        public void CloseDocumentWait(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -620,7 +619,7 @@ namespace BL.Database.Documents
                     if (subscription != null)
                     {
                         var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
-                                                                    isUseInternalSign, isUseCertificateSign, subscription,
+                                                                    isUseInternalSign, isUseCertificateSign, subscription,serverMapPath,
                                                                      subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                                      subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                                      subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
@@ -679,16 +678,16 @@ namespace BL.Database.Documents
             }
         }
 
-        public void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign)
+        public void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, documentId, isUseInternalSign, isUseCertificateSign, null, false, true);
+                CommonQueries.GetDocumentHash(dbContext, ctx, documentId, isUseInternalSign, isUseCertificateSign, null, serverMapPath, false, true);
                 transaction.Complete();
             }
         }
 
-        public void SelfAffixSigningDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
+        public void SelfAffixSigningDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -697,7 +696,7 @@ namespace BL.Database.Documents
                 var subscription = document.Subscriptions.First();
 
                 var docHash = CommonQueries.GetDocumentHash(dbContext, ctx, document.Id,
-                                                            isUseInternalSign, isUseCertificateSign, subscription,
+                                                            isUseInternalSign, isUseCertificateSign, subscription, serverMapPath,
                                                              subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
                                                              subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
                                                              subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||

@@ -152,12 +152,12 @@ namespace BL.Database.Admins
                 filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
                 var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
-                                .GroupBy(x=>x.PositionId)
+                                .GroupBy(x => x.PositionId)
                                 .Select(x => new
                                 {
                                     PositionId = x.Key,
-                                    CountNewEvents = x.Sum(y=>y.CountNewEvents),
-                                    CountWaits = x.Sum(y=>y.CountWaits),
+                                    CountNewEvents = x.Sum(y => y.CountNewEvents),
+                                    CountWaits = x.Sum(y => y.CountWaits),
                                     OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
                                     MinDueDate = x.Min(y => y.MinDueDate),
                                 });
@@ -171,7 +171,7 @@ namespace BL.Database.Admins
                     x.MinDueDate = stat?.MinDueDate;
                 });
 
-                
+
                 //var filterNewEventTargetPositionContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
                 //filterNewEventTargetPositionContains = positions.Aggregate(filterNewEventTargetPositionContains,
                 //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
@@ -221,7 +221,7 @@ namespace BL.Database.Admins
                 //    x.ControlsCount = t?.ControlsCount ?? 0;
                 //    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
                 //});
-                
+
                 transaction.Complete();
                 return res;
             }
@@ -254,10 +254,10 @@ namespace BL.Database.Admins
                     PositionId = x.PositionId,
                     PositionName = x.Position.Name,
                     DepartmentName = x.Position.Department.Name,
-                    ExecutorName =  (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
-                    ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte [] { } : x.Position.ExecutorAgent.Image),
+                    ExecutorName = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
+                    ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte[] { } : x.Position.ExecutorAgent.Image),
                     ExecutorTypeId = x.PositionExecutorType.Id,
-                    ExecutorTypeDescription =  x.PositionExecutorType.Description,
+                    ExecutorTypeDescription = x.PositionExecutorType.Description,
                 }).ToList();
 
                 //IsLastChosen
@@ -351,7 +351,7 @@ namespace BL.Database.Admins
                 return res;
             }
         }
- 
+
         public IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee)
         {
             return null;
@@ -1987,21 +1987,21 @@ namespace BL.Database.Admins
             if (permiss == null || adminPermiss == null || adminRole == null || userRole == null || dictPos == null) throw new KeyNotFoundException();
 
             var fltRoles = userRole.AsQueryable();
-            if (filter.RoleIDs!=null && filter.RoleIDs.Any())
+            if (filter.RoleIDs != null && filter.RoleIDs.Any())
             {
                 fltRoles = fltRoles.Where(x => filter.RoleIDs.Contains(x.RoleId));
             }
 
             var now = DateTime.UtcNow;
 
-            var dictFlt =dictPos.Where(x => x.AgentId == filter.UserId && x.IsActive && now >= x.StartDate && now <= x.EndDate);
-            if (filter.PositionsIdList!=null && filter.PositionsIdList.Any())
+            var dictFlt = dictPos.Where(x => x.AgentId == filter.UserId && x.IsActive && now >= x.StartDate && now <= x.EndDate);
+            if (filter.PositionsIdList != null && filter.PositionsIdList.Any())
             {
                 dictFlt = dictFlt.Where(x => filter.PositionsIdList.Contains(x.PositionId));
             }
 
             var fltPermiss = permiss.AsQueryable();
-            if (filter.PermissionIDs!=null && filter.PermissionIDs.Any())
+            if (filter.PermissionIDs != null && filter.PermissionIDs.Any())
             {
                 fltPermiss = fltPermiss.Where(x => filter.PermissionIDs.Contains(x.Id));
             }
@@ -2019,11 +2019,11 @@ namespace BL.Database.Admins
             {
                 var act = _cacheService.GetData(context, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
                 if (act == null) throw new KeyNotFoundException();
-                var fltAct = act.Where(x => x.Id == filter.ActionId.Value && x.PermissionId.HasValue).Select(x=>x.PermissionId).Distinct().ToList();
+                var fltAct = act.Where(x => x.Id == filter.ActionId.Value && x.PermissionId.HasValue).Select(x => x.PermissionId).Distinct().ToList();
                 qry.Where(x => fltAct.Contains(x.perm.Id));
             }
 
-            return qry.Select(x=>x.perm).Distinct().ToList();
+            return qry.Select(x => x.perm).Distinct().ToList();
         }
 
         public bool ExistsPermissionsAccess(IContext context, FilterPermissionsAccess filter)
@@ -2036,16 +2036,16 @@ namespace BL.Database.Admins
 
         public IEnumerable<FrontPermission> GetUserPermissionsAccess(IContext context, FilterPermissionsAccess filter)
         {
-                var qry = GetPermissionsAccessQuery(context, filter);
+            var qry = GetPermissionsAccessQuery(context, filter);
 
-                qry = qry.OrderBy(x => x.FeatureOrder).ThenBy(x => x.AccessTypeOrder).ToList();
+            qry = qry.OrderBy(x => x.FeatureOrder).ThenBy(x => x.AccessTypeOrder).ToList();
 
             return qry.Select(x => new FrontPermission
-                {
-                    Module = x.ModuleCode,
-                    Feature = x.FeatureCode,
-                    AccessType = x.AccessTypeCode
-                }).ToList();
+            {
+                Module = x.ModuleCode,
+                Feature = x.FeatureCode,
+                AccessType = x.AccessTypeCode
+            }).ToList();
 
         }
 

@@ -6,10 +6,11 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using System;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
@@ -22,8 +23,6 @@ namespace DMS_WebAPI.ControllersV3.System
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
     public class TempFileStorageController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает файл из временного хранилища
         /// </summary>
@@ -32,23 +31,22 @@ namespace DMS_WebAPI.ControllersV3.System
         [HttpGet]
         [Route(Features.TempFileStorage + "/{Id:int}")]
         [ResponseType(typeof(FrontFile))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-
-
-            var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-            var img = tmpService.GetStoreObject(Id) as string;
-
-            var tmpItem = new FrontFile
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Id = Id,
-                FileContent = img
-            };
+                var tmpService = DmsResolver.Current.Get<ITempStorageService>();
+                var img = tmpService.GetStoreObject(Id) as string;
 
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+                var tmpItem = new FrontFile
+                {
+                    Id = Id,
+                    FileContent = img
+                };
+
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -57,18 +55,19 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpPost]
         [Route(Features.TempFileStorage)]
-        public IHttpActionResult Post()
+        public async Task<IHttpActionResult> Post()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            HttpPostedFile file = HttpContext.Current.Request.Files[0];
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var file = (HttpPostedFile)param;
+                byte[] buffer = new byte[file.ContentLength];
+                file.InputStream.Read(buffer, 0, file.ContentLength);
+                var fileContent = Convert.ToBase64String(buffer);
 
-            byte[] buffer = new byte[file.ContentLength];
-            file.InputStream.Read(buffer, 0, file.ContentLength);
-            var fileContent = Convert.ToBase64String(buffer);
-
-            var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-            var imgageId = tmpService.AddToStore(EnumObjects.DictionaryAgents, -1, 0, fileContent);
-            return new JsonResult(imgageId, this);
+                var tmpService = DmsResolver.Current.Get<ITempStorageService>();
+                var imgageId = tmpService.AddToStore(EnumObjects.DictionaryAgents, -1, 0, fileContent);
+                return new JsonResult(imgageId, this);
+            }, HttpContext.Current.Request.Files[0]);
         }
 
 
@@ -79,15 +78,16 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.TempFileStorage + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-            tmpService.ExtractStoreObject(Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<ITempStorageService>();
+                tmpService.ExtractStoreObject(Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
     }
 }

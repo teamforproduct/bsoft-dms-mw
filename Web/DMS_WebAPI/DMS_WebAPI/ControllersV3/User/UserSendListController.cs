@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -10,7 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -24,7 +25,14 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserSendListController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetUserStandartSendList(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
 
         /// <summary>
         /// Список заголовков списков рассылки
@@ -54,15 +62,12 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SendLists + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryStandartSendList))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetUserStandartSendList(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -72,11 +77,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.SendLists)]
-        public IHttpActionResult Post([FromBody]AddStandartSendList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddStandartSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddStandartSendList, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddStandartSendList, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -86,11 +93,13 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.SendLists)]
-        public IHttpActionResult Put([FromBody]ModifyStandartSendList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyStandartSendList model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyStandartSendList, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyStandartSendList, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -100,14 +109,15 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.SendLists + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteStandartSendList, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeleteStandartSendList, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

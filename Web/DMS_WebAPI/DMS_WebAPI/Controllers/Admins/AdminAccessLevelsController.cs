@@ -2,7 +2,6 @@
 using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -11,8 +10,6 @@ namespace DMS_WebAPI.Controllers.Admins
     [Authorize]
     public class AdminAccessLevelsController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Получение словаря уровней доступа
         /// </summary>

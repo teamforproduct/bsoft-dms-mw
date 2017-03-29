@@ -1,14 +1,14 @@
-﻿using BL.Logic.DocumentCore.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Enums;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Web.Http;
-using BL.CrossCutting.DependencyInjection;
-using BL.Logic.SystemServices.AutoPlan;
-using BL.Model.Enums;
-using BL.Model.DocumentCore.IncomingModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers.Documents
 {

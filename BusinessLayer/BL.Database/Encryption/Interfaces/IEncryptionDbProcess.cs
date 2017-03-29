@@ -23,14 +23,14 @@ namespace BL.Database.Encryption.Interfaces
         #endregion
 
         #region CertificateSign
-        string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign);
+        string GetCertificateSign(IContext ctx, int certificateId, string certificatePassword, string dataToSign, string serverMapPath);
 
-        bool VerifyCertificateSign(IContext ctx, string dataToSign, string sign);
+        bool VerifyCertificateSign(IContext ctx, string dataToSign, string sign, string serverMapPath);
         #endregion
 
         #region CertificateSignPdf
-        byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf);
-        bool VerifyCertificateSignPdf(byte[] pdf);
+        byte[] GetCertificateSignPdf(IContext ctx, int certificateId, string certificatePassword, byte[] pdf, string serverMapPath); //TODO NOT USED
+        bool VerifyCertificateSignPdf(byte[] pdf, string serverMapPath);
         #endregion
 
         #region InternalSign

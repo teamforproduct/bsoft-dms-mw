@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -10,7 +11,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -24,7 +25,13 @@ namespace DMS_WebAPI.ControllersV3.Tags
     [RoutePrefix(ApiPrefix.V3 + Modules.Tags)]
     public class TagsInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetTag(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Теги
@@ -37,16 +44,16 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainTag>))]
-        public IHttpActionResult Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
+        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterDictionaryTag filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetMainTags(ctx, ftSearch, filter, paging, sorting);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                   var tmpItems = tmpService.GetMainTags(context, ftSearch, filter, paging, sorting);
+                   var res = new JsonResult(tmpItems, this);
+                   res.Paging = paging;
+                   return res;
+               });
         }
 
 
@@ -58,15 +65,12 @@ namespace DMS_WebAPI.ControllersV3.Tags
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontTag))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetTag(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -76,11 +80,13 @@ namespace DMS_WebAPI.ControllersV3.Tags
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddTag model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTag model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddTag, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   var tmpItem = Action.Execute(context, EnumDictionaryActions.AddTag, model);
+                   return GetById(context, tmpItem);
+               });
         }
 
         /// <summary>
@@ -90,11 +96,13 @@ namespace DMS_WebAPI.ControllersV3.Tags
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyTag model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTag model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyTag, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDictionaryActions.ModifyTag, model);
+                   return GetById(context, model.Id);
+               });
         }
 
         /// <summary>
@@ -104,14 +112,15 @@ namespace DMS_WebAPI.ControllersV3.Tags
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeleteTag, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDictionaryActions.DeleteTag, Id);
+                   var tmpItem = new FrontDeleteModel(Id);
+                   var res = new JsonResult(tmpItem, this);
+                   return res;
+               });
         }
 
     }

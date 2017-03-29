@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.DatabaseContext;
@@ -23,8 +22,6 @@ using LinqKit;
 using System.Data.Entity;
 using BL.Model.Reports.FrontModel;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Database.DBModel.Dictionary;
-using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.DependencyInjection;
 using System.Text.RegularExpressions;
@@ -197,12 +194,6 @@ namespace BL.Database.Documents
                     else
                     #endregion groupCount
                     {
-                        //var sortDocIds = filter.FullTextSearchSearch.FullTextSearchId.Select((x, i) => new { DocId = x, Index = i }).ToList();
-                        //var docIds = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id).Select(x => x.Id).ToList();
-                        //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IDsFromDB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
-                        //docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i).Select(x => x.DocId).ToList();
-                        //FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{filter?.FullTextSearchSearch?.FullTextSearchString}' IntersectLucena&DB: {docIds.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
-
                         if ((paging.IsOnlyCounter ?? true) && !filter.FullTextSearchSearch.IsNotAll)  
                         {
                             var ftDocs = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId);
@@ -604,7 +595,7 @@ namespace BL.Database.Documents
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign, null, false, false, false);
+                CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign, null, model.ServerPath, false, false, false);
 
                 var subscriptionStates = new List<EnumSubscriptionStates> {
                         EnumSubscriptionStates.Sign,
@@ -1116,7 +1107,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign)
+        public void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath)
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
@@ -1157,7 +1148,7 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
 
-                CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, false, false);
+                CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, serverMapPath, false, false);//TODO ЗАЧЕМ ТУТ ЭТО?
                 CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 

@@ -10,6 +10,7 @@ using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
 using System.Collections.Generic;
+using System.Web;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -28,7 +29,7 @@ namespace DMS_WebAPI
             //var systemService = DmsResolver.Current.Get<ISystemService>();
 
             // Проверка на целостность переводов
-            ApplicationDbImportData.CheckLanguages();
+            ApplicationDbImportData.CheckLanguages(HttpContext.Current.Server.MapPath("~/"));
 
 
         //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());

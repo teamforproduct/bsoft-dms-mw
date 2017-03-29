@@ -196,3 +196,5 @@ ModelManifest.xml
 /pub
 /Web/DMS_WebAPI/DMS_WebAPI/App_Data
 /PDFCreator/packages
+/Web/OutRelease
+/Web/OutDebug

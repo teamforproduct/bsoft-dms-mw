@@ -152,6 +152,8 @@
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="EncryptionCore\InternalModel\VerifyPdfCertificate.cs" />
+    <Compile Include="EncryptionCore\InternalModel\VerifySignCertificate.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />
     <Compile Include="FullTextSearch\FilterFullTextIndexCash.cs" />
     <Compile Include="Enums\EnumSortPositionExecutors.cs" />

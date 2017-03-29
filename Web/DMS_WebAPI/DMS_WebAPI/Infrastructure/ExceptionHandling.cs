@@ -216,7 +216,7 @@ namespace DMS_WebAPI.Infrastructure
 
                 errorMessage += $"Request Body: {body}\r\n";
 
-                FileLogger.AppendTextToSiteErrors(errorMessage);
+                FileLogger.AppendTextToFile(errorMessage, HttpContext.Current.Server.MapPath("~/SiteErrors.txt"));
             }
             catch { }
             #endregion log to file
@@ -227,8 +227,6 @@ namespace DMS_WebAPI.Infrastructure
                 DmsResolver.Current.Get<Utilities.UserContexts>().Remove();
 
         }
-
-
 
         private static string InsertValues(string Message, List<string> Paramenters)
         {

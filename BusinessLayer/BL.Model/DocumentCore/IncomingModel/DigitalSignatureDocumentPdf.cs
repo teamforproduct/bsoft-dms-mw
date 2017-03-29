@@ -1,5 +1,4 @@
 ﻿using BL.Model.Users;
-using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -7,5 +6,6 @@ namespace BL.Model.DocumentCore.IncomingModel
     {
         public int DocumentId { get; set; }
         public bool IsAddSubscription { get; set; }
+        public string ServerPath { get; set; }
     }
 }

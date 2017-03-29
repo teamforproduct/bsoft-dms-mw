@@ -53,11 +53,11 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
         InternalDocument SendForInformationDocumentPrepare(IContext context, InternalDocumentSendList model);
-        void CloseDocumentWait(IContext context, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign);
+        void CloseDocumentWait(IContext context, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath);
 
-        void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign);
+        void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath);
 
-        void SelfAffixSigningDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign);
+        void SelfAffixSigningDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath);
 
         InternalDocument SendForExecutionDocumentPrepare(IContext context, InternalDocumentSendList sendList);
 

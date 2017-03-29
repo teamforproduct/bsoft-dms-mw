@@ -35,10 +35,7 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public EnumSigningTypes SigningType { get; set; }
 
-        ///// <summary>
-        ///// ИД должности, от которой будет выполнятся действие
-        ///// </summary>
-        //public int? CurrentPositionId { get; set; }
+        public string ServerPath { get; set; }
 
         public int? CertificateId { get; set; }
         public string CertificatePassword { get; set; }

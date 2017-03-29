@@ -1,14 +1,14 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Logic.SystemServices.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Logic.SystemServices.FullTextSearch;
 
 namespace DMS_WebAPI.ControllersV3.Utilities
 {
@@ -20,8 +20,6 @@ namespace DMS_WebAPI.ControllersV3.Utilities
     [RoutePrefix(ApiPrefix.V3 + Modules.Dev)]
     public class DevController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает Hello, world!
         /// </summary>
@@ -29,11 +27,9 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [HttpGet]
         [Route("Test")]
         [ResponseType(typeof(string))]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var res = new JsonResult("Hello, world!", this);
-            res.SpentTime = stopWatch;
             return res;
         }
 
@@ -43,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns>FrontAdminPositions</returns>
         [HttpGet]
         [Route("Version")]
-        public IHttpActionResult GetVersion()
+        public async Task<IHttpActionResult> GetVersion()
         {
             var tmpItems = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return new JsonResult(tmpItems, this);
@@ -66,17 +62,16 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshPermissions")]
-        public IHttpActionResult RefreshPermissions()
+        public async Task<IHttpActionResult> RefreshPermissions()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                tmpService.RefreshModuleFeature(context);
 
-            tmpService.RefreshModuleFeature(ctx);
-
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -85,15 +80,15 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemActions")]
-        public IHttpActionResult RefreshSystemActions()
+        public async Task<IHttpActionResult> RefreshSystemActions()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            tmpService.RefreshSystemActions(cxt);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                tmpService.RefreshSystemActions(context);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -102,15 +97,15 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemObjects")]
-        public IHttpActionResult RefreshSystemObjects()
+        public async Task<IHttpActionResult> RefreshSystemObjects()
         {
-            stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            tmpService.RefreshSystemObjects(cxt);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISystemService>();
+                tmpService.RefreshSystemObjects(context);
+                var res = new JsonResult(null, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -119,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpGet]
         [Route("SessionsCount")]
-        public IHttpActionResult GetUserContextsCount()
+        public async Task<IHttpActionResult> GetUserContextsCount()
         {
             var count = DmsResolver.Current.Get<UserContexts>().Count;
             return new JsonResult(count, this);
@@ -131,13 +126,15 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpGet]
         [Route("FullTextIndexPrepareNew")]
-        public IHttpActionResult Test()
+        public async Task<IHttpActionResult> Test()
         {
             //TODO REMOVE
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
-            //ftService.FullTextIndexPrepareNew(cxt, EnumObjects.Documents, true, true, 0, 1000);
-            return new JsonResult(null, this);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
+                //ftService.FullTextIndexPrepareNew(context, EnumObjects.Documents, true, true, 0, 1000);
+                return new JsonResult(null, this);
+            });
         }
 
     }

@@ -9,7 +9,6 @@ using System.Web.Http.Filters;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
 using BL.Logic.AdminCore.Interfaces;
-using System.Linq;
 using BL.Model.Exception;
 using BL.Database.DatabaseContext;
 using System.Collections.Generic;
@@ -44,14 +43,11 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public Task<HttpResponseMessage> ExecuteAuthorizationFilterAsync(HttpActionContext actionContext, CancellationToken cancellationToken,
-            Func<Task<HttpResponseMessage>> continuation)
+        public Task<HttpResponseMessage> ExecuteAuthorizationFilterAsync(HttpActionContext actionContext, CancellationToken cancellationToken,Func<Task<HttpResponseMessage>> continuation)
         {
             var principal = actionContext.RequestContext.Principal;
             if (principal == null)
             {
-                //var controller = actionContext.ControllerContext.ControllerDescriptor.ControllerName;
-                //var method = actionContext.ActionDescriptor.ActionName;
                 return Task.FromResult<HttpResponseMessage>(actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized));
             }
 
@@ -66,7 +62,7 @@ namespace DMS_WebAPI.Utilities
             string module = param[0];
             string feature;
             int valueParsed;
-            if (Int32.TryParse(param[1], out valueParsed) && param.Length >= 3)
+            if (int.TryParse(param[1], out valueParsed) && param.Length >= 3)
             {
                 feature = param[2];
             }
