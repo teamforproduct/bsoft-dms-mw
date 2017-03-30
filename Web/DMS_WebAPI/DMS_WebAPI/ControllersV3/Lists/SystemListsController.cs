@@ -190,14 +190,12 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.Languages)]
         [ResponseType(typeof(List<InternalAdminLanguage>))]
-        public async Task<IHttpActionResult> GetLanguages([FromUri] FilterAdminLanguage filter)
+        public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var tmpService = DmsResolver.Current.Get<ILanguages>();
-                var tmpItems = tmpService.GetLanguages(filter);
-                return new JsonResult(tmpItems, this);
-            });
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ILanguages>();
+            var tmpItems = tmpService.GetLanguages(filter);
+            return new JsonResult(tmpItems, this);
         }
 
 
@@ -344,7 +342,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<FrontSystemValueType>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemValueType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) => 
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemValueTypes(context, filter);
