@@ -19,6 +19,7 @@ using BL.Model.Constants;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Users;
@@ -448,6 +449,8 @@ namespace BL.Database.Admins
                 dbContext.AdminRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.AddNew);
                 transaction.Complete();
                 res = dbModel.Id;
             }
@@ -463,6 +466,8 @@ namespace BL.Database.Admins
                 dbContext.AdminRolesSet.Attach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
@@ -474,6 +479,8 @@ namespace BL.Database.Admins
             {
                 var qry = GetRolesQuery(context, dbContext, new FilterAdminRole { IDs = new List<int> { id } });
                 qry.Delete();
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.AdminRoles, EnumOperationType.Delete);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
@@ -719,6 +726,8 @@ namespace BL.Database.Admins
                 dbContext.AdminPositionRolesSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.AdminPositionRoles, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -729,8 +738,8 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminPositionRoleQuery(context, dbContext, filter);
-                dbContext.AdminPositionRolesSet.RemoveRange(qry);
-                dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.AdminPositionRoles, EnumOperationType.Delete);
+                qry.Delete();
                 transaction.Complete();
             }
         }
@@ -912,66 +921,31 @@ namespace BL.Database.Admins
         #endregion
 
         #region [+] UserRole ...
-        public int AddUserRole(IContext context, InternalAdminUserRole model)
-        {
-            int res;
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = AdminModelConverter.GetDbUserRole(context, model);
-                dbContext.AdminUserRolesSet.Add(dbModel);
-                dbContext.SaveChanges();
-                model.Id = dbModel.Id;
-                transaction.Complete();
-                res = dbModel.Id;
-            }
-            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
-            return res;
-        }
-
         public void AddUserRoles(IContext context, IEnumerable<InternalAdminUserRole> models)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var dbModels = AdminModelConverter.GetDbUserRoles(context, models);
-                dbContext.AdminUserRolesSet.AddRange(dbModels);
+                var list = dbContext.AdminUserRolesSet.AddRange(dbModels);
                 dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, list.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.AddNew);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
 
-        public void UpdateUserRole(IContext context, InternalAdminUserRole model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminUserRoles dbModel = AdminModelConverter.GetDbUserRole(context, model);
-                dbContext.AdminUserRolesSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
-        }
-
-        public void DeleteUserRole(IContext context, int id)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = dbContext.AdminUserRolesSet.FirstOrDefault(x => x.Id == id);
-                dbContext.AdminUserRolesSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
-        }
         public void DeleteUserRoles(IContext context, FilterAdminUserRole filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetUserRolesQuery(context, dbContext, filter);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.Delete);
                 qry.Delete();
+
                 transaction.Complete();
             }
+            _cacheService.RefreshKey(context, SettingConstants.USER_ROLE_CASHE_KEY);
         }
 
         public IEnumerable<InternalAdminUserRole> GetInternalUserRoles(IContext context, FilterAdminUserRole filter)
@@ -1472,6 +1446,8 @@ namespace BL.Database.Admins
                 dbContext.AdminRegistrationJournalPositionsSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -1482,20 +1458,10 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var items = AdminModelConverter.GetDbRegistrationJournalPositions(context, list);
-                dbContext.AdminRegistrationJournalPositionsSet.AddRange(items);
+                var res = dbContext.AdminRegistrationJournalPositionsSet.AddRange(items);
                 dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
 
-        public void UpdateRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminRegistrationJournalPositions dbModel = AdminModelConverter.GetDbRegistrationJournalPosition(context, model);
-                dbContext.AdminRegistrationJournalPositionsSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, res.Select(x => x.Id).ToList(), EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.AddNew);
                 transaction.Complete();
             }
         }
@@ -1505,6 +1471,7 @@ namespace BL.Database.Admins
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalPositionQuery(context, dbContext, filter);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }

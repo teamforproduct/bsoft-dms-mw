@@ -74,7 +74,7 @@ namespace BL.Logic.SystemCore
                 res = MainFunc(context, filter, null, sorting);
 
                 // Если явно не запретили
-                if (!searchFilter.IsDontSaveSearchQueryLog && !(paging.IsOnlyCounter ?? false) && res != null && res.Any())
+                if (!searchFilter.IsDontSaveSearchQueryLog && !(paging?.IsOnlyCounter ?? false) && res != null && res.Any())
                 {
                     DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, module, searchFilter?.FullTextSearchString);
                 }

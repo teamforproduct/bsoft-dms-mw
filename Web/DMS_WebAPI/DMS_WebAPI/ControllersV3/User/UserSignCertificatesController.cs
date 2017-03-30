@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.SignCertificates)]
         [ResponseType(typeof(List<FrontEncryptionCertificate>))]
-        public async Task<IHttpActionResult> Get([FromUri]FilterEncryptionCertificate filter, UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterEncryptionCertificate filter, [FromUri]UIPaging paging)
         {
             if (paging == null) paging = new UIPaging();
 

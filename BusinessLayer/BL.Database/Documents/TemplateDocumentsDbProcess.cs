@@ -275,7 +275,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newTemplate.Id, EnumObjects.DictionaryDocumentType,
-                    template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
+                    template.Id > 0 ? EnumOperationType.UpdateFull : EnumOperationType.AddNew);
 
 
                 if (template.Properties != null && template.Properties.Any())
@@ -603,7 +603,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newTemplate.Id, EnumObjects.TemplateDocumentSendList, template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newTemplate.Id, EnumObjects.TemplateDocumentSendList, template.Id > 0 ? EnumOperationType.UpdateFull : EnumOperationType.AddNew);
                 transaction.Complete();
                 return newTemplate.Id;
             }
@@ -994,7 +994,7 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newTemplate.Id, EnumObjects.TemplateDocumentTask,
-                    template.Id > 0 ? EnumOperationType.Update : EnumOperationType.AddNew);
+                    template.Id > 0 ? EnumOperationType.UpdateFull : EnumOperationType.AddNew);
                 transaction.Complete();
                 return newTemplate.Id;
             }
@@ -1387,7 +1387,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
 
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1403,7 +1403,7 @@ namespace BL.Database.Documents
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
 
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Update);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }

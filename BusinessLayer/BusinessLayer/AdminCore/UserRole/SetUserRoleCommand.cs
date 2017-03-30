@@ -53,7 +53,7 @@ namespace BL.Logic.AdminCore
 
             if (!exists && Model.IsChecked)
             {
-                _adminDb.AddUserRole(_context, model);
+                _adminDb.AddUserRoles(_context, new List<InternalAdminUserRole> { model });
             }
             else if (exists && !Model.IsChecked)
             {

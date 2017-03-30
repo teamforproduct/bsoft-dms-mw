@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         [HttpGet]
         [Route("{Id:int}/" + Features.Positions)]
         [ResponseType(typeof(List<ListItem>))]
-        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPosition filter, UIPaging paging)
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
             if (filter == null) filter = new FilterDictionaryPosition();
             filter.RoleIDs = new List<int> { Id };
