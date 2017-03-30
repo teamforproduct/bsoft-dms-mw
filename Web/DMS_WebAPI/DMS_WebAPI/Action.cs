@@ -46,6 +46,8 @@ namespace DMS_WebAPI
 
         public static int Execute(IContext context, EnumDocumentActions action, object model, int? сurrentPositionId = null)
         {
+            if (сurrentPositionId.HasValue)
+                context.SetCurrentPosition(сurrentPositionId);
             var tmpService = DmsResolver.Current.Get<IDocumentService>();
             var res = tmpService.ExecuteAction(action, context, model);
 

@@ -13,7 +13,7 @@ namespace BL.Model.Extensions
             return s.Replace("(", string.Empty).Replace(")", string.Empty)
                     .Replace("[", string.Empty).Replace("]", string.Empty)
                     .Replace("[", string.Empty).Replace("]", string.Empty)
-                    .Replace("^", string.Empty).Replace("]", string.Empty)
+                    .Replace("^", string.Empty)
                 ;
         }
     }
