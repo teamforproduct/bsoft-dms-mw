@@ -157,7 +157,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof (FrontReport))]
         public async Task<IHttpActionResult> GetReportDocumentForDigitalSignature(DigitalSignatureDocumentPdf model)
         {
-            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
+            model.ServerPath = Properties.Settings.Default.ServerPath;
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
@@ -181,7 +181,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             {
                 var file = HttpContext.Current.Request.Files[0];
                 file.InputStream.CopyTo(memoryStream);
-                model.ServerPath = HttpContext.Current.Server.MapPath("~/");
+                model.ServerPath = Properties.Settings.Default.ServerPath;
                 model.FileData = memoryStream.ToArray();
             }
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
@@ -227,7 +227,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody] ModifyDocument model)
         {
-            model.ServerPath = HttpContext.Current.Server.MapPath("~/");
+            model.ServerPath = Properties.Settings.Default.ServerPath;
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.ModifyDocument, model);
