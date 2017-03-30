@@ -29,7 +29,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\OutDebug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -465,9 +465,9 @@
     <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.Designer.cs">
       <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201703062044277_PositionExecutorTypes_Description.cs" />
-    <Compile Include="Migrations\201703062044277_PositionExecutorTypes_Description.Designer.cs">
-      <DependentUpon>201703062044277_PositionExecutorTypes_Description.cs</DependentUpon>
+    <Compile Include="Migrations\201703301041021_UserFingerPrintIndexOff.cs" />
+    <Compile Include="Migrations\201703301041021_UserFingerPrintIndexOff.Designer.cs">
+      <DependentUpon>201703301041021_UserFingerPrintIndexOff.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -673,8 +673,8 @@
     <EmbeddedResource Include="Migrations\201702161918125_AspNetUserContexts.resx">
       <DependentUpon>201702161918125_AspNetUserContexts.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703062044277_PositionExecutorTypes_Description.resx">
-      <DependentUpon>201703062044277_PositionExecutorTypes_Description.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201703301041021_UserFingerPrintIndexOff.resx">
+      <DependentUpon>201703301041021_UserFingerPrintIndexOff.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

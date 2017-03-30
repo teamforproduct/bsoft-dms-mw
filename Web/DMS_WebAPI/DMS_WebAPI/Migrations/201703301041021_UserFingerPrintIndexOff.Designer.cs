@@ -7,13 +7,13 @@ namespace DMS_WebAPI.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class PositionExecutorTypes_Description : IMigrationMetadata
+    public sealed partial class UserFingerPrintIndexOff : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(PositionExecutorTypes_Description));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UserFingerPrintIndexOff));
         
         string IMigrationMetadata.Id
         {
-            get { return "201703062044277_PositionExecutorTypes_Description"; }
+            get { return "201703301041021_UserFingerPrintIndexOff"; }
         }
         
         string IMigrationMetadata.Source
