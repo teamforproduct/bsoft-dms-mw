@@ -1589,7 +1589,7 @@ namespace BL.Database.SystemDb
 
                 var qrys = FullTextIndexItemQuery[objectType](ctx, dbContext);
 
-                if (isDeepUpdate)
+                if (isDeepUpdate && FullTextDeepUpdateParams.Keys.Contains(objectType))
                     foreach (var item in FullTextDeepUpdateParams[objectType])
                         qrys.AddRange(FullTextIndexItemQuery[item.ObjectType](ctx, dbContext, item.FilterType));
 
