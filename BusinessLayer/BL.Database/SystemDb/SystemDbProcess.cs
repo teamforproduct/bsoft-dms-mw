@@ -520,9 +520,9 @@ namespace BL.Database.SystemDb
                 }
                 if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.True<SystemLogs>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
-                                .Aggregate(filterContains, (current, value) => current.Or(e => (e.Message +" "+e.Agent.Name).Contains(value)).Expand());
+                                .Aggregate(filterContains, (current, value) => current.And(e => (e.Message +" "+e.Agent.Name).Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
 

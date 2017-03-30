@@ -90,9 +90,9 @@ namespace BL.Logic.Logging
                     }
                     if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                     {
-                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        var filterContains = PredicateBuilder.True<FrontSystemSession>();
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
-                                    .Aggregate(filterContains, (current, value) => current.Or(e => (e.LoginLogInfo +" "+ e.Name).Contains(value)).Expand());
+                                    .Aggregate(filterContains, (current, value) => current.And(e => (e.LoginLogInfo +" "+ e.Name).Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
                     qry = qry.OrderByDescending(x => x.CreateDate);

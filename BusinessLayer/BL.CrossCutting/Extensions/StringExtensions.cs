@@ -60,6 +60,16 @@ namespace BL.CrossCutting.Extensions
                 return Encoding.Unicode.GetString(mso.ToArray());
             }
         }
+        public static string RemoveSpecialCharactersFullText(this string s)
+        {
+            return s.Replace("(", string.Empty).Replace(")", string.Empty)
+                    .Replace("[", string.Empty).Replace("]", string.Empty)
+                    .Replace("[", string.Empty).Replace("]", string.Empty)
+                    .Replace("^", string.Empty).Replace("]", string.Empty)
+                ;
+        }
+
+
 
     }
 

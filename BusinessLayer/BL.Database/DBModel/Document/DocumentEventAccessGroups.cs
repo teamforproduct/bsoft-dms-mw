@@ -17,12 +17,13 @@ namespace BL.Database.DBModel.Document
         public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int EventId { get; set; }
-        public int AccessTypeId { get; set; }
-        public int AccessGroupsTypeId { get; set; }
+        public int AccessTypeId { get; set; }   // получатель, копия, досылка
+        public int AccessGroupsTypeId { get; set; } //тип группы, в т.ч. РГ по доку
         public int? CompanyId { get; set; }
         public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
+        //public int? StandartSendListId { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
@@ -39,6 +40,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions Position { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
+        [ForeignKey("StandartSendListId")]
+        public virtual DictionaryStandartSendLists StandartSendList { get; set; }
 
     }
 }

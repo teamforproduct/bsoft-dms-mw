@@ -2,6 +2,7 @@
 using BL.Model.Enums;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using BL.Model.Extensions;
 
 namespace BL.Model.FullTextSearch
 {
@@ -13,7 +14,8 @@ namespace BL.Model.FullTextSearch
         /// <summary>
         /// Поисковая фраза для полнотекстового поиска
         /// </summary>
-        public string FullTextSearchString { get; set; }
+        public string FullTextSearchString { get { return _FullTextSearchString; } set { _FullTextSearchString = value.RemoveSpecialCharactersFullText(); } }
+        private string _FullTextSearchString;
         /// <summary>
         /// Признак, не сохранять лог полнотекстовых запросов 
         /// </summary>
