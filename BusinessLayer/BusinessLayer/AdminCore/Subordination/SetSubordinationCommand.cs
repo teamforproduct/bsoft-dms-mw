@@ -33,14 +33,16 @@ namespace BL.Logic.AdminCore
 
                 CommonDocumentUtilities.SetLastChange(_context, row);
 
-                var exists = _adminDb.ExistsSubordination(_context, new FilterAdminSubordination()
+                var filter = new FilterAdminSubordination()
                 {
                     SourcePositionIDs = new List<int>() { row.SourcePositionId },
                     TargetPositionIDs = new List<int>() { row.TargetPositionId },
                     SubordinationTypeIDs = new List<EnumSubordinationTypes>() { (EnumSubordinationTypes)row.SubordinationTypeId }
-                });
+                };
 
-                if (exists && !Model.IsChecked) _adminDb.DeleteSubordination(_context, row);
+                var exists = _adminDb.ExistsSubordination(_context, filter);
+
+                if (exists && !Model.IsChecked) _adminDb.DeleteSubordinations(_context, filter);
                 else if (!exists && Model.IsChecked) _adminDb.AddSubordination(_context, row);
 
                 return null;

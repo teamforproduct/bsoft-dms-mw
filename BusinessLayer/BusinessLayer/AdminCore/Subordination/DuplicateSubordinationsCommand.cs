@@ -27,7 +27,7 @@ namespace BL.Logic.AdminCore
                 if (Model.CopyMode == BL.Model.Enums.EnumCopyMode.Сoverage)
                 {
                     // ощищаю настроки для Model.TargetPositionId
-                    _adminDb.DeleteSubordinationsBySourcePositionId(_context, new InternalAdminSubordination() { SourcePositionId = Model.TargetPositionId });
+                    _adminDb.DeleteSubordinations(_context, new FilterAdminSubordination { SourcePositionIDs = new List<int> { Model.TargetPositionId } });
                 }
 
                 // Для копирования беру только те должности на которые может выполнять рассылку

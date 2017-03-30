@@ -1,5 +1,7 @@
 ﻿using BL.Logic.Common;
+using BL.Model.AdminCore.FilterModel;
 using BL.Model.Exception;
+using System.Collections.Generic;
 
 namespace BL.Logic.AdminCore
 {
@@ -26,6 +28,10 @@ namespace BL.Logic.AdminCore
 
         public override object Execute()
         {
+            _adminDb.DeleteRolePermissions(_context, new FilterAdminRolePermissions { RoleIDs = new List<int> { Model } });
+            _adminDb.DeletePositionRoles(_context, new FilterAdminPositionRole { RoleIDs = new List<int> { Model } });
+            _adminDb.DeleteUserRoles(_context, new FilterAdminUserRole { RoleIDs = new List<int> { Model } });
+
             _adminDb.DeleteRole(_context, Model);
             return null;
         }

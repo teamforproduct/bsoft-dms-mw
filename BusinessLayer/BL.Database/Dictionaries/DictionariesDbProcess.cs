@@ -415,9 +415,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAgentPersonsSet.Where(x => x.Agent.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryAgentPersonsSet.Remove(ddt);
-                dbContext.SaveChanges();
+                var qry = GetAgentPersonsQuery(context, dbContext, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
+                qry.Delete();
 
                 CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
 
@@ -815,10 +814,10 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var dbModel = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryAgentEmployeesSet.Remove(dbModel);
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Delete);
-                dbContext.SaveChanges();
+                var qry = GetAgentEmployeesQuery(context, dbContext, new FilterDictionaryAgentEmployee { IDs = new List<int> { id } });
+                qry.Delete();
+
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Delete);
 
                 transaction.Complete();
             }
@@ -1554,10 +1553,9 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryAddressTypesSet.Remove(ddt);
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, ddt.Id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
-                dbContext.SaveChanges();
+                var qry = GetAddressTypeQuery(context, dbContext, new FilterDictionaryAddressType { IDs = new List<int> { id } });
+                qry.Delete();
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -2839,9 +2837,8 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryContactTypesSet.Remove(ddt);
-                dbContext.SaveChanges();
+                var qry = GetContactTypeQuery(context, dbContext, new FilterDictionaryContactType { IDs = new List<int> { id } });
+                qry.Delete();
 
                 //CommonQueries.AddFullTextCashInfo(dbContext, ddt.Id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
                 transaction.Complete();
@@ -3887,11 +3884,10 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryDocumentTypesSet.Remove(ddt);
-                dbContext.SaveChanges();
+                var qry = GetDocumentTypesQuery(context, dbContext, new FilterDictionaryDocumentType { IDs = new List<int> { id } });
+                qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, ddt.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -6413,11 +6409,10 @@ namespace BL.Database.Dictionaries
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryStandartSendListsSet.Remove(ddt);
-                dbContext.SaveChanges();
+                var qry = GetStandartSendListQuery(context, dbContext, new FilterDictionaryStandartSendList { IDs = new List<int> { id } });
+                qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, ddt.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -6665,43 +6660,30 @@ namespace BL.Database.Dictionaries
                 return dbModel.Id;
             }
         }
-        public void UpdateTag(IContext ctx, InternalDictionaryTag model)
+        public void UpdateTag(IContext context, InternalDictionaryTag model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                            .Where(x => x.Id == model.Id).AsQueryable();
+                var dbModel = DictionaryModelConverter.GetDbTag(context, model);
 
-                var savTag = qry.FirstOrDefault();
+                dbContext.DictionaryTagsSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.State = System.Data.Entity.EntityState.Modified;
+                dbContext.SaveChanges();
 
-                if (savTag?.Id > 0)
-                {
-                    savTag.Name = model.Name;
-                    savTag.Color = model.Color;
-                    savTag.IsActive = model.IsActive;
-                    savTag.LastChangeUserId = ctx.CurrentAgentId;
-                    savTag.LastChangeDate = DateTime.UtcNow;
-                    dbContext.SaveChanges();
-                }
-                else
-                {
-                    //TODO Это нарушение. дб уровень не содержит логики, он молча выполняет вставки и обновления. все проверки должны быть на уровне логики.
-                    throw new DictionaryTagNotFoundOrUserHasNoAccess();
-                }
-
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, model.Id, EnumObjects.DictionaryTag, EnumOperationType.Update);
-
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Update);
                 transaction.Complete();
             }
+
         }
 
         public void DeleteTag(IContext context, int id)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var item = dbContext.DictionaryTagsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
-                dbContext.DictionaryTagsSet.Remove(item);
-                dbContext.SaveChanges();
+                var qry = GetTagsQuery(context, dbContext, new FilterDictionaryTag { IDs = new List<int> { id } });
+                qry.Delete();
+
                 CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryTag, EnumOperationType.Delete);
                 transaction.Complete();
             }
