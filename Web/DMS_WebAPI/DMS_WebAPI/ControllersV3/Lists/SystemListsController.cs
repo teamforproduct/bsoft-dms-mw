@@ -192,7 +192,6 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<InternalAdminLanguage>))]
         public IHttpActionResult GetLanguages([FromUri] FilterAdminLanguage filter)
         {
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpService = DmsResolver.Current.Get<ILanguages>();
             var tmpItems = tmpService.GetLanguages(filter);
             return new JsonResult(tmpItems, this);

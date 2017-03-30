@@ -417,7 +417,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        //TODO NOT USED
+        //TODO NOT USED - do not delete
         public string AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
