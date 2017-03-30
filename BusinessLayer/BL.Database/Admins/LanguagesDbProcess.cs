@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Admins.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FrontModel;
@@ -11,6 +10,7 @@ using BL.Database.DBModel.Admin;
 using LinqKit;
 using System.Transactions;
 using BL.CrossCutting.Helpers;
+using BL.Database.Admins.Interfaces;
 
 namespace BL.Database.Admins
 {

@@ -1,7 +1,4 @@
-﻿using BL.CrossCutting.Interfaces;
-using System;
-using System.ComponentModel.DataAnnotations;
-using BL.Model.Users;
+﻿using System;
 using BL.Model.Extensions;
 
 namespace BL.CrossCutting.Context

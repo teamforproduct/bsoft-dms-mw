@@ -1,6 +1,4 @@
-﻿using BL.Model.Enums;
-using BL.Model.Extensions;
-using BL.Model.Users;
+﻿using BL.Model.Extensions;
 using System;
 using System.Runtime.Serialization;
 using System.Web;

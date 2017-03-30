@@ -1,7 +1,6 @@
 ﻿using BL.Database.Admins;
 using BL.Database.Admins.Interfaces;
 using BL.Database.Dictionaries;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
 using BL.Database.Encryption;
@@ -29,7 +28,8 @@ namespace BL.Database.DependencyInjection
         private void RegistrateDocumentProcess()
         {
 
-            Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
+            //Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
+            Bind<DictionariesDbProcess>().ToSelf().InSingletonScope();
             Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
             Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
             Bind<IDocumentFileDbProcess>().To<DocumentFileDbProcess>().InSingletonScope();
@@ -45,7 +45,8 @@ namespace BL.Database.DependencyInjection
 
         private void RegistrateSystemProcess()
         {
-            Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
+            //Bind<IAdminsDbProcess>().To<AdminsDbProcess>().InSingletonScope();
+            Bind<AdminsDbProcess>().ToSelf().InSingletonScope();
             Bind<ILanguagesDbProcess>().To<LanguagesDbProcess>().InSingletonScope();
             Bind<ISystemDbProcess>().To<SystemDbProcess>().InSingletonScope();
             Bind<IFileStore>().To<FileStore>().InSingletonScope();

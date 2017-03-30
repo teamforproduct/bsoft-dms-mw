@@ -109,8 +109,8 @@ namespace DMS_WebAPI.Providers
                     if (rememberFingerprint)
                     {
                         HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
-
-                        webService.AddUserFingerprint(new AddAspNetUserFingerprint
+                        var userContext = DmsResolver.Current.Get<UserContexts>().Get();
+                        webService.AddUserFingerprint(userContext, new AddAspNetUserFingerprint
                         {
                             UserId = user.Id,
                             Fingerprint = fingerprint,

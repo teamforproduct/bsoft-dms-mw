@@ -11,7 +11,7 @@ using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Enums;
-using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Dictionaries;
 using System.Linq;
 
 namespace BL.Logic.SystemServices.AutoPlan
@@ -21,7 +21,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         private readonly Dictionary<AutoPlanSettings, Timer> _timers;
         private ISystemDbProcess _sysDb;
         private IDocumentsDbProcess _docDb;
-        private IDictionariesDbProcess _dicDb;
+        private DictionariesDbProcess _dicDb;
         private IQueueWorkerService _workerSrv;
         private ICommandService _cmdService;
 
@@ -29,7 +29,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         {
             _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             _docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
-            _dicDb = DmsResolver.Current.Get<IDictionariesDbProcess>();
+            _dicDb = DmsResolver.Current.Get<DictionariesDbProcess>();
             _cmdService = cmdService;
             _timers = new Dictionary<AutoPlanSettings, Timer>();
             _workerSrv = workerService;
@@ -141,7 +141,7 @@ namespace BL.Logic.SystemServices.AutoPlan
 
             if (ctx == null) return;
 
-            _dicDb.UpdatePositionExecutor(ctx); //TODO временно тут, потом может перенести в отдельный сервис
+            _dicDb.UpdateExecutorsInPositions(ctx); //TODO временно тут, потом может перенести в отдельный сервис
 
             var wrkUnit = new QueueTask(() =>
             {

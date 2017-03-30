@@ -3096,7 +3096,7 @@ namespace BL.Database.Common
         #endregion
 
         #region Hash
-        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, InternalDocumentSubscription newSubscription, bool isAddSubscription = false, bool isFull = false, bool isContinueIfEmptySubscriptions = false)
+        public static InternalDocument GetDocumentHash(DmsContext dbContext, IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, InternalDocumentSubscription newSubscription, string serverMapPath, bool isAddSubscription = false, bool isFull = false, bool isContinueIfEmptySubscriptions = false)
         {
             var subscriptionStates = new List<EnumSubscriptionStates> {
                         EnumSubscriptionStates.Sign,
@@ -3163,8 +3163,8 @@ namespace BL.Database.Common
                     {
                         if (isUseCertificateSign && (newSubscription?.CertificateId).HasValue)
                         {
-                            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash GetDocumentCertificateSign ", @"C:\TEMPLOGS\sign.log");
-                            document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, newSubscription.CertificateId.Value, newSubscription.CertificatePassword);
+                            FileLogger.AppendTextToFile(DateTime.Now + " GetDocumentHash GetDocumentCertificateSign ", @"C:\TEMPLOGS\sign.log");
+                            document.CertificateSign = CommonQueries.GetDocumentCertificateSign(ctx, document, newSubscription.CertificateId.Value, newSubscription.CertificatePassword, serverMapPath);
                         }
                         else
                             throw new SigningTypeNotAllowed();
@@ -3176,7 +3176,6 @@ namespace BL.Database.Common
 
             if (subscriptions.Any())
             {
-                StringComparer comparer = StringComparer.OrdinalIgnoreCase;
                 foreach (var subscription in subscriptions)
                 {
                     if (IsFilesIncorrect ||
@@ -3184,7 +3183,7 @@ namespace BL.Database.Common
                         //TODO is internal sign
                         (subscription.SigningType == EnumSigningTypes.InternalSign && !VerifyDocumentInternalSign(subscription.InternalSign, document)) ||
                         //TODO is certificate sign
-                        (subscription.SigningType == EnumSigningTypes.CertificateSign && !VerifyDocumentCertificateSign(ctx, subscription.CertificateSign, document))
+                        (subscription.SigningType == EnumSigningTypes.CertificateSign && !VerifyDocumentCertificateSign(ctx, subscription.CertificateSign, document, serverMapPath))
                         ))
                     {
                         if (subscription.SigningType == EnumSigningTypes.CertificateSign)
@@ -3205,9 +3204,9 @@ namespace BL.Database.Common
                         entry.Property(x => x.LastChangeUserId).IsModified = true;
                         entry.Property(x => x.LastChangeDate).IsModified = true;
 
-                        var sendList = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                            .Where(x => x.StartEventId == subscription.SendEventId && x.IsInitial)
-                            .FirstOrDefault();
+                        var sendList = dbContext.DocumentSendListsSet
+                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .FirstOrDefault(x => x.StartEventId == subscription.SendEventId && x.IsInitial);
 
                         if (sendList != null)
                         {
@@ -3256,16 +3255,16 @@ namespace BL.Database.Common
                     }
                 }
                 document.Subscriptions = subscriptions;
-                FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash CertificateSignPdfFileIdentity ", @"C:\TEMPLOGS\sign.log");
+                FileLogger.AppendTextToFile(DateTime.Now + " GetDocumentHash CertificateSignPdfFileIdentity ", @"C:\TEMPLOGS\sign.log");
 
-                document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword);
+                document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword, serverMapPath);
             }
 
             if (IsFilesIncorrect)
             {
                 throw new DocumentFileWasChangedExternally();
             }
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentHash end ", @"C:\TEMPLOGS\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now + " GetDocumentHash end ", @"C:\TEMPLOGS\sign.log");
 
             return document;
         }
@@ -3446,11 +3445,11 @@ namespace BL.Database.Common
             return sign;
         }
 
-        public static string GetDocumentCertificateSign(IContext ctx, InternalDocument doc, int certificateId, string certificatePassword)
+        public static string GetDocumentCertificateSign(IContext ctx, InternalDocument doc, int certificateId, string certificatePassword, string serverMapPath)
         {
             string stringDocument = GetStringDocumentForDocumentHash(doc, true);
 
-            string sign = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSign(ctx, certificateId, certificatePassword, stringDocument);
+            string sign = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSign(ctx, certificateId, certificatePassword, stringDocument, serverMapPath);
 
             return sign;
         }
@@ -3492,7 +3491,7 @@ namespace BL.Database.Common
             return pdf;
         }
 
-        public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword)
+        public static FilterDocumentFileIdentity GetDocumentCertificateSignPdf(DmsContext dbContext, IContext ctx, InternalDocument doc, int? certificateId, string certificatePassword, string serverMapPath)
         {
             FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf begin ", @"C:\TEMPLOGS\sign.log");
 
@@ -3501,8 +3500,7 @@ namespace BL.Database.Common
 
             if (certificateId.HasValue)
             {
-                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>()
-                    .GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent);
+                pdf.FileContent = DmsResolver.Current.Get<IEncryptionDbProcess>().GetCertificateSignPdf(ctx, certificateId.Value, certificatePassword, pdf.FileContent, serverMapPath);
             }
 
             var positionId = (int)EnumSystemPositions.AdminPosition;
@@ -3541,7 +3539,7 @@ namespace BL.Database.Common
 
             var ordInDoc = operationDb.CheckFileForDocument(ctx, att.DocumentId, att.Name, att.Extension);
 
-            FileLogger.AppendTextToFile(DateTime.Now.ToString() + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\TEMPLOGS\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\TEMPLOGS\sign.log");
 
             if (ordInDoc == -1)
             {
@@ -3583,11 +3581,11 @@ namespace BL.Database.Common
             return DmsResolver.Current.Get<IEncryptionDbProcess>().VerifyInternalSign(stringDocument, sign);
         }
 
-        public static bool VerifyDocumentCertificateSign(IContext ctx, string sign, InternalDocument doc)
+        public static bool VerifyDocumentCertificateSign(IContext ctx, string sign, InternalDocument doc, string serverMapPath)
         {
             string stringDocument = GetStringDocumentForDocumentHash(doc, true);
 
-            var res = DmsResolver.Current.Get<IEncryptionDbProcess>().VerifyCertificateSign(ctx, stringDocument, sign);
+            var res = DmsResolver.Current.Get<IEncryptionDbProcess>().VerifyCertificateSign(ctx, stringDocument, sign, serverMapPath);
 
             return res;
         }

@@ -1,4 +1,7 @@
-﻿namespace BL.Logic.AdminCore
+﻿using BL.Model.AdminCore.FilterModel;
+using System.Collections.Generic;
+
+namespace BL.Logic.AdminCore
 {
     public class DeleteDepartmentAdminCommand : BaseDepartmentAdminCommand
     {
@@ -6,7 +9,7 @@
 
         public override object Execute()
         {
-            _adminDb.DeleteDepartmentAdmin(_context, Model);
+            _adminDb.DeleteDepartmentAdmin(_context, new FilterAdminEmployeeDepartments { IDs = new List<int> { Model } });
             return null;
         }
     }

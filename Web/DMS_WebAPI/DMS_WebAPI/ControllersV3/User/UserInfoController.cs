@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
@@ -18,7 +19,7 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -37,7 +38,6 @@ namespace DMS_WebAPI.ControllersV3.User
     public class UserInfoController : ApiController
     {
 
-        private const string LocalLoginProvider = "Local";
         private ApplicationUserManager _userManager;
 
         public UserInfoController()
@@ -61,9 +61,17 @@ namespace DMS_WebAPI.ControllersV3.User
                 _userManager = value;
             }
         }
-        public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
-        Stopwatch stopWatch = new Stopwatch();
 
+        public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
+
+
+        private IHttpActionResult GetById(IContext context)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var tmpItem = webService.GetUserInfo(context);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
 
         /// <summary>
         /// Возвращает информацию о пользователе: имя, логин, язык, табельный номер, инн, дата рождения, пол
@@ -74,14 +82,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public IHttpActionResult Get()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var tmpItem = webService.GetUserInfo(ctx);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            //!ASYNC
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            return GetById(context);
         }
 
         /// <summary>
@@ -93,13 +96,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Info)]
         public IHttpActionResult Put([FromBody]ModifyAgentUser model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
+            //!ASYNC
             var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
+            var context = contexts.Get();
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            var employee = tmpService.GetDictionaryAgentEmployee(ctx, ctx.CurrentAgentId);
+            var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
 
             employee.ImageId = model.ImageId;
             employee.LanguageId = model.LanguageId;
@@ -112,11 +115,11 @@ namespace DMS_WebAPI.ControllersV3.User
             employee.IsMale = model.IsMale;
             employee.BirthDate = model.BirthDate;
 
-            webSeevice.UpdateUserEmployee(ctx, employee);
+            webSeevice.UpdateUserEmployee(context, employee);
 
             contexts.UpdateLanguageId(employee.Id, model.LanguageId);
 
-            return Get();
+            return GetById(context);
         }
 
         /// <summary>
@@ -126,16 +129,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Permissions)]
         [ResponseType(typeof(List<FrontPermission>))]
-        public IHttpActionResult GetPermissions()
+        public async Task<IHttpActionResult> GetPermissions()
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItem = tmpService.GetUserPermissions(ctx);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItem = tmpService.GetUserPermissions(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -147,20 +149,22 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.AuthLog)]
         [ResponseType(typeof(List<FrontSystemSession>))]
-        public IHttpActionResult Get( [FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
-            var sesions = ctxs.GetContextListQuery();
-            var tmpService = DmsResolver.Current.Get<ILogger>();
-            if (filter == null) filter = new FilterSystemSession();
-            filter.ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId };
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
-            var res = new JsonResult(tmpItems, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
+            var sessions = ctxs.GetContextListQuery();
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var pSessions = (IQueryable<FrontSystemSession>)param;
+                var tmpService = DmsResolver.Current.Get<ILogger>();
+                if (filter == null) filter = new FilterSystemSession();
+                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
+                var tmpItems = tmpService.GetSystemSessions(context, pSessions, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                res.Paging = paging;
+                return res;
+            }, sessions);
         }
 
         /// <summary>
@@ -170,7 +174,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ChangeLogin)]
-        public IHttpActionResult ChangeLogin([FromBody]ChangeLogin model)
+        public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLogin model)
         {
             throw new NotImplementedException();
         }
@@ -184,16 +188,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Language")]
         public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
         {
-
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = contexts.Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem= tmpService.SetAgentUserLanguage(ctx,model.LanguageCode);
-            contexts.UpdateLanguageId(ctx.CurrentAgentId, tmpItem);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var contexts = (UserContexts)param;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItem = tmpService.SetAgentUserLanguage(context, model.LanguageCode);
+                contexts.UpdateLanguageId(context.CurrentAgentId, tmpItem);
+                var res = new JsonResult(null, this);
+                return res;
+            }, DmsResolver.Current.Get<UserContexts>());
         }
 
         /// <summary>
@@ -234,8 +237,7 @@ namespace DMS_WebAPI.ControllersV3.User
                 return new JsonResult(ModelState, false, this);
             }
 
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
-                model.NewPassword);
+            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded)
             {

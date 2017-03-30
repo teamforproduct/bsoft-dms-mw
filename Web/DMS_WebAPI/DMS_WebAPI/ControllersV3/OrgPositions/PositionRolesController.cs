@@ -8,7 +8,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -24,8 +24,6 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionRolesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает роли должности
         /// </summary>
@@ -35,18 +33,19 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
+        public async Task<IHttpActionResult> Get([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = true;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetPositionRolesDIP(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -58,18 +57,19 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<FrontAdminPositionRole>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id, [FromUri] FilterAdminPositionRoleDIP filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterAdminPositionRoleDIP();
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = null;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetPositionRolesDIP(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetPositionRolesDIP(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -79,13 +79,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/Set")]
-        public IHttpActionResult Set([FromBody] SetAdminPositionRole model)
+        public async Task<IHttpActionResult> Set([FromBody] SetAdminPositionRole model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetPositionRole, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetPositionRole, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 
@@ -96,13 +97,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/Duplicate")]
-        public IHttpActionResult Duplicate([FromBody] CopyAdminSettingsByPosition model)
+        public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.DuplicatePositionRoles, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicatePositionRoles, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
     }

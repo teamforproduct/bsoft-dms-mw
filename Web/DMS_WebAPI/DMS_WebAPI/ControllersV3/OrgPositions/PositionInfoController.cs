@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
@@ -9,7 +10,7 @@ using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -25,7 +26,14 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
     public class PositionInfoController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
+        private IHttpActionResult GetById(IContext context, int Id)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpItem = tmpService.GetDictionaryPosition(context, Id);
+            var res = new JsonResult(tmpItem, this);
+            return res;
+        }
+
 
         /// <summary>
         /// Возвращает список должностей. 
@@ -35,15 +43,15 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route(Features.Info)]
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItems = tmpService.GetDictionaryPositions(ctx, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetDictionaryPositions(context, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -54,15 +62,12 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [HttpGet]
         [Route(Features.Info + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryPosition))]
-        public IHttpActionResult Get(int Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryPosition(ctx, Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                return GetById(context, Id);
+            });
         }
 
         /// <summary>
@@ -72,11 +77,13 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddPosition model)
+        public async Task<IHttpActionResult> Post([FromBody]AddPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumDictionaryActions.AddPosition, model);
-            return Get(tmpItem);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddPosition, model);
+                return GetById(context, tmpItem);
+            });
         }
 
         /// <summary>
@@ -86,11 +93,13 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyPosition model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyPosition model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.ModifyPosition, model);
-            return Get(model.Id);
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDictionaryActions.ModifyPosition, model);
+                return GetById(context, model.Id);
+            });
         }
 
         /// <summary>
@@ -100,14 +109,15 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpDelete]
         [Route(Features.Info + "/{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDictionaryActions.DeletePosition, Id);
-            var tmpItem = new FrontDeleteModel(Id);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDictionaryActions.DeletePosition, Id);
+                var tmpItem = new FrontDeleteModel(Id);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -117,15 +127,15 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info + "/Order")]
-        public IHttpActionResult SetOrder([FromBody]ModifyPositionOrder model)
+        public async Task<IHttpActionResult> SetOrder([FromBody]ModifyPositionOrder model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
-            tmpItem.SetPositionOrder(cxt, model);
-            var res = new JsonResult(model.Order, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+                tmpItem.SetPositionOrder(context, model);
+                var res = new JsonResult(model.Order, this);
+                return res;
+            });
         }
 
 

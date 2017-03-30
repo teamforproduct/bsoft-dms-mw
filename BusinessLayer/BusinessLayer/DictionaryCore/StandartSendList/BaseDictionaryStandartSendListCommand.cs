@@ -1,11 +1,8 @@
-﻿using System;
-using BL.Logic.Common;
-using BL.Model.DictionaryCore;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.InternalModel;
-using BL.Model.Exception;
-using BL.Model.Enums;
+﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
+using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Exception;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,7 +24,7 @@ namespace BL.Logic.DictionaryCore
             var filter = new FilterDictionaryStandartSendList()
             {
                 NameExact = Model.Name,
-                PositionID = Model.PositionId ?? 0,
+                PositionIDs = new List<int> { Model.PositionId ?? 0 },
             };
 
             if (TypeModelIs<ModifyStandartSendList>())

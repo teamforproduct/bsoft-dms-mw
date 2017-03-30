@@ -1,6 +1,4 @@
 ﻿using System.Management;
-using System.Security.Cryptography;
-using System.Text;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.CrossCutting.DependencyInjection;
@@ -49,9 +47,6 @@ namespace DMS_WebAPI.Utilities
             {
                 return "";
             }
-
-            // Not Found
-            return "";
         }
         private string GetDiscKey(string driveLetter)
         {

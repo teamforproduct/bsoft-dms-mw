@@ -1,7 +1,8 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Dictionaries.Interfaces;
+using BL.Database.Admins;
+using BL.Database.Dictionaries;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DictionaryCore.Interfaces;
@@ -10,6 +11,7 @@ using BL.Logic.SystemCore;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.TreeBuilder;
 using BL.Model.AdminCore;
+using BL.Model.AdminCore.FilterModel;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.FrontMainModel;
@@ -23,16 +25,16 @@ using BL.Model.Tree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static BL.Database.Dictionaries.DictionariesDbProcess;
 
 namespace BL.Logic.DictionaryCore
 {
     public class DictionaryService : IDictionaryService
     {
-        private readonly IDictionariesDbProcess _dictDb;
+        private readonly AdminsDbProcess _adminDb;
+        private readonly DictionariesDbProcess _dictDb;
         private readonly ICommandService _commandService;
 
-        public DictionaryService(IDictionariesDbProcess dictDb, ICommandService commandService)
+        public DictionaryService(AdminsDbProcess adminDb, DictionariesDbProcess dictDb, ICommandService commandService)
         {
             _dictDb = dictDb;
             _commandService = commandService;
@@ -57,19 +59,40 @@ namespace BL.Logic.DictionaryCore
         }
         public IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging)
         {
-            //var newFilter = new FilterDictionaryAgent();
-            //if (!string.IsNullOrEmpty(filter.FullTextSearchString))
-            //{
-            //    newFilter.IDs = GetIDsForDictionaryFullTextSearch(context, EnumObjects.DictionaryAgents, filter.FullTextSearchString, ResolveSearchResultAgents);
-            //}
-            //else
-            //{
-            //    newFilter = filter;
-            //}
-
             return _dictDb.GetAgents(context, filter, paging);
         }
 
+        /// <summary>
+        /// Удаляет агента если нет выносок
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="agent"></param>
+        public void DeleteAgentIfNoAny(IContext context, List<int> list)
+        {
+            foreach (int agentId in list)
+            {
+                if (_dictDb.ExistsAgentClientCompanies(context, new FilterDictionaryAgentOrg() { IDs = new List<int>() { agentId } })) return;
+
+
+                if (_dictDb.ExistsAgentEmployees(context, new FilterDictionaryAgentEmployee() { IDs = new List<int>() { agentId } })) return;
+                //if (ExistsAgentUsers(context, new FilterDictionaryAgent() { IDs = new List<int>() { agentId } })) return;
+                //if (ExistsAgentPeople(context, new FilterDictionaryAgentPerson() { IDs = new List<int>() { agentId } })) return;
+                if (_dictDb.ExistsAgentPersons(context, new FilterDictionaryAgentPerson() { IDs = new List<int>() { agentId } })) return;
+
+                if (_dictDb.ExistsAgentBanks(context, new FilterDictionaryAgentBank() { IDs = new List<int>() { agentId } })) return;
+
+                if (_dictDb.ExistsAgentCompanies(context, new FilterDictionaryAgentCompany() { IDs = new List<int>() { agentId } })) return;
+
+
+                _dictDb.DeleteAgentAddress(context, new FilterDictionaryAgentAddress { AgentIDs = new List<int> { agentId } });
+
+                _dictDb.DeleteAgentContacts(context, new FilterDictionaryContact { AgentIDs = new List<int> { agentId } });
+
+                _dictDb.DeleteAgentAccounts(context, new FilterDictionaryAgentAccount { AgentIDs = new List<int> { agentId } });
+
+                _dictDb.DeleteAgent(context, new FilterDictionaryAgent { IDs = new List<int> { agentId } });
+            }
+        }
         #endregion DictionaryAgents
 
         #region DictionaryAgentPeople
@@ -97,6 +120,20 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging, UISorting sorting)
         {
             return FTS.Get(context, Modules.Person, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentPersons, _dictDb.GetAgentPersonIDs);
+        }
+
+        public void DeleteAgentPerson(IContext context, int id)
+        {
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _dictDb.DeleteAgentPerson(context, id);
+
+                _dictDb.DeleteAgentPeople(context, id);
+
+                DeleteAgentIfNoAny(context, new List<int>() { id });
+
+                transaction.Complete();
+            }
         }
 
         #endregion DictionaryAgentPersons
@@ -399,7 +436,33 @@ namespace BL.Logic.DictionaryCore
         }
 
 
+        public void DeleteDepartments(IContext context, List<int> list, bool DeleteChildDepartments = true)
+        {
+            using (var transaction = Transactions.GetTransaction())
+            {
+                if (DeleteChildDepartments)
+                {
+                    var childDepartments = _dictDb.GetDepartmentIDs(context, new FilterDictionaryDepartment() { ParentIDs = list });
 
+                    if (childDepartments.Count > 0) DeleteDepartments(context, childDepartments, true);
+                }
+
+                var positions = _dictDb.GetPositionIDs(context, new FilterDictionaryPosition() { DepartmentIDs = list }).ToList();
+
+                if (positions.Count() > 0) DeletePositions(context, positions);
+
+                // AdminEmployeeDepartments
+                _adminDb.DeleteDepartmentAdmin(context, new FilterAdminEmployeeDepartments { DepartmentIDs = list });
+
+                // DictionaryRegistrationJournals
+                _dictDb.DeleteRegistrationJournal(context, new FilterDictionaryRegistrationJournal { DepartmentIDs = list });
+
+                _dictDb.DeleteDepartments(context, new FilterDictionaryDepartment { IDs = list });
+
+                transaction.Complete();
+
+            }
+        }
 
 
         #endregion DictionaryDepartments
@@ -417,20 +480,6 @@ namespace BL.Logic.DictionaryCore
         }
         #endregion DictionaryDepartments
 
-        // Тематики документов
-        #region DictionaryDocumentSubjects
-        public FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id)
-        {
-
-            return _dictDb.GetDocumentSubjects(context, new FilterDictionaryDocumentSubject { IDs = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter)
-        {
-
-            return _dictDb.GetDocumentSubjects(context, filter);
-        }
-        #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
         // следить за списком полей необхдимых в каждом конкретном случае
@@ -707,6 +756,56 @@ namespace BL.Logic.DictionaryCore
                 { _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); }
             }
 
+        }
+
+        public void DeletePositions(IContext context, List<int> list)
+        {
+            using (var transaction = Transactions.GetTransaction())
+            {
+                // Удаляю настройку ролей для должности
+                _adminDb.DeletePositionRoles(context, new FilterAdminPositionRole { PositionIDs = list });
+
+                // Удаляю настройку рассылки
+                _adminDb.DeleteSubordinations(context, new FilterAdminSubordination { PositionIDs = list });
+
+                // Удаляю настройку сенд лист ????
+                //#region [+] StandartSendListContents ...
+                //var filterStandartSendListContents = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                //filterStandartSendListContents = list.Aggregate(filterStandartSendListContents,
+                //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
+
+                //dbContext.DictionaryStandartSendListContentsSet.Where(filterStandartSendListContents).Delete();
+                //#endregion
+
+                // Удаляю настройку журналов
+                _adminDb.DeleteRegistrationJournalPositions(context, new FilterAdminRegistrationJournalPosition { PositionIDs = list });
+
+                // Удаляю руководителей подразделений
+                //var filterDepartments = PredicateBuilder.False<DictionaryDepartments>();
+                //filterDepartments = list.Aggregate(filterDepartments,
+                //    (current, value) => current.Or(e => e.ChiefPositionId == value).Expand());
+
+                //dbContext.DictionaryDepartmentsSet.Where(filterDepartments).Update(x => new DictionaryDepartments() { ChiefPositionId = null });
+
+                // Удаляю настройку ролей для исполнителей
+                _adminDb.DeleteUserRoles(context, new FilterAdminUserRole { PositionIDs = list });
+
+                // Удаляю исполнителей
+                #region [+] PositionExecutors ...
+                var executors = _dictDb.GetPositionExecutorsIDs(context, new FilterDictionaryPositionExecutor { PositionIDs = list });
+
+                foreach (var executor in executors)
+                {
+                    ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, executor);
+                }
+
+                #endregion
+
+                // Удаляю сами должности
+                _dictDb.DeletePositions(context, new FilterDictionaryPosition { IDs = list });
+
+                transaction.Complete();
+            }
         }
 
         #endregion DictionaryPositions
@@ -1061,18 +1160,54 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetStandartSendLists(context, filter, null);
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
-            return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+            {
+                if (filter == null) filter = new FilterDictionaryStandartSendList();
+
+                var tmpService = DmsResolver.Current.Get<IFullTextSearchService>();
+                bool IsNotAll;
+
+                if (SearchInPositionsOnly)
+                {
+                    var positions = tmpService.SearchItemId(out IsNotAll, context, ftSearch.FullTextSearchString,
+                        new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Info });
+
+                    if (positions?.Count == 0) return new List<FrontMainDictionaryStandartSendList>();
+
+                    filter.PositionIDs = positions;
+                }
+                else
+                {
+                    var ids = tmpService.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
+                        new FullTextSearchFilter { Module = Modules.SendList });
+
+                    if (ids?.Count == 0) return new List<FrontMainDictionaryStandartSendList>();
+
+                    filter.IDs = ids;
+                }
+            }
+
+            var res = _dictDb.GetMainStandartSendLists(context, filter, null, null);
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && !ftSearch.IsDontSaveSearchQueryLog && res != null && res.Any())
+            {
+                DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.SendList, ftSearch?.FullTextSearchString);
+            }
+
+            return res;
+
+            //return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, UIPaging paging, UISorting sorting)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter)
         {
             if (filter == null) filter = new FilterDictionaryStandartSendList();
 
             filter.AgentId = context.CurrentAgentId;
 
-            var res = GetMainStandartSendLists(context, ftSearch, filter, paging, sorting);
+            var res = GetMainStandartSendLists(context, ftSearch, filter);
 
             //res = res.ToList();
 

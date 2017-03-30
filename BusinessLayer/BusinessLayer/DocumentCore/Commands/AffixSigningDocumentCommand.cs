@@ -104,7 +104,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             //TODO HASH!!!!
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
-            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), isUseCertificateSign);
+            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), isUseCertificateSign, Model.ServerPath);
             if (_document.IsLaunchPlan)
                 DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
             return _document.Id;

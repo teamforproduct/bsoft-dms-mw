@@ -2,7 +2,6 @@
 using BL.Model.DictionaryCore.FrontModel;
 using DMS_WebAPI.Results;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -18,8 +17,6 @@ namespace DMS_WebAPI.Controllers.Dictionaries
     [RoutePrefix(ApiPrefix.V2 + "DictionaryPositions")]
     public class DictionaryPositionsController : ApiController
     {
-
-        Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Возвращает записи из словаря "Должности"

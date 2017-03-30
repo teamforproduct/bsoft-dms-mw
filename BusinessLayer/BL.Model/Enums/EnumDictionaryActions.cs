@@ -37,24 +37,6 @@
         DeleteAddressType = 202009,
         #endregion DictionaryAddressType
 
-        // Тематики документов
-        #region DictionaryDocumentSubject
-        /// <summary>
-        /// Добавить запись в справочнике "Тематики документов"
-        /// </summary>
-        AddDocumentSubject = 203001,
-
-        /// <summary>
-        /// Изменить запись в справочнике "Тематики документов"
-        /// </summary>       
-        ModifyDocumentSubject = 203005,
-
-        /// <summary>
-        /// Удалить запись в справочнике "Тематики документов"
-        /// </summary>       
-        DeleteDocumentSubject = 203009,
-        #endregion DictionaryDocumentSubject
-
         // Журналы регистрации
         #region DictionaryRegistrationJournal
         /// <summary>
@@ -91,18 +73,6 @@
 
         // Агенты
         #region Agent
-        /// <summary>
-        /// добавить контраента
-        /// </summary>
-        AddAgent = 206001,
-        /// <summary>
-        /// изменить контрагента
-        /// </summary>
-        ModifyAgent = 206005,
-        /// <summary>
-        /// удалить контрагента
-        /// </summary>
-        DeleteAgent = 206009,
         /// <summary>
         /// добавить фото
         /// </summary>

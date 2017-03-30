@@ -1,11 +1,6 @@
 ﻿using BL.Model.Extensions;
-using BL.Model.Users;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -33,5 +28,6 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
         private DateTime? _eventDate;
+        public string ServerPath { get; set; }
     }
 }

@@ -40,13 +40,6 @@ namespace DMS_WebAPI.Utilities
             return source.Replace(Environment.NewLine, " ");
         }
 
-        public static string NoTags(this string source)
-        {
-            if (string.IsNullOrEmpty(source))
-                return source;
-
-            return HttpContext.Current.Server.HtmlEncode(source);
-        }
 
         public static string NoQuotes(this string source)
         {
@@ -241,6 +234,7 @@ namespace DMS_WebAPI.Utilities
         {
             return _rgReplaceQuote.Replace(s, "&quot;");
         }
+
         public static string RemoveQuotes(this string s)
         {
             if (!string.IsNullOrEmpty(s))
@@ -249,48 +243,7 @@ namespace DMS_WebAPI.Utilities
             }
             return s;
         }
-        public static string TruncateWithMinWordsCount(this string source, int length, int minWords)
-        {
 
-            source = HttpContext.Current.Server.HtmlDecode(source.Trim());
-
-            if (string.IsNullOrEmpty(source))
-            {
-                return source;
-            }
-
-            if (source.Length <= length)
-            {
-                return source;
-            }
-
-            var words = source.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (words.Length == 0)
-            {
-                return source;
-            }
-
-            string join = string.Join(" ", words);
-            if (join.Length <= length)
-            {
-                return join;
-            }
-            StringBuilder stringBuilder = new StringBuilder(words[0]);
-            for (int i = 1; i < words.Length; i++)
-            {
-                if ((stringBuilder.Length + words[i].Length + 1 < length) || i < minWords)
-                {
-                    stringBuilder.Append(" " + words[i]);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            stringBuilder.Append(" " + "...");
-            return stringBuilder.ToString();
-        }
         public static string Truncate(this string source, int length)
         {
             if (string.IsNullOrEmpty(source))
@@ -336,23 +289,6 @@ namespace DMS_WebAPI.Utilities
             stringBuilder.Append(" " + "...");
             return stringBuilder.ToString();
         }
-        public static string TruncateFixedLength(this string source, int length)
-        {
-            if (string.IsNullOrEmpty(source))
-            {
-                return source;
-            }
-            source = HttpContext.Current.Server.HtmlDecode(source.Trim());
-            if (source.Length <= length)
-            {
-                return source;
-            }
-
-            var res = source.Substring(0, length) + "...";
-
-
-            return HttpContext.Current.Server.HtmlEncode(res);
-        }
 
         public static string ToQueryString(this Dictionary<string, string> qs)
         {
@@ -363,7 +299,7 @@ namespace DMS_WebAPI.Utilities
         {
             var md5 = new MD5CryptoServiceProvider();
             byte[] bSignature = md5.ComputeHash(Encoding.ASCII.GetBytes(text));
-            return String.Join(string.Empty, bSignature.Select(e => string.Format("{0:x2}", e)).ToArray());
+            return string.Join(string.Empty, bSignature.Select(e => string.Format("{0:x2}", e)).ToArray());
         }
 
         public static bool IsEmpty(this string aString)

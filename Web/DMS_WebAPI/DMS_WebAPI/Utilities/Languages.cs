@@ -36,10 +36,11 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         private AdminLanguageInfo GetLanguageInfo()
         {
+            var sPath = Properties.Settings.Default.ServerPath;
             // если нет кэша - первый вход и после сброса
             if (_language == null)
             {
-                var nlst = GetAdminLanguageStruct();
+                var nlst = GetAdminLanguageStruct(sPath);
                 var nso = new StoreInfo
                 {
                     LastUsage = DateTime.UtcNow,
@@ -52,7 +53,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if ((DateTime.UtcNow - _language.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
                 {
-                    var lst = GetAdminLanguageStruct();
+                    var lst = GetAdminLanguageStruct(sPath);
                     _language.StoreObject = lst;
                     _language.LastUsage = DateTime.UtcNow;
                     return lst;
@@ -216,14 +217,7 @@ namespace DMS_WebAPI.Utilities
             return GetLanguageIdByCode(code);
         }
 
-        public string ReplaceLanguageLabel(HttpContext Context, string text)
-        {
-            if (!ExistsLabels(text)) return text;
-
-            return ReplaceLanguageLabel(GetLanguageFromHttpContext(Context), text);
-        }
-
-        private string GetLanguageFromHttpContext(HttpContext Context)
+        private string GetLanguageFromHttpContext(HttpContext context)
         {
             string languageName = string.Empty;
 
@@ -231,7 +225,7 @@ namespace DMS_WebAPI.Utilities
             {
                 // получаю первый язык из массива языковых параметров клиента
                 // всегда пусто
-                languageName = Context.Request.UserLanguages?[0];
+                languageName = context.Request.UserLanguages?[0];
 
                 if (!string.IsNullOrEmpty(languageName))
                 // Первый параметр может быть "ru-RU" или просто "ru"
@@ -260,7 +254,7 @@ namespace DMS_WebAPI.Utilities
 
         public string GetTranslation(string text)
         {
-            var httpContext = HttpContext.Current;
+            var currLang = GetLanguageFromHttpContext(HttpContext.Current);
             IContext defContext = null;
 
             try
@@ -272,15 +266,14 @@ namespace DMS_WebAPI.Utilities
             catch
             { }
 
-            if (defContext == null) return ReplaceLanguageLabel(httpContext, text);
-            else return ReplaceLanguageLabel(defContext, text);
+            return defContext == null ? ReplaceLanguageLabel(currLang, text) : ReplaceLanguageLabel(defContext, text);
         }
 
         #endregion
 
         #region [+] DbProcess
 
-        private AdminLanguageInfo GetAdminLanguageStruct()
+        private AdminLanguageInfo GetAdminLanguageStruct(string serverPath)
         {
             var res = new AdminLanguageInfo();
 
@@ -295,21 +288,13 @@ namespace DMS_WebAPI.Utilities
                     IsDefault = x.IsDefault
                 }).ToList();
 
-                //res.LanguageValues = dbContext.AdminLanguageValuesSet.Select(x => new InternalAdminLanguageValue
-                //{
-                //    Id = x.Id,
-                //    LanguageId = x.LanguageId,
-                //    Label = x.Label,
-                //    Value = x.Value
-                //}).ToList();
-
                 transaction.Complete();
             }
 
             foreach (var item in res.Languages)
             {
 
-                var list = GetLanguageValues(item.FileName).ToList();
+                var list = GetLanguageValues(item.FileName, serverPath).ToList();
 
                 list.ForEach(x => x.LanguageId = item.Id);
 
@@ -319,10 +304,10 @@ namespace DMS_WebAPI.Utilities
             return res;
         }
 
-        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(string fileName)
+        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(string fileName, string serverPath)
         {
 
-            var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/"), "App_Data", "LanguageValues", fileName);
+            var filePath = Path.Combine(serverPath, "App_Data", "LanguageValues", fileName);
 
             //------------------------------------------------------
 

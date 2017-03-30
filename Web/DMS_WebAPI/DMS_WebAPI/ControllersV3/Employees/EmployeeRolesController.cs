@@ -10,7 +10,7 @@ using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -25,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
     public class EmployeeRolesController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает роли пользователя с пычками
         /// </summary>
@@ -36,17 +34,18 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles)]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult Get([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> Get([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -56,21 +55,22 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <param name="filter">"</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("{Id:int}/" + Features.Roles+ "/Current")]
+        [Route("{Id:int}/" + Features.Roles + "/Current")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetCurrent([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> GetCurrent([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -82,19 +82,20 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> GetEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = null;
             //filter.StartDate = DateTime.UtcNow;
             //filter.EndDate = DateTime.UtcNow;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -106,19 +107,20 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [HttpGet]
         [Route("{Id:int}/" + Features.Roles + "/Current/Edit")]
         [ResponseType(typeof(List<TreeItem>))]
-        public IHttpActionResult GetCurrentEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
+        public async Task<IHttpActionResult> GetCurrentEdit([FromUri] int Id, [FromUri] FilterDIPAdminUserRole filter)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = null;
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var tmpItems = tmpService.GetUserRolesDIP(ctx, Id, filter);
-            var res = new JsonResult(tmpItems, this);
-            res.SpentTime = stopWatch;
-            return res;
+
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<IAdminService>();
+                var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -128,13 +130,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/Set")]
-        public IHttpActionResult Set([FromBody] SetUserRole model)
+        public async Task<IHttpActionResult> Set([FromBody] SetUserRole model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetUserRole, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetUserRole, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
         /// <summary>
@@ -144,13 +147,14 @@ namespace DMS_WebAPI.ControllersV3.Employees
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Roles + "/SetByAssignment")]
-        public IHttpActionResult SetByDepartment([FromBody] ItemCheck model)
+        public async Task<IHttpActionResult> SetByDepartment([FromBody] ItemCheck model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var tmpItem = Action.Execute(EnumAdminActions.SetUserRoleByAssignment, model);
-            var res = new JsonResult(tmpItem, this);
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumAdminActions.SetUserRoleByAssignment, model);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
         }
 
 

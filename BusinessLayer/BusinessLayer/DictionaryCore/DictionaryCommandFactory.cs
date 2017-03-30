@@ -32,15 +32,15 @@ namespace BL.Logic.DictionaryCore
 
                 // Агенты
                 #region DictionaryAgents
-                case EnumDictionaryActions.AddAgent:
-                    cmd = DmsResolver.Current.Get<AddDictionaryAgentCommand>();
-                    break;
-                case EnumDictionaryActions.ModifyAgent:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCommand>();
-                    break;
-                case EnumDictionaryActions.DeleteAgent:
-                    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCommand>();
-                    break;
+                //case EnumDictionaryActions.AddAgent:
+                //    cmd = DmsResolver.Current.Get<AddDictionaryAgentCommand>();
+                //    break;
+                //case EnumDictionaryActions.ModifyAgent:
+                //    cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCommand>();
+                //    break;
+                //case EnumDictionaryActions.DeleteAgent:
+                //    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCommand>();
+                //    break;
                 case EnumDictionaryActions.SetAgentImage:
                     cmd = DmsResolver.Current.Get<SetDictionaryAgentImageCommand>();
                     break;
@@ -75,8 +75,8 @@ namespace BL.Logic.DictionaryCore
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;
                 //case EnumDictionaryActions.ModifyAgentEmployeeLanguage:
-                    //cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
-                    //break;
+                //cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
+                //break;
                 case EnumDictionaryActions.ModifyAgentCompany:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCompanyCommand>();
                     break;
@@ -228,19 +228,6 @@ namespace BL.Logic.DictionaryCore
                     break;
                 #endregion CustomDictionarys
 
-
-                // Тематики документов
-                #region DictionaryDocumentSubjects
-                case EnumDictionaryActions.AddDocumentSubject:
-                    cmd = DmsResolver.Current.Get<AddDictionaryDocumentSubjectCommand>();
-                    break;
-                case EnumDictionaryActions.ModifyDocumentSubject:
-                    cmd = DmsResolver.Current.Get<ModifyDictionaryDocumentSubjectCommand>();
-                    break;
-                case EnumDictionaryActions.DeleteDocumentSubject:
-                    cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentSubjectCommand>();
-                    break;
-                #endregion DictionaryDocumentSubjects
 
                 // Журналы регистрации
                 #region DictionaryRegistrationJournals

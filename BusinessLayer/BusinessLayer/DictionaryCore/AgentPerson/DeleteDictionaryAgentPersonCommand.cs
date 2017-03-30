@@ -18,7 +18,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteAgentPerson(_context, Model);
+            _dictService.DeleteAgentPerson(_context, Model);
             return null;
         }
     }

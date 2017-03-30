@@ -29,7 +29,15 @@ namespace BL.Logic.DictionaryCore
                 var frontObj = _dictDb.GetAgentOrgs(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { Model } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
-                _dictDb.DeleteAgentOrg(_context, new List<int>() { Model });
+                // ссылку на компанию имеют все отделы, любого уровня вложенности
+                var departments = _dictDb.GetDepartmentIDs(_context, new FilterDictionaryDepartment() { CompanyIDs = new List<int> { Model } });
+
+                if (departments.Count > 0) _dictService.DeleteDepartments(_context, departments, false);
+
+                _dictDb.DeleteAgentOrg(_context, new FilterDictionaryAgentOrg { IDs = new List<int>() { Model } });
+
+                _dictService.DeleteAgentIfNoAny(_context, new List<int>() { Model });
+
                 transaction.Complete();
                 return null;
             }

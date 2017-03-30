@@ -1,23 +1,19 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
-using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.EncryptionCore.InternalModel;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -29,8 +25,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class DocumentSignController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает список подписей
         /// </summary>
@@ -40,18 +34,18 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Signs)]
         [ResponseType(typeof(List<FrontDocumentSubscription>))]
-        public IHttpActionResult Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var items = docProc.GetDocumentSubscriptions(ctx, filter, paging);
-            var res = new JsonResult(items, this);
-            res.Paging = paging;
-            res.SpentTime = stopWatch;
-            return res;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   var docProc = DmsResolver.Current.Get<IDocumentService>();
+                   var items = docProc.GetDocumentSubscriptions(context, filter, paging);
+                   var res = new JsonResult(items, this);
+                   res.Paging = paging;
+                   return res;
+               });
         }
-        
+
         /// <summary>
         /// Регистрирует отклонение подписания
         /// </summary>
@@ -59,13 +53,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectSigning")]
         [HttpPut]
-        public IHttpActionResult RejectSigning(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectSigning(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.RejectSigning, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отклонение визирования
@@ -74,13 +70,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectVisaing")]
         [HttpPut]
-        public IHttpActionResult RejectVisaing(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectVisaing(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.RejectVisaing, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectVisaing, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отклонение согласования
@@ -89,13 +87,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectАgreement")]
         [HttpPut]
-        public IHttpActionResult RejectАgreement(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectАgreement(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.RejectАgreement, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectАgreement, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отклонение утверждения
@@ -104,13 +104,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/RejectАpproval")]
         [HttpPut]
-        public IHttpActionResult RejectАpproval(SendEventMessage model)
+        public async Task<IHttpActionResult> RejectАpproval(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.RejectАpproval, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.RejectАpproval, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -120,13 +122,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawSigning")]
         [HttpPut]
-        public IHttpActionResult WithdrawSigning(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawSigning(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.WithdrawSigning, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отозыв визирования
@@ -135,13 +139,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawVisaing")]
         [HttpPut]
-        public IHttpActionResult WithdrawVisaing(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawVisaing(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.WithdrawVisaing, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawVisaing, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отозыв согласования
@@ -150,13 +156,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawАgreement")]
         [HttpPut]
-        public IHttpActionResult WithdrawАgreement(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawАgreement(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.WithdrawАgreement, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawАgreement, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует отозыв утверждения
@@ -165,13 +173,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/WithdrawАpproval")]
         [HttpPut]
-        public IHttpActionResult WithdrawАpproval(SendEventMessage model)
+        public async Task<IHttpActionResult> WithdrawАpproval(SendEventMessage model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.WithdrawАpproval, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.WithdrawАpproval, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -181,13 +191,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixSigning")]
         [HttpPut]
-        public IHttpActionResult AffixSigning(AffixSigning model)
+        public async Task<IHttpActionResult> AffixSigning(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AffixSigning, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует визирование
@@ -196,13 +208,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixVisaing")]
         [HttpPut]
-        public IHttpActionResult AffixVisaing(AffixSigning model)
+        public async Task<IHttpActionResult> AffixVisaing(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AffixVisaing, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixVisaing, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует согласование
@@ -211,13 +225,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixАgreement")]
         [HttpPut]
-        public IHttpActionResult AffixАgreement(AffixSigning model)
+        public async Task<IHttpActionResult> AffixАgreement(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AffixАgreement, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixАgreement, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
         /// <summary>
         /// Регистрирует утверждение
@@ -226,13 +242,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/AffixАpproval")]
         [HttpPut]
-        public IHttpActionResult AffixАpproval(AffixSigning model)
+        public async Task<IHttpActionResult> AffixАpproval(AffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.AffixАpproval, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.AffixАpproval, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -242,13 +260,15 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [Route(Features.Signs + "/SelfAffixSigning")]
         [HttpPost]
-        public IHttpActionResult SelfAffixSigning(SelfAffixSigning model)
+        public async Task<IHttpActionResult> SelfAffixSigning(SelfAffixSigning model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.SelfAffixSigning, model);
-            var res = new JsonResult(true, this);
-            res.SpentTime = stopWatch;
-            return res;
+            model.ServerPath = Properties.Settings.Default.ServerPath;
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+               {
+                   Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model);
+                   var res = new JsonResult(true, this);
+                   return res;
+               });
         }
 
         /// <summary>
@@ -259,13 +279,20 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [DimanicAuthorize("R")]
         [Route(Features.Signs + "/VerifySigning")]
         [HttpPost]
-        public IHttpActionResult VerifySigning([FromBody]Item model)
+        public async Task<IHttpActionResult> VerifySigning([FromBody] Item model)
         {
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-            Action.Execute(EnumDocumentActions.VerifySigning, model.Id);
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
+            var md = new VerifySignCertificate
+            {
+                Id = model.Id,
+                ServerPath = Properties.Settings.Default.ServerPath
+            };
+            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var mod = (VerifySignCertificate) param;
+                Action.Execute(context, EnumDocumentActions.VerifySigning, mod);
+                var res = new JsonResult(null, this);
+                return res;
+            }, md);
         }
 
     }

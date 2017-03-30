@@ -219,10 +219,6 @@
     <Compile Include="DictionaryCore\AgentPerson\DeleteDictionaryAgentPersonCommand.cs" />
     <Compile Include="DictionaryCore\AgentPerson\BaseDictionaryAgentPersonCommand.cs" />
     <Compile Include="DictionaryCore\AgentPerson\ModifyDictionaryAgentPersonCommand.cs" />
-    <Compile Include="DictionaryCore\Agent\AddDictionaryAgentCommand.cs" />
-    <Compile Include="DictionaryCore\Agent\DeleteDictionaryAgentCommand.cs" />
-    <Compile Include="DictionaryCore\Agent\BaseDictionaryAgentCommand.cs" />
-    <Compile Include="DictionaryCore\Agent\ModifyDictionaryAgentCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\AddDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\DeleteDictionaryContactTypeCommand.cs" />
     <Compile Include="DictionaryCore\ContactType\BaseDictionaryContactTypeCommand.cs" />
@@ -240,7 +236,6 @@
     <Compile Include="DictionaryCore\CustomDictionary\ModifyCustomDictionaryTypeCommand.cs" />
     <Compile Include="DictionaryCore\Department\BaseDictionaryDepartmentCommand.cs" />
     <Compile Include="DictionaryCore\DictionaryCommandFactory.cs" />
-    <Compile Include="DictionaryCore\DictionaryModelVerifying.cs" />
     <Compile Include="DictionaryCore\DocumentType\BaseDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddUserPositionExecutorCommand.cs" />
     <Compile Include="DictionaryCore\PositionExecutors\AddPositionExecutorCommand.cs" />
@@ -265,9 +260,6 @@
     <Compile Include="DictionaryCore\RegistrationJournal\DeleteDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\BaseDictionaryRegistrationJournalCommand.cs" />
     <Compile Include="DictionaryCore\RegistrationJournal\ModifyDictionaryRegistrationJournalCommand.cs" />
-    <Compile Include="DictionaryCore\DocumentSubject\AddDictionaryDocumentSubjectCommand.cs" />
-    <Compile Include="DictionaryCore\DocumentSubject\DeleteDictionaryDocumentSubjectCommand.cs" />
-    <Compile Include="DictionaryCore\DocumentSubject\ModifyDictionaryDocumentSubjectCommand.cs" />
     <Compile Include="DictionaryCore\DocumentType\DeleteDictionaryDocumentTypeCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListCommand.cs" />
     <Compile Include="DictionaryCore\StandartSendList\AddDictionaryStandartSendListContentCommand.cs" />

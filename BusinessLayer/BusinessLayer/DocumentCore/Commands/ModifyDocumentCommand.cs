@@ -6,7 +6,6 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.SystemCore.InternalModel;
-using System;
 using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -110,7 +109,7 @@ namespace BL.Logic.DocumentCore.Commands
                 CommonDocumentUtilities.SetLastChange(_context, _document.Properties);
             }
 
-            _documentDb.ModifyDocument(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign());
+            _documentDb.ModifyDocument(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
 
             return _document.Id;
         }

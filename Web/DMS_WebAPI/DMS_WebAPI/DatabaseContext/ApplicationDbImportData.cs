@@ -6,9 +6,6 @@ using DMS_WebAPI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DMS_WebAPI.Models
 {
@@ -70,7 +67,7 @@ namespace DMS_WebAPI.Models
         public static void CheckLanguages()
         {
             //var  = GetLabelsFromEnums();
-
+            string serverPath = Properties.Settings.Default.ServerPath;
             var f = new List<string>();
 
             var tmpService = DmsResolver.Current.Get<ISystemService>();
@@ -93,7 +90,7 @@ namespace DMS_WebAPI.Models
 
             if (lang == null) throw new Exception("Не установлен язык по умолчанию");
 
-            var d = languages.GetLanguageValues(lang.FileName).Select(x => x.Label).ToList();
+            var d = languages.GetLanguageValues(lang.FileName, serverPath).Select(x => x.Label).ToList();
 
             var toAdd = new List<string>();
             var toRem = new List<string>();
@@ -118,11 +115,6 @@ namespace DMS_WebAPI.Models
             {
                 s += item + "=\r\n";
             }
-
-            //foreach (var item in toRem.OrderBy(x => x))
-            //{
-            //    s += "- " + item + "\r\n";
-            //}
 
             if (!string.IsNullOrEmpty(s))
                 throw new Exception(string.Format("Так не пойдет! Нужно поддерживать переводы в актуальном состоянии Add {0} Del {1} \r\n", toAdd.Count, toRem.Count) + s);

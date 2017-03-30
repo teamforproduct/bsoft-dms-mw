@@ -16,8 +16,6 @@ namespace DMS_WebAPI.Controllers
     [RoutePrefix(ApiPrefix.V2 + "Users")]
     public class UsersController : ApiController
     {
-        Stopwatch stopWatch = new Stopwatch();
-
         /// <summary>
         /// Возвращает информацию о пользователе: имя, язык, контакты, адреса
         /// </summary>

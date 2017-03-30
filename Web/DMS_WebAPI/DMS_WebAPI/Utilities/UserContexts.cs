@@ -10,8 +10,6 @@ using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
-using Newtonsoft.Json;
-using BL.CrossCutting.Helpers;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.WebAPI.IncomingModel;
 
@@ -28,32 +26,6 @@ namespace DMS_WebAPI.Utilities
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
 
         private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
-
-        ///// <summary>
-        ///// Gets setting value by its name.
-        ///// </summary>
-        ///// <returns>Typed setting value.</returns>
-        //public IContext GetByLanguage()
-        //{
-        //    string token = TokenLower;
-
-        //    if (!Contains(token)) throw new UserUnauthorized();
-
-        //    var contextValue = _casheContexts[token];
-        //    try
-        //    {
-        //        var ctx = (IContext)contextValue.StoreObject;
-
-        //        var request_ctx = new UserContext(ctx);
-        //        request_ctx.SetCurrentPosition(null);
-        //        return request_ctx;
-        //    }
-        //    catch (InvalidCastException invalidCastException)
-        //    {
-        //        throw new Exception();
-        //    }
-        //}
-
 
 
         public IQueryable<FrontSystemSession> GetContextListQuery()
@@ -92,6 +64,8 @@ namespace DMS_WebAPI.Utilities
             string token = TokenLower;
 
             if (!Contains(token)) throw new UserUnauthorized();
+            // TODO добавить восстановление контекста из базы, если нет в коллекции
+            // жизнь контекста должна совпадать с жизнью овиновского токена
 
             var ctx = GetInternal(token);
 
@@ -309,10 +283,6 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private void Save(IContext val)
-        {
-            _cacheContexts.Add(TokenLower, new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
-        }
         private void Save(string token, IContext val)
         {
             _cacheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
@@ -420,7 +390,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="agentId"></param>
         public void RemoveByAgentId(int agentId)
         {
-            var now = DateTime.UtcNow;
             var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
@@ -434,7 +403,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userId"></param>
         public void RemoveByUserId(string userId)
         {
-            var now = DateTime.UtcNow;
             var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
@@ -486,12 +454,8 @@ namespace DMS_WebAPI.Utilities
                 {
                     throw licenceError as LicenceExceededNumberOfConnectedUsers;
                 }
-                else
-                {
-                    context.ClientLicence.LicenceError = licenceError;
-                }
+                context.ClientLicence.LicenceError = licenceError;
             }
-
         }
 
         public void UpdateLanguageId(int agentId, int languageId)
@@ -569,7 +533,5 @@ namespace DMS_WebAPI.Utilities
                 SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
             }
         }
-
-
     }
 }
