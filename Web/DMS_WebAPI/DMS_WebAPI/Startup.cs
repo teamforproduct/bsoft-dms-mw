@@ -24,12 +24,12 @@ namespace DMS_WebAPI
 
             // configuring authentication
             ConfigureAuth(app);
-
             // Проверка на целостность Actions в процедуре импорта 
             //var systemService = DmsResolver.Current.Get<ISystemService>();
-
+            Properties.Settings.Default["ServerPath"] = HttpContext.Current.Server.MapPath("~/");
+            Properties.Settings.Default.Save();
             // Проверка на целостность переводов
-            ApplicationDbImportData.CheckLanguages(HttpContext.Current.Server.MapPath("~/"));
+            ApplicationDbImportData.CheckLanguages();
 
 
         //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());

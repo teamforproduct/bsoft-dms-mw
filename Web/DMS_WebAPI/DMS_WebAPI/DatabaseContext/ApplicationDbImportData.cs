@@ -64,10 +64,10 @@ namespace DMS_WebAPI.Models
             return items;
         }
 
-        public static void CheckLanguages(string serverPath)
+        public static void CheckLanguages()
         {
             //var  = GetLabelsFromEnums();
-
+            string serverPath = Properties.Settings.Default.ServerPath;
             var f = new List<string>();
 
             var tmpService = DmsResolver.Current.Get<ISystemService>();

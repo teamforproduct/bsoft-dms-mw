@@ -36,7 +36,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         private AdminLanguageInfo GetLanguageInfo()
         {
-            var sPath = HttpContext.Current.Server.MapPath("~/"); //TODO REMOVE IT!
+            var sPath = Properties.Settings.Default.ServerPath;
             // если нет кэша - первый вход и после сброса
             if (_language == null)
             {
