@@ -1,4 +1,6 @@
 ﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -17,6 +19,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
+            _dictDb.DeleteStandartSendListContent(_context, new FilterDictionaryStandartSendListContent { StandartSendListId = new List<int> { Model } });
             _dictDb.DeleteStandartSendList(_context, Model);
             return null;
         }

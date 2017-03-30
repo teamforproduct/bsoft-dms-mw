@@ -25,6 +25,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         int SetAgentUserLanguage(IContext context, string languageCode);
         void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
+        void DeleteAgentIfNoAny(IContext context, List<int> list);
 
         #endregion DictionaryAgents
 
@@ -36,6 +37,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontAgentPerson GetAgentPerson(IContext context, int id);
         IEnumerable<AutocompleteItem> GetShortListAgentPersons(IContext context, FilterDictionaryAgentPerson filter, UIPaging paging);
         IEnumerable<FrontMainAgentPerson> GetMainAgentPersons(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentPerson filter, UIPaging paging, UISorting sorting);
+        void DeleteAgentPerson(IContext context, int id);
 
         #endregion DictionaryAgentPersons
 
@@ -116,6 +118,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<AutocompleteItem> GetDepartmentsShortList(IContext context, FilterDictionaryDepartment filter);
 
         string GetDepartmentPrefix(IContext context, int parentId);
+        void DeleteDepartments(IContext context, List<int> list, bool DeleteChildDepartments = true);
         #endregion DictionaryDepartments
 
         #region DictionaryDocumentDirections
@@ -124,12 +127,6 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontDictionaryDocumentDirection> GetDictionaryDocumentDirections(IContext context, FilterDictionaryDocumentDirection filter);
         #endregion DictionaryDepartments
 
-        // Тематики документов
-        #region DictionaryDocumentSubjects
-        FrontDictionaryDocumentSubject GetDictionaryDocumentSubject(IContext context, int id);
-
-        IEnumerable<FrontDictionaryDocumentSubject> GetDictionaryDocumentSubjects(IContext context, FilterDictionaryDocumentSubject filter);
-        #endregion DictionaryDocumentSubjects
 
         #region DictionaryDocumentTypes
         FrontDictionaryDocumentType GetDictionaryDocumentType(IContext context, int id);
@@ -169,7 +166,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
 
         void SetPositionOrder(IContext context, ModifyPositionOrder model);
-
+        void DeletePositions(IContext context, List<int> list);
         #endregion DictionaryPositions
 
         // Исполнители

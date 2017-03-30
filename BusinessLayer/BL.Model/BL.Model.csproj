@@ -84,6 +84,7 @@
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminPositionRoleDIP.cs" />
+    <Compile Include="AdminCore\FilterModel\FilterAdminEmployeeDepartments.cs" />
     <Compile Include="AdminCore\FilterModel\FilterPermissionsAccess.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissionsDIP.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRolePermissions.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="EncryptionCore\InternalModel\VerifyPdfCertificate.cs" />
     <Compile Include="EncryptionCore\InternalModel\VerifySignCertificate.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />

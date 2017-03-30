@@ -146,8 +146,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admins\LanguagesDbProcess.cs" />
     <Compile Include="Admins\Interfaces\ILanguagesDbProcess.cs" />
+    <Compile Include="Admins\LanguagesDbProcess.cs" />
     <Compile Include="Common\DateTimeKindAttribute.cs" />
     <Compile Include="Common\SystemModelConverter.cs" />
     <Compile Include="Common\CommonFilterUtilites.cs" />
@@ -258,9 +258,7 @@
     <Compile Include="DBModel\Template\TemplateDocumentTasks.cs" />
     <Compile Include="DependencyInjection\DatabaseModule.cs" />
     <Compile Include="Admins\AdminsDbProcess.cs" />
-    <Compile Include="Admins\Interfaces\IAdminsDbProcess.cs" />
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
-    <Compile Include="Dictionaries\Interfaces\IDictionariesDbProcess.cs" />
     <Compile Include="Common\CommonQueries.cs" />
     <Compile Include="Documents\IDocumentSendListService.cs" />
     <Compile Include="Encryption\EncryptionDbProcess.cs" />

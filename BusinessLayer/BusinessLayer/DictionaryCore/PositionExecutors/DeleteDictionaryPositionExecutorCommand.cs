@@ -76,7 +76,7 @@ namespace BL.Logic.DictionaryCore
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
 
                 _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole() { PositionExecutorIDs = new List<int> { Model } });
-                _dictDb.DeleteExecutors(_context, new System.Collections.Generic.List<int> { Model });
+                _dictDb.DeleteExecutors(_context, new List<int> { Model });
 
                 transaction.Complete();
             }

@@ -1,4 +1,6 @@
 ﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -17,7 +19,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteAgentAccount(_context, Model);
+            _dictDb.DeleteAgentAccounts(_context, new FilterDictionaryAgentAccount { IDs = new List<int> { Model } });
             return null;
         }
     }

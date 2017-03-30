@@ -28,7 +28,8 @@ namespace BL.Logic.DictionaryCore
                 var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { Model } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
-                _dictDb.DeleteDepartments(_context, new List<int>() { Model });
+                // Удаляю отдел и дочерние отделы с должностями и всем барахлом
+                _dictService.DeleteDepartments(_context, new List<int>() { Model });
                 transaction.Complete();
             }
             return null;

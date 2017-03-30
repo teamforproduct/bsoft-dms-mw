@@ -1,38 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Helpers.CashService;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Admins.Interfaces;
+using BL.Database.Common;
 using BL.Database.DatabaseContext;
+using BL.Database.DBModel.Admin;
+using BL.Database.DBModel.Dictionary;
+using BL.Database.DBModel.Document;
+using BL.Database.Dictionaries;
+using BL.Database.Helper;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Model.DictionaryCore.FilterModel;
-using BL.Model.Enums;
-using BL.Model.Users;
-using LinqKit;
-using BL.Database.DBModel.Admin;
 using BL.Model.AdminCore.InternalModel;
-using BL.Database.Common;
-using System;
-using BL.Database.DBModel.Dictionary;
-using EntityFramework.Extensions;
-using BL.Model.SystemCore.InternalModel;
-using BL.CrossCutting.Helpers;
 using BL.Model.Common;
-using BL.Model.SystemCore;
-using BL.Database.Helper;
-using BL.CrossCutting.Context;
-using BL.Database.DBModel.Document;
-using BL.CrossCutting.Helpers.CashService;
 using BL.Model.Constants;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
-using BL.Database.Dictionaries;
+using BL.Model.Enums;
+using BL.Model.SystemCore;
+using BL.Model.SystemCore.InternalModel;
+using BL.Model.Users;
+using EntityFramework.Extensions;
+using LinqKit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Database.Admins
 {
-    public class AdminsDbProcess : CoreDb.CoreDb, IAdminsDbProcess
+    public class AdminsDbProcess : CoreDb.CoreDb//, IAdminsDbProcess
     {
         private readonly ICacheService _cacheService;
 
@@ -1199,11 +1197,12 @@ namespace BL.Database.Admins
 
         }
 
-        public void DeleteDepartmentAdmin(IContext context, int id)
+        public void DeleteDepartmentAdmin(IContext context, FilterAdminEmployeeDepartments filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AdminEmployeeDepartmentsSet.Where(x => x.Id == id).Delete();
+                var qry = GetEmployeeDepartmentsQuery(context, dbContext, filter);
+                qry.Delete();
 
                 transaction.Complete();
             }
@@ -1213,7 +1212,7 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.AdminEmployeeDepartmentsSet.Where(x => x.DepartmentId == departmentId);
+                var qry = GetEmployeeDepartmentsQuery(context, dbContext, new FilterAdminEmployeeDepartments { DepartmentIDs = new List<int> { departmentId } });
 
                 var res = qry.Select(x => new FrontAdminEmployeeDepartments
                 {
@@ -1227,6 +1226,53 @@ namespace BL.Database.Admins
             }
 
         }
+
+        private IQueryable<AdminEmployeeDepartments> GetEmployeeDepartmentsQuery(IContext context, DmsContext dbContext, FilterAdminEmployeeDepartments filter)
+        {
+            var qry = dbContext.AdminEmployeeDepartmentsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                // Список первичных ключей
+                if (filter.IDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.IDs.Contains(x.Id));
+                }
+                else if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminEmployeeDepartments>();
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                // Исключение списка первичных ключей
+                if (filter.NotContainsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.True<AdminEmployeeDepartments>();
+                    filterContains = filter.NotContainsIDs.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Id != value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.DepartmentIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.False<AdminEmployeeDepartments>();
+
+                    filterContains = filter.DepartmentIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DepartmentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+            }
+
+            return qry;
+        }
+
+
         #endregion
 
         #region [+] Subordination ...

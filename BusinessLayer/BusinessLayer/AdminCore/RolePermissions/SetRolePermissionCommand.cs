@@ -1,12 +1,5 @@
-﻿using System;
-using BL.Database.Dictionaries.Interfaces;
-using BL.Logic.Common;
-using BL.Model.AdminCore.IncomingModel;
-using BL.Model.AdminCore.InternalModel;
+﻿using BL.Model.AdminCore.IncomingModel;
 using BL.Model.Exception;
-using BL.Model.AdminCore.FilterModel;
-using BL.Model.SystemCore;
-using System.Collections.Generic;
 
 
 namespace BL.Logic.AdminCore

@@ -1,6 +1,8 @@
 ﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -29,10 +31,11 @@ namespace BL.Logic.DictionaryCore
 
                 foreach (var item in persons)
                 {
-                    _dictDb.DeleteAgentPerson(_context, item.Id);
+                    _dictService.DeleteAgentPerson(_context, item.Id);
                 }
 
-                _dictDb.DeleteAgentCompanies(_context, new System.Collections.Generic.List<int>() { Model });
+                _dictDb.DeleteAgentCompanies(_context, new FilterDictionaryAgentCompany { IDs = new List<int>() { Model } } );
+                _dictService.DeleteAgentIfNoAny(_context, new List<int>() { Model });
 
                 transaction.Complete();
                 return null;

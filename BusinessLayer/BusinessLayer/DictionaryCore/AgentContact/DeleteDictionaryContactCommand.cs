@@ -20,7 +20,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteContacts(_context, new FilterDictionaryContact { IDs = new List<int> { Model } });
+            _dictDb.DeleteAgentContacts(_context, new FilterDictionaryContact { IDs = new List<int> { Model } });
             return null;
         }
     }

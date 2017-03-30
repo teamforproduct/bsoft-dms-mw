@@ -141,7 +141,7 @@ namespace BL.Logic.SystemServices.AutoPlan
 
             if (ctx == null) return;
 
-            _dicDb.UpdatePositionExecutor(ctx); //TODO временно тут, потом может перенести в отдельный сервис
+            _dicDb.UpdateExecutorsInPositions(ctx); //TODO временно тут, потом может перенести в отдельный сервис
 
             var wrkUnit = new QueueTask(() =>
             {

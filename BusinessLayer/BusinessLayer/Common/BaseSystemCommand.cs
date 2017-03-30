@@ -1,9 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Dictionaries.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DependencyInjection;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
