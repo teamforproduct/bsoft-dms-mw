@@ -23,7 +23,9 @@ namespace BL.Database.DBModel.Document
         public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
-        //public int? StandartSendListId { get; set; }
+
+
+
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
@@ -40,8 +42,9 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions Position { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
-        [ForeignKey("StandartSendListId")]
-        public virtual DictionaryStandartSendLists StandartSendList { get; set; }
+
+
+
 
     }
 }
