@@ -1374,7 +1374,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.UpdateFullUpdate);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -2844,7 +2844,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetContactTypeQuery(context, dbContext, new FilterDictionaryContactType { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(context, dbContext, ddt.Id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
