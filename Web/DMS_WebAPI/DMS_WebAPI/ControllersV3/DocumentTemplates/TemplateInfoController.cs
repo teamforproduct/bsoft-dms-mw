@@ -44,15 +44,15 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [HttpGet]
         [Route(Features.Info + "/Main")]
         [ResponseType(typeof(List<FrontMainTemplateDocument>))]
-        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterTemplateDocument filter, UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterTemplateDocument filter, [FromUri]UIPaging paging)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-                   var tmpItems = tmpService.GetMainTemplateDocument(context, ftSearch, filter, paging);
-                   var res = new JsonResult(tmpItems, this);
-                   return res;
-               });
+            {
+                var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
+                var tmpItems = tmpService.GetMainTemplateDocument(context, ftSearch, filter, paging);
+                var res = new JsonResult(tmpItems, this);
+                return res;
+            });
         }
 
 
