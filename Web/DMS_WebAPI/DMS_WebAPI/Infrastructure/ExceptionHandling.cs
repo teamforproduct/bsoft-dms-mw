@@ -62,6 +62,7 @@ namespace DMS_WebAPI.Infrastructure
             while (exc != null)
             {
                 var m = string.Empty;
+                var d = string.Empty;
 
                 // для DmsExceptions Message формирую на основании названия класса
                 if (exc is DmsExceptions) m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
@@ -78,13 +79,19 @@ namespace DMS_WebAPI.Infrastructure
                 if (exc is SqlException)
                 {
                     var e = (exc as SqlException);
-                    switch (e.ErrorCode)
+                    d = e.Message;
+                    switch (e.Number)
                     {
                         // The DELETE statement conflicted with the REFERENCE constraint
-                        case -2146232060:
+                        case 547:
                             m = "##l@SqlExceptions:" + "ConflictedWithReferenceConstraint" + "@l##";
                             break;
+                        // {"Cannot insert duplicate key row in object '' with unique index ''.
+                        case 2601:
+                            m = "##l@SqlExceptions:" + "CannotInsertDuplicateKeyRow" + "@l##";
+                            break;
                         default:
+                            m = $"Number: {e.Number}; Msg: {e.Message}";
                             break;
                     }
                 }
@@ -110,7 +117,7 @@ namespace DMS_WebAPI.Infrastructure
                 // Без вложенных сообщений
                 if (string.IsNullOrEmpty(responceExpression)) responceExpression = m;
                 //else
-                descriptionExpression = descriptionExpression + (descriptionExpression == string.Empty ? string.Empty : ";    ") + m;
+                descriptionExpression = descriptionExpression + (descriptionExpression == string.Empty ? string.Empty : ";    ") + (string.IsNullOrEmpty(d) ? m : d);
 
                 logExpression += (logExpression == string.Empty ? "Exception:" : "InnerException:") + "\r\n";
                 logExpression += $"   Message: {(exc is DmsExceptions ? exc.GetType().Name : exc.Message)}\r\n";
