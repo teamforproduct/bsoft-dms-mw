@@ -83,6 +83,8 @@ namespace BL.Logic.DocumentCore
                 };
                 bool IsNotAll;
                 filter.FullTextSearchSearch.FullTextSearchResult = DmsResolver.Current.Get<IFullTextSearchService>().SearchItems(out IsNotAll, ctx, filter.FullTextSearchSearch.FullTextSearchString, fullTextSearchFilter, paging);
+                if (!filter.FullTextSearchSearch.FullTextSearchResult.Any())
+                    return new List<FrontDocument>();
                 filter.FullTextSearchSearch.IsNotAll = IsNotAll;
                 if (IsNotAll) paging.IsNotAll = IsNotAll;
                 FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' FinishSearchIDInLucena: {filter.FullTextSearchSearch.FullTextSearchResult.Count()} rows", @"C:\TEMPLOGS\fulltext.log");

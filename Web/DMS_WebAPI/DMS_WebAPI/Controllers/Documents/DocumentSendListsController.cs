@@ -55,18 +55,6 @@ namespace DMS_WebAPI.Controllers.Documents
                 return Get((int)newId);
         }
 
-        /// <summary>
-        /// Добавление плана работы над документом по стандартному списку - don't use
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Измененные записи плана работы над документом</returns>
-        public IHttpActionResult Put([FromBody]ModifyDocumentSendListByStandartSendList model)
-        {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
-            var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction(EnumDocumentActions.AddByStandartSendListDocumentSendList, ctx, model);
-            return GetByDocument(model.DocumentId);
-        }
 
         /// <summary>
         /// Изменение записи плана работы над документом use V3
@@ -136,7 +124,7 @@ namespace DMS_WebAPI.Controllers.Documents
         [HttpPost]
         public IHttpActionResult AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
         {
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.CurrentPositionId);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
             var sendList = docProc.GetAdditinalLinkedDocumentSendLists(ctx, model);
 

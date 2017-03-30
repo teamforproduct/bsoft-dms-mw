@@ -160,6 +160,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                context.SetCurrentPosition(model.CurrentPositionId);
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
                 var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, context,model);
                 var res = new JsonResult(tmpItem, this);
@@ -302,6 +303,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
+                context.SetCurrentPosition(model.CurrentPositionId);
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
                 var tmpItem = docProc.GetNextRegisterDocumentNumber(context, model);
                 var res = new JsonResult(tmpItem, this);

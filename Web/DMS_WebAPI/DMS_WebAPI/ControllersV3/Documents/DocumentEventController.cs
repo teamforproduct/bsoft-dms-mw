@@ -150,9 +150,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var ctx = DmsResolver.Current.Get<UserContexts>().Get(model.First().CurrentPositionId);
+                context.SetCurrentPosition(model.First().CurrentPositionId);
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                var tmpItem = (Dictionary<int, string>)docProc.ExecuteAction(EnumDocumentActions.SendDocument, ctx, model);
+                var tmpItem = (Dictionary<int, string>)docProc.ExecuteAction(EnumDocumentActions.SendDocument, context, model);
                 var res = new JsonResult(tmpItem, !tmpItem.Any(), this);
                 return res;
             });

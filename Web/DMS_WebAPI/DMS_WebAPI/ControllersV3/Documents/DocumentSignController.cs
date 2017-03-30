@@ -265,7 +265,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model);
+                   Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model, model.CurrentPositionId);
                    var res = new JsonResult(true, this);
                    return res;
                });
