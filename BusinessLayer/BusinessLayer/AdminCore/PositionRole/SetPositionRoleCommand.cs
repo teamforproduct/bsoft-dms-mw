@@ -40,8 +40,8 @@ namespace BL.Logic.AdminCore
             }
             else if (exists && !Model.IsChecked)
             {
-                _adminDb.DeletePositionRole(_context, model);
-                
+                _adminDb.DeletePositionRoles(_context, new FilterAdminPositionRole { RoleIDs = new List<int> { model.RoleId }, PositionIDs = new List<int> { model.PositionId } });
+
                 // При удалении роли у должности, удаляю роль у сотрудников, которые унасленовали ее от этой должности
                 _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole()
                 {

@@ -33,13 +33,15 @@ namespace BL.Logic.AdminCore
             var model = new InternalAdminRolePermission { PermissionId = permissionId , RoleId = roleId };
             CommonDocumentUtilities.SetLastChange(_context, model);
 
-            var exists = _adminDb.ExistsRolePermissions(_context, new FilterAdminRolePermissions
+            var filter = new FilterAdminRolePermissions
             {
                 RoleIDs = new List<int>() { model.RoleId },
                 PermissionIDs = new List<int>() { model.PermissionId },
-            });
+            };
 
-            if (exists && !IsChecked) _adminDb.DeleteRolePermission(_context, model);
+            var exists = _adminDb.ExistsRolePermissions(_context, filter);
+
+            if (exists && !IsChecked) _adminDb.DeleteRolePermissions(_context, filter);
             else if (!exists && IsChecked) _adminDb.AddRolePermission(_context, model);
         }
 

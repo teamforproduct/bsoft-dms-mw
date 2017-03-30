@@ -472,14 +472,11 @@ namespace BL.Database.Admins
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AdminRolePermissionsSet.Where(x => x.RoleId == id).Delete();
-                dbContext.AdminPositionRolesSet.Where(x => x.RoleId == id).Delete();
-                dbContext.AdminUserRolesSet.Where(x => x.RoleId == id).Delete();
-
-                dbContext.AdminRolesSet.Where(x => x.Id == id).Delete();
-                dbContext.SaveChanges();
+                var qry = GetRolesQuery(context, dbContext, new FilterAdminRole { IDs = new List<int> { id } });
+                qry.Delete();
                 transaction.Complete();
             }
+            _cacheService.RefreshKey(context, SettingConstants.ADMIN_ROLE_CASHE_KEY);
         }
 
         public InternalAdminRole GetInternalRole(IContext context, FilterAdminRole filter)
@@ -726,17 +723,6 @@ namespace BL.Database.Admins
                 return dbModel.Id;
             }
         }
-        public void DeletePositionRole(IContext context, InternalAdminPositionRole model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                // по полям RoleId и PositionId соблюдается уникальность, поэтому запись идентифицируется правильно (всегда одна)
-                var dbModel = dbContext.AdminPositionRolesSet.Where(x => x.RoleId == model.RoleId).Where(x => x.PositionId == model.PositionId).FirstOrDefault();
-                dbContext.AdminPositionRolesSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
 
         public void DeletePositionRoles(IContext context, FilterAdminPositionRole filter)
         {
@@ -766,25 +752,6 @@ namespace BL.Database.Admins
                 transaction.Complete();
                 return res;
             }
-        }
-
-        public List<int> GetRolesByPositions(IContext context, List<int> positionIDs)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.AdminPositionRolesSet.AsQueryable();
-
-                var filterContains = PredicateBuilder.False<AdminPositionRoles>();
-
-                filterContains = positionIDs.Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.PositionId == value).Expand());
-                qry = qry.Where(filterContains);
-                var res = qry.Select(x => x.RoleId).ToList();
-                transaction.Complete();
-                return res;
-
-            }
-
         }
 
         public FrontAdminPositionRole GetPositionRole(IContext context, int id)
@@ -1003,9 +970,6 @@ namespace BL.Database.Admins
             {
                 var qry = GetUserRolesQuery(context, dbContext, filter);
                 qry.Delete();
-                //if (qry.Count() == 0) return;
-                //dbContext.AdminUserRolesSet.RemoveRange(qry);
-                //dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -1311,47 +1275,6 @@ namespace BL.Database.Admins
                 transaction.Complete();
             }
         }
-        public void DeleteSubordination(IContext context, InternalAdminSubordination model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminSubordinations dbModel = null;
-                if (model.Id == 0)
-                {
-                    dbModel = dbContext.AdminSubordinationsSet.
-                        FirstOrDefault(x => x.SourcePositionId == model.SourcePositionId && x.TargetPositionId == model.TargetPositionId && x.SubordinationTypeId == model.SubordinationTypeId);
-                }
-                else
-                {
-                    dbModel = dbContext.AdminSubordinationsSet.FirstOrDefault(x => x.Id == model.Id);
-                }
-                dbContext.AdminSubordinationsSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        public void DeleteSubordinationsBySourcePositionId(IContext context, InternalAdminSubordination model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var list = dbContext.AdminSubordinationsSet.Where(x => x.SourcePositionId == model.SourcePositionId);
-                dbContext.AdminSubordinationsSet.RemoveRange(list);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        public void DeleteSubordinationsByTargetPositionId(IContext context, InternalAdminSubordination model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                var list = dbContext.AdminSubordinationsSet.Where(x => x.TargetPositionId == model.TargetPositionId);
-                dbContext.AdminSubordinationsSet.RemoveRange(list);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
 
         public void DeleteSubordinations(IContext context, FilterAdminSubordination filter)
         {
@@ -1359,9 +1282,6 @@ namespace BL.Database.Admins
             {
                 var qry = GetSubordinationsQuery(context, dbContext, filter);
                 qry.Delete();
-                //var e = qry.ToList();
-                //dbContext.AdminSubordinationsSet.RemoveRange(qry);
-                //dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -1580,33 +1500,12 @@ namespace BL.Database.Admins
             }
         }
 
-        public void DeleteRegistrationJournalPosition(IContext context, InternalRegistrationJournalPosition model)
-        {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
-            {
-                AdminRegistrationJournalPositions dbModel = null;
-                if (model.Id == 0)
-                {
-                    dbModel = dbContext.AdminRegistrationJournalPositionsSet.
-                        FirstOrDefault(x => x.PositionId == model.PositionId && x.RegJournalId == model.RegistrationJournalId && x.RegJournalAccessTypeId == model.RegJournalAccessTypeId);
-                }
-                else
-                {
-                    dbModel = dbContext.AdminRegistrationJournalPositionsSet.FirstOrDefault(x => x.Id == model.Id);
-                }
-                dbContext.AdminRegistrationJournalPositionsSet.Remove(dbModel);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
         public void DeleteRegistrationJournalPositions(IContext context, FilterAdminRegistrationJournalPosition filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalPositionQuery(context, dbContext, filter);
-                dbContext.AdminRegistrationJournalPositionsSet.RemoveRange(qry);
-                dbContext.SaveChanges();
+                qry.Delete();
                 transaction.Complete();
             }
         }
@@ -1802,22 +1701,12 @@ namespace BL.Database.Admins
         }
 
 
-        public void DeleteRolePermission(IContext context, InternalAdminRolePermission model)
+        public void DeleteRolePermissions(IContext context, FilterAdminRolePermissions filter)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                AdminRolePermissions dbModel = null;
-                if (model.Id == 0)
-                {
-                    dbModel = dbContext.AdminRolePermissionsSet.
-                        FirstOrDefault(x => x.RoleId == model.RoleId && x.PermissionId == model.PermissionId);
-                }
-                else
-                {
-                    dbModel = dbContext.AdminRolePermissionsSet.FirstOrDefault(x => x.Id == model.Id);
-                }
-                dbContext.AdminRolePermissionsSet.Remove(dbModel);
-                dbContext.SaveChanges();
+                var qry = GetRolePermissionsQuery(context, dbContext, filter);
+                qry.Delete();
                 transaction.Complete();
             }
             _cacheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
