@@ -157,7 +157,7 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging, UISorting sorting)
         {
             return FTS.Get(context, Modules.Employee, ftSearch, filter, paging, sorting, _dictDb.GetMainAgentEmployees, _dictDb.GetAgentEmployeeIDs
-               //, new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
+               , new FullTextSearchFilter { Module = Modules.Employee, IsOnlyActual = true }
                );
         }
 
