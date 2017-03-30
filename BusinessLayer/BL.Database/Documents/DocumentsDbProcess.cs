@@ -231,7 +231,7 @@ namespace BL.Database.Documents
                                     (current, value) => current.Or(e => e.Id == value).Expand());
 
                                 qry = dbContext.DocumentsSet.Where(filterContains)
-                                        .OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id); ;
+                                        .OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id); 
                             }
                             else
                             {
@@ -338,6 +338,10 @@ namespace BL.Database.Documents
                         throw new WrongAPIParameters();
                     }
 
+                    if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
+                        FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** start fetch from db", @"C:\TEMPLOGS\fulltext.log");
+
+
                     #region model filling
                     var res = qry.Select(doc => new FrontDocument
                     {
@@ -371,6 +375,9 @@ namespace BL.Database.Documents
                     });
 
                     docs = res.ToList();
+
+                    if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
+                        FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** finish fetch from db", @"C:\TEMPLOGS\fulltext.log");
 
                     //TODO Sort
                     if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId != null && filter.Document.DocumentId.Count > 0)

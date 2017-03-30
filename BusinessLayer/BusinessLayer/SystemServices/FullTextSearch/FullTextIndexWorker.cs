@@ -139,7 +139,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(dateFrom);
 
             var dateTo = new NumericField(FIELD_DATE_TO_ID, Field.Store.NO, true);
-            dateTo.SetIntValue(item.DateTo.HasValue ? (int)item.DateTo.Value.ToOADate() : 0);
+            dateTo.SetIntValue(item.DateTo.HasValue ? (int)item.DateTo.Value.ToOADate() : int.MaxValue);
             doc.Add(dateTo);
 
             _writer.AddDocument(doc);
@@ -244,9 +244,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             if (filter.IsOnlyActual)
             {
                 var currDat = (int)DateTime.Now.ToOADate();
-                var fromDat = NumericRangeFilter.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, false, true);
-                var maxDate = (int)DateTime.Now.AddYears(20).ToOADate();
-                var toDat = NumericRangeFilter.NewIntRange(FIELD_DATE_FROM_ID, currDat, maxDate, true, true);
+                var fromDat = NumericRangeFilter.NewIntRange(FIELD_DATE_FROM_ID, 0, currDat, true, true);
+                //var maxDate = (int)DateTime.Now.AddYears(20).ToOADate();
+                var toDat = NumericRangeFilter.NewIntRange(FIELD_DATE_TO_ID, currDat, int.MaxValue, true, true);
                 boolFilter.Add(new FilterClause(fromDat, Occur.MUST));
                 boolFilter.Add(new FilterClause(toDat, Occur.MUST));
             }

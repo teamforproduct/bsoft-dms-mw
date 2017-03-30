@@ -119,7 +119,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var objToProcess = _systemDb.ObjectToReindex();
                 worker.DeleteAllDocuments(ctx.CurrentClientId);//delete all current document before reindexing
                 var tskList = new List<Action>();
-                foreach (var obj in objToProcess)
+                foreach (var obj in objToProcess.Where(x=>x == EnumObjects.DictionaryAgentEmployees))
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
                     if (!itmsCount.Any() || itmsCount.All(x => x == 0)) continue;
