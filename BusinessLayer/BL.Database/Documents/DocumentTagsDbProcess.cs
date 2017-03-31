@@ -19,7 +19,8 @@ namespace BL.Database.Documents
         #region DocumentTags
         public IEnumerable<FrontDocumentTag> GetTags(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == documentId).AsQueryable();

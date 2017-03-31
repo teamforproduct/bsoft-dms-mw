@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Database.DatabaseContext;
 using BL.Logic.Common;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Model.Database;
+using Ninject;
+using Ninject.Parameters;
 
 namespace BL.Logic.SystemServices
 {
@@ -31,7 +35,11 @@ namespace BL.Logic.SystemServices
         {
           ServerContext.Clear();
 
-          dbList.Select(x => new AdminContext(x)).ToList().ForEach(x => ServerContext.Add(CommonSystemUtilities.GetServerKey(x), x));
+          dbList.Select(x => new AdminContext(x)).ToList().ForEach(x => 
+          {
+              x.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", x.CurrentDB));
+              ServerContext.Add(CommonSystemUtilities.GetServerKey(x), x);
+          });
 
           Task.Factory.StartNew(InitializeServers);
         }

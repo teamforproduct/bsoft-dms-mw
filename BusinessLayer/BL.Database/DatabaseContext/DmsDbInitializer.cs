@@ -1,11 +1,4 @@
-﻿using BL.Database.DBModel.Admin;
-using BL.Database.DBModel.Dictionary;
-using BL.Database.DBModel.Encryption;
-using BL.Database.DBModel.System;
-using BL.Model.Enums;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 
 namespace BL.Database.DatabaseContext
 {

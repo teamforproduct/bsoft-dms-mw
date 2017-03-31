@@ -7,7 +7,6 @@ using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
-using System.Transactions;
 using BL.CrossCutting.Helpers;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
@@ -24,7 +23,8 @@ namespace BL.Database.Documents
 
         public FrontDocumentRestrictedSendList GetRestrictedSendList(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } });
                 var res = qry.Select(y => new FrontDocumentRestrictedSendList
@@ -45,20 +45,21 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
                 var res = qry.Select(y => new FrontDocumentRestrictedSendList
-                                 {
-                                     Id = y.Id,
-                                     DocumentId = y.DocumentId,
-                                     PositionId = y.PositionId,
-                                     PositionName = y.Position.Name,
-                                     PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                                     AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                                     AccessLevelName = y.AccessLevel.Name,
-                                     DepartmentName = y.Position.Department.Name,
-                                 }).ToList();
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    PositionId = y.PositionId,
+                    PositionName = y.Position.Name,
+                    PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
+                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    DepartmentName = y.Position.Department.Name,
+                }).ToList();
 
                 transaction.Complete();
                 return res;
@@ -67,7 +68,8 @@ namespace BL.Database.Documents
 
         public IEnumerable<AutocompleteItem> GetRestrictedSendListsForAutocomplete(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
                 var res = qry.Select(x => new AutocompleteItem
@@ -87,7 +89,8 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentSendList> GetSendLists(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
                 transaction.Complete();
@@ -97,7 +100,8 @@ namespace BL.Database.Documents
 
         public FrontDocumentSendList GetSendList(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
                 transaction.Complete();
@@ -107,7 +111,8 @@ namespace BL.Database.Documents
 
         public InternalAdditinalLinkedDocumentSendListsPrepare GetAdditinalLinkedDocumentSendListsPrepare(IContext ctx, AdditinalLinkedDocumentSendList model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 InternalAdditinalLinkedDocumentSendListsPrepare res = new InternalAdditinalLinkedDocumentSendListsPrepare();
                 res.SendTypeName = dbContext.DictionarySendTypesSet.Where(x => x.Id == (int)EnumSendTypes.SendForInformation).Select(x => x.Name).FirstOrDefault();
@@ -127,7 +132,7 @@ namespace BL.Database.Documents
                 }
                 ).ToList();
                 var docs = dbContext.DocumentsSet.Where(y => y.LinkId == linkId && y.Id != model.DocumentId)
-                    .Where(x=>x.Accesses.Any(y=>y.PositionId == model.CurrentPositionId))
+                    .Where(x => x.Accesses.Any(y => y.PositionId == model.CurrentPositionId))
                      .Select(y => new FrontDocument
                      {
                          Id = y.Id,
@@ -148,14 +153,14 @@ namespace BL.Database.Documents
                 filterPositionsContains = model.Positions.Aggregate(filterPositionsContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
                 res.Positions = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Where(filterPositionsContains)
-                    .Select(x=> new FrontDictionaryPosition
+                    .Select(x => new FrontDictionaryPosition
                     {
                         Id = x.Id,
                         Name = x.Name,
                         ExecutorAgentId = x.ExecutorAgentId,
                         ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                     }).ToList();
-                    
+
                 transaction.Complete();
                 return res;
             }

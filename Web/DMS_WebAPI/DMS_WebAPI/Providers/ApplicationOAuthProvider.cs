@@ -22,6 +22,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using BL.Database.DatabaseContext;
+using Ninject;
+using Ninject.Parameters;
 
 namespace DMS_WebAPI.Providers
 {
@@ -156,6 +159,7 @@ namespace DMS_WebAPI.Providers
             var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
             var server = dbWeb.GetServerByUser(null, new SetUserServer { ClientId = -1, ServerId = -1, ClientCode = GetClientCodeFromBody(context.Request.Body) });
             var ctx = new AdminContext(server);
+            ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             var logger = DmsResolver.Current.Get<ILogger>();
             var errorInfo = new AuthError
             {

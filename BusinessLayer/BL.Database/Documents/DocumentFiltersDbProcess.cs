@@ -4,7 +4,6 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
-using System.Transactions;
 using BL.Model.DocumentCore.Filters;
 using BL.CrossCutting.Helpers;
 
@@ -19,7 +18,8 @@ namespace BL.Database.Documents
 
         public IEnumerable<FrontDocumentSavedFilter> GetSavedFilters(IContext ctx, FilterDocumentSavedFilter filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -50,7 +50,8 @@ namespace BL.Database.Documents
 
         public FrontDocumentSavedFilter GetSavedFilter(IContext ctx, int savedFilterId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
 
                 var savFilter =

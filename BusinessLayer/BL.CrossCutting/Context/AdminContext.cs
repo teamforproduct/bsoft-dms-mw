@@ -5,6 +5,7 @@ using BL.Model.Users;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using System;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.CrossCutting.Context
 {
@@ -38,6 +39,7 @@ namespace BL.CrossCutting.Context
             };
         }
 
+        //TODO DbContext NOT INITIALIZED HERE
         public AdminContext(IContext ctx)
         {
             var def = ctx as UserContext;
@@ -129,5 +131,6 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
+        public object DbContext { get; set; }
     }
 }

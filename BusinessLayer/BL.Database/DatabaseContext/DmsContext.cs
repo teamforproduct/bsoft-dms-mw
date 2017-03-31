@@ -11,6 +11,7 @@ using BL.Database.Helper;
 using BL.Database.DBModel.Encryption;
 using System.Data.Entity.Infrastructure;
 using BL.Database.Common;
+using BL.Model.Database;
 
 namespace BL.Database.DatabaseContext
 {
@@ -27,9 +28,9 @@ namespace BL.Database.DatabaseContext
                     (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
-        public DmsContext(IContext context) : base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(context), true)
+        public DmsContext(DatabaseModel dbModel): base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(dbModel), true)
         {
-            _DefaultSchema = context.CurrentDB.DefaultSchema;
+            _DefaultSchema = dbModel.DefaultSchema;
 
             this.Database.CommandTimeout = int.MaxValue;
             System.Data.Entity.Database.SetInitializer<DmsContext>(new DmsDbInitializer());
@@ -40,6 +41,11 @@ namespace BL.Database.DatabaseContext
 
             //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
+
+        public DmsContext(IContext context) : this(context.CurrentDB)
+        {
+        }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

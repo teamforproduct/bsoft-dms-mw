@@ -41,7 +41,8 @@ namespace BL.Database.Documents
                 throw new LicenceError();
             }
 
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -64,20 +65,26 @@ namespace BL.Database.Documents
 
         public int GetDocumentIdBySendListId(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DocumentSendListsSet.Where(x => x.Id == id).Select(x => x.DocumentId).FirstOrDefault();
+                var res =
+                    dbContext.DocumentSendListsSet.Where(x => x.Id == id).Select(x => x.DocumentId).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
         }
 
-        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging, EnumGroupCountType? groupCountType = null)
+        public IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filter, UIPaging paging,
+            EnumGroupCountType? groupCountType = null)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 List<FrontDocument> docs = null;
+
                 #region main qry
+
                 var qry = CommonQueries.GetDocumentQuery(ctx, dbContext, filter?.Document, true);
 
                 if (filter?.File != null)
@@ -97,22 +104,32 @@ namespace BL.Database.Documents
                     var waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, filter?.Wait);
                     qry = qry.Where(x => waits.Select(y => y.DocumentId).Contains(x.Id));
                 }
+
                 #endregion main qry
 
                 #region Position filters for counters preparing
+
                 var filterAccessPositionsContains = PredicateBuilder.False<DocumentAccesses>();
-                filterAccessPositionsContains = ctx.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionsContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand());
+                filterAccessPositionsContains = ctx.CurrentPositionsAccessLevel.Aggregate(
+                    filterAccessPositionsContains,
+                    (current, value) =>
+                        current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand());
 
                 var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
-                filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains, (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value).Expand());
+                filterWaitPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains,
+                    (current, value) =>
+                        current.Or(e => e.OnEvent.TargetPositionId == value || e.OnEvent.SourcePositionId == value)
+                            .Expand());
 
                 #endregion Position filters for counters preparing
 
                 #region Paging
+
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
                 {
                     #region IncomingIds
-                    var sortDocIds = filter.Document.DocumentId.Select((x, i) => new { DocId = x, Index = i }).ToList();
+
+                    var sortDocIds = filter.Document.DocumentId.Select((x, i) => new {DocId = x, Index = i}).ToList();
                     var docIds = qry.Select(x => x.Id).ToList();
 
                     docIds = docIds.Join(sortDocIds, o => o, i => i.DocId, (o, i) => i)
@@ -131,7 +148,8 @@ namespace BL.Database.Documents
                     {
                         if (!paging.IsAll)
                         {
-                            docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
+                            docIds =
+                                docIds.Skip(paging.PageSize*(paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
                         }
 
                         if (docIds.Count > 0)
@@ -147,19 +165,31 @@ namespace BL.Database.Documents
                             qry = dbContext.DocumentsSet.Where(x => false);
                         }
                     }
+
                     #endregion IncomingIds
                 }
                 else if (filter?.FullTextSearchSearch?.FullTextSearchResult != null)
                 {
                     #region FullTextSearchDocumentId
+
                     #region groupCount
+
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
                         var docTags = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
                             .Select(x => string.Join(" ", x.Select(y => y.Filters)))
-                            .Select(x => x.Split(' ').Where(y => !string.IsNullOrEmpty(y) && y[y.Length - 1].ToString() == FullTextFilterTypes.Tag)
+                            .Select(
+                                x =>
+                                    x.Split(' ')
+                                        .Where(
+                                            y =>
+                                                !string.IsNullOrEmpty(y) &&
+                                                y[y.Length - 1].ToString() == FullTextFilterTypes.Tag)
                                         .Select(y => y.Substring(0, y.Length - 1)).Distinct().ToList())
-                            .SelectMany(x => x).GroupBy(x => x).Select(x => new { Id = x.Key, Count = x.Count() }).ToList();
+                            .SelectMany(x => x)
+                            .GroupBy(x => x)
+                            .Select(x => new {Id = x.Key, Count = x.Count()})
+                            .ToList();
                         var tagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
                         {
                             TagId = x.Id,
@@ -169,16 +199,34 @@ namespace BL.Database.Documents
                             Name = x.Name,
                             IsSystem = !x.PositionId.HasValue,
                         }).ToList();
-                        tagCounters.ForEach(x => x.DocCount = docTags.Where(y => y.Id == x.TagId.ToString()).Select(y => y.Count).FirstOrDefault());
-                        docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters.Where(x => x.DocCount > 0).OrderBy(x=>x.Name).ToList() } };
+                        tagCounters.ForEach(
+                            x =>
+                                x.DocCount =
+                                    docTags.Where(y => y.Id == x.TagId.ToString()).Select(y => y.Count).FirstOrDefault());
+                        docs = new List<FrontDocument>
+                        {
+                            new FrontDocument
+                            {
+                                DocumentTags = tagCounters.Where(x => x.DocCount > 0).OrderBy(x => x.Name).ToList()
+                            }
+                        };
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
                         var docPositions = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
                             .Select(x => string.Join(" ", x.Select(y => y.Filters)))
-                            .Select(x => x.Split(' ').Where(y => !string.IsNullOrEmpty(y) && y[y.Length - 1].ToString() == FullTextFilterTypes.WorkGroupPosition)
+                            .Select(
+                                x =>
+                                    x.Split(' ')
+                                        .Where(
+                                            y =>
+                                                !string.IsNullOrEmpty(y) &&
+                                                y[y.Length - 1].ToString() == FullTextFilterTypes.WorkGroupPosition)
                                         .Select(y => y.Substring(0, y.Length - 1)).Distinct().ToList())
-                            .SelectMany(x => x).GroupBy(x => x).Select(x => new { Id = x.Key, Count = x.Count() }).ToList();
+                            .SelectMany(x => x)
+                            .GroupBy(x => x)
+                            .Select(x => new {Id = x.Key, Count = x.Count()})
+                            .ToList();
                         var positionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDictionaryPosition
                         {
                             Id = x.Id,
@@ -186,15 +234,32 @@ namespace BL.Database.Documents
                             DepartmentId = x.DepartmentId,
                             ExecutorAgentId = x.ExecutorAgentId,
                             DepartmentName = x.Department.Name,
-                            ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
+                            ExecutorAgentName =
+                                x.ExecutorAgent.Name +
+                                (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string) null),
                         }).ToList();
-                        positionCounters.ForEach(x => x.DocCount = docPositions.Where(y => y.Id == x.Id.ToString()).Select(y => y.Count).FirstOrDefault());
-                        docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters.Where(x => x.DocCount > 0).OrderBy(x=>x.ExecutorAgentName).ToList() } };
+                        positionCounters.ForEach(
+                            x =>
+                                x.DocCount =
+                                    docPositions.Where(y => y.Id == x.Id.ToString())
+                                        .Select(y => y.Count)
+                                        .FirstOrDefault());
+                        docs = new List<FrontDocument>
+                        {
+                            new FrontDocument
+                            {
+                                DocumentWorkGroup =
+                                    positionCounters.Where(x => x.DocCount > 0)
+                                        .OrderBy(x => x.ExecutorAgentName)
+                                        .ToList()
+                            }
+                        };
                     }
                     else
-                    #endregion groupCount
+                        #endregion groupCount
+
                     {
-                        if ((paging.IsOnlyCounter ?? true) && !filter.FullTextSearchSearch.IsNotAll)  
+                        if ((paging.IsOnlyCounter ?? true) && !filter.FullTextSearchSearch.IsNotAll)
                         {
                             var ftDocs = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId);
                             paging.TotalItemsCount = ftDocs.Count();
@@ -212,16 +277,21 @@ namespace BL.Database.Documents
                                 };
                             }
                         }
-                        if (paging.IsOnlyCounter ?? false )
+                        if (paging.IsOnlyCounter ?? false)
                         {
                             docs = new List<FrontDocument>();
                         }
                         else
                         {
-                            var docIds = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId).Select(x => x.Key).OrderByDescending(x => x).ToList();
+                            var docIds =
+                                filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId)
+                                    .Select(x => x.Key)
+                                    .OrderByDescending(x => x)
+                                    .ToList();
                             if (!paging.IsAll)
                             {
-                                docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
+                                docIds =
+                                    docIds.Skip(paging.PageSize*(paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
                             }
 
                             if (docIds.Count > 0)
@@ -231,7 +301,7 @@ namespace BL.Database.Documents
                                     (current, value) => current.Or(e => e.Id == value).Expand());
 
                                 qry = dbContext.DocumentsSet.Where(filterContains)
-                                        .OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id); 
+                                    .OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id);
                             }
                             else
                             {
@@ -239,12 +309,15 @@ namespace BL.Database.Documents
                             }
                         }
                     }
+
                     #endregion FullTextSearchDocumentId
                 }
                 else
                 {
                     #region Others
+
                     #region groupCount
+
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
                         var qryT = qry;
@@ -263,25 +336,29 @@ namespace BL.Database.Documents
                             DocCount = x.Documents.Count(y => qryT.Select(z => z.Id).Contains(y.DocumentId))
                         }).Where(x => x.DocCount > 0);
                         var tagCounters = qryTagCounters.OrderBy(x => x.Name).ToList();
-                        docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
+                        docs = new List<FrontDocument> {new FrontDocument {DocumentTags = tagCounters}};
                     }
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
-                        var qryPositionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDictionaryPosition
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            DepartmentId = x.DepartmentId,
-                            ExecutorAgentId = x.ExecutorAgentId,
-                            DepartmentName = x.Department.Name,
-                            ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string)null),
-                            DocCount = x.DocumentAccesses.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
-                        }).Where(x => x.DocCount > 0);
+                        var qryPositionCounters = dbContext.DictionaryPositionsSet.Select(
+                            x => new FrontDictionaryPosition
+                            {
+                                Id = x.Id,
+                                Name = x.Name,
+                                DepartmentId = x.DepartmentId,
+                                ExecutorAgentId = x.ExecutorAgentId,
+                                DepartmentName = x.Department.Name,
+                                ExecutorAgentName =
+                                    x.ExecutorAgent.Name +
+                                    (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : (string) null),
+                                DocCount = x.DocumentAccesses.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
+                            }).Where(x => x.DocCount > 0);
                         var positionCounters = qryPositionCounters.OrderBy(x => x.ExecutorAgentName).ToList();
-                        docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters } };
+                        docs = new List<FrontDocument> {new FrontDocument {DocumentWorkGroup = positionCounters}};
                     }
                     else
-                    #endregion groupCount
+                        #endregion groupCount
+
                     {
                         if (paging.IsOnlyCounter ?? true)
                         {
@@ -292,7 +369,8 @@ namespace BL.Database.Documents
                             else
                             {
                                 var qryAcc = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                                    .Where(x => qry.Select(y => y.Id).Contains(x.DocumentId)).Where(filterAccessPositionsContains)
+                                    .Where(x => qry.Select(y => y.Id).Contains(x.DocumentId))
+                                    .Where(filterAccessPositionsContains)
                                     .GroupBy(x => x.DocumentId).Select(x => new
                                     {
                                         DocumentId = x.Key,
@@ -308,7 +386,12 @@ namespace BL.Database.Documents
                                     });
                                 var counts = qryAcc.FirstOrDefault();
                                 paging.TotalItemsCount = counts?.Count;
-                                paging.Counters = new UICounters { Counter1 = counts?.CountNewEvents, Counter2 = counts?.CountWaits, Counter3 = counts?.CountFavourite };
+                                paging.Counters = new UICounters
+                                {
+                                    Counter1 = counts?.CountNewEvents,
+                                    Counter2 = counts?.CountWaits,
+                                    Counter3 = counts?.CountFavourite
+                                };
                             }
                         }
                         if (paging.IsOnlyCounter ?? false)
@@ -320,29 +403,36 @@ namespace BL.Database.Documents
                             qry = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id);
                             if (!paging.IsAll)
                             {
-                                var skip = paging.PageSize * (paging.CurrentPage - 1);
+                                var skip = paging.PageSize*(paging.CurrentPage - 1);
                                 var take = paging.PageSize;
 
                                 qry = qry.Skip(() => skip).Take(() => take);
                             }
                         }
                     }
+
                     #endregion Others
                 }
+
                 #endregion Paging
+
                 if (docs == null)
                 {
 
-                    if ((paging?.IsAll ?? true) && (filter?.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0)))
+                    if ((paging?.IsAll ?? true) &&
+                        (filter?.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0)))
                     {
                         throw new WrongAPIParameters();
                     }
 
                     if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
-                        FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** start fetch from db", @"C:\TEMPLOGS\fulltext.log");
+                        FileLogger.AppendTextToFile(
+                            $"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** start fetch from db",
+                            @"C:\TEMPLOGS\fulltext.log");
 
 
                     #region model filling
+
                     var res = qry.Select(doc => new FrontDocument
                     {
                         Id = doc.Id,
@@ -359,17 +449,33 @@ namespace BL.Database.Documents
                         Description = doc.Description,
                         ExecutorPositionId = doc.ExecutorPositionId,
                         ExecutorPositionExecutorAgentId = doc.ExecutorPositionExecutorAgentId,
-                        ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
+                        ExecutorPositionExecutorAgentName =
+                            doc.ExecutorPositionExecutorAgent.Name +
+                            (doc.ExecutorPositionExecutorType.Suffix != null
+                                ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")"
+                                : null),
                         ExecutorPositionName = doc.ExecutorPosition.Name,
 
-                        WaitCount = doc.Waits.AsQueryable().Where(filterWaitPositionsContains).Where(x => !x.OffEventId.HasValue)
+                        WaitCount =
+                            doc.Waits.AsQueryable()
+                                .Where(filterWaitPositionsContains)
+                                .Where(x => !x.OffEventId.HasValue)
                                 .GroupBy(x => x.DocumentId)
-                                .Select(x => new UICounters { Counter1 = x.Count(), Counter2 = x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow) })
+                                .Select(
+                                    x =>
+                                        new UICounters
+                                        {
+                                            Counter1 = x.Count(),
+                                            Counter2 =
+                                                x.Count(s => s.DueDate.HasValue && s.DueDate.Value < DateTime.UtcNow)
+                                        })
                                 .FirstOrDefault(),
 
                         //NewEventCount = doc.Events.AsQueryable().Where(filterNewEventContains).Count(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId),
 
-                        AttachedFilesCount = doc.Files.Count(fl => fl.IsMainVersion && !fl.IsDeleted && fl.TypeId != (int)EnumFileTypes.SubscribePdf),
+                        AttachedFilesCount =
+                            doc.Files.Count(
+                                fl => fl.IsMainVersion && !fl.IsDeleted && fl.TypeId != (int) EnumFileTypes.SubscribePdf),
 
                         LinkId = doc.LinkId,
                     });
@@ -377,10 +483,13 @@ namespace BL.Database.Documents
                     docs = res.ToList();
 
                     if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
-                        FileLogger.AppendTextToFile($"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** finish fetch from db", @"C:\TEMPLOGS\fulltext.log");
+                        FileLogger.AppendTextToFile(
+                            $"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** finish fetch from db",
+                            @"C:\TEMPLOGS\fulltext.log");
 
                     //TODO Sort
-                    if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId != null && filter.Document.DocumentId.Count > 0)
+                    if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId != null &&
+                        filter.Document.DocumentId.Count > 0)
                     {
                         docs = docs.OrderBy(x => filter.Document.DocumentId.IndexOf(x.Id)).ToList();
                     }
@@ -392,12 +501,17 @@ namespace BL.Database.Documents
                     if (docs.Any(x => x.LinkId.HasValue))
                     {
                         var filterLinkIdContains = PredicateBuilder.False<DBModel.Document.Documents>();
-                        filterLinkIdContains = docs.GroupBy(x => x.LinkId).Where(x => x.Key.HasValue).Select(x => x.Key).Aggregate(filterLinkIdContains, (current, value) => current.Or(e => e.LinkId == value).Expand());
+                        filterLinkIdContains =
+                            docs.GroupBy(x => x.LinkId)
+                                .Where(x => x.Key.HasValue)
+                                .Select(x => x.Key)
+                                .Aggregate(filterLinkIdContains,
+                                    (current, value) => current.Or(e => e.LinkId == value).Expand());
 
                         var links = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true)
                             .Where(filterLinkIdContains)
                             .GroupBy(x => x.LinkId.Value)
-                            .Select(x => new { LinkId = x.Key, Count = x.Count() })
+                            .Select(x => new {LinkId = x.Key, Count = x.Count()})
                             .ToList();
 
                         docs.ForEach(x =>
@@ -409,16 +523,19 @@ namespace BL.Database.Documents
 
                     docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
 
-                    var acc = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, new FilterDocumentAccess { DocumentId = docs.Select(x => x.Id).ToList()} ).GroupBy(x => x.DocumentId)
-                                        .Select(x => new
-                                        {
-                                            DocumentId = x.Key,
-                                            IsFavourite = x.Any(y => y.IsFavourite),
-                                            IsInWork = x.Any(y => y.IsInWork),
-                                            NewEventCount = x.Sum(y => y.CountNewEvents),
-                                            //CountWaits = x.Sum(y => y.CountWaits),
-                                            //OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
-                                        }).ToList();
+                    var acc =
+                        CommonQueries.GetDocumentAccessesQuery(ctx, dbContext,
+                            new FilterDocumentAccess {DocumentId = docs.Select(x => x.Id).ToList()})
+                            .GroupBy(x => x.DocumentId)
+                            .Select(x => new
+                            {
+                                DocumentId = x.Key,
+                                IsFavourite = x.Any(y => y.IsFavourite),
+                                IsInWork = x.Any(y => y.IsInWork),
+                                NewEventCount = x.Sum(y => y.CountNewEvents),
+                                //CountWaits = x.Sum(y => y.CountWaits),
+                                //OverDueCountWaits = x.Sum(y => y.OverDueCountWaits),
+                            }).ToList();
 
                     foreach (var doc in docs)
                     {
@@ -442,47 +559,66 @@ namespace BL.Database.Documents
                             //}                           
                         }
                     }
-                    docs = docs.GroupJoin(CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docs.Select(x => x.Id).ToList(), CurrentPositionsId = ctx.CurrentPositionsIdList }),
-                        d => d.Id,
-                        t => t.DocumentId,
-                        (d, t) => { d.DocumentTags = t.ToList(); return d; }).ToList();
+                    docs =
+                        docs.GroupJoin(
+                            CommonQueries.GetDocumentTags(dbContext, ctx,
+                                new FilterDocumentTag
+                                {
+                                    DocumentId = docs.Select(x => x.Id).ToList(),
+                                    CurrentPositionsId = ctx.CurrentPositionsIdList
+                                }),
+                            d => d.Id,
+                            t => t.DocumentId,
+                            (d, t) =>
+                            {
+                                d.DocumentTags = t.ToList();
+                                return d;
+                            }).ToList();
+
                     #endregion model filling
                 }
                 transaction.Complete();
                 return docs;
             }
         }
+
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId);
 
-                var accs = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, null).Where(x => x.DocumentId == documentId)
-                    .Select(acc => new FrontDocumentAccess
-                    {
-                        Id = acc.Id,
-                        PositionId = acc.PositionId,
-                        IsInWork = acc.IsInWork,
-                        DocumentId = acc.DocumentId,
-                        IsFavourite = acc.IsFavourite,
-                        AccessLevelId = acc.AccessLevelId,
-                        AccessLevelName = acc.AccessLevel.Name,
-                        CountNewEvents = acc.CountNewEvents,
-                        CountWaits = acc.CountWaits,
-                        OverDueCountWaits = acc.OverDueCountWaits,
-                    }).ToList();
+                var accs =
+                    CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, null).Where(x => x.DocumentId == documentId)
+                        .Select(acc => new FrontDocumentAccess
+                        {
+                            Id = acc.Id,
+                            PositionId = acc.PositionId,
+                            IsInWork = acc.IsInWork,
+                            DocumentId = acc.DocumentId,
+                            IsFavourite = acc.IsFavourite,
+                            AccessLevelId = acc.AccessLevelId,
+                            AccessLevelName = acc.AccessLevel.Name,
+                            CountNewEvents = acc.CountNewEvents,
+                            CountWaits = acc.CountWaits,
+                            OverDueCountWaits = acc.OverDueCountWaits,
+                        }).ToList();
 
                 var res = qry.Select(doc => new FrontDocument
                 {
                     Id = doc.Id,
-                    DocumentDirection = (EnumDocumentDirections)doc.DocumentDirectionId,
+                    DocumentDirection = (EnumDocumentDirections) doc.DocumentDirectionId,
                     DocumentDirectionName = doc.DocumentDirection.Name,
                     DocumentTypeName = doc.DocumentType.Name,
                     DocumentDate = doc.RegistrationDate ?? doc.CreateDate,
                     IsRegistered = doc.IsRegistered,
                     Description = doc.Description,
-                    ExecutorPositionExecutorAgentName = doc.ExecutorPositionExecutorAgent.Name + (doc.ExecutorPositionExecutorType.Suffix != null ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")" : null),
+                    ExecutorPositionExecutorAgentName =
+                        doc.ExecutorPositionExecutorAgent.Name +
+                        (doc.ExecutorPositionExecutorType.Suffix != null
+                            ? " (" + doc.ExecutorPositionExecutorType.Suffix + ")"
+                            : null),
                     ExecutorPositionName = doc.ExecutorPosition.Name,
                     LinkedDocumentsCount = 0, //TODO
 
@@ -531,7 +667,7 @@ namespace BL.Database.Documents
 
                 CommonQueries.ChangeRegistrationFullNumber(res, false);
 
-                var docIds = new List<int> { res.Id };
+                var docIds = new List<int> {res.Id};
 
                 if (res.LinkId.HasValue)
                 {
@@ -539,7 +675,8 @@ namespace BL.Database.Documents
                     var linkedDocumentsCount = res.LinkedDocuments.Count();
                     if (linkedDocumentsCount > 1)
                     {
-                        res.LinkedDocuments = res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x => x.DocumentDate);
+                        res.LinkedDocuments =
+                            res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x => x.DocumentDate);
                     }
                     res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
                     //if (filter?.DocumentsIdForAIP?.Count() > 0)
@@ -552,17 +689,28 @@ namespace BL.Database.Documents
                     }
                 }
 
-                res.SendLists = CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                res.SendLists = CommonQueries.GetDocumentSendList(dbContext, ctx,
+                    new FilterDocumentSendList {DocumentId = new List<int> {documentId}});
 
-                res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any() ? 0 : res.SendLists.Max(x => x.Stage);
+                res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any()
+                    ? 0
+                    : res.SendLists.Max(x => x.Stage);
 
-                res.RestrictedSendLists = DmsResolver.Current.Get<IDocumentSendListsDbProcess>().GetRestrictedSendLists(ctx, documentId);
+                res.RestrictedSendLists =
+                    DmsResolver.Current.Get<IDocumentSendListsDbProcess>().GetRestrictedSendLists(ctx, documentId);
 
-                res.DocumentTags = CommonQueries.GetDocumentTags(dbContext, ctx, new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = ctx.CurrentPositionsIdList });
+                res.DocumentTags = CommonQueries.GetDocumentTags(dbContext, ctx,
+                    new FilterDocumentTag {DocumentId = docIds, CurrentPositionsId = ctx.CurrentPositionsIdList});
 
-                res.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, ctx, new FilterDictionaryPosition { DocumentIDs = docIds });
+                res.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(dbContext, ctx,
+                    new FilterDictionaryPosition {DocumentIDs = docIds});
 
-                res.Properties = CommonQueries.GetPropertyValues(dbContext, ctx, new FilterPropertyValue { RecordId = new List<int> { documentId }, Object = new List<EnumObjects> { EnumObjects.Documents } });
+                res.Properties = CommonQueries.GetPropertyValues(dbContext, ctx,
+                    new FilterPropertyValue
+                    {
+                        RecordId = new List<int> {documentId},
+                        Object = new List<EnumObjects> {EnumObjects.Documents}
+                    });
                 transaction.Complete();
                 return res;
             }
@@ -570,7 +718,8 @@ namespace BL.Database.Documents
 
         public IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetLinkedDocumentIds(ctx, dbContext, documentId);
                 transaction.Complete();
@@ -580,14 +729,17 @@ namespace BL.Database.Documents
 
         public InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId, new List<EnumSubscriptionStates> {
+                var doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId,
+                    new List<EnumSubscriptionStates>
+                    {
                         EnumSubscriptionStates.Sign,
                         EnumSubscriptionStates.Visa,
                         EnumSubscriptionStates.Аgreement,
                         EnumSubscriptionStates.Аpproval
-                        });
+                    });
 
                 if (doc == null)
                 {
@@ -598,25 +750,41 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontReport ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign)
+        public FrontReport ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model,
+            bool isUseInternalSign, bool isUseCertificateSign)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign, null, model.ServerPath, false, false, false);
+                CommonQueries.GetDocumentHash(dbContext, ctx, model.DocumentId, isUseInternalSign, isUseCertificateSign,
+                    null, model.ServerPath, false, false, false);
 
-                var subscriptionStates = new List<EnumSubscriptionStates> {
-                        EnumSubscriptionStates.Sign,
-                        EnumSubscriptionStates.Visa,
-                        EnumSubscriptionStates.Аgreement,
-                        EnumSubscriptionStates.Аpproval
-                        };
+                var subscriptionStates = new List<EnumSubscriptionStates>
+                {
+                    EnumSubscriptionStates.Sign,
+                    EnumSubscriptionStates.Visa,
+                    EnumSubscriptionStates.Аgreement,
+                    EnumSubscriptionStates.Аpproval
+                };
 
-                InternalDocument doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId, subscriptionStates);
+                InternalDocument doc = CommonQueries.GetDocumentDigitalSignaturePrepare(dbContext, ctx, model.DocumentId,
+                    subscriptionStates);
 
                 if (model.IsAddSubscription)
                 {
                     var subscriptions = doc.Subscriptions.ToList();
-                    subscriptions.Add(dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId).Select(x => new InternalDocumentSubscription { Id = 0, DocumentId = model.DocumentId, DoneEventSourcePositionName = x.Name, DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name }).FirstOrDefault());
+                    subscriptions.Add(
+                        dbContext.DictionaryPositionsSet.Where(x => x.Id == ctx.CurrentPositionId)
+                            .Select(
+                                x =>
+                                    new InternalDocumentSubscription
+                                    {
+                                        Id = 0,
+                                        DocumentId = model.DocumentId,
+                                        DoneEventSourcePositionName = x.Name,
+                                        DoneEventSourcePositionExecutorAgentName = x.ExecutorAgent.Name
+                                    })
+                            .FirstOrDefault());
                     doc.Subscriptions = subscriptions;
                 }
 
@@ -628,7 +796,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId);
 
@@ -637,7 +806,7 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     ClientId = x.ClientId,
                     EntityTypeId = x.EntityTypeId,
-                    DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                    DocumentDirection = (EnumDocumentDirections) x.DocumentDirectionId,
                     IsRegistered = x.IsRegistered,
                     ExecutorPositionId = x.ExecutorPositionId,
                 }).FirstOrDefault();
@@ -653,7 +822,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ReportRegistrationCardDocument(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Id == documentId);
 
@@ -677,43 +847,63 @@ namespace BL.Database.Documents
                     SenderAgentPersonName = doc.SenderAgentPerson?.Agent.Name,
                 };
 
-                var docIds = new List<int> { res.Id };
+                var docIds = new List<int> {res.Id};
 
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
 
-                res.Waits = CommonQueries.GetDocumentWaitQuery(ctx, dbContext, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
-                    .Select(x => new InternalDocumentWait
-                    {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        DocumentId = x.DocumentId,
-                        CreateDate = x.OnEvent.Date,
-                        TargetPositionName = x.OnEvent.TargetPosition.Name,
-                        TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name + (x.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OnEvent.TargetPositionExecutorType.Suffix + ")" : null),
-                        SourcePositionName = x.OnEvent.SourcePosition.Name,
-                        SourcePositionExecutorAgentName = x.OnEvent.SourcePositionExecutorAgent.Name + (x.OnEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.OnEvent.SourcePositionExecutorType.Suffix + ")" : null),
-                        DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
-                        IsClosed = x.OffEventId != null,
-                        ResultTypeName = x.ResultType.Name,
-                        AttentionDate = x.AttentionDate,
-                        OnEventTypeName = x.OnEvent.EventType.Name,
-                        OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
-                    }).ToList();
+                res.Waits =
+                    CommonQueries.GetDocumentWaitQuery(ctx, dbContext,
+                        new FilterDocumentWait {DocumentId = new List<int> {res.Id}})
+                        .Select(x => new InternalDocumentWait
+                        {
+                            Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
+                            DocumentId = x.DocumentId,
+                            CreateDate = x.OnEvent.Date,
+                            TargetPositionName = x.OnEvent.TargetPosition.Name,
+                            TargetPositionExecutorAgentName =
+                                x.OnEvent.TargetPositionExecutorAgent.Name +
+                                (x.OnEvent.TargetPositionExecutorType.Suffix != null
+                                    ? " (" + x.OnEvent.TargetPositionExecutorType.Suffix + ")"
+                                    : null),
+                            SourcePositionName = x.OnEvent.SourcePosition.Name,
+                            SourcePositionExecutorAgentName =
+                                x.OnEvent.SourcePositionExecutorAgent.Name +
+                                (x.OnEvent.SourcePositionExecutorType.Suffix != null
+                                    ? " (" + x.OnEvent.SourcePositionExecutorType.Suffix + ")"
+                                    : null),
+                            DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
+                            IsClosed = x.OffEventId != null,
+                            ResultTypeName = x.ResultType.Name,
+                            AttentionDate = x.AttentionDate,
+                            OnEventTypeName = x.OnEvent.EventType.Name,
+                            OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?) null
+                        }).ToList();
 
-                res.Subscriptions = CommonQueries.GetDocumentSubscriptionsQuery(dbContext, new FilterDocumentSubscription { DocumentId = new List<int> { res.Id }, SubscriptionStates = new List<EnumSubscriptionStates> { EnumSubscriptionStates.Sign } }, ctx)
-                    .Select(x => new InternalDocumentSubscription
-                    {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        DocumentId = x.DocumentId,
-                        SubscriptionStatesName = x.SubscriptionState.Name,
-                        DoneEventSourcePositionName = x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
-                        DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue
-                                                                    ? x.DoneEvent.SourcePositionExecutorAgent.Name + (x.DoneEvent.SourcePositionExecutorType.Suffix != null ? " (" + x.DoneEvent.SourcePositionExecutorType.Suffix + ")" : null)
-                                                                    : string.Empty
-                    }).ToList();
+                res.Subscriptions =
+                    CommonQueries.GetDocumentSubscriptionsQuery(dbContext,
+                        new FilterDocumentSubscription
+                        {
+                            DocumentId = new List<int> {res.Id},
+                            SubscriptionStates = new List<EnumSubscriptionStates> {EnumSubscriptionStates.Sign}
+                        }, ctx)
+                        .Select(x => new InternalDocumentSubscription
+                        {
+                            Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
+                            DocumentId = x.DocumentId,
+                            SubscriptionStatesName = x.SubscriptionState.Name,
+                            DoneEventSourcePositionName =
+                                x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
+                            DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue
+                                ? x.DoneEvent.SourcePositionExecutorAgent.Name +
+                                  (x.DoneEvent.SourcePositionExecutorType.Suffix != null
+                                      ? " (" + x.DoneEvent.SourcePositionExecutorType.Suffix + ")"
+                                      : null)
+                                : string.Empty
+                        }).ToList();
                 transaction.Complete();
                 return res;
             }
@@ -742,7 +932,8 @@ namespace BL.Database.Documents
 
         public List<InternalDocument> ReportRegisterTransmissionDocuments(IContext ctx, int paperListId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
 
                 var qry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
@@ -775,9 +966,17 @@ namespace BL.Database.Documents
                     EntityTypeId = x.EntityTypeId,
                     DocumentId = x.DocumentId,
                     SourcePositionName = x.SourcePosition.Name,
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : null),
+                    SourcePositionExecutorAgentName =
+                        x.SourcePositionExecutorAgent.Name +
+                        (x.SourcePositionExecutorType.Suffix != null
+                            ? " (" + x.SourcePositionExecutorType.Suffix + ")"
+                            : null),
                     TargetPositionName = x.TargetPosition.Name,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null),
+                    TargetPositionExecutorAgentName =
+                        x.TargetPositionExecutorAgent.Name +
+                        (x.TargetPositionExecutorType.Suffix != null
+                            ? " (" + x.TargetPositionExecutorType.Suffix + ")"
+                            : null),
                     PaperId = x.PaperId,
                     Paper = !x.PaperId.HasValue
                         ? null
@@ -792,18 +991,23 @@ namespace BL.Database.Documents
                         }
                 }).ToList();
 
-                res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) => { o.Events = i.ToList(); return o; }).ToList();
+                res = res.GroupJoin(events, o => o.Id, i => i.DocumentId, (o, i) =>
+                {
+                    o.Events = i.ToList();
+                    return o;
+                }).ToList();
                 transaction.Complete();
                 return res;
             }
         }
 
-        public InternalDocument AddDocumentPrepare(IContext context, int templateDocumentId)
+        public InternalDocument AddDocumentPrepare(IContext ctx, int templateDocumentId)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = Transactions.GetTransaction())
             {
 
-                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.Id == templateDocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -816,7 +1020,7 @@ namespace BL.Database.Documents
                         SenderAgentPersonId = x.SenderAgentPersonId,
                         Addressee = x.Addressee,
                         DocumentTypeId = x.DocumentTypeId,
-                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentDirection = (EnumDocumentDirections) x.DocumentDirectionId,
                         RegistrationJournalId = x.RegistrationJournalId,
                     }).FirstOrDefault();
 
@@ -825,78 +1029,94 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
-                    .Select(y => new InternalDocumentTask
-                    {
-                        ClientId = doc.ClientId,
-                        EntityTypeId = doc.EntityTypeId,
-                        Name = y.Task,
-                        Description = y.Description,
-                        PositionId = y.PositionId ?? 0,
-                    }).ToList();
+                doc.Tasks =
+                    dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                        .Where(y => y.DocumentId == templateDocumentId)
+                        .Select(y => new InternalDocumentTask
+                        {
+                            ClientId = doc.ClientId,
+                            EntityTypeId = doc.EntityTypeId,
+                            Name = y.Task,
+                            Description = y.Description,
+                            PositionId = y.PositionId ?? 0,
+                        }).ToList();
 
-                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
-                    .Select(y => new InternalDocumentRestrictedSendList()
-                    {
-                        ClientId = doc.ClientId,
-                        EntityTypeId = doc.EntityTypeId,
-                        PositionId = y.PositionId,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
-                    }).ToList();
+                doc.RestrictedSendLists =
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(
+                        x => x.Document.ClientId == ctx.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
+                        .Select(y => new InternalDocumentRestrictedSendList()
+                        {
+                            ClientId = doc.ClientId,
+                            EntityTypeId = doc.EntityTypeId,
+                            PositionId = y.PositionId,
+                            AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
+                        }).ToList();
 
-                doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == templateDocumentId)
-                    .Select(y => new InternalDocumentSendList()
-                    {
-                        ClientId = doc.ClientId,
-                        EntityTypeId = doc.EntityTypeId,
-                        StageType = (EnumStageTypes?)y.StageTypeId,
-                        SendType = (EnumSendTypes)y.SendTypeId,
-                        //SourcePositionId = y.SourcePositionId??0,
-                        TargetPositionId = y.TargetPositionId,
-                        TargetAgentId = y.TargetAgentId,
-                        TaskName = y.Task.Task,
-                        IsAvailableWithinTask = y.IsAvailableWithinTask,
-                        IsWorkGroup = y.IsWorkGroup,
-                        IsAddControl = y.IsAddControl,
-                        SelfDueDay = y.SelfDueDay,
-                        SelfDescription = y.SelfDescription,
-                        SelfAttentionDay = y.SelfAttentionDay,
-                        Description = y.Description,
-                        Stage = y.Stage,
-                        DueDay = y.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                    }).ToList();
+                doc.SendLists =
+                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                        .Where(y => y.DocumentId == templateDocumentId)
+                        .Select(y => new InternalDocumentSendList()
+                        {
+                            ClientId = doc.ClientId,
+                            EntityTypeId = doc.EntityTypeId,
+                            StageType = (EnumStageTypes?) y.StageTypeId,
+                            SendType = (EnumSendTypes) y.SendTypeId,
+                            //SourcePositionId = y.SourcePositionId??0,
+                            TargetPositionId = y.TargetPositionId,
+                            TargetAgentId = y.TargetAgentId,
+                            TaskName = y.Task.Task,
+                            IsAvailableWithinTask = y.IsAvailableWithinTask,
+                            IsWorkGroup = y.IsWorkGroup,
+                            IsAddControl = y.IsAddControl,
+                            SelfDueDay = y.SelfDueDay,
+                            SelfDescription = y.SelfDescription,
+                            SelfAttentionDay = y.SelfAttentionDay,
+                            Description = y.Description,
+                            Stage = y.Stage,
+                            DueDay = y.DueDay,
+                            AccessLevel = (EnumDocumentAccesses) y.AccessLevelId,
+                        }).ToList();
 
-                doc.DocumentFiles = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId)
-                    .Select(x => new InternalDocumentAttachedFile
-                    {
-                        Id = x.Id,
-                        ClientId = doc.ClientId,
-                        EntityTypeId = doc.EntityTypeId,
-                        DocumentId = x.DocumentId,
-                        Extension = x.Extention,
-                        Name = x.Name,
-                        FileType = x.FileType,
-                        FileSize = x.FileSize,
-                        OrderInDocument = x.OrderNumber,
-                        Type = (EnumFileTypes)x.TypeId,
-                        Hash = x.Hash,
-                        Description = x.Description,
-                    }).ToList();
-                doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == templateDocumentId)
-                    .Select(y => new InternalDocumentPaper
-                    {
-                        ClientId = doc.ClientId,
-                        EntityTypeId = doc.EntityTypeId,
-                        Name = y.Name,
-                        Description = y.Description,
-                        IsCopy = y.IsCopy,
-                        IsMain = y.IsMain,
-                        IsOriginal = y.IsOriginal,
-                        OrderNumber = y.OrderNumber,
-                        PageQuantity = y.PageQuantity,
-                    }).ToList();
-                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { templateDocumentId } }).ToList();
+                doc.DocumentFiles =
+                    dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == templateDocumentId)
+                        .Select(x => new InternalDocumentAttachedFile
+                        {
+                            Id = x.Id,
+                            ClientId = doc.ClientId,
+                            EntityTypeId = doc.EntityTypeId,
+                            DocumentId = x.DocumentId,
+                            Extension = x.Extention,
+                            Name = x.Name,
+                            FileType = x.FileType,
+                            FileSize = x.FileSize,
+                            OrderInDocument = x.OrderNumber,
+                            Type = (EnumFileTypes) x.TypeId,
+                            Hash = x.Hash,
+                            Description = x.Description,
+                        }).ToList();
+                doc.Papers =
+                    dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == templateDocumentId)
+                        .Select(y => new InternalDocumentPaper
+                        {
+                            ClientId = doc.ClientId,
+                            EntityTypeId = doc.EntityTypeId,
+                            Name = y.Name,
+                            Description = y.Description,
+                            IsCopy = y.IsCopy,
+                            IsMain = y.IsMain,
+                            IsOriginal = y.IsOriginal,
+                            OrderNumber = y.OrderNumber,
+                            PageQuantity = y.PageQuantity,
+                        }).ToList();
+                doc.Properties =
+                    CommonQueries.GetInternalPropertyValues(dbContext, ctx,
+                        new FilterPropertyValue
+                        {
+                            Object = new List<EnumObjects> {EnumObjects.TemplateDocument},
+                            RecordId = new List<int> {templateDocumentId}
+                        }).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -904,7 +1124,8 @@ namespace BL.Database.Documents
 
         public InternalDocument CopyDocumentPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
                     .Where(x => x.Id == documentId)
@@ -914,7 +1135,7 @@ namespace BL.Database.Documents
                         EntityTypeId = x.EntityTypeId,
                         TemplateDocumentId = x.TemplateDocumentId,
                         DocumentTypeId = x.DocumentTypeId,
-                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentDirection = (EnumDocumentDirections) x.DocumentDirectionId,
                         DocumentSubject = x.DocumentSubject,
                         Description = x.Description,
                         SenderAgentId = x.SenderAgentId,
@@ -928,72 +1149,84 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.AccessLevel = (EnumDocumentAccesses)CommonQueries.GetDocumentAccessesesQry(dbContext, documentId, ctx).Max(x => x.AccessLevelId);
+                doc.AccessLevel =
+                    (EnumDocumentAccesses)
+                        CommonQueries.GetDocumentAccessesesQry(dbContext, documentId, ctx).Max(x => x.AccessLevelId);
                 doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.DocumentId == documentId)
-                        .Select(x => new InternalDocumentTask
-                        {
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            Name = x.Task,
-                            Description = x.Description,
-                            PositionId = x.PositionId,
-                        }
-                        ).ToList();
+                    .Where(x => x.DocumentId == documentId)
+                    .Select(x => new InternalDocumentTask
+                    {
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        Name = x.Task,
+                        Description = x.Description,
+                        PositionId = x.PositionId,
+                    }
+                    ).ToList();
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.DocumentId == documentId && x.IsInitial)
-                        .Select(y => new InternalDocumentSendList
-                        {
-                            ClientId = y.ClientId,
-                            EntityTypeId = y.EntityTypeId,
-                            Stage = y.Stage,
-                            StageType = (EnumStageTypes?)y.StageTypeId,
-                            SendType = (EnumSendTypes)y.SendTypeId,
-                            SourcePositionId = y.SourcePositionId,
-                            TargetPositionId = y.TargetPositionId,
-                            TargetAgentId = y.TargetAgentId,
-                            TaskName = y.Task.Task,
-                            IsAvailableWithinTask = y.IsAvailableWithinTask,
-                            IsWorkGroup = y.IsWorkGroup,
-                            IsAddControl = y.IsAddControl,
-                            SelfDescription = y.SelfDescription,
-                            SelfDueDate = y.SelfDueDate,
-                            SelfDueDay = y.SelfDueDay,
-                            SelfAttentionDate = y.SelfAttentionDate,
-                            SelfAttentionDay = y.SelfAttentionDay,
-                            Description = y.Description,
-                            DueDate = y.DueDate,
-                            DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
-                            IsInitial = y.IsInitial,
-                        }).ToList();
-                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == documentId && x.IsInitial)
+                    .Select(y => new InternalDocumentSendList
+                    {
+                        ClientId = y.ClientId,
+                        EntityTypeId = y.EntityTypeId,
+                        Stage = y.Stage,
+                        StageType = (EnumStageTypes?) y.StageTypeId,
+                        SendType = (EnumSendTypes) y.SendTypeId,
+                        SourcePositionId = y.SourcePositionId,
+                        TargetPositionId = y.TargetPositionId,
+                        TargetAgentId = y.TargetAgentId,
+                        TaskName = y.Task.Task,
+                        IsAvailableWithinTask = y.IsAvailableWithinTask,
+                        IsWorkGroup = y.IsWorkGroup,
+                        IsAddControl = y.IsAddControl,
+                        SelfDescription = y.SelfDescription,
+                        SelfDueDate = y.SelfDueDate,
+                        SelfDueDay = y.SelfDueDay,
+                        SelfAttentionDate = y.SelfAttentionDate,
+                        SelfAttentionDay = y.SelfAttentionDay,
+                        Description = y.Description,
+                        DueDate = y.DueDate,
+                        DueDay = y.DueDay,
+                        AccessLevel = (EnumDocumentAccesses) y.AccessLevelId,
+                        IsInitial = y.IsInitial,
+                    }).ToList();
+                doc.RestrictedSendLists =
+                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId)
                         .Select(y => new InternalDocumentRestrictedSendList
                         {
                             ClientId = y.ClientId,
                             EntityTypeId = y.EntityTypeId,
                             PositionId = y.PositionId,
-                            AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                            AccessLevel = (EnumDocumentAccesses) y.AccessLevelId,
                         }).ToList();
                 doc.Papers = dbContext.DocumentPapersSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentPaper
-                        {
-                            ClientId = y.ClientId,
-                            EntityTypeId = y.EntityTypeId,
-                            Name = y.Name,
-                            Description = y.Description,
-                            IsCopy = y.IsCopy,
-                            IsInWork = y.IsInWork,
-                            IsMain = y.IsMain,
-                            IsOriginal = y.IsOriginal,
-                            OrderNumber = y.OrderNumber,
-                            PageQuantity = y.PageQuantity,
-                        }).ToList();
-                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId).Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
+                    .Where(x => x.DocumentId == documentId)
+                    .Select(y => new InternalDocumentPaper
+                    {
+                        ClientId = y.ClientId,
+                        EntityTypeId = y.EntityTypeId,
+                        Name = y.Name,
+                        Description = y.Description,
+                        IsCopy = y.IsCopy,
+                        IsInWork = y.IsInWork,
+                        IsMain = y.IsMain,
+                        IsOriginal = y.IsOriginal,
+                        OrderNumber = y.OrderNumber,
+                        PageQuantity = y.PageQuantity,
+                    }).ToList();
+                doc.DocumentFiles =
+                    CommonQueries.GetInternalDocumentFiles(ctx, dbContext, documentId)
+                        .Where(x => x.Type != EnumFileTypes.SubscribePdf)
+                        .ToList();
 
-                doc.Properties = CommonQueries.GetInternalPropertyValues(dbContext, ctx, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { documentId } }).ToList();
+                doc.Properties =
+                    CommonQueries.GetInternalPropertyValues(dbContext, ctx,
+                        new FilterPropertyValue
+                        {
+                            Object = new List<EnumObjects> {EnumObjects.Documents},
+                            RecordId = new List<int> {documentId}
+                        }).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -1001,7 +1234,8 @@ namespace BL.Database.Documents
 
         public void AddDocument(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
 
@@ -1017,7 +1251,8 @@ namespace BL.Database.Documents
 
                 if (document.RestrictedSendLists != null && document.RestrictedSendLists.Any())
                 {
-                    doc.RestrictedSendLists = ModelConverter.GetDbDocumentRestrictedSendLists(document.RestrictedSendLists).ToList();
+                    doc.RestrictedSendLists =
+                        ModelConverter.GetDbDocumentRestrictedSendLists(document.RestrictedSendLists).ToList();
                 }
 
                 if (document.DocumentFiles != null && document.DocumentFiles.Any())
@@ -1039,14 +1274,14 @@ namespace BL.Database.Documents
                     var sendLists = document.SendLists.ToList();
 
                     sendLists.ForEach(x =>
+                    {
+                        x.DocumentId = doc.Id;
+                        if (document.Tasks?.Any(y => y.Id == 0) ?? false)
                         {
-                            x.DocumentId = doc.Id;
-                            if (document.Tasks?.Any(y => y.Id == 0) ?? false)
-                            {
-                                var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
-                                x.TaskId = (taskId == 0 ? null : (int?)taskId);
-                            }
-                        });
+                            var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
+                            x.TaskId = (taskId == 0 ? null : (int?) taskId);
+                        }
+                    });
                     sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                     dbContext.SaveChanges();
@@ -1071,7 +1306,8 @@ namespace BL.Database.Documents
                     }
                 dbContext.SaveChanges();
                 //TODO Papers
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.AddFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents,
+                    EnumOperationType.AddFull);
                 transaction.Complete();
 
             }
@@ -1079,7 +1315,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ModifyDocumentPrepare(IContext ctx, ModifyDocument model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == model.Id)
@@ -1091,14 +1328,17 @@ namespace BL.Database.Documents
                         ExecutorPositionId = x.ExecutorPositionId,
                         TemplateDocumentId = x.TemplateDocumentId,
                         IsHard = x.TemplateDocument.IsHard,
-                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentDirection = (EnumDocumentDirections) x.DocumentDirectionId,
                         DocumentTypeId = x.DocumentTypeId,
                         IsRegistered = x.IsRegistered,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
                 doc.Accesses = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.Id && x.PositionId == doc.ExecutorPositionId && x.AccessLevelId != model.AccessLevelId)
+                    .Where(
+                        x =>
+                            x.DocumentId == model.Id && x.PositionId == doc.ExecutorPositionId &&
+                            x.AccessLevelId != model.AccessLevelId)
                     .Select(x => new InternalDocumentAccess
                     {
                         Id = x.Id,
@@ -1106,7 +1346,7 @@ namespace BL.Database.Documents
                         EntityTypeId = x.EntityTypeId,
                         DocumentId = x.DocumentId,
                         PositionId = x.PositionId,
-                        AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                        AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
                         IsInWork = x.IsInWork,
                     }).ToList();
                 transaction.Complete();
@@ -1114,9 +1354,11 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath)
+        public void ModifyDocument(IContext ctx, InternalDocument document, bool isUseInternalSign,
+            bool isUseCertificateSign, string serverMapPath)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
                 dbContext.DocumentsSet.Attach(doc);
@@ -1155,8 +1397,10 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
 
-                CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null, serverMapPath, false, false);//TODO ЗАЧЕМ ТУТ ЭТО?
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.GetDocumentHash(dbContext, ctx, document.Id, isUseInternalSign, isUseCertificateSign, null,
+                    serverMapPath, false, false); //TODO ЗАЧЕМ ТУТ ЭТО?
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents,
+                    EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1164,7 +1408,8 @@ namespace BL.Database.Documents
 
         public InternalDocument DeleteDocumentPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == documentId)
@@ -1190,30 +1435,55 @@ namespace BL.Database.Documents
 
         public void DeleteDocument(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
 
                 //ADD OTHER TABLES!!!!
-                dbContext.DocumentPapersSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id).ToList()  //TODO OPTIMIZE
-                .ForEach(x =>
-                {
-                    x.LastPaperEventId = null;
-                });
+                dbContext.DocumentPapersSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == id)
+                    .ToList() //TODO OPTIMIZE
+                    .ForEach(x =>
+                    {
+                        x.LastPaperEventId = null;
+                    });
                 //TODO придумать с удалением для полнотекста
-                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
+                dbContext.DocumentEventsSet.RemoveRange(
+                    dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
                 dbContext.SaveChanges();
-                dbContext.DocumentTagsSet.RemoveRange(dbContext.DocumentTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
-                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
-                dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
-                dbContext.DocumentRestrictedSendListsSet.RemoveRange(dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
-                dbContext.DocumentSendListsSet.RemoveRange(dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
-                dbContext.DocumentTasksSet.RemoveRange(dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
+                dbContext.DocumentTagsSet.RemoveRange(
+                    dbContext.DocumentTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentAccessesSet.RemoveRange(
+                    dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentFilesSet.RemoveRange(
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentRestrictedSendListsSet.RemoveRange(
+                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentSendListsSet.RemoveRange(
+                    dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentTasksSet.RemoveRange(
+                    dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
 
-                dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == id));
+                dbContext.DocumentPapersSet.RemoveRange(
+                    dbContext.DocumentPapersSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == id));
 
-                CommonQueries.DeletePropertyValues(dbContext, ctx, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.Documents }, RecordId = new List<int> { id } });
+                CommonQueries.DeletePropertyValues(dbContext, ctx,
+                    new FilterPropertyValue
+                    {
+                        Object = new List<EnumObjects> {EnumObjects.Documents},
+                        RecordId = new List<int> {id}
+                    });
 
-                dbContext.DocumentsSet.RemoveRange(dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == id));
+                dbContext.DocumentsSet.RemoveRange(
+                    dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == id));
 
                 dbContext.SaveChanges();
 
@@ -1223,11 +1493,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument RegisterDocumentPrepare(IContext context, RegisterDocumentBase model)
+        public InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocumentBase model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, context, null, false, true, true)
+                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalDocument
                     {
@@ -1246,15 +1517,15 @@ namespace BL.Database.Documents
                         LinkId = x.LinkId,
 
                         DocumentTypeId = x.DocumentTypeId,
-                        DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
+                        DocumentDirection = (EnumDocumentDirections) x.DocumentDirectionId,
                     }).FirstOrDefault();
 
                 if (doc == null)
                 {
                     return null;
                 }
-                var strDocumentDirection = ((int)doc.DocumentDirection).ToString();
-                doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.CurrentClientId)
+                var strDocumentDirection = ((int) doc.DocumentDirection).ToString();
+                doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == model.DocumentId && x.SubscriptionState.IsSuccess)
                     .Select(x => new InternalDocumentSubscription
                     {
@@ -1270,13 +1541,18 @@ namespace BL.Database.Documents
                             SourcePositionId = x.DoneEvent.SourcePositionId,
                         }
                     }).ToList();
-                var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
-                    .Where(x => x.Id == model.RegistrationJournalId)
-                    .Where(x => x.DirectionCodes.Contains(strDocumentDirection))
-                    .Where(x => dbContext.AdminRegistrationJournalPositionsSet
-                                            .Where(y => y.PositionId == context.CurrentPositionId && y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
-                                            .Select(y => y.RegJournalId).Contains(x.Id))
-                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula }).FirstOrDefault();
+                var regJournal =
+                    dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.Id == model.RegistrationJournalId)
+                        .Where(x => x.DirectionCodes.Contains(strDocumentDirection))
+                        .Where(x => dbContext.AdminRegistrationJournalPositionsSet
+                            .Where(
+                                y =>
+                                    y.PositionId == ctx.CurrentPositionId &&
+                                    y.RegJournalAccessTypeId == (int) EnumRegistrationJournalAccessTypes.Registration)
+                            .Select(y => y.RegJournalId).Contains(x.Id))
+                        .Select(x => new {x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula})
+                        .FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -1294,11 +1570,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext context, RegisterDocumentBase model)
+        public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext ctx, RegisterDocumentBase model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.DocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                var doc = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new
                     {
@@ -1307,13 +1584,13 @@ namespace BL.Database.Documents
                         SenderAgentId = x.SenderAgentId,
                         ExecutorPositionDepartmentCode = x.ExecutorPosition.Department.Code,
                         SubscriptionsPositionDepartmentCode = x.Subscriptions
-                                        .Where(y => y.SubscriptionStateId == (int)EnumSubscriptionStates.Sign)
-                                        .OrderBy(y => y.LastChangeDate).Take(1)
-                                        .Select(y => y.DoneEvent.SourcePosition.Department.Code).FirstOrDefault(),
+                            .Where(y => y.SubscriptionStateId == (int) EnumSubscriptionStates.Sign)
+                            .OrderBy(y => y.LastChangeDate).Take(1)
+                            .Select(y => y.DoneEvent.SourcePosition.Department.Code).FirstOrDefault(),
                         DocumentSendListLastAgentExternalFirstSymbolName = x.SendLists
-                                        .Where(y => y.SendTypeId == (int)EnumSendTypes.SendForInformationExternal)
-                                        .OrderByDescending(y => y.LastChangeDate).Take(1)
-                                        .Select(y => y.TargetAgent.Name).FirstOrDefault()
+                            .Where(y => y.SendTypeId == (int) EnumSendTypes.SendForInformationExternal)
+                            .OrderByDescending(y => y.LastChangeDate).Take(1)
+                            .Select(y => y.TargetAgent.Name).FirstOrDefault()
                     }).FirstOrDefault();
 
                 if (doc == null)
@@ -1326,20 +1603,34 @@ namespace BL.Database.Documents
                     ExecutorPositionDepartmentCode = doc.ExecutorPositionDepartmentCode,
                     RegistrationDate = model.RegistrationDate,
                     SubscriptionsPositionDepartmentCode = doc.SubscriptionsPositionDepartmentCode,
-                    DocumentSendListLastAgentExternalFirstSymbolName = doc.DocumentSendListLastAgentExternalFirstSymbolName
+                    DocumentSendListLastAgentExternalFirstSymbolName =
+                        doc.DocumentSendListLastAgentExternalFirstSymbolName
                 };
 
                 if (!string.IsNullOrEmpty(res.DocumentSendListLastAgentExternalFirstSymbolName))
-                    res.DocumentSendListLastAgentExternalFirstSymbolName = res.DocumentSendListLastAgentExternalFirstSymbolName.Substring(0, 1);
+                    res.DocumentSendListLastAgentExternalFirstSymbolName =
+                        res.DocumentSendListLastAgentExternalFirstSymbolName.Substring(0, 1);
 
                 //TODO ??? если doc.LinkId==null || doc.SenderAgentId ==null
-                res.OrdinalNumberDocumentLinkForCorrespondent = dbContext.DocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
-                        .Where(x => x.LinkId == doc.LinkId && x.SenderAgentId == doc.SenderAgentId && x.IsRegistered == true)
-                        .Count() + 1;
+                res.OrdinalNumberDocumentLinkForCorrespondent = dbContext.DocumentsSet.Where(
+                    x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.LinkId == doc.LinkId && x.SenderAgentId == doc.SenderAgentId && x.IsRegistered == true)
+                    .Count() + 1;
 
-                var regJournal = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.CurrentClientId)
-                    .Where(x => x.Id == model.RegistrationJournalId)
-                    .Select(x => new { x.Id, x.NumerationPrefixFormula, x.PrefixFormula, x.SuffixFormula, x.Index, RegistrationJournalDepartmentCode = x.Department.Code }).FirstOrDefault();
+                var regJournal =
+                    dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.Id == model.RegistrationJournalId)
+                        .Select(
+                            x =>
+                                new
+                                {
+                                    x.Id,
+                                    x.NumerationPrefixFormula,
+                                    x.PrefixFormula,
+                                    x.SuffixFormula,
+                                    x.Index,
+                                    RegistrationJournalDepartmentCode = x.Department.Code
+                                }).FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -1352,7 +1643,7 @@ namespace BL.Database.Documents
                     res.RegistrationJournalId = null;
                 }
 
-                var initiativeDoc = dbContext.DocumentLinksSet.Where(x => x.ClientId == context.CurrentClientId)
+                var initiativeDoc = dbContext.DocumentLinksSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == doc.DocumentId)
                     .OrderBy(x => x.LastChangeDate)
                     .Select(x => x.ParentDocument)
@@ -1378,8 +1669,10 @@ namespace BL.Database.Documents
                     res.InitiativeRegistrationSenderNumber = initiativeDoc.SenderNumber;
                 }
 
-                res.CurrentPositionDepartmentCode = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId).Where(x => x.Id == model.CurrentPositionId)
-                    .Select(x => x.Department.Code).FirstOrDefault();
+                res.CurrentPositionDepartmentCode =
+                    dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.Id == model.CurrentPositionId)
+                        .Select(x => x.Department.Code).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
@@ -1387,7 +1680,8 @@ namespace BL.Database.Documents
 
         public void RegisterDocument(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
                 dbContext.DocumentsSet.Attach(doc);
@@ -1413,26 +1707,30 @@ namespace BL.Database.Documents
                 }
                 else
                 {
-                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == document.Id && x.EventTypeId == (int)EnumEventTypes.Registered));
+                    dbContext.DocumentEventsSet.RemoveRange(
+                        dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.DocumentId == document.Id && x.EventTypeId == (int) EnumEventTypes.Registered));
                 }
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents,
+                    EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
 
         public void GetNextDocumentRegistrationNumber(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 //get next number
                 var maxNumber = (from docreg in dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                                 where docreg.RegistrationJournalId == document.RegistrationJournalId
-                                       && docreg.NumerationPrefixFormula == document.NumerationPrefixFormula
-                                       && docreg.Id != document.Id
-                                 select docreg.RegistrationNumber).Max();
+                    where docreg.RegistrationJournalId == document.RegistrationJournalId
+                          && docreg.NumerationPrefixFormula == document.NumerationPrefixFormula
+                          && docreg.Id != document.Id
+                    select docreg.RegistrationNumber).Max();
                 document.RegistrationNumber = (maxNumber ?? 0) + 1;
                 transaction.Complete();
             }
@@ -1440,13 +1738,14 @@ namespace BL.Database.Documents
 
         public bool VerifyDocumentRegistrationNumber(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = !dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                                .Any(x => x.RegistrationJournalId == document.RegistrationJournalId
-                                         && x.NumerationPrefixFormula == document.NumerationPrefixFormula
-                                         && x.RegistrationNumber == document.RegistrationNumber
-                                         && x.Id != document.Id);
+                    .Any(x => x.RegistrationJournalId == document.RegistrationJournalId
+                              && x.NumerationPrefixFormula == document.NumerationPrefixFormula
+                              && x.RegistrationNumber == document.RegistrationNumber
+                              && x.Id != document.Id);
                 transaction.Complete();
                 return res;
             }
@@ -1454,7 +1753,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ChangeExecutorDocumentPrepare(IContext ctx, ChangeExecutor model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == model.DocumentId)
@@ -1468,7 +1768,10 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && x.TypeId == (int)EnumFileTypes.Main)// !x.IsAdditional)
+                    .Where(
+                        x =>
+                            x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId &&
+                            x.TypeId == (int) EnumFileTypes.Main) // !x.IsAdditional)
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,
@@ -1483,14 +1786,15 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                     }).ToList();
-                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.DocumentId)
-                    .Select(x => new InternalDocumentRestrictedSendList
-                    {
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        PositionId = x.PositionId,
-                    }).ToList();
+                doc.RestrictedSendLists =
+                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == model.DocumentId)
+                        .Select(x => new InternalDocumentRestrictedSendList
+                        {
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
+                            PositionId = x.PositionId,
+                        }).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -1498,7 +1802,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ChangePositionDocumentPrepare(IContext ctx, ChangePosition model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == model.DocumentId)
@@ -1512,7 +1817,10 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId && x.TypeId == (int)EnumFileTypes.Main) //!x.IsAdditional)
+                    .Where(
+                        x =>
+                            x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId &&
+                            x.TypeId == (int) EnumFileTypes.Main) //!x.IsAdditional)
                     .Select(x => new InternalDocumentAttachedFile
                     {
                         Id = x.Id,
@@ -1534,7 +1842,8 @@ namespace BL.Database.Documents
 
         public void ChangeExecutorDocument(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
                 dbContext.DocumentsSet.Attach(doc);
@@ -1561,11 +1870,13 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
 
-                if (document.Papers != null && document.Papers.Any(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null))
+                if (document.Papers != null &&
+                    document.Papers.Any(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null))
                 {
                     foreach (
                         var paper in
-                            document.Papers.Where(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null).ToList())
+                            document.Papers.Where(x => !x.LastPaperEventId.HasValue && x.LastPaperEvent != null)
+                                .ToList())
                     {
                         var paperEventDb = ModelConverter.GetDbDocumentEvent(paper.LastPaperEvent);
                         dbContext.DocumentEventsSet.Add(paperEventDb);
@@ -1609,7 +1920,8 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
                 CommonQueries.ModifyDocumentAccessesStatistics(dbContext, ctx, document.Id);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, document.Id, EnumObjects.Documents,
+                    EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -1617,57 +1929,82 @@ namespace BL.Database.Documents
 
         public void ChangePositionDocument(IContext ctx, ChangePosition model, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
+                dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.Id == model.DocumentId && x.ExecutorPositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.ExecutorPositionId = model.NewPositionId;
                         //TODO исполнители по должности!!!
                     });
-                dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId).ToList()
+                dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.ExecutorPositionId = model.NewPositionId;
                     });
-                dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentTasksSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
                     });
-                dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.SourcePositionId = model.NewPositionId;
                     });
-                dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.TargetPositionId = model.NewPositionId;
                     });
-                dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId).ToList()
+                dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.SourcePositionId = model.NewPositionId;
                     });
-                dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId).ToList()
+                dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.TargetPositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.TargetPositionId = model.NewPositionId;
                     });
-                dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
                     });
-                dbContext.DocumentAccessesSet.RemoveRange(dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
-                dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentAccessesSet.RemoveRange(
+                    dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
                     });
-                dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
-                dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId).ToList()
+                dbContext.DocumentTaskAccessesSet.RemoveRange(
+                    dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                        .Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
+                dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.Task.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
+                    .ToList()
                     .ForEach(x =>
                     {
                         x.PositionId = model.NewPositionId;
@@ -1675,7 +2012,8 @@ namespace BL.Database.Documents
 
                 if (document.Events != null && document.Events.Any(x => x.Id == 0))
                 {
-                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
+                    dbContext.DocumentEventsSet.AddRange(
+                        ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
                 }
 
                 dbContext.SaveChanges();
@@ -1688,7 +2026,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ChangeIsLaunchPlanDocumentPrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, true, true, true)
                     .Where(x => x.Id == documentId)
@@ -1702,14 +2041,14 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc == null) return null;
                 doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                                    .Where(x => x.DocumentId == documentId)
-                                    .Select(x => new InternalDocumentSendList
-                                    {
-                                        Id = x.Id,
-                                        ClientId = x.ClientId,
-                                        EntityTypeId = x.EntityTypeId,
-                                    }
-                                    ).ToList();
+                    .Where(x => x.DocumentId == documentId)
+                    .Select(x => new InternalDocumentSendList
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                    }
+                    ).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -1717,7 +2056,8 @@ namespace BL.Database.Documents
 
         public void ChangeIsLaunchPlanDocument(IContext ctx, InternalDocument document)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
                 dbContext.DocumentsSet.Attach(doc);
@@ -1735,28 +2075,13 @@ namespace BL.Database.Documents
             }
         }
 
-        //public InternalDocument GetBlankInternalDocumentById(IContext ctx, int documentId)
-        //{
-        //    using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var doc = CommonQueries.GetDocumentQuery(dbContext, ctx)
-        //            .Where(x => x.Id == documentId)
-        //            .Select(x => new InternalDocument
-        //            {
-        //                Id = x.Id,
-        //                ExecutorPositionId = x.ExecutorPositionId
-        //            }).FirstOrDefault();
-        //        transaction.Complete();
-        //        return doc;
-        //    }
-        //}
-
-
         #region DocumentPapers
 
-        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter, UIPaging paging)
+        public IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext ctx, FilterDocumentPaper filter,
+            UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentPapers(dbContext, ctx, filter, paging);
                 transaction.Complete();
@@ -1766,20 +2091,26 @@ namespace BL.Database.Documents
 
         public FrontDocumentPaper GetDocumentPaper(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper { Id = new List<int> { id } }, null).FirstOrDefault();
+                var res =
+                    CommonQueries.GetDocumentPapers(dbContext, ctx, new FilterDocumentPaper {Id = new List<int> {id}},
+                        null).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
         }
+
         #endregion DocumentPapers   
 
         #region DocumentPaperLists
 
-        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter, UIPaging paging)
+        public IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext ctx, FilterDocumentPaperList filter,
+            UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentPaperLists(dbContext, ctx, filter, paging);
                 transaction.Complete();
@@ -1789,33 +2120,43 @@ namespace BL.Database.Documents
 
         public FrontDocumentPaperList GetDocumentPaperList(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentPaperLists(dbContext, ctx, new FilterDocumentPaperList { PaperListId = new List<int> { id } }, null).FirstOrDefault();
+                var res =
+                    CommonQueries.GetDocumentPaperLists(dbContext, ctx,
+                        new FilterDocumentPaperList {PaperListId = new List<int> {id}}, null).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
         }
+
         #endregion DocumentPaperLists   
 
         #region DocumentAccesses
 
-        public IEnumerable<InternalDocumentAccess> CheckIsInWorkForControlsPrepare(IContext ctx, FilterDocumentAccess filter)
+        public IEnumerable<InternalDocumentAccess> CheckIsInWorkForControlsPrepare(IContext ctx,
+            FilterDocumentAccess filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, filter, true)
-                    .Where(x=>!x.IsInWork && x.CountWaits > 0 );
+                    .Where(x => !x.IsInWork && x.CountWaits > 0);
 
-                var res = qry.Select(x=>new InternalDocumentAccess { DocumentId = x.DocumentId, PositionId = x.PositionId}).ToList();
+                var res =
+                    qry.Select(x => new InternalDocumentAccess {DocumentId = x.DocumentId, PositionId = x.PositionId})
+                        .ToList();
                 transaction.Complete();
                 return res;
             }
         }
 
-        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filter, UIPaging paging)
+        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext ctx, FilterDocumentAccess filter,
+            UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentAccessesQuery(ctx, dbContext, filter);
                 qry = qry.OrderByDescending(x => x.DocumentId);
@@ -1831,7 +2172,7 @@ namespace BL.Database.Documents
                     }
                     if (!paging.IsAll)
                     {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var skip = paging.PageSize*(paging.CurrentPage - 1);
                         var take = paging.PageSize;
                         qry = qry.Skip(() => skip).Take(() => take);
                     }
@@ -1841,18 +2182,18 @@ namespace BL.Database.Documents
                     throw new WrongAPIParameters();
                 }
                 var res = qry.Select(acc => new FrontDocumentAccess
-                    {
-                        Id = acc.Id,
-                        PositionId = acc.PositionId,
-                        IsInWork = acc.IsInWork,
-                        DocumentId = acc.DocumentId,
-                        IsFavourite = acc.IsFavourite,
-                        AccessLevelId = acc.AccessLevelId,
-                        AccessLevelName = acc.AccessLevel.Name,
-                        CountNewEvents = acc.CountNewEvents,
-                        CountWaits = acc.CountWaits,
-                        OverDueCountWaits = acc.OverDueCountWaits,
-                    }).ToList();
+                {
+                    Id = acc.Id,
+                    PositionId = acc.PositionId,
+                    IsInWork = acc.IsInWork,
+                    DocumentId = acc.DocumentId,
+                    IsFavourite = acc.IsFavourite,
+                    AccessLevelId = acc.AccessLevelId,
+                    AccessLevelName = acc.AccessLevel.Name,
+                    CountNewEvents = acc.CountNewEvents,
+                    CountWaits = acc.CountWaits,
+                    OverDueCountWaits = acc.OverDueCountWaits,
+                }).ToList();
                 transaction.Complete();
                 return res;
             }
@@ -1862,7 +2203,8 @@ namespace BL.Database.Documents
 
         public IEnumerable<InternalDocumentEvent> GetEventsNatively(IContext ctx, FilterDocumentEventNatively filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetEventsNativelyQuery(ctx, dbContext, filter);
 
@@ -1889,7 +2231,8 @@ namespace BL.Database.Documents
 
         public bool ExistsEventsNatively(IContext ctx, FilterDocumentEventNatively filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetEventsNativelyQuery(ctx, dbContext, filter);
 

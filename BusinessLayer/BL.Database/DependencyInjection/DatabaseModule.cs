@@ -1,5 +1,6 @@
 ﻿using BL.Database.Admins;
 using BL.Database.Admins.Interfaces;
+using BL.Database.DatabaseContext;
 using BL.Database.Dictionaries;
 using BL.Database.Documents;
 using BL.Database.Documents.Interfaces;
@@ -23,6 +24,7 @@ namespace BL.Database.DependencyInjection
             RegistrateEncryptionProcess();
 
             Bind<DmsReport>().ToSelf().InSingletonScope();
+            Bind<DmsContext>().ToSelf();
         }
 
         private void RegistrateDocumentProcess()

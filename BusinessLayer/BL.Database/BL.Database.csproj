@@ -260,7 +260,6 @@
     <Compile Include="Admins\AdminsDbProcess.cs" />
     <Compile Include="Dictionaries\DictionariesDbProcess.cs" />
     <Compile Include="Common\CommonQueries.cs" />
-    <Compile Include="Documents\IDocumentSendListService.cs" />
     <Compile Include="Encryption\EncryptionDbProcess.cs" />
     <Compile Include="Encryption\Interfaces\IEncryptionDbProcess.cs" />
     <Compile Include="Documents\DocumentFileDbProcess.cs" />

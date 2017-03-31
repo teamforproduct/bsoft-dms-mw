@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using BL.Database.DatabaseContext;
+using Ninject;
+using Ninject.Parameters;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -104,6 +107,7 @@ namespace DMS_WebAPI.Utilities
             foreach (var db in dbs)
             {
                 var ctx = new AdminContext(db);
+                ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
                 docProc.GetCountDocuments(ctx, licence);
             }
 

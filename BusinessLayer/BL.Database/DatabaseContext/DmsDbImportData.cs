@@ -2,16 +2,12 @@
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
 using BL.Model.Common;
-using BL.Model.Constants;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
-using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Database.DatabaseContext
 {

@@ -20,7 +20,8 @@ namespace BL.Database.Documents
     {
         public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
                 transaction.Complete();
@@ -30,7 +31,8 @@ namespace BL.Database.Documents
 
         public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(
@@ -76,7 +78,7 @@ namespace BL.Database.Documents
                             Id = x.Id,
                             ClientId = x.ClientId,
                             EntityTypeId = x.EntityTypeId,
-                            PdfCreated = x.IsPdfCreated??false,
+                            PdfCreated = x.IsPdfCreated ?? false,
                             LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue
                         }).FirstOrDefault();
             }
@@ -84,7 +86,8 @@ namespace BL.Database.Documents
 
         public InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
                                     .Where(x => x.Id == documentId)
@@ -132,7 +135,8 @@ namespace BL.Database.Documents
         }
         public InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
                                     .Where(x => x.Id == documentId)
@@ -174,7 +178,8 @@ namespace BL.Database.Documents
 
         public InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
                     .Where(x => x.Id == documentId)
@@ -207,7 +212,8 @@ namespace BL.Database.Documents
 
         public int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
 
                 if (docFile.IsMainVersion)
@@ -244,7 +250,8 @@ namespace BL.Database.Documents
 
         public void UpdateFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 if (docFile.IsMainVersion)
                 {
@@ -285,18 +292,19 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
                 }
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull); 
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
 
         public IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-               var res = dbContext.DocumentFilesSet.Where(x=>x.IsPdfCreated.HasValue && x.IsPdfCreated.Value 
-               && (!x.LastPdfAccessDate.HasValue || Math.Abs(DbFunctions.DiffDays(DateTime.Now, x.LastPdfAccessDate.Value)??0)> pdfAge))
-               .Select(x => new InternalDocumentAttachedFile
+                var res = dbContext.DocumentFilesSet.Where(x => x.IsPdfCreated.HasValue && x.IsPdfCreated.Value
+                && (!x.LastPdfAccessDate.HasValue || Math.Abs(DbFunctions.DiffDays(DateTime.Now, x.LastPdfAccessDate.Value) ?? 0) > pdfAge))
+                .Select(x => new InternalDocumentAttachedFile
                 {
                     Id = x.Id,
                     ClientId = x.ClientId,
@@ -304,7 +312,7 @@ namespace BL.Database.Documents
                     ExecutorPositionId = x.ExecutorPositionId,
                     Name = x.Name,
                     Extension = x.Extension,
-                    Type = (EnumFileTypes) x.TypeId,
+                    Type = (EnumFileTypes)x.TypeId,
                     IsMainVersion = x.IsMainVersion,
                     Version = x.Version,
                     IsDeleted = x.IsDeleted,
@@ -318,7 +326,8 @@ namespace BL.Database.Documents
 
         public void UpdateFilePdfView(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Attach(fl);
@@ -332,7 +341,8 @@ namespace BL.Database.Documents
 
         public void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 int? documentId = null;
                 foreach (var docFile in docFiles)
@@ -361,7 +371,8 @@ namespace BL.Database.Documents
 
         public InternalDocument DeleteDocumentFilePrepare(IContext ctx, FilterDocumentFileIdentity flIdent)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
                     .Where(x => x.Id == flIdent.DocumentId)
@@ -408,7 +419,8 @@ namespace BL.Database.Documents
         /// <param name="docFile"> should be filled DocumentId and OrderInDocument fields</param>
         public void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
                 {
@@ -454,7 +466,8 @@ namespace BL.Database.Documents
 
         public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = -1;
                 if (dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
@@ -471,7 +484,8 @@ namespace BL.Database.Documents
 
         public int GetNextFileOrderNumber(IContext ctx, int documentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                         .Where(x => x.DocumentId == documentId).OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault() + 1;
@@ -482,7 +496,8 @@ namespace BL.Database.Documents
 
         public int GetFileNextVersion(IContext ctx, int documentId, int fileOrder)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId && x.OrderNumber == fileOrder).OrderByDescending(x => x.Version).Select(x => x.Version).FirstOrDefault() + 1;
                 transaction.Complete();

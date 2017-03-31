@@ -42,29 +42,28 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetSystemUIElements(IContext ctx, FilterSystemUIElement filter)
         {
-
-
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemUIElementsSet.AsQueryable();
 
                 if (filter.UIElementId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    var filterContains = PredicateBuilder.New<SystemUIElements>(false);
                     filterContains = filter.UIElementId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ActionId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    var filterContains = PredicateBuilder.New<SystemUIElements>(false);
                     filterContains = filter.ActionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ActionId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ObjectId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemUIElements>();
+                    var filterContains = PredicateBuilder.New<SystemUIElements>(false);
                     filterContains = filter.ObjectId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -112,7 +111,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemFormatsSet.AsQueryable();
 
@@ -132,7 +132,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontSystemFormula> GetSystemFormulas(IContext ctx, FilterSystemFormula filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemFormulasSet.AsQueryable();
 
@@ -152,7 +153,8 @@ namespace BL.Database.SystemDb
         }
         public IEnumerable<FrontSystemPattern> GetSystemPatterns(IContext ctx, FilterSystemPattern filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemPatternsSet.AsQueryable();
 
@@ -171,7 +173,8 @@ namespace BL.Database.SystemDb
         }
         public IEnumerable<FrontSystemValueType> GetSystemValueTypes(IContext ctx, FilterSystemValueType filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemValueTypesSet.AsQueryable();
 
@@ -191,7 +194,8 @@ namespace BL.Database.SystemDb
 
         public int AddSystemDate(IContext ctx, DateTime date)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new SystemDate
                 {
@@ -208,7 +212,8 @@ namespace BL.Database.SystemDb
 
         public DateTime GetSystemDate(IContext ctx)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.SystemDateSet.ToList();
 
@@ -223,9 +228,10 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void RefreshModuleFeature(IContext context)
+        public void RefreshModuleFeature(IContext ctx)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminRolePermissionsSet.Delete();
 
@@ -268,8 +274,8 @@ namespace BL.Database.SystemDb
                     dbContext.SaveChanges();
                 }
                 transaction.Complete();
-                _cacheService.RefreshKey(context, SettingConstants.PERMISSION_CASHE_KEY);
-                _cacheService.RefreshKey(context, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+                _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_CASHE_KEY);
+                _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
             }
 
         }
@@ -278,11 +284,12 @@ namespace BL.Database.SystemDb
 
         #region [+] Logs ...
 
-        public IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging)
+        public IEnumerable<FrontSystemLog> GetSystemLogs(IContext ctx, FilterSystemLog filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemLogsQuery(context, dbContext, filter);
+                var qry = GetSystemLogsQuery(ctx, dbContext, filter);
 
                 qry = qry.OrderByDescending(x => x.LogDate);
 
@@ -313,13 +320,14 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging)
+        public IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext ctx, FilterSystemSearchQueryLog filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter);
+                var qry = GetSystemSearchQueryLogsQuery(ctx, dbContext, filter);
 
-                var qryT = qry.GroupBy(x => x.SearchQueryText).Select(x => new FrontSearchQueryLog { SearchQueryText = x.Key, IsOwn = x.Any(y => y.LastChangeUserId == context.CurrentAgentId) });
+                var qryT = qry.GroupBy(x => x.SearchQueryText).Select(x => new FrontSearchQueryLog { SearchQueryText = x.Key, IsOwn = x.Any(y => y.LastChangeUserId == ctx.CurrentAgentId) });
 
                 qryT = qryT.OrderByDescending(x => x.IsOwn).ThenBy(x => x.SearchQueryText.Length).ThenBy(x => x.SearchQueryText);
 
@@ -332,27 +340,29 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter)
+        public void DeleteSystemSearchQueryLogsForCurrentUser(IContext ctx, FilterSystemSearchQueryLog filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemSearchQueryLogsQuery(context, dbContext, filter).Where(x => x.LastChangeUserId == context.CurrentAgentId);
+                var qry = GetSystemSearchQueryLogsQuery(ctx, dbContext, filter).Where(x => x.LastChangeUserId == ctx.CurrentAgentId);
                 dbContext.SystemSearchQueryLogsSet.RemoveRange(qry);
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
 
-        public FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context)
+        public FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext ctx)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
+                var qry = GetSystemLogsQuery(ctx, dbContext, new FilterSystemLog
                 {
-                    NotContainsIDs = new List<int> { context.LoginLogId.HasValue ? context.LoginLogId.Value : 0 },
+                    NotContainsIDs = new List<int> { ctx.LoginLogId.HasValue ? ctx.LoginLogId.Value : 0 },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
-                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
                     LogLevels = new List<int> { (int)EnumLogTypes.Information },
                 });
                 qry = qry.OrderByDescending(x => x.LogDate);
@@ -361,15 +371,16 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public FrontAgentEmployeeUser GetLastErrorLoginInfo(IContext context, DateTime? dateFrom)
+        public FrontAgentEmployeeUser GetLastErrorLoginInfo(IContext ctx, DateTime? dateFrom)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemLogsQuery(context, dbContext, new FilterSystemLog
+                var qry = GetSystemLogsQuery(ctx, dbContext, new FilterSystemLog
                 {
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
-                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
                     LogLevels = new List<int> { (int)EnumLogTypes.Error },
                 });
                 if (dateFrom != null)
@@ -389,9 +400,9 @@ namespace BL.Database.SystemDb
             }
         }
 
-        private IQueryable<SystemSearchQueryLogs> GetSystemSearchQueryLogsQuery(IContext context, DmsContext dbContext, FilterSystemSearchQueryLog filter)
+        private IQueryable<SystemSearchQueryLogs> GetSystemSearchQueryLogsQuery(IContext ctx, DmsContext dbContext, FilterSystemSearchQueryLog filter)
         {
-            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -447,9 +458,9 @@ namespace BL.Database.SystemDb
             return qry;
         }
 
-        private IQueryable<SystemLogs> GetSystemLogsQuery(IContext context, DmsContext dbContext, FilterSystemLog filter)
+        private IQueryable<SystemLogs> GetSystemLogsQuery(IContext ctx, DmsContext dbContext, FilterSystemLog filter)
         {
-            var qry = dbContext.LogSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.LogSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -522,7 +533,7 @@ namespace BL.Database.SystemDb
                 {
                     var filterContains = PredicateBuilder.True<SystemLogs>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
-                                .Aggregate(filterContains, (current, value) => current.And(e => (e.Message +" "+e.Agent.Name).Contains(value)).Expand());
+                                .Aggregate(filterContains, (current, value) => current.And(e => (e.Message + " " + e.Agent.Name).Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
 
@@ -554,7 +565,8 @@ namespace BL.Database.SystemDb
 
         public int AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var nlog = new SystemSearchQueryLogs
                 {
@@ -579,9 +591,11 @@ namespace BL.Database.SystemDb
             }
         }
 
+        // ONE CONTEXT - logger could be called everywhere so we do not need to use here one context.
         public int AddLog(IContext ctx, InternalLog log)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = Transactions.GetTransaction())
             {
                 var nlog = new SystemLogs
                 {
@@ -612,9 +626,10 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void UpdateLogDate1(IContext context, int id, DateTime datetime)
+        public void UpdateLogDate1(IContext ctx, int id, DateTime datetime)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.LogSet.Where(x => x.Id == id).Update(x => new SystemLogs { LogDate1 = datetime });
                 transaction.Complete();
@@ -628,7 +643,8 @@ namespace BL.Database.SystemDb
         public int MergeSetting(IContext ctx, InternalSystemSetting model)
         {
             var res = 0;
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == model.Key);
                 if (cset == null)
@@ -671,7 +687,8 @@ namespace BL.Database.SystemDb
         public string GetSettingValue(IContext ctx, FilterSystemSetting filter)
         {
             var res = string.Empty;
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 if (filter.AgentId.HasValue)
                 {
@@ -701,7 +718,8 @@ namespace BL.Database.SystemDb
         /// <returns></returns>
         public IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSettingsQuery(ctx, dbContext, filter);
 
@@ -729,7 +747,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSettingsQuery(ctx, dbContext, filter);
 
@@ -749,9 +768,9 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IQueryable<SystemSettings> GetSettingsQuery(IContext context, DmsContext dbContext, FilterSystemSetting filter)
+        public IQueryable<SystemSettings> GetSettingsQuery(IContext ctx, DmsContext dbContext, FilterSystemSetting filter)
         {
-            var qry = dbContext.SettingsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.SettingsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -785,27 +804,28 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region [+] SystemObjects ...
-        public void AddSystemObject(IContext context, InternalSystemObject item)
+        public void AddSystemObject(IContext ctx, InternalSystemObject item)
         {
-            AddSystemObject(context, SystemModelConverter.GetDbSystemObject(context, item));
+            AddSystemObject(ctx, SystemModelConverter.GetDbSystemObject(ctx, item));
         }
 
-        public void UpdateSystemObject(IContext context, InternalSystemObject item)
+        public void UpdateSystemObject(IContext ctx, InternalSystemObject item)
         {
-            UpdateSystemObject(context, SystemModelConverter.GetDbSystemObject(context, item));
+            UpdateSystemObject(ctx, SystemModelConverter.GetDbSystemObject(ctx, item));
         }
 
-        public void DeleteSystemObjects(IContext context, FilterSystemObject filter)
+        public void DeleteSystemObjects(IContext ctx, FilterSystemObject filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemObjectsQuery(context, dbContext, filter);
+                var qry = GetSystemObjectsQuery(ctx, dbContext, filter);
 
                 var objects = qry.Select(x => x.Id).ToList();
 
                 if (objects.Count > 0)
                 {
-                    DeleteSystemActions(context, new FilterSystemAction() { ObjectIDs = objects });
+                    DeleteSystemActions(ctx, new FilterSystemAction() { ObjectIDs = objects });
 
                     qry.Delete();
                 }
@@ -813,9 +833,9 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void AddSystemObject(IContext context, SystemObjects item)
+        public void AddSystemObject(IContext ctx, SystemObjects item)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemObjects] ON");
 
@@ -833,9 +853,10 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void UpdateSystemObject(IContext context, SystemObjects item)
+        public void UpdateSystemObject(IContext ctx, SystemObjects item)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.SystemObjectsSet.Attach(item);
                 dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
@@ -844,11 +865,12 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IEnumerable<FrontSystemObject> GetSystemObjects(IContext context, FilterSystemObject filter)
+        public IEnumerable<FrontSystemObject> GetSystemObjects(IContext ctx, FilterSystemObject filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemObjectsQuery(context, dbContext, filter);
+                var qry = GetSystemObjectsQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontSystemObject
                 {
@@ -863,12 +885,12 @@ namespace BL.Database.SystemDb
             }
         }
 
-        //public IEnumerable<FrontSystemObject> GetSystemObjectsWithActions(IContext context, FilterSystemObject filterObject, FilterSystemAction filterAction)
+        //public IEnumerable<FrontSystemObject> GetSystemObjectsWithActions(IContext ctx, FilterSystemObject filterObject, FilterSystemAction filterAction)
         //{
-        //    using (var dbContext = new DmsContext(context))
+        //    using (var dbContext = new DmsContext(ctx))
         //    using (var transaction = Transactions.GetTransaction())
         //    {
-        //        var qry = GetSystemObjectsQuery(context, dbContext, filterObject);
+        //        var qry = GetSystemObjectsQuery(ctx, dbContext, filterObject);
 
         //        var filterContains = PredicateBuilder.False<SystemActions>();
 
@@ -897,11 +919,12 @@ namespace BL.Database.SystemDb
         //        }).ToList();
         //    }
         //}
-        public IEnumerable<int> GetObjectsByActions(IContext context, FilterSystemAction filter)
+        public IEnumerable<int> GetObjectsByActions(IContext ctx, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemActionsQuery(context, dbContext, filter);
+                var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => x.ObjectId).ToList();
                 transaction.Complete();
@@ -909,7 +932,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IQueryable<SystemObjects> GetSystemObjectsQuery(IContext context, DmsContext dbContext, FilterSystemObject filter)
+        public IQueryable<SystemObjects> GetSystemObjectsQuery(IContext ctx, DmsContext dbContext, FilterSystemObject filter)
         {
             var qry = dbContext.SystemObjectsSet.AsQueryable();
 
@@ -948,21 +971,22 @@ namespace BL.Database.SystemDb
 
         #region [+] SystemActions
 
-        public void AddSystemAction(IContext context, InternalSystemAction item)
+        public void AddSystemAction(IContext ctx, InternalSystemAction item)
         {
-            AddSystemAction(context, SystemModelConverter.GetDbSystemAction(context, item));
+            AddSystemAction(ctx, SystemModelConverter.GetDbSystemAction(ctx, item));
         }
 
-        public void UpdateSystemAction(IContext context, InternalSystemAction item)
+        public void UpdateSystemAction(IContext ctx, InternalSystemAction item)
         {
-            UpdateSystemAction(context, SystemModelConverter.GetDbSystemAction(context, item));
+            UpdateSystemAction(ctx, SystemModelConverter.GetDbSystemAction(ctx, item));
         }
 
-        public void DeleteSystemActions(IContext context, FilterSystemAction filter)
+        public void DeleteSystemActions(IContext ctx, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetSystemActionsQuery(context, dbContext, filter);
+                var qry = GetSystemActionsQuery(ctx, dbContext, filter);
                 qry.Delete();
 
                 transaction.Complete();
@@ -971,9 +995,9 @@ namespace BL.Database.SystemDb
 
         }
 
-        public void AddSystemAction(IContext context, SystemActions item)
+        public void AddSystemAction(IContext ctx, SystemActions item)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = dbContext.Database.BeginTransaction())
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
 
@@ -995,21 +1019,23 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void UpdateSystemAction(IContext context, SystemActions item)
+        public void UpdateSystemAction(IContext ctx, SystemActions item)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.SystemActionsSet.Attach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
-                _cacheService.RefreshKey(context, SettingConstants.ACTION_CASHE_KEY);
+                _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
             }
         }
 
         public IEnumerable<FrontSystemAction> GetSystemActions(IContext ctx, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
@@ -1033,7 +1059,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalSystemAction> GetInternalSystemActions(IContext ctx, FilterSystemAction filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
 
@@ -1057,7 +1084,7 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public IQueryable<SystemActions> GetSystemActionsQuery(IContext context, DmsContext dbContext, FilterSystemAction filter)
+        public IQueryable<SystemActions> GetSystemActionsQuery(IContext ctx, DmsContext dbContext, FilterSystemAction filter)
         {
             var qry = dbContext.SystemActionsSet.AsQueryable();
 
@@ -1127,7 +1154,7 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region [+] Permissions
-        private IQueryable<SystemPermissions> GetPermissionsQuery(IContext context, DmsContext dbContext, FilterSystemPermissions filter)
+        private IQueryable<SystemPermissions> GetPermissionsQuery(IContext ctx, DmsContext dbContext, FilterSystemPermissions filter)
         {
             var qry = dbContext.SystemPermissionsSet.AsQueryable();
 
@@ -1207,11 +1234,12 @@ namespace BL.Database.SystemDb
             return qry;
         }
 
-        public int GetPermissionId(IContext context, string module, string feture, string accessType)
+        public int GetPermissionId(IContext ctx, string module, string feture, string accessType)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetPermissionsQuery(context, dbContext, new FilterSystemPermissions { Module = module, Feature = feture, AccessType = accessType });
+                var qry = GetPermissionsQuery(ctx, dbContext, new FilterSystemPermissions { Module = module, Feature = feture, AccessType = accessType });
 
                 var item = qry.FirstOrDefault();
 
@@ -1224,7 +1252,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalPermissions> GetInternalPermissions(IContext ctx, FilterSystemPermissions filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPermissionsQuery(ctx, dbContext, filter);
 
@@ -1259,7 +1288,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetPropertyUIElements(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry =
                     dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
@@ -1322,7 +1352,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontProperty> GetProperties(IContext ctx, FilterProperty filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertiesQuery(dbContext, ctx, filter);
 
@@ -1360,7 +1391,8 @@ namespace BL.Database.SystemDb
 
         public int AddProperty(IContext ctx, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new Properties
                 {
@@ -1393,7 +1425,8 @@ namespace BL.Database.SystemDb
 
         public void UpdateProperty(IContext ctx, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new Properties
                 {
@@ -1425,7 +1458,8 @@ namespace BL.Database.SystemDb
 
         public void DeleteProperty(IContext ctx, InternalProperty model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item =
                     dbContext.PropertiesSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Id == model.Id);
@@ -1472,7 +1506,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalPropertyLink> GetInternalPropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -1493,7 +1528,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontPropertyLink> GetPropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -1515,7 +1551,8 @@ namespace BL.Database.SystemDb
 
         public int AddPropertyLink(IContext ctx, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new PropertyLinks
                 {
@@ -1538,7 +1575,8 @@ namespace BL.Database.SystemDb
 
         public void UpdatePropertyLink(IContext ctx, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new PropertyLinks
                 {
@@ -1562,7 +1600,8 @@ namespace BL.Database.SystemDb
 
         public void DeletePropertyLink(IContext ctx, InternalPropertyLink model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
                 if (item != null)
@@ -1580,7 +1619,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext ctx, FilterPropertyLink filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
 
@@ -1609,7 +1649,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<InternalDataForMail> GetNewActionsForMailing(IContext ctx)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
                 var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
@@ -1644,7 +1685,8 @@ namespace BL.Database.SystemDb
 
         public void MarkActionsLikeMailSended(IContext ctx, InternalMailProcessed mailProcessed)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 //TODO будет ли это работать?? 
                 var upd = new List<DbEntityEntry>();
@@ -1667,7 +1709,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<BaseSystemUIElement> GetFilterProperties(IContext ctx, FilterProperties filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -1700,7 +1743,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<int> GetSendListIdsForAutoPlan(IContext ctx, int? sendListId = null, int? documentId = null)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 if (sendListId.HasValue)
                     return new List<int> { sendListId.GetValueOrDefault() };
@@ -1738,26 +1782,6 @@ namespace BL.Database.SystemDb
 
                 var res = qry2.ToList();
 
-                //var qry3 = sendListsSet
-                //    .Where(x => !x.IsInitial && !x.StartEventId.HasValue
-                //                && !qry.Select(s => s.DocId).Contains(x.DocumentId))
-                //    .OrderBy(x => x.DocumentId)
-                //    .ThenBy(
-                //        x =>
-                //            new
-                //            {
-                //                x.Stage,
-                //                SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId
-                //            })
-                //    .Select(x => x.Id);
-
-                //if (!documentId.HasValue)
-                //{
-                //    qry3 = qry3.Take(50);
-                //}
-
-                //res.AddRange(qry3.ToList());
-
                 transaction.Complete();
 
                 return res;
@@ -1766,7 +1790,8 @@ namespace BL.Database.SystemDb
 
         public IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext ctx, int timeMinForClearTrashDocuments)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
                 var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)

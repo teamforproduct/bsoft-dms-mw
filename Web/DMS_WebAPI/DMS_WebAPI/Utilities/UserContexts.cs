@@ -8,10 +8,13 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.Database.DatabaseContext;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.WebAPI.IncomingModel;
+using Ninject;
+using Ninject.Parameters;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -80,7 +83,7 @@ namespace DMS_WebAPI.Utilities
 
             var request_ctx = new UserContext(ctx);
             request_ctx.SetCurrentPosition(currentPositionId);
-
+            request_ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", request_ctx.CurrentDB));
             if (isThrowExeception && request_ctx.IsChangePasswordRequired)
                 throw new UserMustChangePassword();
 
@@ -224,6 +227,8 @@ namespace DMS_WebAPI.Utilities
         public void SetUserPositions(string token, List<int> positionsIdList)
         {
             var context = GetInternal(token);
+            context.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
+
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
             DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);

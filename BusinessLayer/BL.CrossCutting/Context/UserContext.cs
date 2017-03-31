@@ -15,7 +15,7 @@ namespace BL.CrossCutting.Context
     /// </summary>
     public class UserContext : IContext
     {
-        private bool _isFormed = false;
+        private bool _isFormed;
         private int? _currentPositionId;
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
@@ -52,7 +52,7 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentDB = null;
                 }
-
+                DbContext = ctx.DbContext;
                 CurrentEmployee = new Employee
                 {
                     AgentId = ctx.CurrentEmployee.AgentId,
@@ -224,6 +224,6 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
-
+        public object DbContext { get; set; }
     }
 }
