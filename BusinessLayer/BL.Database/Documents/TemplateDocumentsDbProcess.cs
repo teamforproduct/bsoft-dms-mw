@@ -274,7 +274,7 @@ namespace BL.Database.Documents
 
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newTemplate.Id, EnumObjects.DictionaryDocumentType,
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, newTemplate.Id, EnumObjects.TemplateDocument,
                     template.Id > 0 ? EnumOperationType.UpdateFull : EnumOperationType.AddNew);
 
 
