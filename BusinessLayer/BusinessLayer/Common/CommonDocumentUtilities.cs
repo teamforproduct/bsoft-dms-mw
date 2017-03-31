@@ -85,11 +85,11 @@ namespace BL.Logic.Common
         {
             var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
             var i = 1;
-            var res = name + " ##l@SuffixCopy@l##";
+            var res = name + $" ({i})";
             while (_templateDb.ExistsTemplateDocuments(context, new FilterTemplateDocument { NameExectly = res }))
             {
                 i++;
-                res = name + $" ##l@SuffixCopy@l## {i}";
+                res = name + $" ({i})";
             }
             return res;
         }

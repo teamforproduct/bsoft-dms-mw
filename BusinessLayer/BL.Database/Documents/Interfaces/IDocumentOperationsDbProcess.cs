@@ -73,7 +73,7 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocument DeleteDocumentSendListPrepare(IContext context, int sendListId);
 
-        void DeleteDocumentSendList(IContext context, int sendListId);
+        void DeleteDocumentSendList(IContext context, InternalDocumentSendList sendList);
 
         InternalDocument AddDocumentSendListStagePrepare(IContext context, int documentId);
 
@@ -115,7 +115,7 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<int> AddDocumentPapers(IContext context, IEnumerable<InternalDocumentPaper> items);
         void ModifyDocumentPaper(IContext context, InternalDocumentPaper item);
-        void DeleteDocumentPaper(IContext context, int itemId);
+        void DeleteDocumentPaper(IContext context, InternalDocumentPaper paper);
         void MarkOwnerDocumentPaper(IContext context, InternalDocumentPaper paper);
         void MarkСorruptionDocumentPaper(IContext context, InternalDocumentPaper paper);
         void SendDocumentPaperEvent(IContext context, IEnumerable<InternalDocumentPaper> paper);

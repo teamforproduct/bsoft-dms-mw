@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
 
         public override object Execute()
         {
-            _operationDb.DeleteDocumentPaper(_context, Model);
+            _operationDb.DeleteDocumentPaper(_context, _paper);
             return null;
         }
 

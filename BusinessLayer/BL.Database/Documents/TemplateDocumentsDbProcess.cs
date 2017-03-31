@@ -1126,6 +1126,7 @@ namespace BL.Database.Documents
                         res.Add(paperDb.Id);
                     }
                 }
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, res, EnumObjects.TemplateDocumentPaper, EnumOperationType.AddNew);
                 transaction.Complete();
             }
             return res;
@@ -1148,6 +1149,7 @@ namespace BL.Database.Documents
                 entry.Property(e => e.LastChangeUserId).IsModified = true;
                 entry.Property(e => e.LastChangeDate).IsModified = true;
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, item.Id, EnumObjects.TemplateDocumentPaper, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1192,6 +1194,7 @@ namespace BL.Database.Documents
             {
                 dbContext.TemplateDocumentPapersSet.RemoveRange(dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.CurrentClientId).Where(x => x.Id == id));
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.TemplateDocumentPaper, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }

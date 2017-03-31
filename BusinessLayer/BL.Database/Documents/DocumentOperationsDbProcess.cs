@@ -2167,17 +2167,18 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-        public void DeleteDocumentSendList(IContext context, int sendListId)
+        public void DeleteDocumentSendList(IContext context, InternalDocumentSendList sendList)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var item = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == sendListId);
+                var item = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == sendList.Id);
                 if (item != null)
                 {
-                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.SendListId == sendListId && x.PaperPlanDate == null));
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.SendListId == sendList.Id && x.PaperPlanDate == null));
                     dbContext.DocumentSendListsSet.Remove(item);
                     dbContext.SaveChanges();
                 }
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, sendList.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -2480,6 +2481,7 @@ namespace BL.Database.Documents
                                             Id = x.Id,
                                             ClientId = x.ClientId,
                                             EntityTypeId = x.EntityTypeId,
+                                            DocumentId = x.DocumentId,
                                             OrderNumber = x.OrderNumber,
                                             IsInWork = x.IsInWork,
                                             LastPaperEvent = new InternalDocumentEvent
@@ -2592,6 +2594,7 @@ namespace BL.Database.Documents
                             Id = x.Id,
                             ClientId = x.ClientId,
                             EntityTypeId = x.EntityTypeId,
+                            DocumentId = x.DocumentId,
                             IsCopy = x.IsCopy,
                             IsInWork = x.IsInWork,
                             LastPaperEvent = new InternalDocumentEvent
@@ -2631,6 +2634,7 @@ namespace BL.Database.Documents
                         entry.Property(x => x.LastPaperEventId).IsModified = true;
                         dbContext.SaveChanges();
                     }
+                    CommonQueries.AddFullTextCacheInfo(context, dbContext, papers.First().DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 }
                 transaction.Complete();
             }
@@ -2653,21 +2657,23 @@ namespace BL.Database.Documents
                 entry.Property(e => e.LastChangeUserId).IsModified = true;
                 entry.Property(e => e.LastChangeDate).IsModified = true;
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, item.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
-        public void DeleteDocumentPaper(IContext context, int id)
+        public void DeleteDocumentPaper(IContext context, InternalDocumentPaper paper)
         {
             using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
             {
-                var paper = new DocumentPapers { Id = id };
-                dbContext.DocumentPapersSet.Attach(paper);
+                var paperDb = new DocumentPapers { Id = paper.Id };
+                dbContext.DocumentPapersSet.Attach(paperDb);
                 var entry = dbContext.Entry(paper);
                 entry.Property(e => e.LastPaperEventId).IsModified = true;
                 dbContext.SaveChanges();
-                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.PaperId == id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
-                dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == id));
+                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.PaperId == paper.Id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
+                dbContext.DocumentPapersSet.RemoveRange(dbContext.DocumentPapersSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == paper.Id));
                 dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(context, dbContext, paper.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }

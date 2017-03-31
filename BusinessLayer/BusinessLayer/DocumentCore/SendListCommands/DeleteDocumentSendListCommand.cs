@@ -76,7 +76,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            _operationDb.DeleteDocumentSendList(_context, Model);
+            _operationDb.DeleteDocumentSendList(_context, _sendList);
             return _sendList.DocumentId;
         }
 

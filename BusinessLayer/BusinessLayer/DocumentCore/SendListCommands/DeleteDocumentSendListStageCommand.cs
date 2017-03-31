@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -67,22 +68,24 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override object Execute()
         {
-            //TODO все должно быть в одной транзакции!!!
-            foreach (var sl in DocSendLists)
+            using (var transaction = Transactions.GetTransaction())
             {
-                _operationDb.DeleteDocumentSendList(_context, sl.Id);
+                foreach (var sl in DocSendLists)
+                {
+                    _operationDb.DeleteDocumentSendList(_context, sl);
+                }
+
+                var sendLists = _document.SendLists.Where(x => x.Stage > Model.Stage);
+
+                foreach (var sl in sendLists)
+                {
+                    sl.Stage--;
+                    CommonDocumentUtilities.SetLastChange(_context, sl);
+                }
+
+                _operationDb.ChangeDocumentSendListStage(_context, sendLists);
+                transaction.Complete();
             }
-
-            var sendLists = _document.SendLists.Where(x => x.Stage > Model.Stage);
-
-            foreach (var sl in sendLists)
-            {
-                sl.Stage--;
-                CommonDocumentUtilities.SetLastChange(_context, sl);
-            }
-
-            _operationDb.ChangeDocumentSendListStage(_context, sendLists);
-
             return null;
         }
 
