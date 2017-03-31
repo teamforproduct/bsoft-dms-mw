@@ -6,7 +6,10 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using System;
+using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
+using Ninject;
+using Ninject.Parameters;
 
 namespace BL.CrossCutting.Context
 {
@@ -69,6 +72,8 @@ namespace BL.CrossCutting.Context
                 IsFormed = ctx.IsFormed;
                 LoginLogId = ctx.LoginLogId;
                 LoginLogInfo = ctx.LoginLogInfo;
+
+                DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
 
                 try
                 {
@@ -224,6 +229,6 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
-        public object DbContext { get; set; }
+        public IDmsDatabaseContext DbContext { get; set; }
     }
 }

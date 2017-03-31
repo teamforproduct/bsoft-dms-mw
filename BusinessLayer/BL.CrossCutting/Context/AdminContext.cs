@@ -6,6 +6,8 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using System;
 using BL.CrossCutting.DependencyInjection;
+using Ninject;
+using Ninject.Parameters;
 
 namespace BL.CrossCutting.Context
 {
@@ -37,6 +39,7 @@ namespace BL.CrossCutting.Context
                 AgentId = (int)EnumSystemUsers.AdminUser,
                 ClientId = dbModel.ClientId,
             };
+            DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
         }
 
         //TODO DbContext NOT INITIALIZED HERE
@@ -66,7 +69,7 @@ namespace BL.CrossCutting.Context
                 };
 
                 IsChangePasswordRequired = ctx.IsChangePasswordRequired;
-
+                DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
                 IsFormed = true;
             }
         }
@@ -131,6 +134,6 @@ namespace BL.CrossCutting.Context
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
-        public object DbContext { get; set; }
+        public IDmsDatabaseContext DbContext { get; set; }
     }
 }

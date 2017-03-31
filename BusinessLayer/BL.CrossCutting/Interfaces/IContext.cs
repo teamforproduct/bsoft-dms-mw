@@ -24,6 +24,6 @@ namespace BL.CrossCutting.Interfaces
         bool IsChangePasswordRequired { get; set; }
         int? LoginLogId { get; set; }
         string LoginLogInfo { get; set; }
-        object DbContext { get; set; }
+        IDmsDatabaseContext DbContext { get; set; }
     }
 }

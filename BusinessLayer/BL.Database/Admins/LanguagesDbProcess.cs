@@ -8,7 +8,6 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Database.DBModel.Admin;
 using LinqKit;
-using System.Transactions;
 using BL.CrossCutting.Helpers;
 using BL.Database.Admins.Interfaces;
 
@@ -20,9 +19,10 @@ namespace BL.Database.Admins
         {
         }
 
-        public AdminLanguageInfo GetAdminLanguage(IContext context)
+        public AdminLanguageInfo GetAdminLanguage(IContext ctx)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = new AdminLanguageInfo();
 
@@ -68,9 +68,10 @@ namespace BL.Database.Admins
             return qry;
         }
 
-        public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter)
+        public IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext ctx, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
@@ -86,9 +87,10 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext context, int userId, FilterAdminLanguage filter)
+        public IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext ctx, int userId, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
 
@@ -105,12 +107,13 @@ namespace BL.Database.Admins
             }
         }
 
-        public InternalAdminLanguage GetInternalAdminLanguage(IContext context, FilterAdminLanguage filter)
+        public InternalAdminLanguage GetInternalAdminLanguage(IContext ctx, FilterAdminLanguage filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminLanguagesQuery(dbContext, filter);
-                var res =  qry.Select(x => new InternalAdminLanguage
+                var res = qry.Select(x => new InternalAdminLanguage
                 {
                     Id = x.Id,
                     Code = x.Code,
@@ -122,9 +125,10 @@ namespace BL.Database.Admins
             }
         }
 
-        public int AddAdminLanguage(IContext context, InternalAdminLanguage model)
+        public int AddAdminLanguage(IContext ctx, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguages
                 {
@@ -140,9 +144,10 @@ namespace BL.Database.Admins
             }
         }
 
-        public void UpdateAdminLanguage(IContext context, InternalAdminLanguage model)
+        public void UpdateAdminLanguage(IContext ctx, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguages
                 {
@@ -163,9 +168,10 @@ namespace BL.Database.Admins
         }
 
 
-        public void DeleteAdminLanguage(IContext context, InternalAdminLanguage model)
+        public void DeleteAdminLanguage(IContext ctx, InternalAdminLanguage model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguagesSet.RemoveRange(dbContext.AdminLanguagesSet.Where(x => x.Id == model.Id));
                 dbContext.SaveChanges();
@@ -176,9 +182,9 @@ namespace BL.Database.Admins
 
         #region AdminLanguageValues
 
-        private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(IContext context, DmsContext dbContext, FilterAdminLanguageValue filter)
+        private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(IContext ctx, DmsContext dbContext, FilterAdminLanguageValue filter)
         {
-            var qry = dbContext.AdminLanguageValuesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminLanguageValuesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter.LanguageValueId?.Count > 0)
             {
@@ -218,11 +224,12 @@ namespace BL.Database.Admins
             return qry;
         }
 
-        public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext context, FilterAdminLanguageValue filter)
+        public IEnumerable<FrontAdminLanguageValue> GetAdminLanguageValues(IContext ctx, FilterAdminLanguageValue filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAdminLanguageValuesQuery(context, dbContext, filter);
+                var qry = GetAdminLanguageValuesQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAdminLanguageValue
                 {
@@ -236,11 +243,12 @@ namespace BL.Database.Admins
             }
         }
 
-        public InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext context, FilterAdminLanguageValue filter)
+        public InternalAdminLanguageValue GetInternalAdminLanguageValue(IContext ctx, FilterAdminLanguageValue filter)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAdminLanguageValuesQuery(context, dbContext, filter);
+                var qry = GetAdminLanguageValuesQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new InternalAdminLanguageValue
                 {
@@ -254,16 +262,17 @@ namespace BL.Database.Admins
             }
         }
 
-        public int AddAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
+        public int AddAdminLanguageValue(IContext ctx, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguageValues
                 {
                     LanguageId = model.LanguageId,
                     Label = model.Label,
                     Value = model.Value,
-                    ClientId = context.CurrentClientId
+                    ClientId = ctx.CurrentClientId
                 };
                 dbContext.AdminLanguageValuesSet.Add(item);
                 dbContext.SaveChanges();
@@ -273,9 +282,10 @@ namespace BL.Database.Admins
             }
         }
 
-        public void AddAdminLanguageValues(IContext context, List<AdminLanguageValues> list)
+        public void AddAdminLanguageValues(IContext ctx, List<AdminLanguageValues> list)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguageValuesSet.AddRange(list);
                 dbContext.SaveChanges();
@@ -283,9 +293,10 @@ namespace BL.Database.Admins
             }
         }
 
-        public void UpdateAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
+        public void UpdateAdminLanguageValue(IContext ctx, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var item = new AdminLanguageValues
                 {
@@ -306,9 +317,10 @@ namespace BL.Database.Admins
         }
 
 
-        public void DeleteAdminLanguageValue(IContext context, InternalAdminLanguageValue model)
+        public void DeleteAdminLanguageValue(IContext ctx, InternalAdminLanguageValue model)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet.Where(x => x.Id == model.Id));
                 dbContext.SaveChanges();
@@ -316,9 +328,10 @@ namespace BL.Database.Admins
             }
         }
 
-        public void DeleteAllAdminLanguageValues(IContext context)
+        public void DeleteAllAdminLanguageValues(IContext ctx)
         {
-            using (var dbContext = new DmsContext(context)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.AdminLanguageValuesSet.RemoveRange(dbContext.AdminLanguageValuesSet);
                 dbContext.SaveChanges();

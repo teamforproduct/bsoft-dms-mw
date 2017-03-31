@@ -15,7 +15,9 @@ using BL.Model.Database;
 
 namespace BL.Database.DatabaseContext
 {
-    public class DmsContext : DbContext
+
+
+    public class DmsContext : DbContext, IDmsDatabaseContext
     {
 
         private string _DefaultSchema { get; set; }

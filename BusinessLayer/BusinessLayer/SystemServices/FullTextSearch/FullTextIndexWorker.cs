@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
@@ -14,7 +13,6 @@ using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
 using Version = Lucene.Net.Util.Version;
 using BL.Model.SystemCore;
-using BL.Model.Exception;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Extensions;
 

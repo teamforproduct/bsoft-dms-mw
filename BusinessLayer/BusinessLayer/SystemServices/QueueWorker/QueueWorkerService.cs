@@ -7,7 +7,7 @@ namespace BL.Logic.SystemServices.QueueWorker
 {
     public class QueueWorkerService: BaseSystemWorkerService, IQueueWorkerService
     {
-        private Dictionary<string, QueueWorker> _workers;
+        private readonly Dictionary<string, QueueWorker> _workers;
         protected object _lockObjectWorker;
 
         public QueueWorkerService(ISettings settings, ILogger logger) : base(settings, logger)

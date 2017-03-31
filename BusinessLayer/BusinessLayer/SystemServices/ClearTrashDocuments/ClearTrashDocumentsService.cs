@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
 using System.Threading;
+using BL.CrossCutting.DependencyInjection;
+using BL.Database.DatabaseContext;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
 using BL.Database.SystemDb;
@@ -9,6 +11,8 @@ using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.ClearTrashDocuments;
 using BL.Model.DocumentCore.Filters;
+using Ninject;
+using Ninject.Parameters;
 
 namespace BL.Logic.SystemServices.ClearTrashDocuments
 {
@@ -16,8 +20,8 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
     {
         private readonly Dictionary<ClearTrashDocumentsSettings, Timer> _timers;
         private readonly IDocumentService _documentServ;
-        private ISystemDbProcess _sysDb;
-        private ICommandService _cmdService;
+        private readonly ISystemDbProcess _sysDb;
+        private readonly ICommandService _cmdService;
         private readonly IDocumentFileDbProcess _docFileDb;
         private readonly IDocumentOperationsDbProcess _docOperDb;        
         private readonly IFileStore _fileStore;
@@ -77,6 +81,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
 
             if (ctx == null) return;
+            ctx.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             _docOperDb.MarkDocumentEventAsReadAuto(ctx);
             _docOperDb.ModifyDocumentAccessesStatistics(ctx);
             _documentServ.CheckIsInWorkForControls(ctx, new FilterDocumentAccess());
@@ -89,9 +94,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
                 {
                     try
                     {
-                        var cmd =
-                            DocumentCommandFactory.GetDocumentCommand(
-                                Model.Enums.EnumDocumentActions.DeleteDocument, ctx, null, id);
+                        var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.DeleteDocument, ctx, null, id);
                         _cmdService.ExecuteCommand(cmd);
                     }
                     catch (Exception ex)
@@ -121,13 +124,14 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             {
                 Logger.Error(ctx, "Could not process clear trash documents", ex);
             }
-
+            ((DmsContext)ctx.DbContext).Dispose();
+            ctx.DbContext = null;
             tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite);//start new iteration of the timer
         }
 
         public override void Dispose()
         {
-            throw new System.NotImplementedException();
+           
         }
     }
 }

@@ -39,7 +39,6 @@ namespace DMS_WebAPI.ControllersV3.System
                 srv.ClientId = clientServer.ClientId;
 
                 var ctx = new AdminContext(srv);
-                ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 ftService.ReindexDatabase(ctx);
                 return new JsonResult(new FrontAdminServer { Id = ctx.CurrentClientId }, this);

@@ -19,7 +19,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Runtime.InteropServices;
 using BL.CrossCutting.Helpers;
-using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Database.Encryption
 {
@@ -30,12 +29,7 @@ namespace BL.Database.Encryption
         private const string _ZipCerPasswordFileName = "password.txt";
 
         private const string _RSAKeyXml = "<RSAKeyValue><Modulus>sBRZy9xvw7FWdb5EHd79H8f2D4+JP3yokrbKpCgFbcwCEPPZpGUj07poBM9MvrIXEIHoahIYVw3UqWCLvFFL6Cb+u3zrOTaNmCNyXdZ4H/28sskfuBtVzXjllzwEkrcJg0NfSmCbjw/9YFUYEdl1ZTUL40pN8Kuk1Wr1f/wP+wk=</Modulus><Exponent>AQAB</Exponent><P>twV17e14On7eLeKl46JRJnnXrvZp4tHj68iNFk/S8tK/uKj3b9xeTTqxI6S31xQ3mN26X54egttXNjQ7V9OUaQ==</P><Q>9kpHMG4hxQ3/q1FyPlLgNV1XPDyeGoNF1QQDZ7Te8xfWvPW1ildAYsCEJ91tZMstgJR7oojYPy7VTNDn8bndoQ==</Q><DP>SLy017Bu/eB58IaJI2TZF4+I9pIcFvcPvB9iYyGqVrMHWx5b6GsOV2ciC2ZlYec5CVnlviabPapqiLJNe2QtMQ==</DP><DQ>R++uF2Ezj+Dk2l8xpS6DulKHFlsGOuw4y10euX3E2PAPkqWZ3sxZS/67GwG74ALQSYwVCIY700iUmJk0BhCpwQ==</DQ><InverseQ>oN5Vlg5M68jAeeZRiduiyMBw/T+oZQ5zaxMlvqIhgF603xRjHTzcNaHZB9Kvn0YBnfcRx6F1PfSkJJl4rWAaDw==</InverseQ><D>AIZ3BBwquy82vlAsfNhS8frTOZWoh6d0C0f/T8EMzxiKMwm/LvXcRv/p2oXRyUnXtsVkb5iROQVCCqVOlWe6rbvUMU8P554u4t9g0y1oLJUQDbYmRBo6z0I31OTRNBb7nCI6/l01Vyq6Ju225EdOEL8EVNd/wkQXoYRbm7Mun4E=</D></RSAKeyValue>";
-        private ILogger _logger;
 
-        public EncryptionDbProcess()
-        {
-            _logger = DmsResolver.Current.Get<ILogger>();
-        }
 
         private string GetTempPath()
         {
@@ -47,7 +41,8 @@ namespace BL.Database.Encryption
         #region Certificates
         public IEnumerable<FrontEncryptionCertificate> GetCertificates(IContext ctx, FilterEncryptionCertificate filter, UIPaging paging)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
 
@@ -101,7 +96,8 @@ namespace BL.Database.Encryption
 
         private InternalEncryptionCertificate GetCertificate(IContext ctx, int certificateId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { certificateId } });
 
@@ -134,7 +130,8 @@ namespace BL.Database.Encryption
 
             ZipCertificate(item);
 
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbEncryptionCertificate(item);
 
@@ -147,7 +144,8 @@ namespace BL.Database.Encryption
 
         public InternalEncryptionCertificate ModifyCertificatePrepare(IContext ctx, int itemId, int? agentId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var filter = new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } };
                 if (ctx.IsAdmin && agentId.HasValue) filter.AgentId = new List<int> { agentId.Value };
@@ -164,7 +162,8 @@ namespace BL.Database.Encryption
 
         public void ModifyCertificate(IContext ctx, InternalEncryptionCertificate item)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = new EncryptionCertificates
                 {
@@ -188,7 +187,8 @@ namespace BL.Database.Encryption
 
         public void DeleteCertificate(IContext ctx, int itemId)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
 
@@ -294,7 +294,7 @@ namespace BL.Database.Encryption
                     fs.Write(item.Certificate, 0, item.Certificate.Length);
                     fs.Flush();
                 }
-                FileLogger.AppendTextToFile("File on disc "+File.Exists(file), @"C:\TEMPLOGS\sign.log");
+                FileLogger.AppendTextToFile("File on disc " + File.Exists(file), @"C:\TEMPLOGS\sign.log");
                 FileLogger.AppendTextToFile(DateTime.Now + " ReadDetailsAboutCertificate FileStream Write ", @"C:\TEMPLOGS\sign.log");
                 var certificate = new X509Certificate2(file, item.Password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable);
                 FileLogger.AppendTextToFile(DateTime.Now + " ReadDetailsAboutCertificate new X509Certificate2 ", @"C:\TEMPLOGS\sign.log");
@@ -352,7 +352,7 @@ namespace BL.Database.Encryption
             {
                 File.Delete(file);
             }
-            FileLogger.AppendTextToFile(DateTime.Now +" AddCertificateInWindowsCertificateStores end ", @"C:\TEMPLOGS\sign.log");
+            FileLogger.AppendTextToFile(DateTime.Now + " AddCertificateInWindowsCertificateStores end ", @"C:\TEMPLOGS\sign.log");
 
         }
 

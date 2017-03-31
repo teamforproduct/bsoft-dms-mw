@@ -254,7 +254,6 @@ namespace DMS_WebAPI.Utilities
                 ClientId = model.ClientId
             };
             var ctx = new AdminContext(db);
-            ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             var sysProc = DmsResolver.Current.Get<ISystemService>();
             sysProc.InitializerDatabase(ctx);
         }

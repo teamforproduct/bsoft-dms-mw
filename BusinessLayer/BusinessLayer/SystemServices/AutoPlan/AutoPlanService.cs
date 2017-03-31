@@ -13,17 +13,18 @@ using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Enums;
 using BL.Database.Dictionaries;
 using System.Linq;
+using BL.CrossCutting.Context;
 
 namespace BL.Logic.SystemServices.AutoPlan
 {
     public class AutoPlanService : BaseSystemWorkerService, IAutoPlanService
     {
         private readonly Dictionary<AutoPlanSettings, Timer> _timers;
-        private ISystemDbProcess _sysDb;
-        private IDocumentsDbProcess _docDb;
-        private DictionariesDbProcess _dicDb;
-        private IQueueWorkerService _workerSrv;
-        private ICommandService _cmdService;
+        private readonly ISystemDbProcess _sysDb;
+        private readonly IDocumentsDbProcess _docDb;
+        private readonly DictionariesDbProcess _dicDb;
+        private readonly IQueueWorkerService _workerSrv;
+        private readonly ICommandService _cmdService;
 
         public AutoPlanService(ISettings settings, ILogger logger, ICommandService cmdService, IQueueWorkerService workerService) : base(settings, logger)
         {
@@ -73,7 +74,7 @@ namespace BL.Logic.SystemServices.AutoPlan
 
             var ctx = GetAdminContext(srvKey);
             if (ctx == null) return false;
-
+            var admCtx = new AdminContext(ctx);
             var wrkUnit = new QueueTask(() =>
             {
                 bool isRepeat = true;
@@ -82,34 +83,32 @@ namespace BL.Logic.SystemServices.AutoPlan
                 {
                     while (isRepeat)
                     {
-                        var lst = _sysDb.GetSendListIdsForAutoPlan(ctx, sendListId, documentId);
-                        if (lst.Any() && documentId != null && sendListId == null)
-                            isRepeat = true;
-                        else
-                            isRepeat = false;
+                        var lst = _sysDb.GetSendListIdsForAutoPlan(admCtx, sendListId, documentId);
+                        isRepeat = lst.Any() && documentId != null && sendListId == null;
+
                         foreach (int id in lst)
                         {
                             try
                             {
-                                var cmd = DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
+                                var cmd = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.LaunchDocumentSendListItem, admCtx, null, id);
                                 _cmdService.ExecuteCommand(cmd);
                             }
                             catch (Exception ex)
                             {
                                 isRepeat = false;
-                                Logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                                Logger.Error(admCtx, $"AutoPlanService cannot process SendList Id={id} ", ex);
                                 try
                                 {
-                                    var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
+                                    var docId = _docDb.GetDocumentIdBySendListId(admCtx, id);
                                     if (docId > 0)
                                     {
-                                        var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, docId);
+                                        var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, admCtx, null, docId);
                                         _cmdService.ExecuteCommand(cmdStop);
                                     }
                                 }
                                 catch (Exception ex2)
                                 {
-                                    Logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                                    Logger.Error(admCtx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
                                 }
                             }
                         }
@@ -119,8 +118,8 @@ namespace BL.Logic.SystemServices.AutoPlan
                 {
                     Logger.Error(ctx, "Could not process autoplan", ex);
                 }
-            }) {CurrentContext = ctx};
-            _workerSrv.AddNewTask(ctx, wrkUnit);
+            });
+            _workerSrv.AddNewTask(admCtx, wrkUnit);
 
             // here we can do it through manual or automate reset events or analize wrkr.WorkCompleted event, but do it just stupped and simple
             while (wrkUnit.Status != EnumWorkStatus.Success && wrkUnit.Status != EnumWorkStatus.Error)
@@ -140,36 +139,36 @@ namespace BL.Logic.SystemServices.AutoPlan
             var ctx = GetAdminContext(md.DatabaseKey);
 
             if (ctx == null) return;
-
-            _dicDb.UpdateExecutorsInPositions(ctx); //TODO временно тут, потом может перенести в отдельный сервис
+            var admCtx = new AdminContext(ctx);
+            _dicDb.UpdateExecutorsInPositions(admCtx); //TODO временно тут, потом может перенести в отдельный сервис
 
             var wrkUnit = new QueueTask(() =>
             {
                 try
                 {
-                    var lst = _sysDb.GetSendListIdsForAutoPlan(ctx);
+                    var lst = _sysDb.GetSendListIdsForAutoPlan(admCtx);
                     foreach (int id in lst)
                     {
                         try
                         {
-                            var cmd = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.LaunchDocumentSendListItem, ctx, null, id);
+                            var cmd = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.LaunchDocumentSendListItem, admCtx, null, id);
                             _cmdService.ExecuteCommand(cmd);
                         }
                         catch (Exception ex)
                         {
-                            Logger.Error(ctx, $"AutoPlanService cannot process SendList Id={id} ", ex);
+                            Logger.Error(admCtx, $"AutoPlanService cannot process SendList Id={id} ", ex);
                             try
                             {
-                                var docId = _docDb.GetDocumentIdBySendListId(ctx, id);
+                                var docId = _docDb.GetDocumentIdBySendListId(admCtx, id);
                                 if (docId > 0)
                                 {
-                                    var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, ctx, null, docId);
+                                    var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, admCtx, null, docId);
                                     _cmdService.ExecuteCommand(cmdStop);
                                 }
                             }
                             catch (Exception ex2)
                             {
-                                Logger.Error(ctx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
+                                Logger.Error(admCtx, $"AutoPlanService cannot Stop plan for SendList Id={id} ", ex2);
                             }
 
                         }
@@ -177,10 +176,10 @@ namespace BL.Logic.SystemServices.AutoPlan
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ctx, "Could not process autoplan", ex);
+                    Logger.Error(admCtx, "Could not process autoplan", ex);
                 }
                 tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
-            }) { CurrentContext = ctx };
+            });
 
             _workerSrv.AddNewTask(ctx, wrkUnit);
 

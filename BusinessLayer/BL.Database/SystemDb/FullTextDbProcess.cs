@@ -9,7 +9,6 @@ using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using EntityFramework.Extensions;
-using System.Data.Entity.SqlServer;
 using System;
 using BL.Database.DBModel.System;
 

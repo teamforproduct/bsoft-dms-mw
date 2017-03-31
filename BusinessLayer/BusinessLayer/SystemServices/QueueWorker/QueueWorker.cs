@@ -10,52 +10,52 @@ namespace BL.Logic.SystemServices.QueueWorker
 {
     public class QueueWorker
     {
-        BackgroundWorker worker = new BackgroundWorker();
-        Queue<IQueueTask> workqueue = new Queue<IQueueTask>();
-        AutoResetEvent workAdded = new AutoResetEvent(false);
-        ILogger _logger; 
+        readonly BackgroundWorker _worker = new BackgroundWorker();
+        readonly Queue<IQueueTask> _workqueue = new Queue<IQueueTask>();
+        readonly AutoResetEvent _workAdded = new AutoResetEvent(false);
+        readonly ILogger _logger; 
 
         public event Action<IQueueTask> WorkUnitAdded;
         public event Action<IQueueTask> WorkCompleted;
 
         public QueueWorker()
         {
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerAsync();
+            _worker.DoWork += worker_DoWork;
+            _worker.RunWorkerAsync();
             _logger = DmsResolver.Current.Get<ILogger>();
         }
 
         public void StopWorker()
         {
-            worker.CancelAsync();
-            worker.DoWork -= worker_DoWork;
+            _worker.CancelAsync();
+            _worker.DoWork -= worker_DoWork;
         }
 
         public void AddToQueue(IQueueTask workUnit)
         {
-            lock (workqueue)
+            lock (_workqueue)
             {
                 workUnit.Status = EnumWorkStatus.Pending;
                 WorkUnitAdded?.Invoke(workUnit);
-                workqueue.Enqueue(workUnit);
-                workAdded.Set();
+                _workqueue.Enqueue(workUnit);
+                _workAdded.Set();
             }
         }
 
-        bool m_IsBusy = false;
+        bool _isBusy;
         public bool IsBusy
         {
             set
             {
-                m_IsBusy = value;
+                _isBusy = value;
             }
             get
             {
-                return m_IsBusy;
+                return _isBusy;
             }
         }
 
-        IQueueTask workInProgress = null;
+        IQueueTask _workInProgress;
         void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             try
@@ -64,25 +64,25 @@ namespace BL.Logic.SystemServices.QueueWorker
                 {
                     try
                     {
-                        lock (workqueue)
+                        lock (_workqueue)
                         {
-                            if (workqueue.Count > 0)
+                            if (_workqueue.Count > 0)
                             {
                                 IsBusy = true;
-                                workInProgress = workqueue.Dequeue();
+                                _workInProgress = _workqueue.Dequeue();
                             }
                         }
-                        if (workInProgress == null)
+                        if (_workInProgress == null)
                         {
                             IsBusy = false;
-                            workAdded.WaitOne();
+                            _workAdded.WaitOne();
                         }
                         else
                         {
-                            workInProgress.Status = EnumWorkStatus.Processing;
-                            workInProgress.Execute();
+                            _workInProgress.Status = EnumWorkStatus.Processing;
+                            _workInProgress.Execute();
 
-                            workInProgress.Status = EnumWorkStatus.Success;
+                            _workInProgress.Status = EnumWorkStatus.Success;
                         }
                     }
                     catch (ThreadAbortException)
@@ -91,30 +91,34 @@ namespace BL.Logic.SystemServices.QueueWorker
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(workInProgress.CurrentContext, ex, "Error in Queue worker");
-                        if (workInProgress != null)
+                        _logger.Error(_workInProgress.CurrentContext, ex, "Error in Queue _worker");
+                        if (_workInProgress != null)
                         {
-                            workInProgress.StatusDescription = ex.Message;
+                            _workInProgress.StatusDescription = ex.Message;
                         }
                     }
                     finally
                     {
-                        if (workInProgress != null)
+                        if (_workInProgress != null)
                         {
-                            if (workInProgress.Status != EnumWorkStatus.Success)
+                            if (_workInProgress.Status != EnumWorkStatus.Success)
                             {
-                                workInProgress.Status = EnumWorkStatus.Error;
+                                _workInProgress.Status = EnumWorkStatus.Error;
                             }
-                            WorkCompleted?.Invoke(workInProgress);
+                            WorkCompleted?.Invoke(_workInProgress);
 
-                            workInProgress = null;
+                            _workInProgress = null;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                //Trace.TraceError(ex.ToString());
+                if (_workInProgress?.CurrentContext != null)
+                {
+                    _logger.Error(_workInProgress.CurrentContext, ex, "General exception in Queue worker!");
+                }
+                
             }
         }
     }

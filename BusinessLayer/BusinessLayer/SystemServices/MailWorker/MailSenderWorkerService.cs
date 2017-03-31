@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Database.DatabaseContext;
 using BL.Database.SystemDb;
-using BL.Model.Constants;
-using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 using Ninject;
+using Ninject.Parameters;
 
 namespace BL.Logic.SystemServices.MailWorker
 {
@@ -87,6 +87,7 @@ namespace BL.Logic.SystemServices.MailWorker
             var ctx = GetAdminContext(md.DatabaseKey);
 
             if (ctx == null) return;
+            ctx.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             try
             {
                 var processed = new InternalMailProcessed();
@@ -115,6 +116,8 @@ namespace BL.Logic.SystemServices.MailWorker
             {
                 Logger.Error(ctx, "Error while processing new events and sending EMails", ex);
             }
+            ((DmsContext)ctx.DbContext).Dispose();
+            ctx.DbContext = null;
             tmr.Change(md.CheckInterval * 60000, Timeout.Infinite);//start new iteration of the timer
         }
 
@@ -122,9 +125,6 @@ namespace BL.Logic.SystemServices.MailWorker
         public void SendMessage(IContext ctx, InternalSendMailParameters msSetting)
         {
             var sender = DmsResolver.Current.Kernel.Get<IMailSender>(msSetting.ServerType.ToString());
-
-            if (sender == null) return;
-
             try
             {
                 sender.SendMail(null, msSetting);

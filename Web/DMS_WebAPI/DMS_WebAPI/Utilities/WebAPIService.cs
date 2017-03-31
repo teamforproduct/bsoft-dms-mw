@@ -471,7 +471,6 @@ namespace DMS_WebAPI.Utilities
             }
 
             var ctx = new AdminContext(server);
-            ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             var clientService = DmsResolver.Current.Get<IClientService>();
 
             clientService.AddNewClient(ctx, model);
@@ -687,7 +686,6 @@ namespace DMS_WebAPI.Utilities
             var db = _webDb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
 
             var ctx = new AdminContext(db);
-            ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
         }
@@ -719,7 +717,6 @@ namespace DMS_WebAPI.Utilities
             var db = _webDb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
 
             var ctx = new AdminContext(db);
-            ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
         }
