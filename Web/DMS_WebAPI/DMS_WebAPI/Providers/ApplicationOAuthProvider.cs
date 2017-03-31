@@ -7,7 +7,6 @@ using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
-using DMS_WebAPI.Infrastructure;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
@@ -108,14 +107,10 @@ namespace DMS_WebAPI.Providers
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
                     {
-                        HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
-                        var userContext = DmsResolver.Current.Get<UserContexts>().Get();
-                        webService.AddUserFingerprint(userContext, new AddAspNetUserFingerprint
+                        webService.AddUserFingerprint(new AddAspNetUserFingerprint
                         {
                             UserId = user.Id,
                             Fingerprint = fingerprint,
-                            Name = bc.Browser + " " + bc.Platform + " " + DateTime.UtcNow.ToString("HHmmss"),
-                            IsActive = true
                         });
                     }
                 }

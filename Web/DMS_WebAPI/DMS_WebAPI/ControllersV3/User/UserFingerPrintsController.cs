@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var user = webService.GetUser(context, context.CurrentAgentId);
             model.UserId = user.Id;
-            var tmpItem = webService.AddUserFingerprint(context, model);
+            var tmpItem = webService.AddUserFingerprint(model);
             return GetById(context, tmpItem);
         }
 
