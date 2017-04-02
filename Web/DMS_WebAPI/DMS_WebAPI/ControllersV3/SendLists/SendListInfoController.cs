@@ -38,8 +38,6 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         /// </summary>
         /// <param name="ftSearch"></param>
         /// <param name="filter"></param>
-        /// <param name="paging"></param>
-        /// <param name="sorting">"</param>
         /// <param name="SearchInPositionsOnly">искать только в должностях</param>
         /// <returns></returns>
         [HttpGet]
@@ -50,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                var tmpItems = tmpService.GetMainStandartSendLists(context, ftSearch, filter);
+                var tmpItems = tmpService.GetMainStandartSendLists(context, ftSearch, filter, SearchInPositionsOnly ?? false);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
