@@ -45,33 +45,31 @@ namespace BL.CrossCutting.Context
         //TODO DbContext NOT INITIALIZED HERE
         public AdminContext(IContext ctx)
         {
-            var def = ctx as UserContext;
-            if (def != null)
+            CurrentDB = new DatabaseModel
             {
-                CurrentDB = new DatabaseModel
-                {
-                    Id = ctx.CurrentDB.Id,
-                    Name = ctx.CurrentDB.Name,
-                    ServerType = ctx.CurrentDB.ServerType,
-                    IntegrateSecurity = false,
-                    Address = ctx.CurrentDB.Address,
-                    DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
-                    UserName = _USER_NAME,
-                    UserPassword = _USER_PASS,
-                    DefaultSchema = ctx.CurrentDB.DefaultSchema,
-                    ConnectionString = ctx.CurrentDB.ConnectionString,
-                };
-                CurrentEmployee = new Employee
-                {
-                    Name = "System user",
-                    AgentId = (int)EnumSystemUsers.AdminUser,
-                    ClientId = ctx.CurrentClientId
-                };
+                Id = ctx.CurrentDB.Id,
+                Name = ctx.CurrentDB.Name,
+                ServerType = ctx.CurrentDB.ServerType,
+                IntegrateSecurity = false,
+                Address = ctx.CurrentDB.Address,
+                DefaultDatabase = ctx.CurrentDB.DefaultDatabase,
+                UserName = _USER_NAME,
+                UserPassword = _USER_PASS,
+                DefaultSchema = ctx.CurrentDB.DefaultSchema,
+                ConnectionString = ctx.CurrentDB.ConnectionString,
+            };
+            CurrentEmployee = new Employee
+            {
+                Name = "System user",
+                AgentId = (int) EnumSystemUsers.AdminUser,
+                ClientId = ctx.CurrentClientId
+            };
 
-                IsChangePasswordRequired = ctx.IsChangePasswordRequired;
-                DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
-                IsFormed = true;
-            }
+            IsChangePasswordRequired = ctx.IsChangePasswordRequired;
+            DbContext =
+                DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
+            IsFormed = true;
+
         }
 
         /// <summary>
