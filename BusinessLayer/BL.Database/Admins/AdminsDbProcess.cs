@@ -407,7 +407,7 @@ namespace BL.Database.Admins
 
         public Employee GetEmployeeForContext(IContext ctx, string userId)
         {
-            var dbContext = ctx.DbContext as DmsContext;
+            using (var dbContext = new DmsContext(ctx))// Тут контекст должен создаваться каждый раз т.к метод вызывается в случаях, когда рабочий контекст запроса еще не создан
             using (var transaction = Transactions.GetTransaction())
             {
                 var now = DateTime.UtcNow;
