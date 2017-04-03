@@ -1,5 +1,6 @@
 ﻿using BL.Model.Common;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
@@ -64,7 +65,7 @@ namespace BL.Model.DictionaryCore.FilterModel
         public bool? IsHideVacated { get; set; }
 
         /// <summary>
-        /// Сужение по наименованию (равенство)
+        /// Сужение по наименованию, отделу, исполнителю
         /// </summary>
         [IgnoreDataMember]
         public string NameDepartmentExecutor { get; set; }

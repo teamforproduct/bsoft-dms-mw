@@ -1776,7 +1776,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.CodeName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                    var filterContains = PredicateBuilder.True<DictionaryAddressTypes>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
                         (current, value) => current.And(e => (e.Code + " " + e.Name).Contains(value)).Expand());
 
@@ -5025,7 +5025,7 @@ namespace BL.Database.Dictionaries
                 // Условие по полному имени
                 if (!string.IsNullOrEmpty(filter.NameDepartmentExecutor))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.True<DictionaryPositions>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.NameDepartmentExecutor).Aggregate(filterContains,
                         (current, value) => current.And(e => (e.Name + " " + e.Department.Name + " " + e.ExecutorAgent.Name + " " + e.ExecutorType.Suffix).Contains(value)).Expand());
 
