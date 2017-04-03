@@ -1050,7 +1050,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
                     ParentObjectId = x.Main.StandartSendListId, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
-                    ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name
+                    ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " " + x.Main.TargetPosition.ExecutorAgent.Name + " " + x.Main.TargetPosition.Department.Name + " " + x.Main.TargetAgent.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
