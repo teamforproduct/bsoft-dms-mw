@@ -32,9 +32,9 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
-        private FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent, EnumDocumentFileType fileType)
+        private FrontDocumentAttachedFile GetUserFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
-            var fl = _dbProcess.GetDocumentFileVersion(ctx, fileIdent.DocumentId, fileIdent.OrderInDocument, fileIdent.Version ?? 0);
+            var fl = _dbProcess.GetDocumentFileVersion(ctx, id);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();
@@ -53,19 +53,19 @@ namespace BL.Logic.DocumentCore
             return fl;
         }
 
-        public FrontDocumentAttachedFile GetUserFile(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        public FrontDocumentAttachedFile GetUserFile(IContext ctx, int id)
         {
-            return GetUserFile(ctx, fileIdent, EnumDocumentFileType.UserFile);
+            return GetUserFile(ctx, id, EnumDocumentFileType.UserFile);
         }
 
-        public FrontDocumentAttachedFile GetUserFilePdf(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        public FrontDocumentAttachedFile GetUserFilePdf(IContext ctx, int id)
         {
-            return GetUserFile(ctx, fileIdent, EnumDocumentFileType.PdfFile);
+            return GetUserFile(ctx, id, EnumDocumentFileType.PdfFile);
         }
 
-        public FrontDocumentAttachedFile GetUserFilePreview(IContext ctx, FilterDocumentFileIdentity fileIdent)
+        public FrontDocumentAttachedFile GetUserFilePreview(IContext ctx, int id)
         {
-            return GetUserFile(ctx, fileIdent, EnumDocumentFileType.PdfPreview);
+            return GetUserFile(ctx, id, EnumDocumentFileType.PdfPreview);
         }
 
     }

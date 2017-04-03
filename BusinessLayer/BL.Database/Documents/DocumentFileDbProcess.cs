@@ -29,15 +29,13 @@ namespace BL.Database.Documents
             }
         }
 
-        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber)
+        public FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(
-                            x =>
-                                x.DocumentId == documentId && x.Version == versionNumber && x.OrderNumber == orderNumber)
+                        .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontDocumentAttachedFile
@@ -369,36 +367,39 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocument DeleteDocumentFilePrepare(IContext ctx, FilterDocumentFileIdentity flIdent)
+        public InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
-                    .Where(x => x.Id == flIdent.DocumentId)
+                var doc = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                    .Where(x => x.Id == id)
                     .Select(x => new InternalDocument
                     {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        IsRegistered = x.IsRegistered,
-                        ExecutorPositionId = x.ExecutorPositionId,
+                        Id = x.Document.Id,
+                        ClientId = x.Document.ClientId,
+                        EntityTypeId = x.Document.EntityTypeId,
+                        IsRegistered = x.Document.IsRegistered,
+                        ExecutorPositionId = x.Document.ExecutorPositionId,
+                        FileOrderNumber = x.OrderNumber,
                     }).FirstOrDefault();
                 if (doc == null) return null;
 
                 var docFileQry = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(x => x.DocumentId == flIdent.DocumentId && x.OrderNumber == flIdent.OrderInDocument).AsQueryable();
+                        .Where(x => x.DocumentId == doc.Id && x.OrderNumber == doc.FileOrderNumber).AsQueryable();
 
-                if (flIdent.Version.HasValue)
-                {
-                    docFileQry = docFileQry.Where(x => x.Version == flIdent.Version);
-                }
+                //if (flIdent.Version.HasValue)
+                //{
+                //    docFileQry = docFileQry.Where(x => x.Version == flIdent.Version);
+                //}
                 doc.DocumentFiles = docFileQry
                         .Select(x => new InternalDocumentAttachedFile
                         {
                             Id = x.Id,
                             ClientId = x.ClientId,
                             EntityTypeId = x.EntityTypeId,
+                            DocumentId = x.DocumentId,
+                            OrderInDocument = x.OrderNumber,
                             ExecutorPositionId = x.ExecutorPositionId,
                             Name = x.Name,
                             Extension = x.Extension,

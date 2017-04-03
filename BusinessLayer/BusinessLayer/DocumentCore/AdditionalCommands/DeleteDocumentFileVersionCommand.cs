@@ -22,15 +22,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _fStore = fStore;
         }
 
-        private FilterDocumentFileIdentity Model
+        private int Model
         {
             get
             {
-                if (!(_param is FilterDocumentFileIdentity))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (FilterDocumentFileIdentity)_param;
+                return (int)_param;
             }
         }
 
@@ -67,22 +67,18 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || !Model.Version.HasValue)
-            {
-                throw new WrongParameterValueError();
-            }
 
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
             }
-            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
+            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any(x=>x.Id == Model))
             {
                 throw new UnknownDocumentFile();
             }
 
-            _file = _document.DocumentFiles.First();
+            _file = _document.DocumentFiles.First(x => x.Id == Model);
 
             _context.SetCurrentPosition(_file.ExecutorPositionId);
             _admin.VerifyAccess(_context, CommandType);
@@ -101,9 +97,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 ClientId = _document.ClientId,
                 EntityTypeId = _document.EntityTypeId,
-                DocumentId = Model.DocumentId,
-                OrderInDocument = Model.OrderInDocument,
-                Version = Model.Version ?? 0,
+                DocumentId = _file.DocumentId,
+                OrderInDocument = _file.OrderInDocument,
+                Version = _file.Version,
                 IsDeleted = _file.IsDeleted
             };
 

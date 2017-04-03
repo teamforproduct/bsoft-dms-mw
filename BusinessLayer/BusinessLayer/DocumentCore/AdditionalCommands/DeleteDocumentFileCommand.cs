@@ -22,15 +22,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _fStore = fStore;
         }
 
-        private FilterDocumentFileIdentity Model
+        private int Model
         {
             get
             {
-                if (!(_param is FilterDocumentFileIdentity))
+                if (!(_param is int))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (FilterDocumentFileIdentity)_param;
+                return (int)_param;
             }
         }
 
@@ -55,11 +55,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            if (Model.DocumentId <= 0 || Model.OrderInDocument <= 0 || Model.Version.HasValue)
-            {
-                throw new WrongParameterValueError();
-            }
-
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
@@ -96,8 +91,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 ClientId = _document.ClientId,
                 EntityTypeId = _document.EntityTypeId,
-                DocumentId = Model.DocumentId,
-                OrderInDocument = Model.OrderInDocument
+                DocumentId = _file.DocumentId,
+                OrderInDocument = _file.OrderInDocument
             };
 
             try

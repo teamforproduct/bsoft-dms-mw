@@ -27,9 +27,9 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var res = docFileProc.GetUserFile(ctx, model);
+            //var res = docFileProc.GetUserFile(ctx, model);
 
-            return new JsonResult(res, this);
+            return new JsonResult(null, this);
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var res = docFileProc.GetUserFilePdf(ctx, model);
+            //var res = docFileProc.GetUserFilePdf(ctx, model);
 
-            return new JsonResult(res, this);
+            return new JsonResult(null, this);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace DMS_WebAPI.Controllers.Documents
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docFileProc = DmsResolver.Current.Get<IDocumentFileService>();
-            var res = docFileProc.GetUserFilePreview(ctx, model);
+            //var res = docFileProc.GetUserFilePreview(ctx, model);
 
-            return new JsonResult(res, this);
+            return new JsonResult(null, this);
         }
 
         /// <summary>

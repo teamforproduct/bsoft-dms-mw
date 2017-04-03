@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
         [ResponseType(typeof(FrontDocumentAttachedFile))]
-        public async Task<IHttpActionResult> Get([FromUri]FilterDocumentFileIdentity Id)
+        public async Task<IHttpActionResult> Get(int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Pdf")]
         [ResponseType(typeof(FrontDocumentAttachedFile))]
-        public async Task<IHttpActionResult> GetPdf([FromUri]FilterDocumentFileIdentity Id)
+        public async Task<IHttpActionResult> GetPdf(int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Preview")]
         [ResponseType(typeof(FrontDocumentAttachedFile))]
-        public async Task<IHttpActionResult> GetPreview([FromUri]FilterDocumentFileIdentity Id)
+        public async Task<IHttpActionResult> GetPreview(int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -242,17 +242,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
 
 
         /// <summary>
-        /// Удаляет файла (удадяет все версии) (ставится отметка или полное удаление)
+        /// Удаляет файл (удадяет все версии) (ставится отметка или полное удаление)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Files)]
-        public async Task<IHttpActionResult> Delete([FromUri]FilterDocumentFileIdentity model)
+        [Route(Features.Files + "/{Id:int}")]
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteDocumentFile, model);
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentFile, Id);
                 var res = new JsonResult(null, this);
                 return res;
             });

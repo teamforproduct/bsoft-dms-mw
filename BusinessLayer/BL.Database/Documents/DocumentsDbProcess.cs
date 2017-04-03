@@ -385,12 +385,12 @@ namespace BL.Database.Documents
                                         CountWaits = x.Sum(y => y.CountWaits),
                                     });
                                 var counts = qryAcc.FirstOrDefault();
-                                paging.TotalItemsCount = counts?.Count;
+                                paging.TotalItemsCount = counts?.Count ?? 0;
                                 paging.Counters = new UICounters
                                 {
-                                    Counter1 = counts?.CountNewEvents,
-                                    Counter2 = counts?.CountWaits,
-                                    Counter3 = counts?.CountFavourite
+                                    Counter1 = counts?.CountNewEvents ?? 0,
+                                    Counter2 = counts?.CountWaits ?? 0,
+                                    Counter3 = counts?.CountFavourite ?? 0,
                                 };
                             }
                         }

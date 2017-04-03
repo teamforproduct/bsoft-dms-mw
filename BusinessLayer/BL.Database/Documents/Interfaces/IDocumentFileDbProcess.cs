@@ -10,7 +10,7 @@ namespace BL.Database.Documents.Interfaces
     public interface IDocumentFileDbProcess
     {
         IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
-        FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int documentId, int orderNumber, int versionNumber);
+        FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
         int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt);
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
         int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
@@ -20,7 +20,7 @@ namespace BL.Database.Documents.Interfaces
         void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents);
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version);
         InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber);
-        InternalDocument DeleteDocumentFilePrepare(IContext ctx, FilterDocumentFileIdentity flIdent);
+        InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id);
         void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile);
         int GetNextFileOrderNumber(IContext ctx, int documentId);
         int GetFileNextVersion(IContext ctx, int documentId, int fileOrder);
