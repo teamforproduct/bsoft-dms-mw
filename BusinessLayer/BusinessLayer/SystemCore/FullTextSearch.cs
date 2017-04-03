@@ -43,7 +43,7 @@ namespace BL.Logic.SystemCore
 
                 // Если фильтр не задан и результат полнотекста влезает в PageSize 
                 // (список ID из базы можно не джойнить, а сортировка примениться в  MainFunc)
-                if (filter == null && ftList.Count <= paging.PageSize)
+                if (filter == null && ftList.Count <= paging?.PageSize)
                 {
                     list = ftList;
                 }

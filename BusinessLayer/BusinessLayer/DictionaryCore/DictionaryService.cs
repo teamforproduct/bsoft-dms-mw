@@ -1162,43 +1162,21 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
+
+            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && SearchInPositionsOnly)
             {
+                var positions = _dictDb.GetPositionIDs(context, new FilterDictionaryPosition { NameDepartmentExecutor = ftSearch?.FullTextSearchString }).ToList();
+
+                if (!positions.Any()) return new List<FrontMainDictionaryStandartSendList>();
+
                 if (filter == null) filter = new FilterDictionaryStandartSendList();
 
-                var tmpService = DmsResolver.Current.Get<IFullTextSearchService>();
-                bool IsNotAll;
+                filter.PositionIDs = positions;
 
-                if (SearchInPositionsOnly)
-                {
-                    var positions = tmpService.SearchItemId(out IsNotAll, context, ftSearch.FullTextSearchString,
-                        new FullTextSearchFilter { Module = Modules.Position, Feature = Features.Info });
-
-                    if (positions?.Count == 0) return new List<FrontMainDictionaryStandartSendList>();
-
-                    filter.PositionIDs = positions;
-                }
-                else
-                {
-                    var ids = tmpService.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString,
-                        new FullTextSearchFilter { Module = Modules.SendList });
-
-                    if (ids?.Count == 0) return new List<FrontMainDictionaryStandartSendList>();
-
-                    filter.IDs = ids;
-                }
+                ftSearch.FullTextSearchString = string.Empty;
             }
 
-            var res = _dictDb.GetMainStandartSendLists(context, filter, null, null);
-
-            if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && !ftSearch.IsDontSaveSearchQueryLog && res != null && res.Any())
-            {
-                DmsResolver.Current.Get<ILogger>().AddSearchQueryLog(context, Modules.SendList, ftSearch?.FullTextSearchString);
-            }
-
-            return res;
-
-            //return FTS.Get(context, Modules.SendList, ftSearch, filter, paging, sorting, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
+            return FTS.Get(context, Modules.SendList, ftSearch, filter, null, null, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
         }
 
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter)

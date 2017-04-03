@@ -1778,7 +1778,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
-                        (current, value) => current.Or(e => (e.Code + " " + e.Name).Contains(value)).Expand());
+                        (current, value) => current.And(e => (e.Code + " " + e.Name).Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -5007,7 +5007,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryPositions>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                        (current, value) => current.And(e => e.Name.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -5017,10 +5017,21 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryPositions>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
+                        (current, value) => current.And(e => e.FullName.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
+
+                // Условие по полному имени
+                if (!string.IsNullOrEmpty(filter.NameDepartmentExecutor))
+                {
+                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.NameDepartmentExecutor).Aggregate(filterContains,
+                        (current, value) => current.And(e => (e.Name + " " + e.Department.Name + " " + e.ExecutorAgent.Name + " " + e.ExecutorType.Suffix).Contains(value)).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
 
                 if (filter.DocumentIDs?.Count > 0)
                 {
@@ -5061,6 +5072,7 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
+
                 if (filter.IsHideVacated ?? false)
                 {
                     qry = qry.Where(x => x.ExecutorAgentId.HasValue);

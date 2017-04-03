@@ -62,5 +62,11 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// Не показывать вакантные должности
         /// </summary>
         public bool? IsHideVacated { get; set; }
+
+        /// <summary>
+        /// Сужение по наименованию (равенство)
+        /// </summary>
+        [IgnoreDataMember]
+        public string NameDepartmentExecutor { get; set; }
     }
 }
