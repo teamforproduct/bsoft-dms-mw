@@ -181,7 +181,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpGet]
         [Route(Features.Plan + "/AdditinalLinkedDocument")]
         [ResponseType(typeof(List<FrontDocument>))]
-        public async Task<IHttpActionResult> AdditinalLinkedDocumentSendLists([FromBody]AdditinalLinkedDocumentSendList model)
+        public async Task<IHttpActionResult> AdditinalLinkedDocumentSendLists([FromUri]AdditinalLinkedDocumentSendList model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
                {
