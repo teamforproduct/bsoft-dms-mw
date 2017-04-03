@@ -1778,7 +1778,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Code.Contains(value) || e.Name.Contains(value)).Expand());
+                        (current, value) => current.Or(e => (e.Code + " " + e.Name).Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
