@@ -1209,22 +1209,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void UpdateAgentUser(IContext ctx, InternalDictionaryAgentUser User)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
-
-                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
-                var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
-                dbContext.SaveChanges();
-
-                transaction.Complete();
-            }
-        }
-
         public void DeleteAgentUser(IContext ctx, int id)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -1276,14 +1260,20 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //var u = dbContext.DictionaryAgentUsersSet.Where(x => x.Id == User.Id).Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+                var dbModel = dbContext.DictionaryAgentUsersSet.FirstOrDefault(x => x.Id == User.Id && x.ClientId == ctx.CurrentClientId);
 
-                var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
+                dbModel.UserId = User.UserId;
 
-                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
-                var entity = dbContext.Entry(dbModel);
-                entity.Property(x => x.UserId).IsModified = true;
                 dbContext.SaveChanges();
+
+                // Attach стал стреляться при внедрении ctx.DbContext as DmsContext;
+
+                //var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
+                //dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                //var entity = dbContext.Entry(dbModel);
+                //entity.Property(x => x.UserId).IsModified = true;
+                //dbContext.SaveChanges();
+
                 transaction.Complete();
             }
         }
@@ -1826,12 +1816,12 @@ namespace BL.Database.Dictionaries
             {
                 UpdateAgentName(ctx, org.Id, org);
 
-                DictionaryCompanies drj = DictionaryModelConverter.GetDbAgentOrg(ctx, org);
-                dbContext.DictionaryAgentClientCompaniesSet.Attach(drj);
-                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                var dbModel = DictionaryModelConverter.GetDbAgentOrg(ctx, org);
+                dbContext.DictionaryAgentClientCompaniesSet.Attach(dbModel);
+                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, drj.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
