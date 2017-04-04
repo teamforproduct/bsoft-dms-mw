@@ -24,6 +24,7 @@ using System.Web;
 using BL.Database.DatabaseContext;
 using Ninject;
 using Ninject.Parameters;
+using Microsoft.Owin.Security.Provider;
 
 namespace DMS_WebAPI.Providers
 {
@@ -150,7 +151,7 @@ namespace DMS_WebAPI.Providers
 
         private void ThrowErrorGrantResourceOwnerCredentials (OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {
-            string message = GetBrowswerInfo();
+            string message = GetBrowswerInfo(context);
             var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
             var server = dbWeb.GetServerByUser(null, new SetUserServer { ClientId = -1, ServerId = -1, ClientCode = GetClientCodeFromBody(context.Request.Body) });
             var ctx = new AdminContext(server);
@@ -250,7 +251,7 @@ namespace DMS_WebAPI.Providers
             return Task.FromResult<object>(null);
         }
 
-        private static string GetBrowswerInfo(OAuthTokenEndpointResponseContext context = null, bool isIncludeFingerPrintInfo = true)
+        private static string GetBrowswerInfo(BaseContext<OAuthAuthorizationServerOptions> context = null, bool isIncludeFingerPrintInfo = true)
         {
             HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
             var userAgent = HttpContext.Current.Request.UserAgent;
