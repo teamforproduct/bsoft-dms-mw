@@ -283,6 +283,18 @@ namespace BL.Database.SystemDb
         #endregion
 
         #region [+] Logs ...
+        // ONE CONTEXT - logger could be called everywhere so we do not need to use here one context.
+        public void DeleteSystemLogs(IContext ctx, FilterSystemLog filter)
+        {
+            using (var dbContext = new DmsContext(ctx))
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemLogsQuery(ctx, dbContext, filter);
+                dbContext.LogSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
 
         public IEnumerable<FrontSystemLog> GetSystemLogs(IContext ctx, FilterSystemLog filter, UIPaging paging)
         {
@@ -549,6 +561,13 @@ namespace BL.Database.SystemDb
                     var filterContains = PredicateBuilder.False<SystemLogs>();
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LogTrace)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.LogTrace.Contains(value)).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (!String.IsNullOrEmpty(filter.ObjectLog))
+                {
+                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ObjectLog)
+                                .Aggregate(filterContains, (current, value) => current.Or(e => e.ObjectLog.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.LogException))

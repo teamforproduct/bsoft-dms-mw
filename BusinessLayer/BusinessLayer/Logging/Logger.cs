@@ -158,6 +158,11 @@ namespace BL.Logic.Logging
             return res;
         }
 
+        public void DeleteSystemLogs(IContext context, FilterSystemLog filter)
+        {
+            _systemDb.DeleteSystemLogs(context, filter);
+        }
+
         public IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging)
         {
             var res = _systemDb.GetSystemLogs(context, filter, paging);

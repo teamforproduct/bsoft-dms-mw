@@ -15,6 +15,7 @@ namespace BL.CrossCutting.Interfaces
         IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions);
         FrontAgentEmployeeUser GetLastUserLoginInfo(IContext context);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
+        void DeleteSystemLogs(IContext context, FilterSystemLog filter);
         IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging);
         void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter);
 

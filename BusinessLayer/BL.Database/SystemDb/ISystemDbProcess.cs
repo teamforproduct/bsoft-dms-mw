@@ -20,6 +20,7 @@ namespace BL.Database.SystemDb
         #region Logging
         FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext context);
         FrontAgentEmployeeUser GetLastErrorLoginInfo(IContext context, DateTime? dateFrom);
+        void DeleteSystemLogs(IContext context, FilterSystemLog filter);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging);
         void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter);

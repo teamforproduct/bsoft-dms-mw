@@ -54,6 +54,10 @@ namespace BL.Model.SystemCore.Filters
         /// </summary>
         public string LogTrace { get; set; }
         /// <summary>
+        /// Отрывок описания объекта
+        /// </summary>
+        public string ObjectLog { get; set; }
+        /// <summary>
         /// Отрывок описания исключения
         /// </summary>
         public string LogException { get; set; }

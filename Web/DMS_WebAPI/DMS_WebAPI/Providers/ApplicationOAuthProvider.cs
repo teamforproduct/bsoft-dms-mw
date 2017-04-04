@@ -25,6 +25,7 @@ using BL.Database.DatabaseContext;
 using Ninject;
 using Ninject.Parameters;
 using Microsoft.Owin.Security.Provider;
+using BL.Model.SystemCore.Filters;
 
 namespace DMS_WebAPI.Providers
 {
@@ -106,7 +107,7 @@ namespace DMS_WebAPI.Providers
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                        ThrowErrorGrantResourceOwnerCredentials (context, new UserAnswerIsIncorrect());
+                        ThrowErrorGrantResourceOwnerCredentials(context, new UserAnswerIsIncorrect());
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
@@ -149,7 +150,7 @@ namespace DMS_WebAPI.Providers
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
 
-        private void ThrowErrorGrantResourceOwnerCredentials (OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
+        private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {
             string message = GetBrowswerInfo(context);
             var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
@@ -173,7 +174,7 @@ namespace DMS_WebAPI.Providers
             }
 
             var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId : (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId );
+            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
 
             throw ex;
         }
@@ -240,6 +241,17 @@ namespace DMS_WebAPI.Providers
 
                 var logger = DmsResolver.Current.Get<ILogger>();
                 var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1: true);
+                var fingerPrint = GetFingerprintFromBody(context.Request.Body);
+                if (!string.IsNullOrEmpty(fingerPrint))
+                    logger.DeleteSystemLogs(ctx, new FilterSystemLog
+                    {
+                        ObjectIDs = new List<int> { (int)EnumObjects.System },
+                        ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                        LogLevels = new List<int> { (int)EnumLogTypes.Error },
+                        ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
+                        LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
+                        ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
+                    });
 
                 // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, loginLogId, message);
@@ -260,7 +272,7 @@ namespace DMS_WebAPI.Providers
             if (string.IsNullOrEmpty(ip))
                 ip = HttpContext.Current.Request.UserHostAddress;
             var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
-            if (isIncludeFingerPrintInfo && context !=null)
+            if (isIncludeFingerPrintInfo && context != null)
             {
                 var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
                 var fingerprint = GetFingerprintFromBody(context.Request.Body);
