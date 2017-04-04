@@ -1,13 +1,6 @@
-﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.Exception;
-using DMS_WebAPI.Infrastructure;
-using DMS_WebAPI.Utilities;
-using Newtonsoft.Json;
+﻿using DMS_WebAPI.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Http;
@@ -17,7 +10,7 @@ using System.Web.Routing;
 
 namespace DMS_WebAPI
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr LoadLibrary(string libname);
@@ -30,7 +23,7 @@ namespace DMS_WebAPI
         protected void Application_Start()
         {
             // maximum number of concurrent connections allowed by a ServicePoint object
-            System.Net.ServicePointManager.DefaultConnectionLimit = System.Int16.MaxValue;
+            System.Net.ServicePointManager.DefaultConnectionLimit = short.MaxValue;
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
@@ -66,10 +59,7 @@ namespace DMS_WebAPI
 
             // Игнорируем ошибки, которые пока не умеем выключить
             // Server cannot set status after HTTP headers have been sent.
-            if (exc is System.Web.HttpException)
-            {
-                if ((exc as System.Web.HttpException).ErrorCode == -2147467259) return;
-            }
+            if ((exc as HttpException)?.ErrorCode == -2147467259) return;
 
             ExceptionHandling.ReturnExceptionResponse(exc);
 

@@ -52,13 +52,13 @@ namespace DMS_WebAPI.Infrastructure
         /// <param name="logExpression"></param>
         /// <param name="descriptionExpression"></param>
         /// <returns></returns>
-        public static string GetExceptionText(Exception exception, out string logExpression, out string descriptionExpression)
+        private static string GetExceptionText(Exception exception, out string logExpression, out string descriptionExpression)
         {
             var exc = exception;
             var responceExpression = string.Empty;
             logExpression = string.Empty;
             descriptionExpression = string.Empty;
-
+            var languageService = DmsResolver.Current.Get<ILanguages>();
             while (exc != null)
             {
                 var m = string.Empty;
@@ -67,13 +67,6 @@ namespace DMS_WebAPI.Infrastructure
                 // для DmsExceptions Message формирую на основании названия класса
                 if (exc is DmsExceptions) m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
                 else m = exc.Message;
-
-
-                //if (exc is AggregateException)
-                //{
-                //    var e = (exc as AggregateException);
-
-                //}
 
                 // ошибки SQL-базы
                 if (exc is SqlException)
@@ -100,10 +93,10 @@ namespace DMS_WebAPI.Infrastructure
                 {
                     exc = exc.InnerException;
                     continue;
-                };
+                }
 
                 // перевожу
-                m = GetTranslation(m);
+                m = languageService.GetTranslation(m);
 
                 // подстановка параметров в сообщение
                 if (exc is DmsExceptions)
@@ -125,11 +118,11 @@ namespace DMS_WebAPI.Infrastructure
                 logExpression += $"   Method: {exc.TargetSite}\r\n";
 
                 exc = exc.InnerException;
-            };
+            }
 
             // Если в результате подстановки параметров подставили лейблы, нужно их перевести
-            descriptionExpression = GetTranslation(descriptionExpression);
-            responceExpression = GetTranslation(responceExpression);
+            descriptionExpression = languageService.GetTranslation(descriptionExpression);
+            responceExpression = languageService.GetTranslation(responceExpression);
 
             return responceExpression;
         }
@@ -203,10 +196,6 @@ namespace DMS_WebAPI.Infrastructure
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
                 errorMessage += $"URL: {url}\r\n";
-                //errorMessage += $"Message:{ex.Message}\r\n";
-                //errorMessage += $"Source:{ex.Source}\r\n";
-                //errorMessage += $"Method:{ex.TargetSite}\r\n";
-                //errorMessage += $"StackTrace:{ex.StackTrace}\r\n";
                 errorMessage += logExpression;
 
 
@@ -245,14 +234,6 @@ namespace DMS_WebAPI.Infrastructure
             { }
             return Message;
         }
-
-        private static string GetTranslation(string text)
-        {
-            var languageService = DmsResolver.Current.Get<ILanguages>();
-            return languageService.GetTranslation(text);
-        }
-
-
 
     }
 }
