@@ -12,6 +12,8 @@ namespace BL.Database.DBModel.Dictionary
         [MaxLength(2000)]
         [Index("IX_Name", 1, IsUnique = true)]
         public string Name { get; set; }
+
+        public int Order { get; set; }
         public bool IsImportant { get; set; }
         public int SubordinationTypeId { get; set; }
         public int LastChangeUserId { get; set; }

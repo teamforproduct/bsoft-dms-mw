@@ -266,6 +266,20 @@ namespace BL.Model.Exception
         public FingerprintRequired() : base() { }
         public FingerprintRequired(System.Exception ex) : base(ex) { }
     }
+
+    public class NameRequired : DmsExceptions
+    {
+        public NameRequired() : base() { }
+        public NameRequired(System.Exception ex) : base(ex) { }
+    }
+
+    public class FullNameRequired : DmsExceptions
+    {
+        public FullNameRequired() : base() { }
+        public FullNameRequired(System.Exception ex) : base(ex) { }
+    }
+
+
     /// <summary>
     /// UserContextUseOnly
     /// </summary>

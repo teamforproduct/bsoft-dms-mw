@@ -1,12 +1,5 @@
 ﻿using BL.Model.Exception;
-using DMS_WebAPI.Results;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
