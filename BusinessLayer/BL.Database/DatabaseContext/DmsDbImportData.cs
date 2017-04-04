@@ -1392,9 +1392,9 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionarySendType(50, EnumSendTypes.SendForSigning, isImportant: true, subordinationTypeId: 1));
             items.Add(GetDictionarySendType(60, EnumSendTypes.SendForVisaing, isImportant: true, subordinationTypeId: 1));
             items.Add(GetDictionarySendType(70, EnumSendTypes.SendForАpproval, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(1, EnumSendTypes.SendForResponsibleExecution, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(1, EnumSendTypes.SendForControl, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(1, EnumSendTypes.SendForInformationExternal, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(80, EnumSendTypes.SendForResponsibleExecution, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(90, EnumSendTypes.SendForControl, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(100, EnumSendTypes.SendForInformationExternal, isImportant: false, subordinationTypeId: 1));
 
             return items;
         }
