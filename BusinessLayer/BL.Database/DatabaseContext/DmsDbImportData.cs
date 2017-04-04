@@ -1378,13 +1378,6 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionarySendTypes>();
 
-
-
-// На утверждение
-// На контроль
-// Соисполнителю
-// Внешнему контрагенту
-
             items.Add(GetDictionarySendType(10, EnumSendTypes.SendForInformation, isImportant: false, subordinationTypeId: 1));
             items.Add(GetDictionarySendType(20, EnumSendTypes.SendForConsideration, isImportant: false, subordinationTypeId: 1));
             items.Add(GetDictionarySendType(30, EnumSendTypes.SendForExecution, isImportant: true, subordinationTypeId: 2));
