@@ -1378,21 +1378,28 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionarySendTypes>();
 
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForResponsibleExecution, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForControl, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForExecution, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformation, isImportant: false, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForInformationExternal, isImportant: false, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForConsideration, isImportant: false, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForVisaing, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForАgreement, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForАpproval, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(EnumSendTypes.SendForSigning, isImportant: true, subordinationTypeId: 1));
+
+
+// На утверждение
+// На контроль
+// Соисполнителю
+// Внешнему контрагенту
+
+            items.Add(GetDictionarySendType(10, EnumSendTypes.SendForInformation, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(20, EnumSendTypes.SendForConsideration, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(30, EnumSendTypes.SendForExecution, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(40, EnumSendTypes.SendForАgreement, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(50, EnumSendTypes.SendForSigning, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(60, EnumSendTypes.SendForVisaing, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(70, EnumSendTypes.SendForАpproval, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(1, EnumSendTypes.SendForResponsibleExecution, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(1, EnumSendTypes.SendForControl, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(1, EnumSendTypes.SendForInformationExternal, isImportant: false, subordinationTypeId: 1));
 
             return items;
         }
 
-        private static DictionarySendTypes GetDictionarySendType(EnumSendTypes id, bool isImportant, int subordinationTypeId)
+        private static DictionarySendTypes GetDictionarySendType(int order, EnumSendTypes id, bool isImportant, int subordinationTypeId)
         {
             string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySendTypes()
@@ -1402,6 +1409,7 @@ namespace BL.Database.DatabaseContext
                 Name = name,
                 IsImportant = isImportant,
                 SubordinationTypeId = subordinationTypeId,
+                Order = order,
                 LastChangeUserId = (int)EnumSystemUsers.AdminUser,
                 LastChangeDate = DateTime.UtcNow,
             };

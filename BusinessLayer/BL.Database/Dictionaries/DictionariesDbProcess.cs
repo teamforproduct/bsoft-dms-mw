@@ -6111,6 +6111,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = dbContext.DictionarySendTypesSet.AsQueryable();
 
+                qry = qry.OrderBy(x => x.Order);
+
                 if (filter != null)
                 {
                     // Список первичных ключей
