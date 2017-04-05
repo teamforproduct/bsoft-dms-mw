@@ -35,6 +35,7 @@ namespace BL.Database.Common
                     RegistrationJournalId = document.RegistrationJournalId,
                     RegistrationNumberSuffix = document.RegistrationNumberSuffix,
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,
+                    RegistrationNumber = document.RegistrationNumber,
                     RegistrationDate = document.RegistrationDate,
                     ExecutorPositionId = document.ExecutorPositionId,
                     ExecutorPositionExecutorAgentId = document.ExecutorPositionExecutorAgentId,
