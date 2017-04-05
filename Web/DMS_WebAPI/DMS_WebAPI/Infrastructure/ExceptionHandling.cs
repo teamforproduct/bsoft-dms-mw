@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
@@ -132,6 +131,7 @@ namespace DMS_WebAPI.Infrastructure
 
             bool fromGlobalAsax = context == null;
 
+            var user = string.Empty;
             var url = string.Empty;
             var body = string.Empty;
             var request = string.Empty;
@@ -150,9 +150,11 @@ namespace DMS_WebAPI.Infrastructure
             var httpContext = HttpContext.Current;
 
             if (context != null)
+            {
                 request = $"{context.Request}";
+            }
 
-            try { url = httpContext.Request.Url.ToString(); } catch { }
+            try { url = httpContext.Request.HttpMethod + " " + httpContext.Request.Url.ToString(); } catch { }
 
             try
             {
@@ -195,7 +197,10 @@ namespace DMS_WebAPI.Infrastructure
                 string errorMessage = string.Empty;
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
+                // TODO - USER
+                errorMessage += $"User: {user}\r\n";
                 errorMessage += $"URL: {url}\r\n";
+                errorMessage += $"Request Body: {body}\r\n";
                 errorMessage += logExpression;
 
 
@@ -206,11 +211,11 @@ namespace DMS_WebAPI.Infrastructure
                 else
                     exc = exception;
 
-                errorMessage += $"StackTrace:\r\n{exc.StackTrace}\r\n";
+                //errorMessage += $"StackTrace:\r\n{exc.StackTrace}\r\n";
 
                 errorMessage += $"Request:\r\n{request}\r\n";
 
-                errorMessage += $"Request Body: {body}\r\n";
+                
 
                 FileLogger.AppendTextToFile(errorMessage, HttpContext.Current.Server.MapPath("~/SiteErrors.txt"));
             }
