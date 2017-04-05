@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace BL.Database.Dictionaries
 {
-    public class DictionariesDbProcess : CoreDb.CoreDb//, IDictionariesDbProcess
+    public class DictionariesDbProcess : CoreDb.CoreDb
     {
         private readonly ICacheService _cacheService;
         public DictionariesDbProcess(ICacheService casheService)
@@ -317,7 +317,7 @@ namespace BL.Database.Dictionaries
             var M = people.MiddleName?.Trim().First().ToString();
 
             people.Name = people.LastName?.Trim();
-            people.Name += string.IsNullOrEmpty(F) ? "" : F + ".";
+            people.Name += string.IsNullOrEmpty(F) ? "" : " " + F + ".";
             people.Name += string.IsNullOrEmpty(F + M) ? "" : M + ".";
 
             people.FullName = (people.LastName?.Trim() + " " + people.FirstName?.Trim() + " " + people.MiddleName?.Trim())?.Trim();
